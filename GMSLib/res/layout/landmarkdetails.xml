@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.jstakun.gms.android.ui.TransparentLinearLayout
+android:id="@+id/lvView"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:visibility="gone"
+xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:padding="3dip">
+    <RelativeLayout
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:gravity="right">
+        <ImageButton
+android:id="@+id/lvCloseButton"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentTop="true"
+android:layout_alignParentRight="true"
+android:src="@drawable/close"
+android:background="@null"/>
+        <TextView
+android:id="@+id/lvheader"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:gravity="center"
+style="@android:style/TextAppearance.Large"
+android:textColor="#d3d3d3"/>
+    </RelativeLayout>
+    <LinearLayout
+ android:layout_width="wrap_content"
+ android:layout_height="wrap_content"
+ android:layout_marginTop="10dip"
+ android:layout_marginBottom="5dip"
+ android:orientation="horizontal"
+ android:gravity="left">
+        <ImageView
+android:id="@+id/lvLayerImage"
+android:layout_width="wrap_content"
+android:layout_height="fill_parent"
+android:layout_marginRight="5dip"
+android:layout_gravity="center_vertical"/>
+        <TextView
+android:id="@+id/lvname"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_gravity="center_vertical"
+style="@android:style/TextAppearance.Small"
+android:textColor="#fffafa"/>
+    </LinearLayout>
+    <ScrollView
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:scrollbars="none"
+android:layout_weight="1">
+    <RelativeLayout
+             android:id="@+id/lvDescLayout"
+             android:layout_width="fill_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="10dip">
+        <ImageView
+              android:id="@+id/thumbnailButton"
+              android:src="@drawable/download48"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:padding="3dip"/>
+        <TextView
+            android:id="@+id/lvdesc"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/thumbnailButton"
+            style="@android:style/TextAppearance.Small"
+            android:textColor="#d3d3d3"/>
+      </RelativeLayout>
+    </ScrollView>
+    <LinearLayout
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:gravity="right"
+android:orientation="horizontal"
+android:layout_marginTop="5dip"
+android:layout_alignParentTop="true"
+android:background="@android:color/transparent">
+        <ImageButton
+android:id="@+id/lvCommentButton"
+android:layout_width="56dip"
+android:layout_height="56dip"
+android:src="@drawable/comment"
+android:layout_gravity="right"
+android:background="@color/ivory2"/>
+        <View
+        android:layout_height="56dip"
+        android:layout_width="2dip"
+        android:background="#00000000"
+        android:id="@+id/lvCommentSeparator"
+        />
+        <ImageButton
+android:id="@+id/lvCallButton"
+android:layout_width="56dip"
+android:layout_height="56dip"
+android:src="@drawable/call"
+android:layout_gravity="right"
+android:background="@color/ivory2"
+        />
+        <View
+        android:layout_height="56dip"
+        android:layout_width="2dip"
+        android:background="#00000000"
+        android:id="@+id/lvCallSeparator"
+        />
+        <ImageButton
+android:id="@+id/lvActionButton"
+android:layout_width="56dip"
+android:layout_height="56dip"
+android:src="@drawable/checkin"
+android:layout_gravity="right"
+android:background="@color/ivory2"
+        />
+        <View
+        android:layout_height="56dip"
+        android:layout_width="2dip"
+        android:background="#00000000"
+        android:id="@+id/lvActionSeparator"
+        />
+        <ImageButton
+android:id="@+id/lvSendMailButton"
+android:layout_width="56dip"
+android:layout_height="56dip"
+android:src="@drawable/email_send"
+android:layout_gravity="right"
+android:background="@color/ivory2"
+        />
+        <View
+        android:layout_height="56dip"
+        android:layout_width="2dip"
+        android:background="#00000000"
+        android:id="@+id/lvSendMailSeparator"
+        />
+        <ImageButton
+android:id="@+id/lvCarRouteButton"
+android:layout_width="56dip"
+android:layout_height="56dip"
+android:src="@drawable/route48"
+android:layout_gravity="right"
+android:background="@color/ivory2"
+        />
+        <View
+        android:layout_height="56dip"
+        android:layout_width="2dip"
+        android:background="#00000000"
+        android:id="@+id/lvCarRouteSeparator"
+        />
+        <ImageButton
+android:id="@+id/lvOpenButton"
+android:layout_width="56dip"
+android:layout_height="56dip"
+android:src="@drawable/gotourl"
+android:layout_gravity="right"
+android:background="@color/ivory2"
+        />
+        <View
+        android:layout_height="56dip"
+        android:layout_width="2dip"
+        android:background="#00000000"
+        android:id="@+id/lvOpenSeparator"
+        />
+    </LinearLayout>
+    <View
+        android:layout_height="10dip"
+        android:layout_width="fill_parent"
+        android:background="#00000000"
+    />
+    <include layout="@layout/adview"/>
+</com.jstakun.gms.android.ui.TransparentLinearLayout>

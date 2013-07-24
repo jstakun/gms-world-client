@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal"
+  android:gravity="left"
+  android:paddingTop="10dip"
+  android:paddingBottom="10dip">
+  <ImageView android:id="@+id/intentIcon"
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:layout_marginRight="2dip"
+    android:padding="4dip"/>
+  <TextView
+    android:id="@+id/intentLabel"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@android:style/TextAppearance.Large"
+    android:layout_gravity="center_vertical"
+    android:padding="2dip"
+    android:textColor="#000000"/>
+</LinearLayout>

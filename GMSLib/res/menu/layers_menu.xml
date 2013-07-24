@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/addLayer" android:icon="@android:drawable/ic_menu_add"
+                 android:title="@string/addLayer" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/refreshLayers" android:icon="@drawable/ic_menu_refresh"
+                 android:title="@string/refreshLayers" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/enableLayers" android:icon="@drawable/ic_menu_mark"
+                 android:title="@string/enableLayers" android:showAsAction="ifRoom|withText"/>
+</menu>

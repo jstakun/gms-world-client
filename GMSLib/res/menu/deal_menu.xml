@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/addLayer" android:icon="@android:drawable/ic_menu_add"
+                 android:title="@string/addLayer" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/search"
+          android:title="@string/search" 
+          android:icon="@drawable/ic_menu_search"
+          android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/mapMode"
+          android:title="@string/mapMode"
+          android:icon="@android:drawable/ic_menu_mapmode"
+          android:showAsAction="ifRoom|withText"/>
+</menu>
+

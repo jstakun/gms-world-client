@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical"
+        android:background="@drawable/defaultbg" android:padding="5dip">
+    <LinearLayout
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:orientation="horizontal"
+android:gravity="left">
+        <ImageView android:id="@+id/layerIcon"
+                   android:layout_height="wrap_content"
+		   android:src="@drawable/image_missing16"
+                   android:layout_width="wrap_content"
+                   android:layout_marginRight="5dip"
+		   android:layout_gravity="center_vertical"/>
+        <TextView android:layout_width="wrap_content"
+                  style="@android:style/TextAppearance.Large"
+		  android:layout_height="wrap_content"
+                  android:id="@+id/layerStatusHeader"
+                  android:layout_gravity="center_vertical"
+android:textColor="#000000"/>
+    </LinearLayout>
+    <RelativeLayout
+android:layout_width="wrap_content"
+android:layout_height="wrap_content">
+        <CheckBox 
+            android:id="@+id/layerStatusCheckbox" 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_alignParentTop="true" 
+            android:textColor="#000000"
+            android:layout_alignParentLeft="true"/>
+    </RelativeLayout>
+    <RelativeLayout
+android:layout_width="wrap_content"
+android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content" style="@android:style/TextAppearance.Small"
+		android:layout_height="wrap_content" android:id="@+id/layerDetailsHeader"
+android:layout_alignParentTop="true"
+android:textColor="#000000"/>
+    </RelativeLayout>
+</LinearLayout>

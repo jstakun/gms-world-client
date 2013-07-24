@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:amazon="http://schemas.amazon.com/apk/res/android"
+      package="com.jstakun.gms.android.ui.deals"
+      android:versionCode="84"
+      android:versionName="0.6">
+    <uses-sdk android:minSdkVersion="11"
+    android:targetSdkVersion="13"/>
+    <supports-screens android:smallScreens="true"
+                  android:normalScreens="true"
+                  android:largeScreens="true"
+                  android:xlargeScreens="true"
+                  android:anyDensity="true" />
+    <permission android:name="com.jstakun.gms.android.permission.ACTIVITY" android:protectionLevel="signature"/>
+    <application android:name="DealMapApp" android:label="@string/app_name"
+    android:icon="@drawable/currency_dollar" android:theme="@style/GMSTheme.Light">
+        <amazon:enable-feature android:name="com.amazon.geo.maps" android:required="true" />
+        <activity android:name="DealMapActivity"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data android:name="android.app.default_searchable" android:value="com.jstakun.gms.android.ui.GMSSearchActivity"/>
+        </activity>
+        <activity-alias android:name=".CreateShortcut" android:targetActivity=".DealMapActivity"
+               android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+        <activity android:name="DealCategoryListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+            <meta-data android:name="android.app.default_searchable" android:value="com.jstakun.gms.android.ui.GMSSearchActivity"/>
+        </activity>
+        <activity android:name="com.jstakun.gms.android.ui.LandmarkListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+            <meta-data android:name="android.app.default_searchable" android:value="com.jstakun.gms.android.ui.GMSSearchActivity"/>
+        </activity>
+        <activity android:name="com.jstakun.gms.android.ui.PickLocationActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|keyboardHidden"></activity>
+        <activity android:name="com.jstakun.gms.android.ui.WebViewActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="keyboard|keyboardHidden|orientation"></activity>
+        <activity android:name="SettingsActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.PREFERENCE"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.google.ads.AdActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+        <activity android:name="com.jstakun.gms.android.ui.HelpActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="com.jstakun.gms.android.ui.AddLayerActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="com.jstakun.gms.android.ui.GMSSearchActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+          <intent-filter>
+           <action android:name="android.intent.action.SEARCH" />
+           <category android:name="android.intent.category.DEFAULT" />
+          </intent-filter>
+          <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
+        </activity>
+        <activity android:name="com.exina.android.calendar.CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <provider android:authorities="com.jstakun.gms.android.deals" android:name="com.jstakun.gms.android.ui.deals.DealsSuggestionProvider"/>
+    </application>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- -->
+    <uses-permission android:name="com.jstakun.gms.android.permission.ACTIVITY" />
+</manifest> 

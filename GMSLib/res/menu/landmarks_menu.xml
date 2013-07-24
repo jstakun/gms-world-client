@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/sortRating"
+          android:title="@string/list.sortby.rating"
+          android:showAsAction="ifRoom|withText"
+          android:icon="@drawable/ic_menu_star"/>
+    <item android:id="@+id/search"
+          android:title="@string/search"
+          android:icon="@drawable/ic_menu_search"
+          android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/sortDate"
+          android:title="@string/list.sortby.date"
+          android:showAsAction="ifRoom|withText"
+          android:icon="@android:drawable/ic_menu_today"/>
+    <item android:id="@+id/sortDistance"
+          android:title="@string/list.sortby.distance"
+          android:showAsAction="ifRoom|withText"
+          android:icon="@android:drawable/ic_menu_sort_by_size"/>
+    <item android:id="@+id/sortAlphabetically"
+          android:title="@string/list.sortby.name"
+          android:showAsAction="ifRoom|withText"
+          android:icon="@android:drawable/ic_menu_sort_alphabetically"/>
+</menu>

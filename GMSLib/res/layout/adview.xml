@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<com.google.ads.AdView
+   xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/adView"
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content"
+   android:layout_alignParentBottom="true"
+   android:gravity="center"
+   android:layout_gravity="center"
+   ads:adUnitId="@string/adUnitId"
+   ads:adSize="SMART_BANNER"
+   ads:loadAdOnCreate="false"/>
+
+<!--com.tapfortap.AdView xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/adView"
+   android:layout_height="10dip"
+   android:layout_width="fill_parent"
+   android:layout_gravity="bottom"/-->

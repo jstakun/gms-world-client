@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- main_menu -->
+    <string name="app_name">Landmark Manager</string>
+    <string name="settings">Ustawienia</string>
+    <string name="zoomin">Powi\u0119ksz</string>
+    <string name="zoomout">Pomniejsz</string>
+    <string name="blogeo">Prze\u015blij posta na Blogeo</string>
+    <string name="trackPos">\u015aledzenie Twojej trasy</string>
+    <string name="login">Zaloguj si\u0119</string>
+    <string name="socialNetworks">Sieci spo\u0142eczno\u015bciowe</string>
+    <string name="addLandmark">Dodaj miejsce</string>
+    <string name="addLayer">Dodaj warstw\u0119</string>
+    <string name="refreshLayers">Od\u015bwie\u017c warstwy</string>
+    <string name="enableLayers">W\u0142\u0105cz wszystkie warstwy</string>
+    <string name="showLayers">Poka\u017c warstwy</string>
+    <string name="saveRoute">Zapisz tras\u0119</string>
+    <string name="routes">Trasy</string>
+    <string name="friendsCheckins">Aktywno\u015bci znajomych</string>
+    <string name="events">Kalendarz</string>
+    <string name="loadRoute">Za\u0142aduj tras\u0119 z pliku</string>
+    <string name="loadPoiFile">Pliki z miejscami</string>
+    <string name="clearMap">Wyczy\u015b\u0107 map\u0119</string>
+    <string name="showMyPos">Moja lokalizacja</string>
+    <string name="showMyLandmarks">Zapisane miejsca</string>
+    <string name="recentLandmarks">Ostatnio ogl\u0105dane</string>
+    <string name="landmarks">Moje miejsca</string>
+    <string name="landmarksNearby">Miejsca wok\u00f3\u0142</string>
+    <string name="dataPacket">Pakiety danych</string>
+    <string name="checkin">Meldowanie</string>
+    <string name="search">Szukaj</string>
+    <string name="qrcheckin">Zamelduj si\u0119 kodem QR</string>
+    <string name="searchcheckin">Zamelduj si\u0119 do miejsca</string>
+    <string name="autocheckin">Auto Check-In</string>
+    <string name="pickMyPos">Szukaj lokalizacji</string>
+    <string name="discoverPlaces">Odkrywaj nowe miejsca w okolicy</string>
+    <string name="releaseNotes">Dokumentacja</string>
+    <string name="about">O programie</string>
+    <string name="exit">Wyj\u015bcie</string>
+    <string name="more">Wi\u0119cej&#8230;</string>
+    <string name="register">Zarejestruj si\u0119 w GMS World</string>
+    <string name="deals">Okazje</string>
+    <string name="mapMode">Mapa</string>
+    <string name="listMode">Lista</string>
+    <string name="newestLandmarks">Najnowsze miejsca</string>
+    <string name="rateUs">Oce\u0144 nas</string>
+
+    <!-- preferences -->
+    <string name="mapProvider">Dostawca map</string>
+    <string name="logLevel">Poziom logowania</string>
+    <string name="landmarkPersist">Spos\u00f3b zapisu miejsc</string>
+    <string name="layers">Warstwy</string>
+    <string name="persistMgr">Trwa\u0142y zapis</string>
+    <string name="tileCache">Buforowanie map</string>
+    <string name="mapLoad">\u0141adowanie map</string>
+    <string name="googleMaps">Typ map Google</string>
+    <string name="landmarksPerLayer">Liczba miejsc w warstwie</string>
+    <string name="dealLimit">Liczba okazji w warstwie</string>
+    <string name="unitOfLength">Jednostka d\u0142ugo\u015bci</string>
+    <string name="radius">Promie\u0144 wyszukiwania</string>
+    <string name="clearCache">Wyczy\u015b\u0107 bufor map</string>
+    <string name="routeType">Typ tras</string>
+    <string name="searchType">Typ wyszukiwania</string>
+    <string name="autoCheckinTitle">Automatyczne meldowanie</string>
+    <string name="autoCheckinSummaryOn">Kliknij aby wy\u0142\u0105czy\u0107 automatyczne meldowanie</string>
+    <string name="autoCheckinSummaryOff">Kliknij aby w\u0142\u0105czy\u0107 automatyczne meldowanie</string>
+    <string name="trackUserTitle">\u015aledzenie u\u017cytkownika</string>
+    <string name="trackUserSummaryOn">Kliknij aby wy\u0142\u0105czy\u0107 \u015bledzenie u\u017cytkownika</string>
+    <string name="trackUserSummaryOff">Kliknij aby w\u0142\u0105czy\u0107 \u015bledzenie u\u017cytkownika</string>
+
+    <string name="select">Wybierz opcj\u0119</string>
+    <string name="select.value">Wybierz warto\u015b\u0107</string>
+    <string name="enable">W\u0142\u0105cz lub wy\u0142\u0105cz warstwy</string>
+    <string name="summary">Kliknij \u017ceby otworzy\u0107 list\u0119 wyboru</string>
+
+    <string name="confirmDealPreferences">Rekomendacje okazji wyczyszczone!</string>
+
+     <!-- addLandmark, addLayer -->
+    <string name="addButton">Dodaj</string>
+    <string name="descLabel">Opis</string>
+    <string name="categoryLabel">Kategoria</string>
+    <string name="keywordsLabel">S\u0142owa kluczowe</string>
+    <string name="keywordsHint">Wpisz s\u0142owa kluczowe oddzielone przecinkami. Nazwa warstwy b\u0119dzie dodana do listy s\u0142\u00f3w kluczowych.</string>
+    <string name="cancelButton">Cofnij</string>
+    <string name="nameLabel">Nazwa</string>
+    <string name="okButton">Ok</string>
+    <string name="addVenue">Utw\u00f3rz miejsce w Foursquare</string>
+    <string name="pickCategory">Wybierz kategori\u0119 miejsca Foursquare</string>
+    <string name="venueCreated.success">Miejsce utworzone w Foursquare!</string>
+    <string name="venueCreated.failed">B\u0142\u0105d tworzenia miejsca w Foursquare: %1$s</string>
+    <string name="Venue.exists.error">Miejsce ju\u017c istnieje!</string>
+    <string name="layerCreated">Warstwa utworzona!</string>
+    <string name="Layer.name.empty.error">Nazwa warstwy nie mo\u017ce by\u0107 pusta!</string>
+    <string name="Layer.exists.error">Warstwa ju\u017c istnieje! Wybierz inn\u0105 nazw\u0119.</string>
+    <string name="Layer.creating.dynamic"><![CDATA[Warstwa <b>%1$s</b> jest tworzona...]]></string>
+
+     <!-- blogeoview -->
+     <string name="validityLabel">Czas wa\u017cno\u015bci</string>
+     <string name="sendButton">Wy\u015blij</string>
+
+     <!-- closing -->
+     <string name="closingText">Zamykanie Landmark Manager&#8230;</string>
+
+     <!-- loading -->
+     <string name="loadingText">\u0141adowanie Landmark Manager&#8230;</string>
+
+     <!-- login -->
+     <string name="passwordLabel">Has\u0142o</string>
+     <string name="loginButton">Zaloguj</string>
+     <string name="loginLabel">Login</string>
+     <string name="loginFull">Jeste\u015b zalogowany(a) do wszystkich dost\u0119pnych serwis\u00f3w!</string>
+
+     <!-- picklocation -->
+     <string name="country_prompt">Wybierz kraj</string>
+     <string name="pickButton">Szukaj</string>
+     <string name="countryLabel">Kraj</string>
+     <string name="addressLabel">Miasto lub miejsce</string>
+     <string name="Pick.location.default">\u0141aduj\u0119 domy\u015bln\u0105 lokalizacj\u0119 %1$s&#8230;\nW celu wyszukania innych lokalizacji kliknij Menu->Szukaj lokalizacji.</string>
+
+      <!-- comment -->
+     <string name="commentLabel">Tw\u00f3j komentarz:</string>
+     <string name="commentTitle">Wpisz tw\u00f3j komentarz</string>
+     
+     <!-- Transparent -->
+     <string name="open">Otw\u00f3rz</string>
+     <string name="close">Zamknij</string>
+     <string name="comment">Skomentuj</string>
+     <string name="call">Zadzwon</string>
+
+     <!-- LandmarkList -->
+     <string name="listSelection">Wybierz miejsce</string>
+     <string name="listLocations">Wybierz lokalizacj\u0119</string>
+     <string name="foundLandmarks">Znaleziono %1$d pasuj\u0105cych miejsc</string>
+     <string name="foundLandmarksLow">
+         Je\u017celi chcesz poprawi\u0107 wyniki wyszukiwania id\u017a do Menu -> Ustawienia -> Typ wyszukiwania
+     </string>
+     <string name="foundDeals">Znaleziono %1$d pasuj\u0105cych okazji</string>
+     <string name="foundDealsLow">
+         Je\u017celi chcesz poprawi\u0107 wyniki wyszukiwania id\u017a do Menu -> Ustawienia -> Typ wyszukiwania
+     </string>
+     
+     <!-- Deals list -->
+     <string name="searchDeals">Dost\u0119pne okazje</string>
+     <string name="dealsString">Okazje w %1$s</string>
+
+     <!-- Sort list -->
+     <string name="sort">Sortuj</string>
+     <string name="list.sorted.name">Lista posortowana po nazwie</string>
+     <string name="list.sorted.date">Lista posortowana po dacie</string>
+     <string name="list.sorted.distance">Lista posortowana po odleg\u0142o\u015bci</string>
+     <string name="list.sorted.category">Lista posortowana po popularno\u015bci kategorii</string>
+     <string name="list.sorted.rating">Lista posortowana po ocenach</string>
+     <string name="list.sorted.relevance">Lista posortowana po trafno\u015bci</string>
+     <string name="list.sortby.name">Sortuj po nazwie</string>
+     <string name="list.sortby.date">Sortuj po dacie</string>
+     <string name="list.sortby.distance">Sortuj po odleg\u0142o\u015bci</string>
+     <string name="list.sortby.rating">Sortuj po ocenach</string>
+
+     <!-- help -->
+     <string name="back">Wstecz</string>
+     <string name="done">Gotowe</string>
+
+     <!-- JSONParser -->
+     <string name="category">Kategoria: %1$s</string>
+     <string name="merchant">Sprzedawca: %1$s</string>
+     <string name="artist">Artysta: %1$s</string>
+     <string name="venue">Miejsce: %1$s</string>
+     <string name="description">Opis: %1$s</string>
+     <string name="address">Adres: %1$s</string>
+     <string name="phone">Nr telefonu: %1$s</string>
+     <string name="checkinUser">%1$s by\u0142(a) tutaj %2$s</string>
+     <string name="start_date">Termin rozpocz\u0119cia: %1$s</string>
+     <string name="end_date">Termin zako\u0144czenia: %1$s</string>
+     <string name="expiration_date">Termin wyga\u015bni\u0119cia: %1$s</string>
+     <string name="creation_date">Data utworzenia: %1$s</string>
+     <string name="upload_date">Data przes\u0142ania: %1$s</string>
+     <string name="taken_date">Data wykonania: %1$s</string>
+     <string name="numberOfReviews.single">1 opinia</string>
+     <string name="numberOfReviews.multiple">%1$s opinii</string>
+     <string name="price">Cena: %1$s</string>
+     <string name="discount">, obni\u017cka: %1$s, oszcz\u0119dzasz: %2$s</string>
+     <string name="dealOfTheDay">To jest okazja dnia!</string>
+     <string name="dealType">Rodzaj okazji: %1$s</string>
+     <string name="photo.url.noname"><![CDATA[<font color=\"red\">%1$s %2$s zrobi\u0142(a) tutaj </font> <a href=\"%3$s\">zdj\u0119cie</a>.]]></string>
+     <string name="photo.url"><![CDATA[<font color=\"red\">%1$s %2$s zrobi\u0142(a) tutaj zdj\u0119cie </font><a href=\"%3$s\">%4$s</a>.]]></string>
+     <string name="label.empty">Bez nazwy</string>
+     <string name="source">\u0179r\u00f3d\u0142o: %1$s</string>
+     <string name="homepage">Strona internetowa</string>
+     <string name="menu">Menu</string>
+     <string name="photo">Zdj\u0119cie</string>
+     <string name="trending"><![CDATA[<font color=\"red\">W tej chwili jest tutaj zameldowanych %1$s os\u00f3b!</font>]]></string>
+
+     <!-- Errors -->
+     <string name="Internet.connection.error">B\u0142\u0105d po\u0142\u0105czenia z internetem!</string>
+     <string name="Authn.error">B\u0142\u0105d logowania!</string>
+     <string name="Authz.error">B\u0142\u0105d autoryzacji!</string>
+     <string name="Http.error">B\u0142\u0105d po\u0142\u0105czenia %1$s!</string>
+     <string name="GPS.location.missing.error">Nie mog\u0119 odczyta\u0107 Twojej pozycji!</string>
+     <string name="Pick.location.failed.error">Nie mog\u0119 znale\u017a\u0107 lokalizacji %1$s z powodu: %2$s</string>
+     <string name="Login.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w!</string>
+     <string name="Checkin.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w Facebook lub Foursquare!</string>
+     <string name="Checkin.layer.error">Nie mog\u0119 zameldowa\u0107 do warstwy: %1$s</string>
+     <string name="Location.send.error">Nie uda\u0142o si\u0119 wys\u0142a\u0107 lokalizacji z powodu: %1$s</string>
+     <string name="Empty.credentials.error">Login i has\u0142o nie mog\u0105 by\u0107 puste!</string>
+     <string name="Comment.empty.error">Komentarz nie mo\u017ce by\u0107 pusty!</string>
+     <string name="Landmark.delete.not.allowed.error">Usuwani\u0119cie miejsca jest niemo\u017cliwe w tym widoku!</string>
+     <string name="SDcard.readmode.error">Karta SD jest w trybie tylko do odczytu!</string>
+     <string name="SDcard.missing.error">Prosz\u0119 w\u0142o\u017cy\u0107 kart\u0119 SD!</string>
+     <string name="Location.checkin.error">Brak miejsc. Prosz\u0119 od\u015bwie\u017cy\u0107 warstwy.</string>
+     <string name="Network.connection.error.title">Brak po\u0142\u0105czenia z internetem!</string>
+     <string name="Network.connection.error.message">Czy chcesz sprawdzi\u0107 ustawienia sieciowe?</string>
+     <string name="Location.connection.error.title">Brak po\u0142\u0105czenia GPS!</string>
+     <string name="Location.connection.error.message">Czy chcesz sprawdzi\u0107 ustawienia GPS?</string>
+     <string name="QRCode.scanner.missing.error">Prosz\u0119 zainstalowa\u0107 Barcode Scanner</string>
+     <string name="OAuth.authz.url.missing">Brak adresu autoryzacji. Spr\u00f3buj ponownie!</string>
+     <string name="OAuth.service.missing">Brak us\u0142ugi OAuth. Spr\u00f3buj ponownie!</string>
+     <string name="Share.no.share.apps">Brak aplikacji do udost\u0119pniania!</string>
+     <string name="Share.no.matching.apps">Nie mog\u0119 zlokalizowa\u0107 aplikacji do udost\u0119pniania!</string>
+     <string name="Call.not.supported.error">Nie mog\u0119 wykona\u0107 po\u0142\u0105cznia telefonicznego z Twojego urz\u0105dzenia!</string>
+     <string name="Unexpected.error">Oops! Co\u015b si\u0119 nie uda\u0142o. Spr\u00f3buj ponownie!</string>
+     
+     <!-- Misc -->
+     <string name="Your.Location">Twoja lokalizacja</string>
+     <string name="Authn.success">Logowanie udane!</string>
+     <string name="Please.Wait">Prosz\u0119 czeka\u0107&#8230;</string>
+     <string name="Processing.results">Zapisywanie wynik\u00f3w (%1$d/%2$d)&#8230;</string>
+     <string name="Last.update">Ostatnia aktualizacja: %1$s</string>
+     <string name="Location.sent">Lokalizacja przes\u0142ana</string>
+     <string name="Close.app.prompt">Zamkn\u0105\u0107 aplikacj\u0119?</string>
+     <string name="Searching.dialog.message"><![CDATA[Wyszukiwanie: <br/><b>%1$s</b>...]]></string>
+     <string name="Oauth.progress.message"><![CDATA[Logowanie do <b>%1$s</b>...]]></string>
+     <string name="rate.us.message">U\u017cywa\u0142e(a)\u015b ten program %1$d razy. Czy chcesz go teraz oceni\u0107?</string>
+     <string name="New.version.short.message">Nowa wersja</string>
+     <string name="New.version.long.message">Nowa wersja aplikacji jest dost\u0119pna. Czy chcesz teraz zaktualizowa\u0107?</string>
+     <string name="search_hint">Szukaj miejsca w okolicy</string>
+
+     <!-- Auto Check-In alert -->
+     <string name="yesButton">Tak</string>
+     <string name="noButton">Nie</string>
+     <string name="autoCheckinMessage"><![CDATA[Czy chcesz by\u0107 automatycznie zameldowany(a) przy nast\u0119pnych wizytach w <b>%1$s</b>?]]></string>
+     <string name="autoCheckinListEmpty">Twoja lista Auto Check-in jest pusta!</string>
+     <string name="lastCheckinDate">Ostatnie meldowanie: %1$s</string>
+     
+     <!-- Settings -->
+     <string name="Settings.Summary">Bie\u017c\u0105ca warto\u015b\u0107: %1$s</string>
+     <string name="Settings.Summary.1">Bie\u017c\u0105ca warto\u015b\u0107: %1$s %2$s</string>
+     <string name="Settings.MapProvider.Changed">Nowe mapy b\u0119d\u0105 widoczne po restarcie aplikacji</string>
+     <string name="Settings.general">Ustawienia og\u00f3lne</string>
+
+     <!-- Packet data -->
+     <string name="Packet.data">Ca\u0142kowita ilo\u015b\u0107 danych wys\u0142anych: %1$sMB\nCa\u0142kowita ilo\u015b\u0107 danych odebranych: %2$sMB</string>
+     <string name="Clear.Counter">Wyzeruj licznik</string>
+     <string name="Counter.cleared">Licznik wyzerowany</string>
+
+     <!-- Tasks -->
+     <string name="Task.started">%1$s uruchomione</string>
+     <string name="Task.stopped">Zadanie zatrzymane!</string>
+     <string name="Task.finished">Zadanie zako\u0144czy\u0142o si\u0119!</string>
+     <string name="Task.in.progress">%1$s uruchomione</string>
+     <string name="Task.Click.to.cancel">Kliknij aby zako\u0144czy\u0107</string>
+     <string name="Task.Click.to.open">Kliknij aby otworzy\u0107</string>
+     <string name="Task.Background.send.comment">Wy\u015blij komentarz</string>
+     <string name="Task.Background.login">Logowanie do GMS World</string>
+     <string name="Task.Background.sendMyLoc">Prze\u015blij moj\u0105 lokalizacj\u0119</string>
+
+     <!-- Landmark -->
+     <string name="Landmark.delete.prompt">Usun\u0105\u0107 miejsce %1$s?</string>
+     <string name="Landmark.deleted">Miejsce usuni\u0119te</string>
+     <string name="Landmark.deleted.error">B\u0142\u0105d podczas usuwania miejsca!</string>
+     <string name="Landmark.distance">Odleg\u0142o\u015b\u0107: %1$s</string>
+     <string name="Landmark.distance.max">Maksymalna odleg\u0142o\u015b\u0107: %1$s</string>
+     <string name="Landmark.MultiLandmark">Lista miejsc: %1$s</string>
+     <string name="Landmark.search.empty.result">Brak miejsc spe\u0142niaj\u0105cych kryteria wyboru!</string>
+     <string name="Landmark.deals.in.category">Ilo\u015b\u0107 okazji w kategorii: %1$d</string>
+     <string name="Landmark.in.layer.count">Ilo\u015b\u0107 miejsc w warstwie: %1$d</string>
+     <string name="Landmark.NoLandmarks">Brak miejsc w folderze.</string>
+     <string name="Landmark.exists.error">Takie miejsce ju\u017c istnieje!</string>
+     <string name="Landmark.add.error">B\u0142\u0105d podczas tworzenia miejsca!</string>
+     <string name="Landmark.url.empty.error">Adres miejsca jest pusty!</string>
+     <string name="Landmark.name.empty.error">Nazwa miejsca nie mo\u017ce by\u0107 pusta!</string>
+     <string name="Landmark.opening.error">Nie uda\u0142o si\u0119 wybra\u0107 miejsca. Spr\u00f3buj ponownie!</string>
+     <string name="Landmark.share">Udost\u0119pnij miejsce</string>
+     <string name="Landmark.see">Zobacz %1$s</string>
+     <string name="Landmarks.day.empty">Brak miejsc w tym dniu</string>
+     <string name="Landmark.Loading">\u0141adowanie miejsc&#8230;</string>
+
+     <!-- MapLoader, OsmTilesLoader -->
+    <string name="Maps.LoadingMap">\u0141adowanie mapy&#8230;</string>
+    <string name="Maps.MapLoaded">Mapa za\u0142adowana!</string>
+    <string name="Maps.CacheCleared">Usuni\u0119to %1$s plik\u00f3w map z bufora</string>
+    <string name="Maps.cleared">Mapa wyczyszczona</string>
+
+    <!-- Routes -->
+    <string name="Routes.title">Wybierz tras\u0119</string>
+    <string name="Routes.Label">\u015aledzenie trasy</string>
+    <string name="Routes.TrackMyPosStart">W\u0142\u0105cz \u015bledzenie trasy</string>
+    <string name="Routes.TrackMyPosStop">Wy\u0142\u0105cz \u015bledzenie trasy</string>
+    <string name="Routes.TrackMyPosOn">\u015aledzenie trasy w\u0142\u0105czone</string>
+    <string name="Routes.TrackMyPosOff">\u015aledzenie trasy wy\u0142\u0105czone</string>
+    <string name="Routes.TrackMyPosStopped">Prosz\u0119 najpierw w\u0142\u0105czy\u0107 \u015bledzenie trasy!</string>
+    <string name="Routes.TrackMyPosEnable">W\u0142\u0105czy\u0107 \u015bledzenie?</string>
+    <string name="Routes.TrackMyPosDisable">Wy\u0142\u0105czy\u0107 \u015bledzenie?</string>
+    <string name="Routes.PauseRecording">Wstrzymaj \u015bledzenie</string>
+    <string name="Routes.ResumeRecording">Wzn\u00f3w \u015bledzenie</string>
+    <string name="Routes.PauseRecordingOn">\u015aledzenie trasy wstrzymane</string>
+    <string name="Routes.PauseRecordingOff">\u015aledzenie trasy wznowione</string>
+    <string name="Routes.NoRoute">Brak trasy do zapisania</string>
+    <string name="Routes.Background.task.loading">Wczytywanie trasy</string>
+    <string name="Routes.Recording.Saved">Trasa zapisana do pliku %1$s\n%2$s</string>
+    <string name="Routes.Recording.Question">Zapisa\u0107 tras\u0119 do pliku %1$s?</string>
+    <string name="Routes.Recording.description">D\u0142ugo\u015b\u0107 trasy: %1$s, \u015arednia szybko\u015b\u0107: %2$s, Oczekiwany czas: %3$s</string>
+    <string name="Routes.Loaded">Trasa za\u0142adowana</string>
+    <string name="Routes.Failed">Nie uda\u0142o si\u0119 za\u0142adowa\u0107 trasy</string>
+    <string name="Routes.NoRoutes">Brak tras w folderze.</string>
+    <string name="Routes.in.layer.count">Ilo\u015b\u0107 tras w warstwie: %1$d</string>
+    <string name="Routes.Server.route.loaded">Trasa za\u0142adowana! Odleg\u0142o\u015b\u0107: %1$s, oczekiwany czas %2$s</string>
+    <string name="Routes.loading.error.0">Nie uda\u0142o si\u0119 za\u0142adowa\u0107 trasy</string>
+    <string name="Routes.loading.error.1">Nie uda\u0142o si\u0119 za\u0142adowa\u0107 trasy: %1$s</string>
+    <string name="Routes.starting.point">Pocz\u0105tek trasy</string>
+    <string name="Routes.end.point">Koniec trasy</string>
+
+    <!-- Files -->
+    <string name="Files.title">Wybierz plik</string>
+    <string name="Files.Background.task.loading">Wczytywanie pliku z miejscami</string>
+    <string name="Files.delete.prompt">Usun\u0105\u0107 plik %1$s?</string>
+    <string name="Files.deleted">Plik usuni\u0119ty</string>
+    <string name="Files.NoFiles">Brak plik\u00f3w w folderze.</string>
+    <string name="Files.Loaded">Za\u0142adowano %1$s miejsc z pliku</string>
+    <string name="Files.Failed">Nie uda\u0142o si\u0119 za\u0142adowa\u0107 pliku z miejscami</string>
+
+    <!-- Social -->
+    <string name="Social.comment.sent">Komentarz przes\u0142any</string>
+    <string name="Social.comment.failed">Nie uda\u0142o si\u0119 wys\u0142a\u0107 komentarza z powodu: %1$s</string>
+    <string name="Social.checkin.success">Zarejestrowano w %1$s</string>
+    <string name="Social.checkin.failure">Rejestracja nie powiod\u0142a si\u0119 z powodu: %1$s</string>
+    <string name="Social.checkin.prompt">Zamelduj do %1$s</string>
+    <string name="Social.send.post.success">Aktalizacja %1$s wys\u0142ana</string>
+    <string name="Social.send.post.failure">B\u0142\u0105d po\u0142\u0105czenia %1$s</string>
+    <string name="Social.login.string">Tw\u00f3j g\u0142\u00f3wny login to %1$s</string>
+    <string name="Social.notLogged">Nie jeste\u015b zalogowany(a).</string>
+    <string name="Social.Checkin.wrong.key.0">Z\u0142y format kodu</string>
+    <string name="Social.Checkin.wrong.key.1">Z\u0142y format kodu: %1$s</string>
+    <string name="Social.allow.sending">Zezwalaj na wysy\u0142anie wiadomo\u015bci do %1$s</string>
+    <string name="Social.Logout.successful">Wylogowanie udane</string>
+    <string name="Social.loginButton">Zaloguj do %1$s</string>
+    <string name="Social.logoutButton">Wyloguj z %1$s</string>
+    <string name="Social.login.statusyes">Jeste\u015b zalogowany(a) jako %1$s.\nKliknij aby zobaczy\u0107 profil.</string>
+    <string name="Social.login.statusno">Nie jeste\u015b zalogowany(a) do %1$s.\nKliknij aby si\u0119 zalogowa\u0107.</string>
+    <string name="Social.Checkin.error">B\u0142\u0105d rejestracji</string>
+    <string name="Social.token.expired">Tw\u00f3j token jest niewa\u017cny! Prosz\u0119 si\u0119 zalogowa\u0107 ponownie do %1$s</string>
+
+    <!-- Layers -->
+    <string name="Layer.enabled">Warstwa w\u0142\u0105czona</string>
+    <string name="Layer.all.enabled">Wszystkie warstwy w\u0142\u0105czone</string>
+    <string name="Layer.disabled">Warstwa wy\u0142\u0105czona</string>
+    <string name="Layer.operation.unsupported">Nie mo\u017cna wykona\u0107 akcji w tej warstwie</string>
+    <string name="Layer.Loading">\u0141adowanie warstw&#8230;</string>
+    <string name="Layer.Loading.1"><![CDATA[\u0141adowanie warstwy <b>%1$s</b>...]]></string>
+    <string name="Layer.Loading.counter">\u0141adowanie warstwy (%1$d/%2$d)&#8230;</string>
+    <string name="Layer.Loading.processing">Zapisywanie za\u0142adowanych warstw&#8230;</string>
+    <string name="Layer.Loaded">Warstwy za\u0142adowane. Znaleziono %1$d miejsc!</string>
+    <string name="Layer.action">Wybierz akcj\u0119 dla warstwy %1$s</string>
+    <string name="Layer.cleared">Warstwa %1$s wyczyszczona!</string>
+    <string name="Layer.exists">Warstwa ju\u017c istnieje!</string>
+    <string name="Layer.deleted">Warstwa %1$s skasowana!</string>
+    <string name="Layer.add.message.short">Wyszukiwanie %1$s&#8230;</string>
+    <string name="Layer.add.message.long"><![CDATA[Czy chcesz zapisa\u0107 zapytanie <b>%1$s</b> jako warstw\u0119?]]></string>
+    <string name="Layer.delete.prompt">Skasowa\u0107 warstw\u0119 %1$s?</string>
+    <string name="Layer.enableLayers.prompt">W\u0142\u0105czy\u0107 wszystkie warstwy?</string>
+    
+    <!-- DealCategoryListActivity -->
+    <string name="Category.title">Wybierz kategori\u0119</string>
+    <string name="Category.Loading.1"><![CDATA[\u0141adowanie kategorii <b>%1$s</b>...]]></string>
+
+</resources>

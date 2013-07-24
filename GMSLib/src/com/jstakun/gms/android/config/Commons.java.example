@@ -1,0 +1,64 @@
+package com.jstakun.gms.android.config;
+
+public final class Commons {
+
+    public static final String LOCAL_LAYER = "Phone Landmarks";
+	public static final String MY_POSITION_LAYER = "My Location";
+	public static final String PANORAMIO_LAYER = "Panoramio";
+	public static final String WIKIPEDIA_LAYER = "Wikipedia";
+	public static final String LM_SERVER_LAYER = "Public";
+	public static final String EVENTFUL_LAYER = "Eventful";
+	public static final String FLICKR_LAYER = "Flickr"
+	public static final String YOUTUBE_LAYER = "YouTube";
+	public static final String FACEBOOK_LAYER = "Facebook";
+	public static final String PICASA_LAYER = "Picasa";
+	public static final String FOURSQUARE_LAYER = "Foursquare";
+	public static final String FOURSQUARE_MERCHANT_LAYER = "Foursquare Merchant";
+	public static final String YELP_LAYER = "Yelp";
+	public static final String QYPE_LAYER = "Qype";
+	public static final String GROUPON_LAYER = "Groupon";
+	public static final String HOTELS_LAYER = "Hotels Combined";
+	public static final String ROUTES_LAYER = "Routes";
+	public static final String GOOGLE_PLACES_LAYER = "Google Places";
+	public static final String TWITTER_LAYER = "Twitter";
+	public static final String HOTWIRE_LAYER = "Hotwire";
+	public static final String EXPEDIA_LAYER = "Expedia";
+	public static final String COUPONS_LAYER = "8Coupons";
+	public static final String LASTFM_LAYER = "LastFM";
+	public static final String UPCOMING_LAYER = "Upcoming";
+	public static final String MEETUP_LAYER = "Meetup";
+	public static final String MC_ATM_LAYER = "MasterCard ATMs";
+	public static final String OSM_ATM_LAYER = "ATMs";
+	public static final String OSM_PARKING_LAYER = "Parkings";
+	public static final String WEBCAM_LAYER = "Travel Webcams";
+	public static final String GEOCODES_LAYER = "Geocodes";
+	public static final String MY_POS_CODE = "MyPos";
+	public static final String MULTI_LANDMARK = "MultiLandmark";
+	
+	public static final int BLOGEO = 0;
+	public static final int LANDMARK = 1;
+	public static final int MY_POS = 2;
+	public static final int LOGIN = 3;
+	
+	public static final String GOOGLE = "gl";
+	public static final String LINKEDIN = "ln";
+	public static final String TWITTER = "tw";
+	public static final String FACEBOOK = "fb";
+	public static final String FOURSQUARE = "fs";
+	
+	public static final char[] bc_password = {};
+	public static byte[] bc_salt = Hex.decode("");
+
+	public static final String TAPFORTAP_ID = "";
+	
+	public static final String DEFAULT_USERNAME = "";
+	public static final String DEFAULT_PASSWORD = "";
+	public static final String APP_USER_PWD = ""; 
+	public static final String MY_POS_USER = "";
+	public static final String DA_APP_USER = "";
+	
+	public static final String DEFAULT_GA_ID = "";
+	public static final String DA_GA_ID = "";
+		
+	private Commons() {}
+}

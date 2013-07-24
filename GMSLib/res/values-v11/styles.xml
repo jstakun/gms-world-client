@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <style name="GMSTheme.Light" parent="@android:style/Theme.Holo.Light">
+         <item name="android:actionBarStyle">@style/GMSTheme.MyActionBar</item>
+    </style>
+    <style name="LoadingText" parent="@android:style/TextAppearance">
+        <item name="android:typeface">sans</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#ff000000</item>
+        <item name="android:background">#ffffffff</item>
+    </style>
+    <style name="GMSTheme.MyActionBar" parent="android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/trans_light_gray</item>
+    </style>
+</resources>

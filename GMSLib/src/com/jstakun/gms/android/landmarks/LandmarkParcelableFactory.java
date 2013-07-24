@@ -1,0 +1,86 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.jstakun.gms.android.landmarks;
+
+import android.text.format.DateUtils;
+import android.text.format.Formatter;
+
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FavouritesDAO;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.DateTimeUtils;
+import com.jstakun.gms.android.utils.DistanceUtils;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.StringUtil;
+import java.io.File;
+import org.apache.commons.lang.StringUtils;
+
+/**
+ *
+ * @author jstakun
+ */
+public class LandmarkParcelableFactory {
+
+    public static LandmarkParcelable getLandmarkParcelable(ExtendedLandmark l, int id, String key, double lat, double lng, java.util.Locale locale) {
+        String desc;
+        
+        if (l == null) {
+            throw new NullPointerException("ExtendedLandmark is null!");
+        } else if (l.getQualifiedCoordinates() == null) {
+            throw new NullPointerException("QualifiedCoordinates is null");
+        }
+        
+        float distance = DistanceUtils.distanceInKilometer(lat, lng, l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
+
+        if (l.getLayer().equals(Commons.MY_POSITION_LAYER)) {
+            String date = DateTimeUtils.getDefaultDateTimeString(l.getDescription(), locale);
+            desc = Locale.getMessage(R.string.Last_update, date);
+        } else if (l.getLayer().equals(Commons.LOCAL_LAYER)) {
+            desc = l.getDescription();
+            if (StringUtils.isNotEmpty(desc)) {
+                desc += "<br/>";
+            }
+            desc += Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(l.getCreationDate(), locale));
+        } else {
+            desc = l.getDescription();
+        }
+        String layer = l.getLayer();
+
+        String name = StringUtils.abbreviate(l.getName(), 48);
+        if (l.getLayer().equals(Commons.LOCAL_LAYER)) {
+            name = StringUtil.formatCommaSeparatedString(name);
+        }
+
+        return new LandmarkParcelable(id, name, key, layer, desc, distance, l.getCreationDate(), l.getCategoryId(), l.getSubCategoryId(), l.getRating(), l.getNumberOfReviews(), l.getThumbnail(), l.getRevelance());
+    }
+
+    public static LandmarkParcelable getLandmarkParcelable(FavouritesDAO f, double lat, double lng) {
+        float distance = DistanceUtils.distanceInKilometer(lat, lng, f.getLatitude(), f.getLongitude());
+        String maxDistance = DistanceUtils.formatDistance(f.getMaxDistance() / 1000.0d);
+        long fromLastCheckinTime = System.currentTimeMillis() - f.getLastCheckinDate();
+        CharSequence lastCheckinDate = DateUtils.getRelativeTimeSpanString(f.getLastCheckinDate(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
+        String fromLastCheckin = "<font color=\"green\">" + lastCheckinDate + "</font>";
+
+        if (fromLastCheckinTime < (1000 * 60 * 60 * ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL))) {
+            fromLastCheckin = "<font color=\"red\">" + lastCheckinDate + "</font>";
+        }
+        String distanceStatus = "red";
+        if (f.getMaxDistance() > ConfigurationManager.getInstance().getLong(ConfigurationManager.MIN_CHECKIN_DISTANCE)) {
+            distanceStatus = "green";
+        }
+
+        String desc = Locale.getMessage(R.string.lastCheckinDate, fromLastCheckin) + ", "
+                + Locale.getMessage(R.string.Landmark_distance_max, "<font color=\"" + distanceStatus + "\">" + maxDistance + "</font>");
+        return new LandmarkParcelable(f.getId(), f.getName(), "", f.getLayer(), desc, distance, f.getLastCheckinDate(), -1, -1, -1, 0, null, 0);
+    }
+
+    public static LandmarkParcelable getLandmarkParcelable(File f, int id, String name, java.util.Locale locale) {
+        String length = Formatter.formatFileSize(ConfigurationManager.getInstance().getContext(), f.length());
+        String date = DateTimeUtils.getShortDateTimeString(f.lastModified(), locale);
+        String desc = length + " | " + date;
+        return new LandmarkParcelable(id, f.getName(), "", name, desc, 0.0f, f.lastModified(), -1, -1, -1, 0, null, 0);
+    }
+}

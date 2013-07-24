@@ -1,0 +1,7 @@
+[{"categoryID":"1","category":"Restaurants","icon":"restaurant","iconLarge":"restaurant_24"},
+ {"categoryID":"2","category":"Entertainment","icon":"arts","iconLarge":"arts_24"},
+ {"categoryID":"3","category":"Beauty & Spa","icon":"gift","iconLarge":"gift_24"},
+ {"categoryID":"4","category":"Services","icon":"services","iconLarge":"services_24"},
+ {"categoryID":"6","category":"Shopping","icon":"shopping","iconLarge":"shopping_24"},
+ {"categoryID":"7","category":"Travel","icon":"hotel","iconLarge":"hotel_24"},
+ {"categoryID":"8","category":"Other","icon":"dollar","iconLarge":"dollar_24"}]
