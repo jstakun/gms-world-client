@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.jstakun.gms.android.ui"
+      android:versionCode="1084"
+      android:versionName="2.0.6">
+    <uses-sdk android:minSdkVersion="3"
+              android:targetSdkVersion="13"/>
+    <supports-screens android:smallScreens="true"
+                  android:normalScreens="true"
+                  android:largeScreens="true"
+                  android:xlargeScreens="true"
+                  android:anyDensity="true" />
+    <permission android:name="com.jstakun.gms.android.permission.ACTIVITY" android:protectionLevel="signature"/>
+    <application android:name="GMSClientApp" android:icon="@drawable/icon"
+    android:label="@string/app_name" android:theme="@style/GMSTheme.Light">
+        <uses-library android:name="com.google.android.maps" android:required="false"/>
+        <activity android:name="GMSClientDispatchActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="sensor"
+                  android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity-alias android:name="LauncherShortcut" android:label="@string/app_name" android:targetActivity="GMSClientDispatchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+        <activity android:name="GMSClient2MainActivity" android:label="@string/app_name" android:screenOrientation="sensor"
+                  android:launchMode="singleTop" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+                 <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
+        </activity>
+        <activity android:name="GMSClient2OSMMainActivity" android:label="@string/app_name" android:screenOrientation="sensor"
+                  android:launchMode="singleTop" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+                 <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
+        </activity>
+        <activity android:name="GMSClientMainActivity" android:label="@string/app_name" android:screenOrientation="sensor"
+                  android:launchMode="singleTop" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+                 <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
+        </activity>
+        <activity android:name="GMSClientOSMMainActivity" android:label="@string/app_name" android:screenOrientation="sensor"
+                  android:launchMode="singleTop" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+                 <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
+        </activity>
+        <activity android:name="SettingsActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.PREFERENCE"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.google.ads.AdActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+        <activity android:name="LoginActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name="AddLandmarkActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name="AddLayerActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name="WebViewActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="keyboard|keyboardHidden|orientation"></activity>
+        <activity android:name="SendBlogeoPostActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name="FilesActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="OAuth2Activity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|keyboardHidden"></activity>
+        <activity android:name="LandmarkListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+            <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
+        </activity>
+        <activity android:name="PickLocationActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|keyboardHidden"></activity>
+        <activity android:name="SocialListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="LayerListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="AutoCheckinListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="HelpActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="CommentActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name="DealCategoryListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+            <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
+        </activity>
+        <activity android:name=".GMSSearchActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
+        </activity>
+        <activity android:name="com.exina.android.calendar.CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider"/>
+        <meta-data android:name="CLOUDMADE_KEY" android:value="@string/cloudmadeKey" />
+    </application>    
+    <!-- Allows an application to access fine (e.g., GPS) location  -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- Allows an application to access coarse (e.g., Cell-ID, WiFi) location -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!--  Allows applications to access information about Wi-Fi networks  -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <!--  Allows applications to access information about networks  -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Allows an application to initiate a phone call without going through the Dialer
+    user interface for the user to confirm the call being placed  -->
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <!-- Allows applications to open network sockets  -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Allows an application to write to external storage   -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!--   -->
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+    <!-- -->
+    <uses-permission android:name="com.jstakun.gms.android.permission.ACTIVITY" />
+</manifest> 

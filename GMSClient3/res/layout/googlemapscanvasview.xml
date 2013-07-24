@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+    android:id="@+id/mapCanvasWidgetL"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffffff"
+    android:layout_centerInParent="true">
+        <ImageView
+    android:id="@+id/mapCanvasLoadingImage"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/globeconnected"
+    android:contentDescription="@string/loadingText"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"/>
+        <TextView
+    android:id="@+id/mapCanvasLoadingText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@style/LoadingText"
+    android:layout_below="@+id/mapCanvasLoadingImage"
+    android:text="@string/loadingText"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+    <FrameLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/mapCanvasWidgetM"
+    android:background="#ffffffff"
+    android:visibility="gone">
+        <com.google.android.maps.MapView
+    android:id="@+id/mapCanvas"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clickable="true"
+    android:apiKey="@string/googleMapsKey"/>
+         <include layout="@layout/statusbar"/>
+    </FrameLayout>
+
+    <include layout="@layout/landmarkdetails"/>
+
+</merge>

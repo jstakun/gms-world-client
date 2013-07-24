@@ -1,0 +1,91 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:seekbar="http://schemas.android.com/apk/res/com.jstakun.gms.android.ui">
+    <PreferenceCategory android:title="@string/Settings.general"
+                            android:key="settings">
+        <ListPreference
+            android:key="mapProvider"
+            android:title="@string/mapProvider"
+            android:entries="@array/mapProvider"
+            android:entryValues="@array/codes2"
+            android:dialogTitle="@string/select" />
+        <ListPreference
+            android:key="googleMapsType"
+            android:title="@string/googleMaps"
+            android:entries="@array/googleMaps"
+            android:entryValues="@array/codes3"
+            android:dialogTitle="@string/select" />
+        <ListPreference
+            android:key="osmMapsType"
+            android:title="@string/osmMaps"
+            android:entries="@array/osmMaps"
+            android:entryValues="@array/codes11"
+            android:dialogTitle="@string/select" />
+        <ListPreference
+            android:key="routeType"
+            android:title="@string/routeType"
+            android:entries="@array/routeType"
+            android:entryValues="@array/codes3"
+            android:dialogTitle="@string/select" />
+        <ListPreference
+            android:key="searchType"
+            android:title="@string/searchType"
+            android:entries="@array/searchType"
+            android:entryValues="@array/codes3"
+            android:dialogTitle="@string/select" />
+        <com.mnm.seekbarpreference.SeekBarPreference
+            android:key="landmarksPerLayer"
+            android:title="@string/landmarksPerLayer"
+            android:dialogTitle="@string/select.value"
+            android:summary="@string/Settings.Summary.1"
+            android:persistent="true"
+            android:defaultValue="30"
+            seekbar:minValue="30"
+            seekbar:maxValue="100" />       
+        <CheckBoxPreference
+            android:title="@string/autoCheckinTitle"
+            android:defaultValue="true"
+            android:summaryOn="@string/autoCheckinSummaryOn"
+            android:summaryOff="@string/autoCheckinSummaryOff"
+            android:key="autoCheckin" />
+        <ListPreference
+            android:key="addLandmark"
+            android:title="@string/landmarkPersist"
+            android:entries="@array/landmarkPersist"
+            android:entryValues="@array/codes2"
+            android:dialogTitle="@string/select" />
+        <com.mnm.seekbarpreference.SeekBarPreference
+            android:key="radius"
+            android:title="@string/radius"
+            android:dialogTitle="@string/select.value"
+            android:summary="@string/Settings.Summary.1"
+            android:persistent="true"
+            android:defaultValue="10"
+            seekbar:minValue="3"
+            seekbar:maxValue="100"
+            seekbar:unit="km" />  
+        <ListPreference
+            android:key="unitOfLength"
+            android:title="@string/unitOfLength"
+            android:entries="@array/unitOfLength"
+            android:entryValues="@array/codes4"
+            android:dialogTitle="@string/select" />
+        <ListPreference
+            android:key="logLevel"
+            android:title="@string/logLevel"
+            android:entries="@array/logLevel"
+            android:entryValues="@array/codes6"
+            android:dialogTitle="@string/select" />
+        <com.jstakun.gms.android.ui.ListPreferenceMultiSelect
+            android:key="layers"
+            android:title="@string/layers"
+            android:summary="@string/summary"
+            android:dialogTitle="@string/enable" />
+        <CheckBoxPreference
+            android:title="@string/trackUserTitle"
+            android:defaultValue="true"
+            android:summaryOn="@string/trackUserSummaryOn"
+            android:summaryOff="@string/trackUserSummaryOff"
+            android:key="sendMyPos" />
+    </PreferenceCategory>
+</PreferenceScreen>
