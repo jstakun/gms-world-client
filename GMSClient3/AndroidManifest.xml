@@ -79,6 +79,7 @@
         </activity>
         <activity android:name="com.exina.android.calendar.CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider"/>
+        <service android:name="AutoCheckinService"></service>
         <meta-data android:name="CLOUDMADE_KEY" android:value="@string/cloudmadeKey" />
     </application>    
     <!-- Allows an application to access fine (e.g., GPS) location  -->

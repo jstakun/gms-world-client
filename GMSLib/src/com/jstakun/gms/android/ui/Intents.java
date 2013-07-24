@@ -242,6 +242,33 @@ public class Intents {
     public void startLoginActivity() {
         activity.startActivity(new Intent(activity, LoginActivity.class));
     }
+    
+    public boolean checkAuthStatus(ExtendedLandmark selectedLandmark) {
+        String selectedLayer = selectedLandmark.getLayer();
+
+        if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER))
+                && ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
+            startOAuthActivity(Commons.FOURSQUARE);
+            return false;
+        } else if (selectedLayer.equals(Commons.FACEBOOK_LAYER)
+                && ConfigurationManager.getInstance().isOff(ConfigurationManager.FB_AUTH_STATUS)) {
+            startOAuthActivity(Commons.FACEBOOK);
+            return false;
+        } else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER)
+                && ConfigurationManager.getInstance().isOff(ConfigurationManager.GL_AUTH_STATUS)) {
+            startOAuthActivity(Commons.GOOGLE);
+            return false;
+        } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)
+                && !ConfigurationManager.getInstance().isUserLoggedIn()) {
+            startLoginActivity();
+            return false;
+        } else if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
+            return false;
+        }
+
+        return true;
+    }
+
 
     public void startLoginActivity(int type) {
         List<String> items = ConfigurationManager.getInstance().getLoginItems(true);

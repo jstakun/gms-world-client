@@ -26,13 +26,11 @@ import java.util.List;
 public class CheckinManager {
 
     private LandmarkManager landmarkManager;
-    private Intents intents;
     private AsyncTaskManager asyncTaskManager;
     private List<FavouritesDAO> favourites;
 
-    public CheckinManager(LandmarkManager landmarkManager, Intents intents, AsyncTaskManager asyncTaskManager) {
+    public CheckinManager(LandmarkManager landmarkManager, AsyncTaskManager asyncTaskManager) {
         this.landmarkManager = landmarkManager;
-        this.intents = intents;
         this.asyncTaskManager = asyncTaskManager;
 
         FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
@@ -42,32 +40,6 @@ public class CheckinManager {
         }
         favourites = fdb.fetchAllLandmarks();
         //System.out.println("Number of auto checkin landmarks: " + favourites.size());
-    }
-
-    public boolean checkAuthStatus(ExtendedLandmark selectedLandmark) {
-        String selectedLayer = selectedLandmark.getLayer();
-
-        if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER))
-                && ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
-            intents.startOAuthActivity(Commons.FOURSQUARE);
-            return false;
-        } else if (selectedLayer.equals(Commons.FACEBOOK_LAYER)
-                && ConfigurationManager.getInstance().isOff(ConfigurationManager.FB_AUTH_STATUS)) {
-            intents.startOAuthActivity(Commons.FACEBOOK);
-            return false;
-        } else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER)
-                && ConfigurationManager.getInstance().isOff(ConfigurationManager.GL_AUTH_STATUS)) {
-            intents.startOAuthActivity(Commons.GOOGLE);
-            return false;
-        } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)
-                && !ConfigurationManager.getInstance().isUserLoggedIn()) {
-            intents.startLoginActivity();
-            return false;
-        } else if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
-            return false;
-        }
-
-        return true;
     }
 
     public boolean checkinAction(boolean addToFavourites, boolean silent) {
@@ -87,28 +59,24 @@ public class CheckinManager {
 
         if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER))
                 && ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
-            //checkin
             String checkinat = Locale.getMessage(R.string.Social_checkin_prompt, selectedLandmark.getName());
             asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.foursquare_24, silent, selectedLandmark);
             result = true;
         } else if (selectedLayer.equals(Commons.FACEBOOK_LAYER)
                 && ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
-            //checkin
             String checkinat = Locale.getMessage(R.string.Social_checkin_prompt, selectedLandmark.getName());
             asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.facebook_24, silent, selectedLandmark);
             result = true;
         } else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER)
                 && ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
-            //checkin
             String checkinat = Locale.getMessage(R.string.Social_checkin_prompt, selectedLandmark.getName());
             asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.google_24, silent, selectedLandmark);
             result = true;
         } else if (selectedLayer.equals(Commons.MY_POSITION_LAYER)) {
-            asyncTaskManager.executeSocialSendMyLocationTask();
+            asyncTaskManager.executeSocialSendMyLocationTask(silent);
             result = true;
         } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)
                 && ConfigurationManager.getInstance().isUserLoggedIn()) {
-            //checkin
             String venueid = selectedLandmark.getUrl();
             if (venueid != null) {
                 String[] s = venueid.split("=");
@@ -124,7 +92,7 @@ public class CheckinManager {
         return result;
     }
 
-    public synchronized void autoCheckin(double lat, double lon) {
+    public synchronized void autoCheckin(double lat, double lon, boolean silent) {
         FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
 
         for (FavouritesDAO favourite : favourites) {
@@ -132,11 +100,10 @@ public class CheckinManager {
             //System.out.println("Checking landmark " + favourite.getName() + " in distance " + distInMeter + " meter.");
             CheckinCandidatePredicate candidatePredicate = new CheckinCandidatePredicate(distInMeter);
             if (candidatePredicate.apply(favourite)) {
-                //ExtendedLandmark landmark = findLandmarkById(favourite.getId(), favourite.getLayer());
                 ExtendedLandmark landmark = findSimilarLandmark(favourite.getName(), favourite.getLatitude(), favourite.getLongitude(), favourite.getLayer());
                 if (landmark != null && fdb != null) {
                     //change in production
-                    if (checkinAction(false, landmark, true)) {
+                    if (checkinAction(false, landmark, silent)) {
                         fdb.updateOnCheckin(favourite.getId());
                         favourite.setMaxDistance(0);
                         favourite.setLastCheckinDate(System.currentTimeMillis());
@@ -159,15 +126,6 @@ public class CheckinManager {
         }
         return null;
     }
-    
-    /*private ExtendedLandmark findLandmarkById(long id, String layer) {
-        for (ExtendedLandmark landmark : landmarkManager.getUnmodifableLayer(layer)) {
-            if (landmark.hashCode() == id) {
-                return landmark;
-            }
-        }
-        return null;
-    }*/
     
     private class CheckinCandidatePredicate implements Predicate<FavouritesDAO> {
 

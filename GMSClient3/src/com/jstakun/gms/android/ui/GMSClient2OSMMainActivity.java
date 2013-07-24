@@ -309,7 +309,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         intents = new Intents(this, landmarkManager, asyncTaskManager);
 
-        checkinManager = new CheckinManager(landmarkManager, intents, asyncTaskManager);
+        checkinManager = new CheckinManager(landmarkManager, asyncTaskManager);
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || !cm.isInitialized()) {
@@ -910,7 +910,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             if (selectedLandmark != null) {
                 UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
-                boolean authStatus = checkinManager.checkAuthStatus(selectedLandmark);
+                boolean authStatus = intents.checkAuthStatus(selectedLandmark);
                 FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
                 if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)
                         && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)
@@ -1148,7 +1148,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
 
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-            checkinManager.autoCheckin(lat, lng);
+            checkinManager.autoCheckin(lat, lng, false);
         }
     }
 

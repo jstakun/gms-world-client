@@ -454,7 +454,7 @@ public class AsyncTaskManager {
     private class SocialCheckInTask extends GenericTask {
 
         private ExtendedLandmark selectedLandmark;
-        //private boolean silent = false;
+        private boolean silent = false;
 
         public SocialCheckInTask(ExtendedLandmark selectedLandmark) {
             super();
@@ -464,7 +464,7 @@ public class AsyncTaskManager {
 		@Override
 		protected String doInBackground(String... fileData) {
 			super.doInBackground(fileData);
-			// silent = Boolean.parseBoolean(fileData[2]);
+			silent = Boolean.parseBoolean(fileData[2]);
 			String msg;// = Locale.getMessage(R.string.Social_Checkin_error,
 						// selectedLandmark.getName());
 			String layer = selectedLandmark.getLayer();
@@ -519,7 +519,9 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
-            intents.showInfoToast(res);
+            if (! silent) {
+            	intents.showInfoToast(res);
+            }	
         }
     }
 
@@ -568,17 +570,18 @@ public class AsyncTaskManager {
         LocationCheckInTask checkInTask = new LocationCheckInTask();
         String notificationId = createNotification(icon, message, message, true);
         checkInTask.execute("", notificationId, checkinLandmarkCode, name, Boolean.toString(silent));
-        //if (!AsyncTaskExecutor.execute(checkInTask, activity, "", Integer.toString(notificationId), checkinLandmarkCode, name, Boolean.toString(silent))) {
-        //    checkInTask.clear();
-        //}
     }
 
     private class LocationCheckInTask extends GenericTask {
 
+    	private boolean silent = false;
+    	
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
-            intents.showInfoToast(res);
+            if (! silent) {
+                intents.showInfoToast(res);
+            }
         }
 
         @Override
@@ -586,6 +589,7 @@ public class AsyncTaskManager {
             super.doInBackground(checkinData);
             String checkinLandmarkCode = checkinData[2];
             String name = checkinData[3];
+            silent = Boolean.parseBoolean(checkinData[4]);
             return checkin("locationCheckIn", checkinLandmarkCode, name);
         }
     }
@@ -628,30 +632,32 @@ public class AsyncTaskManager {
         return msg;
     }
 
-    public void executeSocialSendMyLocationTask() {
+    public void executeSocialSendMyLocationTask(boolean silent) {
         String message = Locale.getMessage(R.string.Task_Background_sendMyLoc);
         //intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
         intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
         SocialSendMyLocationTask socialSendMyLocationTask = new SocialSendMyLocationTask();
         String notificationId = createNotification(-1, message, message, true);
-        socialSendMyLocationTask.execute("", notificationId);
-        //if (!AsyncTaskExecutor.execute(socialSendMyLocationTask, activity, "", Integer.toString(notificationId))) {
-        //    socialSendMyLocationTask.clear();
-        //}
+        socialSendMyLocationTask.execute("", notificationId, Boolean.toString(silent));
     }
 
     private class SocialSendMyLocationTask extends GenericTask {
 
+    	private boolean silent = false;
+    	
         @Override
         protected String doInBackground(String... data) {
             super.doInBackground(data);
+            silent = Boolean.parseBoolean(data[2]);
             return sendMyPos();
         }
 
         @Override
         protected void onPostExecute(String msg) {
             super.onPostExecute(msg);
-            intents.showInfoToast(msg);
+            if (! silent) {
+            	intents.showInfoToast(msg);
+            }
         }
     }
 
