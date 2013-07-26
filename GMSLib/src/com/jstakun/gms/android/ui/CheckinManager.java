@@ -92,9 +92,10 @@ public class CheckinManager {
         return result;
     }
 
-    public synchronized void autoCheckin(double lat, double lon, boolean silent) {
-        FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-
+    public synchronized int autoCheckin(double lat, double lon, boolean silent) {
+        int checkinCount = 0;
+    	FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+        
         for (FavouritesDAO favourite : favourites) {
             long distInMeter = (long) DistanceUtils.distanceInMeter(lat, lon, favourite.getLatitude(), favourite.getLongitude());
             //System.out.println("Checking landmark " + favourite.getName() + " in distance " + distInMeter + " meter.");
@@ -107,6 +108,7 @@ public class CheckinManager {
                         fdb.updateOnCheckin(favourite.getId());
                         favourite.setMaxDistance(0);
                         favourite.setLastCheckinDate(System.currentTimeMillis());
+                        checkinCount++;
                     }
                 }
             } else if (distInMeter > favourite.getMaxDistance() && fdb != null) {
@@ -114,6 +116,8 @@ public class CheckinManager {
                 favourite.setMaxDistance(distInMeter);
             }
         }
+        
+        return checkinCount;
     }
 
     private ExtendedLandmark findSimilarLandmark(String name, double lat, double lng, String layer) {

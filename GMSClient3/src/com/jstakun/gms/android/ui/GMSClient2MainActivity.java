@@ -1,11 +1,17 @@
 package com.jstakun.gms.android.ui;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.text.Html;
 import android.text.SpannableString;
@@ -43,6 +49,8 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.service.AutoCheckinService;
+import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
 import com.jstakun.gms.android.utils.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -83,6 +91,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private CategoriesManager cm;
     private Intents intents;
     private DialogManager dialogManager;
+    //private AutoCheckinService autoCheckinService;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton,
             lvOpenButton, lvView, lvSendMailButton,
@@ -131,6 +140,17 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
         }
     };
+    /*private ServiceConnection autoCheckinConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+        	//autoCheckinService = ((AutoCheckinService.GMSBinder) binder).getService();  
+        	System.out.println(className.getClassName() + " service connected...");
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+        	//autoCheckinService = null;
+        	System.out.println(className.getClassName() + " service disconnected...");
+        }
+     };*/
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
@@ -314,6 +334,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             //myLocation.runOnFirstFix(r);
             LocationServicesManager.runOnFirstFix(r);
         }
+        
+        Intent intent = new Intent();
+        intent.setAction("com.jstakun.gms.android.autocheckinbroadcast");
+        sendBroadcast(intent); 
     }
 
     @Override
@@ -370,6 +394,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 loadingHandler.post(gpsRunnable);
             }
         }
+        
+        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+        //	bindService(new Intent(this, AutoCheckinService.class), autoCheckinConnection, Context.BIND_AUTO_CREATE);
+        //}
     }
 
     @Override
@@ -409,6 +437,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         if (dialogManager != null) {
             dialogManager.dismissDialog();
         }
+        
+        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+        //	unbindService(autoCheckinConnection);
+        //}
     }
 
     @Override
@@ -480,6 +512,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         //SuggestionProviderUtil.clearHistory();
 
+        AlarmManager service = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		Intent i = new Intent(this, AutoCheckinStartServiceReceiver.class);
+		PendingIntent pending = PendingIntent.getBroadcast(this, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
+        service.cancel(pending);
+		
         IconCache.getInstance().clearAll();
         landmarkManager.clearLandmarkStore();
         asyncTaskManager.cancelAll();
@@ -1134,13 +1171,12 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             postInvalidate();
         }
 
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-            //checkinManager.autoCheckin(lat, lng);
-        	Intent intent = new Intent(this, AutoCheckinService.class);
-        	intent.putExtra("lat", lat);
-        	intent.putExtra("lng", lng);
-        	startService(intent);
-        }
+        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+            //Intent intent = new Intent(this, AutoCheckinService.class);
+        	//intent.putExtra("lat", lat);
+        	//intent.putExtra("lng", lng);
+        	//startService(intent);
+        //}
     }
 
     private void setBuiltInZoomControls(boolean enable) {

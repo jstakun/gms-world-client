@@ -79,7 +79,15 @@
         </activity>
         <activity android:name="com.exina.android.calendar.CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider"/>
-        <service android:name="AutoCheckinService"></service>
+        <service android:name="com.jstakun.gms.android.service.AutoCheckinService"></service>
+        <receiver android:name="com.jstakun.gms.android.service.AutoCheckinScheduleReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                 <action android:name="com.jstakun.gms.android.autocheckinbroadcast" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver" >
+        </receiver>
         <meta-data android:name="CLOUDMADE_KEY" android:value="@string/cloudmadeKey" />
     </application>    
     <!-- Allows an application to access fine (e.g., GPS) location  -->
@@ -101,4 +109,6 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
     <!-- -->
     <uses-permission android:name="com.jstakun.gms.android.permission.ACTIVITY" />
+    <!-- -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 </manifest> 

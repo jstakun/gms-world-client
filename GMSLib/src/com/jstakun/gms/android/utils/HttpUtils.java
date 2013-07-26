@@ -67,6 +67,7 @@ public class HttpUtils {
     private static final String LAT_HEADER = "X-GMS-Lat";
     private static final String LNG_HEADER = "X-GMS-Lng";
     private static java.util.Locale locale;
+    private static final int RETRY_COUNT = 1;
 
     private static HttpClient getHttpClient() {
         if (httpClient == null) {
@@ -102,7 +103,7 @@ public class HttpUtils {
 
     public void sendPostRequest(String url, List<NameValuePair> params, boolean auth) {
         getThreadSafeClientConnManagerStats();
-        sendPostRequest(url, params, auth, 2);
+        sendPostRequest(url, params, auth, RETRY_COUNT);
     }
 
     private void sendPostRequest(String url, List<NameValuePair> params, boolean auth, int retryCount) {
@@ -274,7 +275,7 @@ public class HttpUtils {
 
     public byte[] loadHttpFile(String url, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();
-        return loadHttpFile(url, auth, format, 2);
+        return loadHttpFile(url, auth, format, RETRY_COUNT);
     }
 
     private byte[] loadHttpFile(String url, boolean auth, String format, int retryCount) {

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.gms.android.ui;
+package com.jstakun.gms.android.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
