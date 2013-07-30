@@ -96,7 +96,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             //add to favoutites db
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            checkinManager.checkinAction(true, false);
+            checkinManager.checkinAction(true, false, landmarkManager.getSeletedLandmarkUI());
         }
     };
     private DialogInterface.OnClickListener checkinManualListener = new DialogInterface.OnClickListener() {
@@ -104,7 +104,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             //don't add to favoutites db
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            checkinManager.checkinAction(false, false);
+            checkinManager.checkinAction(false, false, landmarkManager.getSeletedLandmarkUI());
         }
     };
     private DialogInterface.OnClickListener rateUsListener = new DialogInterface.OnClickListener() {

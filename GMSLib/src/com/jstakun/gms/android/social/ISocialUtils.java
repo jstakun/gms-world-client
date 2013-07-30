@@ -25,4 +25,5 @@ public interface ISocialUtils {
     public String checkin(String placeId, String name, String extras);
     public String sendComment(String placeId, String message, String name);
     public String addPlace(String name, String desc, String category, double lat, double lng);
+    public String getKey(String url);
 }

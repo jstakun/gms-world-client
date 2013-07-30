@@ -30,7 +30,8 @@ public class FavouritesDbDataSource {
         LandmarkDbSQLiteOpenHelper.COLUMN_LONGITUDE,
         FavouritesDbSQLiteOpenHelper.COLUMN_LAYER,
         FavouritesDbSQLiteOpenHelper.COLUMN_MAX_DISTANCE,
-        FavouritesDbSQLiteOpenHelper.COLUMN_CHECKIN_DATE};
+        FavouritesDbSQLiteOpenHelper.COLUMN_CHECKIN_DATE,
+        FavouritesDbSQLiteOpenHelper.COLUMN_KEY};
     private SQLiteStatement countStatement;
 
     public FavouritesDbDataSource(Context context) {
@@ -54,7 +55,7 @@ public class FavouritesDbDataSource {
         dbHelper = null;
     }
 
-    public FavouritesDAO addLandmark(ExtendedLandmark landmark) {
+    public FavouritesDAO addLandmark(ExtendedLandmark landmark, String key) {
         ContentValues values = new ContentValues();
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_ID, landmark.hashCode());
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_NAME, landmark.getName());
@@ -65,8 +66,10 @@ public class FavouritesDbDataSource {
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_LAYER, landmark.getLayer());
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_MAX_DISTANCE, 0);
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_CHECKIN_DATE, System.currentTimeMillis());
+        values.put(FavouritesDbSQLiteOpenHelper.COLUMN_KEY, key);
         long insertId = getDatabase().insert(FavouritesDbSQLiteOpenHelper.TABLE_NAME, null, values);
-        return new FavouritesDAO(landmark.hashCode(), landmark.getName(), latitude, longitude, landmark.getLayer(), 0, System.currentTimeMillis());
+        LoggerUtils.debug("Landmark added to favourites database with id: " + insertId);
+        return new FavouritesDAO(landmark.hashCode(), landmark.getName(), latitude, longitude, landmark.getLayer(), 0, System.currentTimeMillis(), key);
     }
 
     public boolean hasLandmark(ExtendedLandmark landmark) {
@@ -159,6 +162,7 @@ public class FavouritesDbDataSource {
         String layer = cursor.getString(4);
         long maxDistance = cursor.getLong(5);
         long lastCheckinDate = cursor.getLong(6);
-        return new FavouritesDAO(id, name, latitude, longitude, layer, maxDistance, lastCheckinDate);
+        String key = cursor.getString(7);
+        return new FavouritesDAO(id, name, latitude, longitude, layer, maxDistance, lastCheckinDate, key);
     }
 }

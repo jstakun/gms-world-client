@@ -196,7 +196,7 @@ public class GoogleUtils extends AbstractSocialUtils {
 		}
 	}
 
-	public String checkin(String reference, String name, String coords) {
+	public String checkin(String reference, String name, String extras) {
 		HttpUtils utils = new HttpUtils();
 		String message = null;
 

@@ -1,19 +1,20 @@
 package com.jstakun.gms.android.ui;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
+import java.util.Iterator;
+import java.util.List;
+
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.api.IMapView;
+import org.osmdroid.api.IMyLocationOverlay;
+
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.text.Html;
 import android.text.SpannableString;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -25,9 +26,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.IconCache;
@@ -49,11 +53,7 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.service.AutoCheckinService;
-import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
 import com.jstakun.gms.android.utils.AdsUtils;
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
@@ -66,12 +66,6 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
-import java.util.Iterator;
-import java.util.List;
-import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.api.IMapController;
-import org.osmdroid.api.IMapView;
-import org.osmdroid.api.IMyLocationOverlay;
 
 public class GMSClient2MainActivity extends MapActivity implements OnClickListener {
 
@@ -91,7 +85,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private CategoriesManager cm;
     private Intents intents;
     private DialogManager dialogManager;
-    //private AutoCheckinService autoCheckinService;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton,
             lvOpenButton, lvView, lvSendMailButton,
@@ -140,17 +133,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
         }
     };
-    /*private ServiceConnection autoCheckinConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder binder) {
-        	//autoCheckinService = ((AutoCheckinService.GMSBinder) binder).getService();  
-        	System.out.println(className.getClassName() + " service connected...");
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-        	//autoCheckinService = null;
-        	System.out.println(className.getClassName() + " service disconnected...");
-        }
-     };*/
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
@@ -301,7 +283,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Creating AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this, landmarkManager, this.getClass());
+            asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
@@ -309,7 +291,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         intents = new Intents(this, landmarkManager, asyncTaskManager);
 
-        checkinManager = new CheckinManager(landmarkManager, asyncTaskManager);
+        checkinManager = new CheckinManager(asyncTaskManager);
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || !cm.isInitialized()) {
@@ -335,9 +317,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             LocationServicesManager.runOnFirstFix(r);
         }
         
-        Intent intent = new Intent();
-        intent.setAction("com.jstakun.gms.android.autocheckinbroadcast");
-        sendBroadcast(intent); 
+        intents.startAutoCheckinBroadcast(); 
     }
 
     @Override
@@ -393,11 +373,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 loadingHandler.removeCallbacks(gpsRunnable);
                 loadingHandler.post(gpsRunnable);
             }
-        }
-        
-        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-        //	bindService(new Intent(this, AutoCheckinService.class), autoCheckinConnection, Context.BIND_AUTO_CREATE);
-        //}
+        }      
     }
 
     @Override
@@ -437,10 +413,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         if (dialogManager != null) {
             dialogManager.dismissDialog();
         }
-        
-        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-        //	unbindService(autoCheckinConnection);
-        //}
     }
 
     @Override
@@ -512,10 +484,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         //SuggestionProviderUtil.clearHistory();
 
-        AlarmManager service = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent i = new Intent(this, AutoCheckinStartServiceReceiver.class);
-		PendingIntent pending = PendingIntent.getBroadcast(this, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
-        service.cancel(pending);
+        intents.stopAutoCheckinService();
 		
         IconCache.getInstance().clearAll();
         landmarkManager.clearLandmarkStore();
@@ -930,9 +899,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)
                         && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)
                         && authStatus && (fdb == null || !fdb.hasLandmark(selectedLandmark))) {
-                    dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Html.fromHtml(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName()))));
+                    //dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Html.fromHtml(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName()))));
+                	checkinManager.checkinAction(true, false, selectedLandmark);
                 } else if (authStatus) {
-                    checkinManager.checkinAction(false, false);
+                    checkinManager.checkinAction(false, false, selectedLandmark);
                 }
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
@@ -1101,27 +1071,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         }
     }
 
-    /*private IGeoPoint getMyLocation() {
-     //if (myLocation instanceof GoogleIMyLocationOverlay) {
-     //    if (((GoogleIMyLocationOverlay) myLocation).getMyLocation() != null) {
-     //        return new org.osmdroid.google.wrapper.GeoPoint(((GoogleIMyLocationOverlay) myLocation).getMyLocation());
-     //    }
-     //} else if (myLocation instanceof OsmMyLocationOverlay) {
-     //    return ((OsmMyLocationOverlay) myLocation).getMyLocation();
-     //}
-     //return null;
-        
-     Location location = ConfigurationManager.getInstance().getLocation();
-     if (location == null) {
-     location = myLocation.getLastFix();
-     }
-     if (location != null) {
-     return new org.osmdroid.util.GeoPoint(MathUtils.coordDoubleToInt(location.getLatitude()),
-     MathUtils.coordDoubleToInt(location.getLongitude()));
-     } else {
-     return null;
-     }
-     }*/
     private void showMyPositionAction(boolean loadLayers) {
         IGeoPoint myLoc = LocationServicesManager.getMyLocation();
         if (myLoc != null) {
@@ -1170,13 +1119,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         } else {
             postInvalidate();
         }
-
-        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-            //Intent intent = new Intent(this, AutoCheckinService.class);
-        	//intent.putExtra("lat", lat);
-        	//intent.putExtra("lng", lng);
-        	//startService(intent);
-        //}
     }
 
     private void setBuiltInZoomControls(boolean enable) {

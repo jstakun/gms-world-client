@@ -69,9 +69,6 @@ public class KMLParser {
         counter = 0;
 
         if (!landmarks.isEmpty()) {
-            //for (int i = 0; i < landmarks.size(); i++) {
-            //    origLandmarks.add(landmarks.get(i));
-            //}
             origLandmarks.addAll(landmarks);
         }
 
@@ -167,8 +164,7 @@ public class KMLParser {
      *             not a valid floating point number.
      * @throws IOException
      */
-    private float parseLookAt(XmlPullParser parser)
-            throws XmlPullParserException, IOException {
+    private float parseLookAt(XmlPullParser parser) throws XmlPullParserException, IOException {
         // keep track of the tag we are in
         Vector<String> tags = new Vector<String>();
         tags.addElement("LookAt");
@@ -338,7 +334,7 @@ public class KMLParser {
                 if ("coordinates".equals(name)) {
                     try {
                         // unfortunately, the actual data is contained in a
-                        // coordinates element, so outsource again
+                        // coordinates element, so out source again
                         qc = parseCoordinates(content);
                     } catch (IllegalArgumentException e) {
                         throw new XmlPullParserException(e.getMessage());

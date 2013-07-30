@@ -22,13 +22,11 @@ public class GMSNotificationManager {
     private int notificationCounter;
     private NotificationManager mNotificationManager = null;
     private Context context;
-    private Class<?> intentClass;
 
-    public GMSNotificationManager(Context parent, Class<?> intentClass) {
+    public GMSNotificationManager(Context parent) {
         mNotificationManager = (NotificationManager) parent.getSystemService(Context.NOTIFICATION_SERVICE);
         this.context = parent;
         notificationCounter = 0;
-        this.intentClass = intentClass;
     }
 
     public int createNotification(int icon, String ticker, String title, boolean delete) {
@@ -43,7 +41,7 @@ public class GMSNotificationManager {
         String tickerText = Locale.getMessage(R.string.Task_started, ticker);              // ticker-text
         String contentTitle = Locale.getMessage(R.string.Task_in_progress, title);  // expanded message title
         String contentText = (delete == true) ? Locale.getMessage(R.string.Task_Click_to_cancel) : Locale.getMessage(R.string.Task_Click_to_open);      // expanded message text
-        Intent notificationIntent = new Intent(context, intentClass);
+        Intent notificationIntent = new Intent(context, context.getClass());
         //System.out.println("putExtra(\"notification\"," +  num + ")-----------------------------------");
         Bundle extras = new Bundle();
         extras.putInt("notification", num);

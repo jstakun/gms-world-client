@@ -4,9 +4,18 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.bouncycastle.util.encoders.Base64;
+
 import android.app.Activity;
 import android.location.Location;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
@@ -32,14 +41,6 @@ import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MercatorUtils;
 import com.jstakun.gms.android.utils.OsUtil;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.bouncycastle.util.encoders.Base64;
 
 /**
  *
@@ -54,11 +55,11 @@ public class AsyncTaskManager {
     private Intents intents;
     private Activity activity;
 
-    public AsyncTaskManager(Activity context, LandmarkManager lm, Class<?> intentClass) {
+    public AsyncTaskManager(Activity context, LandmarkManager lm) {
         tasksInProgress = new ConcurrentHashMap<Integer, GMSAsyncTask<?,?,?>>();
         landmarkManager = lm;
         if (context != null) {
-            notificationManager = new GMSNotificationManager(context, intentClass);
+            notificationManager = new GMSNotificationManager(context);
             setActivity(context);
             intents = new Intents(context, landmarkManager, null);
         }
@@ -103,7 +104,7 @@ public class AsyncTaskManager {
     }
 
     public void cancelNotification(int num) {
-        notificationManager.cancelNotification(num);
+    	notificationManager.cancelNotification(num);
     }
 
     private String sendSocialNotification(String auth_status, String send_status, String service, ExtendedLandmark landmark, int type) {
@@ -175,7 +176,9 @@ public class AsyncTaskManager {
 
         @Override
         protected void onPreExecute() {
-            tasksInProgress.put(notificationId, this);
+        	if (notificationId >= 0) {
+        		tasksInProgress.put(notificationId, this);
+        	}
         }
 
         @Override
@@ -191,8 +194,10 @@ public class AsyncTaskManager {
         }
 
         protected void clear() {
-            notificationManager.cancelNotification(notificationId);
-            tasksInProgress.remove(notificationId);
+        	if (notificationId >= 0) {
+            	notificationManager.cancelNotification(notificationId);
+            	tasksInProgress.remove(notificationId);
+        	}	
         }
     }
 
@@ -439,73 +444,36 @@ public class AsyncTaskManager {
     }
 
     //CheckIn tasks
-    public void executeSocialCheckInTask(String message, int icon, boolean silent, ExtendedLandmark selectedLandmark) {
-        if (!silent) {
+    public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name) {
+    	String notificationId = "-1";
+    	if (!silent) {
             intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+            notificationId = createNotification(icon, message, message, true);
         }
-        SocialCheckInTask checkInTask = new SocialCheckInTask(selectedLandmark);
-        String notificationId = createNotification(icon, message, message, true);
-        checkInTask.execute("", notificationId, Boolean.toString(silent));
-        //if (!AsyncTaskExecutor.execute(checkInTask, activity, "", Integer.toString(notificationId), Boolean.toString(silent))) {
-        //    checkInTask.clear();
-        //}
+        SocialCheckInTask checkInTask = new SocialCheckInTask();
+        checkInTask.execute("", notificationId, Boolean.toString(silent), layer, venueid, name);
     }
 
     private class SocialCheckInTask extends GenericTask {
 
-        private ExtendedLandmark selectedLandmark;
         private boolean silent = false;
 
-        public SocialCheckInTask(ExtendedLandmark selectedLandmark) {
-            super();
-            this.selectedLandmark = selectedLandmark;
-        }
-
-		@Override
+        @Override
 		protected String doInBackground(String... fileData) {
 			super.doInBackground(fileData);
 			silent = Boolean.parseBoolean(fileData[2]);
-			String msg;// = Locale.getMessage(R.string.Social_Checkin_error,
-						// selectedLandmark.getName());
-			String layer = selectedLandmark.getLayer();
+			String msg;// = Locale.getMessage(R.string.Social_Checkin_error, selectedLandmark.getName());
+			String layer = fileData[3];
+			String venueid = fileData[4];
+			String name = fileData[5];
 
 			try {
-				if (layer.equals(Commons.FOURSQUARE_LAYER)
-						|| layer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {
-					String venueid = selectedLandmark.getUrl();
-					String[] s = venueid.split("/");
-
-					if (s.length > 0) {
-						venueid = s[s.length - 1];
-					}
-					msg = OAuthServiceFactory.getSocialUtils(
-							Commons.FOURSQUARE).checkin(venueid,
-							selectedLandmark.getName(), null);
+				if (layer.equals(Commons.FOURSQUARE_LAYER) || layer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {
+					msg = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).checkin(venueid, name, null);
 				} else if (layer.equals(Commons.FACEBOOK_LAYER)) {
-					String venueid = selectedLandmark.getUrl();
-					String[] s = venueid.split("=");
-
-					if (s.length > 0) {
-						venueid = s[s.length - 1];
-					}
-					String coords = "{\"latitude\":\""
-							+ selectedLandmark.getQualifiedCoordinates()
-									.getLatitude()
-							+ "\", \"longitude\": \""
-							+ selectedLandmark.getQualifiedCoordinates()
-									.getLongitude() + "\"}";
-					msg = OAuthServiceFactory.getSocialUtils(
-							Commons.FACEBOOK).checkin(venueid,
-							selectedLandmark.getName(), coords);
+					msg = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).checkin(venueid, name, null);
 				} else if (layer.equals(Commons.GOOGLE_PLACES_LAYER)) {
-					Bundle extras = selectedLandmark.getAddress().getExtras();
-					String venueid = null;
-					if (extras.containsKey("reference")) {
-						venueid = extras.getString("reference");
-					}
-					msg = OAuthServiceFactory.getSocialUtils(
-							Commons.GOOGLE).checkin(venueid,
-							selectedLandmark.getName(), null);
+					msg = OAuthServiceFactory.getSocialUtils(Commons.GOOGLE).checkin(venueid, name, null);
 				} else {
 					msg = Locale.getMessage(R.string.Checkin_layer_error, layer);
 				}
@@ -521,7 +489,9 @@ public class AsyncTaskManager {
             super.onPostExecute(res);
             if (! silent) {
             	intents.showInfoToast(res);
-            }	
+            } else {
+            	LoggerUtils.debug(res);
+            }
         }
     }
 
@@ -564,11 +534,12 @@ public class AsyncTaskManager {
     }
 
     public void executeLocationCheckInTask(int icon, String checkinLandmarkCode, String message, String name, boolean silent) {
-        if (!silent) {
+    	String notificationId = "-1";
+    	if (!silent) {
             intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+            notificationId = createNotification(icon, message, message, true);
         }
         LocationCheckInTask checkInTask = new LocationCheckInTask();
-        String notificationId = createNotification(icon, message, message, true);
         checkInTask.execute("", notificationId, checkinLandmarkCode, name, Boolean.toString(silent));
     }
 
@@ -1027,7 +998,7 @@ public class AsyncTaskManager {
         protected void onPostExecute(Boolean status) {
             if (status) {
                 try {
-                    DialogManager dialogManager = new DialogManager(activity, intents, null,
+                    DialogManager dialogManager = new DialogManager((Activity)activity, intents, null,
                             landmarkManager, null, null);
                     dialogManager.showAlertDialog(AlertDialogBuilder.NEW_VERSION_DIALOG, null, null);
                 } catch (Throwable e) {

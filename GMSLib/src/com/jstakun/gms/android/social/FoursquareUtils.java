@@ -12,6 +12,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONObject;
+
 import com.jstakun.gms.android.utils.Token;
 
 import com.jstakun.gms.android.config.Commons;
@@ -114,7 +115,7 @@ public class FoursquareUtils extends AbstractSocialUtils {
         return result;
     }
 
-    public String checkin(String venueId, String name, String coords) {
+    public String checkin(String venueId, String name, String extras) {
         //socialCheckin  accessToken, venueId, name, service
         HttpUtils utils = new HttpUtils();
 		String message = null;
@@ -219,5 +220,16 @@ public class FoursquareUtils extends AbstractSocialUtils {
 			}
 		}
 		return message;
+    }
+    
+    public String getKey(String url) {
+    	String venueid = url;
+		String[] s = venueid.split("/");
+
+		if (s.length > 0) {
+			venueid = s[s.length - 1];
+		}
+		
+		return venueid;
     }
 }

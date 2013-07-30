@@ -25,9 +25,10 @@ public class FavouritesDbSQLiteOpenHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LAYER = "layer";
     public static final String COLUMN_MAX_DISTANCE = "maxDistance";
     public static final String COLUMN_CHECKIN_DATE = "checkinDate";
+    public static final String COLUMN_KEY = "key";
 
     private static final String DATABASE_NAME = "favourites.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_CREATE = "create table " + TABLE_NAME + "( "
             + COLUMN_ID + " integer primary key, "
@@ -36,7 +37,8 @@ public class FavouritesDbSQLiteOpenHelper extends SQLiteOpenHelper {
             + COLUMN_LONGITUDE + " real not null, "
             + COLUMN_LAYER + " text not null, "
             + COLUMN_MAX_DISTANCE + " integer, "
-            + COLUMN_CHECKIN_DATE + " integer"
+            + COLUMN_CHECKIN_DATE + " integer, "
+            + COLUMN_KEY + " text not null"
             + ");";
 
     public FavouritesDbSQLiteOpenHelper(Context context) {
@@ -52,7 +54,7 @@ public class FavouritesDbSQLiteOpenHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase landmarkdb, int oldVersion, int newVersion) {
         LoggerUtils.debug("Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
-        landmarkdb.execSQL("DROP TABLE IF EXISTS" + TABLE_NAME);
+        landmarkdb.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(landmarkdb);
     }
 

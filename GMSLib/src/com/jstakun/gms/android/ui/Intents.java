@@ -45,6 +45,7 @@ import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.AdsUtils;
 import com.jstakun.gms.android.utils.BCTools;
@@ -461,6 +462,21 @@ public class Intents {
 
     public void startLocationSettingsActivity() {
         activity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+    }
+    
+    public void startAutoCheckinBroadcast() {
+    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+    		Intent intent = new Intent();
+    		intent.setAction("com.jstakun.gms.android.autocheckinbroadcast");
+    		activity.sendBroadcast(intent);
+    	}
+    }
+    
+    public void stopAutoCheckinService() {
+    	AlarmManager service = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+		Intent i = new Intent(activity, AutoCheckinStartServiceReceiver.class);
+		PendingIntent pending = PendingIntent.getBroadcast(activity, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
+        service.cancel(pending);
     }
 
     private void startCommentActivity(String service, String venueid, String name) {

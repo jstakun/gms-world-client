@@ -522,8 +522,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 					int layerCount = jsonLayers.length();
 					int i = 0;
-					for (Iterator<String> layerNames = jsonLayers.keys(); layerNames
-							.hasNext();) {
+					for (Iterator<String> layerNames = jsonLayers.keys(); layerNames.hasNext();) {
 						String layerName = layerNames.next();
 						JSONObject layer = jsonLayers.getJSONObject(layerName);
 						JSONArray resultSet = layer.optJSONArray("ResultSet");

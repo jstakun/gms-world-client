@@ -39,9 +39,7 @@ public class FacebookUtils extends AbstractSocialUtils {
 		}
 		
 		try {
-				ConfigurationManager.getInstance().putString(
-						ConfigurationManager.FB_USERNAME,
-						json.getString(ConfigurationManager.FB_USERNAME) + "@fb");
+				ConfigurationManager.getInstance().putString(ConfigurationManager.FB_USERNAME, json.getString(ConfigurationManager.FB_USERNAME) + "@fb");
 
 				if (json.has(ConfigurationManager.FB_NAME)) {
 					ConfigurationManager.getInstance().putString(
@@ -49,8 +47,7 @@ public class FacebookUtils extends AbstractSocialUtils {
 				}
 				if (json.has(ConfigurationManager.FB_GENDER)) {
 					ConfigurationManager.getInstance().putString(
-							ConfigurationManager.FB_GENDER,
-							json.getString(ConfigurationManager.FB_GENDER));
+							ConfigurationManager.FB_GENDER, json.getString(ConfigurationManager.FB_GENDER));
 				}
 				if (json.has(ConfigurationManager.FB_BIRTHDAY)) {
 					ConfigurationManager.getInstance().putString(ConfigurationManager.FB_BIRTHDAY, json.getString(ConfigurationManager.FB_BIRTHDAY));
@@ -173,7 +170,7 @@ public class FacebookUtils extends AbstractSocialUtils {
 	}
 
 	
-	public String checkin(String placeId, String name, String coords) {
+	public String checkin(String placeId, String name, String extras) {
 		//socialCheckin  accessToken, venueId, name, service
         HttpUtils utils = new HttpUtils();
 		String message = null;
@@ -242,5 +239,16 @@ public class FacebookUtils extends AbstractSocialUtils {
 			}
 		}
 		return errorMessage;
+	}
+	
+	public String getKey(String url) {
+		String venueid = url;
+		String[] s = venueid.split("=");
+
+		if (s.length > 0) {
+			venueid = s[s.length - 1];
+		}
+		
+		return venueid;
 	}
 }

@@ -18,7 +18,7 @@ public class AutoCheckinScheduleReceiver extends BroadcastReceiver {
 
 	  @Override
 	  public void onReceive(Context context, Intent intent) {
-		  LoggerUtils.debug("AutoCheckinScheduleReceiver.onReceive() executed..........................");
+		  LoggerUtils.debug("AutoCheckinScheduleReceiver.onReceive() executed...");
 		  if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
 			  AlarmManager service = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 			  Intent i = new Intent(context, AutoCheckinStartServiceReceiver.class);

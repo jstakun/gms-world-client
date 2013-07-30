@@ -49,21 +49,22 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 
 	@Override
 	public String checkin(String placeId, String name, String extras) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String sendComment(String placeId, String message, String name) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String addPlace(String name, String desc, String category,
 			double lat, double lng) {
-		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public String getKey(String url) {
+		return url;
 	}
 	
 	protected abstract Token loadAccessToken();

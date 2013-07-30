@@ -119,22 +119,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             }
         }
     };
-    /*private final Handler locationHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle b = msg.getData();
-            if (b.containsKey("lat") && b.containsKey("lng") && b.containsKey("alt")) {
-                double lat = b.getDouble("lat");
-                double lng = b.getDouble("lng");
-                float altitude = b.getFloat("alt");
-                float accuracy = b.getFloat("acc", 0f);
-                //float bearing = b.getFloat("bea");
-                float speed = b.getFloat("spe", 0f);
-
-                updateGpsLocation(lat, lng, altitude, accuracy, speed);
-            }
-        }
-    };*/
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = LocationServicesManager.getMyLocation();
@@ -195,17 +179,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         //
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        /*final Intent intent = getIntent();
-         final String action = intent.getAction();
-         // If the intent is a request to create a shortcut, we'll do that and exit
-         if (Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
-         intents = new Intents(this, null, null);
-         intents.setupShortcut();
-         appAbort = true;
-         finish();
-         }*/
-
-        //if (!appAbort) {
         ConfigurationManager.getInstance().setContext(getApplicationContext());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -218,7 +191,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         infoOverlay = new OsmInfoOverlay(this);
 
         initComponents();
-        //}
     }
 
     private void initComponents() {
@@ -285,7 +257,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Creating AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this, landmarkManager, this.getClass());
+            asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
 
             //check if newer version available
@@ -294,7 +266,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         intents = new Intents(this, landmarkManager, asyncTaskManager);
 
-        checkinManager = new CheckinManager(landmarkManager, asyncTaskManager);
+        checkinManager = new CheckinManager(asyncTaskManager);
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || !cm.isInitialized()) {
@@ -897,9 +869,10 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)
                         && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)
                         && authStatus && (fdb == null || !fdb.hasLandmark(selectedLandmark))) {
-                    dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName())));
+                    //dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName())));
+                	checkinManager.checkinAction(true, false, selectedLandmark);
                 } else if (authStatus) {
-                    checkinManager.checkinAction(false, false);
+                    checkinManager.checkinAction(false, false, selectedLandmark);
                 }
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));

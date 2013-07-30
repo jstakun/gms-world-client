@@ -82,8 +82,7 @@
         <service android:name="com.jstakun.gms.android.service.AutoCheckinService"></service>
         <receiver android:name="com.jstakun.gms.android.service.AutoCheckinScheduleReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                 <action android:name="com.jstakun.gms.android.autocheckinbroadcast" />
+                <action android:name="com.jstakun.gms.android.autocheckinbroadcast" />
             </intent-filter>
         </receiver>
         <receiver android:name="com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver" >
@@ -109,6 +108,4 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
     <!-- -->
     <uses-permission android:name="com.jstakun.gms.android.permission.ACTIVITY" />
-    <!-- -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 </manifest> 

@@ -4,9 +4,20 @@
  */
 package com.jstakun.gms.android.routes;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -20,18 +31,6 @@ import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.openlapi.QualifiedCoordinates;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
@@ -76,122 +75,6 @@ public class RoutesManager {
     public Set<String> getRoutes() {
         return routes.keySet();
     }
-
-    /*public void paintRoutes(Canvas c, BoundingBox bbox, Paint paint, int width, int height, DisplayMetrics displayMetrics) {
-        if (landmarkManager.getLayerManager().isLayerEnabled(LayerManager.ROUTES_LAYER)) {
-
-            Bitmap b = LayerManager.getLayerIcon(LayerManager.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-
-            paint.setColor(Color.RED);
-            paint.setStyle(Paint.Style.STROKE);
-
-            for (Iterator<Map.Entry<String, List<ExtendedLandmark>>> iter = routes.entrySet().iterator(); iter.hasNext();) {
-                Map.Entry<String, List<ExtendedLandmark>> entry = iter.next();
-                String key = entry.getKey();
-                List<ExtendedLandmark> routePoints = entry.getValue();
-                LoggerUtils.debug("Painting route " + key + " has " + routePoints.size() + " points.");
-
-                if (!routePoints.isEmpty()) {
-                    int size = routePoints.size();
-                    boolean visible = false;
-                    Path path = new Path();
-
-                    if (!key.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
-
-                        ExtendedLandmark firstPoint = routePoints.get(0);
-                        //int[] xy1 = MercatorUtils.coordsToXY(width, height, firstPoint.getQualifiedCoordinates().getLatitude(), firstPoint.getQualifiedCoordinates().getLongitude(), bbox);
-
-                        int y1 = Integer.MAX_VALUE;
-
-                        int x1 = MercatorUtils.lonToX(width, firstPoint.getQualifiedCoordinates().getLongitude(), bbox);
-                        {
-                            if (x1 >= 0 && x1 <= width) {
-                                y1 = MercatorUtils.latToY(height, firstPoint.getQualifiedCoordinates().getLatitude(), bbox);
-                                if (y1 >= 0 && y1 <= height) {
-                                    drawLandmark(c, b, x1, y1, paint);
-                                    visible = true;
-                                }
-                            }
-                        }
-
-                        for (int i = 1; i < size; i++) {
-                            ExtendedLandmark secondPoint = routePoints.get(i);
-                            boolean newVisible = false;
-
-                            int y2 = Integer.MAX_VALUE;
-                            int x2 = MercatorUtils.lonToX(width, secondPoint.getQualifiedCoordinates().getLongitude(), bbox);
-
-                            if (x2 >= 0 && x2 <= width || visible) {
-                                y2 = MercatorUtils.latToY(height, secondPoint.getQualifiedCoordinates().getLatitude(), bbox);
-                                if (y2 >= 0 && y2 <= height) {
-                                    newVisible = true;
-                                    if (y1 == Integer.MAX_VALUE) {
-                                        y1 = MercatorUtils.latToY(height, firstPoint.getQualifiedCoordinates().getLatitude(), bbox);
-                                    }
-                                }
-                            }
-
-                            if (visible || newVisible) {
-                                path.moveTo(x1, y1);
-                                path.lineTo(x2, y2);
-                            }
-
-                            x1 = x2;
-                            y1 = y2;
-                            visible = newVisible;
-                            firstPoint = secondPoint;
-                        }
-
-                        c.drawPath(path, paint);
-
-                        if (x1 >= 0 && x1 <= width && y1 >= 0 && y1 <= height) {
-                            drawLandmark(c, b, x1, y1, paint);
-                        }
-
-                    } else {
-
-                        //draw route only from end
-                        ExtendedLandmark lastPoint = routePoints.get(size - 1);
-                        int[] xy1 = MercatorUtils.coordsToXY(width, height, lastPoint.getQualifiedCoordinates().getLatitude(), lastPoint.getQualifiedCoordinates().getLongitude(), bbox);
-
-                        int i = size - 2;
-                        visible = true;
-
-                        while (i >= 0 && visible) {
-                            ExtendedLandmark secondPoint = routePoints.get(i);
-                            int[] xy2 = MercatorUtils.coordsToXY(width, height, secondPoint.getQualifiedCoordinates().getLatitude(), secondPoint.getQualifiedCoordinates().getLongitude(), bbox);
-
-                            if ((xy1[0] >= 0 && xy1[0] <= width && xy1[1] >= 0 && xy1[1] <= height)
-                                    || (xy2[0] >= 0 && xy2[0] <= width && xy2[1] >= 0 && xy2[1] <= height)) {
-
-                                //System.out.println("Drawing line: " + xy1[0] + "," + xy1[1] + " " + xy2[0] + "," + xy2[1] + " " + i);
-
-                                path.moveTo(xy1[0], xy1[1]);
-                                path.lineTo(xy2[0], xy2[1]);
-
-                            } else {
-                                visible = false;
-                            }
-
-                            xy1[0] = xy2[0];
-                            xy1[1] = xy2[1];
-                            lastPoint = secondPoint;
-                            i--;
-                        }
-
-                        c.drawPath(path, paint);
-
-                        //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
-                        if (i == -1) {
-                            drawLandmark(c, b, xy1[0], xy1[1], paint);
-                        }
-
-                        //System.out.println("Painted " + (size - i) + " from " + size + " points.");
-                    }
-                }
-            }
-        }
-    }*/
 
     public double[] calculateRouteCenter(String routeKey) {
         double coords[] = new double[2];
@@ -243,8 +126,8 @@ public class RoutesManager {
     }
 
     public void clearRoutesStore() {
-        Set entries = routes.entrySet();
-        Iterator iter = entries.iterator();
+        Set<Entry<String, List<ExtendedLandmark>>> entries = routes.entrySet();
+        Iterator<Entry<String, List<ExtendedLandmark>>> iter = entries.iterator();
 
         while (iter.hasNext()) {
             iter.next();
@@ -369,12 +252,6 @@ public class RoutesManager {
         }
 
         return response;
-    }
-
-    private void drawLandmark(Canvas c, Bitmap b, int x, int y, Paint p) {
-        int x1 = x - (b.getWidth() / 2);
-        int y1 = y - (b.getHeight() / 2);
-        c.drawBitmap(b, x1, y1, p);
     }
 
     private String getRouteDesc(String key) {

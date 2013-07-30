@@ -17,8 +17,9 @@ public class FavouritesDAO {
     private String layer;
     private long maxDistance;
     private long lastCheckinDate;
+    private String key;
 
-    public FavouritesDAO(long id, String name, double latitude, double longitude, String layer, long maxDistance, long lastCheckinDate) {
+    public FavouritesDAO(long id, String name, double latitude, double longitude, String layer, long maxDistance, long lastCheckinDate, String key) {
         this.id = id;
         this.name = name;
         this.latitude = latitude;
@@ -26,6 +27,7 @@ public class FavouritesDAO {
         this.layer = layer;
         this.maxDistance = maxDistance;
         this.lastCheckinDate = lastCheckinDate;
+        this.key = key;
     }
     /**
      * @return the id
@@ -123,5 +125,19 @@ public class FavouritesDAO {
      */
     public void setLastCheckinDate(long lastCheckinDate) {
         this.lastCheckinDate = lastCheckinDate;
+    }
+    
+    /**
+     * @return the key
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * @param key the key to set
+     */
+    public void setKey(String key) {
+        this.key = key;
     }
 }

@@ -6,7 +6,7 @@ package com.jstakun.gms.android.landmarks;
 
 import android.location.Address;
 import com.jstakun.gms.android.config.ConfigurationManager;
-//import com.google.common.base.Objects;
+import com.google.common.base.Objects;
 import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.openlapi.AddressInfo;
@@ -182,16 +182,14 @@ public class ExtendedLandmark extends Landmark {
         } else if (landmark instanceof ExtendedLandmark) {
             ExtendedLandmark l = (ExtendedLandmark)landmark;
             
-            //TODO layer should be added to hashcode
+            return Objects.equal(l.getName(), getName()) && 
+               Objects.equal(l.getLatitudeE6(), getLatitudeE6()) &&
+               Objects.equal(l.getLongitudeE6(), getLongitudeE6()) &&
+               Objects.equal(l.getLayer(), layer);
             
-            //return Objects.equal(l.getName(), name) && 
-            //Objects.equal(l.getLatitudeE6(), getLatitudeE6()) &&
-            //Objects.equal(l.getLongitudeE6(), getLongitudeE6() &&
-            //Objects.equal(l.getLayer(), layer));
-            
-            return (l.getName().hashCode() == getName().hashCode() &&
-                    l.getLatitudeE6() == getLatitudeE6() && 
-                    l.getLongitudeE6() == getLongitudeE6());
+            //return (l.getName().hashCode() == getName().hashCode() &&
+            //        l.getLatitudeE6() == getLatitudeE6() && 
+            //        l.getLongitudeE6() == getLongitudeE6());
         } else {
             return false;
         }
@@ -200,12 +198,12 @@ public class ExtendedLandmark extends Landmark {
     @Override
     public int hashCode() {
         
-        //return Objects.hashCode(name, getLatitudeE6(), getLongitudeE6(), layer);
+        return Objects.hashCode(getName(), getLatitudeE6(), getLongitudeE6(), layer);
         
-        int hash = 31 * getName().hashCode() + 1;
-        hash = 31 * getLatitudeE6() + hash;
-        hash = 31 * getLongitudeE6() + hash;
-        return hash; 
+        //int hash = 31 * getName().hashCode() + 1;
+        //hash = 31 * getLatitudeE6() + hash;
+        //hash = 31 * getLongitudeE6() + hash;
+        //return hash; 
     }
 
     /**
