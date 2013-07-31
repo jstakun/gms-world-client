@@ -469,6 +469,8 @@ public class Intents {
     		Intent intent = new Intent();
     		intent.setAction("com.jstakun.gms.android.autocheckinbroadcast");
     		activity.sendBroadcast(intent);
+    	} else if (ConfigurationManager.getInstance().isOff(ConfigurationManager.AUTO_CHECKIN)) {
+    		stopAutoCheckinService();
     	}
     }
     

@@ -291,7 +291,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         intents = new Intents(this, landmarkManager, asyncTaskManager);
 
-        checkinManager = new CheckinManager(asyncTaskManager);
+        checkinManager = new CheckinManager(asyncTaskManager, this);
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || !cm.isInitialized()) {
@@ -316,8 +316,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             //myLocation.runOnFirstFix(r);
             LocationServicesManager.runOnFirstFix(r);
         }
-        
-        intents.startAutoCheckinBroadcast(); 
     }
 
     @Override
@@ -373,7 +371,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 loadingHandler.removeCallbacks(gpsRunnable);
                 loadingHandler.post(gpsRunnable);
             }
-        }      
+        }
+        
+        intents.startAutoCheckinBroadcast(); 
     }
 
     @Override
@@ -484,7 +484,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         //SuggestionProviderUtil.clearHistory();
 
-        intents.stopAutoCheckinService();
+        //let work auto checkin service after app shutdown
+        //intents.stopAutoCheckinService();
 		
         IconCache.getInstance().clearAll();
         landmarkManager.clearLandmarkStore();

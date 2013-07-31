@@ -266,7 +266,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         intents = new Intents(this, landmarkManager, asyncTaskManager);
 
-        checkinManager = new CheckinManager(asyncTaskManager);
+        checkinManager = new CheckinManager(asyncTaskManager, this);
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || !cm.isInitialized()) {
@@ -288,10 +288,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                     }
                 }
             };
-            /*myLocation.runOnFirstFix(r);*/
-            //skyhook.runOnFirstFix(r);
             LocationServicesManager.runOnFirstFix(r);
-
         }
     }
 
@@ -300,34 +297,12 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         super.onResume();
         LoggerUtils.debug("onResume");
 
-        //myLocation.enableMyLocation();
-        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        //    myLocation.enableCompass();
-        //}
-        //skyhook.enableMyLocation();
         LocationServicesManager.enableMyLocation();
 
         OsmMapsTypeSelector.selectMapType(mapView, this);
 
         asyncTaskManager.setActivity(this);
 
-        /*String searchQueryResult = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, String.class);
-         if (StringUtils.equals(searchQueryResult, "true")) {
-         GeoPoint newCenter = new GeoPoint(MathUtils.coordDoubleToInt(ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE)),
-         MathUtils.coordDoubleToInt(ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE)));
-         pickPositionAction(newCenter, false, false);
-         landmarkManager.clearLandmarkOnFocusQueue();
-         try {
-         landmarkDetailsAction();
-         } catch (Exception e) {
-         LoggerUtils.error("GMSClientMainActivity.onResume error", e);
-         }
-         } else if (StringUtils.equals(searchQueryResult, "false")) {
-         intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
-         } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
-         ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
-         intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
-         }*/
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
             showSelectedLandmark(searchQueryResult);
@@ -362,6 +337,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 loadingHandler.post(gpsRunnable);
             }
         }
+        
+        intents.startAutoCheckinBroadcast();
     }
 
     @Override

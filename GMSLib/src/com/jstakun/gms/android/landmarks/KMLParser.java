@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -164,10 +163,10 @@ public class KMLParser {
      *             not a valid floating point number.
      * @throws IOException
      */
-    private float parseLookAt(XmlPullParser parser) throws XmlPullParserException, IOException {
+     /*private float parseLookAt(XmlPullParser parser) throws XmlPullParserException, IOException {
         // keep track of the tag we are in
-        Vector<String> tags = new Vector<String>();
-        tags.addElement("LookAt");
+        List<String> tags = new ArrayList<String>();
+        tags.add("LookAt");
 
         float heading = Float.NaN;
 
@@ -176,12 +175,12 @@ public class KMLParser {
             if (event == XmlPullParser.START_TAG) {
                 String name = parser.getName();
                 // mark that we are in a tag
-                tags.addElement(name);
+                tags.add(name);
                 continue;
             } else if (event == XmlPullParser.END_TAG) {
                 String name = parser.getName();
                 // remove the tag from the list
-                tags.removeElement(name);
+                tags.remove(name);
                 if ("LookAt".equals(name)) // end of LookAt info, return
                 {
                     return heading;
@@ -189,7 +188,7 @@ public class KMLParser {
             }
             if (event == XmlPullParser.TEXT) {
                 // we recorded where we are
-                String name = tags.lastElement();
+                String name = tags.get(tags.size()-1);
                 if ("heading".equals(name)) {
                     String content = parser.getText();
                     try {
@@ -202,7 +201,7 @@ public class KMLParser {
         }
         // we get here if the tag never closed
         throw new XmlPullParserException("expected </LookAt>");
-    }
+    }*/
 
     /**
      * Parse a Placemark element into a Location. Moves the parser to the end of the
@@ -217,13 +216,13 @@ public class KMLParser {
             throws XmlPullParserException, IOException {
         String lmname = "Noname";
         String lmdescription = null;
-        List<ExtendedLandmark> landmarks = new Vector<ExtendedLandmark>();
-        Vector qc = null;
+        List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
+        List<?> qc = null;
 
         // keep track of the tag we are in
-        Vector<String> tags = new Vector<String>();
+        List<String> tags = new ArrayList<String>();
         //System.out.println("Adding: Placemark");
-        tags.addElement("Placemark");
+        tags.add("Placemark");
 
         int event = parser.next();
 
@@ -232,13 +231,13 @@ public class KMLParser {
                 String name = parser.getName();
                 // mark that we are in a tag
                 //System.out.println("Adding: " + name);
-                tags.addElement(name);
+                tags.add(name);
                 continue;
             } else if (event == XmlPullParser.END_TAG) {
                 String name = parser.getName();
                 // remove the tag from the list
                 //System.out.println("Removing: " + name);
-                tags.removeElement(name);
+                tags.remove(name);
                 //System.out.println("Removed: " + name);
                 if ("Placemark".equals(name)) // end of Placemark info, return
                 {
@@ -250,7 +249,7 @@ public class KMLParser {
                         }
                         for (int i = 0; i < qc.size(); i++) {
                             //System.out.println(i);
-                            landmarks.add(LandmarkFactory.getLandmark(lmname, lmdescription, (QualifiedCoordinates) qc.elementAt(i), layer, creationDate));
+                            landmarks.add(LandmarkFactory.getLandmark(lmname, lmdescription, (QualifiedCoordinates) qc.get(i), layer, creationDate));
                         }
                         return landmarks;
                     }
@@ -258,28 +257,28 @@ public class KMLParser {
             }
             if (event == XmlPullParser.TEXT) {
                 // we recorded where we are
-                String name = tags.lastElement();
+                String name = tags.get(tags.size()-1);
                 //System.out.println(name);
                 if ("name".equals(name)) {
                     // name, append this info to the plain text extra info
                     lmname = parser.getText();
-                    tags.removeElement("name");
+                    tags.remove("name");
                 } else if ("description".equals(name)) {
                     // description
                     lmdescription = parser.getText();
-                    tags.removeElement("decription");
+                    tags.remove("decription");
                 } else if ("LookAt".equals(name)) {
                     // LookAt tag holds course info
                     //location.setCourse(parseLookAt(parser));
-                    tags.removeElement("LookAt");
+                    tags.remove("LookAt");
                 } else if ("Point".equals(name)) {
                     // Point
                     qc = parsePoint(parser);
-                    tags.removeElement("Point");
+                    tags.remove("Point");
                 } else if ("coordinates".equals(name)) {
                     String content = parser.getText();
                     qc = parseCoordinates(content);
-                    tags.removeElement("coordinates");
+                    tags.remove("coordinates");
                 }
             }
         }
@@ -300,12 +299,12 @@ public class KMLParser {
      * @throws IOException
      * @throws XmlPullParserException
      */
-    private Vector parsePoint(XmlPullParser parser)
+    private List<QualifiedCoordinates> parsePoint(XmlPullParser parser)
             throws XmlPullParserException, IOException {
-        Vector<QualifiedCoordinates> qc = new Vector<QualifiedCoordinates>();
+    	List<QualifiedCoordinates> qc = new ArrayList<QualifiedCoordinates>();
         // keep track of the tag we are in
-        Vector<String> tags = new Vector<String>();
-        tags.addElement("Point");
+        List<String> tags = new ArrayList<String>();
+        tags.add("Point");
 
         int event = parser.next();
         for (; event != XmlPullParser.END_DOCUMENT; event = parser.next()) {
@@ -313,13 +312,13 @@ public class KMLParser {
                 String name = parser.getName();
                 // mark that we are in a tag
                 //System.out.println("Adding: " + name);
-                tags.addElement(name);
+                tags.add(name);
                 continue;
             } else if (event == XmlPullParser.END_TAG) {
                 String name = parser.getName();
                 // remove the tag from the list
                 //System.out.println("Removing: " + name);
-                tags.removeElement(name);
+                tags.remove(name);
                 if ("Point".equals(name)) // end of Point info, return
                 {
                     return qc;
@@ -327,7 +326,7 @@ public class KMLParser {
             }
             if (event == XmlPullParser.TEXT) {
                 // we recorded where we are
-                String name = tags.lastElement();
+                String name = tags.get(tags.size()-1);
                 //System.out.println(name);
                 String content = parser.getText();
                 //System.out.println(content);
@@ -346,10 +345,10 @@ public class KMLParser {
         throw new XmlPullParserException("expected </Point>");
     }
 
-    private Vector<QualifiedCoordinates> parseCoordinates(String content)
+    private List<QualifiedCoordinates> parseCoordinates(String content)
             throws IllegalArgumentException {
         //System.out.println(content);
-        Vector<QualifiedCoordinates> coords = new Vector<QualifiedCoordinates>();
+        List<QualifiedCoordinates> coords = new ArrayList<QualifiedCoordinates>();
         int subStart = 0;
         int p = 0;
         int length = content.length();
@@ -390,7 +389,7 @@ public class KMLParser {
                             parts[0], (float) parts[2], Float.NaN,
                             Float.NaN);
 
-                    coords.addElement(qc);
+                    coords.add(qc);
                     p = 0;
                 }
             }

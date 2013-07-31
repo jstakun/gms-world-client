@@ -4,6 +4,7 @@
  */
 package com.jstakun.gms.android.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.google.common.base.Predicate;
@@ -29,12 +30,12 @@ public class CheckinManager {
     private AsyncTaskManager asyncTaskManager;
     private List<FavouritesDAO> favourites;
 
-    public CheckinManager(AsyncTaskManager asyncTaskManager) {
+    public CheckinManager(AsyncTaskManager asyncTaskManager, Context context) {
         this.asyncTaskManager = asyncTaskManager;
 
         FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
         if (fdb == null) {
-            fdb = new FavouritesDbDataSource(ConfigurationManager.getInstance().getContext());
+            fdb = new FavouritesDbDataSource(context);
             ConfigurationManager.getInstance().putObject("FAVOURITESDB", fdb);
         }
         favourites = fdb.fetchAllLandmarks();

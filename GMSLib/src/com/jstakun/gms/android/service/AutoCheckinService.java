@@ -1,20 +1,21 @@
 package com.jstakun.gms.android.service;
 
+import android.app.Service;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
+
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.CheckinManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
-
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.location.LocationManager;
-import android.os.Binder;
-import android.os.IBinder;
+import com.jstakun.gms.android.utils.MathUtils;
 
 public class AutoCheckinService extends Service {
 
 	private final IBinder gmsBinder = new GMSBinder();
+	private static double lastExecutedLat = Double.NaN;
+	private static double lastExecutedLng = Double.NaN;
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -22,27 +23,25 @@ public class AutoCheckinService extends Service {
 		double lat = intent.getDoubleExtra("lat", Double.NaN);
         double lng = intent.getDoubleExtra("lng", Double.NaN);
 		
-        LoggerUtils.debug("AutoCheckinService.doReceive() Running at " + lat + "," + lng + "...");
+        LoggerUtils.debug("AutoCheckinService.doReceive() Running at " + lat + "," + lng);
         
-        boolean silent = false;
-        AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-		
-        /*if (asyncTaskManager == null) {
-        	Context context = getApplicationContext();
-        	asyncTaskManager = new AsyncTaskManager(null, null);
-        	silent = true;
-        	//TODO load lat, lng from location service
-        	LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        	if (locationManager != null) {
-        		//locationManager.getLastKnownLocation(provider);
-        	}      	
-        }*/
-		
-        if (lat != Double.NaN && lng != Double.NaN) {
-        	CheckinManager checkinManager = new CheckinManager(asyncTaskManager);
-        	int checkinCount = checkinManager.autoCheckin(lat, lng, silent); //change to true if running in background
-        	LoggerUtils.debug("AutoCheckinService.doReceive() Finishing with " + checkinCount + " checkins...");
-        } 
+        if (!Double.isNaN(lat) && !Double.isNaN(lng) && 
+        		(Double.isNaN(lastExecutedLat) || MathUtils.abs(lat-lastExecutedLat) > 0.01 ||
+        		Double.isNaN(lastExecutedLng) || MathUtils.abs(lng-lastExecutedLng) > 0.01)) {
+        	boolean silent = false;
+            AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class); 		
+            if (asyncTaskManager == null) {
+            	asyncTaskManager = new AsyncTaskManager(null, null);
+            	silent = true; 
+            }
+        	CheckinManager checkinManager = new CheckinManager(asyncTaskManager, getApplicationContext());
+        	int checkinCount = checkinManager.autoCheckin(lat, lng, silent); //set silent to true if running in background
+        	lastExecutedLat = lat;
+        	lastExecutedLng = lng;
+        	LoggerUtils.debug("AutoCheckinService.doReceive() Finishing with " + checkinCount + " checkins");
+        } else {
+        	LoggerUtils.debug("AutoCheckinService.doReceive() skipping current run");
+        }
 		
 	    return Service.START_NOT_STICKY;
 	}

@@ -35,10 +35,11 @@ public class LandmarkParcelableFactory {
         
         float distance = DistanceUtils.distanceInKilometer(lat, lng, l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
 
-        if (l.getLayer().equals(Commons.MY_POSITION_LAYER)) {
+        String layerName = l.getLayer();
+        if (layerName.equals(Commons.MY_POSITION_LAYER)) {
             String date = DateTimeUtils.getDefaultDateTimeString(l.getDescription(), locale);
             desc = Locale.getMessage(R.string.Last_update, date);
-        } else if (l.getLayer().equals(Commons.LOCAL_LAYER)) {
+        } else if (layerName.equals(Commons.LOCAL_LAYER)) {
             desc = l.getDescription();
             if (StringUtils.isNotEmpty(desc)) {
                 desc += "<br/>";
@@ -47,14 +48,17 @@ public class LandmarkParcelableFactory {
         } else {
             desc = l.getDescription();
         }
-        String layer = l.getLayer();
-
+        
+        if (!StringUtils.isNotEmpty(desc)){
+        	desc = Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(l.getCreationDate(), locale));
+        }
+        
         String name = StringUtils.abbreviate(l.getName(), 48);
-        if (l.getLayer().equals(Commons.LOCAL_LAYER)) {
+        if (layerName.equals(Commons.LOCAL_LAYER)) {
             name = StringUtil.formatCommaSeparatedString(name);
         }
 
-        return new LandmarkParcelable(id, name, key, layer, desc, distance, l.getCreationDate(), l.getCategoryId(), l.getSubCategoryId(), l.getRating(), l.getNumberOfReviews(), l.getThumbnail(), l.getRevelance());
+        return new LandmarkParcelable(id, name, key, layerName, desc, distance, l.getCreationDate(), l.getCategoryId(), l.getSubCategoryId(), l.getRating(), l.getNumberOfReviews(), l.getThumbnail(), l.getRevelance());
     }
 
     public static LandmarkParcelable getLandmarkParcelable(FavouritesDAO f, double lat, double lng) {

@@ -14,7 +14,7 @@ import android.content.Intent;
 public class AutoCheckinScheduleReceiver extends BroadcastReceiver {
 
 	 // Restart service every x seconds
-	  private static final long REPEAT_TIME = 1000 * 60;
+	  private static final long DEFAULT_REPEAT_TIME = 1000 * 300;
 
 	  @Override
 	  public void onReceive(Context context, Intent intent) {
@@ -26,10 +26,12 @@ public class AutoCheckinScheduleReceiver extends BroadcastReceiver {
 			  Calendar cal = Calendar.getInstance();
 			  // Start x seconds after boot completed
 			  cal.add(Calendar.SECOND, 60);
-			  //
-			  // Fetch every 30 seconds
-			  // InexactRepeating allows Android to optimize the energy consumption
-			  service.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), REPEAT_TIME, pending);
+			  // Fetch every x seconds
+			  long repeat_time = ConfigurationManager.getInstance().getLong(ConfigurationManager.AUTO_CHECKIN_REPEAT_TIME);
+			  if (repeat_time == -1) {
+				  repeat_time = DEFAULT_REPEAT_TIME;
+			  }
+			  service.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), repeat_time, pending);
 		  }
 	  }
 }

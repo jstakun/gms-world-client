@@ -8,7 +8,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Html;
 import android.text.SpannableString;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -270,7 +269,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         intents = new Intents(this, landmarkManager, asyncTaskManager);
 
-        checkinManager = new CheckinManager(asyncTaskManager);
+        checkinManager = new CheckinManager(asyncTaskManager, this);
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || !cm.isInitialized()) {
@@ -350,6 +349,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 loadingHandler.post(gpsRunnable);
             }
         }
+        
+        intents.startAutoCheckinBroadcast();
     }
 
     @Override

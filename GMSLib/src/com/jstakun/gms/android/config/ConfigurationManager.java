@@ -103,6 +103,7 @@ public class ConfigurationManager {
     public static final String APP_ID = "appId";
     public static final String USE_COUNT = "useCount";
     public static final String APP_RATED = "appRated";
+    public static final String AUTO_CHECKIN_REPEAT_TIME = "autoCheckinRepeatTime";
     public static final String FB_AUTH_STATUS = "fbAuthStatus";
     public static final String FB_TOKEN = "fbToken";
     public static final String FB_AUTH_KEY = "fbauth_key";
