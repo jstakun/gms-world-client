@@ -438,17 +438,7 @@ public class HttpUtils {
     }
 
     public static void closeConnManager() {
-        if (httpClient != null) {
-            try {
-                ClientConnectionManager cm = httpClient.getConnectionManager();
-                if (cm != null) {
-                    cm.shutdown();
-                }
-            } catch (Exception e) {
-                LoggerUtils.error("HttpUtils.closeConnManager", e);
-            }
-        }
-        httpClient = null;
+        new HttpClientClosingTask(1).execute();
     }
 
     private static byte[] concat(byte[] b1, byte[] b2) {
@@ -541,5 +531,28 @@ public class HttpUtils {
             }
             return SSLSocketFactory.getSocketFactory();
         }
+    }
+    
+    private static class HttpClientClosingTask extends GMSAsyncTask<Void, Void, Void> {
+
+		public HttpClientClosingTask(int priority) {
+			super(priority);
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			if (httpClient != null) {
+	            try {
+	                ClientConnectionManager cm = httpClient.getConnectionManager();
+	                if (cm != null) {
+	                    cm.shutdown();
+	                }
+	            } catch (Exception e) {
+	                LoggerUtils.error("HttpUtils.closeConnManager", e);
+	            }
+	        }
+	        httpClient = null;return null;
+		}
+    	
     }
 }

@@ -54,13 +54,8 @@ public class UserTracker {
                         String gaid = ConfigurationManager.getInstance().getString(ConfigurationManager.GA_ID);
                         tracker.startNewSession(gaid, context);
                         tracker.trackEvent("", "", "", 0);
-                    }
-                ;
-            }
-        
-    
-
-    );
+                    };
+            });
             }
         }
     }

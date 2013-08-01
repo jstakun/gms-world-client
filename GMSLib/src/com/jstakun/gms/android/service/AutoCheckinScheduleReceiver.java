@@ -27,10 +27,11 @@ public class AutoCheckinScheduleReceiver extends BroadcastReceiver {
 			  // Start x seconds after boot completed
 			  cal.add(Calendar.SECOND, 60);
 			  // Fetch every x seconds
-			  long repeat_time = ConfigurationManager.getInstance().getLong(ConfigurationManager.AUTO_CHECKIN_REPEAT_TIME);
-			  if (repeat_time == -1) {
+			  long repeat_time = ConfigurationManager.getInstance().getLong(ConfigurationManager.AUTO_CHECKIN_REPEAT_TIME) * 1000;
+			  if (repeat_time == -1000) {
 				  repeat_time = DEFAULT_REPEAT_TIME;
 			  }
+			  LoggerUtils.debug("AutoCheckinScheduleReceiver.onReceive() setting auto checkin interval " + repeat_time + " milliseconds...");
 			  service.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), repeat_time, pending);
 		  }
 	  }
