@@ -153,7 +153,7 @@ public class JSONParser {
                     tmp.setLongitude(lng);
                     
                     if (origLandmarks.isEmpty() || !origLandmarks.contains(LandmarkFactory.getLandmark(StringUtils.trimToEmpty(name), null,
-                            tmp, null, null, -1, null))) {
+                            tmp, layer, null, -1, null))) {
                         String desc = "";
                         int categoryId = defaultCategory;
                         int subCategoryId = defaultSubcategory;

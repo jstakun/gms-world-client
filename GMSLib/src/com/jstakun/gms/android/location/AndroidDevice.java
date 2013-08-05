@@ -66,14 +66,20 @@ public class AndroidDevice implements LocationListener {
         }
     };
 
-    public AndroidDevice() {
+    public AndroidDevice(Context context) {
 
-        Context context = ConfigurationManager.getInstance().getContext();
-        if (locationManager == null) {
+    	if (context == null) {
+    		context = ConfigurationManager.getInstance().getContext();
+    	}
+        if (locationManager == null && context != null) {
             locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         }
 
-        Location lastKnownLocation = getLastKnownLocation();
+        Location lastKnownLocation = null; 
+        
+        if (locationManager != null) {
+        	lastKnownLocation = getLastKnownLocation();
+        }
 
         if (lastKnownLocation != null) {
             setMyLocation(lastKnownLocation);

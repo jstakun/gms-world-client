@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
@@ -32,8 +33,7 @@ import com.skyhookwireless.wps.XPS;
  */
 public class SkyhookUtils {
 
-    private static final byte[] key = "1234567890ABCDEF".getBytes();
-    private static final WPSAuthentication auth = new WPSAuthentication("jstakun", "GMS World");
+    private static final WPSAuthentication auth = new WPSAuthentication(Commons.SKYHOOK_USERNAME, Commons.SHYHOOK_PWD);
     private final GMSRegistrationCallback regCallback = new GMSRegistrationCallback();
     private XPS xps;
     private boolean isRegistered, hasRunOnFirstFix, isRegistering;
@@ -138,9 +138,9 @@ public class SkyhookUtils {
     }
 
     public void enableMyLocation() {
-        byte[] token = xps.getOfflineToken(auth, key);
+        byte[] token = xps.getOfflineToken(auth, Commons.SKYHOOK_KEY);
         if (token != null) {
-            xps.getOfflineLocation(auth, key, token, oneTimeCallback);
+            xps.getOfflineLocation(auth, Commons.SKYHOOK_KEY, token, oneTimeCallback);
         } else {
             LoggerUtils.debug("WPS offline token missing...");
         }

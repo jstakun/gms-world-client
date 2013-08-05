@@ -35,7 +35,8 @@ public class MockAndroidDevice extends AndroidDevice {
     private static final String ROUTE = "route_a.xml";
     private static float bearing = 0.0f;
 
-    public MockAndroidDevice() {
+    public MockAndroidDevice(Context context) {
+    	super(context);
         initTrackThread();
     }
 
@@ -88,10 +89,6 @@ public class MockAndroidDevice extends AndroidDevice {
         public TrackThread() {
             super();
         }
-
-        //public ExtendedLandmark getCurrentLandmark() {
-        //    return currentLandmark;
-        //}
 
         @Override
         public void interrupt() {

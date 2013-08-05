@@ -196,7 +196,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             }
         }
 
-        if (parent != -1) {
+        if (parent != -1 && cm != null) {
             Category parentCat = cm.getCategory(parent);
             setTitle(Locale.getMessage(R.string.dealsString, parentCat.getCategory()));
         }

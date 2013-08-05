@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author jstakun
  */
-public class LayerLoader {
+public class LayerLoaderConcurrent {
     
     public static final int LAYER_LOADED = 100;
     public static final int ALL_LAYERS_LOADED = 101;
@@ -41,14 +41,16 @@ public class LayerLoader {
     private List<String> excludedExternal;
     private int currentLayerIndex = 0;
     private long loadingStartTime;
+    private Map<String, Integer> currentLayerReaderIndex;
     
-    public LayerLoader(LandmarkManager landmarkManager, MessageStack messageStack) {
-        //System.out.println("LayerLoader()..");
+    public LayerLoaderConcurrent(LandmarkManager landmarkManager, MessageStack messageStack) {
+        //System.out.println("Creating layer loader object..");
         MAX_CONCURRENT_TASKS = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_CONCURRENT_COUNT, 3);
         this.messageStack = messageStack;
         this.landmarkManager = landmarkManager;
         concurrentLayerLoader = new ConcurrentLayerLoader();
         excludedExternal = new ArrayList<String>();
+        currentLayerReaderIndex = new HashMap<String, Integer>();
     }
     
     public void setRepaintHandler(Handler repaintHandler) {
@@ -63,7 +65,7 @@ public class LayerLoader {
     
     private void sendFinishedMessage() {
         if (repaintHandler != null) {
-            //System.out.println("LayerLoader.sendFinishedMessage()");
+            //System.out.println("Sending Finished Message... -----------------------------------------");
             repaintHandler.sendEmptyMessage(ALL_LAYERS_LOADED);
         }
     }
@@ -79,7 +81,7 @@ public class LayerLoader {
         initialized = false;
         
         loadingStartTime = System.currentTimeMillis();
-        //System.out.println("LayerLoader.loadLayers()");
+        //System.out.println("Layer loader loadLayers");
 
         if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
                 || ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
@@ -88,18 +90,24 @@ public class LayerLoader {
         
         if (selectedLayer != null) {
             currentLayerIndex = -1;
-            LayerLoaderTask currentTask = new LayerLoaderTask();
-            currentTask.execute(selectedLayer);
-            concurrentLayerLoader.addTask(selectedLayer, currentTask);           
+            Layer layer = landmarkManager.getLayerManager().getLayer(selectedLayer);
+            for (int i = 0; i < layer.getLayerReader().size(); i++) {
+                LayerLoaderTask currentTask = new LayerLoaderTask();
+                currentTask.execute(selectedLayer, Integer.toString(i));
+                //if (AsyncTaskExecutor.execute(currentTask, null, selectedLayer, Integer.toString(i))) {
+                concurrentLayerLoader.addTask(selectedLayer + "_" + i, currentTask);
+                //}
+            }
             initialized = true;
         } else {
             initLayerLoadingTask = new InitLayerLoadingTask();
             initLayerLoadingTask.execute(loadServerLayers);
+            //AsyncTaskExecutor.executeTask(initLayerLoadingTask, null, loadServerLayers);
         }
     }
     
     private void notifyOnLoadingFinished(String layerKey) {
-        //System.out.println("LayerLoader.notifyOnLoadingFinished() " + layerKey);
+        //System.out.println("Layer notifyOnLoadingFinished " + layerKey + " ----------------------");
 
         boolean hasLayerLoaderTask = false;
         boolean hasLayerLoader = false;
@@ -111,14 +119,16 @@ public class LayerLoader {
                 key = layers.get(currentLayerIndex);
                 Layer layer = landmarkManager.getLayerManager().getLayer(key);
                 List<LayerReader> layerReader = layer.getLayerReader();
-                currentLayerIndex++;
-                if (layer != null && !layerReader.isEmpty()) {
+                
+                nextReader(key, layerReader);
+                
+                if (layer != null && !layerReader.isEmpty() && layerReader.size() > currentLayerReaderIndex.get(key)) {
                     hasLayerLoader = true;
                     break;
-                } else {
-                    //System.out.println("Skipping layer " + key);
+                } //else {
+                //System.out.println("Skipping layer " + key);
                 //counter++;
-                }
+                //}
             }
             
             if (hasLayerLoader) {
@@ -129,8 +139,11 @@ public class LayerLoader {
                 
                 try {
                     LayerLoaderTask currentTask = new LayerLoaderTask();
-                    currentTask.execute(key);
-                    concurrentLayerLoader.addTask(key, currentTask);
+                    int index = currentLayerReaderIndex.get(key);
+                    currentTask.execute(key, Integer.toString(index));
+                    //if (AsyncTaskExecutor.execute(currentTask, null, key, Integer.toString(index))) {
+                    concurrentLayerLoader.addTask(key + "_" + index, currentTask);
+                    //}
                     hasLayerLoaderTask = true;
                 } catch (Exception e) {
                     LoggerUtils.error("LayerLoader.notifyOnLoadingFinished exception:", e);
@@ -162,16 +175,16 @@ public class LayerLoader {
         if (!concurrentLayerLoader.isEmpty() || !initialized
                 || (currentLayerIndex != -1 && !concurrentLayerLoader.isCancelled()
                 && currentLayerIndex < landmarkManager.getLayerManager().getLayers().size())) {
-            //System.out.println("LayerLoader.isLoading() true");
+            //System.out.println("Layer loader isLoading true");
             return true;
         } else {
-            //System.out.println("LayerLoader.isLoading() false");
+            //System.out.println("Layer loader isLoading false");
             return false;
         }
     }
     
     public void stopLoading() {
-        //System.out.println("LayerLoader.stopLoading()");
+        //System.out.println("Layer loader stopLoading");
 
         if (initLayerLoadingTask != null && initLayerLoadingTask.getStatus() == GMSAsyncTask.Status.RUNNING) {
             try {
@@ -192,11 +205,30 @@ public class LayerLoader {
         excludedExternal.clear();
         currentLayerIndex = 0;
         counter = 0;
+        currentLayerReaderIndex.clear();
     }
-        
+    
+    private void nextReader(String key, List<LayerReader> layerReader) {
+        if (layerReader.isEmpty()) {
+            currentLayerIndex++;
+        } else if (currentLayerReaderIndex.containsKey(key) && layerReader.size() <= currentLayerReaderIndex.get(key)) {
+            currentLayerIndex++;
+        } else if (!currentLayerReaderIndex.containsKey(key) && layerReader.size() == 1) {
+            currentLayerReaderIndex.put(key, 0);
+            currentLayerIndex++;
+        } else if (!currentLayerReaderIndex.containsKey(key) && layerReader.size() > 1) {
+            currentLayerReaderIndex.put(key, 0);
+        } else if (currentLayerReaderIndex.containsKey(key)) {
+            currentLayerReaderIndex.put(key, currentLayerReaderIndex.get(key) + 1);
+        }
+
+        //System.out.println(currentLayerIndex + " " + currentLayerReaderIndex.get(key) + " " + layerReader.size());
+    }
+    
     private class LayerLoaderTask extends GMSAsyncTask<String, Void, String> {
         
         private LayerReader currentReader = null;
+        private int index;
         
         public LayerLoaderTask() {
             super(1);
@@ -205,45 +237,46 @@ public class LayerLoader {
         @Override
         protected String doInBackground(String... args) {
             String key = args[0];
+            index = Integer.valueOf(args[1]).intValue();
             if (!isCancelled() && key != null && !excludedExternal.contains(key)) {
                 loadLayer(key, false, true);
             }
-            return key;
+            return key + "_" + index;
         }
         
         @Override
         protected void onPostExecute(String key) {
-            //System.out.println("LayerLoaderTask.onPostExecute() " + key);
+            //System.out.println("On post execute " + key);
+            //concurrentLayerLoader.removeTask(key);
             notifyOnLoadingFinished(key);
         }
         
         @Override
         protected void onCancelled(String key) {
-            //System.out.println("LayerLoaderTask.onCancelled() " + key);
+            //System.out.println("On cancelled " + key);
             concurrentLayerLoader.removeTask(key);
         }
         
         private void loadLayer(String key, boolean loadIfDisabled, boolean repaintIfNoError) {
-            //System.out.println("LayerLoaderTask.loadLayer() " + key);
+            //System.out.println("LayerLoaderTask.loadLayer " + key);
             Layer layer = landmarkManager.getLayerManager().getLayer(key);
             if (layer != null && (loadIfDisabled || layer.isEnabled() || ConfigurationManager.getInstance().isOn(ConfigurationManager.LOAD_DISABLED_LAYERS))) {
-                List<LayerReader> readers = layer.getLayerReader();
-            	if (!readers.isEmpty()) {
+                if (!layer.getLayerReader().isEmpty() && layer.getLayerReader().size() > index) {
                     if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
                             || ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                        for (LayerReader reader : readers) {
-                        	currentReader = reader;
-                        	String errorMessage = reader.readRemoteLayer(landmarkManager.getLandmarkStoreLayer(key), latitude, longitude, zoom, width, height, key, this);
-                        	if (!isCancelled()) {
-                        		if (errorMessage != null) {
-                        			messageStack.addMessage(errorMessage, 10, -1, -1);
-                        			if (repaintHandler != null && errorMessage.equals(FacebookUtils.FB_OAUTH_ERROR)) {
-                        				repaintHandler.sendEmptyMessage(FB_TOKEN_EXPIRED);
-                        			}
-                        		} else if (repaintIfNoError && layer.isEnabled()) {
-                        			sendRepaintMessage(key);
-                        		}
-                        	}
+                        currentReader = layer.getLayerReader().get(index);
+                        String errorMessage = currentReader.readRemoteLayer(landmarkManager.getLandmarkStoreLayer(key), latitude, longitude, zoom, width, height, key, this);
+                        if (!isCancelled()) {
+                            if (errorMessage != null) {
+                                messageStack.addMessage(errorMessage, 10, -1, -1);
+                                if (repaintHandler != null && errorMessage.equals(FacebookUtils.FB_OAUTH_ERROR)) {
+                                    //Message msg = repaintHandler.obtainMessage();
+                                    //msg.getData().putString("status", Locale.getMessage(R.string.Social_fb_token_expired));
+                                    repaintHandler.sendEmptyMessage(FB_TOKEN_EXPIRED);
+                                }
+                            } else if (repaintIfNoError && layer.isEnabled()) {
+                                sendRepaintMessage(key);
+                            }
                         }
                     }
                 }
@@ -266,7 +299,7 @@ public class LayerLoader {
         @Override
         protected Void doInBackground(Boolean... b) {
 
-            //System.out.println("InitLayerLoadingTask.doInBackground()");
+            //System.out.println("InitLayerLoadingTask.doInBackground...");
 
             Boolean loadServerLayers = false;
             if (b.length > 0) {
@@ -278,11 +311,13 @@ public class LayerLoader {
                 //System.out.println("Initializing server layer list...");
                 if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
                         || ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+                    //AsyncTaskExecutor.execute(new ExternalLayersInitiatorTask(), null);
                     new ExternalLayersInitiatorTask().execute();
                 }
             }
             
             currentLayerIndex = 0;
+            currentLayerReaderIndex.clear();
             counter = 0;
             initialized = true;
             int i = 0;
@@ -294,9 +329,9 @@ public class LayerLoader {
                     Layer layer = layerManager.getLayer(key);
                     List<LayerReader> layerReader = layer.getLayerReader();
                     
-                    currentLayerIndex++;
+                    nextReader(key, layerReader);
                     
-                    if (!layerReader.isEmpty()) {
+                    if (!layerReader.isEmpty() && layerReader.size() > currentLayerReaderIndex.get(key)) {
                         counter++;
                         if (!excludedExternal.contains(key)) {
                             i++;
@@ -304,11 +339,15 @@ public class LayerLoader {
                             int size = layerManager.getLoadableLayersCount();
                             messageStack.addMessage(Locale.getMessage(R.string.Layer_Loading_counter, counter, size), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
                             LayerLoaderTask currentTask = new LayerLoaderTask();
-                            currentTask.execute(key);
-                            concurrentLayerLoader.addTask(key, currentTask);
-                        } else {
-                        	//System.out.println("Skipping layer " + key);
+                            int index = currentLayerReaderIndex.get(key);
+                            currentTask.execute(key, Integer.toString(index));
+                            //if (AsyncTaskExecutor.execute(currentTask, null, key, Integer.toString(index))) {
+                            concurrentLayerLoader.addTask(key + "_" + index, currentTask);
+                            //}
                         }
+                        // else {
+                        //System.out.println("Skipping layer " + key);
+                        //}
                     }
                 } catch (Exception e) {
                     LoggerUtils.error("InitLayerLoadingTask.doInBackground() exception: ", e);
@@ -345,13 +384,13 @@ public class LayerLoader {
         private boolean isCancelled = false;
         
         protected void addTask(String layer, LayerLoaderTask task) {
-            //System.out.println("ConcurrentLayerLoader.addTask() " + layer);
+            //System.out.println("Adding task " + layer);
             tasksInProgress.put(layer, task);
             isCancelled = false;
         }
         
         protected void removeTask(String layer) {
-            //System.out.println("ConcurrentLayerLoader.removeTask() " + layer);
+            //System.out.println("Removed task " + layer);
             tasksInProgress.remove(layer);
         }
         
@@ -364,7 +403,7 @@ public class LayerLoader {
         //}
         
         protected void cancelAll() {
-            //System.out.println("ConcurrentLayerLoader.cancelAll()");
+            //System.out.println("Cancel All");
             isCancelled = true;
             for (Iterator<Map.Entry<String, LayerLoaderTask>> i = tasksInProgress.entrySet().iterator(); i.hasNext();) {
                 Map.Entry<String, LayerLoaderTask> taskEntry = i.next();
