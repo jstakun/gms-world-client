@@ -7,6 +7,9 @@ package com.jstakun.gms.android.social;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Handler;
+import android.os.Message;
+
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -196,7 +199,7 @@ public class GoogleUtils extends AbstractSocialUtils {
 		}
 	}
 
-	public String checkin(String reference, String name, String extras) {
+	public String checkin(String reference, String name, Handler notifier) {
 		HttpUtils utils = new HttpUtils();
 		String message = null;
 
@@ -210,6 +213,11 @@ public class GoogleUtils extends AbstractSocialUtils {
 		    message = utils.getResponseCodeErrorMessage();
 	        if (message == null) {
 	                message = Locale.getMessage(R.string.Social_checkin_success, name);
+	                if (notifier != null) {
+		     			   Message msg = notifier.obtainMessage();
+		     			   msg.getData().putString("key", reference);
+		     			   notifier.sendMessage(msg);
+		     		   }
 	        } else {
 	                message = Locale.getMessage(R.string.Social_checkin_failure, message);
 	        }

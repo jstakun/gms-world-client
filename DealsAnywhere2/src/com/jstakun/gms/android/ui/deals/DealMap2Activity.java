@@ -135,24 +135,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             }
         }
     };
-    /*private final Handler locationHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle b = msg.getData();
-            if (b.containsKey("lat") && b.containsKey("lng") && b.containsKey("alt")) {
-                double lat = b.getDouble("lat");
-                double lng = b.getDouble("lng");
-                float altitude = b.getFloat("alt");
-                if (landmarkManager != null) {
-                    landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), LayerManager.MY_POSITION_LAYER, false);
-                }
-            } else if (b.containsKey("msg")) {
-                LoggerUtils.error(b.getString("msg"));
-            } else {
-                LoggerUtils.error("Received empty locationHandler message!");
-            }
-        }
-    };*/
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = getMyLocation();
@@ -376,7 +358,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 UserTracker.getInstance().sendMyLocation();
                 ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
                 landmarkManager.initialize(ConfigurationManager.getInstance().getLandmarkDatabase(), Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
-                		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.HOTWIRE_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER);
+                		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.HOTWIRE_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
 
             GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);//, new String[]{LayerManager.ROUTES_LAYER});

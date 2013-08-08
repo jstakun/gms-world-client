@@ -94,7 +94,7 @@ public class DialogManager {
     private DialogInterface.OnClickListener checkinAutoListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int id) {
-            //add to favoutites db
+            //add to favourites database
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             checkinManager.checkinAction(true, false, landmarkManager.getSeletedLandmarkUI());
         }
@@ -102,8 +102,8 @@ public class DialogManager {
     private DialogInterface.OnClickListener checkinManualListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int id) {
-            //don't add to favoutites db
-            ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
+            //don't add to favourites database
+        	ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             checkinManager.checkinAction(false, false, landmarkManager.getSeletedLandmarkUI());
         }
     };

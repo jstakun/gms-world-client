@@ -158,7 +158,7 @@ public class HttpUtils {
 
             postResponse = new String(byteBuffer, "UTF-8");
 
-            LoggerUtils.debug(postResponse);
+            //LoggerUtils.debug(postResponse);
 
             if (params != null && byteBuffer != null) {
                 increaseCounter(1024, byteBuffer.length);

@@ -7,6 +7,9 @@ package com.jstakun.gms.android.social;
 
 //import org.json.JSONArray;
 import org.json.JSONObject;
+
+import android.os.Handler;
+
 import com.jstakun.gms.android.utils.Token;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -22,7 +25,7 @@ public interface ISocialUtils {
     public Token getAccessToken();
     public void logout();
     public String sendPost(ExtendedLandmark landmark, int type);
-    public String checkin(String placeId, String name, String extras);
+    public String checkin(String placeId, String name, Handler notifier);
     public String sendComment(String placeId, String message, String name);
     public String addPlace(String name, String desc, String category, double lat, double lng);
     public String getKey(String url);

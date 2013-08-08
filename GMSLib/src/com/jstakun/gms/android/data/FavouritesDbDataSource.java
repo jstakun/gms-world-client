@@ -94,12 +94,12 @@ public class FavouritesDbDataSource {
                 FavouritesDbSQLiteOpenHelper.COLUMN_ID + "=?", new String[]{Long.toString(hashcode)});
     }
 
-    public int updateOnCheckin(long hashcode) {
+    public int updateOnCheckin(String key) {
         ContentValues val = new ContentValues();
         val.put(FavouritesDbSQLiteOpenHelper.COLUMN_MAX_DISTANCE, 0);
         val.put(FavouritesDbSQLiteOpenHelper.COLUMN_CHECKIN_DATE, System.currentTimeMillis());
         return getDatabase().update(FavouritesDbSQLiteOpenHelper.TABLE_NAME, val,
-                FavouritesDbSQLiteOpenHelper.COLUMN_ID + "=?", new String[]{Long.toString(hashcode)});
+                FavouritesDbSQLiteOpenHelper.COLUMN_KEY + "=?", new String[]{key});
     }
 
     public int deleteLandmark(long hashcode) {

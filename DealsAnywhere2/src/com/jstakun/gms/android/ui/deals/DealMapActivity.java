@@ -388,7 +388,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 UserTracker.getInstance().sendMyLocation();
                 ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
                 landmarkManager.initialize(ConfigurationManager.getInstance().getLandmarkDatabase(), Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
-                		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.HOTWIRE_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER);
+                		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.HOTWIRE_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
 
             GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);

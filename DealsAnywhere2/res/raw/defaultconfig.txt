@@ -39,9 +39,6 @@ setLastKnownLocAtStartup;1
 showAds;1
 memoryCacheSize;48
 routeType;0
-Groupon_status;1
-Hotwire_status;1
-Coupons_status;1
 loadDisabledLayers;1
 bitmapType;0
 layerPaintLimit;30

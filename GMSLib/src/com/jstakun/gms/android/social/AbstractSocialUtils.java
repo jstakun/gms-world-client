@@ -1,6 +1,9 @@
 package com.jstakun.gms.android.social;
 
 import org.json.JSONObject;
+
+import android.os.Handler;
+
 import com.jstakun.gms.android.utils.Token;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -48,7 +51,7 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 	}
 
 	@Override
-	public String checkin(String placeId, String name, String extras) {
+	public String checkin(String placeId, String name, Handler handler) {
 		return null;
 	}
 

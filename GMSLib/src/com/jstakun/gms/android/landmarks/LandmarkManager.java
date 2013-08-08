@@ -523,7 +523,7 @@ public class LandmarkManager {
     public void searchDeals(List<LandmarkParcelable> results, String searchTerm, String[] searchTermTokens, double lat, double lng, int searchType) {
         final List<String> included = Arrays.asList(new String[]{Commons.HOTWIRE_LAYER, Commons.COUPONS_LAYER,
                     Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER,
-                    Commons.HOTELS_LAYER, Commons.LOCAL_LAYER});
+                    Commons.HOTELS_LAYER, Commons.LOCAL_LAYER, Commons.YELP_LAYER});
         searchLandmarks(results, searchTerm, searchTermTokens, included, lat, lng, searchType);
     }
 
@@ -1061,7 +1061,7 @@ public class LandmarkManager {
     public void selectCategoryLandmarks(List<LandmarkParcelable> landmarkParcelable, int categoryId, int subCategoryId, double lat, double lng) {
         //landmarkPaintManager.clearLandmarkOnFocusQueue();
         final List<String> included = Arrays.asList(new String[]{Commons.HOTWIRE_LAYER, Commons.COUPONS_LAYER,
-                    Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.HOTELS_LAYER});
+                    Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.HOTELS_LAYER, Commons.YELP_LAYER});
 
         List<ExtendedLandmark> categoryLandmarks = new ArrayList<ExtendedLandmark>();
         CategoryLandmarkPredicate categoryLandmarkPredicate = new CategoryLandmarkPredicate(categoryId, subCategoryId);
@@ -1088,7 +1088,7 @@ public class LandmarkManager {
         }
 
         final List<String> included = Arrays.asList(new String[]{Commons.COUPONS_LAYER,
-                    Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER});
+                    Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER});
         CategoryLandmarkPredicate categoryLandmarkPredicate = new CategoryLandmarkPredicate(categoryId, subCategoryId);
 
         for (String key : Iterables.filter(included, new LayerExistsPredicate())) {
@@ -1107,7 +1107,7 @@ public class LandmarkManager {
         }
 
         final List<String> included = Arrays.asList(new String[]{Commons.COUPONS_LAYER,
-                    Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER});
+                    Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER});
         CategoryLandmarkPredicate categoryLandmarkPredicate = new CategoryLandmarkPredicate(categoryId, subCategoryId);
 
         for (String key : Iterables.filter(included, new LayerExistsPredicate())) {
