@@ -13,11 +13,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONObject;
 
-import android.os.Handler;
-import android.os.Message;
-
-import com.jstakun.gms.android.utils.Token;
-
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
@@ -25,6 +20,7 @@ import com.jstakun.gms.android.utils.BCTools;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.Token;
 
 /**
  *
@@ -118,7 +114,7 @@ public class FoursquareUtils extends AbstractSocialUtils {
         return result;
     }
 
-    public String checkin(String venueId, String name, Handler notifier) {
+    public String checkin(String venueId, String name) {
         //socialCheckin  accessToken, venueId, name, service
         HttpUtils utils = new HttpUtils();
 		String message = null;
@@ -135,11 +131,7 @@ public class FoursquareUtils extends AbstractSocialUtils {
 		    message = utils.getResponseCodeErrorMessage();
 	        if (message == null) {
 	                message = Locale.getMessage(R.string.Social_checkin_success, name);
-	                if (notifier != null) {
-		     			   Message msg = notifier.obtainMessage();
-		     			   msg.getData().putString("key", venueId);
-		     			   notifier.sendMessage(msg);
-		     		   }
+	                onCheckin(venueId);
 	        } else {
 	                message = Locale.getMessage(R.string.Social_checkin_failure, message);
 	        }

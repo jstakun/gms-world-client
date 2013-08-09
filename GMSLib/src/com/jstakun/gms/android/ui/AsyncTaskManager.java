@@ -21,6 +21,7 @@ import android.os.Message;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
@@ -444,26 +445,20 @@ public class AsyncTaskManager {
     }
 
     //CheckIn tasks
-    public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name, Handler notifier) {
+    public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name) {
      String notificationId = "-1";
      if (!silent) {
             intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
             notificationId = createNotification(icon, message, message, true);
         }
-        SocialCheckInTask checkInTask = new SocialCheckInTask(notifier);
+        SocialCheckInTask checkInTask = new SocialCheckInTask();
         checkInTask.execute("", notificationId, Boolean.toString(silent), layer, venueid, name);
     }
 
     private class SocialCheckInTask extends GenericTask {
 
         private boolean silent = false;
-        private Handler notifier = null;
-
-        public SocialCheckInTask(Handler notifier) {
-        	super();
-        	this.notifier = notifier;
-        }
-        
+                
         @Override
         protected String doInBackground(String... fileData) {
         	super.doInBackground(fileData);
@@ -487,11 +482,11 @@ public class AsyncTaskManager {
 		
 		try {
 			if (layer.equals(Commons.FOURSQUARE_LAYER) || layer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {
-				msg = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).checkin(venueid, name, null);
+				msg = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).checkin(venueid, name);
 			} else if (layer.equals(Commons.FACEBOOK_LAYER)) {
-				msg = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).checkin(venueid, name, null);
+				msg = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).checkin(venueid, name);
 			} else if (layer.equals(Commons.GOOGLE_PLACES_LAYER)) {
-				msg = OAuthServiceFactory.getSocialUtils(Commons.GOOGLE).checkin(venueid, name, null);
+				msg = OAuthServiceFactory.getSocialUtils(Commons.GOOGLE).checkin(venueid, name);
 			} else {
 				msg = Locale.getMessage(R.string.Checkin_layer_error, layer);
 			}
@@ -529,7 +524,7 @@ public class AsyncTaskManager {
             qrformat = fileData[3];
             if (checkinLandmarkCode.matches("[a-zA-z0-9]*")) {
                 if (qrformat.equals("QR_CODE")) {
-                    return gmsWorldCheckin("qrCodeCheckIn", checkinLandmarkCode, null, null);
+                    return gmsWorldCheckin("qrCodeCheckIn", checkinLandmarkCode, null);
                 } else {
                     return Locale.getMessage(R.string.Social_Checkin_wrong_key_1, qrformat);
                 }
@@ -539,25 +534,19 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeLocationCheckInTask(int icon, String checkinLandmarkCode, String message, String name, boolean silent, Handler notifier) {
+    public void executeLocationCheckInTask(int icon, String checkinLandmarkCode, String message, String name, boolean silent) {
         String notificationId = "-1";
         if (!silent) {
                intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
                notificationId = createNotification(icon, message, message, true);
            }
-           LocationCheckInTask checkInTask = new LocationCheckInTask(notifier);
+           LocationCheckInTask checkInTask = new LocationCheckInTask();
            checkInTask.execute("", notificationId, checkinLandmarkCode, name, Boolean.toString(silent));
         }
 
         private class LocationCheckInTask extends GenericTask {
 
            private boolean silent = false;
-           private Handler notifier = null;
-
-           public LocationCheckInTask(Handler notifier) {
-           	   super();
-        	   this.notifier = notifier;
-           }
            
            @Override
            protected void onPostExecute(String res) {
@@ -573,11 +562,11 @@ public class AsyncTaskManager {
                String checkinLandmarkCode = checkinData[2];
                String name = checkinData[3];
                silent = Boolean.parseBoolean(checkinData[4]);
-               return gmsWorldCheckin("locationCheckIn", checkinLandmarkCode, name, notifier);
+               return gmsWorldCheckin("locationCheckIn", checkinLandmarkCode, name);
            }
        }
 
-       private String gmsWorldCheckin(String service, String checkinLandmarkCode, String name, Handler notifier) {
+       private String gmsWorldCheckin(String service, String checkinLandmarkCode, String name) {
     	   String url = ConfigurationManager.SERVER_SERVICES_URL + service;
     	   List<NameValuePair> params = new ArrayList<NameValuePair>();
     	   params.add(new BasicNameValuePair("key", checkinLandmarkCode));
@@ -601,11 +590,12 @@ public class AsyncTaskManager {
     				   nameP = "Landmark";
     			   }
     		   }
-    		   if (notifier != null) {
-    			   Message message = notifier.obtainMessage();
-    			   message.getData().putString("key", checkinLandmarkCode);
-    			   notifier.sendMessage(message);
-    		   }
+    		   FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+               if (fdb != null) {
+               	  fdb.updateOnCheckin(checkinLandmarkCode);
+               } else {
+            	   LoggerUtils.debug("AsyncTaskmanager.gmsWorldCheckin() fdb == null");
+               }
     		   msg = Locale.getMessage(R.string.Social_checkin_success, nameP);
     	   } else {
     		   msg = Locale.getMessage(R.string.Social_checkin_failure, msg);

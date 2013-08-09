@@ -6,8 +6,6 @@ package com.jstakun.gms.android.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 
 import com.google.common.base.Predicate;
 import com.jstakun.gms.android.config.Commons;
@@ -21,7 +19,6 @@ import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.UserTracker;
-import java.util.List;
 
 /**
  *
@@ -29,30 +26,7 @@ import java.util.List;
  */
 public class CheckinManager {
 
-    private AsyncTaskManager asyncTaskManager;
-    private List<FavouritesDAO> favourites;
-    
-    private final Handler notificationHandler = new Handler() {
-        @Override
-        public void handleMessage(Message message) {
-            String key = message.getData().getString("key");
-            LoggerUtils.debug("Key " + key);
-            FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-            if (fdb != null) {
-            	fdb.updateOnCheckin(key);
-            	for (FavouritesDAO favourite : favourites) {
-            		if (favourite.getKey().equals(key)) {
-            			favourite.setMaxDistance(0);
-                    	favourite.setLastCheckinDate(System.currentTimeMillis());
-                    	LoggerUtils.debug("CheckinManager.autoCheckin() checked-in at " + favourite.getName());	
-                    	continue;
-            		}
-            	}         	
-            } else {
-            	LoggerUtils.debug("fdb is null");
-            }
-        }
-    };    
+    private AsyncTaskManager asyncTaskManager;  
 
     public CheckinManager(AsyncTaskManager asyncTaskManager, Context context) {
         this.asyncTaskManager = asyncTaskManager;
@@ -62,16 +36,13 @@ public class CheckinManager {
             fdb = new FavouritesDbDataSource(context);
             ConfigurationManager.getInstance().putObject("FAVOURITESDB", fdb);
         }
-        favourites = fdb.fetchAllLandmarks();
-        //System.out.println("Number of auto check-in landmarks: " + favourites.size());
     }
 
     public boolean checkinAction(boolean addToFavourites, boolean silent, ExtendedLandmark selectedLandmark) {
         if (addToFavourites) {
             FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
             String key = getLandmarkKey(selectedLandmark);
-            FavouritesDAO favourite = fdb.addLandmark(selectedLandmark, key);
-            favourites.add(favourite);
+            fdb.addLandmark(selectedLandmark, key);
         }
         return checkinAction(selectedLandmark.getLayer(), selectedLandmark.getName(), getLandmarkKey(selectedLandmark), silent);
     }
@@ -83,22 +54,22 @@ public class CheckinManager {
         String checkinat = Locale.getMessage(R.string.Social_checkin_prompt, name);
         if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER))
                 && ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
-            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.foursquare_24, silent, selectedLayer, venueid, name, notificationHandler);
+            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.foursquare_24, silent, selectedLayer, venueid, name);
             result = true;
         } else if (selectedLayer.equals(Commons.FACEBOOK_LAYER) && ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
-            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.facebook_24, silent, selectedLayer, venueid, name, notificationHandler);
+            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.facebook_24, silent, selectedLayer, venueid, name);
             result = true;
         } else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER)
                 && ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
             if (venueid != null) {
-            	asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.google_24, silent, selectedLayer, venueid, name, notificationHandler);
+            	asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.google_24, silent, selectedLayer, venueid, name);
             	result = true;
             }
         } else if (selectedLayer.equals(Commons.MY_POSITION_LAYER)) {
             asyncTaskManager.executeSocialSendMyLocationTask(silent);
             result = true;
         } else { //if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer) && ConfigurationManager.getInstance().isUserLoggedIn()) {
-            asyncTaskManager.executeLocationCheckInTask(-1, venueid, Locale.getMessage(R.string.searchcheckin), name, silent, notificationHandler);
+            asyncTaskManager.executeLocationCheckInTask(-1, venueid, Locale.getMessage(R.string.searchcheckin), name, silent);
             result = true;
         }
 
@@ -109,7 +80,7 @@ public class CheckinManager {
         int checkinCount = 0;
     	FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
         if (fdb != null) {
-        	for (FavouritesDAO favourite : favourites) {
+        	for (FavouritesDAO favourite : fdb.fetchAllLandmarks()) {
             	long distInMeter = (long) DistanceUtils.distanceInMeter(lat, lon, favourite.getLatitude(), favourite.getLongitude());
             	//System.out.println("Checking landmark " + favourite.getName() + " in distance " + distInMeter + " meter.");
             	CheckinCandidatePredicate candidatePredicate = new CheckinCandidatePredicate(distInMeter);
@@ -120,7 +91,7 @@ public class CheckinManager {
                 	} 
             	} else if (distInMeter > favourite.getMaxDistance()) {
                 	fdb.updateMaxDist(distInMeter, favourite.getId());
-                	favourite.setMaxDistance(distInMeter);
+                	//favourite.setMaxDistance(distInMeter);
             	}
         	}
         }

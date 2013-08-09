@@ -2,11 +2,11 @@ package com.jstakun.gms.android.social;
 
 import org.json.JSONObject;
 
-import android.os.Handler;
-
+import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.Token;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 
@@ -51,7 +51,7 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 	}
 
 	@Override
-	public String checkin(String placeId, String name, Handler handler) {
+	public String checkin(String placeId, String name) {
 		return null;
 	}
 
@@ -89,4 +89,14 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 			return null;
 		}
 	}
+    
+    protected void onCheckin(String key) {
+    	LoggerUtils.debug("Updating check-in with key " + key);
+        FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+        if (fdb != null) {
+        	fdb.updateOnCheckin(key);
+        } else {
+        	LoggerUtils.debug("AbstractSocialUtils.onCheckin() fdb == null");
+        }
+    }
 }

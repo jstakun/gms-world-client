@@ -7,8 +7,11 @@ package com.jstakun.gms.android.social;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.os.Handler;
-import android.os.Message;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.bouncycastle.util.encoders.Base64;
+import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -18,12 +21,6 @@ import com.jstakun.gms.android.utils.BCTools;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.bouncycastle.util.encoders.Base64;
-import org.json.JSONObject;
 import com.jstakun.gms.android.utils.Token;
 
 /**
@@ -199,7 +196,7 @@ public class GoogleUtils extends AbstractSocialUtils {
 		}
 	}
 
-	public String checkin(String reference, String name, Handler notifier) {
+	public String checkin(String reference, String name) {
 		HttpUtils utils = new HttpUtils();
 		String message = null;
 
@@ -213,11 +210,7 @@ public class GoogleUtils extends AbstractSocialUtils {
 		    message = utils.getResponseCodeErrorMessage();
 	        if (message == null) {
 	                message = Locale.getMessage(R.string.Social_checkin_success, name);
-	                if (notifier != null) {
-		     			   Message msg = notifier.obtainMessage();
-		     			   msg.getData().putString("key", reference);
-		     			   notifier.sendMessage(msg);
-		     		   }
+	                onCheckin(reference);
 	        } else {
 	                message = Locale.getMessage(R.string.Social_checkin_failure, message);
 	        }
