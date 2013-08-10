@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.jstakun.gms.android.ui"
       android:versionCode="1084"
-      android:versionName="2.0.6">
+      android:versionName="2.0.7">
     <uses-sdk android:minSdkVersion="3"
               android:targetSdkVersion="13"/>
     <supports-screens android:smallScreens="true"

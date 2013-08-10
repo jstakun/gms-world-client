@@ -591,7 +591,8 @@ public class AsyncTaskManager {
     			   }
     		   }
     		   FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-               if (fdb != null) {
+    		   LoggerUtils.debug("Updating check-in with key " + checkinLandmarkCode);
+    	       if (fdb != null) {
                	  fdb.updateOnCheckin(checkinLandmarkCode);
                } else {
             	   LoggerUtils.debug("AsyncTaskmanager.gmsWorldCheckin() fdb == null");
