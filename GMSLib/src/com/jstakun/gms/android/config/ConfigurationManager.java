@@ -61,6 +61,7 @@ public class ConfigurationManager {
     public static final String MAP_PROVIDER = "mapProvider";
     public static final String PACKET_DATA_SENT = "packetDataSent";
     public static final String PACKET_DATA_RECEIVED = "packetDataReceived";
+    public static final String PACKET_DATA_DATE = "packetDataDate";
     public static final String MAP_RELOAD = "mapReload";
     public static final String BLUETOOTH_ENABLED = "bluetoothEnabled";
     public static final String FOLLOW_MY_POSITION = "followMyPos";

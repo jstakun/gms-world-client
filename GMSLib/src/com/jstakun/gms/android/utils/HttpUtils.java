@@ -410,25 +410,32 @@ public class HttpUtils {
     public static void clearCounter() {
         ConfigurationManager.getInstance().putString(ConfigurationManager.PACKET_DATA_RECEIVED, "0");
         ConfigurationManager.getInstance().putString(ConfigurationManager.PACKET_DATA_SENT, "0");
+        ConfigurationManager.getInstance().putString(ConfigurationManager.PACKET_DATA_DATE, Long.toString(System.currentTimeMillis()));
     }
 
     public static String[] formatCounter() {
         double mb = 1024.0 * 1024.0 * 8.0;
 
-        long allDataReceivedCounter = Long.parseLong(ConfigurationManager.getInstance().getString(ConfigurationManager.PACKET_DATA_RECEIVED));
-        long allDataSentCounter = Long.parseLong(ConfigurationManager.getInstance().getString(ConfigurationManager.PACKET_DATA_SENT));
-
+        long allDataReceivedCounter = ConfigurationManager.getInstance().getLong(ConfigurationManager.PACKET_DATA_RECEIVED);
+        long allDataSentCounter = ConfigurationManager.getInstance().getLong(ConfigurationManager.PACKET_DATA_SENT);
+        long packetDateDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.PACKET_DATA_DATE);
+        String sd = null;
+        if (packetDateDate == -1) {
+        	sd = "unknown";
+        } else {
+        	sd = DateTimeUtils.getDefaultDateTimeString(packetDateDate, ConfigurationManager.getInstance().getCurrentLocale());
+        }
+        
         String ds = StringUtil.formatDouble((allDataSentCounter / mb), 2);
         String dr = StringUtil.formatDouble((allDataReceivedCounter / mb), 2);
-
-        return new String[]{ds, dr};
+        
+        return new String[]{ds, dr, sd};
     }
 
     private void setBasicAuth(HttpRequest request) throws IOException {
         if (ConfigurationManager.getInstance().isUserLoggedIn() || !ConfigurationManager.getInstance().isDefaultUser()) {
             String username = ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME);
             String password = ConfigurationManager.getInstance().getString(ConfigurationManager.PASSWORD);
-
             //System.out.println("Setting Basic Auth " + username + ":" + password);
 
             byte[] userpassword = concat((username + ":").getBytes(), Base64.decode(password));

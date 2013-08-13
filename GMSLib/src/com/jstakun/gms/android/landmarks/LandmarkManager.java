@@ -1042,9 +1042,9 @@ public class LandmarkManager {
     public void setLayerOnFocus(List<LandmarkParcelable> results, String layerName, boolean isDeal, double lat, double lng) {
         Layer layer = layerManager.getLayer(layerName);
         if (layer != null && layer.getType() == LayerManager.LAYER_DYNAMIC && !isDeal) {
-            searchLandmarks(results, null, layer.getKeywords(), lat, lng, -1);
+            searchLandmarks(results, null, layer.getKeywords(), lat, lng, ConfigurationManager.FUZZY_SEARCH);
         } else if (layer != null && layer.getType() == LayerManager.LAYER_DYNAMIC && isDeal) {
-            searchDeals(results, null, layer.getKeywords(), lat, lng, -1);
+            searchDeals(results, null, layer.getKeywords(), lat, lng, ConfigurationManager.FUZZY_SEARCH);
         } else if (landmarkStore.containsKey(layerName)) {
             List<ExtendedLandmark> landmarks = getLandmarkStoreLayer(layerName);
             if (!landmarks.isEmpty()) {

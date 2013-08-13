@@ -248,7 +248,7 @@
      <string name="Settings.general">Ustawienia og\u00f3lne</string>
 
      <!-- Packet data -->
-     <string name="Packet.data">Ca\u0142kowita ilo\u015b\u0107 danych wys\u0142anych: %1$sMB\nCa\u0142kowita ilo\u015b\u0107 danych odebranych: %2$sMB</string>
+     <string name="Packet.data">Ca\u0142kowita ilo\u015b\u0107 danych wys\u0142anych: %1$sMB\nCa\u0142kowita ilo\u015b\u0107 danych odebranych: %2$sMB\nData rozpocz\u0119cia zbierania statystyk: %3$s</string>
      <string name="Clear.Counter">Wyzeruj licznik</string>
      <string name="Counter.cleared">Licznik wyzerowany</string>
 
