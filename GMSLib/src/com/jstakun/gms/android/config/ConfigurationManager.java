@@ -212,7 +212,7 @@ public class ConfigurationManager {
         putString(USERNAME, Commons.DEFAULT_USERNAME);
         putString(PASSWORD, Commons.DEFAULT_PASSWORD);
         putString(APP_USER_PWD, Commons.APP_USER_PWD);
-        putString(MY_POS_USER, Commons.MY_POS_CODE);
+        putString(MY_POS_USER, Commons.MY_POS_USER);
         fm.createDefaultDirs(); 
         changedConfig.clear();
     }
@@ -796,13 +796,13 @@ public class ConfigurationManager {
     }
 
     public void setAppUser() {
-        putString(USERNAME, getString(ConfigurationManager.APP_USER));
-        putString(PASSWORD, getString(ConfigurationManager.APP_USER_PWD));
+        putString(USERNAME, getString(APP_USER));
+        putString(PASSWORD, getString(APP_USER_PWD));
     }
 
     public void setMyPosUser() {
-        putString(USERNAME, getString(ConfigurationManager.MY_POS_USER));
-        putString(PASSWORD, getString(ConfigurationManager.APP_USER_PWD));
+        putString(USERNAME, getString(MY_POS_USER));
+        putString(PASSWORD, getString(APP_USER_PWD));
     }
     
     public boolean isMyPosUser() {
