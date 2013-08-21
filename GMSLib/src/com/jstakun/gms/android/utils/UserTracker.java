@@ -214,7 +214,7 @@ public class UserTracker {
                 }
 
                 if (ConfigurationManager.getInstance().isMyPosUser()) {
-                    ConfigurationManager.getInstance().resetUser();
+                    ConfigurationManager.getInstance().resetUser(false);
                 }
             }
 

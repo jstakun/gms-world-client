@@ -278,7 +278,7 @@
      <string name="Landmark.add.error">B\u0142\u0105d podczas tworzenia miejsca!</string>
      <string name="Landmark.url.empty.error">Adres miejsca jest pusty!</string>
      <string name="Landmark.name.empty.error">Nazwa miejsca nie mo\u017ce by\u0107 pusta!</string>
-     <string name="Landmark.opening.error">Nie uda\u0142o si\u0119 wybra\u0107 miejsca. Spr\u00f3buj ponownie!</string>
+     <string name="Landmark.opening.error">Nie uda\u0142o si\u0119 wykona\u0107 akcji. Spr\u00f3buj ponownie!</string>
      <string name="Landmark.share">Udost\u0119pnij miejsce</string>
      <string name="Landmark.see">Zobacz %1$s</string>
      <string name="Landmarks.day.empty">Brak miejsc w tym dniu</string>

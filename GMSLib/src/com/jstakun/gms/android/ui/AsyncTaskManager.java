@@ -906,11 +906,7 @@ public class AsyncTaskManager {
         }
 
         if (errorMessage != null) {
-            if (ConfigurationManager.getInstance().isUserLoggedIn()) {
-                ConfigurationManager.getInstance().setAppUser();
-            } else {
-                ConfigurationManager.getInstance().resetUser();
-            }
+            ConfigurationManager.getInstance().resetUser(true);
         } else {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.GMS_AUTH_STATUS);
         }

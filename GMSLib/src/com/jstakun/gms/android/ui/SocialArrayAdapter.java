@@ -172,7 +172,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             if (position == 0) { //GMS World
                 if (ConfigurationManager.getInstance().isOn(auth_status[0])) {
                     //logout
-                    ConfigurationManager.getInstance().resetUser();
+                    ConfigurationManager.getInstance().resetUser(true);
                     notifyDataSetChanged();
                     intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
 

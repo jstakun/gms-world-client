@@ -42,7 +42,7 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 	@Override
 	public void logout() {
 		if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
-            ConfigurationManager.getInstance().resetUser();
+            ConfigurationManager.getInstance().resetUser(false);
         }
 
         accessToken = null;

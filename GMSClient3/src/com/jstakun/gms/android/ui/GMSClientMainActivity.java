@@ -911,20 +911,12 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
             }
         } else if (v == newestButton) {
-            //UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowCalendarView", "", 0);
-            //intents.startCalendarActivity(getMyPosition());
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestLandmarks", "", 0);
             final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
             intents.startNewestLandmarkIntent(getMyPosition(), excluded, AbstractLandmarkList.ORDER_BY_DATE_DESC, 7);
         } else if (v == listButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleLandmarks", "", 0);
             if (!lvView.isShown()) {
-                //ProjectionInterface projection = ProjectionFactory.getProjection(mapView, googleMapsView);
-                //landmarkManager.findVisibleLandmarks(projection, true);
-                //String response = intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_DIST_ASC);
-                //if (StringUtils.isNotEmpty(response)) {
-                //    intents.showInfoToast(response);
-                //}
                 intents.showNearbyLandmarks(getMyPosition(), ProjectionFactory.getProjection(mapView, googleMapsView), AbstractLandmarkList.ORDER_BY_DIST_ASC);
             }
         } else if (v == layersButton) {

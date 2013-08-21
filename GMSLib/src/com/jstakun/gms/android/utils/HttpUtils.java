@@ -48,7 +48,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
-import org.bouncycastle.util.encoders.Base64;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  *
@@ -438,8 +438,15 @@ public class HttpUtils {
             String password = ConfigurationManager.getInstance().getString(ConfigurationManager.PASSWORD);
             //System.out.println("Setting Basic Auth " + username + ":" + password);
 
-            byte[] userpassword = concat((username + ":").getBytes(), Base64.decode(password));
-            String encodedAuthorization = new String(Base64.encode(userpassword));
+            byte[] pwd = null;
+            if (Base64.isBase64(password)) {
+              pwd = Base64.decodeBase64(password);
+            } else {
+              pwd = password.getBytes();	
+            }
+            
+            byte[] userpassword = concat((username + ":").getBytes(), pwd);
+            String encodedAuthorization = new String(Base64.encodeBase64(userpassword));
             request.addHeader("Authorization", "Basic " + encodedAuthorization);
         }
     }

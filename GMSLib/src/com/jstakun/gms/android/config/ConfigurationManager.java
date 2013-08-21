@@ -105,6 +105,44 @@ public class ConfigurationManager {
     public static final String USE_COUNT = "useCount";
     public static final String APP_RATED = "appRated";
     public static final String AUTO_CHECKIN_REPEAT_TIME = "autoCheckinRepeatTime";
+    public static final String GMS_AUTH_STATUS = "gmsAuthStatus";
+    public static final String SCREEN_SIZE = "screenSize";
+    public static final String USER_EMAIL = "userEmail";
+    public static final String MAP_CENTER = "mapCenter";
+    public static final String AUTO_CHECKIN = "autoCheckin";
+    public static final String MIN_CHECKIN_DISTANCE = "minCheckinDistance";
+    public static final String CHECKIN_TIME_INTERVAL = "checkinTimeInterval";
+    public static final String MAX_CURRENT_DISTANCE = "maxCurrentDistance";
+    public static final String GA_ID = "gaId";
+    public static final String APP_URL = "appUrl";
+    private static final String DEFAULT_LATITUDE = "defaultLatitude";
+    private static final String DEFAULT_LONGITUDE = "defaultLongitude";
+    private static final String ON = "1";
+    private static final String OFF = "0";
+    public static final int GOOGLE_MAPS = 0;
+    public static final int OSM_MAPS = 1;
+    public static final int OSM_TILES = 2;
+    private static final String DISABLED = "-1";
+    public static final String SERVER_HOST = "gms-world.appspot.com";
+    public static final String SERVER_URL = "http://www.gms-world.net/";
+    public static final String SSL_SERVER_URL = "https://" + SERVER_HOST + "/";
+    public static final String SHOW_LANDMARK_URL = SERVER_URL + "showLandmark/";
+    public static final String SHOW_LOCATION_URL = SERVER_URL + "showLocation.do";
+    public static final String CRASH_REPORT_URL = SERVER_URL + "crashReport";
+    public static final String BITLY_URL = "http://bit.ly/";
+    public static final String REGISTER_URL = SERVER_URL + "m/register.jsp";
+    public static final String SERVER_SERVICES_URL = SERVER_URL + "services/";
+    private static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + "services/";
+    public static final String GMS_WORLD = "GMS World";
+    public static final String LM_MARKET_URL = "http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
+    
+    //User Manager
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String APP_USER = "appUser";
+    private static final String APP_USER_PWD = "appUserPwd";
+    private static final String MY_POS_USER = "myPosUser";
+    
     public static final String FB_AUTH_STATUS = "fbAuthStatus";
     public static final String FB_TOKEN = "fbToken";
     public static final String FB_AUTH_KEY = "fbauth_key";
@@ -149,42 +187,6 @@ public class ConfigurationManager {
     //public static final String GW_AUTH_SECRET_KEY = "gwauth_secret_key";
     //public static final String GW_USERNAME = "gwUsername";
     //public static final String GW_SEND_STATUS = "gwSendStatus";
-    public static final String GMS_AUTH_STATUS = "gmsAuthStatus";
-    public static final String SCREEN_SIZE = "screenSize";
-    public static final String USER_EMAIL = "userEmail";
-    public static final String MAP_CENTER = "mapCenter";
-    public static final String AUTO_CHECKIN = "autoCheckin";
-    public static final String MIN_CHECKIN_DISTANCE = "minCheckinDistance";
-    public static final String CHECKIN_TIME_INTERVAL = "checkinTimeInterval";
-    public static final String MAX_CURRENT_DISTANCE = "maxCurrentDistance";
-    public static final String GA_ID = "gaId";
-    public static final String APP_URL = "appUrl";
-    private static final String DEFAULT_LATITUDE = "defaultLatitude";
-    private static final String DEFAULT_LONGITUDE = "defaultLongitude";
-    private static final String ON = "1";
-    private static final String OFF = "0";
-    public static final int GOOGLE_MAPS = 0;
-    public static final int OSM_MAPS = 1;
-    public static final int OSM_TILES = 2;
-    private static final String DISABLED = "-1";
-    public static final String SERVER_HOST = "gms-world.appspot.com";
-    public static final String SERVER_URL = "http://www.gms-world.net/";
-    public static final String SSL_SERVER_URL = "https://" + SERVER_HOST + "/";
-    public static final String SHOW_LANDMARK_URL = SERVER_URL + "showLandmark/";
-    public static final String SHOW_LOCATION_URL = SERVER_URL + "showLocation.do";
-    public static final String CRASH_REPORT_URL = SERVER_URL + "crashReport";
-    public static final String BITLY_URL = "http://bit.ly/";
-    public static final String REGISTER_URL = SERVER_URL + "m/register.jsp";
-    public static final String SERVER_SERVICES_URL = SERVER_URL + "services/";
-    private static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + "services/";
-    public static final String GMS_WORLD = "GMS World";
-    public static final String LM_MARKET_URL = "http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
-    
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String APP_USER = "appUser";
-    private static final String APP_USER_PWD = "appUserPwd";
-    private static final String MY_POS_USER = "myPosUser";
     
     public static final int PERSIST_SERVER = 0;
     public static final int PERSIST_LOCAL = 1;
@@ -705,7 +707,8 @@ public class ConfigurationManager {
         return ReturnVal;
     }
 
-    //User Manager candidates
+    //Start of User Manager
+    
     public boolean isUserLoggedIn() {
         return (getString(TWEET_AUTH_STATUS, "").equals(ON)
                 || getString(FB_AUTH_STATUS, "").equals(ON)
@@ -781,9 +784,11 @@ public class ConfigurationManager {
         return items;
     }
 
-    public void resetUser() {
-        putString(GMS_AUTH_STATUS, OFF);
-        if (isUserLoggedIn()) {
+    public void resetUser(boolean gms_logout) {
+    	if (gms_logout) {
+    		putString(GMS_AUTH_STATUS, OFF);
+    	}
+    	if (isUserLoggedIn()) {
         	setAppUser();
         } else {
         	putString(USERNAME, Commons.DEFAULT_USERNAME);
@@ -808,4 +813,6 @@ public class ConfigurationManager {
     public boolean isMyPosUser() {
     	return getString(USERNAME).equals(getString(MY_POS_USER));
     }
+    
+    //End of UserManager
 }
