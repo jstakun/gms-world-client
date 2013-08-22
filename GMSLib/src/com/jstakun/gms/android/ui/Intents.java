@@ -4,6 +4,15 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -29,6 +38,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.exina.android.calendar.CalendarActivity;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -48,7 +58,6 @@ import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.AdsUtils;
-import com.jstakun.gms.android.utils.BCTools;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.HttpUtils;
@@ -57,14 +66,6 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.StringUtil;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.util.encoders.Base64;
-import org.json.JSONObject;
 
 /**
  *
@@ -580,14 +581,15 @@ public class Intents {
 
                 message += "\nLink: " + url;
 
-                email = ConfigurationManager.getInstance().getString(ConfigurationManager.USER_EMAIL);
-                if (StringUtils.isNotEmpty(email)) {
-                    try {
-                        email = new String(BCTools.decrypt(Base64.decode(email)));
-                    } catch (Exception e) {
-                        email = null;
-                    }
-                }
+                email = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.USER_EMAIL);
+                //email = ConfigurationManager.getInstance().getString(ConfigurationManager.USER_EMAIL);
+                //if (StringUtils.isNotEmpty(email)) {
+                //    try {
+                //        email = new String(BCTools.decrypt(Base64.decode(email)));
+                //    } catch (Exception e) {
+                //        email = null;
+                //    }
+                //}
                 if (StringUtils.isNotEmpty(email)) {
                     intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{email});
                 }

@@ -10,19 +10,16 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONObject;
-
-import com.jstakun.gms.android.utils.Token;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.BCTools;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.Token;
 
 /**
  * 
@@ -35,39 +32,36 @@ public class FacebookUtils extends AbstractSocialUtils {
 	public boolean initOnTokenPresent(JSONObject json) {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.FB_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.FB_SEND_STATUS);
-		if (ConfigurationManager.getInstance().isDefaultUser()) {
-			ConfigurationManager.getInstance().setAppUser();
-		}
+		//if (ConfigurationManager.getInstance().isDefaultUser()) {
+		//	ConfigurationManager.getInstance().setAppUser();
+		//}
 		
 		try {
-				ConfigurationManager.getInstance().putString(ConfigurationManager.FB_USERNAME, json.getString(ConfigurationManager.FB_USERNAME) + "@fb");
+			ConfigurationManager.getInstance().putString(ConfigurationManager.FB_USERNAME, json.getString(ConfigurationManager.FB_USERNAME) + "@fb");
 
-				if (json.has(ConfigurationManager.FB_NAME)) {
-					ConfigurationManager.getInstance().putString(
-							ConfigurationManager.FB_NAME, json.getString(ConfigurationManager.FB_NAME));
-				}
-				if (json.has(ConfigurationManager.FB_GENDER)) {
-					ConfigurationManager.getInstance().putString(
-							ConfigurationManager.FB_GENDER, json.getString(ConfigurationManager.FB_GENDER));
-				}
-				if (json.has(ConfigurationManager.FB_BIRTHDAY)) {
+			if (json.has(ConfigurationManager.FB_NAME)) {
+					ConfigurationManager.getInstance().putString(ConfigurationManager.FB_NAME, json.getString(ConfigurationManager.FB_NAME));
+			}
+			if (json.has(ConfigurationManager.FB_GENDER)) {
+					ConfigurationManager.getInstance().putString(ConfigurationManager.FB_GENDER, json.getString(ConfigurationManager.FB_GENDER));
+			}
+			if (json.has(ConfigurationManager.FB_BIRTHDAY)) {
 					ConfigurationManager.getInstance().putString(ConfigurationManager.FB_BIRTHDAY, json.getString(ConfigurationManager.FB_BIRTHDAY));
-				}
-				String email = json.optString(ConfigurationManager.USER_EMAIL);
-				if (StringUtils.isNotEmpty(email)) {
-					email = new String(Base64.encode(BCTools.encrypt(email.getBytes())));
-					ConfigurationManager.getInstance().putString(ConfigurationManager.USER_EMAIL, email);
-				}
+			}
+			String email = json.optString(ConfigurationManager.USER_EMAIL);
+			if (StringUtils.isNotEmpty(email)) {
+					//email = new String(Base64.encode(BCTools.encrypt(email.getBytes())));
+					//ConfigurationManager.getInstance().putString(ConfigurationManager.USER_EMAIL, email);
+				ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
+			}
 
-				long expires_in = json.optLong(ConfigurationManager.FB_EXPIRES_IN, -1);
+			long expires_in = json.optLong(ConfigurationManager.FB_EXPIRES_IN, -1);
 				
-				if (expires_in > 0) {
-					ConfigurationManager.getInstance().putLong(
-							ConfigurationManager.FB_EXPIRES_IN,
-							System.currentTimeMillis() + (expires_in * 1000));
-				}
+			if (expires_in > 0) {
+				ConfigurationManager.getInstance().putLong(ConfigurationManager.FB_EXPIRES_IN, System.currentTimeMillis() + (expires_in * 1000));
+			}
 				
-				ConfigurationManager.getInstance().saveConfiguration(false);
+			ConfigurationManager.getInstance().saveConfiguration(false);
 				
 			return true;
 		} catch (Exception ex) {
@@ -79,30 +73,17 @@ public class FacebookUtils extends AbstractSocialUtils {
 
 	public void storeAccessToken(Token accessToken) {
 		try {
-		String encToken = new String(Base64.encode(BCTools.encrypt(accessToken
-				.getToken().getBytes())));
-		ConfigurationManager.getInstance().putString(
-				ConfigurationManager.FB_AUTH_KEY, encToken);
-		this.accessToken = accessToken;
+		//String encToken = new String(Base64.encode(BCTools.encrypt(accessToken.getToken().getBytes())));
+		//ConfigurationManager.getInstance().putString(ConfigurationManager.FB_AUTH_KEY, encToken);
+			ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.FB_AUTH_KEY, accessToken.getToken());
+			this.accessToken = accessToken;
 		} catch (Exception e) {
 			LoggerUtils.error("FacebookUtils.storeAccessToken error: ", e);
 		}
 	}
 	
 	protected Token loadAccessToken() {
-		String token = null;
-		try {
-			String encToken = ConfigurationManager.getInstance().getString(
-					ConfigurationManager.FB_AUTH_KEY);
-			if (encToken != null) {
-				token = new String(BCTools.decrypt(Base64.decode(encToken
-						.getBytes())));
-			}
-		} catch (Exception e) {
-			LoggerUtils.error("FacebookUtils.loadAccessToken error: ", e);
-			token = ConfigurationManager.getInstance().getString(
-					ConfigurationManager.FB_AUTH_KEY);
-		}
+		String token = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.FB_AUTH_KEY);
 		if (null != token) {
 			return new Token(token, null);
 		} else {

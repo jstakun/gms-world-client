@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.bouncycastle.util.encoders.Base64;
 
 import android.app.Activity;
 import android.location.Location;
@@ -34,7 +33,6 @@ import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.BCTools;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
@@ -150,6 +148,7 @@ public class AsyncTaskManager {
         ExtendedLandmark myPos = null;
 
         if (location != null) {
+        	ConfigurationManager.getInstance().putObject(Commons.MY_POS_CODE, Commons.MY_POS_CODE);
             myPos = landmarkManager.createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), Commons.MY_POSITION_LAYER, null, null);
             msg = landmarkManager.persistToServer(myPos, Commons.MY_POS_CODE, null);
         }
@@ -570,13 +569,10 @@ public class AsyncTaskManager {
     	   String url = ConfigurationManager.SERVER_SERVICES_URL + service;
     	   List<NameValuePair> params = new ArrayList<NameValuePair>();
     	   params.add(new BasicNameValuePair("key", checkinLandmarkCode));
-    	   String oauthUser = ConfigurationManager.getInstance().getOAuthLoggedInUsername();
-
-    	   if (oauthUser != null) {
-    		   params.add(new BasicNameValuePair("username", oauthUser));
-    	   } else {
-    		   params.add(new BasicNameValuePair("username", ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME)));
-    	   }
+    	   String username = ConfigurationManager.getInstance().getLoggedInUsername();
+    	   if (username != null) {
+    		   params.add(new BasicNameValuePair("username",username));
+    	   } 
 
     	   HttpUtils utils = new HttpUtils();
     	   utils.sendPostRequest(url, params, true);
@@ -820,12 +816,10 @@ public class AsyncTaskManager {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("key", placeId));
         params.add(new BasicNameValuePair("message", commentText));
-        String oauthUser = ConfigurationManager.getInstance().getOAuthLoggedInUsername();
-        if (oauthUser != null) {
-            params.add(new BasicNameValuePair("username", oauthUser));
-        } else {
-            params.add(new BasicNameValuePair("username", ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME)));
-        }
+        String username = ConfigurationManager.getInstance().getLoggedInUsername();
+        if (username != null) {
+            params.add(new BasicNameValuePair("username", username));
+        } 
         HttpUtils utils = new HttpUtils();
         try {
             utils.sendPostRequest(url, params, true);
@@ -884,10 +878,9 @@ public class AsyncTaskManager {
         String errorMessage = null;
 
         try {
-            String pwd = new String(Base64.encode(BCTools.encrypt(password.getBytes())));
-            ConfigurationManager.getInstance().putString(ConfigurationManager.USERNAME, login);
-            ConfigurationManager.getInstance().putString(ConfigurationManager.PASSWORD, pwd);
-            String url = ConfigurationManager.SERVER_SERVICES_URL + "authn";
+            ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_USERNAME, login);
+            ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_PASSWORD, password);
+            String url = ConfigurationManager.SERVER_SERVICES_URL + "authenticate";
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("mobile", "true"));
             utils.sendPostRequest(url, params, true);
@@ -905,13 +898,13 @@ public class AsyncTaskManager {
             }
         }
 
-        if (errorMessage != null) {
-            ConfigurationManager.getInstance().resetUser(true);
-        } else {
+        if (errorMessage == null) {
+        	ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_USERNAME, login);
+            ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.GMS_PASSWORD, password);
             ConfigurationManager.getInstance().setOn(ConfigurationManager.GMS_AUTH_STATUS);
+            ConfigurationManager.getInstance().saveConfiguration(false);
         }
-        ConfigurationManager.getInstance().saveConfiguration(false);
-
+        
         return errorMessage;
     }
 

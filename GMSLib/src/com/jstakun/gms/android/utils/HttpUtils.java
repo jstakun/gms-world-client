@@ -4,11 +4,6 @@
  */
 package com.jstakun.gms.android.utils;
 
-import android.net.SSLCertificateSocketFactory;
-import android.net.SSLSessionCache;
-
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.ui.lib.R;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -48,7 +44,14 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
-import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.util.encoders.Base64;
+
+import android.net.SSLCertificateSocketFactory;
+import android.net.SSLSessionCache;
+
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.ui.lib.R;
 
 /**
  *
@@ -219,11 +222,10 @@ public class HttpUtils {
 
                 if (auth) {
                     setBasicAuth(postRequest);
-                    String oauthUser = ConfigurationManager.getInstance().getOAuthLoggedInUsername();
-                    if (StringUtils.isNotEmpty(oauthUser)) {
-                        postRequest.addHeader("username", oauthUser);
-                    }    
-                    
+                    String username = ConfigurationManager.getInstance().getLoggedInUsername();
+                    if (StringUtils.isNotEmpty(username)) {
+                        postRequest.addHeader("username", username);
+                    }                      
                 }
 
                 ByteArrayBody bab = new ByteArrayBody(file, filename);
@@ -433,22 +435,41 @@ public class HttpUtils {
     }
 
     private void setBasicAuth(HttpRequest request) throws IOException {
-        if (ConfigurationManager.getInstance().isUserLoggedIn() || !ConfigurationManager.getInstance().isDefaultUser()) {
-            String username = ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME);
-            String password = ConfigurationManager.getInstance().getString(ConfigurationManager.PASSWORD);
-            //System.out.println("Setting Basic Auth " + username + ":" + password);
-
-            byte[] pwd = null;
-            if (Base64.isBase64(password)) {
-              pwd = Base64.decodeBase64(password);
-            } else {
-              pwd = password.getBytes();	
+    	String username = null;
+    	byte[] pwd = null;
+    	
+    	if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_USERNAME, String.class) && 
+    			ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_PASSWORD, String.class)) {
+        	//user in process of login to gms world
+    		username = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_USERNAME, String.class);
+    		String password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
+            if (password != null) {
+            	pwd = ConfigurationManager.getInstance().getEncryptedString(password);           
             }
-            
-            byte[] userpassword = concat((username + ":").getBytes(), pwd);
-            String encodedAuthorization = new String(Base64.encodeBase64(userpassword));
-            request.addHeader("Authorization", "Basic " + encodedAuthorization);
-        }
+        } else if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+    		//user is logged in
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
+        		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);
+        		String password = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_PASSWORD);
+        		pwd = Base64.decode(password);
+        	} else {
+        		username = Commons.GMS_APP_USER;
+                String password = Commons.APP_USER_PWD;
+                pwd = Base64.decode(password);
+        	}
+    	} else if (ConfigurationManager.getInstance().containsObject(Commons.MY_POS_CODE, String.class)) {
+    		//mypos request
+    		username = Commons.MY_POS_USER;
+            String password = Commons.APP_USER_PWD;
+            ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
+            pwd = Base64.decode(password);
+    	} 
+        
+    	if (StringUtils.isNotEmpty(username) && pwd != null) {
+    		byte[] userpassword = concat((username + ":").getBytes(), pwd);
+    		String encodedAuthorization = new String(Base64.encode(userpassword));
+    		request.addHeader("Authorization", "Basic " + encodedAuthorization);
+    	}
     }
 
     public static void closeConnManager() {

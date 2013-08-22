@@ -46,11 +46,9 @@ public class SocialListActivity extends ListActivity {
     public void onResume() {
         super.onResume();
 
-        String oauthUser = ConfigurationManager.getInstance().getOAuthLoggedInUsername();
-        if (oauthUser != null) {
-            footer.setText(Locale.getMessage(R.string.Social_login_string, oauthUser));
-        } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
-            footer.setText(Locale.getMessage(R.string.Social_login_string, ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME)));
+        String username = ConfigurationManager.getInstance().getLoggedInUsername();
+        if (username != null) {
+            footer.setText(Locale.getMessage(R.string.Social_login_string, username));
         } else {
             footer.setText(Locale.getMessage(R.string.Social_notLogged));
         }

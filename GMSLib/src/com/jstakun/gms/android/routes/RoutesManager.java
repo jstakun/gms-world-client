@@ -154,12 +154,10 @@ public class RoutesManager {
         url += "&type=" + type;
         url += "&tId=" + System.currentTimeMillis();
 
-        String oauthUser = ConfigurationManager.getInstance().getOAuthLoggedInUsername();
-        if (oauthUser != null) {
-            url += "&username=" + oauthUser;
-        } else {
-            url += "&username=" + ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME);
-        }
+        String username = ConfigurationManager.getInstance().getLoggedInUsername();
+        if (username != null) {
+            url += "&username=" + username;
+        } 
 
         if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.ROUTES_TOKEN)) {
             url += "&token=" + ConfigurationManager.getInstance().getString(ConfigurationManager.ROUTES_TOKEN);

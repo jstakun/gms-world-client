@@ -599,18 +599,14 @@ public class LandmarkManager {
         if (persist == ConfigurationManager.PERSIST_SMS) {
             //Not used currently
             //System.out.println("Sending landmark via SMS");
-            String user = ConfigurationManager.getInstance().getOAuthLoggedInUsername();
-
-            if (user == null) {
-                user = ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME);
-            }
+            String username = ConfigurationManager.getInstance().getLoggedInUsername();
 
             double[] coords = MercatorUtils.normalizeE6(new double[]{landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()});
             String text = " lat:" + coords[0] + FileManager.SEPARATOR_CHAR
                     + "lon:" + coords[1] + FileManager.SEPARATOR_CHAR
                     + "name:" + landmark.getName() + FileManager.SEPARATOR_CHAR
                     + "desc:" + landmark.getDescription() + FileManager.SEPARATOR_CHAR
-                    + "user:" + user;
+                    + "user:" + username;
 
             try {
                 SMSSender sender = new SMSSender(text);
@@ -707,13 +703,11 @@ public class LandmarkManager {
         params.add(new BasicNameValuePair("altitude", Double.toString(alt)));
         params.add(new BasicNameValuePair("radius", Integer.toString(DistanceUtils.radiusInKilometer())));
 
-        String oauthUser = ConfigurationManager.getInstance().getOAuthLoggedInUsername();
+        String username = ConfigurationManager.getInstance().getLoggedInUsername();
 
-        if (StringUtils.isNotEmpty(oauthUser)) {
-            params.add(new BasicNameValuePair("username", oauthUser));
-        } else {
-            params.add(new BasicNameValuePair("username", ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME)));
-        }
+        if (StringUtils.isNotEmpty(username)) {
+            params.add(new BasicNameValuePair("username", username));
+        } 
 
         if (StringUtils.isNotEmpty(layer)) {
             params.add(new BasicNameValuePair("layer", layer));

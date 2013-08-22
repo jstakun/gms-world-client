@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.gms.android.utils;
+package com.jstakun.gms.android.config;
 
 /*
  * To change this template, choose Tools | Templates
@@ -23,7 +23,6 @@ import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.util.encoders.Hex;
 
-import com.jstakun.gms.android.config.Commons;
 
 public class BCTools {
 
@@ -41,7 +40,7 @@ public class BCTools {
         return result;
     }
 
-    public static byte[] decrypt(byte[] cipher) throws Exception {
+    protected static byte[] decrypt(byte[] cipher) throws Exception {
 
         PKCS12ParametersGenerator pGen = new PKCS12ParametersGenerator(new SHA1Digest());
         pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(Commons.bc_password), Commons.bc_salt, 128);
@@ -56,7 +55,7 @@ public class BCTools {
         return cipherData(cipherAES, cipher);
     }
 
-    public static byte[] encrypt(byte[] plain) throws Exception {
+    protected static byte[] encrypt(byte[] plain) throws Exception {
 
         PKCS12ParametersGenerator pGen = new PKCS12ParametersGenerator(new SHA1Digest());
         pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(Commons.bc_password), Commons.bc_salt, 128);

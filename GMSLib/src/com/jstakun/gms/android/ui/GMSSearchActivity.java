@@ -510,13 +510,10 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				}
 
 				utils.sendPostRequest(url, params, true);
-				//String url = urlBuilder.toString();
-
-				//byte[] res = utils.loadHttpFile(url, true, "json");
+				
 				errorMessage = utils.getResponseCodeErrorMessage();
 				String response = utils.getPostResponse();
 				if (StringUtils.startsWith(response, "{")) {
-					//String response = new String(res, "UTF-8");
 					JSONObject jsonRoot = new JSONObject(response);
 					JSONObject jsonLayers = jsonRoot.getJSONObject("ResultSet");
 

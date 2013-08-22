@@ -10,13 +10,11 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.BCTools;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -35,8 +33,9 @@ public class FoursquareUtils extends AbstractSocialUtils {
 
     public void storeAccessToken(Token accessToken)  {
     	try {
-        String encToken = new String(Base64.encode(BCTools.encrypt(accessToken.getToken().getBytes())));
-        ConfigurationManager.getInstance().putString(ConfigurationManager.FS_AUTH_KEY, encToken);
+        //String encToken = new String(Base64.encode(BCTools.encrypt(accessToken.getToken().getBytes())));
+        //ConfigurationManager.getInstance().putString(ConfigurationManager.FS_AUTH_KEY, encToken);
+        ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.FS_AUTH_KEY, accessToken.getToken());
         this.accessToken = accessToken;
     	} catch (Exception e) {
 			LoggerUtils.error("FoursquareUtils.storeAccessToken exception: ", e);
@@ -44,9 +43,9 @@ public class FoursquareUtils extends AbstractSocialUtils {
     }
 
     protected Token loadAccessToken() {
-        String token = null;
+        String token = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.FS_AUTH_KEY);
 
-        try {
+        /*try {
             String encToken = ConfigurationManager.getInstance().getString(ConfigurationManager.FS_AUTH_KEY);
 
             if (encToken != null) {
@@ -55,7 +54,7 @@ public class FoursquareUtils extends AbstractSocialUtils {
         } catch (Exception e) {
             LoggerUtils.error("FoursquareUtils.loadAccessToken exception: ", e);
             token = ConfigurationManager.getInstance().getString(ConfigurationManager.FS_AUTH_KEY);
-        }
+        }*/
 
         if (null != token) {
             return new Token(token, null);
@@ -81,9 +80,9 @@ public class FoursquareUtils extends AbstractSocialUtils {
         boolean result = false;
         ConfigurationManager.getInstance().setOn(ConfigurationManager.FS_AUTH_STATUS);
 
-        if (ConfigurationManager.getInstance().isDefaultUser()) {
-            ConfigurationManager.getInstance().setAppUser();
-        }
+        //if (ConfigurationManager.getInstance().isDefaultUser()) {
+        //    ConfigurationManager.getInstance().setAppUser();
+        //}
 
         try {
         	String id = json.getString(ConfigurationManager.FS_USERNAME);
@@ -96,8 +95,9 @@ public class FoursquareUtils extends AbstractSocialUtils {
             }
             String email = json.optString(ConfigurationManager.USER_EMAIL);
 			if (StringUtils.isNotEmpty(email)) {
-				email = new String(Base64.encode(BCTools.encrypt(email.getBytes())));
-				ConfigurationManager.getInstance().putString(ConfigurationManager.USER_EMAIL, email);
+				//email = new String(Base64.encode(BCTools.encrypt(email.getBytes())));
+				//ConfigurationManager.getInstance().putString(ConfigurationManager.USER_EMAIL, email);
+				ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
 			}
 			
 			ConfigurationManager.getInstance().saveConfiguration(false);

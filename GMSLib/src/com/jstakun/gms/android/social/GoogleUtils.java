@@ -10,14 +10,12 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.BCTools;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -30,25 +28,27 @@ import com.jstakun.gms.android.utils.Token;
 public class GoogleUtils extends AbstractSocialUtils {
 
 	public void storeAccessToken(Token accessToken) {
-		String encToken = null, encSecret = null;
+		//String encToken = null, encSecret = null;
 		
-		try {
+		/*try {
 			encToken = new String(Base64.encode(BCTools.encrypt(accessToken.getToken().getBytes())));
 			encSecret = new String(Base64.encode(BCTools.encrypt(accessToken.getSecret().getBytes())));
 		} catch (Exception e) {
 			LoggerUtils.error("GoogleUtils.storeAccessToken() exception: ", e);
 		}
-
 		ConfigurationManager.getInstance().putString(ConfigurationManager.GL_AUTH_KEY, encToken);
-		ConfigurationManager.getInstance().putString(ConfigurationManager.GL_AUTH_SECRET_KEY, encSecret);
+		ConfigurationManager.getInstance().putString(ConfigurationManager.GL_AUTH_SECRET_KEY, encSecret);*/
+		
+		ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.GL_AUTH_KEY, accessToken.getToken());
+		ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.GL_AUTH_SECRET_KEY, accessToken.getSecret());
 		this.accessToken = accessToken;
 	}
 
 	protected Token loadAccessToken() {
-		String token = null;
-		String tokenSecret = null;
+		String token = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.GL_AUTH_KEY);
+		String tokenSecret = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.GL_AUTH_SECRET_KEY);
 
-		try {
+		/*try {
 			String encToken = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_AUTH_KEY);
 			String encTokenSecret = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_AUTH_SECRET_KEY);
 			
@@ -63,7 +63,7 @@ public class GoogleUtils extends AbstractSocialUtils {
 			LoggerUtils.error("GoogleUtils.loadAccessToken() exception: ", e);
 			token = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_AUTH_KEY);
 			tokenSecret = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_AUTH_SECRET_KEY);
-		}
+		}*/
 	
 		if (null != token) {
 			return new Token(token, tokenSecret);
@@ -132,9 +132,9 @@ public class GoogleUtils extends AbstractSocialUtils {
 	public boolean initOnTokenPresent(JSONObject json) {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.GL_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.GL_SEND_STATUS);
-		if (ConfigurationManager.getInstance().isDefaultUser()) {
-			ConfigurationManager.getInstance().setAppUser();
-		}
+		//if (ConfigurationManager.getInstance().isDefaultUser()) {
+		//	ConfigurationManager.getInstance().setAppUser();
+		//}
 		
 		try {
 			long expires_in = json.optLong(ConfigurationManager.GL_EXPIRES_IN, -1);
@@ -183,8 +183,9 @@ public class GoogleUtils extends AbstractSocialUtils {
             
             String email = json.optString(ConfigurationManager.USER_EMAIL);
 			if (StringUtils.isNotEmpty(email)) {
-				email = new String(Base64.encode(BCTools.encrypt(email.getBytes())));
-				ConfigurationManager.getInstance().putString(ConfigurationManager.USER_EMAIL, email);
+				//email = new String(Base64.encode(BCTools.encrypt(email.getBytes())));
+				//ConfigurationManager.getInstance().putString(ConfigurationManager.USER_EMAIL, email);
+				ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
 			}
 			
 			ConfigurationManager.getInstance().saveConfiguration(false);

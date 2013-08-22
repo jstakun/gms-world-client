@@ -9,17 +9,15 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONObject;
-import com.jstakun.gms.android.utils.Token;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.BCTools;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.Token;
 
 /**
  * 
@@ -28,26 +26,26 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 public class LinkedInUtils extends AbstractSocialUtils {
 
 	public void storeAccessToken(Token accessToken) {
-		try {
+		/*try {
 			String encToken = new String(Base64.encode(BCTools
 					.encrypt(accessToken.getToken().getBytes())));
 			String encSecret = new String(Base64.encode(BCTools
 					.encrypt(accessToken.getSecret().getBytes())));
-			ConfigurationManager.getInstance().putString(
-					ConfigurationManager.LN_AUTH_KEY, encToken);
-			ConfigurationManager.getInstance().putString(
-					ConfigurationManager.LN_AUTH_SECRET_KEY, encSecret);
+			ConfigurationManager.getInstance().putString(ConfigurationManager.LN_AUTH_KEY, encToken);
+			ConfigurationManager.getInstance().putString(ConfigurationManager.LN_AUTH_SECRET_KEY, encSecret);
 			this.accessToken = accessToken;
 		} catch (Exception e) {
 			LoggerUtils.error("LinkedInUtils.storeAccessToken error: ", e);
-		}
+		}*/
+		ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.LN_AUTH_KEY, accessToken.getToken());
+		ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.LN_AUTH_SECRET_KEY, accessToken.getSecret());
 	}
 
 	protected Token loadAccessToken() {
-		String token = null;
-		String tokenSecret = null;
+		String token = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.LN_AUTH_KEY);
+		String tokenSecret = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.LN_AUTH_SECRET_KEY);
 
-		try {
+		/*try {
 			String encToken = ConfigurationManager.getInstance().getString(
 					ConfigurationManager.LN_AUTH_KEY);
 			String encTokenSecret = ConfigurationManager.getInstance()
@@ -68,7 +66,7 @@ public class LinkedInUtils extends AbstractSocialUtils {
 					ConfigurationManager.LN_AUTH_KEY);
 			tokenSecret = ConfigurationManager.getInstance().getString(
 					ConfigurationManager.LN_AUTH_SECRET_KEY);
-		}
+		}*/
 
 		if (null != token && null != tokenSecret) {
 			return new Token(token, tokenSecret);
@@ -78,13 +76,11 @@ public class LinkedInUtils extends AbstractSocialUtils {
 	}
 
 	public boolean initOnTokenPresent(JSONObject json) {
-		ConfigurationManager.getInstance().setOn(
-				ConfigurationManager.LN_AUTH_STATUS);
-		ConfigurationManager.getInstance().setOn(
-				ConfigurationManager.LN_SEND_STATUS);
-		if (ConfigurationManager.getInstance().isDefaultUser()) {
-			ConfigurationManager.getInstance().setAppUser();
-		}
+		ConfigurationManager.getInstance().setOn(ConfigurationManager.LN_AUTH_STATUS);
+		ConfigurationManager.getInstance().setOn(ConfigurationManager.LN_SEND_STATUS);
+		//if (ConfigurationManager.getInstance().isDefaultUser()) {
+		//	ConfigurationManager.getInstance().setAppUser();
+		//}
 
 		String id = json.optString(ConfigurationManager.LN_USERNAME);
 		if (id != null) {

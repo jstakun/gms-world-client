@@ -55,7 +55,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
         intents = new Intents(context, null, null);
 
         usernames = new String[]{
-            ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME),
+            ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME),
             OAuthServiceFactory.getUsername(Commons.FACEBOOK),
             OAuthServiceFactory.getUsername(Commons.FOURSQUARE),
             OAuthServiceFactory.getUsername(Commons.GOOGLE),
@@ -63,7 +63,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             OAuthServiceFactory.getUsername(Commons.LINKEDIN)};
         
         displaynames = new String[]{
-            ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME),
+            ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME),
             OAuthServiceFactory.getDisplayname(Commons.FACEBOOK),
             OAuthServiceFactory.getDisplayname(Commons.FOURSQUARE),
             OAuthServiceFactory.getDisplayname(Commons.GOOGLE),
@@ -172,13 +172,17 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             if (position == 0) { //GMS World
                 if (ConfigurationManager.getInstance().isOn(auth_status[0])) {
                     //logout
-                    ConfigurationManager.getInstance().resetUser(true);
+                	ConfigurationManager.getInstance().setOff(ConfigurationManager.GMS_AUTH_STATUS);
+                    //ConfigurationManager.getInstance().resetUser();
+                	ConfigurationManager.getInstance().removeAll(new String[]{	
+                      ConfigurationManager.GMS_USERNAME, ConfigurationManager.GMS_PASSWORD});
+                    ConfigurationManager.getInstance().saveConfiguration(false);
                     notifyDataSetChanged();
                     intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
 
-                    String oauthUser = ConfigurationManager.getInstance().getOAuthLoggedInUsername();
-                    if (oauthUser != null) {
-                        footer.setText(Locale.getMessage(R.string.Social_login_string, oauthUser));
+                    String username = ConfigurationManager.getInstance().getLoggedInUsername();
+                    if (username != null) {
+                        footer.setText(Locale.getMessage(R.string.Social_login_string, username));
                     } else {
                         footer.setText(Locale.getMessage(R.string.Social_notLogged));
                     }
@@ -194,11 +198,9 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     notifyDataSetChanged();
                     intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
                     //refresh listview footer
-                    String oauthUser = ConfigurationManager.getInstance().getOAuthLoggedInUsername();
-                    if (oauthUser != null) {
-                        footer.setText(Locale.getMessage(R.string.Social_login_string, oauthUser));
-                    } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
-                        footer.setText(Locale.getMessage(R.string.Social_login_string, ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME)));
+                    String username = ConfigurationManager.getInstance().getLoggedInUsername();
+                    if (username != null) {
+                        footer.setText(Locale.getMessage(R.string.Social_login_string, username));
                     } else {
                         footer.setText(Locale.getMessage(R.string.Social_notLogged));
                     }

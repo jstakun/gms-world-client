@@ -1,8 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.config;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.util.encoders.Base64;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -11,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap.Config;
 import android.location.Location;
+
 import com.jstakun.gms.android.data.ConfigDbDataSource;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.FileManager;
@@ -29,15 +38,6 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MessageStack;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.openlapi.QualifiedCoordinates;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -137,12 +137,14 @@ public class ConfigurationManager {
     public static final String LM_MARKET_URL = "http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     
     //User Manager
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String APP_USER = "appUser";
-    private static final String APP_USER_PWD = "appUserPwd";
-    private static final String MY_POS_USER = "myPosUser";
+    //public static final String USERNAME = "username";
+    //public static final String PASSWORD = "password";
+    //public static final String APP_USER = "appUser";
+    //public static final String APP_USER_PWD = "appUserPwd";
+    //public static final String MY_POS_USER = "myPosUser";
     
+    public static final String GMS_USERNAME = "gmsUsername";
+    public static final String GMS_PASSWORD = "gmsPassword";
     public static final String FB_AUTH_STATUS = "fbAuthStatus";
     public static final String FB_TOKEN = "fbToken";
     public static final String FB_AUTH_KEY = "fbauth_key";
@@ -182,11 +184,6 @@ public class ConfigurationManager {
     public static final String GL_NAME = "glName";
     public static final String GL_GENDER = "glGender";
     public static final String GL_BIRTHDAY = "glBirthday";
-    //public static final String GW_AUTH_STATUS = "gwAuthStatus";
-    //public static final String GW_AUTH_KEY = "gwauth_key";
-    //public static final String GW_AUTH_SECRET_KEY = "gwauth_secret_key";
-    //public static final String GW_USERNAME = "gwUsername";
-    //public static final String GW_SEND_STATUS = "gwSendStatus";
     
     public static final int PERSIST_SERVER = 0;
     public static final int PERSIST_LOCAL = 1;
@@ -211,10 +208,10 @@ public class ConfigurationManager {
     private void setDefaultConfiguration() {
         FileManager fm = PersistenceManagerFactory.getFileManager();
         fm.readResourceBundleFile(configuration, R.raw.defaultconfig, getContext());
-        putString(USERNAME, Commons.DEFAULT_USERNAME);
-        putString(PASSWORD, Commons.DEFAULT_PASSWORD);
-        putString(APP_USER_PWD, Commons.APP_USER_PWD);
-        putString(MY_POS_USER, Commons.MY_POS_USER);
+        //putString(USERNAME, Commons.DEFAULT_USERNAME);
+        //putString(PASSWORD, Commons.DEFAULT_PASSWORD);
+        //putString(APP_USER_PWD, Commons.APP_USER_PWD);
+        //putString(MY_POS_USER, Commons.MY_POS_USER);
         fm.createDefaultDirs(); 
         changedConfig.clear();
     }
@@ -491,15 +488,19 @@ public class ConfigurationManager {
         return containsObject(ConfigurationManager.APP_CLOSING, Object.class);
     }
 
-    private List<? extends Object> getObjectList(String key, Class<? extends Object> type) {
-        if (containsObject(key, type)) {
-            return (List<? extends Object>) objectCache.get(key);
-        }
-        return null;
-    }
+    //private List<? extends Object> getObjectList(String key, Class<? extends Object> type) {
+    //    if (containsObject(key, type)) {
+    //        return (List<? extends Object>) objectCache.get(key);
+    //    }
+    //    return null;
+    //}
 
     public List<LandmarkParcelable> getLandmarkList(String key, Class<? extends Object> type) {
-        return (List<LandmarkParcelable>) getObjectList(key, type); 
+    	if (containsObject(key, type)) {
+    		return (List<LandmarkParcelable>) objectCache.get(key);
+    	} else {
+    		return null;
+    	}
     }
 
     public boolean isDefaultCoordinate() {
@@ -581,8 +582,15 @@ public class ConfigurationManager {
             putObject(ConfigurationManager.BUILD_INFO, buildInfo);
         }
 
-        if (!isDefaultUser()) {
-            setOn(ConfigurationManager.GMS_AUTH_STATUS);
+        //if (!isDefaultUser()) {
+        //    setOn(ConfigurationManager.GMS_AUTH_STATUS);
+        //}
+        
+        //1086 version gms world user migration
+        if (isOn(ConfigurationManager.GMS_AUTH_STATUS) && containsKey("username") && containsKey("password")) {
+        	removeAll(new String[]{"username", "password"});
+        	setOff(ConfigurationManager.GMS_AUTH_STATUS);
+        	saveConfiguration(false);
         }
 
         String[] limitArray = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.landmarksPerLayer);
@@ -701,7 +709,7 @@ public class ConfigurationManager {
             //ReturnVal += "User : " + User;
 
         } catch (NameNotFoundException ex) {
-            LoggerUtils.error("ConfigurationManager.collectSystemInformation error", ex);
+            LoggerUtils.error("ConfigurationManager.collectSystemInformation exception", ex);
         }
 
         return ReturnVal;
@@ -715,12 +723,13 @@ public class ConfigurationManager {
                 || getString(LN_AUTH_STATUS, "").equals(ON)
                 || getString(GL_AUTH_STATUS, "").equals(ON)
                 || getString(FS_AUTH_STATUS, "").equals(ON)
-                //|| getString(GW_AUTH_STATUS, "").equals(ON)
                 || getString(GMS_AUTH_STATUS, "").equals(ON));
     }
 
-    public String getOAuthLoggedInUsername() {
-        if (getString(FB_AUTH_STATUS, "").equals(ON)) {
+    public String getLoggedInUsername() {
+    	if (getString(GMS_AUTH_STATUS, "").equals(ON)) {
+    		return getString(GMS_USERNAME);
+    	} else if (getString(FB_AUTH_STATUS, "").equals(ON)) {
             return getString(FB_USERNAME);
         } else if (getString(TWEET_AUTH_STATUS, "").equals(ON)) {
             return getString(TWEET_USERNAME);
@@ -730,9 +739,7 @@ public class ConfigurationManager {
             return getString(GL_USERNAME);
         } else if (getString(FS_AUTH_STATUS, "").equals(ON)) {
             return getString(FS_USERNAME);
-        } //else if (getString(GW_AUTH_STATUS, "").equals(ON)) {
-            //return getString(GW_USERNAME);
-        //}
+        } 
 
         return null;
     }
@@ -784,34 +791,75 @@ public class ConfigurationManager {
         return items;
     }
 
-    public void resetUser(boolean gms_logout) {
-    	if (gms_logout) {
-    		putString(GMS_AUTH_STATUS, OFF);
+    //public void resetUser() {
+    //	if (isUserLoggedIn()) {
+    //    	setAppUser();
+    //    } else {
+    //    	putString(USERNAME, Commons.DEFAULT_USERNAME);
+    //        putString(PASSWORD, Commons.DEFAULT_PASSWORD);
+    //    }
+    //}
+
+    //public boolean isDefaultUser() {
+    //    return (getString(USERNAME, "").equals(Commons.DEFAULT_USERNAME) || getString(USERNAME, "").equals(getString(APP_USER)));
+    //}
+
+    //public void setAppUser() {
+    //    putString(USERNAME, getString(APP_USER));
+    //    putString(PASSWORD, getString(APP_USER_PWD));
+    //}
+
+    //public void setMyPosUser() {
+    //    putString(USERNAME, getString(MY_POS_USER));
+    //    putString(PASSWORD, getString(APP_USER_PWD));
+    //}
+    
+    //public boolean isMyPosUser() {
+    //	return getString(USERNAME).equals(getString(MY_POS_USER));
+    //}
+    
+    public boolean putStringAndEncrypt(String key, String value) {
+    	if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
+    		try {
+    			String tmp = new String(Base64.encode(BCTools.encrypt(value.getBytes())));
+    			putString(key, tmp);
+    			//System.out.println("Encrypted: " +  key + " = " + tmp);
+    			tmp = null;
+    			return true;
+    		} catch (Exception ex) {
+    			LoggerUtils.error("ConfigurationManager.putStringAndEncrypt exception:", ex);
+    			return false;
+    		}
+    	} else {
+    		return false;
     	}
-    	if (isUserLoggedIn()) {
-        	setAppUser();
-        } else {
-        	putString(USERNAME, Commons.DEFAULT_USERNAME);
-            putString(PASSWORD, Commons.DEFAULT_PASSWORD);
-        }
-    }
-
-    public boolean isDefaultUser() {
-        return (getString(USERNAME, "").equals(Commons.DEFAULT_USERNAME) || getString(USERNAME, "").equals(getString(APP_USER)));
-    }
-
-    public void setAppUser() {
-        putString(USERNAME, getString(APP_USER));
-        putString(PASSWORD, getString(APP_USER_PWD));
-    }
-
-    public void setMyPosUser() {
-        putString(USERNAME, getString(MY_POS_USER));
-        putString(PASSWORD, getString(APP_USER_PWD));
     }
     
-    public boolean isMyPosUser() {
-    	return getString(USERNAME).equals(getString(MY_POS_USER));
+    public byte[] getEncryptedString(String value) {
+    	if (StringUtils.isNotEmpty(value)) {
+    		try {
+    			return BCTools.encrypt(value.getBytes());
+    		} catch (Exception ex) {
+    			LoggerUtils.error("ConfigurationManager.getEncryptedString exception:", ex);
+    		}
+    	}
+    	return null;
+    }
+    
+    public String getStringDecrypted(String key) {
+    	String decrypted = null;
+    	if (StringUtils.isNotEmpty(key)) {
+    		String encValue = getString(key);
+			if (encValue != null) {
+				try {
+					decrypted = new String(BCTools.decrypt(Base64.decode(encValue.getBytes())));
+					//System.out.println("Decrypted: " +  key + " = " + decrypted);
+				} catch (Exception e) {
+					LoggerUtils.error("ConfigurationManager.getDecryptedString exception: ", e);
+				}		
+			}
+    	}
+		return decrypted;
     }
     
     //End of UserManager

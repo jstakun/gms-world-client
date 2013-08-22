@@ -30,7 +30,7 @@ public class DealMapApp extends Application {
         super.onCreate();
         LoggerUtils.debug("DealsAnywhereApp.onCreate...");
         ACRA.init(this);
-        ConfigurationManager.getInstance().putString(ConfigurationManager.APP_USER, Commons.DA_APP_USER);
+        //ConfigurationManager.getInstance().putString(ConfigurationManager.APP_USER, Commons.DA_APP_USER);
         ConfigurationManager.getInstance().putString(ConfigurationManager.GA_ID, Commons.DA_GA_ID);
         ConfigurationManager.getInstance().initApp(getApplicationContext());
     }

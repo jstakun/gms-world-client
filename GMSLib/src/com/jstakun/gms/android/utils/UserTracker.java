@@ -196,9 +196,9 @@ public class UserTracker {
             String errorMessage = null;
 
             if (ConfigurationManager.getInstance().getLocation() != null) {
-                if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
-                    ConfigurationManager.getInstance().setMyPosUser();
-                }
+                //if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
+                //    ConfigurationManager.getInstance().setMyPosUser();
+                //}
 
                 if (!dryRun) {
                     try {
@@ -213,9 +213,9 @@ public class UserTracker {
                     LoggerUtils.error("Sending my location at startup is dryRun mode.");
                 }
 
-                if (ConfigurationManager.getInstance().isMyPosUser()) {
-                    ConfigurationManager.getInstance().resetUser(false);
-                }
+                //if (ConfigurationManager.getInstance().isMyPosUser()) {
+                //    ConfigurationManager.getInstance().resetUser(false);
+                //}
             }
 
             return errorMessage;
