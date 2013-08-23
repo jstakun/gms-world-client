@@ -155,9 +155,12 @@ public class RoutesManager {
         url += "&tId=" + System.currentTimeMillis();
 
         String username = ConfigurationManager.getInstance().getLoggedInUsername();
-        if (username != null) {
-            url += "&username=" + username;
-        } 
+        if (username == null) {
+            username = "anonymous";
+        }
+        
+        url += "&username=" + username;
+         
 
         if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.ROUTES_TOKEN)) {
             url += "&token=" + ConfigurationManager.getInstance().getString(ConfigurationManager.ROUTES_TOKEN);

@@ -30,6 +30,7 @@ android:id="@+id/commentText"
 android:hint="@string/commentLabel"
 android:layout_height="wrap_content"
 android:layout_width="fill_parent"
+android:maxLength="200"
 android:imeOptions="actionSend"
 android:inputType="text|textCapSentences"
 >

@@ -148,8 +148,10 @@ public class AsyncTaskManager {
         ExtendedLandmark myPos = null;
 
         if (location != null) {
-        	ConfigurationManager.getInstance().putObject(Commons.MY_POS_CODE, Commons.MY_POS_CODE);
-            myPos = landmarkManager.createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), Commons.MY_POSITION_LAYER, null, null);
+        	if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
+        		ConfigurationManager.getInstance().putObject(Commons.MY_POS_CODE, Commons.MY_POS_CODE);
+        	}
+        	myPos = landmarkManager.createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), Commons.MY_POSITION_LAYER, null, null);
             msg = landmarkManager.persistToServer(myPos, Commons.MY_POS_CODE, null);
         }
 

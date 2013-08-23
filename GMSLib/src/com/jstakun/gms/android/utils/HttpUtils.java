@@ -463,7 +463,12 @@ public class HttpUtils {
             String password = Commons.APP_USER_PWD;
             ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
             pwd = Base64.decode(password);
-    	} 
+    	} else if (ConfigurationManager.getInstance().getString(ConfigurationManager.PACKAGE_NAME, "").equals("com.jstakun.gms.android.ui.deals")) {
+    		//da request
+    		username = Commons.DA_APP_USER;
+            String password = Commons.APP_USER_PWD;
+            pwd = Base64.decode(password);
+    	}
         
     	if (StringUtils.isNotEmpty(username) && pwd != null) {
     		byte[] userpassword = concat((username + ":").getBytes(), pwd);
@@ -586,7 +591,8 @@ public class HttpUtils {
 	                LoggerUtils.error("HttpUtils.closeConnManager", e);
 	            }
 	        }
-	        httpClient = null;return null;
+	        httpClient = null;
+	        return null;
 		}
     	
     }

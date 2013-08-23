@@ -202,7 +202,7 @@
      <string name="Checkin.layer.error">Nie mog\u0119 zameldowa\u0107 do warstwy: %1$s</string>
      <string name="Location.send.error">Nie uda\u0142o si\u0119 wys\u0142a\u0107 lokalizacji z powodu: %1$s</string>
      <string name="Empty.credentials.error">Login i has\u0142o nie mog\u0105 by\u0107 puste!</string>
-     <string name="Comment.empty.error">Komentarz nie mo\u017ce by\u0107 pusty!</string>
+     <string name="Comment.empty.error">Komentarz musi mie\u0107 conajmniej 10 znak\u00f3w!</string>
      <string name="Landmark.delete.not.allowed.error">Usuwani\u0119cie miejsca jest niemo\u017cliwe w tym widoku!</string>
      <string name="SDcard.readmode.error">Karta SD jest w trybie tylko do odczytu!</string>
      <string name="SDcard.missing.error">Prosz\u0119 w\u0142o\u017cy\u0107 kart\u0119 SD!</string>

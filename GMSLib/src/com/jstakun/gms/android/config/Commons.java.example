@@ -53,7 +53,8 @@ public final class Commons {
 	
 	public static final String APP_USER_PWD = ""; 
 	public static final String MY_POS_USER = "";
-	//public static final String DA_APP_USER = "";
+	public static final String DA_APP_USER = "";
+	public static final String GMS_APP_USER = ""; 
 	
 	public static final String DEFAULT_GA_ID = "";
 	public static final String DA_GA_ID = "";

@@ -65,8 +65,12 @@ public class LoginActivity extends Activity implements OnClickListener {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".LoginAction", "", 0);
             if (loginText.getText().length() > 0 && passwordText.getText().length() > 0) {
                 AsyncTaskManager asyncTaskManager = ConfigurationManager.getInstance().getTaskManager();
-                asyncTaskManager.executeLoginTask(loginText.getText().toString(), passwordText.getText().toString());
-                finish();
+                if (asyncTaskManager != null) {
+                	asyncTaskManager.executeLoginTask(loginText.getText().toString(), passwordText.getText().toString());
+                	finish();
+                } else {
+                	intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
+                }
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Empty_credentials_error));
             }

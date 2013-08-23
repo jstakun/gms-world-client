@@ -68,7 +68,7 @@ public class CommentActivity extends Activity implements OnClickListener {
 
     public void onClick(View v) {
         if (v == commentButton) {
-            if (commentText.getText().length() > 0) {
+            if (commentText.getText().length() >= 10) {
                 AsyncTaskManager asyncTaskManager = ConfigurationManager.getInstance().getTaskManager();
                 asyncTaskManager.executeSendCommentTask(service, placeId, commentText.getText().toString(), name);
                 finish();

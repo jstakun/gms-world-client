@@ -330,26 +330,6 @@ public class ConfigurationManager {
         return null;
     }
 
-    public void saveConfiguration(boolean force) {
-        if (force || !changedConfig.isEmpty()) {
-            //PersistenceManagerFactory.getPersistenceManagerInstance().saveConfigurationFile();
-            ConfigDbDataSource cdb = getConfigDatabase();
-            if (force) {
-                cdb.putAll(configuration);
-            } else {
-                cdb.putAll(changedConfig);
-            }
-            changedConfig.clear();
-        }
-    }
-
-    private void readConfiguration() {
-        ConfigDbDataSource cdb = getConfigDatabase();
-        putAll(cdb.fetchAllConfig());
-        //PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();
-        changedConfig.clear();
-    }
-
     public String getServicesUrl() {
         if (isUserLoggedIn()) {
             return SERVER_SERVICES_URL;
@@ -518,6 +498,27 @@ public class ConfigurationManager {
     }
 
     //Database management
+    
+    public void saveConfiguration(boolean force) {
+        if (force || !changedConfig.isEmpty()) {
+            //PersistenceManagerFactory.getPersistenceManagerInstance().saveConfigurationFile();
+            ConfigDbDataSource cdb = getConfigDatabase();
+            if (force) {
+                cdb.putAll(configuration);
+            } else {
+                cdb.putAll(changedConfig);
+            }
+            changedConfig.clear();
+        }
+    }
+
+    private void readConfiguration() {
+        ConfigDbDataSource cdb = getConfigDatabase();
+        putAll(cdb.fetchAllConfig());
+        //PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();
+        changedConfig.clear();
+    }
+
     private ConfigDbDataSource getConfigDatabase() {
         ConfigDbDataSource cdb = (ConfigDbDataSource) getObject("CONFIGDB", ConfigDbDataSource.class);
         if (cdb == null) {
@@ -565,6 +566,7 @@ public class ConfigurationManager {
     }
 
     //App initialization
+    
     public void initApp(Context applicationContext) {
         setContext(applicationContext);
         String buildInfo = collectSystemInformation();
