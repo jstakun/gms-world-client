@@ -619,7 +619,7 @@ public class LandmarkManager {
             List<ExtendedLandmark> layer = getLandmarkStoreLayer(landmark.getLayer());
             layer.add(landmark);
         } else if (persist == ConfigurationManager.PERSIST_SERVER) {
-            errorMessage = persistToServer(landmark, landmark.getLayer(), null);
+            errorMessage = persistToServer(landmark, landmark.getLayer(), null, ConfigurationManager.getInstance().getLoggedInUsername());
         } else if (persist == ConfigurationManager.PERSIST_LOCAL) {
             //Local store
             List<ExtendedLandmark> layer = getLandmarkStoreLayer(Commons.LOCAL_LAYER);
@@ -688,7 +688,7 @@ public class LandmarkManager {
         }
     }
 
-    public String persistToServer(ExtendedLandmark landmark, String layer, String validityDate) {
+    public String persistToServer(ExtendedLandmark landmark, String layer, String validityDate, String username) {
 
         String errorMessage;
 
@@ -703,10 +703,8 @@ public class LandmarkManager {
         params.add(new BasicNameValuePair("altitude", Double.toString(alt)));
         params.add(new BasicNameValuePair("radius", Integer.toString(DistanceUtils.radiusInKilometer())));
 
-        String username = ConfigurationManager.getInstance().getLoggedInUsername();
-
         if (StringUtils.isNotEmpty(username)) {
-            params.add(new BasicNameValuePair("username", username));
+        	params.add(new BasicNameValuePair("username", username));
         } 
 
         if (StringUtils.isNotEmpty(layer)) {

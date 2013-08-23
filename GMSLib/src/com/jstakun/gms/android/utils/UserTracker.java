@@ -128,15 +128,16 @@ public class UserTracker {
         int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0);
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)
-                && ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
+             && ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
             ConfigurationManager.getInstance().remove(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
             ConfigurationManager.getInstance().saveConfiguration(false);
             LoggerUtils.debug("Sending my location at startup.");
-
-            //AsyncTaskExecutor.executeStringTask(new SendMyLocationTask(), null);
             new SendMyLocationTask(10).execute();
         } //else {
-        //System.out.println("Skipping sending my location at startup... -----------------------------------");
+        //	System.out.println("Skipping sending my location at startup " +
+        //			ConfigurationManager.getInstance().getInt(ConfigurationManager.TRACK_USER) + " " +
+        //			ConfigurationManager.getInstance().getInt(ConfigurationManager.SEND_MY_POS_AT_STARTUP) +
+        //			"-----------------------------------");
         //}
     }
 
@@ -216,6 +217,8 @@ public class UserTracker {
                 //if (ConfigurationManager.getInstance().isMyPosUser()) {
                 //    ConfigurationManager.getInstance().resetUser(false);
                 //}
+            } else {
+            	LoggerUtils.debug("Can't send my location is missing");
             }
 
             return errorMessage;
