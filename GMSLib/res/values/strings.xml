@@ -206,7 +206,7 @@
      <string name="Checkin.layer.error">Wrong layer for check-in: %1$s</string>
      <string name="Location.send.error">Location upload failed due to %1$s</string>
      <string name="Empty.credentials.error">Login and password can\'t be empty!</string>
-     <string name="Comment.empty.error">Comment can\'t be empty!</string>
+     <string name="Comment.empty.error">Comment must be at least 10 character long!</string>
      <string name="SDcard.readmode.error">SD card is only in read mode!</string>
      <string name="SDcard.missing.error">Please insert SD card!</string>
      <string name="Location.checkin.error">No landmarks available. Please refresh layers.</string>
@@ -220,7 +220,7 @@
      <string name="Share.no.share.apps">No share apps available!</string>
      <string name="Share.no.matching.apps">Can\'t find matching application!</string>
      <string name="Call.not.supported.error">Can\'t make a call from your device!</string>
-     <string name="Unexpected.error">Oops! Something went wrong. Please retry!</string>
+     <string name="Unexpected.error">Oops! Something went wrong. Please try again!</string>
      
      <!-- Misc -->
      <string name="Your.Location">Your location</string>
@@ -251,7 +251,7 @@
      <string name="Settings.general">General Settings</string>
      
      <!-- Packet data -->
-     <string name="Packet.data">All sent data %1$sMB\nAll received data %2$sMB</string>
+     <string name="Packet.data">All sent data: %1$sMB\nAll received data: %2$sMB\nCollecting data from date: %3$s</string>
      <string name="Clear.Counter">Clear counter</string>
      <string name="Counter.cleared">Counter cleared</string>
 
@@ -282,7 +282,7 @@
      <string name="Landmark.add.error">Landmark adding error!</string>
      <string name="Landmark.url.empty.error">Selected landmark url is empty!</string>
      <string name="Landmark.name.empty.error">Landmark name can\'t be empty!</string>
-     <string name="Landmark.opening.error">Oops! Can\'t open selected landmark. Try again!</string>
+     <string name="Landmark.opening.error">Oops! Can\'t take action on selected landmark. Try again!</string>
      <string name="Landmark.share">Share landmark</string>
      <string name="Landmark.see">See %1$s</string>
      <string name="Landmarks.day.empty">No landmarks for the day</string>
@@ -414,9 +414,4 @@
      <string name="Layer.Routes.desc">Recorded or saved routes</string>
      <string name="Layer.My.Location.desc"></string>
      <string name="Layer.Public.desc">%1$s community public landmarks</string>
-     
-     <!-- keys -->
-     <string name="googleMapsKey">xxx</string>
-     <string name="cloudmadeKey">xxx</string>
-     <string name="adUnitId">xxx</string>
 </resources>
