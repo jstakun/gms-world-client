@@ -28,7 +28,6 @@ public class GMSClientApp extends Application {
         super.onCreate();
         LoggerUtils.debug("GMSClientApp.onCreate...");
         ACRA.init(this);      
-        //ConfigurationManager.getInstance().putString(ConfigurationManager.APP_USER, Commons.DEFAULT_USERNAME);
         ConfigurationManager.getInstance().putString(ConfigurationManager.GA_ID, Commons.DEFAULT_GA_ID);
         ConfigurationManager.getInstance().initApp(getApplicationContext());    
     }

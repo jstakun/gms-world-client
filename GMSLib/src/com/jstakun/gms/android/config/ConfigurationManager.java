@@ -43,7 +43,7 @@ import com.openlapi.QualifiedCoordinates;
  *
  * @author jstakun
  */
-public class ConfigurationManager {
+public final class ConfigurationManager {
 
     private static final Map<String, ExtendedLandmark> default_locations = new HashMap<String, ExtendedLandmark>();
     private static final Map<String, String> configuration = new HashMap<String, String>();
@@ -51,6 +51,7 @@ public class ConfigurationManager {
     private static final Map<String, Object> objectCache = new HashMap<String, Object>();
     private static ConfigurationManager instance = null;
     
+    //configuration parameters
     public static final String PERSISTENCE_MANAGER = "persistenceManager";
     public static final String LOCALE = "locale";
     public static final String LOG_LEVEL = "logLevel";
@@ -117,6 +118,8 @@ public class ConfigurationManager {
     public static final String APP_URL = "appUrl";
     private static final String DEFAULT_LATITUDE = "defaultLatitude";
     private static final String DEFAULT_LONGITUDE = "defaultLongitude";
+    
+    //static values
     private static final String ON = "1";
     private static final String OFF = "0";
     public static final int GOOGLE_MAPS = 0;
@@ -135,14 +138,17 @@ public class ConfigurationManager {
     private static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + "services/";
     public static final String GMS_WORLD = "GMS World";
     public static final String LM_MARKET_URL = "http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
+    public static final int PERSIST_SERVER = 0;
+    public static final int PERSIST_LOCAL = 1;
+    public static final int PERSIST_SMS = 2;
+    public static final int TILE_SIZE = 256;
+    public static final int TEN_SECONDS = 10 * 1000;
+    public static final int FIVE_SECONDS = 5 * 1000;
+    public static final int PHRASE_SEARCH = 0;
+    public static final int WORDS_SEARCH = 1;
+    public static final int FUZZY_SEARCH = 2;
     
     //User Manager
-    //public static final String USERNAME = "username";
-    //public static final String PASSWORD = "password";
-    //public static final String APP_USER = "appUser";
-    //public static final String APP_USER_PWD = "appUserPwd";
-    //public static final String MY_POS_USER = "myPosUser";
-    
     public static final String GMS_USERNAME = "gmsUsername";
     public static final String GMS_PASSWORD = "gmsPassword";
     public static final String FB_AUTH_STATUS = "fbAuthStatus";
@@ -184,16 +190,7 @@ public class ConfigurationManager {
     public static final String GL_NAME = "glName";
     public static final String GL_GENDER = "glGender";
     public static final String GL_BIRTHDAY = "glBirthday";
-    
-    public static final int PERSIST_SERVER = 0;
-    public static final int PERSIST_LOCAL = 1;
-    public static final int PERSIST_SMS = 2;
-    public static final int TILE_SIZE = 256;
-    public static final int TEN_SECONDS = 10 * 1000;
-    public static final int FIVE_SECONDS = 5 * 1000;
-    public static final int PHRASE_SEARCH = 0;
-    public static final int WORDS_SEARCH = 1;
-    public static final int FUZZY_SEARCH = 2;
+    //
     
     private ConfigurationManager() {
     }
@@ -720,26 +717,26 @@ public class ConfigurationManager {
     //Start of User Manager
     
     public boolean isUserLoggedIn() {
-        return (getString(TWEET_AUTH_STATUS, "").equals(ON)
-                || getString(FB_AUTH_STATUS, "").equals(ON)
-                || getString(LN_AUTH_STATUS, "").equals(ON)
-                || getString(GL_AUTH_STATUS, "").equals(ON)
-                || getString(FS_AUTH_STATUS, "").equals(ON)
-                || getString(GMS_AUTH_STATUS, "").equals(ON));
-    }
-
+	    return (isOn(TWEET_AUTH_STATUS)
+	            || isOn(FB_AUTH_STATUS)
+	            || isOn(LN_AUTH_STATUS)
+	            || isOn(GL_AUTH_STATUS)
+	            || isOn(FS_AUTH_STATUS)
+	            || isOn(GMS_AUTH_STATUS));
+	}
+    
     public String getLoggedInUsername() {
-    	if (getString(GMS_AUTH_STATUS, "").equals(ON)) {
+    	if (isOn(GMS_AUTH_STATUS)) {
     		return getString(GMS_USERNAME);
-    	} else if (getString(FB_AUTH_STATUS, "").equals(ON)) {
+    	} else if (isOn(FB_AUTH_STATUS)) {
             return getString(FB_USERNAME);
-        } else if (getString(TWEET_AUTH_STATUS, "").equals(ON)) {
+        } else if (isOn(TWEET_AUTH_STATUS)) {
             return getString(TWEET_USERNAME);
-        } else if (getString(LN_AUTH_STATUS, "").equals(ON)) {
+        } else if (isOn(LN_AUTH_STATUS)) {
             return getString(LN_USERNAME);
-        } else if (getString(GL_AUTH_STATUS, "").equals(ON)) {
+        } else if (isOn(GL_AUTH_STATUS)) {
             return getString(GL_USERNAME);
-        } else if (getString(FS_AUTH_STATUS, "").equals(ON)) {
+        } else if (isOn(FS_AUTH_STATUS)) {
             return getString(FS_USERNAME);
         } 
 
@@ -748,42 +745,42 @@ public class ConfigurationManager {
 
     public List<String> getLoginItems(boolean withSuffix) {
         List<String> items = new ArrayList<String>();
-        if (getString(FB_AUTH_STATUS, "").equals(OFF)) {
+        if (isOff(FB_AUTH_STATUS)) {
             if (withSuffix) {
                 items.add(OAuthServiceFactory.getServiceName(Commons.FACEBOOK) + ";" + Commons.FACEBOOK);
             } else {
                 items.add(OAuthServiceFactory.getServiceName(Commons.FACEBOOK));
             }
         }
-        if (getString(FS_AUTH_STATUS, "").equals(OFF)) {
+        if (isOff(FS_AUTH_STATUS)) {
             if (withSuffix) {
                 items.add(OAuthServiceFactory.getServiceName(Commons.FOURSQUARE) + ";" + Commons.FOURSQUARE);
             } else {
                 items.add(OAuthServiceFactory.getServiceName(Commons.FOURSQUARE));
             }
         }
-        if (getString(GL_AUTH_STATUS, "").equals(OFF)) {
+        if (isOff(GL_AUTH_STATUS)) {
             if (withSuffix) {
                 items.add(OAuthServiceFactory.getServiceName(Commons.GOOGLE) + ";" + Commons.GOOGLE);
             } else {
                 items.add(OAuthServiceFactory.getServiceName(Commons.GOOGLE));
             }
         }
-        if (getString(GMS_AUTH_STATUS, "").equals(OFF)) {
+        if (isOff(GMS_AUTH_STATUS)) {
             if (withSuffix) {
                 items.add(GMS_WORLD + ";");
             } else {
                 items.add(GMS_WORLD);
             }
         }
-        if (getString(TWEET_AUTH_STATUS, "").equals(OFF)) {
+        if (isOff(TWEET_AUTH_STATUS)) {
             if (withSuffix) {
                 items.add(OAuthServiceFactory.getServiceName(Commons.TWITTER) + ";" + Commons.TWITTER);
             } else {
                 items.add(OAuthServiceFactory.getServiceName(Commons.TWITTER));
             }
         }
-        if (getString(LN_AUTH_STATUS, "").equals(OFF)) {
+        if (isOff(LN_AUTH_STATUS)) {
             if (withSuffix) {
                 items.add(OAuthServiceFactory.getServiceName(Commons.LINKEDIN) + ";" + Commons.LINKEDIN);
             } else {
@@ -793,34 +790,7 @@ public class ConfigurationManager {
         return items;
     }
 
-    //public void resetUser() {
-    //	if (isUserLoggedIn()) {
-    //    	setAppUser();
-    //    } else {
-    //    	putString(USERNAME, Commons.DEFAULT_USERNAME);
-    //        putString(PASSWORD, Commons.DEFAULT_PASSWORD);
-    //    }
-    //}
-
-    //public boolean isDefaultUser() {
-    //    return (getString(USERNAME, "").equals(Commons.DEFAULT_USERNAME) || getString(USERNAME, "").equals(getString(APP_USER)));
-    //}
-
-    //public void setAppUser() {
-    //    putString(USERNAME, getString(APP_USER));
-    //    putString(PASSWORD, getString(APP_USER_PWD));
-    //}
-
-    //public void setMyPosUser() {
-    //    putString(USERNAME, getString(MY_POS_USER));
-    //    putString(PASSWORD, getString(APP_USER_PWD));
-    //}
-    
-    //public boolean isMyPosUser() {
-    //	return getString(USERNAME).equals(getString(MY_POS_USER));
-    //}
-    
-    public boolean putStringAndEncrypt(String key, String value) {
+     public boolean putStringAndEncrypt(String key, String value) {
     	if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
     		try {
     			String tmp = new String(Base64.encode(BCTools.encrypt(value.getBytes())));
@@ -863,6 +833,6 @@ public class ConfigurationManager {
     	}
 		return decrypted;
     }
-    
+
     //End of UserManager
 }

@@ -24,7 +24,7 @@ import com.jstakun.gms.android.utils.Token;
  *
  * @author jstakun
  */
-public class FoursquareUtils extends AbstractSocialUtils {
+public final class FoursquareUtils extends AbstractSocialUtils {
 
     public FoursquareUtils() {
     	super();

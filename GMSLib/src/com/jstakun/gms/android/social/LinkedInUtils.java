@@ -23,7 +23,7 @@ import com.jstakun.gms.android.utils.Token;
  * 
  * @author jstakun
  */
-public class LinkedInUtils extends AbstractSocialUtils {
+public final class LinkedInUtils extends AbstractSocialUtils {
 
 	public void storeAccessToken(Token accessToken) {
 		/*try {

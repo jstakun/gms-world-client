@@ -138,9 +138,9 @@ public class SkyhookUtils {
     }
 
     public void enableMyLocation() {
-        byte[] token = xps.getOfflineToken(auth, Commons.SKYHOOK_KEY);
+        byte[] token = xps.getOfflineToken(auth, Commons.SKYHOOK_KEY.getBytes());
         if (token != null) {
-            xps.getOfflineLocation(auth, Commons.SKYHOOK_KEY, token, oneTimeCallback);
+            xps.getOfflineLocation(auth, Commons.SKYHOOK_KEY.getBytes(), token, oneTimeCallback);
         } else {
             LoggerUtils.debug("WPS offline token missing...");
         }

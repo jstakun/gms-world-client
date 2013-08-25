@@ -19,7 +19,7 @@ import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.Token;
 
-public class TwitterUtils extends AbstractSocialUtils {
+public final class TwitterUtils extends AbstractSocialUtils {
 
     public void storeAccessToken(Token accessToken) {
     	/*try {

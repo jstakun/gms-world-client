@@ -25,7 +25,7 @@ import com.jstakun.gms.android.utils.Token;
  * 
  * @author jstakun
  */
-public class GoogleUtils extends AbstractSocialUtils {
+public final class GoogleUtils extends AbstractSocialUtils {
 
 	public void storeAccessToken(Token accessToken) {
 		//String encToken = null, encSecret = null;

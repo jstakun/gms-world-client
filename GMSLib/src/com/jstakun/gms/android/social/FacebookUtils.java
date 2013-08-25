@@ -25,7 +25,7 @@ import com.jstakun.gms.android.utils.Token;
  * 
  * @author jstakun
  */
-public class FacebookUtils extends AbstractSocialUtils {
+public final class FacebookUtils extends AbstractSocialUtils {
 
 	public static final String FB_OAUTH_ERROR = "Facebook authentication error";
 

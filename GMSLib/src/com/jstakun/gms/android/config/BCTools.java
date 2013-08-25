@@ -24,7 +24,7 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.util.encoders.Hex;
 
 
-public class BCTools {
+public final class BCTools {
 
     private static MessageDigest md;
 
@@ -43,7 +43,7 @@ public class BCTools {
     protected static byte[] decrypt(byte[] cipher) throws Exception {
 
         PKCS12ParametersGenerator pGen = new PKCS12ParametersGenerator(new SHA1Digest());
-        pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(Commons.bc_password), Commons.bc_salt, 128);
+        pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(Commons.BC_PASSWORD.toCharArray()), Commons.BC_SALT.getBytes(), 128);
         ParametersWithIV paramsWithIV = (ParametersWithIV) pGen.generateDerivedParameters(192, 64);
 
         DESedeEngine des = new DESedeEngine();
@@ -58,7 +58,7 @@ public class BCTools {
     protected static byte[] encrypt(byte[] plain) throws Exception {
 
         PKCS12ParametersGenerator pGen = new PKCS12ParametersGenerator(new SHA1Digest());
-        pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(Commons.bc_password), Commons.bc_salt, 128);
+        pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(Commons.BC_PASSWORD.toCharArray()), Commons.BC_SALT.getBytes(), 128);
         ParametersWithIV paramsWithIV = (ParametersWithIV) pGen.generateDerivedParameters(192, 64);
 
         DESedeEngine des = new DESedeEngine();
