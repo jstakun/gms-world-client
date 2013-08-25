@@ -131,10 +131,10 @@ public final class ConfigurationManager {
     public static final String SSL_SERVER_URL = "https://" + SERVER_HOST + "/";
     public static final String SHOW_LANDMARK_URL = SERVER_URL + "showLandmark/";
     public static final String SHOW_LOCATION_URL = SERVER_URL + "showLocation.do";
-    public static final String CRASH_REPORT_URL = SERVER_URL + "crashReport";
     public static final String BITLY_URL = "http://bit.ly/";
     public static final String REGISTER_URL = SERVER_URL + "m/register.jsp";
     public static final String SERVER_SERVICES_URL = SERVER_URL + "services/";
+    public static final String CRASH_REPORT_URL = SERVER_SERVICES_URL + "crashReport";
     private static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + "services/";
     public static final String GMS_WORLD = "GMS World";
     public static final String LM_MARKET_URL = "http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
@@ -152,7 +152,6 @@ public final class ConfigurationManager {
     public static final String GMS_USERNAME = "gmsUsername";
     public static final String GMS_PASSWORD = "gmsPassword";
     public static final String FB_AUTH_STATUS = "fbAuthStatus";
-    public static final String FB_TOKEN = "fbToken";
     public static final String FB_AUTH_KEY = "fbauth_key";
     public static final String FB_AUTH_SECRET_KEY = "fbauth_secret_key";
     public static final String FB_SEND_STATUS = "fbSendStatus";

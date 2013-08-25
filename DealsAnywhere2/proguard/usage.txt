@@ -2752,6 +2752,8 @@ com.google.common.util.concurrent.UncheckedExecutionException
 com.google.common.util.concurrent.UncheckedTimeoutException
 com.google.common.util.concurrent.Uninterruptibles
 com.google.common.util.concurrent.package-info
+com.jstakun.gms.android.config.BCTools:
+    27:27:public BCTools()
 com.jstakun.gms.android.config.Commons:
     public static final java.lang.String LOCAL_LAYER
     public static final java.lang.String MY_POSITION_LAYER
@@ -2795,16 +2797,15 @@ com.jstakun.gms.android.config.Commons:
     public static final java.lang.String FACEBOOK
     public static final java.lang.String FOURSQUARE
     public static final java.lang.String TAPFORTAP_ID
-    public static final java.lang.String DEFAULT_USERNAME
-    public static final java.lang.String DEFAULT_PASSWORD
-    public static final java.lang.String APP_USER_PWD
     public static final java.lang.String MY_POS_USER
+    public static final java.lang.String GMS_APP_USER
     public static final java.lang.String DA_APP_USER
+    public static final java.lang.String APP_USER_PWD
     public static final java.lang.String DEFAULT_GA_ID
     public static final java.lang.String DA_GA_ID
     public static final java.lang.String SKYHOOK_USERNAME
     public static final java.lang.String SHYHOOK_PWD
-    69:69:private Commons()
+    68:68:private Commons()
 com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String PERSISTENCE_MANAGER
     public static final java.lang.String LOCALE
@@ -2816,6 +2817,7 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String MAP_PROVIDER
     public static final java.lang.String PACKET_DATA_SENT
     public static final java.lang.String PACKET_DATA_RECEIVED
+    public static final java.lang.String PACKET_DATA_DATE
     public static final java.lang.String MAP_RELOAD
     public static final java.lang.String BLUETOOTH_ENABLED
     public static final java.lang.String FOLLOW_MY_POSITION
@@ -2859,6 +2861,38 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String USE_COUNT
     public static final java.lang.String APP_RATED
     public static final java.lang.String AUTO_CHECKIN_REPEAT_TIME
+    public static final java.lang.String GMS_AUTH_STATUS
+    public static final java.lang.String SCREEN_SIZE
+    public static final java.lang.String USER_EMAIL
+    public static final java.lang.String MAP_CENTER
+    public static final java.lang.String AUTO_CHECKIN
+    public static final java.lang.String MIN_CHECKIN_DISTANCE
+    public static final java.lang.String CHECKIN_TIME_INTERVAL
+    public static final java.lang.String MAX_CURRENT_DISTANCE
+    public static final java.lang.String GA_ID
+    public static final java.lang.String APP_URL
+    private static final java.lang.String DEFAULT_LATITUDE
+    private static final java.lang.String DEFAULT_LONGITUDE
+    private static final java.lang.String ON
+    private static final java.lang.String OFF
+    public static final int GOOGLE_MAPS
+    public static final int OSM_MAPS
+    public static final int OSM_TILES
+    private static final java.lang.String DISABLED
+    public static final java.lang.String SERVER_HOST
+    public static final java.lang.String SERVER_URL
+    public static final java.lang.String SSL_SERVER_URL
+    public static final java.lang.String SHOW_LANDMARK_URL
+    public static final java.lang.String SHOW_LOCATION_URL
+    public static final java.lang.String CRASH_REPORT_URL
+    public static final java.lang.String BITLY_URL
+    public static final java.lang.String REGISTER_URL
+    public static final java.lang.String SERVER_SERVICES_URL
+    private static final java.lang.String SSL_SERVER_SERVICES_URL
+    public static final java.lang.String GMS_WORLD
+    public static final java.lang.String LM_MARKET_URL
+    public static final java.lang.String GMS_USERNAME
+    public static final java.lang.String GMS_PASSWORD
     public static final java.lang.String FB_AUTH_STATUS
     public static final java.lang.String FB_TOKEN
     public static final java.lang.String FB_AUTH_KEY
@@ -2898,41 +2932,6 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String GL_NAME
     public static final java.lang.String GL_GENDER
     public static final java.lang.String GL_BIRTHDAY
-    public static final java.lang.String GMS_AUTH_STATUS
-    public static final java.lang.String SCREEN_SIZE
-    public static final java.lang.String USER_EMAIL
-    public static final java.lang.String MAP_CENTER
-    public static final java.lang.String AUTO_CHECKIN
-    public static final java.lang.String MIN_CHECKIN_DISTANCE
-    public static final java.lang.String CHECKIN_TIME_INTERVAL
-    public static final java.lang.String MAX_CURRENT_DISTANCE
-    public static final java.lang.String GA_ID
-    public static final java.lang.String APP_URL
-    private static final java.lang.String DEFAULT_LATITUDE
-    private static final java.lang.String DEFAULT_LONGITUDE
-    private static final java.lang.String ON
-    private static final java.lang.String OFF
-    public static final int GOOGLE_MAPS
-    public static final int OSM_MAPS
-    public static final int OSM_TILES
-    private static final java.lang.String DISABLED
-    public static final java.lang.String SERVER_HOST
-    public static final java.lang.String SERVER_URL
-    public static final java.lang.String SSL_SERVER_URL
-    public static final java.lang.String SHOW_LANDMARK_URL
-    public static final java.lang.String SHOW_LOCATION_URL
-    public static final java.lang.String CRASH_REPORT_URL
-    public static final java.lang.String BITLY_URL
-    public static final java.lang.String REGISTER_URL
-    public static final java.lang.String SERVER_SERVICES_URL
-    private static final java.lang.String SSL_SERVER_SERVICES_URL
-    public static final java.lang.String GMS_WORLD
-    public static final java.lang.String LM_MARKET_URL
-    public static final java.lang.String USERNAME
-    public static final java.lang.String PASSWORD
-    public static final java.lang.String APP_USER
-    private static final java.lang.String APP_USER_PWD
-    private static final java.lang.String MY_POS_USER
     public static final int PERSIST_SERVER
     public static final int PERSIST_LOCAL
     public static final int PERSIST_SMS
@@ -2942,9 +2941,8 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final int PHRASE_SEARCH
     public static final int WORDS_SEARCH
     public static final int FUZZY_SEARCH
-    271:271:public java.util.Map getConfiguration()
-    492:495:private java.util.List getObjectList(java.lang.String,java.lang.Class)
-    499:499:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
+    272:272:public java.util.Map getConfiguration()
+    480:483:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
 com.jstakun.gms.android.data.AndroidPersistenceManager:
     private static final java.lang.String CONFIGURATION_FILE
     private static final java.lang.String MAP_FILE
@@ -3493,6 +3491,7 @@ com.jstakun.gms.android.landmarks.ExtendedLandmark:
     123:124:public void setCreationDate(long)
     140:141:public void setLatitudeE6(int)
     157:158:public void setLongitudeE6(int)
+com.jstakun.gms.android.landmarks.HotwireReader
 com.jstakun.gms.android.landmarks.KMLParser:
     private static final java.lang.String KML2_2NSO
     private static final java.lang.String KML2_2NS
@@ -3501,8 +3500,8 @@ com.jstakun.gms.android.landmarks.KMLParser:
 com.jstakun.gms.android.landmarks.LandmarkFactory:
     15:15:public LandmarkFactory()
 com.jstakun.gms.android.landmarks.LandmarkManager:
-    998:999:public void setSelectedLandmark(com.jstakun.gms.android.landmarks.ExtendedLandmark,double)
-    1002:1002:public boolean hasSelectedLandmark()
+    990:991:public void setSelectedLandmark(com.jstakun.gms.android.landmarks.ExtendedLandmark,double)
+    994:994:public boolean hasSelectedLandmark()
 com.jstakun.gms.android.landmarks.LandmarkPaintManager:
     40:41:protected void addLandmarkToFocusQueue(com.jstakun.gms.android.landmarks.ExtendedLandmark)
     83:83:protected boolean hasSelectedLandmark()
@@ -3639,10 +3638,10 @@ com.jstakun.gms.android.ui.AlertDialogBuilder:
     public static final java.lang.String OPEN_DIALOG
 com.jstakun.gms.android.ui.AsyncTaskManager:
     public static final int SHOW_ROUTE_MESSAGE
-    75:89:public void cancelTask(java.lang.Integer,boolean)
-    94:100:public void cancelAll()
-    108:109:public void cancelNotification(int)
-    423:430:public void executeClearCacheTask(java.lang.String)
+    73:87:public void cancelTask(java.lang.Integer,boolean)
+    92:98:public void cancelAll()
+    106:107:public void cancelNotification(int)
+    430:437:public void executeClearCacheTask(java.lang.String)
 com.jstakun.gms.android.ui.AsyncTaskManager$ClearCacheTask
 com.jstakun.gms.android.ui.CheckinManager$CheckinCandidatePredicate:
     private static final long ONE_HOUR
@@ -3681,26 +3680,26 @@ com.jstakun.gms.android.ui.Intents:
     public static final int INTENT_AUTO_CHECKIN
     public static final int INTENT_CALENDAR
     private static final java.lang.String SCAN_INTENT
-    163:164:public void startAddLandmarkActivity()
-    167:168:public void startAddLayerActivity()
-    171:172:public void startBlogeoActivity()
-    175:187:public boolean startRouteLoadingActivity()
-    191:203:public boolean startFilesLoadingActivity()
-    207:208:public void startSocialListActivity()
-    211:212:public void startLayersListActivity()
-    230:233:public void startRegisterActivity()
-    248:270:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
-    285:288:public boolean isIntentAvailable(java.lang.String)
-    292:300:public void startQrCodeCheckinActivity(double[])
-    306:307:public void startLocationCheckinActivity(double[])
-    328:347:public void startAutoCheckinListActivity(double[])
-    411:412:public void startFriendsCheckinsIntent(double[])
-    468:475:public void startAutoCheckinBroadcast()
-    478:482:public void stopAutoCheckinService()
-    485:498:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
-    502:524:public void commentButtonPressedAction()
-    527:532:public void saveRouteAction()
-    859:863:public void setRepeatingAlarm(java.lang.Class)
+    164:165:public void startAddLandmarkActivity()
+    168:169:public void startAddLayerActivity()
+    172:173:public void startBlogeoActivity()
+    176:188:public boolean startRouteLoadingActivity()
+    192:204:public boolean startFilesLoadingActivity()
+    208:209:public void startSocialListActivity()
+    212:213:public void startLayersListActivity()
+    231:234:public void startRegisterActivity()
+    249:271:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
+    286:289:public boolean isIntentAvailable(java.lang.String)
+    293:301:public void startQrCodeCheckinActivity(double[])
+    307:308:public void startLocationCheckinActivity(double[])
+    329:348:public void startAutoCheckinListActivity(double[])
+    412:413:public void startFriendsCheckinsIntent(double[])
+    469:476:public void startAutoCheckinBroadcast()
+    479:483:public void stopAutoCheckinService()
+    486:499:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
+    503:525:public void commentButtonPressedAction()
+    528:533:public void saveRouteAction()
+    861:865:public void setRepeatingAlarm(java.lang.Class)
 com.jstakun.gms.android.ui.LandmarkListActivity:
     public static final java.lang.String LANDMARK
 com.jstakun.gms.android.ui.LayerListActivity:
@@ -3833,6 +3832,7 @@ com.jstakun.gms.android.ui.lib.R$drawable:
     public static final int gotourl
     public static final int grey_star
     public static final int hot_deals
+    public static final int hotwire
     public static final int ic_dialog_alert
     public static final int ic_launcher
     public static final int ic_menu_login
@@ -3943,6 +3943,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int Landmark_delete_not_allowed_error
     public static final int Landmark_distance_max
     public static final int Landmarks_day_empty
+    public static final int Layer_Hotwire_desc
     public static final int Layer_Loading_1
     public static final int Layer_My_Location_desc
     public static final int Layer_Upcoming_desc
@@ -3980,7 +3981,6 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int Social_send_post_success
     public static final int Task_finished
     public static final int Task_stopped
-    public static final int Unexpected_error
     public static final int Zoom_info
     public static final int adUnitId
     public static final int addButton
@@ -4089,8 +4089,6 @@ com.jstakun.gms.android.utils.AdsUtils:
     private static final int TAPFORTAP
     private static final int selected
     16:16:public AdsUtils()
-com.jstakun.gms.android.utils.BCTools:
-    28:28:public BCTools()
 com.jstakun.gms.android.utils.BoundingBox:
     19:19:public boolean equals(com.jstakun.gms.android.utils.BoundingBox)
 com.jstakun.gms.android.utils.DateTimeUtils:
@@ -4137,7 +4135,7 @@ com.jstakun.gms.android.utils.HttpUtils:
     private static final java.lang.String LNG_HEADER
     private static final int RETRY_COUNT
 com.jstakun.gms.android.utils.HttpUtils$SSLSocketFactoryHelper:
-    524:524:private HttpUtils$SSLSocketFactoryHelper()
+    564:564:private HttpUtils$SSLSocketFactoryHelper()
 com.jstakun.gms.android.utils.LayerPoint:
     private static final int INTERVAL
 com.jstakun.gms.android.utils.Locale:
@@ -5368,49 +5366,6 @@ org.acra.util.HttpUtils:
 org.acra.util.Installation:
     private static final java.lang.String INSTALLATION
     26:26:public Installation()
-org.apache.commons.codec.BinaryDecoder
-org.apache.commons.codec.BinaryEncoder
-org.apache.commons.codec.CharEncoding
-org.apache.commons.codec.Decoder
-org.apache.commons.codec.DecoderException
-org.apache.commons.codec.Encoder
-org.apache.commons.codec.EncoderException
-org.apache.commons.codec.StringDecoder
-org.apache.commons.codec.StringEncoder
-org.apache.commons.codec.StringEncoderComparator
-org.apache.commons.codec.binary.Base32
-org.apache.commons.codec.binary.Base32InputStream
-org.apache.commons.codec.binary.Base32OutputStream
-org.apache.commons.codec.binary.Base64
-org.apache.commons.codec.binary.Base64InputStream
-org.apache.commons.codec.binary.Base64OutputStream
-org.apache.commons.codec.binary.BaseNCodec
-org.apache.commons.codec.binary.BaseNCodecInputStream
-org.apache.commons.codec.binary.BaseNCodecOutputStream
-org.apache.commons.codec.binary.BinaryCodec
-org.apache.commons.codec.binary.Hex
-org.apache.commons.codec.binary.StringUtils
-org.apache.commons.codec.digest.DigestUtils
-org.apache.commons.codec.language.AbstractCaverphone
-org.apache.commons.codec.language.Caverphone
-org.apache.commons.codec.language.Caverphone1
-org.apache.commons.codec.language.Caverphone2
-org.apache.commons.codec.language.ColognePhonetic
-org.apache.commons.codec.language.ColognePhonetic$CologneBuffer
-org.apache.commons.codec.language.ColognePhonetic$CologneInputBuffer
-org.apache.commons.codec.language.ColognePhonetic$CologneOutputBuffer
-org.apache.commons.codec.language.DoubleMetaphone
-org.apache.commons.codec.language.DoubleMetaphone$DoubleMetaphoneResult
-org.apache.commons.codec.language.Metaphone
-org.apache.commons.codec.language.RefinedSoundex
-org.apache.commons.codec.language.Soundex
-org.apache.commons.codec.language.SoundexUtils
-org.apache.commons.codec.net.BCodec
-org.apache.commons.codec.net.QCodec
-org.apache.commons.codec.net.QuotedPrintableCodec
-org.apache.commons.codec.net.RFC1522Codec
-org.apache.commons.codec.net.URLCodec
-org.apache.commons.codec.net.Utils
 org.apache.commons.lang.ArrayUtils:
     public static final int INDEX_NOT_FOUND
     static java.lang.Class class$java$lang$Object

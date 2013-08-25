@@ -17,8 +17,10 @@ import org.acra.annotation.ReportsCrashes;
  *
  * @author jstakun
  */
-@ReportsCrashes(formKey = "", // will not be used
+@ReportsCrashes(formKey = "", 
 formUri = ConfigurationManager.CRASH_REPORT_URL,
+formUriBasicAuthLogin = Commons.GMS_APP_USER,
+formUriBasicAuthPassword = Commons.APP_USER_PWD,
 mode = ReportingInteractionMode.TOAST,
 resToastText = R.string.Crash_error)
 public class GMSClientApp extends Application {

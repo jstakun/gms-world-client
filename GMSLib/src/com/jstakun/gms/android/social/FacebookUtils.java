@@ -93,8 +93,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 
 	public void logout() {
 		ConfigurationManager.getInstance().removeAll(
-				new String[] { ConfigurationManager.FB_TOKEN,
-						ConfigurationManager.FB_AUTH_KEY,
+				new String[] { ConfigurationManager.FB_AUTH_KEY,
 						ConfigurationManager.FB_AUTH_SECRET_KEY,
 						ConfigurationManager.FB_USERNAME,
 						ConfigurationManager.FB_GENDER,
