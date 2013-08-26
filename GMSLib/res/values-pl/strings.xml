@@ -233,7 +233,8 @@
      <string name="New.version.short.message">Nowa wersja</string>
      <string name="New.version.long.message">Nowa wersja aplikacji jest dost\u0119pna. Czy chcesz teraz zaktualizowa\u0107?</string>
      <string name="search_hint">Szukaj miejsca w okolicy</string>
-
+     <string name="Migation.1086.message">Wylogowano ze wszystkich sieci spo\u0142eczno\u015bciowych. To by\u0142a jednorazowa operacja spowodowana aktualizacj\u0105 aplikacji. Prosz\u0119 si\u0119 zalogowa\u0107 ponownie!</string>
+     
      <!-- Auto Check-In alert -->
      <string name="yesButton">Tak</string>
      <string name="noButton">Nie</string>

@@ -11,14 +11,13 @@ import java.util.Map;
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
-import org.bouncycastle.util.encoders.Base64;
 
 import android.app.Application;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.StringUtil;
 
 /**
  *
@@ -36,9 +35,7 @@ public class DealMapApp extends Application {
         LoggerUtils.debug("DealsAnywhereApp.onCreate...");
         ACRA.init(this);
         Map<String, String> headers = new HashMap<String, String>();
-        byte[] userpassword = StringUtil.concat((Commons.DA_APP_USER + ":").getBytes(), Base64.decode(Commons.APP_USER_PWD));
-		String encodedAuthorization = new String(Base64.encode(userpassword));
-        headers.put("Authorization", "Basic " + encodedAuthorization);
+        headers.put("Authorization", HttpUtils.getAuthorizationHeader(Commons.DA_APP_USER, true, Commons.APP_USER_PWD, true));
         ACRA.getConfig().setHttpHeaders(headers);ConfigurationManager.getInstance().initApp(getApplicationContext());
     }
     

@@ -98,7 +98,6 @@ public class HttpUtils {
 
             httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schemeRegistry), params);
 
-            //httpClient = AndroidHttpClient.newInstance(buildInfo, ConfigurationManager.getInstance().getContext());
         }
 
         return httpClient;
@@ -435,47 +434,60 @@ public class HttpUtils {
     }
 
     private static void setBasicAuth(HttpRequest request) throws IOException {
-    	String username = null;
-    	byte[] pwd = null;
+    	String username = null, password = null;
+    	boolean decodePassword = true, decodeUsername = true;
     	
     	if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_USERNAME, String.class) && 
     			ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_PASSWORD, String.class)) {
         	//user in process of login to gms world
     		username = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_USERNAME, String.class);
-    		String password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
-            //if (password != null) {
-            //	pwd = ConfigurationManager.getInstance().getEncryptedString(password);           
-            //}
-    		pwd = password.getBytes();
+    		password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
+    		decodeUsername = false;
+    		decodePassword = false;
         } else if (ConfigurationManager.getInstance().isUserLoggedIn()) {
     		//user is logged in
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
         		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);
-        		String password = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_PASSWORD);
-        		pwd = Base64.decode(password);
+        		password = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_PASSWORD);
+        		decodeUsername = false;
         	} else {
         		username = Commons.GMS_APP_USER;
-                String password = Commons.APP_USER_PWD;
-                pwd = Base64.decode(password);
+                password = Commons.APP_USER_PWD;
         	}
     	} else if (ConfigurationManager.getInstance().containsObject(Commons.MY_POS_CODE, String.class)) {
     		//mypos request
     		username = Commons.MY_POS_USER;
-            String password = Commons.APP_USER_PWD;
+            password = Commons.APP_USER_PWD;
             ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
-            pwd = Base64.decode(password);
-    	} else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) == 1) {
+        } else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) == 1) {
     		//da app request
     		username = Commons.DA_APP_USER;
-            String password = Commons.APP_USER_PWD;
-            pwd = Base64.decode(password);
+            password = Commons.APP_USER_PWD;
     	}
         
-    	if (StringUtils.isNotEmpty(username) && pwd != null) {
-    		byte[] userpassword = StringUtil.concat((username + ":").getBytes(), pwd);
-    		String encodedAuthorization = new String(Base64.encode(userpassword));
-    		request.addHeader("Authorization", "Basic " + encodedAuthorization);
+    	if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
+    		request.addHeader("Authorization", getAuthorizationHeader(username, decodeUsername, password, decodePassword));
     	}
+    }
+    
+    public static String getAuthorizationHeader(String username, boolean decodeUsername, String password, boolean decodePassword) {
+    	byte[] usr, pwd;
+    	
+    	if (decodeUsername) {
+    	   usr = Base64.decode(username);
+    	} else {
+    	   usr = username.getBytes();	
+    	}
+    	
+    	if (decodePassword) {
+    		pwd = Base64.decode(password);
+    	} else {
+    		pwd = password.getBytes();
+    	}
+    		
+    	byte[] userpassword = StringUtil.concat(StringUtil.concat(usr, ":".getBytes()), pwd);
+		String encodedAuthorization = new String(Base64.encode(userpassword));
+		return "Basic " + encodedAuthorization;
     }
 
     public static void closeConnManager() {

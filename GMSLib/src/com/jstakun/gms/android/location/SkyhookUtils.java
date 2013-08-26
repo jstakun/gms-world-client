@@ -4,6 +4,8 @@
  */
 package com.jstakun.gms.android.location;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
@@ -34,7 +36,8 @@ import com.skyhookwireless.wps.XPS;
  */
 public class SkyhookUtils {
 
-    private static final WPSAuthentication auth = new WPSAuthentication(Commons.SKYHOOK_USERNAME, Commons.SHYHOOK_REALM);
+    private static final WPSAuthentication auth = new WPSAuthentication(new String(Base64.decode(Commons.SKYHOOK_USERNAME)), 
+    		new String(Base64.decode(Commons.SHYHOOK_REALM)));
     private final GMSRegistrationCallback regCallback = new GMSRegistrationCallback();
     private XPS xps;
     private boolean isRegistered, hasRunOnFirstFix, isRegistering;

@@ -942,35 +942,42 @@ public class Intents {
         	}
         
         	if (versionCode == 1086 || versionCode == 86) { //2.0.7
+        		boolean notify = false;
         		//logout user due to user management changes
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS) && ConfigurationManager.getInstance().containsKey("username") && ConfigurationManager.getInstance().containsKey("password")) {
         			ConfigurationManager.getInstance().removeAll(new String[]{"username", "password"});
         			ConfigurationManager.getInstance().setOff(ConfigurationManager.GMS_AUTH_STATUS);
+        			notify = true;
         		}
         		
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
                     OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).logout();
+                    notify = true;
                 } 
         		
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TWEET_AUTH_STATUS)) {
         			OAuthServiceFactory.getSocialUtils(Commons.TWITTER).logout();
+        			notify = true;
                 } 
         		
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.LN_AUTH_STATUS)) {
         			OAuthServiceFactory.getSocialUtils(Commons.LINKEDIN).logout();
+        			notify = true;
                 } 
         		
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
         			OAuthServiceFactory.getSocialUtils(Commons.GOOGLE).logout();
+        			notify = true;
                 } 
         		
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
         			OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).logout();
+        			notify = true;
                 } 
         	    
-        		message = "You have been logged out from all social networks. " +
-        	 		   "This is one time operation due to changes in our application. " +
-        	 		   "Please login once again and enjoy the application!";
+        		if (notify) {
+        			message = Locale.getMessage(R.string.Migation_1086_message);
+        		}	
         	}
         	
         	ConfigurationManager.getInstance().putInteger(ConfigurationManager.BUILD_VERSION, versionCode);
