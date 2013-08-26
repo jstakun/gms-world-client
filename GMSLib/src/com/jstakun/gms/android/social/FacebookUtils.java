@@ -84,11 +84,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 	
 	protected Token loadAccessToken() {
 		String token = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.FB_AUTH_KEY);
-		if (null != token) {
-			return new Token(token, null);
-		} else {
-			return null;
-		}
+		return new Token(token, null);
 	}
 
 	public void logout() {

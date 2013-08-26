@@ -328,7 +328,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             dialogManager.showAlertDialog(type, arrayAdapter, null);
         }
 
-        intents.checkAppVersion();
+        intents.onAppVersionChanged();
 
         if (ConfigurationManager.getInstance().removeObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class) != null) {
             GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);

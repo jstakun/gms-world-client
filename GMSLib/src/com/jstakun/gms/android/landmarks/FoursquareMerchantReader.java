@@ -35,7 +35,12 @@ public class FoursquareMerchantReader extends AbstractJsonReader {
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
                 ISocialUtils fsUtils = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE);
                 String token = fsUtils.getAccessToken().getToken();
-                url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "foursquareMerchant?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
+                if (token != null) {
+                	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "foursquareMerchant?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
+                } else {
+                	LoggerUtils.error("FoursquareMerchantReader exception: token is null!");
+                    url = ConfigurationManager.SERVER_URL + "foursquareMerchant?" + query_string;
+                }
             } else {
                 url = ConfigurationManager.SERVER_URL + "foursquareMerchant?" + query_string;
             }
@@ -51,7 +56,7 @@ public class FoursquareMerchantReader extends AbstractJsonReader {
             return parser.parse(url, landmarks, Commons.FOURSQUARE_MERCHANT_LAYER, FOURSQUARE_PREFIX, -1, -1, task, true, limit);
 
         } catch (Exception e) {
-            LoggerUtils.error("FoursquareMerchantReader error: ", e);
+            LoggerUtils.error("FoursquareMerchantReader exception: ", e);
         }
         return null;
     }

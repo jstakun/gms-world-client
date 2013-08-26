@@ -363,7 +363,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             dialogManager.showAlertDialog(type, arrayAdapter, null);
         }
 
-        intents.checkAppVersion();
+        intents.onAppVersionChanged();
 
         if (ConfigurationManager.getInstance().removeObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class) != null) {
             IGeoPoint mapCenter = (IGeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, IGeoPoint.class);

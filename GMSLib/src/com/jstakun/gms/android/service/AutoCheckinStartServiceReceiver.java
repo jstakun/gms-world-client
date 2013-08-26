@@ -17,7 +17,7 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 
 public class AutoCheckinStartServiceReceiver extends BroadcastReceiver {
 
-	private Context context;
+	/*private Context context;
 	private final Handler locationHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -30,7 +30,7 @@ public class AutoCheckinStartServiceReceiver extends BroadcastReceiver {
 				LoggerUtils.debug("AutoCheckinStartServiceReceiver.locationhandler: no location available");
 			}
 		}
-	};
+	};*/
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -71,7 +71,7 @@ public class AutoCheckinStartServiceReceiver extends BroadcastReceiver {
 	 * locationHandler, null); LocationServicesManager.enableMyLocation(); } }
 	 */
 
-	private void startService(Context context, double lat, double lng) {
+	/*private void startService(Context context, double lat, double lng) {
 		if (isGpsHardwarePresent(context)) {
 			GpsDeviceFactory.stopDevice();
 		} else {
@@ -102,5 +102,5 @@ public class AutoCheckinStartServiceReceiver extends BroadcastReceiver {
 			return context.getPackageManager().hasSystemFeature(
 					PackageManager.FEATURE_LOCATION_GPS);
 		}
-	}
+	}*/
 }

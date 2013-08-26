@@ -7,7 +7,6 @@ package com.jstakun.gms.android.utils;
 import android.app.Activity;
 import android.widget.LinearLayout.LayoutParams;
 
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.tapfortap.AdView;
@@ -28,7 +27,7 @@ public class TapForTapUtils {
     private static final SimpleDateFormat ggFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     protected static void loadAd(final Activity activity) {
-        TapForTap.setDefaultAppId(Commons.TAPFORTAP_ID);
+        TapForTap.setDefaultAppId(activity.getResources().getString(R.string.tapForTapId));
         TapForTap.checkIn(activity);
 
         final AdView adView = (AdView) activity.findViewById(R.id.adView);

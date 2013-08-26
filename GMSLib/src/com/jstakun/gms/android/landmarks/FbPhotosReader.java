@@ -40,13 +40,17 @@ public class FbPhotosReader extends FbPlacesReader {
 
                 ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
                 String token = fbUtils.getAccessToken().getToken();
-                queryString += "&token=" + URLEncoder.encode(token, "UTF-8");
+                if (token != null) {
+                	queryString += "&token=" + URLEncoder.encode(token, "UTF-8");
 
-                url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbPhotos?" + queryString;
-                response = parser.parse(url, landmarks, Commons.FACEBOOK_LAYER, null, -1, -1, task, false, limit);
+                	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbPhotos?" + queryString;
+                	response = parser.parse(url, landmarks, Commons.FACEBOOK_LAYER, null, -1, -1, task, false, limit);
 
-                if (StringUtils.equals(response, FacebookUtils.FB_OAUTH_ERROR)) {
-                    fbUtils.logout();
+                	if (StringUtils.equals(response, FacebookUtils.FB_OAUTH_ERROR)) {
+                		fbUtils.logout();
+                	}
+                } else {
+                	LoggerUtils.error("FbPhotosReader exception: token is null");
                 }
             }
         } catch (Exception e) {

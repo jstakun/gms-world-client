@@ -5,14 +5,20 @@
 
 package com.jstakun.gms.android.ui.deals;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.Application;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.StringUtil;
+
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.bouncycastle.util.encoders.Base64;
 
 /**
  *
@@ -20,8 +26,6 @@ import org.acra.annotation.ReportsCrashes;
  */
 @ReportsCrashes(formKey = "",
 formUri = ConfigurationManager.CRASH_REPORT_URL,
-formUriBasicAuthLogin = Commons.DA_APP_USER,
-formUriBasicAuthPassword = Commons.APP_USER_PWD,
 mode = ReportingInteractionMode.TOAST,
 resToastText = R.string.Crash_error)
 public class DealMapApp extends Application {
@@ -31,8 +35,11 @@ public class DealMapApp extends Application {
         super.onCreate();
         LoggerUtils.debug("DealsAnywhereApp.onCreate...");
         ACRA.init(this);
-        //ConfigurationManager.getInstance().putString(ConfigurationManager.APP_USER, Commons.DA_APP_USER);
-        ConfigurationManager.getInstance().putString(ConfigurationManager.GA_ID, Commons.DA_GA_ID);
+        Map<String, String> headers = new HashMap<String, String>();
+        byte[] userpassword = StringUtil.concat((Commons.DA_APP_USER + ":").getBytes(), Base64.decode(Commons.APP_USER_PWD));
+		String encodedAuthorization = new String(Base64.encode(userpassword));
+        headers.put("Authorization", "Basic " + encodedAuthorization);
+        ACRA.getConfig().setHttpHeaders(headers);
         ConfigurationManager.getInstance().initApp(getApplicationContext());
     }
     

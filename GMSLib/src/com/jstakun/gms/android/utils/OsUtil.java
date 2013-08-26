@@ -8,6 +8,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -67,7 +70,7 @@ public class OsUtil {
         }
 
         try {
-            return HelperInternal.getSdkIntInternal();
+            return BuildVersionHelperInternal.getSdkIntInternal();
         } catch (VerifyError e) {
             return 3;
         }
@@ -128,8 +131,47 @@ public class OsUtil {
             return false;
         }
     }
+    
+    public static String getDeviceId(Context context) {
+        String id = getUniqueID(context);
+        if (id == null)
+            id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        return id;
+    }
 
-    private static class HelperInternal {
+    private static String getUniqueID(Context context) {
+
+        String telephonyDeviceId = "NoTelephonyId";
+        String androidDeviceId = "NoAndroidId";
+
+        // get telephony id
+        try {
+        	if (context != null) {
+        		final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        		telephonyDeviceId = tm.getDeviceId();
+        		if (telephonyDeviceId == null) {
+        			telephonyDeviceId = "NoTelephonyId";
+        		}
+        	}
+        } catch (Exception e) {
+        	LoggerUtils.error("OsUtil.getUniqueId() exception", e);
+        }
+
+        // get internal android device id
+        try {
+            androidDeviceId = android.provider.Settings.Secure.getString(context.getContentResolver(),
+                    android.provider.Settings.Secure.ANDROID_ID);
+            if (androidDeviceId == null) {
+                androidDeviceId = "NoAndroidId";
+            }
+        } catch (Exception e) {
+        	LoggerUtils.error("OsUtil.getUniqueId() exception", e);  
+        }
+
+        return androidDeviceId.equals("NoAndroidId") ? telephonyDeviceId : androidDeviceId;
+    }
+
+    private static class BuildVersionHelperInternal {
 
         private static int getSdkIntInternal() {
             return Build.VERSION.SDK_INT;

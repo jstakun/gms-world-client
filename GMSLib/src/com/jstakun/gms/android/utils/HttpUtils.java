@@ -434,7 +434,7 @@ public class HttpUtils {
         return new String[]{ds, dr, sd};
     }
 
-    private void setBasicAuth(HttpRequest request) throws IOException {
+    private static void setBasicAuth(HttpRequest request) throws IOException {
     	String username = null;
     	byte[] pwd = null;
     	
@@ -443,9 +443,10 @@ public class HttpUtils {
         	//user in process of login to gms world
     		username = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_USERNAME, String.class);
     		String password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
-            if (password != null) {
-            	pwd = ConfigurationManager.getInstance().getEncryptedString(password);           
-            }
+            //if (password != null) {
+            //	pwd = ConfigurationManager.getInstance().getEncryptedString(password);           
+            //}
+    		pwd = password.getBytes();
         } else if (ConfigurationManager.getInstance().isUserLoggedIn()) {
     		//user is logged in
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
@@ -471,7 +472,7 @@ public class HttpUtils {
     	}
         
     	if (StringUtils.isNotEmpty(username) && pwd != null) {
-    		byte[] userpassword = concat((username + ":").getBytes(), pwd);
+    		byte[] userpassword = StringUtil.concat((username + ":").getBytes(), pwd);
     		String encodedAuthorization = new String(Base64.encode(userpassword));
     		request.addHeader("Authorization", "Basic " + encodedAuthorization);
     	}
@@ -479,13 +480,6 @@ public class HttpUtils {
 
     public static void closeConnManager() {
         new HttpClientClosingTask(1).execute();
-    }
-
-    private static byte[] concat(byte[] b1, byte[] b2) {
-        byte[] b3 = new byte[b1.length + b2.length];
-        System.arraycopy(b1, 0, b3, 0, b1.length);
-        System.arraycopy(b2, 0, b3, b1.length, b2.length);
-        return b3;
     }
 
     public String getHeader(String key) {

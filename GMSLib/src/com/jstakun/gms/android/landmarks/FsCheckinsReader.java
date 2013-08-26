@@ -29,14 +29,18 @@ public class FsCheckinsReader extends FoursquareReader {
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
             ISocialUtils fsUtils = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE);
             String token = fsUtils.getAccessToken().getToken();
-            String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&version=3";
+            if (token != null) {
+               String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&version=3";
 
-            try {
-                String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsCheckins?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
-                errorMessage = parser.parse(url, landmarks, Commons.FOURSQUARE_LAYER, FOURSQUARE_PREFIX, -1, -1, task, false, limit);
-            } catch (Exception e) {
-                errorMessage = e.getMessage();
-                LoggerUtils.error("FoursquareReader error: ", e);
+               try {
+                  String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsCheckins?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
+                  errorMessage = parser.parse(url, landmarks, Commons.FOURSQUARE_LAYER, FOURSQUARE_PREFIX, -1, -1, task, false, limit);
+               } catch (Exception e) {
+                  errorMessage = e.getMessage();
+                  LoggerUtils.error("FsCheckinsReader exception: ", e);
+               }
+            } else {
+            	LoggerUtils.error("FsCheckinsReader exception: token is null");
             }
         }
 

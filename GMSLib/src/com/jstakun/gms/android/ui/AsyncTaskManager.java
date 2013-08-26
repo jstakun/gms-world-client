@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.location.Location;
@@ -884,15 +885,24 @@ public class AsyncTaskManager {
     private String loginAction(String login, String password) {
         HttpUtils utils = new HttpUtils();
         String errorMessage = null;
+        String encPwd = null;
 
         try {
             ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_USERNAME, login);
             ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_PASSWORD, password);
-            String url = ConfigurationManager.SERVER_SERVICES_URL + "authenticate";
+            String url = ConfigurationManager.SSL_SERVER_SERVICES_URL + "authenticate";
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("mobile", "true"));
-            utils.sendPostRequest(url, params, true);
-            //System.out.println(res);
+            //utils.sendPostRequest(url, params, true);
+            byte[] resp = utils.loadHttpFile(url, true, "text/json");
+            if (resp != null && resp.length > 0) {
+                String jsonResp = new String(resp, "UTF-8");   
+                if (jsonResp.startsWith("{")) {          
+                	JSONObject json = new JSONObject(jsonResp);
+                	encPwd = json.getString("password");               	
+                	//System.out.println(jsonResp);
+                }
+            }    
         } catch (Exception ex) {
             LoggerUtils.error("LoginActivity.loginAction exception", ex);
             errorMessage = ex.getMessage();
@@ -906,9 +916,9 @@ public class AsyncTaskManager {
             }
         }
 
-        if (errorMessage == null) {
+        if (errorMessage == null && encPwd != null) {
         	ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_USERNAME, login);
-            ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.GMS_PASSWORD, password);
+            ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_PASSWORD, encPwd);
             ConfigurationManager.getInstance().setOn(ConfigurationManager.GMS_AUTH_STATUS);
             ConfigurationManager.getInstance().saveConfiguration(false);
         }

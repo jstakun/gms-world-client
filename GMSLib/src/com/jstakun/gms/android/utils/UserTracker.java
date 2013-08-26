@@ -8,6 +8,8 @@ import android.content.Context;
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
+import com.jstakun.gms.android.ui.lib.R;
+
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -51,11 +53,11 @@ public class UserTracker {
                 queueToTrackerThreadIfEnabled(new Runnable() {
                     @Override
                     public void run() {
-                        String gaid = ConfigurationManager.getInstance().getString(ConfigurationManager.GA_ID);
+                        String gaid = context.getResources().getString(R.string.gaId);
                         tracker.startNewSession(gaid, context);
                         tracker.trackEvent("", "", "", 0);
                     };
-            });
+                });
             }
         }
     }

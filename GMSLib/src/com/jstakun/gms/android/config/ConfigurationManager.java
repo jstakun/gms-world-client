@@ -114,7 +114,6 @@ public final class ConfigurationManager {
     public static final String MIN_CHECKIN_DISTANCE = "minCheckinDistance";
     public static final String CHECKIN_TIME_INTERVAL = "checkinTimeInterval";
     public static final String MAX_CURRENT_DISTANCE = "maxCurrentDistance";
-    public static final String GA_ID = "gaId";
     public static final String APP_URL = "appUrl";
     private static final String DEFAULT_LATITUDE = "defaultLatitude";
     private static final String DEFAULT_LONGITUDE = "defaultLongitude";
@@ -135,7 +134,7 @@ public final class ConfigurationManager {
     public static final String REGISTER_URL = SERVER_URL + "m/register.jsp";
     public static final String SERVER_SERVICES_URL = SERVER_URL + "services/";
     public static final String CRASH_REPORT_URL = SERVER_SERVICES_URL + "crashReport";
-    private static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + "services/";
+    public static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + "services/";
     public static final String GMS_WORLD = "GMS World";
     public static final String LM_MARKET_URL = "http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     public static final int PERSIST_SERVER = 0;
@@ -204,10 +203,6 @@ public final class ConfigurationManager {
     private void setDefaultConfiguration() {
         FileManager fm = PersistenceManagerFactory.getFileManager();
         fm.readResourceBundleFile(configuration, R.raw.defaultconfig, getContext());
-        //putString(USERNAME, Commons.DEFAULT_USERNAME);
-        //putString(PASSWORD, Commons.DEFAULT_PASSWORD);
-        //putString(APP_USER_PWD, Commons.APP_USER_PWD);
-        //putString(MY_POS_USER, Commons.MY_POS_USER);
         fm.createDefaultDirs(); 
         changedConfig.clear();
     }
@@ -464,13 +459,6 @@ public final class ConfigurationManager {
         return containsObject(ConfigurationManager.APP_CLOSING, Object.class);
     }
 
-    //private List<? extends Object> getObjectList(String key, Class<? extends Object> type) {
-    //    if (containsObject(key, type)) {
-    //        return (List<? extends Object>) objectCache.get(key);
-    //    }
-    //    return null;
-    //}
-
     public List<LandmarkParcelable> getLandmarkList(String key, Class<? extends Object> type) {
     	if (containsObject(key, type)) {
     		return (List<LandmarkParcelable>) objectCache.get(key);
@@ -580,17 +568,6 @@ public final class ConfigurationManager {
             putObject(ConfigurationManager.BUILD_INFO, buildInfo);
         }
 
-        //if (!isDefaultUser()) {
-        //    setOn(ConfigurationManager.GMS_AUTH_STATUS);
-        //}
-        
-        //1086 version gms world user migration
-        if (isOn(ConfigurationManager.GMS_AUTH_STATUS) && containsKey("username") && containsKey("password")) {
-        	removeAll(new String[]{"username", "password"});
-        	setOff(ConfigurationManager.GMS_AUTH_STATUS);
-        	saveConfiguration(false);
-        }
-
         String[] limitArray = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.landmarksPerLayer);
         int index = getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 0);
         if (index >= 0 && index < limitArray.length) {
@@ -657,9 +634,8 @@ public final class ConfigurationManager {
 
         String ReturnVal = "";
         try {
-            PackageManager pm = getContext().getPackageManager();
-            //Version
-            PackageInfo pi = pm.getPackageInfo(getContext().getPackageName(), 0);
+            PackageInfo pi = getPackageInfo();
+            
             String VersionName = pi.versionName;
             // Package name
             String PackageName = pi.packageName;
@@ -712,7 +688,13 @@ public final class ConfigurationManager {
 
         return ReturnVal;
     }
-
+    
+    public PackageInfo getPackageInfo() throws NameNotFoundException {    
+    	PackageManager pm = getContext().getPackageManager();
+    	PackageInfo pi = pm.getPackageInfo(getContext().getPackageName(), 0);
+    	return pi;
+    }
+    
     //Start of User Manager
     
     public boolean isUserLoggedIn() {
@@ -804,17 +786,6 @@ public final class ConfigurationManager {
     	} else {
     		return false;
     	}
-    }
-    
-    public byte[] getEncryptedString(String value) {
-    	if (StringUtils.isNotEmpty(value)) {
-    		try {
-    			return BCTools.encrypt(value.getBytes());
-    		} catch (Exception ex) {
-    			LoggerUtils.error("ConfigurationManager.getEncryptedString exception:", ex);
-    		}
-    	}
-    	return null;
     }
     
     public String getStringDecrypted(String key) {

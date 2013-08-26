@@ -56,11 +56,7 @@ public final class FoursquareUtils extends AbstractSocialUtils {
             token = ConfigurationManager.getInstance().getString(ConfigurationManager.FS_AUTH_KEY);
         }*/
 
-        if (null != token) {
-            return new Token(token, null);
-        } else {
-            return null;
-        }
+        return new Token(token, null);
     }
 
     public void logout() {

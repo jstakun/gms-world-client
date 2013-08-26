@@ -477,14 +477,10 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "search";			
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				
-				//StringBuilder urlBuilder = new StringBuilder();
-				//urlBuilder.append(
-				//		ConfigurationManager.getInstance()
-				//				.getSecuredServicesUrl()).append("search?");
 				params.add(new BasicNameValuePair("lat",StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lat))));
 				params.add(new BasicNameValuePair("lng", StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lng))));
 				params.add(new BasicNameValuePair("radius", Integer.toString(radius)));				
-				PackageInfo info = caller.getPackageManager().getPackageInfo(ConfigurationManager.getInstance().getString(ConfigurationManager.PACKAGE_NAME), 0);
+				PackageInfo info = ConfigurationManager.getInstance().getPackageInfo();
 				params.add(new BasicNameValuePair("version", Integer.toString(info.versionCode)));
 				String q;
 				if (query.lastIndexOf("/") == query.length()-2) {

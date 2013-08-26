@@ -56,6 +56,7 @@ import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
+import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.AdsUtils;
 import com.jstakun.gms.android.utils.DateTimeUtils;
@@ -153,9 +154,6 @@ public class Intents {
     public void startSettingsActivity(Class<?> settingsActivityClass) {
         Intent intent = new Intent(activity, settingsActivityClass);
         Bundle extras = landmarkManager.getLayerManager().loadLayersGroup();
-        //CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-        //Bundle cextras = cm.loadCategoriesGroup();
-        //extras.putBundle("categories", cextras);
         intent.putExtras(extras);
         activity.startActivityForResult(intent, INTENT_PREFS);
     }
@@ -878,7 +876,7 @@ public class Intents {
                 if (resp.startsWith("{")) {
                     JSONObject json = new JSONObject(resp);
                     int version = Integer.valueOf(json.optString("value", "0"));
-                    PackageInfo info = activity.getPackageManager().getPackageInfo(ConfigurationManager.getInstance().getString(ConfigurationManager.PACKAGE_NAME), 0);
+                    PackageInfo info = ConfigurationManager.getInstance().getPackageInfo();
                     int versionCode = info.versionCode;
                     if (version > versionCode) {
                         response = true;
@@ -915,14 +913,15 @@ public class Intents {
         activity.startSearch(null, false, appData, false);
     }
 
-    public void checkAppVersion() {
+    public void onAppVersionChanged() {
 
-        //whats new helpactivity call
+    	//This method is executed when new app version is installed
+    	String message = null;
         int versionCode = -1;
         String versionName = null;
 
         try {
-            PackageInfo info = activity.getPackageManager().getPackageInfo(ConfigurationManager.getInstance().getString(ConfigurationManager.PACKAGE_NAME), 0);
+            PackageInfo info = ConfigurationManager.getInstance().getPackageInfo();
             versionCode = info.versionCode;
             versionName = info.versionName;
             //info.versionName ends with m;
@@ -931,27 +930,58 @@ public class Intents {
             LoggerUtils.error("Intents.checkAppVersion() exception", ex);
         }
         int buildVersion = ConfigurationManager.getInstance().getInt(ConfigurationManager.BUILD_VERSION);
-        if (buildVersion == -1 || (buildVersion < versionCode && StringUtils.endsWithIgnoreCase(versionName, "m"))) {
-            ConfigurationManager.getInstance().putInteger(ConfigurationManager.BUILD_VERSION, versionCode);
-            startHelpActivity();
-            //if (buildVersion != -1 && buildVersion < 1000) { //GMS 2.0.1
-            //    PersistenceManager pm = PersistenceManagerFactory.getPersistenceManagerInstance();
-            //    pm.deleteTilesCache();
-            //}
-        }
+        
+        //if (buildVersion != -1 && buildVersion < 1000) { //2.0.1
+        //    PersistenceManagerFactory.getPersistenceManagerInstance().deleteTilesCache();
+        //}
+        
+        if (buildVersion < versionCode) {
+        
+        	if (StringUtils.endsWithIgnoreCase(versionName, "m")) {
+        		startHelpActivity();
+        	}
+        
+        	if (versionCode == 1086 || versionCode == 86) { //2.0.7
+        		//logout user due to user management changes
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS) && ConfigurationManager.getInstance().containsKey("username") && ConfigurationManager.getInstance().containsKey("password")) {
+        			ConfigurationManager.getInstance().removeAll(new String[]{"username", "password"});
+        			ConfigurationManager.getInstance().setOff(ConfigurationManager.GMS_AUTH_STATUS);
+        		}
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
+                    OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).logout();
+                } 
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TWEET_AUTH_STATUS)) {
+        			OAuthServiceFactory.getSocialUtils(Commons.TWITTER).logout();
+                } 
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.LN_AUTH_STATUS)) {
+        			OAuthServiceFactory.getSocialUtils(Commons.LINKEDIN).logout();
+                } 
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
+        			OAuthServiceFactory.getSocialUtils(Commons.GOOGLE).logout();
+                } 
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
+        			OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).logout();
+                } 
+        	    
+        		message = "You have been logged out from all social networks. " +
+        	 		   "This is one time operation due to changes in our application. " +
+        	 		   "Please login once again and enjoy the application!";
+        	}
+        	
+        	ConfigurationManager.getInstance().putInteger(ConfigurationManager.BUILD_VERSION, versionCode);
+        	ConfigurationManager.getInstance().saveConfiguration(false);
+        
+        	if (StringUtils.isNotEmpty(message)) {
+        		showInfoToast(message);
+        	};
+        }	
     }
 
-    /*private void startLandmarkListActivity(List<LandmarkParcelable> landmarks, int activityCode, int sortOrder, int requestCode, int emptyMessage) {
-     if (!landmarks.isEmpty()) {
-     ConfigurationManager.getInstance().putObject(LandmarkListActivity.LANDMARK_PARCELABLE_LIST, landmarks);
-     Intent intent = new Intent(activity, LandmarkListActivity.class);
-     intent.putExtra("sort", sortOrder);
-     intent.putExtra("requestCode", requestCode);
-     activity.startActivityForResult(intent, activityCode);
-     } else {
-     showInfoToast(Locale.getMessage(emptyMessage));
-     }
-     }*/
     private void startLandmarkListActivity(int requestCode, Intent src, LandmarkListActivity.SOURCE source, double[] myLocation, int sortOrder) { //int sortOrder, String layer, double[] myLocation, int cat, int subCat) {
         Intent intent = new Intent(activity, LandmarkListActivity.class);
         intent.putExtra("sort", sortOrder);

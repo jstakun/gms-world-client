@@ -655,7 +655,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             }
         }
 
-        intents.checkAppVersion();
+        intents.onAppVersionChanged();
 
         if (ConfigurationManager.getInstance().removeObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class) != null) {
             GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);

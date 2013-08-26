@@ -16,6 +16,7 @@ import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.OsUtil;
 import com.skyhookwireless.wps.RegistrationCallback;
 import com.skyhookwireless.wps.TilingListener;
 import com.skyhookwireless.wps.WPSAuthentication;
@@ -33,7 +34,7 @@ import com.skyhookwireless.wps.XPS;
  */
 public class SkyhookUtils {
 
-    private static final WPSAuthentication auth = new WPSAuthentication(Commons.SKYHOOK_USERNAME, Commons.SHYHOOK_PWD);
+    private static final WPSAuthentication auth = new WPSAuthentication(Commons.SKYHOOK_USERNAME, Commons.SHYHOOK_REALM);
     private final GMSRegistrationCallback regCallback = new GMSRegistrationCallback();
     private XPS xps;
     private boolean isRegistered, hasRunOnFirstFix, isRegistering;
@@ -51,7 +52,7 @@ public class SkyhookUtils {
         }
 
         public WPSContinuation handleError(WPSReturnCode error) {
-            return handleErrorStatus(error);
+        	return handleErrorStatus(error);
         }
     };
     private WPSPeriodicLocationCallback periodicCallback = new WPSPeriodicLocationCallback() {
@@ -83,6 +84,9 @@ public class SkyhookUtils {
     }
 
     private WPSContinuation handleErrorStatus(WPSReturnCode error) {
+    	if (error == WPSReturnCode.WPS_ERROR_UNAUTHORIZED) {
+    		//TODO handle 90 days old token
+    	}
         String errorMsg = "WPS location request error: " + error.toString();
         Message msg = locationHandler.obtainMessage();
         Bundle b = new Bundle();
@@ -138,9 +142,11 @@ public class SkyhookUtils {
     }
 
     public void enableMyLocation() {
-        byte[] token = xps.getOfflineToken(auth, Commons.SKYHOOK_KEY.getBytes());
+    	//byte[] key = Commons.SKYHOOK_KEY.getBytes();
+    	byte[] key = OsUtil.getDeviceId(ConfigurationManager.getInstance().getContext()).getBytes();
+        byte[] token = xps.getOfflineToken(auth, key);
         if (token != null) {
-            xps.getOfflineLocation(auth, Commons.SKYHOOK_KEY.getBytes(), token, oneTimeCallback);
+            xps.getOfflineLocation(auth, key, token, oneTimeCallback);
         } else {
             LoggerUtils.debug("WPS offline token missing...");
         }

@@ -22,7 +22,10 @@ import org.bouncycastle.crypto.engines.DESedeEngine;
 import org.bouncycastle.crypto.generators.PKCS12ParametersGenerator;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.encoders.Hex;
+
+import com.jstakun.gms.android.utils.OsUtil;
 
 
 public final class BCTools {
@@ -79,7 +82,10 @@ public final class BCTools {
     private static CipherParameters getCipherParameters() {
     	if (cipherParameters == null) {
     		PKCS12ParametersGenerator pGen = new PKCS12ParametersGenerator(new SHA1Digest());
-            pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(Commons.BC_PASSWORD.toCharArray()), Hex.decode(Commons.BC_SALT.getBytes()), 128);
+    		String salt = OsUtil.getDeviceId(ConfigurationManager.getInstance().getContext());
+    		//System.out.println("Salt: " + salt + " ----------------------------");
+    		char[] password = new String(Base64.decode(Commons.BC_PASSWORD)).toCharArray();
+            pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(password), Hex.decode(salt), 128);
             cipherParameters = pGen.generateDerivedParameters(192, 64);
     	}
     	return cipherParameters;

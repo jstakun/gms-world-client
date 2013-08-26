@@ -612,7 +612,7 @@ public class LandmarkManager {
                 SMSSender sender = new SMSSender(text);
                 sender.sendSMS();
             } catch (Exception e) {
-                LoggerUtils.error("LandmarkManager.persistLandmark exception 2", e);
+                LoggerUtils.error("LandmarkManager.persistLandmark exception ", e);
                 errorMessage = "SMS sending error";
             }
 

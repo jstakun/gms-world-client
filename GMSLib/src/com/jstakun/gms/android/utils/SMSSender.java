@@ -11,16 +11,16 @@ package com.jstakun.gms.android.utils;
  */
 public class SMSSender {
 
-    private static final String SMS_NUMBER = "+48123456789"; //TODO provide real phone number and enable in menu
-    private String message;
+    //private static final String SMS_NUMBER = "";
+    //private String message;
 
     public SMSSender(String text)
     {
-        message = text;
+        //message = text;
     }
 
     public void sendSMS()
     {
-       //TODO send message to SMS_NUMBER   
+        //send message to SMS_NUMBER   
     }
 }

@@ -3,6 +3,7 @@ package com.jstakun.gms.android.ui;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
@@ -363,7 +364,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             dialogManager.showAlertDialog(type, arrayAdapter, null);
         }
 
-        intents.checkAppVersion();
+        intents.onAppVersionChanged();
 
         if (ConfigurationManager.getInstance().removeObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class) != null) {
             IGeoPoint mapCenter = (IGeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, IGeoPoint.class);
