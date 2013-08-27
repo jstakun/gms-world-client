@@ -25,63 +25,24 @@ import com.jstakun.gms.android.utils.Token;
  */
 public final class LinkedInUtils extends AbstractSocialUtils {
 
+	private static final String LN_AUTH_KEY = "lnauth_key";
+    private static final String LN_AUTH_SECRET_KEY = "lnauth_secret_key";
+    
 	public void storeAccessToken(Token accessToken) {
-		/*try {
-			String encToken = new String(Base64.encode(BCTools
-					.encrypt(accessToken.getToken().getBytes())));
-			String encSecret = new String(Base64.encode(BCTools
-					.encrypt(accessToken.getSecret().getBytes())));
-			ConfigurationManager.getInstance().putString(ConfigurationManager.LN_AUTH_KEY, encToken);
-			ConfigurationManager.getInstance().putString(ConfigurationManager.LN_AUTH_SECRET_KEY, encSecret);
-			this.accessToken = accessToken;
-		} catch (Exception e) {
-			LoggerUtils.error("LinkedInUtils.storeAccessToken error: ", e);
-		}*/
-		ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.LN_AUTH_KEY, accessToken.getToken());
-		ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.LN_AUTH_SECRET_KEY, accessToken.getSecret());
+		ConfigurationManager.getUserManager().putStringAndEncrypt(LN_AUTH_KEY, accessToken.getToken());
+		ConfigurationManager.getUserManager().putStringAndEncrypt(LN_AUTH_SECRET_KEY, accessToken.getSecret());
 	}
 
 	protected Token loadAccessToken() {
-		String token = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.LN_AUTH_KEY);
-		String tokenSecret = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.LN_AUTH_SECRET_KEY);
-
-		/*try {
-			String encToken = ConfigurationManager.getInstance().getString(
-					ConfigurationManager.LN_AUTH_KEY);
-			String encTokenSecret = ConfigurationManager.getInstance()
-					.getString(ConfigurationManager.LN_AUTH_SECRET_KEY);
-
-			if (encToken != null) {
-				token = new String(BCTools.decrypt(Base64.decode(encToken
-						.getBytes())));
-			}
-
-			if (encTokenSecret != null) {
-				tokenSecret = new String(BCTools.decrypt(Base64
-						.decode(encTokenSecret.getBytes())));
-			}
-		} catch (Exception e) {
-			LoggerUtils.error("LinkedInUtils.loadAccessToken error: ", e);
-			token = ConfigurationManager.getInstance().getString(
-					ConfigurationManager.LN_AUTH_KEY);
-			tokenSecret = ConfigurationManager.getInstance().getString(
-					ConfigurationManager.LN_AUTH_SECRET_KEY);
-		}*/
-
-		if (null != token && null != tokenSecret) {
-			return new Token(token, tokenSecret);
-		} else {
-			return null;
-		}
+		String token = ConfigurationManager.getUserManager().getStringDecrypted(LN_AUTH_KEY);
+		String tokenSecret = ConfigurationManager.getUserManager().getStringDecrypted(LN_AUTH_SECRET_KEY);
+		return new Token(token, tokenSecret);
 	}
 
 	public boolean initOnTokenPresent(JSONObject json) {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.LN_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.LN_SEND_STATUS);
-		//if (ConfigurationManager.getInstance().isDefaultUser()) {
-		//	ConfigurationManager.getInstance().setAppUser();
-		//}
-
+		
 		String id = json.optString(ConfigurationManager.LN_USERNAME);
 		if (id != null) {
 			ConfigurationManager.getInstance().putString(
@@ -99,7 +60,7 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 			if (name != null) {
 				ConfigurationManager.getInstance().putString(
 						ConfigurationManager.LN_NAME, name);
-				ConfigurationManager.getInstance().saveConfiguration(false);
+				ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 				return true;
 			} else {
 				logout();
@@ -157,8 +118,8 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 
 	public void logout() {
 		ConfigurationManager.getInstance().removeAll(
-				new String[] { ConfigurationManager.LN_AUTH_KEY,
-						ConfigurationManager.LN_AUTH_SECRET_KEY,
+				new String[] { LN_AUTH_KEY,
+						LN_AUTH_SECRET_KEY,
 						ConfigurationManager.LN_USERNAME,
 						ConfigurationManager.LN_EXPIRES_IN,
 						ConfigurationManager.LN_NAME });

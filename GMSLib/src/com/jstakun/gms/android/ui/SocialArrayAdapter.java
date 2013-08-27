@@ -176,11 +176,11 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     //ConfigurationManager.getInstance().resetUser();
                 	ConfigurationManager.getInstance().removeAll(new String[]{	
                       ConfigurationManager.GMS_USERNAME, ConfigurationManager.GMS_PASSWORD});
-                    ConfigurationManager.getInstance().saveConfiguration(false);
+                    ConfigurationManager.getDatabaseManager().saveConfiguration(false);
                     notifyDataSetChanged();
                     intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
 
-                    String username = ConfigurationManager.getInstance().getLoggedInUsername();
+                    String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (username != null) {
                         footer.setText(Locale.getMessage(R.string.Social_login_string, username));
                     } else {
@@ -198,7 +198,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     notifyDataSetChanged();
                     intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
                     //refresh listview footer
-                    String username = ConfigurationManager.getInstance().getLoggedInUsername();
+                    String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (username != null) {
                         footer.setText(Locale.getMessage(R.string.Social_login_string, username));
                     } else {

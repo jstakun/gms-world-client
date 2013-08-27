@@ -27,56 +27,27 @@ import com.jstakun.gms.android.utils.Token;
  */
 public final class GoogleUtils extends AbstractSocialUtils {
 
+	private static final String GL_AUTH_KEY = "glauth_key";
+    private static final String GL_REFRESH_TOKEN = "glRefreshToken";
+    private static final String GL_AUTH_SECRET_KEY = "glauth_secret_key";
+    
 	public void storeAccessToken(Token accessToken) {
-		//String encToken = null, encSecret = null;
-		
-		/*try {
-			encToken = new String(Base64.encode(BCTools.encrypt(accessToken.getToken().getBytes())));
-			encSecret = new String(Base64.encode(BCTools.encrypt(accessToken.getSecret().getBytes())));
-		} catch (Exception e) {
-			LoggerUtils.error("GoogleUtils.storeAccessToken() exception: ", e);
-		}
-		ConfigurationManager.getInstance().putString(ConfigurationManager.GL_AUTH_KEY, encToken);
-		ConfigurationManager.getInstance().putString(ConfigurationManager.GL_AUTH_SECRET_KEY, encSecret);*/
-		
-		ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.GL_AUTH_KEY, accessToken.getToken());
-		ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.GL_AUTH_SECRET_KEY, accessToken.getSecret());
+		ConfigurationManager.getUserManager().putStringAndEncrypt(GL_AUTH_KEY, accessToken.getToken());
+		ConfigurationManager.getUserManager().putStringAndEncrypt(GL_AUTH_SECRET_KEY, accessToken.getSecret());
 		this.accessToken = accessToken;
 	}
 
 	protected Token loadAccessToken() {
-		String token = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.GL_AUTH_KEY);
-		String tokenSecret = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.GL_AUTH_SECRET_KEY);
-
-		/*try {
-			String encToken = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_AUTH_KEY);
-			String encTokenSecret = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_AUTH_SECRET_KEY);
-			
-			if (encToken != null) {
-				token = new String(BCTools.decrypt(Base64.decode(encToken.getBytes())));
-			}
-
-			if (encTokenSecret != null) {
-				tokenSecret = new String(BCTools.decrypt(Base64.decode(encTokenSecret.getBytes())));
-			}
-		} catch (Exception e) {
-			LoggerUtils.error("GoogleUtils.loadAccessToken() exception: ", e);
-			token = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_AUTH_KEY);
-			tokenSecret = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_AUTH_SECRET_KEY);
-		}*/
-	
-		if (null != token) {
-			return new Token(token, tokenSecret);
-		} else {
-			return null;
-		}
+		String token = ConfigurationManager.getUserManager().getStringDecrypted(GL_AUTH_KEY);
+		String tokenSecret = ConfigurationManager.getUserManager().getStringDecrypted(GL_AUTH_SECRET_KEY);
+		return new Token(token, tokenSecret);
 	}
 
 	public void logout() {
 		ConfigurationManager.getInstance().removeAll(
-				new String[] { ConfigurationManager.GL_AUTH_KEY,
-						ConfigurationManager.GL_AUTH_SECRET_KEY,
-						ConfigurationManager.GL_REFRESH_TOKEN,
+				new String[] { GL_AUTH_KEY,
+					    GL_AUTH_SECRET_KEY,
+						GL_REFRESH_TOKEN,
 						ConfigurationManager.GL_EXPIRES_IN,
 						ConfigurationManager.GL_USERNAME,
 						ConfigurationManager.GL_GENDER,
@@ -90,7 +61,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 	public String sendPost(ExtendedLandmark landmark, int type) {
 		//send to glSendPost with parameters: key, token, refresh_token
 		String errorMessage = null;
-		String refreshToken = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_REFRESH_TOKEN);
+		String refreshToken = ConfigurationManager.getInstance().getString(GL_REFRESH_TOKEN);
 		long expires_in = ConfigurationManager.getInstance().getLong(ConfigurationManager.GL_EXPIRES_IN);
 		
 		if (expires_in > 0 && expires_in < System.currentTimeMillis() && refreshToken == null) {
@@ -132,9 +103,6 @@ public final class GoogleUtils extends AbstractSocialUtils {
 	public boolean initOnTokenPresent(JSONObject json) {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.GL_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.GL_SEND_STATUS);
-		//if (ConfigurationManager.getInstance().isDefaultUser()) {
-		//	ConfigurationManager.getInstance().setAppUser();
-		//}
 		
 		try {
 			long expires_in = json.optLong(ConfigurationManager.GL_EXPIRES_IN, -1);
@@ -147,7 +115,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 			
 			String refreshToken = json.optString("refresh_token");
 			if (refreshToken != null) {
- 				ConfigurationManager.getInstance().putString(ConfigurationManager.GL_REFRESH_TOKEN, refreshToken);
+ 				ConfigurationManager.getInstance().putString(GL_REFRESH_TOKEN, refreshToken);
 			}
 						
 			String userid = json.getString(ConfigurationManager.GL_USERNAME);
@@ -183,12 +151,10 @@ public final class GoogleUtils extends AbstractSocialUtils {
             
             String email = json.optString(ConfigurationManager.USER_EMAIL);
 			if (StringUtils.isNotEmpty(email)) {
-				//email = new String(Base64.encode(BCTools.encrypt(email.getBytes())));
-				//ConfigurationManager.getInstance().putString(ConfigurationManager.USER_EMAIL, email);
-				ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
+				ConfigurationManager.getUserManager().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
 			}
 			
-			ConfigurationManager.getInstance().saveConfiguration(false);
+			ConfigurationManager.getDatabaseManager().saveConfiguration(false);
             return true;
 		} catch (Exception ex) {
 			logout();

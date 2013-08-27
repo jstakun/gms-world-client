@@ -132,7 +132,7 @@ public class UserTracker {
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)
              && ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
             ConfigurationManager.getInstance().remove(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
-            ConfigurationManager.getInstance().saveConfiguration(false);
+            ConfigurationManager.getDatabaseManager().saveConfiguration(false);
             LoggerUtils.debug("Sending my location at startup.");
             new SendMyLocationTask(10).execute();
         } //else {

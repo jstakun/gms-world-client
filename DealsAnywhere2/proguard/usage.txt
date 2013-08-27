@@ -2753,59 +2753,8 @@ com.google.common.util.concurrent.UncheckedTimeoutException
 com.google.common.util.concurrent.Uninterruptibles
 com.google.common.util.concurrent.package-info
 com.jstakun.gms.android.config.BCTools:
-    27:27:public BCTools()
-com.jstakun.gms.android.config.Commons:
-    public static final java.lang.String LOCAL_LAYER
-    public static final java.lang.String MY_POSITION_LAYER
-    public static final java.lang.String PANORAMIO_LAYER
-    public static final java.lang.String WIKIPEDIA_LAYER
-    public static final java.lang.String LM_SERVER_LAYER
-    public static final java.lang.String EVENTFUL_LAYER
-    public static final java.lang.String FLICKR_LAYER
-    public static final java.lang.String YOUTUBE_LAYER
-    public static final java.lang.String FACEBOOK_LAYER
-    public static final java.lang.String PICASA_LAYER
-    public static final java.lang.String FOURSQUARE_LAYER
-    public static final java.lang.String FOURSQUARE_MERCHANT_LAYER
-    public static final java.lang.String YELP_LAYER
-    public static final java.lang.String QYPE_LAYER
-    public static final java.lang.String GROUPON_LAYER
-    public static final java.lang.String HOTELS_LAYER
-    public static final java.lang.String ROUTES_LAYER
-    public static final java.lang.String GOOGLE_PLACES_LAYER
-    public static final java.lang.String TWITTER_LAYER
-    public static final java.lang.String HOTWIRE_LAYER
-    public static final java.lang.String EXPEDIA_LAYER
-    public static final java.lang.String COUPONS_LAYER
-    public static final java.lang.String LASTFM_LAYER
-    public static final java.lang.String UPCOMING_LAYER
-    public static final java.lang.String MEETUP_LAYER
-    public static final java.lang.String MC_ATM_LAYER
-    public static final java.lang.String OSM_ATM_LAYER
-    public static final java.lang.String OSM_PARKING_LAYER
-    public static final java.lang.String WEBCAM_LAYER
-    public static final java.lang.String GEOCODES_LAYER
-    public static final java.lang.String MY_POS_CODE
-    public static final java.lang.String MULTI_LANDMARK
-    public static final int BLOGEO
-    public static final int LANDMARK
-    public static final int MY_POS
-    public static final int LOGIN
-    public static final java.lang.String GOOGLE
-    public static final java.lang.String LINKEDIN
-    public static final java.lang.String TWITTER
-    public static final java.lang.String FACEBOOK
-    public static final java.lang.String FOURSQUARE
-    public static final java.lang.String TAPFORTAP_ID
-    public static final java.lang.String MY_POS_USER
-    public static final java.lang.String GMS_APP_USER
-    public static final java.lang.String DA_APP_USER
-    public static final java.lang.String APP_USER_PWD
-    public static final java.lang.String DEFAULT_GA_ID
-    public static final java.lang.String DA_GA_ID
-    public static final java.lang.String SKYHOOK_USERNAME
-    public static final java.lang.String SHYHOOK_PWD
-    68:68:private Commons()
+    31:31:public BCTools()
+com.jstakun.gms.android.config.Commons
 com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String PERSISTENCE_MANAGER
     public static final java.lang.String LOCALE
@@ -2869,7 +2818,6 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String MIN_CHECKIN_DISTANCE
     public static final java.lang.String CHECKIN_TIME_INTERVAL
     public static final java.lang.String MAX_CURRENT_DISTANCE
-    public static final java.lang.String GA_ID
     public static final java.lang.String APP_URL
     private static final java.lang.String DEFAULT_LATITUDE
     private static final java.lang.String DEFAULT_LONGITUDE
@@ -2884,17 +2832,25 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String SSL_SERVER_URL
     public static final java.lang.String SHOW_LANDMARK_URL
     public static final java.lang.String SHOW_LOCATION_URL
-    public static final java.lang.String CRASH_REPORT_URL
     public static final java.lang.String BITLY_URL
     public static final java.lang.String REGISTER_URL
     public static final java.lang.String SERVER_SERVICES_URL
-    private static final java.lang.String SSL_SERVER_SERVICES_URL
+    public static final java.lang.String CRASH_REPORT_URL
+    public static final java.lang.String SSL_SERVER_SERVICES_URL
     public static final java.lang.String GMS_WORLD
     public static final java.lang.String LM_MARKET_URL
+    public static final int PERSIST_SERVER
+    public static final int PERSIST_LOCAL
+    public static final int PERSIST_SMS
+    public static final int TILE_SIZE
+    public static final int TEN_SECONDS
+    public static final int FIVE_SECONDS
+    public static final int PHRASE_SEARCH
+    public static final int WORDS_SEARCH
+    public static final int FUZZY_SEARCH
     public static final java.lang.String GMS_USERNAME
     public static final java.lang.String GMS_PASSWORD
     public static final java.lang.String FB_AUTH_STATUS
-    public static final java.lang.String FB_TOKEN
     public static final java.lang.String FB_AUTH_KEY
     public static final java.lang.String FB_AUTH_SECRET_KEY
     public static final java.lang.String FB_SEND_STATUS
@@ -2932,17 +2888,8 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String GL_NAME
     public static final java.lang.String GL_GENDER
     public static final java.lang.String GL_BIRTHDAY
-    public static final int PERSIST_SERVER
-    public static final int PERSIST_LOCAL
-    public static final int PERSIST_SMS
-    public static final int TILE_SIZE
-    public static final int TEN_SECONDS
-    public static final int FIVE_SECONDS
-    public static final int PHRASE_SEARCH
-    public static final int WORDS_SEARCH
-    public static final int FUZZY_SEARCH
-    272:272:public java.util.Map getConfiguration()
-    480:483:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
+    262:262:public java.util.Map getConfiguration()
+    463:466:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
 com.jstakun.gms.android.data.AndroidPersistenceManager:
     private static final java.lang.String CONFIGURATION_FILE
     private static final java.lang.String MAP_FILE
@@ -3233,6 +3180,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int Maps_LoadingMap
     public static final int Maps_MapLoaded
     public static final int Maps_cleared
+    public static final int Migation_1086_message
     public static final int Network_connection_error_message
     public static final int Network_connection_error_title
     public static final int New_version_long_message
@@ -3373,6 +3321,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int foundLandmarks
     public static final int foundLandmarksLow
     public static final int friendsCheckins
+    public static final int gaId
     public static final int googleMaps
     public static final int googleMapsKey
     public static final int homepage
@@ -3462,6 +3411,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int start_date
     public static final int summary
     public static final int taken_date
+    public static final int tapForTapId
     public static final int tileCache
     public static final int trackPos
     public static final int trackUserSummaryOff
@@ -3538,25 +3488,32 @@ com.jstakun.gms.android.location.AndroidDevice:
     private static final int MILLIS
     private static final int METERS
     private static final int THREE_MINUTES
+    private float maxAcceptableAccuracy
+    private android.location.LocationManager locationManager
+    private boolean isListening
+    private android.location.GpsStatus$Listener gpsStatusListener
+    69:91:public AndroidDevice(android.content.Context)
+    94:95:public void setPositionHandler(android.os.Handler)
+    98:124:public void startListening()
+    143:148:public void stopListening()
     152:159:public static int getBearingIndex(android.location.Location)
+    163:198:private android.location.Location getLastKnownLocation()
+    202:205:private void setMyLocation(android.location.Location)
     236:269:private android.location.Location filterLocation(android.location.Location)
-com.jstakun.gms.android.location.GpsDeviceFactory:
-    16:16:public GpsDeviceFactory()
-    41:46:public static void startDevice(android.content.Context)
-    59:62:public static void setPositionHandler(android.os.Handler)
-    65:66:public static void resetDevice()
-com.jstakun.gms.android.location.LocationServicesManager:
-    22:22:public LocationServicesManager()
-    56:56:public static boolean isGpsHardwarePresent()
-    83:88:public static void runOnFirstFix(java.lang.Runnable)
-    91:98:public static void enableCompass()
-    101:109:public static org.osmdroid.util.GeoPoint getMyLocation()
-com.jstakun.gms.android.location.LocationServicesManager$HelperInternal:
-    113:113:private LocationServicesManager$HelperInternal()
+    39:39:static synthetic android.location.LocationManager access$0(com.jstakun.gms.android.location.AndroidDevice)
+com.jstakun.gms.android.location.AndroidDevice$1
+com.jstakun.gms.android.location.GpsDeviceFactory
+com.jstakun.gms.android.location.LocationServicesManager
+com.jstakun.gms.android.location.LocationServicesManager$HelperInternal
 com.jstakun.gms.android.location.MockAndroidDevice
 com.jstakun.gms.android.location.MockAndroidDevice$TrackThread
-com.jstakun.gms.android.location.SkyhookUtils:
-    171:172:public void runOnFirstFix(java.lang.Runnable)
+com.jstakun.gms.android.location.SkyhookUtils
+com.jstakun.gms.android.location.SkyhookUtils$1
+com.jstakun.gms.android.location.SkyhookUtils$2
+com.jstakun.gms.android.location.SkyhookUtils$3
+com.jstakun.gms.android.location.SkyhookUtils$GMSRegistrationCallback
+com.jstakun.gms.android.location.SkyhookUtils$GMSTilingCallback
+com.jstakun.gms.android.location.SkyhookUtils$GetLocationTask
 com.jstakun.gms.android.maps.MapProvider
 com.jstakun.gms.android.maps.MemoryTilesCache
 com.jstakun.gms.android.maps.Tile
@@ -3586,8 +3543,6 @@ com.jstakun.gms.android.service.AutoCheckinScheduleReceiver:
     private static final long DEFAULT_REPEAT_TIME
 com.jstakun.gms.android.service.AutoCheckinService$GMSBinder:
     53:53:public com.jstakun.gms.android.service.AutoCheckinService getService()
-com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver$HelperInternal:
-    90:90:private AutoCheckinStartServiceReceiver$HelperInternal()
 com.jstakun.gms.android.social.AbstractSocialUtils:
     public abstract boolean initOnTokenPresent(org.json.JSONObject)
     public abstract void storeAccessToken(com.jstakun.gms.android.utils.Token)
@@ -3638,10 +3593,10 @@ com.jstakun.gms.android.ui.AlertDialogBuilder:
     public static final java.lang.String OPEN_DIALOG
 com.jstakun.gms.android.ui.AsyncTaskManager:
     public static final int SHOW_ROUTE_MESSAGE
-    73:87:public void cancelTask(java.lang.Integer,boolean)
-    92:98:public void cancelAll()
-    106:107:public void cancelNotification(int)
-    430:437:public void executeClearCacheTask(java.lang.String)
+    74:88:public void cancelTask(java.lang.Integer,boolean)
+    93:99:public void cancelAll()
+    107:108:public void cancelNotification(int)
+    431:438:public void executeClearCacheTask(java.lang.String)
 com.jstakun.gms.android.ui.AsyncTaskManager$ClearCacheTask
 com.jstakun.gms.android.ui.CheckinManager$CheckinCandidatePredicate:
     private static final long ONE_HOUR
@@ -3680,26 +3635,26 @@ com.jstakun.gms.android.ui.Intents:
     public static final int INTENT_AUTO_CHECKIN
     public static final int INTENT_CALENDAR
     private static final java.lang.String SCAN_INTENT
-    164:165:public void startAddLandmarkActivity()
-    168:169:public void startAddLayerActivity()
-    172:173:public void startBlogeoActivity()
-    176:188:public boolean startRouteLoadingActivity()
-    192:204:public boolean startFilesLoadingActivity()
-    208:209:public void startSocialListActivity()
-    212:213:public void startLayersListActivity()
-    231:234:public void startRegisterActivity()
-    249:271:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
-    286:289:public boolean isIntentAvailable(java.lang.String)
-    293:301:public void startQrCodeCheckinActivity(double[])
-    307:308:public void startLocationCheckinActivity(double[])
-    329:348:public void startAutoCheckinListActivity(double[])
-    412:413:public void startFriendsCheckinsIntent(double[])
-    469:476:public void startAutoCheckinBroadcast()
-    479:483:public void stopAutoCheckinService()
-    486:499:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
-    503:525:public void commentButtonPressedAction()
-    528:533:public void saveRouteAction()
-    861:865:public void setRepeatingAlarm(java.lang.Class)
+    162:163:public void startAddLandmarkActivity()
+    166:167:public void startAddLayerActivity()
+    170:171:public void startBlogeoActivity()
+    174:186:public boolean startRouteLoadingActivity()
+    190:202:public boolean startFilesLoadingActivity()
+    206:207:public void startSocialListActivity()
+    210:211:public void startLayersListActivity()
+    229:232:public void startRegisterActivity()
+    247:269:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
+    284:287:public boolean isIntentAvailable(java.lang.String)
+    291:299:public void startQrCodeCheckinActivity(double[])
+    305:306:public void startLocationCheckinActivity(double[])
+    327:346:public void startAutoCheckinListActivity(double[])
+    410:411:public void startFriendsCheckinsIntent(double[])
+    467:474:public void startAutoCheckinBroadcast()
+    477:481:public void stopAutoCheckinService()
+    484:497:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
+    501:523:public void commentButtonPressedAction()
+    526:531:public void saveRouteAction()
+    859:863:public void setRepeatingAlarm(java.lang.Class)
 com.jstakun.gms.android.ui.LandmarkListActivity:
     public static final java.lang.String LANDMARK
 com.jstakun.gms.android.ui.LayerListActivity:
@@ -4069,6 +4024,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int socialNetworks
     public static final int sort
     public static final int summary
+    public static final int tapForTapId
     public static final int tileCache
     public static final int trackPos
     public static final int trackUserSummaryOff
@@ -4127,7 +4083,6 @@ com.jstakun.gms.android.utils.GMSAsyncTask$ComparableFutureTask:
     633:635:public GMSAsyncTask$ComparableFutureTask(java.lang.Runnable,java.lang.Object,int)
 com.jstakun.gms.android.utils.GoogleMercator:
     13:13:public GoogleMercator()
-com.jstakun.gms.android.utils.Hex
 com.jstakun.gms.android.utils.HttpUtils:
     private static final java.lang.String APP_HEADER
     private static final java.lang.String USE_COUNT_HEADER
@@ -4135,7 +4090,7 @@ com.jstakun.gms.android.utils.HttpUtils:
     private static final java.lang.String LNG_HEADER
     private static final int RETRY_COUNT
 com.jstakun.gms.android.utils.HttpUtils$SSLSocketFactoryHelper:
-    564:564:private HttpUtils$SSLSocketFactoryHelper()
+    570:570:private HttpUtils$SSLSocketFactoryHelper()
 com.jstakun.gms.android.utils.LayerPoint:
     private static final int INTERVAL
 com.jstakun.gms.android.utils.Locale:
@@ -4170,18 +4125,16 @@ com.jstakun.gms.android.utils.OsUtil:
     private static final int HONEYCOMB_3_0
     private static final int HONEYCOMB_3_2
     private static final int ICE_CREAM_SANDWICH
-    19:19:public OsUtil()
-    45:45:public static boolean isFroyoOrHigher()
-    94:106:public static boolean hasSystemSharedLibraryInstalled(android.content.Context,java.lang.String)
-    112:119:public static boolean isGoogleMapActivityInstalled()
-    125:128:public static boolean isGoogleMapsInstalled(android.content.Context)
+    22:22:public OsUtil()
+    48:48:public static boolean isFroyoOrHigher()
+    97:109:public static boolean hasSystemSharedLibraryInstalled(android.content.Context,java.lang.String)
+    115:122:public static boolean isGoogleMapActivityInstalled()
+    128:131:public static boolean isGoogleMapsInstalled(android.content.Context)
+com.jstakun.gms.android.utils.OsUtil$BuildVersionHelperInternal:
+    174:174:private OsUtil$BuildVersionHelperInternal()
 com.jstakun.gms.android.utils.OsUtil$DisplayHelperInternal:
-    139:139:private OsUtil$DisplayHelperInternal()
-com.jstakun.gms.android.utils.OsUtil$HelperInternal:
-    132:132:private OsUtil$HelperInternal()
+    181:181:private OsUtil$DisplayHelperInternal()
 com.jstakun.gms.android.utils.OsmMercator
-com.jstakun.gms.android.utils.SMSSender:
-    private static final java.lang.String SMS_NUMBER
 com.jstakun.gms.android.utils.ServicesUtils:
     16:16:public ServicesUtils()
     20:24:public static boolean isGpsActive(android.content.Context)
@@ -4199,8 +4152,8 @@ com.jstakun.gms.android.utils.SuggestionProviderUtil:
 com.jstakun.gms.android.utils.TapForTapUtils
 com.jstakun.gms.android.utils.TapForTapUtils$1
 com.jstakun.gms.android.utils.UserTracker:
-    119:120:public void setDebug(boolean)
-    123:125:public void setDryRun(boolean)
+    121:122:public void setDebug(boolean)
+    125:127:public void setDryRun(boolean)
 com.mnm.seekbarpreference.SeekBarPreference:
     private static final java.lang.String ANDROID_NS
     private static final java.lang.String ATTR_DEFAULT_VALUE
@@ -4281,282 +4234,349 @@ com.openlapi.ProximityListener
 com.openlapi.QualifiedCoordinates:
     public float getHorizontalAccuracy()
     public float getVerticalAccuracy()
-com.skyhookwireless._sdkcb:
-    public long _sdka()
-    public int _sdkc()
-com.skyhookwireless._sdkcc:
-    public static void _sdka(com.skyhookwireless._sdkcc)
-com.skyhookwireless._sdkce:
-    public static boolean _sdka(java.lang.Iterable)
-    public static void _sdkb(java.util.List,boolean[])
-    public static void _sdka(java.util.List,java.util.List,com.skyhookwireless._sdkie)
-    public static int _sdka(java.util.List,java.util.List)
-    public static int _sdkc(java.util.List,java.util.List,java.util.Comparator)
-    public static int _sdkb(java.util.List,java.util.List)
-    public static java.nio.ByteBuffer _sdka(long)
-    public static byte[] _sdkb(long)
-    public static int _sdka(byte)
-    public static int _sdka(short)
-    public static long _sdkc(int)
-com.skyhookwireless._sdkfc:
-    public abstract java.lang.String _sdka()
-    public static void _sdka(com.skyhookwireless._sdkfc)
-com.skyhookwireless._sdkfd:
-    public static void _sdka(com.skyhookwireless._sdkfd)
+com.skyhookwireless._sdka
+com.skyhookwireless._sdkab
+com.skyhookwireless._sdkac
+com.skyhookwireless._sdkad
+com.skyhookwireless._sdkae
+com.skyhookwireless._sdkaf
+com.skyhookwireless._sdkb
+com.skyhookwireless._sdkbb
+com.skyhookwireless._sdkbc
+com.skyhookwireless._sdkbd
+com.skyhookwireless._sdkbe
+com.skyhookwireless._sdkbf
+com.skyhookwireless._sdkc
+com.skyhookwireless._sdkcb
+com.skyhookwireless._sdkcc
+com.skyhookwireless._sdkcd
+com.skyhookwireless._sdkce
+com.skyhookwireless._sdkcf
+com.skyhookwireless._sdkd
+com.skyhookwireless._sdkdb
+com.skyhookwireless._sdkdc
+com.skyhookwireless._sdkdd
+com.skyhookwireless._sdkde
+com.skyhookwireless._sdkdf
+com.skyhookwireless._sdke
+com.skyhookwireless._sdkeb
+com.skyhookwireless._sdkec
+com.skyhookwireless._sdked
+com.skyhookwireless._sdkee
+com.skyhookwireless._sdkef
+com.skyhookwireless._sdkf
+com.skyhookwireless._sdkfb
+com.skyhookwireless._sdkfc
+com.skyhookwireless._sdkfd
+com.skyhookwireless._sdkfe
+com.skyhookwireless._sdkff
+com.skyhookwireless._sdkg
+com.skyhookwireless._sdkgb
+com.skyhookwireless._sdkgc
+com.skyhookwireless._sdkgd
+com.skyhookwireless._sdkge
+com.skyhookwireless._sdkgf
 com.skyhookwireless._sdkh
-com.skyhookwireless._sdkhb:
-    public java.lang.Object _sdka()
-    public com.skyhookwireless._sdkj _sdkd()
-com.skyhookwireless._sdkid:
-    public static void _sdka(com.skyhookwireless._sdkid)
-com.skyhookwireless._sdkjc:
-    public static void _sdka(com.skyhookwireless._sdkjc)
-com.skyhookwireless._sdkkd:
-    private final com.skyhookwireless._sdklb _sdkc
-    public _sdkkd(com.skyhookwireless._sdklb)
-    public void _sdkb()
-    public void _sdkc()
-    public synchronized void _sdka(java.util.List)
-    static void _sdka(com.skyhookwireless._sdkkd)
-    static synchronized void _sdkb(com.skyhookwireless._sdkkd)
-com.skyhookwireless._sdkke:
-    public static void _sdka(boolean)
-    public static void _sdka(boolean,java.lang.Object)
-    public static void _sdka(java.lang.Object,java.lang.Object)
-    public static void _sdkb(java.lang.Object,java.lang.Object)
-    public static void _sdka(double,double,double)
-    public static void _sdka(double,double)
-com.skyhookwireless._sdkld:
-    public static void _sdka(com.skyhookwireless._sdkld)
+com.skyhookwireless._sdkhb
+com.skyhookwireless._sdkhc
+com.skyhookwireless._sdkhd
+com.skyhookwireless._sdkhe
+com.skyhookwireless._sdkhf
+com.skyhookwireless._sdki
+com.skyhookwireless._sdkib
+com.skyhookwireless._sdkic
+com.skyhookwireless._sdkid
+com.skyhookwireless._sdkie
+com.skyhookwireless._sdkif
+com.skyhookwireless._sdkj
+com.skyhookwireless._sdkjb
+com.skyhookwireless._sdkjc
+com.skyhookwireless._sdkjd
+com.skyhookwireless._sdkje
+com.skyhookwireless._sdkjf
+com.skyhookwireless._sdkk
+com.skyhookwireless._sdkkb
+com.skyhookwireless._sdkkc
+com.skyhookwireless._sdkkd
+com.skyhookwireless._sdkke
+com.skyhookwireless._sdkkf
+com.skyhookwireless._sdkl
+com.skyhookwireless._sdklb
+com.skyhookwireless._sdklc
+com.skyhookwireless._sdkld
+com.skyhookwireless._sdkle
+com.skyhookwireless._sdklf
+com.skyhookwireless._sdkm
+com.skyhookwireless._sdkmb
 com.skyhookwireless._sdkmc
-com.skyhookwireless._sdkme:
-    public void _sdka(java.util.List,long)
-com.skyhookwireless._sdknc:
-    public float _sdka()
-    public float _sdkb()
-    public float _sdkc()
-com.skyhookwireless._sdkp:
-    public _sdkp(java.lang.String,java.lang.Throwable)
-com.skyhookwireless._sdkqb:
-    public synchronized int _sdkc()
-com.skyhookwireless._sdkqc:
-    public abstract java.lang.String _sdka()
-    public abstract boolean _sdkc()
-    public static void _sdka(com.skyhookwireless._sdkqc)
-com.skyhookwireless._sdkr:
-    public _sdkr(java.lang.String,java.lang.Throwable)
-com.skyhookwireless._sdkrc:
-    public java.lang.String _sdka()
-    public boolean _sdkc()
-com.skyhookwireless._sdkre:
-    public static final double PI
-    public static final double DEGREE_TO_RADIAN
-    public static final double RADIAN_TO_DEGREE
-com.skyhookwireless._sdks:
-    public _sdks(java.lang.String,java.lang.Throwable)
-com.skyhookwireless._sdksc:
-    public boolean _sdkc()
-com.skyhookwireless._sdksd:
-    public static void _sdka(com.skyhookwireless._sdksd)
-com.skyhookwireless._sdkse:
-    public _sdkse(com.skyhookwireless._sdkse)
-    public static com.skyhookwireless._sdkse _sdka(com.skyhookwireless._sdkse)
-com.skyhookwireless._sdkt:
-    public _sdkt(java.lang.String,java.lang.Throwable)
+com.skyhookwireless._sdkmd
+com.skyhookwireless._sdkme
+com.skyhookwireless._sdkmf
+com.skyhookwireless._sdkn
+com.skyhookwireless._sdknb
+com.skyhookwireless._sdknc
+com.skyhookwireless._sdknd
+com.skyhookwireless._sdkne
+com.skyhookwireless._sdko
+com.skyhookwireless._sdkob
+com.skyhookwireless._sdkoc
+com.skyhookwireless._sdkod
+com.skyhookwireless._sdkoe
+com.skyhookwireless._sdkp
+com.skyhookwireless._sdkpb
+com.skyhookwireless._sdkpc
+com.skyhookwireless._sdkpd
+com.skyhookwireless._sdkpe
+com.skyhookwireless._sdkq
+com.skyhookwireless._sdkqb
+com.skyhookwireless._sdkqc
+com.skyhookwireless._sdkqd
+com.skyhookwireless._sdkqe
+com.skyhookwireless._sdkr
+com.skyhookwireless._sdkrb
+com.skyhookwireless._sdkrc
+com.skyhookwireless._sdkrd
+com.skyhookwireless._sdkre
+com.skyhookwireless._sdks
+com.skyhookwireless._sdksb
+com.skyhookwireless._sdksc
+com.skyhookwireless._sdksd
+com.skyhookwireless._sdkse
+com.skyhookwireless._sdkt
+com.skyhookwireless._sdktb
 com.skyhookwireless._sdktc
+com.skyhookwireless._sdktd
+com.skyhookwireless._sdkte
 com.skyhookwireless._sdku
-com.skyhookwireless._sdkub:
-    public final void _sdka(java.lang.String,java.lang.Throwable)
-    public static synchronized void _sdka(com.skyhookwireless._sdkub)
-com.skyhookwireless._sdkuc:
-    private static final long serialVersionUID
-    public static synchronized void _sdkd(com.skyhookwireless._sdkuc)
-com.skyhookwireless._sdkud:
-    public abstract java.lang.String _sdka()
-    public static void _sdka(com.skyhookwireless._sdkud)
-com.skyhookwireless._sdkv:
-    public static final boolean allowSetPrototypes
-    public static final boolean useGpsPoller
-    public static final boolean ignoreLogConfFile
-    public static final boolean enableInternalLogging
-    public static final boolean forceEnableWifi
-    public static final boolean disableWifiIfConnected
-    public static final long noSatIgnorePeriod
-    public static final boolean noGpsProviderInjection
-    public static final boolean useGoogleFallback
-    public static final boolean useInflightFallback
-    private _sdkv()
-com.skyhookwireless._sdkvd:
-    public java.lang.String _sdka()
-com.skyhookwireless._sdkve:
-    public static float _sdka(float,float,float)
-    public static double _sdkb(java.util.Collection)
-com.skyhookwireless._sdkwe:
-    public static java.lang.Double _sdkd(org.w3c.dom.Document,java.lang.String,java.lang.String)
-com.skyhookwireless._sdkx:
-    private _sdkx()
-    public static boolean _sdka(java.lang.Runnable)
-com.skyhookwireless._sdkxd:
-    public static void _sdka(com.skyhookwireless._sdkxd)
-com.skyhookwireless._sdky:
-    public static int _sdka(java.lang.String,int)
+com.skyhookwireless._sdkub
+com.skyhookwireless._sdkuc
+com.skyhookwireless._sdkud
+com.skyhookwireless._sdkue
+com.skyhookwireless._sdkv
+com.skyhookwireless._sdkvb
+com.skyhookwireless._sdkvc
+com.skyhookwireless._sdkvd
+com.skyhookwireless._sdkve
+com.skyhookwireless._sdkw
+com.skyhookwireless._sdkwb
+com.skyhookwireless._sdkwc
+com.skyhookwireless._sdkwd
+com.skyhookwireless._sdkwe
+com.skyhookwireless._sdkx
+com.skyhookwireless._sdkxb
+com.skyhookwireless._sdkxc
+com.skyhookwireless._sdkxd
+com.skyhookwireless._sdkxe
+com.skyhookwireless._sdky
+com.skyhookwireless._sdkyb
+com.skyhookwireless._sdkyc
+com.skyhookwireless._sdkyd
 com.skyhookwireless._sdkye
-com.skyhookwireless.wps.CellAlgorithm:
-    public void clear()
-com.skyhookwireless.wps.ExpiringCache:
-    public java.lang.Object add(java.lang.Object,java.lang.Object)
-    public java.lang.Object get(java.lang.Object)
-    public java.lang.Object get(java.lang.Object,com.skyhookwireless._sdkuc)
-    public java.lang.Object remove(java.lang.Object)
-    public void clear()
-    public int size()
-    public int maxSize()
-com.skyhookwireless.wps.IPLocation:
-    private static final long serialVersionUID
-    public com.skyhookwireless.wps.StreetAddress getStreetAddress()
+com.skyhookwireless._sdkz
+com.skyhookwireless._sdkzb
+com.skyhookwireless._sdkzc
+com.skyhookwireless._sdkzd
+com.skyhookwireless._sdkze
+com.skyhookwireless.wps.GeoFenceCallback
+com.skyhookwireless.wps.IPLocation
 com.skyhookwireless.wps.IPLocationCallback
-com.skyhookwireless.wps.Location:
-    private static final long serialVersionUID
-com.skyhookwireless.wps.StreetAddress:
-    private static final long serialVersionUID
-    public java.lang.String getStreetNumber()
-    public java.lang.String getCity()
-    public java.lang.String getPostalCode()
-    public java.lang.String getCounty()
-    public java.lang.String getProvince()
-    public java.lang.String getRegion()
-    public java.lang.String[] getAddressLine()
-    public java.lang.String getStateName()
-    public java.lang.String getStateCode()
-    public java.lang.String getCountryName()
-    public java.lang.String getCountryCode()
-    public void setStreetNumber(java.lang.String)
-    public void setCity(java.lang.String)
-    public void setPostalCode(java.lang.String)
-    public void setCounty(java.lang.String)
-    public void setProvince(java.lang.String)
-    public void setRegion(java.lang.String)
-    public void setStateName(java.lang.String)
-    public void setStateCode(java.lang.String)
-    public void setCountryName(java.lang.String)
-    public void setCountryCode(java.lang.String)
-    public void setAddressLines(java.lang.String[])
+com.skyhookwireless.wps.IWPS
+com.skyhookwireless.wps.IXPS
+com.skyhookwireless.wps.Location
+com.skyhookwireless.wps.RegistrationCallback
+com.skyhookwireless.wps.StreetAddress
+com.skyhookwireless.wps.TilingListener
 com.skyhookwireless.wps.TuneLocationCallback
-com.skyhookwireless.wps.WPS:
-    public WPS(android.content.Context)
-    public static void setServerUrl(java.lang.String)
-    public bridge synthetic com.skyhookwireless.wps.WPSReturnCode cancelAllGeoFences()
-    public bridge synthetic com.skyhookwireless.wps.WPSReturnCode cancelGeoFence(com.skyhookwireless.wps.WPSGeoFence$Handle)
-    public bridge synthetic com.skyhookwireless.wps.WPSGeoFence$Handle setGeoFence(com.skyhookwireless.wps.WPSGeoFence,com.skyhookwireless.wps.GeoFenceCallback)
-    public bridge synthetic void setLocalFilePaths(java.util.List)
-    public bridge synthetic void tuneLocation(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSLocation,com.skyhookwireless.wps.TuneLocationCallback)
-    public bridge synthetic void getLocation(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSStreetAddressLookup,com.skyhookwireless.wps.WPSLocationCallback)
-    public bridge synthetic void getIPLocation(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSStreetAddressLookup,com.skyhookwireless.wps.IPLocationCallback)
-com.skyhookwireless.wps.WPSAuthentication:
-    private static final long serialVersionUID
-com.skyhookwireless.wps.WPSGeoFence:
-    private static final long serialVersionUID
-    public WPSGeoFence(double,double,int,com.skyhookwireless.wps.WPSGeoFence$Type,long)
-    protected WPSGeoFence()
-com.skyhookwireless.wps.WPSGeoFence$Handle:
-    public WPSGeoFence$Handle()
-com.skyhookwireless.wps.WPSLocation:
-    private static final long serialVersionUID
-    public WPSLocation(double,double,long,int,int,int,double,double,com.skyhookwireless.wps.StreetAddress,com.skyhookwireless.wps._sdksd)
-com.skyhookwireless.wps.XPS:
-    public static void setServerUrl(java.lang.String)
-    public bridge synthetic void getXPSLocation(com.skyhookwireless.wps.WPSAuthentication,int,int,com.skyhookwireless.wps.WPSPeriodicLocationCallback)
-    public bridge synthetic com.skyhookwireless.wps.WPSReturnCode cancelAllGeoFences()
-    public bridge synthetic com.skyhookwireless.wps.WPSReturnCode cancelGeoFence(com.skyhookwireless.wps.WPSGeoFence$Handle)
-    public bridge synthetic com.skyhookwireless.wps.WPSGeoFence$Handle setGeoFence(com.skyhookwireless.wps.WPSGeoFence,com.skyhookwireless.wps.GeoFenceCallback)
-    public bridge synthetic void setLocalFilePaths(java.util.List)
-    public bridge synthetic void tuneLocation(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSLocation,com.skyhookwireless.wps.TuneLocationCallback)
-    public bridge synthetic void getLocation(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSStreetAddressLookup,com.skyhookwireless.wps.WPSLocationCallback)
-    public bridge synthetic void getIPLocation(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSStreetAddressLookup,com.skyhookwireless.wps.IPLocationCallback)
-com.skyhookwireless.wps._sdkad:
-    synchronized void _sdkc(com.skyhookwireless.wps._sdksd)
-    private static void _sdka(com.skyhookwireless.wps._sdkbb,java.util.List)
-com.skyhookwireless.wps._sdkaf:
-    public static long getOneShotPeriod()
-    public static int getOneShotIterations()
-    public static double getPowerStdDevStationaryThreshold()
-    public static double getApObsStationaryThreshold()
-    public static double getApObsLowSpeedThreshold()
-    public static double getAccelVarianceWalkingThreshold()
-    public static java.lang.String getXpsTilesDirPath()
-    public static long getXpsTilesMaxDataSizePerSession()
-    public static long getXpsTilesMaxDataSizeTotal()
-    public static int getXpsMinCoarseAccuracy()
-    public static int getGeofenceRadiusFloor()
-    public static int getGeofencePeriodFloor()
-    public static java.lang.String getWifiTestFilePath()
-    public static java.lang.String getGsmTestFilePath()
-com.skyhookwireless.wps._sdkbb:
-    public java.lang.Object remove(java.lang.Object)
-    public void clear()
-com.skyhookwireless.wps._sdkde:
-    public void clear()
-com.skyhookwireless.wps._sdkfe:
-    void _sdka()
-com.skyhookwireless.wps._sdkge:
-    public synchronized void _sdka()
-com.skyhookwireless.wps._sdkhb:
-    synchronized com.skyhookwireless.wps.WPSGeoFence$Handle _sdka(com.skyhookwireless.wps.WPSGeoFence,com.skyhookwireless.wps.GeoFenceCallback)
-    synchronized void _sdkb()
-com.skyhookwireless.wps._sdkie:
-    void _sdkb(java.util.List)
-com.skyhookwireless.wps._sdkld:
-    synchronized void _sdka(com.skyhookwireless.wps._sdksd)
-com.skyhookwireless.wps._sdklf:
-    public static synchronized com.skyhookwireless.wps._sdklf newInstance(com.skyhookwireless.wps.WPSGeoFence,com.skyhookwireless.wps.GeoFenceCallback)
-    private _sdklf(com.skyhookwireless.wps.WPSGeoFence,com.skyhookwireless.wps.GeoFenceCallback)
-com.skyhookwireless.wps._sdkm:
-    private void _sdke()
-    protected final com.skyhookwireless.wps.WPSContinuation _sdka(com.skyhookwireless.wps._sdkkf,com.skyhookwireless.wps.WPSReturnCode)
-    public void getIPLocation(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSStreetAddressLookup,com.skyhookwireless.wps.IPLocationCallback)
-    public void getLocation(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSStreetAddressLookup,com.skyhookwireless.wps.WPSLocationCallback)
-    private boolean _sdkf()
-    public void tuneLocation(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSLocation,com.skyhookwireless.wps.TuneLocationCallback)
-    public void setLocalFilePaths(java.util.List)
-    public com.skyhookwireless.wps.WPSGeoFence$Handle setGeoFence(com.skyhookwireless.wps.WPSGeoFence,com.skyhookwireless.wps.GeoFenceCallback)
-    public com.skyhookwireless.wps.WPSReturnCode cancelGeoFence(com.skyhookwireless.wps.WPSGeoFence$Handle)
-    public com.skyhookwireless.wps.WPSReturnCode cancelAllGeoFences()
-    public static void setServerUrl(java.lang.String)
-    static synthetic boolean access$1000(com.skyhookwireless.wps._sdkm)
-com.skyhookwireless.wps._sdkn:
-    public void getXPSLocation(com.skyhookwireless.wps.WPSAuthentication,int,int,com.skyhookwireless.wps.WPSPeriodicLocationCallback)
+com.skyhookwireless.wps.WPS
+com.skyhookwireless.wps.WPSAuthentication
+com.skyhookwireless.wps.WPSCertifiedLocationCallback
+com.skyhookwireless.wps.WPSContinuation
+com.skyhookwireless.wps.WPSGeoFence
+com.skyhookwireless.wps.WPSGeoFence$Handle
+com.skyhookwireless.wps.WPSGeoFence$Type
+com.skyhookwireless.wps.WPSLocation
+com.skyhookwireless.wps.WPSLocationCallback
+com.skyhookwireless.wps.WPSPeriodicLocationCallback
+com.skyhookwireless.wps.WPSReturnCode
+com.skyhookwireless.wps.WPSStreetAddressLookup
+com.skyhookwireless.wps.XPS
+com.skyhookwireless.wps._sdka
+com.skyhookwireless.wps._sdkab
+com.skyhookwireless.wps._sdkac
+com.skyhookwireless.wps._sdkad
+com.skyhookwireless.wps._sdkae
+com.skyhookwireless.wps._sdkaf
+com.skyhookwireless.wps._sdkag
+com.skyhookwireless.wps._sdkb
+com.skyhookwireless.wps._sdkbb
+com.skyhookwireless.wps._sdkbc
+com.skyhookwireless.wps._sdkbd
+com.skyhookwireless.wps._sdkbe
+com.skyhookwireless.wps._sdkbf
+com.skyhookwireless.wps._sdkbg
+com.skyhookwireless.wps._sdkc
+com.skyhookwireless.wps._sdkcb
+com.skyhookwireless.wps._sdkcc
+com.skyhookwireless.wps._sdkcd
+com.skyhookwireless.wps._sdkce
+com.skyhookwireless.wps._sdkcf
+com.skyhookwireless.wps._sdkcg
+com.skyhookwireless.wps._sdkd
+com.skyhookwireless.wps._sdkdb
+com.skyhookwireless.wps._sdkdc
+com.skyhookwireless.wps._sdkdd
+com.skyhookwireless.wps._sdkde
+com.skyhookwireless.wps._sdkdf
+com.skyhookwireless.wps._sdkdg
+com.skyhookwireless.wps._sdke
+com.skyhookwireless.wps._sdkeb
+com.skyhookwireless.wps._sdkec
+com.skyhookwireless.wps._sdked
+com.skyhookwireless.wps._sdkee
+com.skyhookwireless.wps._sdkef
+com.skyhookwireless.wps._sdkeg
+com.skyhookwireless.wps._sdkf
+com.skyhookwireless.wps._sdkfb
+com.skyhookwireless.wps._sdkfc
+com.skyhookwireless.wps._sdkfd
+com.skyhookwireless.wps._sdkfe
+com.skyhookwireless.wps._sdkff
+com.skyhookwireless.wps._sdkfg
+com.skyhookwireless.wps._sdkg
+com.skyhookwireless.wps._sdkgb
+com.skyhookwireless.wps._sdkgc
+com.skyhookwireless.wps._sdkgd
+com.skyhookwireless.wps._sdkge
+com.skyhookwireless.wps._sdkgf
+com.skyhookwireless.wps._sdkgg
+com.skyhookwireless.wps._sdkh
+com.skyhookwireless.wps._sdkhb
+com.skyhookwireless.wps._sdkhc
+com.skyhookwireless.wps._sdkhd
+com.skyhookwireless.wps._sdkhe
+com.skyhookwireless.wps._sdkhf
+com.skyhookwireless.wps._sdkhg
+com.skyhookwireless.wps._sdki
+com.skyhookwireless.wps._sdkib
+com.skyhookwireless.wps._sdkic
+com.skyhookwireless.wps._sdkid
+com.skyhookwireless.wps._sdkie
+com.skyhookwireless.wps._sdkif
+com.skyhookwireless.wps._sdkig
+com.skyhookwireless.wps._sdkj
+com.skyhookwireless.wps._sdkjb
+com.skyhookwireless.wps._sdkjc
+com.skyhookwireless.wps._sdkjd
+com.skyhookwireless.wps._sdkje
+com.skyhookwireless.wps._sdkjf
+com.skyhookwireless.wps._sdkjg
+com.skyhookwireless.wps._sdkk
+com.skyhookwireless.wps._sdkkb
+com.skyhookwireless.wps._sdkkc
+com.skyhookwireless.wps._sdkkd
+com.skyhookwireless.wps._sdkke
+com.skyhookwireless.wps._sdkkf
+com.skyhookwireless.wps._sdkkg
+com.skyhookwireless.wps._sdkl
+com.skyhookwireless.wps._sdklb
+com.skyhookwireless.wps._sdklc
+com.skyhookwireless.wps._sdkld
+com.skyhookwireless.wps._sdkle
+com.skyhookwireless.wps._sdklf
+com.skyhookwireless.wps._sdklg
+com.skyhookwireless.wps._sdkm
+com.skyhookwireless.wps._sdkmb
+com.skyhookwireless.wps._sdkmc
+com.skyhookwireless.wps._sdkmd
+com.skyhookwireless.wps._sdkme
+com.skyhookwireless.wps._sdkmf
+com.skyhookwireless.wps._sdkmg
+com.skyhookwireless.wps._sdkn
+com.skyhookwireless.wps._sdknb
+com.skyhookwireless.wps._sdknc
+com.skyhookwireless.wps._sdknd
+com.skyhookwireless.wps._sdkne
+com.skyhookwireless.wps._sdknf
+com.skyhookwireless.wps._sdkng
+com.skyhookwireless.wps._sdko
 com.skyhookwireless.wps._sdkob
+com.skyhookwireless.wps._sdkoc
+com.skyhookwireless.wps._sdkod
+com.skyhookwireless.wps._sdkoe
+com.skyhookwireless.wps._sdkof
+com.skyhookwireless.wps._sdkog
+com.skyhookwireless.wps._sdkp
 com.skyhookwireless.wps._sdkpb
-com.skyhookwireless.wps._sdkpd:
-    public static java.lang.String getIPLocationRQ(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSStreetAddressLookup)
-    public static java.lang.String getUserLocationRQ(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSLocation,com.skyhookwireless.wps._sdksd)
-com.skyhookwireless.wps._sdkpe:
-    public synchronized void _sdka(com.skyhookwireless.wps._sdksd)
+com.skyhookwireless.wps._sdkpc
+com.skyhookwireless.wps._sdkpd
+com.skyhookwireless.wps._sdkpe
+com.skyhookwireless.wps._sdkpf
+com.skyhookwireless.wps._sdkpg
 com.skyhookwireless.wps._sdkq
-com.skyhookwireless.wps._sdkqd:
-    com.skyhookwireless._sdkse _sdka(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSStreetAddressLookup)
-    com.skyhookwireless.wps.WPSReturnCode _sdka(com.skyhookwireless.wps.WPSAuthentication,com.skyhookwireless.wps.WPSLocation,com.skyhookwireless.wps._sdksd)
-com.skyhookwireless.wps._sdkrc:
-    private static final long serialVersionUID
+com.skyhookwireless.wps._sdkqb
+com.skyhookwireless.wps._sdkqc
+com.skyhookwireless.wps._sdkqd
+com.skyhookwireless.wps._sdkqe
+com.skyhookwireless.wps._sdkqf
+com.skyhookwireless.wps._sdkqg
+com.skyhookwireless.wps._sdkr
+com.skyhookwireless.wps._sdkrb
+com.skyhookwireless.wps._sdkrc
+com.skyhookwireless.wps._sdkrd
+com.skyhookwireless.wps._sdkre
+com.skyhookwireless.wps._sdkrf
+com.skyhookwireless.wps._sdkrg
+com.skyhookwireless.wps._sdks
+com.skyhookwireless.wps._sdksb
+com.skyhookwireless.wps._sdksc
+com.skyhookwireless.wps._sdksd
+com.skyhookwireless.wps._sdkse
+com.skyhookwireless.wps._sdksf
+com.skyhookwireless.wps._sdksg
 com.skyhookwireless.wps._sdkt
-com.skyhookwireless.wps._sdktb:
-    public void _sdke()
-com.skyhookwireless.wps._sdkub:
-    public static final void _sdka(java.lang.String[])
-    private static final void _sdka(java.lang.String,byte[])
-com.skyhookwireless.wps._sdkvc:
-    public abstract void clear()
-com.skyhookwireless.wps._sdkwb:
-    public static void _sdka(com.skyhookwireless.wps._sdkwb)
-com.skyhookwireless.wps._sdkwc:
-    public void clear()
+com.skyhookwireless.wps._sdktb
+com.skyhookwireless.wps._sdktc
+com.skyhookwireless.wps._sdktd
+com.skyhookwireless.wps._sdkte
+com.skyhookwireless.wps._sdktf
+com.skyhookwireless.wps._sdktg
+com.skyhookwireless.wps._sdku
+com.skyhookwireless.wps._sdkub
+com.skyhookwireless.wps._sdkuc
+com.skyhookwireless.wps._sdkud
+com.skyhookwireless.wps._sdkue
+com.skyhookwireless.wps._sdkuf
+com.skyhookwireless.wps._sdkug
+com.skyhookwireless.wps._sdkv
+com.skyhookwireless.wps._sdkvb
+com.skyhookwireless.wps._sdkvc
+com.skyhookwireless.wps._sdkvd
+com.skyhookwireless.wps._sdkve
+com.skyhookwireless.wps._sdkvf
+com.skyhookwireless.wps._sdkw
+com.skyhookwireless.wps._sdkwb
+com.skyhookwireless.wps._sdkwc
+com.skyhookwireless.wps._sdkwd
+com.skyhookwireless.wps._sdkwe
+com.skyhookwireless.wps._sdkwf
 com.skyhookwireless.wps._sdkx
-com.skyhookwireless.wps._sdkxc:
-    synchronized void _sdka(com.skyhookwireless.wps._sdksd)
-com.skyhookwireless.wps._sdkyb:
-    public void _sdkb()
-    public void _sdka(java.util.List,java.util.Set)
-    private void _sdka(com.skyhookwireless.wps._sdkuf)
+com.skyhookwireless.wps._sdkxb
+com.skyhookwireless.wps._sdkxc
+com.skyhookwireless.wps._sdkxd
+com.skyhookwireless.wps._sdkxe
+com.skyhookwireless.wps._sdkxf
+com.skyhookwireless.wps._sdky
+com.skyhookwireless.wps._sdkyb
+com.skyhookwireless.wps._sdkyc
+com.skyhookwireless.wps._sdkyd
+com.skyhookwireless.wps._sdkye
+com.skyhookwireless.wps._sdkyf
+com.skyhookwireless.wps._sdkz
+com.skyhookwireless.wps._sdkzb
+com.skyhookwireless.wps._sdkzc
+com.skyhookwireless.wps._sdkzd
+com.skyhookwireless.wps._sdkze
+com.skyhookwireless.wps._sdkzf
 com.tapfortap.AdView:
     private static final java.lang.String TAG
     private java.lang.String appId
@@ -5265,29 +5285,112 @@ net.dclausen.microfloat.MicroDouble:
 net.dclausen.microfloat.MicroFloat
 org.acra.ACRA:
     public static final boolean DEV_LOGGING
-    static final java.lang.String RES_NOTIF_ICON
-    static final java.lang.String RES_NOTIF_TICKER_TEXT
-    static final java.lang.String RES_NOTIF_TITLE
-    static final java.lang.String RES_NOTIF_TEXT
-    static final java.lang.String RES_DIALOG_ICON
-    static final java.lang.String RES_DIALOG_TITLE
-    static final java.lang.String RES_DIALOG_TEXT
-    static final java.lang.String RES_DIALOG_COMMENT_PROMPT
-    static final java.lang.String RES_DIALOG_OK_TOAST
-    static final java.lang.String RES_TOAST_TEXT
-    static final int NOTIF_CRASH_ID
     public static final java.lang.String PREF_DISABLE_ACRA
     public static final java.lang.String PREF_ENABLE_ACRA
     public static final java.lang.String PREF_ENABLE_SYSTEM_LOGS
     public static final java.lang.String PREF_ENABLE_DEVICE_ID
     public static final java.lang.String PREF_USER_EMAIL_ADDRESS
     public static final java.lang.String PREF_ALWAYS_ACCEPT
-    public static final java.lang.String NULL_VALUE
+    public static final java.lang.String PREF_LAST_VERSION_NR
+    281:282:public static void setConfig(org.acra.ACRAConfiguration)
+    317:318:public static void setLog(org.acra.log.ACRALog)
+org.acra.ACRAConfiguration:
+    134:135:public void setAdditionalDropboxTags(java.lang.String[])
+    142:143:public void setAdditionalSharedPreferences(java.lang.String[])
+    150:151:public void setConnectionTimeout(java.lang.Integer)
+    158:159:public void setCustomReportContent(org.acra.ReportField[])
+    166:167:public void setDeleteUnapprovedReportsOnApplicationStart(java.lang.Boolean)
+    173:174:public void setDeleteOldUnsentReportsOnApplicationStart(java.lang.Boolean)
+    181:182:public void setDropboxCollectionMinutes(java.lang.Integer)
+    189:190:public void setForceCloseDialogAfterToast(java.lang.Boolean)
+    202:203:public void setFormKey(java.lang.String)
+    215:216:public void setFormUri(java.lang.String)
+    223:224:public void setFormUriBasicAuthLogin(java.lang.String)
+    231:232:public void setFormUriBasicAuthPassword(java.lang.String)
+    239:240:public void setIncludeDropboxSystemTags(java.lang.Boolean)
+    247:248:public void setLogcatArguments(java.lang.String[])
+    260:261:public void setMailTo(java.lang.String)
+    268:269:public void setMaxNumberOfRequestRetries(java.lang.Integer)
+    281:283:public void setMode(org.acra.ReportingInteractionMode)
+    295:296:public void setResDialogCommentPrompt(int)
+    308:309:public void setResDialogEmailPrompt(int)
+    320:321:public void setResDialogIcon(int)
+    332:333:public void setResDialogOkToast(int)
+    344:345:public void setResDialogText(int)
+    356:357:public void setResDialogTitle(int)
+    368:369:public void setResNotifIcon(int)
+    380:381:public void setResNotifText(int)
+    393:394:public void setResNotifTickerText(int)
+    405:406:public void setResNotifTitle(int)
+    417:418:public void setResToastText(int)
+    425:426:public void setSharedPreferenceMode(java.lang.Integer)
+    433:434:public void setSharedPreferenceName(java.lang.String)
+    441:442:public void setSocketTimeout(java.lang.Integer)
+    451:452:public void setLogcatFilterByPid(java.lang.Boolean)
+    461:462:public void setSendReportsInDevMode(java.lang.Boolean)
+    472:473:public void setExcludeMatchingSharedPreferencesKeys(java.lang.String[])
+    483:484:public void setExcludeMatchingSettingsKeys(java.lang.String[])
+    493:494:public void setApplicationLogFile(java.lang.String)
+    504:505:public void setApplicationLogFileLines(int)
+    514:515:public void setDisableSSLCertValidation(boolean)
+    523:524:public void setHttpMethod(org.acra.sender.HttpSender$Method)
+    533:534:public void setReportType(org.acra.sender.HttpSender$Type)
 org.acra.ACRAConfigurationException:
     private static final long serialVersionUID
-org.acra.Compatibility:
+org.acra.ACRAConstants:
+    public static final java.lang.String REPORTFILE_EXTENSION
+    static final java.lang.String APPROVED_SUFFIX
+    static final int MAX_SEND_REPORTS
+    protected static final java.lang.String EXTRA_REPORT_FILE_NAME
+    protected static final java.lang.String EXTRA_FORCE_CANCEL
+    static final int NOTIF_CRASH_ID
+    static final int TOAST_WAIT_DURATION
+    public static final java.lang.String NULL_VALUE
+    public static final boolean DEFAULT_FORCE_CLOSE_DIALOG_AFTER_TOAST
+    public static final int DEFAULT_MAX_NUMBER_OF_REQUEST_RETRIES
+    public static final int DEFAULT_SOCKET_TIMEOUT
+    public static final int DEFAULT_CONNECTION_TIMEOUT
+    public static final boolean DEFAULT_DELETE_UNAPPROVED_REPORTS_ON_APPLICATION_START
+    public static final boolean DEFAULT_DELETE_OLD_UNSENT_REPORTS_ON_APPLICATION_START
+    public static final int DEFAULT_DROPBOX_COLLECTION_MINUTES
+    public static final boolean DEFAULT_INCLUDE_DROPBOX_SYSTEM_TAGS
+    public static final int DEFAULT_SHARED_PREFERENCES_MODE
+    public static final int DEFAULT_NOTIFICATION_ICON
+    public static final int DEFAULT_DIALOG_ICON
+    public static final int DEFAULT_RES_VALUE
+    public static final java.lang.String DEFAULT_STRING_VALUE
+    public static final int DEFAULT_LOGCAT_LINES
+    public static final int DEFAULT_BUFFER_SIZE_IN_BYTES
+    public static final boolean DEFAULT_LOGCAT_FILTER_BY_PID
+    public static final boolean DEFAULT_SEND_REPORTS_IN_DEV_MODE
+    public static final java.lang.String DEFAULT_APPLICATION_LOGFILE
+    public static final int DEFAULT_APPLICATION_LOGFILE_LINES
+    public static final java.lang.String DEFAULT_GOOGLE_FORM_URL_FORMAT
+    public static final boolean DEFAULT_DISABLE_SSL_CERT_VALIDATION
+    58:58:public ACRAConstants()
+org.acra.CrashReportDialog:
+    private static final java.lang.String STATE_EMAIL
+    private static final java.lang.String STATE_COMMENT
+org.acra.CrashReportPersister:
+    private static final int NONE
+    private static final int SLASH
+    private static final int UNICODE
+    private static final int CONTINUE
+    private static final int KEY_DONE
+    private static final int IGNORE
+    private static final java.lang.String LINE_SEPARATOR
+org.acra.ErrorReporter:
+    229:230:public void addCustomData(java.lang.String,java.lang.String)
+    254:254:public java.lang.String putCustomData(java.lang.String,java.lang.String)
+    267:267:public java.lang.String removeCustomData(java.lang.String)
+    280:280:public java.lang.String getCustomData(java.lang.String)
+    301:302:public void removeReportSender(org.acra.sender.ReportSender)
+    311:318:public void removeReportSenders(java.lang.Class)
+    570:571:public void handleException(java.lang.Throwable,boolean)
+    583:584:public void handleException(java.lang.Throwable)
+org.acra.collector.Compatibility:
     29:29:public Compatibility()
-org.acra.ConfigurationInspector:
+org.acra.collector.ConfigurationCollector:
     private static final java.lang.String SUFFIX_MASK
     private static final java.lang.String FIELD_SCREENLAYOUT
     private static final java.lang.String FIELD_UIMODE
@@ -5302,70 +5405,80 @@ org.acra.ConfigurationInspector:
     private static final java.lang.String PREFIX_KEYBOARDHIDDEN
     private static final java.lang.String PREFIX_KEYBOARD
     private static final java.lang.String PREFIX_HARDKEYBOARDHIDDEN
-    39:39:public ConfigurationInspector()
-org.acra.CrashReportData:
+    42:42:public ConfigurationCollector()
+org.acra.collector.CrashReportData:
     private static final long serialVersionUID
-    private static final java.lang.String PROP_DTD_NAME
-    private static final int NONE
-    private static final int SLASH
-    private static final int UNICODE
-    private static final int CONTINUE
-    private static final int KEY_DONE
-    private static final int IGNORE
-    88:90:public CrashReportData(org.acra.CrashReportData)
-    162:169:public java.lang.String getProperty(org.acra.ReportField,java.lang.String)
-    181:205:public void list(java.io.PrintStream)
-    216:240:public void list(java.io.PrintWriter)
-    475:475:private java.util.Enumeration keys()
-    497:500:public void save(java.io.OutputStream,java.lang.String)
-    513:513:public java.lang.Object setProperty(org.acra.ReportField,java.lang.String)
-    568:585:public synchronized void store(java.io.Writer,java.lang.String)
-    700:701:public void storeToXML(java.io.OutputStream,java.lang.String)
-    727:778:public synchronized void storeToXML(java.io.OutputStream,java.lang.String,java.lang.String)
-    786:786:private java.lang.String substitutePredefinedEntries(java.lang.String)
-org.acra.DeviceFeaturesCollector:
-    33:33:public DeviceFeaturesCollector()
-org.acra.DropBoxCollector:
-    37:37:DropBoxCollector()
-org.acra.DumpSysCollector:
-    31:31:DumpSysCollector()
-org.acra.ErrorReporter:
-    public static final java.lang.String REPORTFILE_EXTENSION
-    private static final int MAX_SEND_REPORTS
-    static final java.lang.String APPROVED_SUFFIX
-    static final java.lang.String EXTRA_REPORT_FILE_NAME
-    266:267:public void addCustomData(java.lang.String,java.lang.String)
-    289:289:public java.lang.String putCustomData(java.lang.String,java.lang.String)
-    302:302:public java.lang.String removeCustomData(java.lang.String)
-    315:315:public java.lang.String getCustomData(java.lang.String)
-    1081:1082:public void deletePendingSilentReports()
-    1234:1235:public void removeReportSender(org.acra.sender.ReportSender)
-    1243:1250:public void removeReportSenders(java.lang.Class)
-    1257:1258:public void removeAllReportSenders()
-    1266:1268:public void setReportSender(org.acra.sender.ReportSender)
-org.acra.LogCatCollector:
+org.acra.collector.CrashReportDataFactory:
+    127:127:public java.lang.String putCustomData(java.lang.String,java.lang.String)
+    138:138:public java.lang.String removeCustomData(java.lang.String)
+    149:149:public java.lang.String getCustomData(java.lang.String)
+org.acra.collector.DeviceFeaturesCollector:
+    32:32:DeviceFeaturesCollector()
+org.acra.collector.DisplayManagerCollector:
+    18:18:DisplayManagerCollector()
+org.acra.collector.DropBoxCollector:
+    private static final java.lang.String NO_RESULT
+    40:40:DropBoxCollector()
+org.acra.collector.DumpSysCollector:
+    34:34:DumpSysCollector()
+org.acra.collector.LogCatCollector:
     private static final int DEFAULT_TAIL_COUNT
-    37:37:LogCatCollector()
-org.acra.ReflectionCollector:
-    32:32:public ReflectionCollector()
-org.acra.SettingsCollector:
-    34:34:public SettingsCollector()
-org.acra.SharedPreferencesCollector:
-    10:10:public SharedPreferencesCollector()
-org.acra.util.Base64
-org.acra.util.Base64$Coder
-org.acra.util.Base64$Decoder
-org.acra.util.Base64$Encoder
-org.acra.util.HttpRequest:
-    65:66:public void clearCookies()
-    70:77:public void abort()
-    131:140:public java.lang.String sendGet(java.lang.String)
-    144:167:public java.io.InputStream getHttpStream(java.lang.String)
-org.acra.util.HttpUtils:
-    29:29:public HttpUtils()
+    41:41:LogCatCollector()
+org.acra.collector.LogFileCollector:
+    41:42:private LogFileCollector()
+org.acra.collector.MediaCodecListCollector:
+    private static final java.lang.String COLOR_FORMAT_PREFIX
+    34:35:public MediaCodecListCollector()
+org.acra.collector.ReflectionCollector:
+    32:32:ReflectionCollector()
+org.acra.collector.SettingsCollector:
+    39:39:SettingsCollector()
+org.acra.collector.SharedPreferencesCollector:
+    33:33:SharedPreferencesCollector()
+org.acra.collector.ThreadCollector:
+    25:25:public ThreadCollector()
+org.acra.jraf.android.util.activitylifecyclecallbackscompat.ActivityLifecycleCallbacksAdapter
+org.acra.jraf.android.util.activitylifecyclecallbackscompat.ApplicationHelper:
+    38:38:public ApplicationHelper()
+    80:85:public void unregisterActivityLifecycleCallbacks(android.app.Application,org.acra.jraf.android.util.activitylifecyclecallbackscompat.ActivityLifecycleCallbacksCompat)
+    88:89:private static void preIcsUnregisterActivityLifecycleCallbacks(org.acra.jraf.android.util.activitylifecyclecallbackscompat.ActivityLifecycleCallbacksCompat)
+    93:94:private static void postIcsUnregisterActivityLifecycleCallbacks(android.app.Application,org.acra.jraf.android.util.activitylifecyclecallbackscompat.ActivityLifecycleCallbacksCompat)
+org.acra.jraf.android.util.activitylifecyclecallbackscompat.MainLifecycleDispatcher:
+    58:61:void unregisterActivityLifecycleCallbacks(org.acra.jraf.android.util.activitylifecyclecallbackscompat.ActivityLifecycleCallbacksCompat)
+org.acra.log.ACRALog:
+    public abstract int v(java.lang.String,java.lang.String)
+    public abstract int v(java.lang.String,java.lang.String,java.lang.Throwable)
+    public abstract int d(java.lang.String,java.lang.String,java.lang.Throwable)
+    public abstract int i(java.lang.String,java.lang.String)
+    public abstract int i(java.lang.String,java.lang.String,java.lang.Throwable)
+    public abstract int w(java.lang.String,java.lang.Throwable)
+    public abstract java.lang.String getStackTraceString(java.lang.Throwable)
+org.acra.log.AndroidLogDelegate:
+    14:14:public int v(java.lang.String,java.lang.String)
+    17:17:public int v(java.lang.String,java.lang.String,java.lang.Throwable)
+    23:23:public int d(java.lang.String,java.lang.String,java.lang.Throwable)
+    26:26:public int i(java.lang.String,java.lang.String)
+    29:29:public int i(java.lang.String,java.lang.String,java.lang.Throwable)
+    39:39:public int w(java.lang.String,java.lang.Throwable)
+    48:48:public java.lang.String getStackTraceString(java.lang.Throwable)
+org.acra.sender.GoogleFormSender:
+    65:67:public GoogleFormSender(java.lang.String)
+org.acra.sender.HttpSender:
+    173:178:public HttpSender(org.acra.sender.HttpSender$Method,org.acra.sender.HttpSender$Type,java.lang.String,java.util.Map)
+org.acra.sender.ReportSenderException:
+    49:50:public ReportSenderException(java.lang.String)
 org.acra.util.Installation:
     private static final java.lang.String INSTALLATION
-    26:26:public Installation()
+    29:29:public Installation()
+org.acra.util.JSONReportBuilder:
+    17:17:public JSONReportBuilder()
+org.acra.util.JSONReportBuilder$JSONReportException:
+    private static final long serialVersionUID
+org.acra.util.ReportUtils:
+    24:24:public ReportUtils()
+    86:105:public static java.lang.String sparseArrayToString(android.util.SparseArray)
+org.acra.util.ToastSender:
+    15:15:public ToastSender()
 org.apache.commons.lang.ArrayUtils:
     public static final int INDEX_NOT_FOUND
     static java.lang.Class class$java$lang$Object
@@ -6480,13 +6593,7 @@ org.osmdroid.api.IMapView:
     public abstract int getLongitudeSpan()
     public abstract org.osmdroid.api.IGeoPoint getMapCenter()
     public abstract void setBackgroundColor(int)
-org.osmdroid.api.IMyLocationOverlay:
-    public abstract boolean isMyLocationEnabled()
-    public abstract boolean isCompassEnabled()
-    public abstract float getOrientation()
-    public abstract boolean runOnFirstFix(java.lang.Runnable)
-    public abstract void onStatusChanged(java.lang.String,int,android.os.Bundle)
-    public abstract android.location.Location getLastFix()
+org.osmdroid.api.IMyLocationOverlay
 org.osmdroid.api.IProjection
 org.osmdroid.contributor.GpxToPHPUploader
 org.osmdroid.contributor.GpxToPHPUploader$1

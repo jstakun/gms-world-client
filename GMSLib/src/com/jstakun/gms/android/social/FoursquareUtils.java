@@ -26,6 +26,8 @@ import com.jstakun.gms.android.utils.Token;
  */
 public final class FoursquareUtils extends AbstractSocialUtils {
 
+	private static final String FS_AUTH_KEY = "fsauth_key";
+    
     public FoursquareUtils() {
     	super();
         ConfigurationManager.getInstance().setDisabled(ConfigurationManager.FS_SEND_STATUS);
@@ -33,36 +35,21 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 
     public void storeAccessToken(Token accessToken)  {
     	try {
-        //String encToken = new String(Base64.encode(BCTools.encrypt(accessToken.getToken().getBytes())));
-        //ConfigurationManager.getInstance().putString(ConfigurationManager.FS_AUTH_KEY, encToken);
-        ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.FS_AUTH_KEY, accessToken.getToken());
-        this.accessToken = accessToken;
+    		ConfigurationManager.getUserManager().putStringAndEncrypt(FS_AUTH_KEY, accessToken.getToken());
+    		this.accessToken = accessToken;
     	} catch (Exception e) {
 			LoggerUtils.error("FoursquareUtils.storeAccessToken exception: ", e);
 		}
     }
 
     protected Token loadAccessToken() {
-        String token = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.FS_AUTH_KEY);
-
-        /*try {
-            String encToken = ConfigurationManager.getInstance().getString(ConfigurationManager.FS_AUTH_KEY);
-
-            if (encToken != null) {
-                token = new String(BCTools.decrypt(Base64.decode(encToken.getBytes())));
-            }
-        } catch (Exception e) {
-            LoggerUtils.error("FoursquareUtils.loadAccessToken exception: ", e);
-            token = ConfigurationManager.getInstance().getString(ConfigurationManager.FS_AUTH_KEY);
-        }*/
-
+        String token = ConfigurationManager.getUserManager().getStringDecrypted(FS_AUTH_KEY);
         return new Token(token, null);
     }
 
     public void logout() {
         ConfigurationManager.getInstance().removeAll(new String[]{
-                    ConfigurationManager.FS_AUTH_KEY,
-                    ConfigurationManager.FS_AUTH_SECRET_KEY,
+                    FS_AUTH_KEY,
                     ConfigurationManager.FS_USERNAME,
                     ConfigurationManager.FS_NAME,
                 });
@@ -76,10 +63,6 @@ public final class FoursquareUtils extends AbstractSocialUtils {
         boolean result = false;
         ConfigurationManager.getInstance().setOn(ConfigurationManager.FS_AUTH_STATUS);
 
-        //if (ConfigurationManager.getInstance().isDefaultUser()) {
-        //    ConfigurationManager.getInstance().setAppUser();
-        //}
-
         try {
         	String id = json.getString(ConfigurationManager.FS_USERNAME);
             ConfigurationManager.getInstance().putString(ConfigurationManager.FS_USERNAME, id + "@fs");
@@ -91,12 +74,10 @@ public final class FoursquareUtils extends AbstractSocialUtils {
             }
             String email = json.optString(ConfigurationManager.USER_EMAIL);
 			if (StringUtils.isNotEmpty(email)) {
-				//email = new String(Base64.encode(BCTools.encrypt(email.getBytes())));
-				//ConfigurationManager.getInstance().putString(ConfigurationManager.USER_EMAIL, email);
-				ConfigurationManager.getInstance().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
+				ConfigurationManager.getUserManager().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
 			}
 			
-			ConfigurationManager.getInstance().saveConfiguration(false);
+			ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 			
             result = true;
         } catch (Exception ex) {

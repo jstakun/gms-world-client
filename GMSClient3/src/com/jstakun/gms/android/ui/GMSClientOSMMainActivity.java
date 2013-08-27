@@ -64,7 +64,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private MapView mapView;
     private MapController mapController;
     private MyLocationOverlay myLocation;
-    //private SkyhookUtils skyhook;
     private OsmInfoOverlay infoOverlay;
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
@@ -144,11 +143,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         public void onClick(DialogInterface dialog, int id) {
             String filename = followMyPositionAction();
 
-            /*if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-             myLocation.enableCompass();
-             } else {
-             myLocation.disableCompass();
-             }*/
             LocationServicesManager.enableCompass();
 
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
@@ -185,7 +179,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         setContentView(R.layout.osmdroidcanvasview_1);
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setMultiTouchControls(true);
-        //skyhook = new SkyhookUtils(this, locationHandler);
         myLocation = new OsmMyLocationOverlay(this, mapView, loadingHandler);
         LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
         infoOverlay = new OsmInfoOverlay(this);
@@ -197,7 +190,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
-        //loadingAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate_indefinitely);
         lvView = findViewById(R.id.lvView);
 
         lvActionButton = findViewById(R.id.lvActionButton);
@@ -320,9 +312,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                     arrayAdapter = new IntentArrayAdapter(this, intentList);
                 }
             } else if (type == AlertDialogBuilder.LOGIN_DIALOG) {
-                List<String> items = ConfigurationManager.getInstance().getLoginItems(false);
-                if (!items.isEmpty()) {
-                    arrayAdapter = new LoginArrayAdapter(this, items);
+                if (!ConfigurationManager.getUserManager().isUserLoggedInFully()) {
+                    arrayAdapter = new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false));
                 }
             }
             dialogManager.showAlertDialog(type, arrayAdapter, null);
@@ -346,12 +337,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         super.onPause();
         LoggerUtils.debug("onPause");
 
-        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        //    myLocation.disableCompass();
-        //} else {
-        //    myLocation.disableMyLocation();
-        //}
-        //skyhook.disableMyLocation();
         LocationServicesManager.disableMyLocation();
 
         if (dialogManager != null) {
@@ -407,7 +392,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, mapView.getZoomLevel());
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()));
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()));
-        ConfigurationManager.getInstance().saveConfiguration(false);
+        ConfigurationManager.getDatabaseManager().saveConfiguration(false);
     }
 
     private void hardClose() {
@@ -417,13 +402,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         loadingHandler.removeCallbacks(gpsRunnable);
 
-        //if (myLocation.isMyLocationEnabled()) {
-        //myLocation.disableMyLocation();
-        //}
-        //if (myLocation.isCompassEnabled()) {
-        //myLocation.disableCompass();
-        //}
-        //skyhook.disableMyLocation();
         LocationServicesManager.disableMyLocation();
 
         ConfigurationManager.getInstance().setOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
@@ -443,7 +421,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             }
         }
 
-        ConfigurationManager.getInstance().closeAllDatabases();
+        ConfigurationManager.getDatabaseManager().closeAllDatabases();
 
         ConfigurationManager.getInstance().clearObjectCache();
 
@@ -491,7 +469,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             if (initLandmarkManager) {
                 UserTracker.getInstance().sendMyLocation();
                 ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-                landmarkManager.initialize(ConfigurationManager.getInstance().getLandmarkDatabase());
+                landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
             }
 
             addLandmarkOverlay();
@@ -642,11 +620,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 }
             }
 
-            if (ConfigurationManager.getInstance().getLoginItems(false).isEmpty()) {
-                login.setVisible(false);
-            } else {
-                login.setVisible(true);
-            }
+            login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
 
             return super.onPrepareOptionsMenu(menu);
         }
@@ -659,12 +633,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             case R.id.settings:
                 intents.startSettingsActivity(SettingsActivity.class);
                 break;
-            /*case R.id.zoomin:
-             zoomInAction();
-             break;
-             case R.id.zoomout:
-             zoomOutAction();
-             break;*/
             case R.id.search:
                 onSearchRequested();
                 break;
@@ -678,43 +646,35 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 intents.startHelpActivity();
                 break;
             case R.id.login:
-                List<String> items = ConfigurationManager.getInstance().getLoginItems(false);
-                if (!items.isEmpty()) {
-                    dialogManager.showAlertDialog(AlertDialogBuilder.LOGIN_DIALOG, new LoginArrayAdapter(this, items), null);
+                if (!ConfigurationManager.getUserManager().isUserLoggedInFully()) {
+                    dialogManager.showAlertDialog(AlertDialogBuilder.LOGIN_DIALOG, new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false)), null);
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Checkin_required_error));
                 }
                 break;
             case R.id.addLandmark:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startAddLandmarkActivity();
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
                 }
                 break;
-            /*case R.id.checkin:
-             if (ConfigurationManager.getInstance().isUserLoggedIn()) {
-             showAlertDialog(AlertDialogBuilder.CHECKIN_DIALOG, null, null);
-             } else {
-             intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
-             }
-             break;*/
             case R.id.autocheckin:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startAutoCheckinListActivity(getMyPosition());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
                 }
                 break;
             case R.id.qrcheckin:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startQrCodeCheckinActivity(getMyPosition());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
                 }
                 break;
             case R.id.searchcheckin:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startLocationCheckinActivity(getMyPosition());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
@@ -745,7 +705,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 intents.startRecentLandmarksIntent(getMyPosition());
                 break;
             case R.id.blogeo:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     if (!landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER).isEmpty()) {
                         intents.startBlogeoActivity();
                     } else {
@@ -800,7 +760,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 intents.startPickLocationActivity();
                 break;
             case R.id.deals:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
                             mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1, DealCategoryListActivity.class);
                 } else {
@@ -865,7 +825,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         } else if (v == lvRouteButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
-            if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+            if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                 asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
@@ -922,9 +882,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 }
                 landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(names), "", Commons.LOCAL_LAYER, true);
             } else if (resultCode == RESULT_CANCELED && intent != null && !appInitialized) {
-                //String name = intent.getStringExtra("name");
-                //String message = intent.getStringExtra("message");
-                //intents.showInfoToast(Locale.getMessage(R.string.Pick_location_failed_error, name, message));
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
@@ -981,14 +938,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    /*ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-                     if (selectedLandmark != null) {
-                     landmarkManager.setSelectedLandmark(selectedLandmark);
-                     landmarkManager.clearLandmarkOnFocusQueue();
-                     landmarkDetailsAction();
-                     } else {
-                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-                     }*/
                     showSelectedLandmark(id);
                 }
             }
@@ -1037,20 +986,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         }
     }
 
-    /*private GeoPoint getMyLocation() {
-     //if (myLocation != null) {
-     //    return myLocation.getMyLocation();
-     //} else {
-     //    return null;
-     //}
-     Location location = ConfigurationManager.getInstance().getLocation();
-     if (location != null) {
-     return new GeoPoint(MathUtils.coordDoubleToInt(location.getLatitude()),
-     MathUtils.coordDoubleToInt(location.getLongitude()));
-     } else {
-     return null;
-     }
-     }*/
     private void showMyPositionAction(boolean loadLayers) {
         GeoPoint myLoc = LocationServicesManager.getMyLocation();
         if (myLoc != null) {
@@ -1062,18 +997,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             }
             if (!isVisible) {
                 IGeoPoint mapCenter = mapView.getMapCenter();
-                /*Display display = getWindowManager().getDefaultDisplay();
-                 float viewDist = DistanceUtils.distanceInKilometer(display.getWidth(), display.getHeight(),
-                 MathUtils.coordIntToDouble(mapCenter.getLatitudeE6()),
-                 MathUtils.coordIntToDouble(mapCenter.getLongitudeE6()), mapView.getZoomLevel());
-                 float dist = DistanceUtils.distanceInKilometer(
-                 MathUtils.coordIntToDouble(myLoc.getLatitudeE6()),
-                 MathUtils.coordIntToDouble(myLoc.getLongitudeE6()),
-                 MathUtils.coordIntToDouble(mapCenter.getLatitudeE6()),
-                 MathUtils.coordIntToDouble(mapCenter.getLongitudeE6()));
-                 if (dist > 10 * viewDist) {
-                 clearLandmarks = true;
-                 }*/
                 clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
                         myLoc.getLatitudeE6(), myLoc.getLongitudeE6());
             }

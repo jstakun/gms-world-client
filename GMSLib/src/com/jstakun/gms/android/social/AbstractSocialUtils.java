@@ -25,11 +25,6 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 	public abstract void storeAccessToken(Token accessToken);
 	
 	@Override
-	public boolean hasAccessToken() {
-        return null != accessToken;
-    }
-
-	@Override
     public Token getAccessToken() {
         return accessToken;
     }
@@ -45,7 +40,7 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
         
         accessToken = null;
 
-        ConfigurationManager.getInstance().saveConfiguration(false);
+        ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class DealMapApp extends Application {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", HttpUtils.getAuthorizationHeader(Commons.DA_APP_USER, true, Commons.APP_USER_PWD, true));
         ACRA.getConfig().setHttpHeaders(headers);
-        ConfigurationManager.getInstance().initApp(getApplicationContext());
+        ConfigurationManager.getAppUtils().initApp(getApplicationContext());
     }
     
     @Override

@@ -221,7 +221,7 @@ public class HttpUtils {
 
                 if (auth) {
                     setBasicAuth(postRequest);
-                    String username = ConfigurationManager.getInstance().getLoggedInUsername();
+                    String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (StringUtils.isNotEmpty(username)) {
                         postRequest.addHeader("username", username);
                     }                      
@@ -444,7 +444,7 @@ public class HttpUtils {
     		password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
     		decodeUsername = false;
     		decodePassword = false;
-        } else if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+        } else if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
     		//user is logged in
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
         		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);

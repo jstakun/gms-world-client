@@ -387,7 +387,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             if (initLandmarkManager) {
                 UserTracker.getInstance().sendMyLocation();
                 ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-                landmarkManager.initialize(ConfigurationManager.getInstance().getLandmarkDatabase(), Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
+                landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase(), Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
 
@@ -768,7 +768,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, googleMapsView.getZoomLevel());
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLatitudeE6()));
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLongitudeE6()));
-        ConfigurationManager.getInstance().saveConfiguration(false);
+        ConfigurationManager.getDatabaseManager().saveConfiguration(false);
     }
 
     private void hardClose() {
@@ -786,7 +786,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         IconCache.getInstance().clearAll();
         landmarkManager.clearLandmarkStore();
 
-        ConfigurationManager.getInstance().closeAllDatabases();
+        ConfigurationManager.getDatabaseManager().closeAllDatabases();
 
         ConfigurationManager.getInstance().clearObjectCache();
 

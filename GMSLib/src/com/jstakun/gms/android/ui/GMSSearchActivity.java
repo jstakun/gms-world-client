@@ -480,7 +480,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				params.add(new BasicNameValuePair("lat",StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lat))));
 				params.add(new BasicNameValuePair("lng", StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lng))));
 				params.add(new BasicNameValuePair("radius", Integer.toString(radius)));				
-				PackageInfo info = ConfigurationManager.getInstance().getPackageInfo();
+				PackageInfo info = ConfigurationManager.getAppUtils().getPackageInfo();
 				params.add(new BasicNameValuePair("version", Integer.toString(info.versionCode)));
 				String q;
 				if (query.lastIndexOf("/") == query.length()-2) {

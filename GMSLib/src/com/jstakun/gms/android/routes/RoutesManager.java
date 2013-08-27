@@ -154,7 +154,7 @@ public class RoutesManager {
         url += "&type=" + type;
         url += "&tId=" + System.currentTimeMillis();
 
-        String username = ConfigurationManager.getInstance().getLoggedInUsername();
+        String username = ConfigurationManager.getUserManager().getLoggedInUsername();
         if (username == null) {
             username = "anonymous";
         }

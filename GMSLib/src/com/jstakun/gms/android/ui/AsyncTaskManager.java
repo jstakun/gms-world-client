@@ -149,11 +149,11 @@ public class AsyncTaskManager {
         ExtendedLandmark myPos = null;
 
         if (location != null) {
-        	if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
+        	if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
         		ConfigurationManager.getInstance().putObject(Commons.MY_POS_CODE, Commons.MY_POS_CODE);
         	}
         	myPos = landmarkManager.createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), Commons.MY_POSITION_LAYER, null, null);
-        	String username = ConfigurationManager.getInstance().getLoggedInUsername();
+        	String username = ConfigurationManager.getUserManager().getLoggedInUsername();
             if (username == null) {
             	username = Commons.MY_POS_USER;
             }
@@ -578,7 +578,7 @@ public class AsyncTaskManager {
     	   String url = ConfigurationManager.SERVER_SERVICES_URL + service;
     	   List<NameValuePair> params = new ArrayList<NameValuePair>();
     	   params.add(new BasicNameValuePair("key", checkinLandmarkCode));
-    	   String username = ConfigurationManager.getInstance().getLoggedInUsername();
+    	   String username = ConfigurationManager.getUserManager().getLoggedInUsername();
     	   if (username != null) {
     		   params.add(new BasicNameValuePair("username",username));
     	   } 
@@ -665,7 +665,7 @@ public class AsyncTaskManager {
             String validityDate = landmarkData[4];
             Location lastPosition = ConfigurationManager.getInstance().getLocation();
             ExtendedLandmark landmark = landmarkManager.createLandmark(lastPosition.getLatitude(), lastPosition.getLongitude(), (float) lastPosition.getAltitude(), name, desc, Commons.LM_SERVER_LAYER);
-            String msg = landmarkManager.persistToServer(landmark, "Social", validityDate, ConfigurationManager.getInstance().getLoggedInUsername());
+            String msg = landmarkManager.persistToServer(landmark, "Social", validityDate, ConfigurationManager.getUserManager().getLoggedInUsername());
 
             if (msg == null) {
                 String tmp = sendSocialNotification(landmark, Commons.BLOGEO);
@@ -825,7 +825,7 @@ public class AsyncTaskManager {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("key", placeId));
         params.add(new BasicNameValuePair("message", commentText));
-        String username = ConfigurationManager.getInstance().getLoggedInUsername();
+        String username = ConfigurationManager.getUserManager().getLoggedInUsername();
         if (username != null) {
             params.add(new BasicNameValuePair("username", username));
         } 
@@ -920,7 +920,7 @@ public class AsyncTaskManager {
         	ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_USERNAME, login);
             ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_PASSWORD, encPwd);
             ConfigurationManager.getInstance().setOn(ConfigurationManager.GMS_AUTH_STATUS);
-            ConfigurationManager.getInstance().saveConfiguration(false);
+            ConfigurationManager.getDatabaseManager().saveConfiguration(false);
         }
         
         return errorMessage;

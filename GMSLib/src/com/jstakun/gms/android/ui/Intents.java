@@ -259,10 +259,10 @@ public class Intents {
             startOAuthActivity(Commons.GOOGLE);
             return false;
         } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)
-                && !ConfigurationManager.getInstance().isUserLoggedIn()) {
+                && !ConfigurationManager.getUserManager().isUserLoggedIn()) {
             startLoginActivity();
             return false;
-        } else if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
+        } else if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
             return false;
         }
 
@@ -271,7 +271,7 @@ public class Intents {
 
 
     public void startLoginActivity(int type) {
-        List<String> items = ConfigurationManager.getInstance().getLoginItems(true);
+        List<String> items = ConfigurationManager.getUserManager().getLoginItems(true);
         String[] selected = items.get(type).split(";");
         if (selected[0].startsWith(ConfigurationManager.GMS_WORLD)) {
             startLoginActivity();
@@ -579,15 +579,7 @@ public class Intents {
 
                 message += "\nLink: " + url;
 
-                email = ConfigurationManager.getInstance().getStringDecrypted(ConfigurationManager.USER_EMAIL);
-                //email = ConfigurationManager.getInstance().getString(ConfigurationManager.USER_EMAIL);
-                //if (StringUtils.isNotEmpty(email)) {
-                //    try {
-                //        email = new String(BCTools.decrypt(Base64.decode(email)));
-                //    } catch (Exception e) {
-                //        email = null;
-                //    }
-                //}
+                email = ConfigurationManager.getUserManager().getStringDecrypted(ConfigurationManager.USER_EMAIL);
                 if (StringUtils.isNotEmpty(email)) {
                     intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{email});
                 }
@@ -783,7 +775,7 @@ public class Intents {
             }
         } else if (selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
-            if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
+            if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
                 lvActionButton.setVisibility(View.GONE);
                 lvView.findViewById(R.id.lvActionSeparator).setVisibility(View.GONE);
             } else {
@@ -804,7 +796,7 @@ public class Intents {
             visibleButtons -= 2;
         } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLandmark.getLayer())) { //GMS World checkinabe layers
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
-            if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
+            if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
                 lvActionButton.setImageResource(R.drawable.login);
                 lvCommentButton.setVisibility(View.GONE);
                 lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
@@ -819,6 +811,7 @@ public class Intents {
             visibleButtons -= 2;
         }
         float dip = activity.getResources().getDisplayMetrics().density;
+        //API 8 minimum
         if (visibleButtons == 5 && activity.getWindowManager().getDefaultDisplay().getWidth() < (360f * dip)) {
             lvCommentButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
@@ -876,7 +869,7 @@ public class Intents {
                 if (resp.startsWith("{")) {
                     JSONObject json = new JSONObject(resp);
                     int version = Integer.valueOf(json.optString("value", "0"));
-                    PackageInfo info = ConfigurationManager.getInstance().getPackageInfo();
+                    PackageInfo info = ConfigurationManager.getAppUtils().getPackageInfo();
                     int versionCode = info.versionCode;
                     if (version > versionCode) {
                         response = true;
@@ -921,7 +914,7 @@ public class Intents {
         String versionName = null;
 
         try {
-            PackageInfo info = ConfigurationManager.getInstance().getPackageInfo();
+            PackageInfo info = ConfigurationManager.getAppUtils().getPackageInfo();
             versionCode = info.versionCode;
             versionName = info.versionName;
             //info.versionName ends with m;
@@ -981,7 +974,7 @@ public class Intents {
         	}
         	
         	ConfigurationManager.getInstance().putInteger(ConfigurationManager.BUILD_VERSION, versionCode);
-        	ConfigurationManager.getInstance().saveConfiguration(false);
+        	ConfigurationManager.getDatabaseManager().saveConfiguration(false);
         
         	if (StringUtils.isNotEmpty(message)) {
         		showInfoToast(message);

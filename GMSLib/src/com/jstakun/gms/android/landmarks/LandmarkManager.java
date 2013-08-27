@@ -493,7 +493,7 @@ public class LandmarkManager {
     private static Drawable getBitmapDrawable(Bitmap frame, LayerPoint p) {
         int w = frame.getWidth() / 2;
         //int h = frame.getHeight() / 2;
-        BitmapDrawable bd = new BitmapDrawable(frame);
+        BitmapDrawable bd = new BitmapDrawable(frame); //API 4 minimum to change
         bd.setBounds(p.x - w, p.y - frame.getHeight(), p.x + w, p.y);
         return bd;
     }
@@ -599,7 +599,7 @@ public class LandmarkManager {
         if (persist == ConfigurationManager.PERSIST_SMS) {
             //Not used currently
             //System.out.println("Sending landmark via SMS");
-            String username = ConfigurationManager.getInstance().getLoggedInUsername();
+            String username = ConfigurationManager.getUserManager().getLoggedInUsername();
 
             double[] coords = MercatorUtils.normalizeE6(new double[]{landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()});
             String text = " lat:" + coords[0] + FileManager.SEPARATOR_CHAR
@@ -619,7 +619,7 @@ public class LandmarkManager {
             List<ExtendedLandmark> layer = getLandmarkStoreLayer(landmark.getLayer());
             layer.add(landmark);
         } else if (persist == ConfigurationManager.PERSIST_SERVER) {
-            errorMessage = persistToServer(landmark, landmark.getLayer(), null, ConfigurationManager.getInstance().getLoggedInUsername());
+            errorMessage = persistToServer(landmark, landmark.getLayer(), null, ConfigurationManager.getUserManager().getLoggedInUsername());
         } else if (persist == ConfigurationManager.PERSIST_LOCAL) {
             //Local store
             List<ExtendedLandmark> layer = getLandmarkStoreLayer(Commons.LOCAL_LAYER);

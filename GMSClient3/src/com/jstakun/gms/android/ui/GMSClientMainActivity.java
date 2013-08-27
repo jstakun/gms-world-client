@@ -155,11 +155,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         public void onClick(DialogInterface dialog, int id) {
             String filename = followMyPositionAction();
 
-            /*if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-             myLocation.enableCompass();
-             } else {
-             myLocation.disableCompass();
-             }*/
             LocationServicesManager.enableCompass();
 
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
@@ -224,7 +219,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
         statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
-        //loadingAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate_indefinitely);
         lvView = findViewById(R.id.lvView);
 
         lvActionButton = findViewById(R.id.lvActionButton);
@@ -318,7 +312,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                     }
                 }
             };
-            /*myLocation.runOnFirstFix(r);*/
             LocationServicesManager.runOnFirstFix(r);
         }
     }
@@ -355,9 +348,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                     arrayAdapter = new IntentArrayAdapter(this, intentList);
                 }
             } else if (type == AlertDialogBuilder.LOGIN_DIALOG) {
-                List<String> items = ConfigurationManager.getInstance().getLoginItems(false);
-                if (!items.isEmpty()) {
-                    arrayAdapter = new LoginArrayAdapter(this, items);
+                if (!ConfigurationManager.getUserManager().isUserLoggedInFully()) {
+                    arrayAdapter = new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false));
                 }
             }
             dialogManager.showAlertDialog(type, arrayAdapter, null);
@@ -403,11 +395,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         super.onPause();
         LoggerUtils.debug("onPause");
 
-        /*if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-         myLocation.disableCompass();
-         } else {
-         myLocation.disableMyLocation();
-         }*/
         LocationServicesManager.disableMyLocation();
 
         if (dialogManager != null) {
@@ -444,12 +431,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         if (mapProvider != ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER)) {
             Intent intent = getIntent();
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
-            //if (myLocation.isMyLocationEnabled()) {
-            //myLocation.disableMyLocation();
-            //}
-            //if (myLocation.isCompassEnabled()) {
-            //myLocation.disableCompass();
-            //}
             LocationServicesManager.disableMyLocation();
             finish();
             startActivity(intent);
@@ -460,7 +441,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, mapView.getZoomLevel());
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()));
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()));
-        ConfigurationManager.getInstance().saveConfiguration(false);
+        ConfigurationManager.getDatabaseManager().saveConfiguration(false);
     }
 
     private void hardClose() {
@@ -470,12 +451,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
         loadingHandler.removeCallbacks(gpsRunnable);
 
-        //if (myLocation.isMyLocationEnabled()) {
-        //myLocation.disableMyLocation();
-        //}
-        //if (myLocation.isCompassEnabled()) {
-        //myLocation.disableCompass();
-        //}
         LocationServicesManager.disableMyLocation();
 
         ConfigurationManager.getInstance().setOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
@@ -495,7 +470,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             }
         }
 
-        ConfigurationManager.getInstance().closeAllDatabases();
+        ConfigurationManager.getDatabaseManager().closeAllDatabases();
 
         ConfigurationManager.getInstance().clearObjectCache();
 
@@ -541,7 +516,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             if (initLandmarkManager) {
                 UserTracker.getInstance().sendMyLocation();
                 ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-                landmarkManager.initialize(ConfigurationManager.getInstance().getLandmarkDatabase());
+                landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
             }
 
             addLandmarkOverlay();
@@ -689,11 +664,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 }
             }
 
-            if (ConfigurationManager.getInstance().getLoginItems(false).isEmpty()) {
-                login.setVisible(false);
-            } else {
-                login.setVisible(true);
-            }
+            login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
 
             return super.onPrepareOptionsMenu(menu);
         }
@@ -719,15 +690,14 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 intents.startHelpActivity();
                 break;
             case R.id.login:
-                List<String> items = ConfigurationManager.getInstance().getLoginItems(false);
-                if (!items.isEmpty()) {
-                    dialogManager.showAlertDialog(AlertDialogBuilder.LOGIN_DIALOG, new LoginArrayAdapter(this, items), null);
+                if (!ConfigurationManager.getUserManager().isUserLoggedInFully()) {
+                    dialogManager.showAlertDialog(AlertDialogBuilder.LOGIN_DIALOG, new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false)), null);
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.loginFull));
                 }
                 break;
             case R.id.addLandmark:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startAddLandmarkActivity();
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
@@ -735,21 +705,21 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
                 break;
             case R.id.autocheckin:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startAutoCheckinListActivity(getMyPosition());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
                 }
                 break;
             case R.id.qrcheckin:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startQrCodeCheckinActivity(getMyPosition());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
                 }
                 break;
             case R.id.searchcheckin:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startLocationCheckinActivity(getMyPosition());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
@@ -780,7 +750,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 intents.startRecentLandmarksIntent(getMyPosition());
                 break;
             case R.id.blogeo:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     if (!landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER).isEmpty()) {
                         intents.startBlogeoActivity();
                     } else {
@@ -835,7 +805,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 intents.startPickLocationActivity();
                 break;
             case R.id.deals:
-                if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+                if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                     intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
                             mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1, DealCategoryListActivity.class);
                 } else {
@@ -905,7 +875,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         } else if (v == lvRouteButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
-            if (ConfigurationManager.getInstance().isUserLoggedIn()) {
+            if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
                 asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
@@ -1019,14 +989,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    /*ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-                     if (selectedLandmark != null) {
-                     landmarkManager.setSelectedLandmark(selectedLandmark);
-                     landmarkManager.clearLandmarkOnFocusQueue();
-                     landmarkDetailsAction();
-                     } else {
-                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-                     }*/
                     showSelectedLandmark(id);
                 }
             }
@@ -1076,26 +1038,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         }
     }
 
-    /*private IGeoPoint getMyLocation() {
-     //if (myLocation instanceof GoogleIMyLocationOverlay) {
-     //    if (((GoogleIMyLocationOverlay) myLocation).getMyLocation() != null) {
-     //        return new org.osmdroid.google.wrapper.GeoPoint(((GoogleIMyLocationOverlay) myLocation).getMyLocation());
-     //    }
-     //} else if (myLocation instanceof OsmMyLocationOverlay) {
-     //    return ((OsmMyLocationOverlay) myLocation).getMyLocation();
-     //}
-     //return null;
-     Location location = ConfigurationManager.getInstance().getLocation();
-     if (location == null) {
-     location = myLocation.getLastFix();
-     }
-     if (location != null) {
-     return new org.osmdroid.util.GeoPoint(MathUtils.coordDoubleToInt(location.getLatitude()),
-     MathUtils.coordDoubleToInt(location.getLongitude()));
-     } else {
-     return null;
-     }
-     }*/
     private void showMyPositionAction(boolean loadLayers) {
         IGeoPoint myLoc = LocationServicesManager.getMyLocation();
         if (myLoc != null) {
@@ -1107,18 +1049,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             }
             if (!isVisible) {
                 IGeoPoint mapCenter = mapView.getMapCenter();
-                /*Display display = getWindowManager().getDefaultDisplay();
-                 float viewDist = DistanceUtils.distanceInKilometer(display.getWidth(), display.getHeight(),
-                 MathUtils.coordIntToDouble(mapCenter.getLatitudeE6()),
-                 MathUtils.coordIntToDouble(mapCenter.getLongitudeE6()), mapView.getZoomLevel());
-                 float dist = DistanceUtils.distanceInKilometer(
-                 MathUtils.coordIntToDouble(myLoc.getLatitudeE6()),
-                 MathUtils.coordIntToDouble(myLoc.getLongitudeE6()),
-                 MathUtils.coordIntToDouble(mapCenter.getLatitudeE6()),
-                 MathUtils.coordIntToDouble(mapCenter.getLongitudeE6()));
-                 if (dist > 10 * viewDist) {
-                 clearLandmarks = true;
-                 }*/
                 clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
                         myLoc.getLatitudeE6(), myLoc.getLongitudeE6());
             }

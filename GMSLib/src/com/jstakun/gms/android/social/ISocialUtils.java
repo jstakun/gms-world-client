@@ -19,7 +19,6 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public interface ISocialUtils {
     public boolean initOnTokenPresent(JSONObject json);
     public void storeAccessToken(Token accessToken);
-    public boolean hasAccessToken();
     public Token getAccessToken();
     public void logout();
     public String sendPost(ExtendedLandmark landmark, int type);

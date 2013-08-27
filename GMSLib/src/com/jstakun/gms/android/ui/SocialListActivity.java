@@ -46,7 +46,7 @@ public class SocialListActivity extends ListActivity {
     public void onResume() {
         super.onResume();
 
-        String username = ConfigurationManager.getInstance().getLoggedInUsername();
+        String username = ConfigurationManager.getUserManager().getLoggedInUsername();
         if (username != null) {
             footer.setText(Locale.getMessage(R.string.Social_login_string, username));
         } else {

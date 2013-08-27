@@ -50,6 +50,9 @@ public final class ConfigurationManager {
     private static final Map<String, String> changedConfig = new ConcurrentHashMap<String, String>();
     private static final Map<String, Object> objectCache = new HashMap<String, Object>();
     private static ConfigurationManager instance = null;
+    private static UserManager userManager = null;
+    private static DatabaseManager databaseManager = null;
+    private static AppUtils appUtils = null;
     
     //configuration parameters
     public static final String PERSISTENCE_MANAGER = "persistenceManager";
@@ -108,7 +111,6 @@ public final class ConfigurationManager {
     public static final String AUTO_CHECKIN_REPEAT_TIME = "autoCheckinRepeatTime";
     public static final String GMS_AUTH_STATUS = "gmsAuthStatus";
     public static final String SCREEN_SIZE = "screenSize";
-    public static final String USER_EMAIL = "userEmail";
     public static final String MAP_CENTER = "mapCenter";
     public static final String AUTO_CHECKIN = "autoCheckin";
     public static final String MIN_CHECKIN_DISTANCE = "minCheckinDistance";
@@ -150,9 +152,7 @@ public final class ConfigurationManager {
     //User Manager
     public static final String GMS_USERNAME = "gmsUsername";
     public static final String GMS_PASSWORD = "gmsPassword";
-    public static final String FB_AUTH_STATUS = "fbAuthStatus";
-    public static final String FB_AUTH_KEY = "fbauth_key";
-    public static final String FB_AUTH_SECRET_KEY = "fbauth_secret_key";
+    public static final String FB_AUTH_STATUS = "fbAuthStatus";   
     public static final String FB_SEND_STATUS = "fbSendStatus";
     public static final String FB_USERNAME = "fbUsername";
     public static final String FB_GENDER = "fbGender";
@@ -160,34 +160,26 @@ public final class ConfigurationManager {
     public static final String FB_NAME = "fbName";
     public static final String FB_EXPIRES_IN = "fbExpiresIn";
     public static final String TWEET_AUTH_STATUS = "tweetAuthStatus";
-    public static final String TWEET_AUTH_KEY = "auth_key";
-    public static final String TWEET_AUTH_SECRET_KEY = "auth_secret_key";
     public static final String TWEET_SEND_STATUS = "tweetSendStatus";
     public static final String TWEET_USERNAME = "twUsername";
     public static final String TWEET_NAME = "twName";
     public static final String LN_AUTH_STATUS = "lnAuthStatus";
-    public static final String LN_AUTH_KEY = "lnauth_key";
-    public static final String LN_AUTH_SECRET_KEY = "lnauth_secret_key";
     public static final String LN_SEND_STATUS = "lnSendStatus";
     public static final String LN_USERNAME = "lnUsername";
     public static final String LN_NAME = "lnName";
     public static final String LN_EXPIRES_IN = "lnExpiresIn";
     public static final String FS_AUTH_STATUS = "fsAuthStatus";
-    public static final String FS_AUTH_KEY = "fsauth_key";
-    public static final String FS_AUTH_SECRET_KEY = "fsauth_secret_key";
     public static final String FS_USERNAME = "fsUsername";
     public static final String FS_NAME = "fsName";
     public static final String FS_SEND_STATUS = "fsSendStatus";
     public static final String GL_AUTH_STATUS = "glAuthStatus";
-    public static final String GL_AUTH_KEY = "glauth_key";
-    public static final String GL_REFRESH_TOKEN = "glRefreshToken";
     public static final String GL_EXPIRES_IN = "glExpiresIn";
-    public static final String GL_AUTH_SECRET_KEY = "glauth_secret_key";
     public static final String GL_SEND_STATUS = "glSendStatus";
     public static final String GL_USERNAME = "glUsername";
     public static final String GL_NAME = "glName";
     public static final String GL_GENDER = "glGender";
     public static final String GL_BIRTHDAY = "glBirthday";
+    public static final String USER_EMAIL = "userEmail";
     //
     
     private ConfigurationManager() {
@@ -238,7 +230,7 @@ public final class ConfigurationManager {
 
     public String remove(String key) {
         if (containsKey(key)) {
-            getConfigDatabase().deleteConfigParam(key);
+            getDatabaseManager().getConfigDatabase().deleteConfigParam(key);
             return configuration.remove(key);
         } else {
             return null;
@@ -322,7 +314,7 @@ public final class ConfigurationManager {
     }
 
     public String getServicesUrl() {
-        if (isUserLoggedIn()) {
+        if (getUserManager().isUserLoggedIn()) {
             return SERVER_SERVICES_URL;
         } else {
             return SERVER_URL;
@@ -330,7 +322,7 @@ public final class ConfigurationManager {
     }
 
     public String getSecuredServicesUrl() {
-        if (isUserLoggedIn()) {
+        if (getUserManager().isUserLoggedIn()) {
             return SSL_SERVER_SERVICES_URL;
         } else {
             return SSL_SERVER_URL;
@@ -481,328 +473,366 @@ public final class ConfigurationManager {
         }
     }
 
-    //Database management
+    public static AppUtils getAppUtils() {
+    	if (appUtils == null) {
+    		appUtils = getInstance().new AppUtils();
+    	}
+    	return appUtils;
+    }
     
-    public void saveConfiguration(boolean force) {
-        if (force || !changedConfig.isEmpty()) {
-            //PersistenceManagerFactory.getPersistenceManagerInstance().saveConfigurationFile();
-            ConfigDbDataSource cdb = getConfigDatabase();
-            if (force) {
-                cdb.putAll(configuration);
-            } else {
-                cdb.putAll(changedConfig);
-            }
-            changedConfig.clear();
-        }
-    }
-
-    private void readConfiguration() {
-        ConfigDbDataSource cdb = getConfigDatabase();
-        putAll(cdb.fetchAllConfig());
-        //PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();
-        changedConfig.clear();
-    }
-
-    private ConfigDbDataSource getConfigDatabase() {
-        ConfigDbDataSource cdb = (ConfigDbDataSource) getObject("CONFIGDB", ConfigDbDataSource.class);
-        if (cdb == null) {
-            cdb = new ConfigDbDataSource(getContext());
-            putObject("CONFIGDB", cdb);
-        }
-        return cdb;
-    }
-
-    public List<ExtendedLandmark> getLandmarkDatabase() {
-        LandmarkDbDataSource db = new LandmarkDbDataSource(getContext());
-        List<ExtendedLandmark> lmdb;
-        FileManager fm = PersistenceManagerFactory.getFileManager();
-
-        //file to landmarkdb migration code
-        if (fm.fileExists(null, FileManager.LANDMARKDB_FILE)) {
-            lmdb = new ArrayList<ExtendedLandmark>();
-            fm.readLandmarkStore(lmdb);
-            fm.deleteFile(null, FileManager.LANDMARKDB_FILE);
-            db.addAll(lmdb);
-        } else {
-            lmdb = db.fetchAllLandmarks();
-        }
-        lmdb.addAll(default_locations.values());
-        putObject("LANDMARKDB", db);
-
-        return lmdb;
-    }
-
-    public void closeAllDatabases() {
-        ConfigDbDataSource cdb = (ConfigDbDataSource) getObject("CONFIGDB", ConfigDbDataSource.class);
-        if (cdb != null) {
-            cdb.close();
-        }
-
-        LandmarkDbDataSource db = (LandmarkDbDataSource) getObject("LANDMARKDB", LandmarkDbDataSource.class);
-        if (db != null) {
-            db.close();
-        }
-
-        FavouritesDbDataSource fdb = (FavouritesDbDataSource) getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-        if (fdb != null) {
-            fdb.close();
-        }
-    }
-
-    //App initialization
+    public class AppUtils {
+    	
+    	private AppUtils() {}
     
-    public void initApp(Context applicationContext) {
-        setContext(applicationContext);
-        String buildInfo = collectSystemInformation();
-        setDefaultConfiguration();
+    	public void initApp(Context applicationContext) {
+    		setContext(applicationContext);
+    		String buildInfo = collectSystemInformation();
+    		setDefaultConfiguration();
 
-        if (PersistenceManagerFactory.getFileManager().fileExists(null, FileManager.CONFIGURATION_FILE)) {
-            PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();
-            saveConfiguration(true);
-            PersistenceManagerFactory.getFileManager().deleteFile(null, FileManager.CONFIGURATION_FILE);
-        } else {
-            readConfiguration();
-        }
+    		if (PersistenceManagerFactory.getFileManager().fileExists(null, FileManager.CONFIGURATION_FILE)) {
+    			PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();
+    			getDatabaseManager().saveConfiguration(true);
+    			PersistenceManagerFactory.getFileManager().deleteFile(null, FileManager.CONFIGURATION_FILE);
+    		} else {
+    			getDatabaseManager().readConfiguration();
+    		}
 
-        if (StringUtils.isNotEmpty(buildInfo)) {
-            putObject(ConfigurationManager.BUILD_INFO, buildInfo);
-        }
+    		if (StringUtils.isNotEmpty(buildInfo)) {
+    			putObject(ConfigurationManager.BUILD_INFO, buildInfo);
+    		}
 
-        String[] limitArray = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.landmarksPerLayer);
-        int index = getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 0);
-        if (index >= 0 && index < limitArray.length) {
-            putInteger(ConfigurationManager.LANDMARKS_PER_LAYER, Integer.parseInt(limitArray[index]));
-        }
+    		String[] limitArray = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.landmarksPerLayer);
+    		int index = getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 0);
+    		if (index >= 0 && index < limitArray.length) {
+    			putInteger(ConfigurationManager.LANDMARKS_PER_LAYER, Integer.parseInt(limitArray[index]));
+    		}
 
-        int dealIndex = getInt(ConfigurationManager.DEAL_LIMIT, 0);
-        String[] dealLimitArray = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.dealLimit);
-        if (dealIndex >= 0 && dealIndex < dealLimitArray.length) {
-            try {
-                putInteger(ConfigurationManager.DEAL_LIMIT, Integer.parseInt(dealLimitArray[dealIndex]));
-            } catch (Exception e) {
-            }
-        }
+    		int dealIndex = getInt(ConfigurationManager.DEAL_LIMIT, 0);
+    		String[] dealLimitArray = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.dealLimit);
+    		if (dealIndex >= 0 && dealIndex < dealLimitArray.length) {
+    			try {
+    				putInteger(ConfigurationManager.DEAL_LIMIT, Integer.parseInt(dealLimitArray[dealIndex]));
+    			} catch (Exception e) {
+    			}
+    		}
 
-        String[] array = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.radius);
-        int pos = getInt(ConfigurationManager.SEARCH_RADIUS);
-        if (pos == 0) {
-            putInteger(ConfigurationManager.SEARCH_RADIUS, 10);
-        } else if (pos > 0 && pos < array.length) {
-            putInteger(ConfigurationManager.SEARCH_RADIUS, Integer.valueOf(array[pos]).intValue());
-        }
+    		String[] array = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.radius);
+    		int pos = getInt(ConfigurationManager.SEARCH_RADIUS);
+    		if (pos == 0) {
+    			putInteger(ConfigurationManager.SEARCH_RADIUS, 10);
+    		} else if (pos > 0 && pos < array.length) {
+    			putInteger(ConfigurationManager.SEARCH_RADIUS, Integer.valueOf(array[pos]).intValue());
+    		}
 
-        long installed;
-        try {
-            PackageManager pm = applicationContext.getPackageManager();
-            //Version
-            ApplicationInfo appInfo = pm.getApplicationInfo(applicationContext.getPackageName(), 0);
-            String appFile = appInfo.sourceDir;
-            installed = new File(appFile).lastModified();
-        } catch (Exception ex) {
-            LoggerUtils.error("ConfigurationManager.initApp() exception", ex);
-            installed = System.currentTimeMillis();
-        }
+    		long installed;
+    		try {
+    			PackageManager pm = applicationContext.getPackageManager();
+    			//Version
+    			ApplicationInfo appInfo = pm.getApplicationInfo(applicationContext.getPackageName(), 0);
+    			String appFile = appInfo.sourceDir;
+    			installed = new File(appFile).lastModified();
+    		} catch (Exception ex) {
+    			LoggerUtils.error("ConfigurationManager.initApp() exception", ex);
+    			installed = System.currentTimeMillis();
+    		}
 
-        default_locations.clear();
-        default_locations.put("USA", LandmarkFactory.getLandmark("United States, Los Angeles", "", new QualifiedCoordinates(34.052234, -118.243685, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //United States Los Angeles 34.052234,-118.243685
-        default_locations.put("FRA", LandmarkFactory.getLandmark("France, Paris", "", new QualifiedCoordinates(48.856918, 2.34121, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //France, Paris 48.856918, 2.34121 
-        default_locations.put("DEU", LandmarkFactory.getLandmark("Germany, Berlin", "", new QualifiedCoordinates(52.516071, 13.37698, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Germany, Berlin 52.516071, 13.37698 
-        default_locations.put("ITA", LandmarkFactory.getLandmark("Italy, Rome", "", new QualifiedCoordinates(41.901514, 12.460774, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Italy, Rome 41.901514, 12.460774
-        default_locations.put("ESP", LandmarkFactory.getLandmark("Spain, Madrid", "", new QualifiedCoordinates(40.4203, -3.70577, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Spain, Madrid 40.4203,-3.70577, 
-        default_locations.put("JPN", LandmarkFactory.getLandmark("Japan, Tokyo", "", new QualifiedCoordinates(35.689488, 139.691706, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Japan, Tokyo, 35.689488,139.691706 
-        default_locations.put("GBR", LandmarkFactory.getLandmark("United Kingdom, London", "", new QualifiedCoordinates(51.506321, -0.12714, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //United Kingdom, London, 51.506321,-0.12714  
-        default_locations.put("IND", LandmarkFactory.getLandmark("India, Mumbai", "", new QualifiedCoordinates(19.076191, 72.875877, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //India, Mumbai, 19.076191,72.875877 
-        default_locations.put("CHN", LandmarkFactory.getLandmark("China, Beijing", "", new QualifiedCoordinates(39.90403, 116.407526, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //China, Beijing 39.90403, 116.407526
-        default_locations.put("CHN", LandmarkFactory.getLandmark("Poland, Warsaw", "", new QualifiedCoordinates(52.235352, 21.00939, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Poland, Warsaw, 52.235352,21.00939
-        default_locations.put("CAN", LandmarkFactory.getLandmark("Canada, Toronto", "", new QualifiedCoordinates(43.64856, -79.38533, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Canada, Toronto, 43.64856,-79.38533
-        default_locations.put("BRA", LandmarkFactory.getLandmark("Brazil, Sao Paolo", "", new QualifiedCoordinates(-23.548943, -46.638818, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Brazil, Sao Paolo -23.548943,-46.638818,     
-        default_locations.put("IDN", LandmarkFactory.getLandmark("Indonesia, Jakarta", "", new QualifiedCoordinates(-6.17144, 106.82782, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //IDN Indonesia, Jakarta -6.17144, 106.82782
-        default_locations.put("THA", LandmarkFactory.getLandmark("Thailand, Bangkok", "", new QualifiedCoordinates(13.75333, 100.504822, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //THA Thailand, Bangkok 13.75333, 100.504822
-        default_locations.put("RUS", LandmarkFactory.getLandmark("Russia, Moscow", "", new QualifiedCoordinates(55.755786, 37.617633, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //RUS Russia, Moscow 55.755786, 37.617633
-        default_locations.put("MEX", LandmarkFactory.getLandmark("Mexico, Mexico City", "", new QualifiedCoordinates(19.432608, -99.133208, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //MEX Mexico, Mexico City 19.432608, -99.133208
-        default_locations.put("MYS", LandmarkFactory.getLandmark("Malaysia, Kuala Lumpur", "", new QualifiedCoordinates(3.15248, 101.71727, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //MYS Malaysia, Kuala Lumpur 3.15248, 101.71727
-        default_locations.put("TUR", LandmarkFactory.getLandmark("Turkey, Istanbul", "", new QualifiedCoordinates(41.00527, 28.97696, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //TUR Turkey, Istanbul 41.00527, 28.97696
-        default_locations.put("PHL", LandmarkFactory.getLandmark("Philippines, Manilia", "", new QualifiedCoordinates(14.5995124, 120.9842195, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PHL Philippines, Manilia 14.5995124, 120.9842195
-        default_locations.put("NLD", LandmarkFactory.getLandmark("Netherlands, Amsterdam", "", new QualifiedCoordinates(52.373119, 4.89319, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //NLD Netherlands, Amsterdam 52.373119, 4.89319
-        default_locations.put("SAU", LandmarkFactory.getLandmark("Saudi Arabia, Riyadh", "", new QualifiedCoordinates(24.64732, 46.714581, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SAU Saudi Arabia, Riyadh 24.64732, 46.714581
-        default_locations.put("PRT", LandmarkFactory.getLandmark("Portugal, Lisbon", "", new QualifiedCoordinates(38.7252993, 9.1500364, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PRT Portugal, Lisbon 38.7252993, 9.1500364
-        default_locations.put("PAK", LandmarkFactory.getLandmark("Pakistan, Islamabad", "", new QualifiedCoordinates(33.718151, 73.060547, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PAK Pakistan, Islamabad 33.718151, 73.060547
-        default_locations.put("SWE", LandmarkFactory.getLandmark("Sweden, Stockholm", "", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SWE Sweden, Stockholm 59.32893, 18.06491
-    }
+    		default_locations.clear();
+    		default_locations.put("USA", LandmarkFactory.getLandmark("United States, Los Angeles", "", new QualifiedCoordinates(34.052234, -118.243685, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //United States Los Angeles 34.052234,-118.243685
+    		default_locations.put("FRA", LandmarkFactory.getLandmark("France, Paris", "", new QualifiedCoordinates(48.856918, 2.34121, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //France, Paris 48.856918, 2.34121 
+    		default_locations.put("DEU", LandmarkFactory.getLandmark("Germany, Berlin", "", new QualifiedCoordinates(52.516071, 13.37698, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Germany, Berlin 52.516071, 13.37698 
+    		default_locations.put("ITA", LandmarkFactory.getLandmark("Italy, Rome", "", new QualifiedCoordinates(41.901514, 12.460774, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Italy, Rome 41.901514, 12.460774
+    		default_locations.put("ESP", LandmarkFactory.getLandmark("Spain, Madrid", "", new QualifiedCoordinates(40.4203, -3.70577, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Spain, Madrid 40.4203,-3.70577, 
+    		default_locations.put("JPN", LandmarkFactory.getLandmark("Japan, Tokyo", "", new QualifiedCoordinates(35.689488, 139.691706, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Japan, Tokyo, 35.689488,139.691706 
+    		default_locations.put("GBR", LandmarkFactory.getLandmark("United Kingdom, London", "", new QualifiedCoordinates(51.506321, -0.12714, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //United Kingdom, London, 51.506321,-0.12714  
+        	default_locations.put("IND", LandmarkFactory.getLandmark("India, Mumbai", "", new QualifiedCoordinates(19.076191, 72.875877, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //India, Mumbai, 19.076191,72.875877 
+        	default_locations.put("CHN", LandmarkFactory.getLandmark("China, Beijing", "", new QualifiedCoordinates(39.90403, 116.407526, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //China, Beijing 39.90403, 116.407526
+        	default_locations.put("CHN", LandmarkFactory.getLandmark("Poland, Warsaw", "", new QualifiedCoordinates(52.235352, 21.00939, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Poland, Warsaw, 52.235352,21.00939
+        	default_locations.put("CAN", LandmarkFactory.getLandmark("Canada, Toronto", "", new QualifiedCoordinates(43.64856, -79.38533, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Canada, Toronto, 43.64856,-79.38533
+        	default_locations.put("BRA", LandmarkFactory.getLandmark("Brazil, Sao Paolo", "", new QualifiedCoordinates(-23.548943, -46.638818, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //Brazil, Sao Paolo -23.548943,-46.638818,     
+        	default_locations.put("IDN", LandmarkFactory.getLandmark("Indonesia, Jakarta", "", new QualifiedCoordinates(-6.17144, 106.82782, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //IDN Indonesia, Jakarta -6.17144, 106.82782
+        	default_locations.put("THA", LandmarkFactory.getLandmark("Thailand, Bangkok", "", new QualifiedCoordinates(13.75333, 100.504822, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //THA Thailand, Bangkok 13.75333, 100.504822
+        	default_locations.put("RUS", LandmarkFactory.getLandmark("Russia, Moscow", "", new QualifiedCoordinates(55.755786, 37.617633, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //RUS Russia, Moscow 55.755786, 37.617633
+        	default_locations.put("MEX", LandmarkFactory.getLandmark("Mexico, Mexico City", "", new QualifiedCoordinates(19.432608, -99.133208, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //MEX Mexico, Mexico City 19.432608, -99.133208
+        	default_locations.put("MYS", LandmarkFactory.getLandmark("Malaysia, Kuala Lumpur", "", new QualifiedCoordinates(3.15248, 101.71727, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //MYS Malaysia, Kuala Lumpur 3.15248, 101.71727
+        	default_locations.put("TUR", LandmarkFactory.getLandmark("Turkey, Istanbul", "", new QualifiedCoordinates(41.00527, 28.97696, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //TUR Turkey, Istanbul 41.00527, 28.97696
+        	default_locations.put("PHL", LandmarkFactory.getLandmark("Philippines, Manilia", "", new QualifiedCoordinates(14.5995124, 120.9842195, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PHL Philippines, Manilia 14.5995124, 120.9842195
+        	default_locations.put("NLD", LandmarkFactory.getLandmark("Netherlands, Amsterdam", "", new QualifiedCoordinates(52.373119, 4.89319, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //NLD Netherlands, Amsterdam 52.373119, 4.89319
+        	default_locations.put("SAU", LandmarkFactory.getLandmark("Saudi Arabia, Riyadh", "", new QualifiedCoordinates(24.64732, 46.714581, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SAU Saudi Arabia, Riyadh 24.64732, 46.714581
+        	default_locations.put("PRT", LandmarkFactory.getLandmark("Portugal, Lisbon", "", new QualifiedCoordinates(38.7252993, 9.1500364, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PRT Portugal, Lisbon 38.7252993, 9.1500364
+        	default_locations.put("PAK", LandmarkFactory.getLandmark("Pakistan, Islamabad", "", new QualifiedCoordinates(33.718151, 73.060547, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PAK Pakistan, Islamabad 33.718151, 73.060547
+        	default_locations.put("SWE", LandmarkFactory.getLandmark("Sweden, Stockholm", "", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SWE Sweden, Stockholm 59.32893, 18.06491
+    	}
 
-    public String collectSystemInformation() {
+    	private String collectSystemInformation() {
 
-        String ReturnVal = "";
-        try {
-            PackageInfo pi = getPackageInfo();
+    		String ReturnVal = "";
+    		try {
+    			PackageInfo pi = getPackageInfo();
             
-            String VersionName = pi.versionName;
-            // Package name
-            String PackageName = pi.packageName;
-            // Device model
-            putString(ConfigurationManager.PACKAGE_NAME, PackageName);
+    			String VersionName = pi.versionName;
+    			// Package name
+    			String PackageName = pi.packageName;
+    			// Device model
+    			putString(ConfigurationManager.PACKAGE_NAME, PackageName);
 
-            int VersionCode = pi.versionCode;
+    			int VersionCode = pi.versionCode;
 
-            String PhoneModel = android.os.Build.MODEL;
-            // Android version
-            String AndroidVersion = android.os.Build.VERSION.RELEASE;
-            String Board = android.os.Build.BOARD;
-            String Brand = android.os.Build.BRAND;
-            String Device = android.os.Build.DEVICE;
-            String Display = android.os.Build.DISPLAY;
-            //String FingerPrint = android.os.Build.FINGERPRINT;
-            String Host = android.os.Build.HOST;
-            String ID = android.os.Build.ID;
-            String Model = android.os.Build.MODEL;
-            String Product = android.os.Build.PRODUCT;
-            String Tags = android.os.Build.TAGS;
+    			String PhoneModel = android.os.Build.MODEL;
+    			// Android version
+    			String AndroidVersion = android.os.Build.VERSION.RELEASE;
+    			String Board = android.os.Build.BOARD;
+    			String Brand = android.os.Build.BRAND;
+    			String Device = android.os.Build.DEVICE;
+            	String Display = android.os.Build.DISPLAY;
+            	//String FingerPrint = android.os.Build.FINGERPRINT;
+            	String Host = android.os.Build.HOST;
+            	String ID = android.os.Build.ID;
+            	String Model = android.os.Build.MODEL;
+            	String Product = android.os.Build.PRODUCT;
+            	String Tags = android.os.Build.TAGS;
 
+            	long Time = android.os.Build.TIME;
+            	String Type = android.os.Build.TYPE;
+            	//String User = android.os.Build.USER;
 
-            long Time = android.os.Build.TIME;
-            String Type = android.os.Build.TYPE;
-            //String User = android.os.Build.USER;
+            	ReturnVal += "Package: " + PackageName + ", ";
+            	ReturnVal += "Version: " + VersionName + ", ";
+            	ReturnVal += "Version Code: " + VersionCode + ", ";
+            	ReturnVal += "Phone Model: " + PhoneModel + ", ";
+            	ReturnVal += "Android Version: " + AndroidVersion + ", ";
+            	ReturnVal += "Board: " + Board + ", ";
+            	ReturnVal += "Brand: " + Brand + ", ";
+            	ReturnVal += "Device: " + Device + ", ";
+            	ReturnVal += "Display: " + Display + ", ";
+            	//ReturnVal += "Finger Print: " + FingerPrint + ", ";
+            	ReturnVal += "Host: " + Host + ", ";
+            	ReturnVal += "ID: " + ID + ", ";
+            	ReturnVal += "Model: " + Model + ", ";
+            	ReturnVal += "Product: " + Product + ", ";
+            	ReturnVal += "Tags: " + Tags + ", ";
+            	ReturnVal += "Time: " + Time + ", ";
+            	ReturnVal += "Type: " + Type;
+            	//ReturnVal += "User : " + User;
 
-            ReturnVal += "Package: " + PackageName + ", ";
-            ReturnVal += "Version: " + VersionName + ", ";
-            ReturnVal += "Version Code: " + VersionCode + ", ";
-            ReturnVal += "Phone Model: " + PhoneModel + ", ";
-            ReturnVal += "Android Version: " + AndroidVersion + ", ";
-            ReturnVal += "Board: " + Board + ", ";
-            ReturnVal += "Brand: " + Brand + ", ";
-            ReturnVal += "Device: " + Device + ", ";
-            ReturnVal += "Display: " + Display + ", ";
-            //ReturnVal += "Finger Print: " + FingerPrint + ", ";
-            ReturnVal += "Host: " + Host + ", ";
-            ReturnVal += "ID: " + ID + ", ";
-            ReturnVal += "Model: " + Model + ", ";
-            ReturnVal += "Product: " + Product + ", ";
-            ReturnVal += "Tags: " + Tags + ", ";
-            ReturnVal += "Time: " + Time + ", ";
-            ReturnVal += "Type: " + Type;
-            //ReturnVal += "User : " + User;
+        	} catch (NameNotFoundException ex) {
+            	LoggerUtils.error("ConfigurationManager.collectSystemInformation exception", ex);
+        	}
 
-        } catch (NameNotFoundException ex) {
-            LoggerUtils.error("ConfigurationManager.collectSystemInformation exception", ex);
-        }
-
-        return ReturnVal;
+        	return ReturnVal;
+    	}
+    
+    	public PackageInfo getPackageInfo() throws NameNotFoundException {    
+    		PackageManager pm = getContext().getPackageManager();
+    		PackageInfo pi = pm.getPackageInfo(getContext().getPackageName(), 0);
+    		return pi;
+    	}
     }
     
-    public PackageInfo getPackageInfo() throws NameNotFoundException {    
-    	PackageManager pm = getContext().getPackageManager();
-    	PackageInfo pi = pm.getPackageInfo(getContext().getPackageName(), 0);
-    	return pi;
+    public static DatabaseManager getDatabaseManager() {
+    	if (databaseManager == null) {
+    		databaseManager = getInstance().new DatabaseManager();
+    	}
+    	return databaseManager;
     }
     
-    //Start of User Manager
+    public class DatabaseManager {
     
-    public boolean isUserLoggedIn() {
-	    return (isOn(TWEET_AUTH_STATUS)
+    	private DatabaseManager() {}
+    	
+    	public void saveConfiguration(boolean force) {
+        	if (force || !changedConfig.isEmpty()) {
+            	//PersistenceManagerFactory.getPersistenceManagerInstance().saveConfigurationFile();
+            	ConfigDbDataSource cdb = getConfigDatabase();
+            	if (force) {
+                	cdb.putAll(configuration);
+            	} else {
+                	cdb.putAll(changedConfig);
+            	}
+            	changedConfig.clear();
+        	}
+    	}
+
+    	private void readConfiguration() {
+        	ConfigDbDataSource cdb = getConfigDatabase();
+        	putAll(cdb.fetchAllConfig());
+        	//PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();
+        	changedConfig.clear();
+    	}
+
+    	private ConfigDbDataSource getConfigDatabase() {
+        	ConfigDbDataSource cdb = (ConfigDbDataSource) getObject("CONFIGDB", ConfigDbDataSource.class);
+        	if (cdb == null) {
+            	cdb = new ConfigDbDataSource(getContext());
+            	putObject("CONFIGDB", cdb);
+        	}
+        	return cdb;
+    	}
+
+    	public List<ExtendedLandmark> getLandmarkDatabase() {
+        	LandmarkDbDataSource db = new LandmarkDbDataSource(getContext());
+        	List<ExtendedLandmark> lmdb;
+        	FileManager fm = PersistenceManagerFactory.getFileManager();
+
+        	//file to landmarkdb migration code
+        	if (fm.fileExists(null, FileManager.LANDMARKDB_FILE)) {
+            	lmdb = new ArrayList<ExtendedLandmark>();
+            	fm.readLandmarkStore(lmdb);
+            	fm.deleteFile(null, FileManager.LANDMARKDB_FILE);
+            	db.addAll(lmdb);
+        	} else {
+            	lmdb = db.fetchAllLandmarks();
+        	}
+        	lmdb.addAll(default_locations.values());
+        	putObject("LANDMARKDB", db);
+
+        	return lmdb;
+    	}
+
+    	public void closeAllDatabases() {
+        	ConfigDbDataSource cdb = (ConfigDbDataSource) getObject("CONFIGDB", ConfigDbDataSource.class);
+        	if (cdb != null) {
+            	cdb.close();
+        	}
+
+        	LandmarkDbDataSource db = (LandmarkDbDataSource) getObject("LANDMARKDB", LandmarkDbDataSource.class);
+        	if (db != null) {
+            	db.close();
+        	}
+
+        	FavouritesDbDataSource fdb = (FavouritesDbDataSource) getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+        	if (fdb != null) {
+            	fdb.close();
+        	}
+    	}
+    
+    }
+
+    public static UserManager getUserManager() {
+    	if (userManager == null) {
+    		userManager = getInstance().new UserManager();
+    	}
+    	return userManager;
+    }
+    
+    public class UserManager {
+    	
+    	private UserManager() {}
+    
+    	public boolean isUserLoggedIn() {
+    		return (isOn(TWEET_AUTH_STATUS)
 	            || isOn(FB_AUTH_STATUS)
 	            || isOn(LN_AUTH_STATUS)
 	            || isOn(GL_AUTH_STATUS)
 	            || isOn(FS_AUTH_STATUS)
 	            || isOn(GMS_AUTH_STATUS));
-	}
+    	}
+    	
+    	public boolean isUserLoggedInFully() {
+    		return (isOn(TWEET_AUTH_STATUS)
+	            && isOn(FB_AUTH_STATUS)
+	            && isOn(LN_AUTH_STATUS)
+	            && isOn(GL_AUTH_STATUS)
+	            && isOn(FS_AUTH_STATUS)
+	            && isOn(GMS_AUTH_STATUS));
+    	}
     
-    public String getLoggedInUsername() {
-    	if (isOn(GMS_AUTH_STATUS)) {
-    		return getString(GMS_USERNAME);
-    	} else if (isOn(FB_AUTH_STATUS)) {
-            return getString(FB_USERNAME);
-        } else if (isOn(TWEET_AUTH_STATUS)) {
-            return getString(TWEET_USERNAME);
-        } else if (isOn(LN_AUTH_STATUS)) {
-            return getString(LN_USERNAME);
-        } else if (isOn(GL_AUTH_STATUS)) {
-            return getString(GL_USERNAME);
-        } else if (isOn(FS_AUTH_STATUS)) {
-            return getString(FS_USERNAME);
-        } 
+    	public String getLoggedInUsername() {
+    		if (isOn(GMS_AUTH_STATUS)) {
+    			return getString(GMS_USERNAME);
+    		} else if (isOn(FB_AUTH_STATUS)) {
+            	return getString(FB_USERNAME);
+        	} else if (isOn(TWEET_AUTH_STATUS)) {
+            	return getString(TWEET_USERNAME);
+        	} else if (isOn(LN_AUTH_STATUS)) {
+            	return getString(LN_USERNAME);
+        	} else if (isOn(GL_AUTH_STATUS)) {
+            	return getString(GL_USERNAME);
+        	} else if (isOn(FS_AUTH_STATUS)) {
+            	return getString(FS_USERNAME);
+        	} 
 
-        return null;
-    }
+        	return null;
+    	}
 
-    public List<String> getLoginItems(boolean withSuffix) {
-        List<String> items = new ArrayList<String>();
-        if (isOff(FB_AUTH_STATUS)) {
-            if (withSuffix) {
-                items.add(OAuthServiceFactory.getServiceName(Commons.FACEBOOK) + ";" + Commons.FACEBOOK);
-            } else {
-                items.add(OAuthServiceFactory.getServiceName(Commons.FACEBOOK));
-            }
-        }
-        if (isOff(FS_AUTH_STATUS)) {
-            if (withSuffix) {
-                items.add(OAuthServiceFactory.getServiceName(Commons.FOURSQUARE) + ";" + Commons.FOURSQUARE);
-            } else {
-                items.add(OAuthServiceFactory.getServiceName(Commons.FOURSQUARE));
-            }
-        }
-        if (isOff(GL_AUTH_STATUS)) {
-            if (withSuffix) {
-                items.add(OAuthServiceFactory.getServiceName(Commons.GOOGLE) + ";" + Commons.GOOGLE);
-            } else {
-                items.add(OAuthServiceFactory.getServiceName(Commons.GOOGLE));
-            }
-        }
-        if (isOff(GMS_AUTH_STATUS)) {
-            if (withSuffix) {
-                items.add(GMS_WORLD + ";");
-            } else {
-                items.add(GMS_WORLD);
-            }
-        }
-        if (isOff(TWEET_AUTH_STATUS)) {
-            if (withSuffix) {
-                items.add(OAuthServiceFactory.getServiceName(Commons.TWITTER) + ";" + Commons.TWITTER);
-            } else {
-                items.add(OAuthServiceFactory.getServiceName(Commons.TWITTER));
-            }
-        }
-        if (isOff(LN_AUTH_STATUS)) {
-            if (withSuffix) {
-                items.add(OAuthServiceFactory.getServiceName(Commons.LINKEDIN) + ";" + Commons.LINKEDIN);
-            } else {
-                items.add(OAuthServiceFactory.getServiceName(Commons.LINKEDIN));
-            }
-        }
-        return items;
-    }
+    	public List<String> getLoginItems(boolean withSuffix) {
+        	List<String> items = new ArrayList<String>();
+        	if (isOff(FB_AUTH_STATUS)) {
+        		if (withSuffix) {
+        			items.add(OAuthServiceFactory.getServiceName(Commons.FACEBOOK) + ";" + Commons.FACEBOOK);
+        		} else {
+        			items.add(OAuthServiceFactory.getServiceName(Commons.FACEBOOK));
+        		}
+        	}
+        	if (isOff(FS_AUTH_STATUS)) {
+        		if (withSuffix) {
+        			items.add(OAuthServiceFactory.getServiceName(Commons.FOURSQUARE) + ";" + Commons.FOURSQUARE);
+        		} else {
+        			items.add(OAuthServiceFactory.getServiceName(Commons.FOURSQUARE));
+        		}
+        	}
+        	if (isOff(GL_AUTH_STATUS)) {
+        		if (withSuffix) {
+        			items.add(OAuthServiceFactory.getServiceName(Commons.GOOGLE) + ";" + Commons.GOOGLE);
+        		} else {
+        			items.add(OAuthServiceFactory.getServiceName(Commons.GOOGLE));
+        		}
+        	}
+        	if (isOff(GMS_AUTH_STATUS)) {
+        		if (withSuffix) {
+                	items.add(GMS_WORLD + ";");
+            	} else {
+                	items.add(GMS_WORLD);
+            	}
+        	}
+        	if (isOff(TWEET_AUTH_STATUS)) {
+            	if (withSuffix) {
+                	items.add(OAuthServiceFactory.getServiceName(Commons.TWITTER) + ";" + Commons.TWITTER);
+            	} else {
+                	items.add(OAuthServiceFactory.getServiceName(Commons.TWITTER));
+            	}
+        	}
+        	if (isOff(LN_AUTH_STATUS)) {
+            	if (withSuffix) {
+                	items.add(OAuthServiceFactory.getServiceName(Commons.LINKEDIN) + ";" + Commons.LINKEDIN);
+            	} else {
+                	items.add(OAuthServiceFactory.getServiceName(Commons.LINKEDIN));
+            	}
+        	}
+        	return items;
+    	}
 
-     public boolean putStringAndEncrypt(String key, String value) {
-    	if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
-    		try {
-    			String tmp = new String(Base64.encode(BCTools.encrypt(value.getBytes())));
-    			putString(key, tmp);
-    			//System.out.println("Encrypted: " +  key + " = " + tmp);
-    			tmp = null;
-    			return true;
-    		} catch (Exception ex) {
-    			LoggerUtils.error("ConfigurationManager.putStringAndEncrypt exception:", ex);
+    	public boolean putStringAndEncrypt(String key, String value) {
+    		if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
+    			try {
+    				String tmp = new String(Base64.encode(BCTools.encrypt(value.getBytes())));
+    				putString(key, tmp);
+    				//System.out.println("Encrypted: " +  key + " = " + tmp);
+    				tmp = null;
+    				return true;
+    			} catch (Exception ex) {
+    				LoggerUtils.error("ConfigurationManager.putStringAndEncrypt exception:", ex);
+    				return false;
+    			}
+    		} else {
     			return false;
     		}
-    	} else {
-    		return false;
     	}
-    }
     
-    public String getStringDecrypted(String key) {
-    	String decrypted = null;
-    	if (StringUtils.isNotEmpty(key)) {
-    		String encValue = getString(key);
-			if (encValue != null) {
-				try {
-					decrypted = new String(BCTools.decrypt(Base64.decode(encValue.getBytes())));
-					//System.out.println("Decrypted: " +  key + " = " + decrypted);
-				} catch (Exception e) {
-					LoggerUtils.error("ConfigurationManager.getDecryptedString exception: ", e);
-				}		
-			}
+    	public String getStringDecrypted(String key) {
+    		String decrypted = null;
+    		if (StringUtils.isNotEmpty(key)) {
+    			String encValue = getString(key);
+				if (encValue != null) {
+					try {
+						decrypted = new String(BCTools.decrypt(Base64.decode(encValue.getBytes())));
+						//System.out.println("Decrypted: " +  key + " = " + decrypted);
+					} catch (Exception e) {
+						LoggerUtils.error("ConfigurationManager.getDecryptedString exception: ", e);
+					}		
+				}
+    		}
+			return decrypted;
     	}
-		return decrypted;
+    
     }
-
-    //End of UserManager
 }
