@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
@@ -39,8 +40,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
     private static final boolean[] checkbox_status = {false, true, false, true, true, true};
     private static final int[] icons = {R.drawable.globecompass_16, R.drawable.facebook_icon, R.drawable.foursquare,
         R.drawable.google_plus, R.drawable.twitter_icon, R.drawable.linkedin_icon};
-    private String[] usernames, displaynames;
-
+    
     public SocialArrayAdapter(Activity context, TextView footer) {
         super(context, R.layout.socialrow,
                 new String[]{
@@ -53,22 +53,6 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
         this.context = context;
         this.footer = footer;
         intents = new Intents(context, null, null);
-
-        usernames = new String[]{
-            ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME),
-            OAuthServiceFactory.getUsername(Commons.FACEBOOK),
-            OAuthServiceFactory.getUsername(Commons.FOURSQUARE),
-            OAuthServiceFactory.getUsername(Commons.GOOGLE),
-            OAuthServiceFactory.getUsername(Commons.TWITTER),
-            OAuthServiceFactory.getUsername(Commons.LINKEDIN)};
-        
-        displaynames = new String[]{
-            ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME),
-            OAuthServiceFactory.getDisplayname(Commons.FACEBOOK),
-            OAuthServiceFactory.getDisplayname(Commons.FOURSQUARE),
-            OAuthServiceFactory.getDisplayname(Commons.GOOGLE),
-            OAuthServiceFactory.getDisplayname(Commons.TWITTER),
-            OAuthServiceFactory.getDisplayname(Commons.LINKEDIN)};
     }
 
     @Override
@@ -94,7 +78,13 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
         rowView.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
-                    intents.startActionViewIntent(ConfigurationManager.SERVER_URL + "socialProfile?uid=" + usernames[position]);
+                	String username;
+                	if (position == 0) {
+                		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);
+                	} else {
+                		username =  OAuthServiceFactory.getUsername(services[position]);
+                	}
+                    intents.startActionViewIntent(ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username);
                 }  else if (ConfigurationManager.getInstance().isOff(auth_status[position])) {
                     if (position == 0) {
                         intents.startLoginActivity();
@@ -133,7 +123,13 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
         holder.headerText.setText(getItem(position));
         if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
-            holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusyes, displaynames[position]));
+        	String username;
+        	if (position == 0) {
+        		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_NAME);
+        	} else {
+        		username =  OAuthServiceFactory.getDisplayname(services[position]);
+        	}
+            holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusyes, username));
         } else {
             holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusno, getItem(position)));
         }
@@ -172,12 +168,8 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             if (position == 0) { //GMS World
                 if (ConfigurationManager.getInstance().isOn(auth_status[0])) {
                     //logout
-                	ConfigurationManager.getInstance().setOff(ConfigurationManager.GMS_AUTH_STATUS);
-                    //ConfigurationManager.getInstance().resetUser();
-                	ConfigurationManager.getInstance().removeAll(new String[]{	
-                      ConfigurationManager.GMS_USERNAME, ConfigurationManager.GMS_PASSWORD});
-                    ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-                    notifyDataSetChanged();
+                	GMSUtils.logout();
+                	notifyDataSetChanged();
                     intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
 
                     String username = ConfigurationManager.getUserManager().getLoggedInUsername();

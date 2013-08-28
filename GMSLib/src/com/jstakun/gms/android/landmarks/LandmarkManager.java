@@ -715,8 +715,7 @@ public class LandmarkManager {
             params.add(new BasicNameValuePair("validityDate", validityDate));
         }
 
-        String email = ConfigurationManager.getInstance().getString(ConfigurationManager.USER_EMAIL);
-
+        String email = ConfigurationManager.getUserManager().getUserEmail();
         if (StringUtils.isNotEmpty(email)) {
             params.add(new BasicNameValuePair("email", email));
         }

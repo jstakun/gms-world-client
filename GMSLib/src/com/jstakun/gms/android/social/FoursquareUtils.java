@@ -28,7 +28,7 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 
 	private static final String FS_AUTH_KEY = "fsauth_key";
     
-    public FoursquareUtils() {
+    protected FoursquareUtils() {
     	super();
         ConfigurationManager.getInstance().setDisabled(ConfigurationManager.FS_SEND_STATUS);
     }

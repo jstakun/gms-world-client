@@ -72,7 +72,7 @@ import com.jstakun.gms.android.utils.StringUtil;
  *
  * @author jstakun
  */
-public class Intents {
+public final class Intents {
 
     public static final int INTENT_ADD_LANDMARK = 0;
     public static final int INTENT_BLOGEO_POST = 1;
@@ -579,7 +579,7 @@ public class Intents {
 
                 message += "\nLink: " + url;
 
-                email = ConfigurationManager.getUserManager().getStringDecrypted(ConfigurationManager.USER_EMAIL);
+                email = ConfigurationManager.getUserManager().getUserEmail();
                 if (StringUtils.isNotEmpty(email)) {
                     intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{email});
                 }

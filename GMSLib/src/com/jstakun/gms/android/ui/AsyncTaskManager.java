@@ -31,6 +31,7 @@ import com.jstakun.gms.android.landmarks.KMLParser;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
@@ -878,52 +879,8 @@ public class AsyncTaskManager {
         @Override
         protected String doInBackground(String... loginData) {
             super.doInBackground(loginData);
-            return loginAction(loginData[2], loginData[3]);
+            return GMSUtils.loginAction(loginData[2], loginData[3]);
         }
-    }
-
-    private String loginAction(String login, String password) {
-        HttpUtils utils = new HttpUtils();
-        String errorMessage = null;
-        String encPwd = null;
-
-        try {
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_USERNAME, login);
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_PASSWORD, password);
-            String url = ConfigurationManager.SSL_SERVER_SERVICES_URL + "authenticate";
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("mobile", "true"));
-            //utils.sendPostRequest(url, params, true);
-            byte[] resp = utils.loadHttpFile(url, true, "text/json");
-            if (resp != null && resp.length > 0) {
-                String jsonResp = new String(resp, "UTF-8");   
-                if (jsonResp.startsWith("{")) {          
-                	JSONObject json = new JSONObject(jsonResp);
-                	encPwd = json.getString("password");               	
-                	//System.out.println(jsonResp);
-                }
-            }    
-        } catch (Exception ex) {
-            LoggerUtils.error("LoginActivity.loginAction exception", ex);
-            errorMessage = ex.getMessage();
-        } finally {
-            try {
-                if (utils != null) {
-                    errorMessage = utils.getResponseCodeErrorMessage();
-                    utils.close();
-                }
-            } catch (Exception e) {
-            }
-        }
-
-        if (errorMessage == null && encPwd != null) {
-        	ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_USERNAME, login);
-            ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_PASSWORD, encPwd);
-            ConfigurationManager.getInstance().setOn(ConfigurationManager.GMS_AUTH_STATUS);
-            ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-        }
-        
-        return errorMessage;
     }
 
     public void executeClearStatsTask(String message) {

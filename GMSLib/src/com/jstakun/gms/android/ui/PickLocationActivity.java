@@ -282,7 +282,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
 
             String query_string = "address=" + URLEncoder.encode(name, "UTF-8");
 
-            String email = ConfigurationManager.getInstance().getString(ConfigurationManager.USER_EMAIL);
+            String email = ConfigurationManager.getUserManager().getUserEmail();
             if (StringUtils.isNotEmpty(email)) {
                 query_string += "&email=" + URLEncoder.encode(email, "UTF-8");
             }

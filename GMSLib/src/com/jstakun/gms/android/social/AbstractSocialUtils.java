@@ -14,7 +14,7 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 
 	protected Token accessToken;
     
-	public AbstractSocialUtils() {
+	protected AbstractSocialUtils() {
 	    accessToken = loadAccessToken();	
 	}
 	

@@ -152,6 +152,7 @@ public final class ConfigurationManager {
     //User Manager
     public static final String GMS_USERNAME = "gmsUsername";
     public static final String GMS_PASSWORD = "gmsPassword";
+    public static final String GMS_NAME = "gmsName";
     public static final String FB_AUTH_STATUS = "fbAuthStatus";   
     public static final String FB_SEND_STATUS = "fbSendStatus";
     public static final String FB_USERNAME = "fbUsername";
@@ -832,6 +833,10 @@ public final class ConfigurationManager {
 				}
     		}
 			return decrypted;
+    	}
+    	
+    	public String getUserEmail() {
+    		return getStringDecrypted(USER_EMAIL);
     	}
     
     }
