@@ -36,8 +36,12 @@ import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.UserTracker;
-import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 /**
@@ -116,7 +120,6 @@ public class PickLocationActivity extends Activity implements OnClickListener {
                     if (StringUtils.isNotEmpty(address)) {
                         name += "," + StringUtils.trimToEmpty(address);
                     }
-                    //AsyncTaskExecutor.execute(new PickLocationTask(), PickLocationActivity.this);
                     new PickLocationTask().execute();
                     return true;
                 }
@@ -139,7 +142,6 @@ public class PickLocationActivity extends Activity implements OnClickListener {
             if (StringUtils.isNotEmpty(address)) {
                 name += "," + StringUtils.trimToEmpty(address);
             }
-            //AsyncTaskExecutor.execute(new PickLocationTask(), PickLocationActivity.this);
             new PickLocationTask().execute();
         } else if (v == cancelButton) {
             cancelActivity();
@@ -271,44 +273,41 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     private void pickLocationAction() {
 
         HttpUtils utils = new HttpUtils();
-        String response;
-
+        
         try {
-            String address = locationAddressText.getText().toString();
+        	List<NameValuePair> params = new ArrayList<NameValuePair>();
+        	String address = locationAddressText.getText().toString();
             name = country;
             if (StringUtils.isNotEmpty(address)) {
                 name += "," + StringUtils.trimToEmpty(address);
             }
 
-            String query_string = "address=" + URLEncoder.encode(name, "UTF-8");
-
+            params.add(new BasicNameValuePair("address", name));
+            
             String email = ConfigurationManager.getUserManager().getUserEmail();
             if (StringUtils.isNotEmpty(email)) {
-                query_string += "&email=" + URLEncoder.encode(email, "UTF-8");
+              	params.add(new BasicNameValuePair("email", email));
             }
 
-            String url = ConfigurationManager.getInstance().getServicesUrl() + "geocode?" + query_string;
+            String url = ConfigurationManager.getInstance().getServicesUrl() + "geocode";
 
-            byte[] res = utils.loadHttpFile(url, true, "json");
-            if (res != null) {
-                response = new String(res);
-                if (response.startsWith("{")) {
-                    JSONObject json = new JSONObject(response);
-                    LoggerUtils.debug("Geocode response: " + response);
+            utils.sendPostRequest(url, params, true);
+            
+            String response = utils.getPostResponse();
+			if (StringUtils.startsWith(response, "{")) {
+               JSONObject json = new JSONObject(response);
+               LoggerUtils.debug("Geocode response: " + response);
 
-                    if (json.getString("status").equals("OK")) {
-                        lat = json.getString("lat");
-                        lng = json.getString("lng");
-                        String type = json.getString("type");
-                        if (type.equals("l")) {
-                            name = address;
-                        }
-                    } else {
-                        message = Locale.getMessage(R.string.Http_error, json.getString("message"));
-                    }
-                } else {
-                    message = Locale.getMessage(R.string.Http_error, "Wrong response format!");
-                }
+               if (json.getString("status").equals("OK")) {
+                  lat = json.getString("lat");
+                  lng = json.getString("lng");
+                  String type = json.getString("type");
+                  if (type.equals("l")) {
+                     name = address;
+                  }
+               } else {
+                  message = Locale.getMessage(R.string.Http_error, json.getString("message"));
+               }              
             } else {
                 message = utils.getResponseCodeErrorMessage();
             }

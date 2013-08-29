@@ -16,6 +16,8 @@ import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
 public class AutoCheckinStartServiceReceiver extends BroadcastReceiver {
+	
+	private static final long THRITY_MINS = 1000 * 60 * 30;
 
 	/*private Context context;
 	private final Handler locationHandler = new Handler() {
@@ -53,7 +55,7 @@ public class AutoCheckinStartServiceReceiver extends BroadcastReceiver {
 			LoggerUtils.debug("AutoCheckinStartServiceReceiver.doReceive() no saved location");
 		}
 
-		if (location != null) {
+		if (location != null && (System.currentTimeMillis() - location.getTime()) < THRITY_MINS) {
 			Intent service = new Intent(context, AutoCheckinService.class);
 			service.putExtra("lat", location.getLatitude());
 			service.putExtra("lng", location.getLongitude());
