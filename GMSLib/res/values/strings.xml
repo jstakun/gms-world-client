@@ -409,6 +409,7 @@
      <string name="Layer.Panoramio.desc">Geolocation oriented photo sharing service</string>
      <string name="Layer.Flickr.desc">Geolocation oriented photo sharing service</string>
      <string name="Layer.Picasa.desc">Geolocation oriented photo sharing service</string>
+     <string name="Layer.Instagram.desc">Geolocation oriented photo sharing service</string>
      <string name="Layer.YouTube.desc">Video sharing service</string>
      <string name="Layer.Travel.Webcams.desc">Webcams near your current location</string>
      <string name="Layer.Phone.Landmarks.desc">Landmarks from your phone</string>

@@ -15,7 +15,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/jsr305-1.3.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/kxml2-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/libGoogleAnalytics.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/openlapi-jsr179.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/osmdroid-android-3.0.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/TapForTap.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/wpsapi.jar"/>

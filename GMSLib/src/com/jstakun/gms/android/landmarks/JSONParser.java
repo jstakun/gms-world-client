@@ -108,7 +108,7 @@ public class JSONParser {
                 //System.out.println("Processed layer " + layer + " containing " + landmarks.size() + " in " + (System.currentTimeMillis() - start) + " millis.");
             }
         } catch (Exception ex) {
-            LoggerUtils.error("JSonParser.parse exception: ", ex);
+            LoggerUtils.error("JSonParser.parse() exception: ", ex);
         } finally {
             if (!hasJsonError) {
                 errorMessage = utils.getResponseCodeErrorMessage();

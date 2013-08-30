@@ -7,6 +7,7 @@ package com.jstakun.gms.android.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -338,7 +339,6 @@ public class HttpUtils {
                         is = entity.getContent();
                     }
 
-
                     try {
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
                         byte[] buffer = new byte[512];
@@ -378,6 +378,92 @@ public class HttpUtils {
             return loadHttpFile(url, auth, format, retryCount - 1);
         } else {
             return byteBuffer;
+        }
+    }
+    
+    public Object loadObject(String url, boolean auth, String format) {
+        getThreadSafeClientConnManagerStats();
+        return loadObject(url, auth, format, RETRY_COUNT);
+    }
+
+    private Object loadObject(String url, boolean auth, String format, int retryCount) {
+
+        Object reply = null;
+        boolean needRetry = false;
+
+        try {
+            LoggerUtils.debug("Loading file: " + url + ", retry count " + retryCount);
+            
+            if (locale == null) {
+                locale = ConfigurationManager.getInstance().getCurrentLocale();
+            }
+
+            if (getRequest == null) {
+                getRequest = new HttpGet(url);
+
+                getRequest.addHeader("Accept-Encoding", "gzip, deflate");
+                //getRequest.addHeader("User-Agent", buildInfo);
+                getRequest.addHeader("Connection", "close");
+                getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
+                getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+                getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+
+                // HTTP Response
+                if (auth) {
+                    setBasicAuth(getRequest);
+                }
+            } else {
+                getRequest.setURI(new URI(url));
+            }
+
+            HttpResponse httpResponse = getHttpClient().execute(getRequest);
+
+            int responseCode = httpResponse.getStatusLine().getStatusCode();
+
+            if (responseCode == HttpStatus.SC_OK) {
+                HttpEntity entity = httpResponse.getEntity();
+
+                if (entity != null) {
+                    Header contentType = entity.getContentType();
+                    if (contentType != null) {
+                        String contentTypeValue = contentType.getValue();
+                        if (!contentTypeValue.contains(format)) {
+                            throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + url);
+                        }
+                    } else {
+                    //    throw new IOException("Missing content type! Expected: " + format + " at url: " + url);
+                    	LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + url);
+                    }
+
+                    InputStream is = entity.getContent();
+                    
+                    ObjectInputStream ois = new ObjectInputStream(is);
+                    
+                    reply = ois.readObject();
+                    
+                    ois.close();
+                    
+                    entity.consumeContent();
+                }
+            } else {
+                LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
+                needRetry = true;
+                errorMessage = handleHttpStatus(responseCode);
+            }
+        } catch (Exception e) {
+            LoggerUtils.error("HttpUtils.loadObject() exception: ", e);
+            needRetry = true;
+            errorMessage = handleHttpException(e);
+        }
+
+        if (needRetry && retryCount > 0) {
+            try {
+                Thread.sleep(1000L);
+            } catch (InterruptedException ie) {
+            }
+            return loadObject(url, auth, format, retryCount - 1);
+        } else {
+            return reply;
         }
     }
 
