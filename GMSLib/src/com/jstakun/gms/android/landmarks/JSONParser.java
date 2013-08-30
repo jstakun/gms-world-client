@@ -4,8 +4,19 @@
  */
 package com.jstakun.gms.android.landmarks;
 
-import android.location.Address;
-import android.os.Bundle;
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.text.format.DateUtils;
 
 import com.jstakun.gms.android.config.Commons;
@@ -18,18 +29,8 @@ import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.StringUtil;
+import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
@@ -152,8 +153,7 @@ public class JSONParser {
                     tmp.setLatitude(lat);
                     tmp.setLongitude(lng);
                     
-                    if (origLandmarks.isEmpty() || !origLandmarks.contains(LandmarkFactory.getLandmark(StringUtils.trimToEmpty(name), null,
-                            tmp, layer, null, -1, null))) {
+                    if (origLandmarks.isEmpty() || !origLandmarks.contains(LandmarkFactory.getLandmark(StringUtils.trimToEmpty(name), null, tmp, layer, -1))) {
                         String desc = "";
                         int categoryId = defaultCategory;
                         int subCategoryId = defaultSubcategory;
@@ -163,7 +163,7 @@ public class JSONParser {
                         numberOfReviews = 0;
                         hasCheckinOrPhoto = false;
                         thumbnail = null;
-                        Address address = new Address(locale);
+                        AddressInfo address = new AddressInfo();
                         Deal deal = new Deal(-1, -1, -1, null, null);
                         String checkins = null;
 
@@ -176,7 +176,7 @@ public class JSONParser {
                                 url = urlPrefix[urlType] + url;
                             }
                             if (StringUtils.isNotEmpty(url)) {
-                                address.setUrl(url);
+                                address.setField(AddressInfo.URL, url);
                             }
                             
                             subCategoryId = landmark.optInt("subcategoryID", defaultSubcategory);
@@ -186,9 +186,7 @@ public class JSONParser {
                             //Google Maps reference
                             String reference = landmark.optString("reference");
                             if (reference != null) {
-                                Bundle extras = new Bundle();
-                                extras.putString("reference", reference);
-                                address.setExtras(extras);
+                                address.setField(AddressInfo.EXTENSION, reference);
                             }
 
                             //checkins FB, FS
@@ -282,34 +280,33 @@ public class JSONParser {
         //}
     }
     
-    private static String formatAddress(Address address) {
+    private static String formatAddress(AddressInfo address) {
         List<String> tokens = new ArrayList<String>();
         
-        int lines = address.getMaxAddressLineIndex();
-        if (lines > -1) {
-            tokens.add(address.getAddressLine(0));
+        if (address.getField(AddressInfo.STREET) != null) {
+            tokens.add(address.getField(AddressInfo.STREET));
         }
         
         String line = "";
-        if (address.getPostalCode() != null) {
-            line += address.getPostalCode();
+        if (address.getField(AddressInfo.POSTAL_CODE) != null) {
+            line += address.getField(AddressInfo.POSTAL_CODE);
         }
-        if (address.getLocality() != null) {
+        if (address.getField(AddressInfo.CITY) != null) {
             if (line.length() > 0) {
                 line += " ";
             }
-            line += address.getLocality();
+            line += address.getField(AddressInfo.CITY);
         }
         
         if (line.length() > 0) {
             tokens.add(line);
         }
         
-        if (address.getAdminArea() != null) {
-            tokens.add(address.getAdminArea());
+        if (address.getField(AddressInfo.STATE) != null) {
+            tokens.add(address.getField(AddressInfo.STATE));
         }
-        if (address.getCountryName() != null) {
-            tokens.add(address.getCountryName());
+        if (address.getField(AddressInfo.COUNTRY) != null) {
+            tokens.add(address.getField(AddressInfo.COUNTRY));
         }
         
         if (!tokens.isEmpty()) {
@@ -406,7 +403,7 @@ public class JSONParser {
         }
     }
     
-    private List<String> parseJSonObject(Address address, Map<String, String> tokens, Deal deal, int categoryId, String checkins, String layer) {
+    private List<String> parseJSonObject(AddressInfo address, Map<String, String> tokens, Deal deal, int categoryId, String checkins, String layer) {
         List<String> result = new ArrayList<String>();
         List<String> otherNamed = new ArrayList<String>();
         String start_date = null;
@@ -441,8 +438,8 @@ public class JSONParser {
         if (StringUtils.isNotEmpty(locality)) {
             result.add(Locale.getMessage(R.string.address, locality));
         }
-        if (StringUtils.isNotEmpty(address.getPhone())) {
-            otherNamed.add(Locale.getMessage(R.string.phone, address.getPhone()));
+        if (StringUtils.isNotEmpty(address.getField(AddressInfo.PHONE_NUMBER))) {
+            otherNamed.add(Locale.getMessage(R.string.phone, address.getField(AddressInfo.PHONE_NUMBER)));
         }
 
         //thumbnail
@@ -524,14 +521,6 @@ public class JSONParser {
                     ratingStr = "<img src=\"stars_0\"/>";
                 }
             } else {
-                /*String color = "#ff0000"; //red
-                 if (r >= maxRating * 0.85) {
-                 color = "green"; //#66cdaa"; //Medium aquamarine
-                 } else if (r >= maxRating * 0.7 && r < maxRating * 0.85) {
-                 color = "#ff8c00"; //dark orange
-                 }
-                 ratingStr = Locale.getMessage(R.string.rating, "<font color=\"" + color + "\">" + nf.format(r) + "</font>");*/
-                //<img src=\"star_chat\"/>
                 if (r >= maxRating * 0.9) {
                     ratingStr = "<img src=\"star_5\"/>";
                 } else if (r >= maxRating * 0.8 && r < maxRating * 0.9) {
@@ -714,65 +703,65 @@ public class JSONParser {
         return isDeal;
     }
     
-    private static void buildAddress(Address address, Map<String, String> tokens) {
+    private static void buildAddress(AddressInfo address, Map<String, String> tokens) {
         String val = tokens.remove("phone");
         if (val != null) {
-            address.setPhone(val);
+            address.setField(AddressInfo.PHONE_NUMBER, val);
         }
         
         val = tokens.remove("country");
         if (val != null) {
-            address.setCountryName(val);
+            address.setField(AddressInfo.COUNTRY, val);
         }
         
         val = tokens.remove("zip");
         if (val != null) {
-            address.setPostalCode(val);
+            address.setField(AddressInfo.POSTAL_CODE, val);
         } else {
             val = tokens.remove("postalCode");
             if (val != null) {
-                address.setPostalCode(val);
+            	address.setField(AddressInfo.POSTAL_CODE, val);
             }
         }
         
         val = tokens.remove("city");
         if (val != null) {
-            address.setLocality(val);
+        	address.setField(AddressInfo.CITY, val);
         } else {
             val = tokens.remove("locality");
             if (val != null) {
-                address.setLocality(val);
+            	address.setField(AddressInfo.CITY, val);
             }
         }
         
         val = tokens.remove("street");
         if (val != null) {
-            address.setAddressLine(0, val);
+        	address.setField(AddressInfo.STREET, val);
         } else {
             val = tokens.remove("address");
             if (val != null) {
-                address.setAddressLine(0, val);
+            	address.setField(AddressInfo.STREET, val);
             } else {
                 val = tokens.remove("location");
                 if (val != null) {
-                    address.setAddressLine(0, val);
+                	address.setField(AddressInfo.STREET, val);
                 }
             }
         }
         
         val = tokens.remove("state");
         if (val != null) {
-            address.setAdminArea(val);
+        	address.setField(AddressInfo.STATE, val);
         } else {
             val = tokens.remove("region");
             if (val != null) {
-                address.setAdminArea(val);
+            	address.setField(AddressInfo.STATE, val);
             }
         }
         
         val = tokens.remove("crossStreet");
         if (val != null) {
-            address.setThoroughfare(val);
+        	address.setField(AddressInfo.CROSSING1, val);
         }
     }
     

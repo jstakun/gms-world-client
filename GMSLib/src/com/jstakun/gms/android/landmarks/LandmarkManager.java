@@ -9,7 +9,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
 import android.util.DisplayMetrics;
 import com.devahead.util.objectpool.ObjectPool;
 import com.google.common.base.Function;
@@ -742,8 +741,7 @@ public class LandmarkManager {
             }
 
             if (lmUrl != null) {
-                Address address = landmark.getAddress();
-                address.setUrl(lmUrl);
+                landmark.setUrl(lmUrl);
             }
         }
 

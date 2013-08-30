@@ -19,6 +19,7 @@ import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.UserTracker;
+import com.openlapi.AddressInfo;
 
 /**
  *
@@ -107,10 +108,7 @@ public class CheckinManager {
     	} else if (selectedLayer.equals(Commons.FACEBOOK_LAYER)) {
     		venueid = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).getKey(selectedLandmark.getUrl());            
     	} else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER))  {
-    		Bundle extras = selectedLandmark.getAddress().getExtras();
-    		if (extras.containsKey("reference")) {
-    			venueid = extras.getString("reference");
-    		}
+    		venueid = selectedLandmark.getAddressInfo().getField(AddressInfo.EXTENSION);
     	} else { //if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)) {
     		if (venueid != null) {
     			String[] s = venueid.split("=");

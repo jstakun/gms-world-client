@@ -4,15 +4,21 @@
  */
 package com.jstakun.gms.android.deals;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
  *
  * @author jstakun
  */
-public class Deal {
+public final class Deal implements Serializable {
 
-    private double price;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private double price;
     private double discount;
     private double save;
     private String dealType;
