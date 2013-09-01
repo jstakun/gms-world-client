@@ -186,7 +186,7 @@ public final class ExtendedLandmark extends Landmark implements Serializable {
     /**
      * @return the hasCheckins
      */
-    public boolean hasCheckinsOrPhotos() {
+    public boolean isCheckinsOrPhotos() {
         return hasCheckins;
     }
 

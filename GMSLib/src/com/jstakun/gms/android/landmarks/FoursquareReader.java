@@ -4,7 +4,6 @@
  */
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 
@@ -15,11 +14,12 @@ import java.util.Locale;
  *
  * @author jstakun
  */
-public class FoursquareReader extends AbstractJsonReader {
+public class FoursquareReader extends AbstractSerialReader {
 
     protected static final String[] FOURSQUARE_PREFIX = {"http://foursquare.com/mobile/venue/"};
 
-    public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
+    //JSON method
+    /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
         init(latitude, longitude, zoom, width, height);
         String l = Locale.getDefault().getLanguage();
         String url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareProvider?lat=" + coords[0] + "&lng=" + coords[1]
@@ -30,10 +30,18 @@ public class FoursquareReader extends AbstractJsonReader {
         close();
 
         return errorMessage;
-    }
+    }*/
 
     @Override
     public String[] getUrlPrefix() {
         return FOURSQUARE_PREFIX;
     }
+
+	@Override
+	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
+		String l = Locale.getDefault().getLanguage();
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareProvider?lat=" + coords[0] + "&lng=" + coords[1]
+                + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&format=bin";
+		return parser.parse(url, landmarks, task, true);
+	}
 }

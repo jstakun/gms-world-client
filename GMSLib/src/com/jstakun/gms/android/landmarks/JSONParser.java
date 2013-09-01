@@ -454,7 +454,7 @@ public class JSONParser {
         val = tokens.remove("upload_date");
         if (val != null) {
             otherNamed.add(Locale.getMessage(R.string.upload_date, val));
-            //TODO convert panoramio date to long
+            //convert panoramio date to long
             //creationDate = val;
         }
         

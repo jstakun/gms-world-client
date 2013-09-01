@@ -12,12 +12,12 @@ public abstract class AbstractSerialReader implements LayerReader {
 	private static final int DEFAULT_LIMIT = 30;
     private static final int DEFAULT_DEAL_LIMIT = 300;
     
-    protected SerialParser parser;
-    protected String[] coords;
+    protected SerialParser parser = null;
+    protected String[] coords = null;
     protected int radius, limit = DEFAULT_LIMIT, dealLimit = DEFAULT_DEAL_LIMIT;
-    protected String display;
+    protected String display = null;
      
-    protected void init(double latitude, double longitude, int zoom, int width, int height) {
+    private void init(double latitude, double longitude, int zoom, int width, int height) {
         parser = new SerialParser();
         coords = new String[] {StringUtil.formatCoordE6(latitude), StringUtil.formatCoordE6(longitude)};
         radius = DistanceUtils.radiusInKilometer();
@@ -31,8 +31,13 @@ public abstract class AbstractSerialReader implements LayerReader {
             dealLimit = (int) (1.5 * dealLimit);
         }
     }
+    
+    protected abstract String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task);
 
-    public abstract String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task);
+    public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
+    	init(latitude, longitude, zoom, width, height);
+    	return readLayer(landmarks, latitude, longitude, zoom, width, height, layer, task);
+    }
 
     public void close() {
         parser.close();

@@ -8,9 +8,7 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 public class InstagramReader extends AbstractSerialReader {
 
 	@Override
-	public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
-		init(latitude, longitude, zoom, width, height);
-		
+	public String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		String url = ConfigurationManager.getInstance().getServicesUrl() + "instagramProvider?" +
 				"lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius  +
 				"&limit=" + limit + "&display=" + display + "&format=bin";

@@ -19,9 +19,35 @@ import java.util.Locale;
  *
  * @author jstakun
  */
-public class FsRecommendsReader extends FoursquareReader {
+public class FsRecommendsReader extends AbstractSerialReader {
 
-    @Override
+	@Override
+	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
+		String l = Locale.getDefault().getLanguage();
+        String errorMessage = null;
+
+        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
+            ISocialUtils fsUtils = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE);
+            String token = fsUtils.getAccessToken().getToken();
+            if (token != null) {
+            	String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&format=bin";
+
+            	try {
+            		String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsRecommended?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
+            		errorMessage = parser.parse(url, landmarks, task, true);
+            	} catch (Exception e) {
+            		errorMessage = e.getMessage();
+            		LoggerUtils.error("FsRecommendsReader exception: ", e);
+            	}
+            } else {
+            	LoggerUtils.error("FsRecommendsReader exception: token is null!");
+            }
+        }
+
+        return errorMessage;
+	}
+
+    /*@Override
     public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
         init(latitude, longitude, zoom, width, height);
         String l = Locale.getDefault().getLanguage();
@@ -48,5 +74,5 @@ public class FsRecommendsReader extends FoursquareReader {
         close();
 
         return errorMessage;
-    }
+    }*/
 }

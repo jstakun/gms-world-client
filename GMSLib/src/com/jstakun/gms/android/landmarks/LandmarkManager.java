@@ -414,7 +414,7 @@ public class LandmarkManager {
 
                         drawablePoints.add(point);
                         int color = COLOR_WHITE;
-                        if (landmark.hasCheckinsOrPhotos()) {
+                        if (landmark.isCheckinsOrPhotos()) {
                             color = COLOR_LIGHT_SALMON;
                         } else if (landmark.getRating() >= 0.85) {
                             color = COLOR_PALE_GREEN;
@@ -1640,7 +1640,7 @@ public class LandmarkManager {
     private class FriendsCheckinsPredicate implements Predicate<ExtendedLandmark> {
 
         public boolean apply(ExtendedLandmark t) {
-            return t.hasCheckinsOrPhotos();
+            return t.isCheckinsOrPhotos();
         }
     }
     
