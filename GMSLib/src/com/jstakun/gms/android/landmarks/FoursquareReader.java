@@ -41,7 +41,7 @@ public class FoursquareReader extends AbstractSerialReader {
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		String l = Locale.getDefault().getLanguage();
         String url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareProvider?lat=" + coords[0] + "&lng=" + coords[1]
-                + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&format=bin";
+                + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&version=3&format=bin";
 		return parser.parse(url, landmarks, task, true);
 	}
 }

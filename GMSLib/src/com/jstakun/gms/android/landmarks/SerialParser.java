@@ -46,6 +46,10 @@ public class SerialParser {
         } catch (Exception ex) {
             LoggerUtils.error("SerialParser.parse() exception: ", ex);
         } finally {
+        	int responseCode = utils.getResponseCode();
+        	if (responseCode == 401) {
+        		//TODO logout from layer
+        	}
             errorMessage = utils.getResponseCodeErrorMessage();
             if (close) {
                 close();

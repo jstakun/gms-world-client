@@ -19,11 +19,11 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author jstakun
  */
-public class FbPlacesReader extends AbstractJsonReader {
+public class FbPlacesReader extends AbstractSerialReader {
 
     public static final String[] FBPLACES_PREFIX = {"http://touch.facebook.com/profile.php?id="};
 
-    public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
+    /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
 
         String url, response = null;
 
@@ -66,10 +66,39 @@ public class FbPlacesReader extends AbstractJsonReader {
         }
 
         return response;
-    }
+    }*/
 
     @Override
     public String[] getUrlPrefix() {
         return FBPLACES_PREFIX;
     }
+
+	@Override
+	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
+		String url = null, response = null;
+
+		int dist = radius;
+        if (dist > 6371) {
+            dist = 6371;
+        }
+        
+        String queryString = "lat=" + coords[0] + "&lng=" + coords[1] + "&distance=" +
+                dist + "&limit=" + limit + "&display=" + display + "&version=2&format=bin";
+
+        try {
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
+        		ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
+        		String token = fbUtils.getAccessToken().getToken();
+        		url = ConfigurationManager.getInstance().getSecuredServicesUrl() +
+                    "facebookProvider?" + queryString + "&token=" + URLEncoder.encode(token, "UTF-8");
+        	} else {
+        		url = ConfigurationManager.SERVER_URL + "facebookProvider?" + queryString;
+        	}
+        	response = parser.parse(url, landmarks, task, true);
+        } catch (Exception e) {
+            LoggerUtils.error("FBPlacesReader.readLayer() exception: ", e);
+        }	
+
+        return response;
+	}
 }

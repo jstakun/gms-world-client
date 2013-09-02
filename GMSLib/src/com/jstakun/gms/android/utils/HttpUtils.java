@@ -72,6 +72,7 @@ public class HttpUtils {
     private static final String LNG_HEADER = "X-GMS-Lng";
     private static java.util.Locale locale;
     private static final int RETRY_COUNT = 1;
+    private int responseCode;
 
     private static HttpClient getHttpClient() {
         if (httpClient == null) {
@@ -112,7 +113,6 @@ public class HttpUtils {
     private void sendPostRequest(String url, List<NameValuePair> params, boolean auth, int retryCount) {
 
         InputStream is = null;
-        int responseCode = -1;
         boolean needRetry = false;
 
         if (locale == null) {
@@ -201,12 +201,7 @@ public class HttpUtils {
     public void uploadFile(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
         getThreadSafeClientConnManagerStats();
         InputStream is = null;
-        int responseCode;
-
-        //if (locale == null) {
-        //    locale = ConfigurationManager.getInstance().getCurrentLocale();
-        //}
-
+        
         try {
             // Open an HTTP Connection object
             if (postRequest == null) {
@@ -314,7 +309,7 @@ public class HttpUtils {
 
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
 
-            int responseCode = httpResponse.getStatusLine().getStatusCode();
+            responseCode = httpResponse.getStatusLine().getStatusCode();
 
             if (responseCode == HttpStatus.SC_OK) {
                 HttpEntity entity = httpResponse.getEntity();
@@ -418,7 +413,7 @@ public class HttpUtils {
 
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
 
-            int responseCode = httpResponse.getStatusLine().getStatusCode();
+            responseCode = httpResponse.getStatusLine().getStatusCode();
 
             if (responseCode == HttpStatus.SC_OK) {
                 HttpEntity entity = httpResponse.getEntity();
@@ -594,6 +589,10 @@ public class HttpUtils {
 
     public String getResponseCodeErrorMessage() {
         return errorMessage;
+    }
+    
+    public int getResponseCode() {
+    	return responseCode;
     }
 
     public static String handleHttpException(Exception e) {

@@ -19,9 +19,46 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author jstakun
  */
-public class FbCheckinsReader extends FbPlacesReader {
+public class FbCheckinsReader extends AbstractSerialReader {
 
-    @Override
+	@Override
+	protected String readLayer(List<ExtendedLandmark> landmarks,
+			double latitude, double longitude, int zoom, int width, int height,
+			String layer, GMSAsyncTask<?, ?, ?> task) {
+		
+		String response = null;
+
+        try {
+            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
+
+                int dist = radius;
+                if (dist > 6371) {
+                    dist = 6371;
+                }
+
+                String queryString = "lat=" + coords[0] + "&lng=" + coords[1] + "&distance="
+                        + dist + "&limit=" + limit + "&display=" + display + "&version=2&format=bin";
+
+                ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
+                String token = fbUtils.getAccessToken().getToken();
+                if (token != null) {
+                	queryString += "&token=" + URLEncoder.encode(token, "UTF-8");
+
+                	String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbCheckins?" + queryString;
+                	response = parser.parse(url, landmarks, task, true);
+
+                } else {
+                	LoggerUtils.error("FbCheckinsReader.readLayer() exception: token is null");
+                }
+            }
+        } catch (Exception e) {
+            LoggerUtils.error("FbCheckinsReader.readLayer() exception: ", e);
+        } 
+
+        return response;
+	}
+
+    /*@Override
     public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
 
         String url, response = null;
@@ -60,5 +97,5 @@ public class FbCheckinsReader extends FbPlacesReader {
         }
 
         return response;
-    }
+    }*/
 }
