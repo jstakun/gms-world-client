@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -27,7 +29,7 @@ public class SerialParser {
         }
     }
 	
-    public String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close) {
+    public String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) {
         
         String errorMessage = null;
         
@@ -47,8 +49,8 @@ public class SerialParser {
             LoggerUtils.error("SerialParser.parse() exception: ", ex);
         } finally {
         	int responseCode = utils.getResponseCode();
-        	if (responseCode == 401) {
-        		//TODO logout from layer
+        	if (responseCode == 401 && socialService != null) {
+        		OAuthServiceFactory.getSocialUtils(socialService).logout();
         	}
             errorMessage = utils.getResponseCodeErrorMessage();
             if (close) {

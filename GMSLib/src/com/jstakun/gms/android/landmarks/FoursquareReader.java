@@ -4,6 +4,7 @@
  */
 package com.jstakun.gms.android.landmarks;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 
@@ -42,6 +43,6 @@ public class FoursquareReader extends AbstractSerialReader {
 		String l = Locale.getDefault().getLanguage();
         String url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareProvider?lat=" + coords[0] + "&lng=" + coords[1]
                 + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&version=3&format=bin";
-		return parser.parse(url, landmarks, task, true);
+		return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
 	}
 }

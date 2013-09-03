@@ -42,7 +42,7 @@ public class FbPhotosReader extends AbstractSerialReader {
                 	queryString += "&token=" + URLEncoder.encode(token, "UTF-8");
 
                 	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbPhotos?" + queryString;
-                	response = parser.parse(url, landmarks, task, true);
+                	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK);
 
                 } else {
                 	LoggerUtils.error("FbPhotosReader.readLayer() exception: token is null");
