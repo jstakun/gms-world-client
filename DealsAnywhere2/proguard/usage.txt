@@ -1459,8 +1459,6 @@ com.google.common.base.Predicates:
     265:265:public static com.google.common.base.Predicate contains(java.util.regex.Pattern)
     610:610:private static varargs java.util.List defensiveCopy(java.lang.Object[])
     614:618:static java.util.List defensiveCopy(java.lang.Iterable)
-com.google.common.base.Predicates$AndPredicate:
-    private static final long serialVersionUID
 com.google.common.base.Predicates$AssignableFromPredicate
 com.google.common.base.Predicates$CompositionPredicate
 com.google.common.base.Predicates$ContainsPatternPredicate
@@ -2070,10 +2068,6 @@ com.google.common.collect.Lists$ReverseList
 com.google.common.collect.Lists$ReverseList$1
 com.google.common.collect.Lists$StringAsImmutableList
 com.google.common.collect.Lists$StringAsImmutableList$1
-com.google.common.collect.Lists$TransformingRandomAccessList:
-    private static final long serialVersionUID
-com.google.common.collect.Lists$TransformingSequentialList:
-    private static final long serialVersionUID
 com.google.common.collect.Lists$TwoPlusArrayList
 com.google.common.collect.MapConstraint
 com.google.common.collect.MapConstraints
@@ -2812,7 +2806,6 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String AUTO_CHECKIN_REPEAT_TIME
     public static final java.lang.String GMS_AUTH_STATUS
     public static final java.lang.String SCREEN_SIZE
-    public static final java.lang.String USER_EMAIL
     public static final java.lang.String MAP_CENTER
     public static final java.lang.String AUTO_CHECKIN
     public static final java.lang.String MIN_CHECKIN_DISTANCE
@@ -2850,9 +2843,8 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final int FUZZY_SEARCH
     public static final java.lang.String GMS_USERNAME
     public static final java.lang.String GMS_PASSWORD
+    public static final java.lang.String GMS_NAME
     public static final java.lang.String FB_AUTH_STATUS
-    public static final java.lang.String FB_AUTH_KEY
-    public static final java.lang.String FB_AUTH_SECRET_KEY
     public static final java.lang.String FB_SEND_STATUS
     public static final java.lang.String FB_USERNAME
     public static final java.lang.String FB_GENDER
@@ -2860,36 +2852,30 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String FB_NAME
     public static final java.lang.String FB_EXPIRES_IN
     public static final java.lang.String TWEET_AUTH_STATUS
-    public static final java.lang.String TWEET_AUTH_KEY
-    public static final java.lang.String TWEET_AUTH_SECRET_KEY
     public static final java.lang.String TWEET_SEND_STATUS
     public static final java.lang.String TWEET_USERNAME
     public static final java.lang.String TWEET_NAME
     public static final java.lang.String LN_AUTH_STATUS
-    public static final java.lang.String LN_AUTH_KEY
-    public static final java.lang.String LN_AUTH_SECRET_KEY
     public static final java.lang.String LN_SEND_STATUS
     public static final java.lang.String LN_USERNAME
     public static final java.lang.String LN_NAME
     public static final java.lang.String LN_EXPIRES_IN
     public static final java.lang.String FS_AUTH_STATUS
-    public static final java.lang.String FS_AUTH_KEY
-    public static final java.lang.String FS_AUTH_SECRET_KEY
     public static final java.lang.String FS_USERNAME
     public static final java.lang.String FS_NAME
     public static final java.lang.String FS_SEND_STATUS
     public static final java.lang.String GL_AUTH_STATUS
-    public static final java.lang.String GL_AUTH_KEY
-    public static final java.lang.String GL_REFRESH_TOKEN
     public static final java.lang.String GL_EXPIRES_IN
-    public static final java.lang.String GL_AUTH_SECRET_KEY
     public static final java.lang.String GL_SEND_STATUS
     public static final java.lang.String GL_USERNAME
     public static final java.lang.String GL_NAME
     public static final java.lang.String GL_GENDER
     public static final java.lang.String GL_BIRTHDAY
-    262:262:public java.util.Map getConfiguration()
-    463:466:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
+    public static final java.lang.String USER_EMAIL
+    255:255:public java.util.Map getConfiguration()
+    456:459:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
+com.jstakun.gms.android.config.ConfigurationManager$UserManager:
+    732:732:public boolean isUserLoggedInFully()
 com.jstakun.gms.android.data.AndroidPersistenceManager:
     private static final java.lang.String CONFIGURATION_FILE
     private static final java.lang.String MAP_FILE
@@ -3053,7 +3039,7 @@ com.jstakun.gms.android.deals.Category:
 com.jstakun.gms.android.deals.CategoryJsonParser:
     22:22:public CategoryJsonParser()
 com.jstakun.gms.android.deals.Deal:
-    104:105:public void setIsDealOfTheDay(boolean)
+    110:111:public void setIsDealOfTheDay(boolean)
 com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay:
     public static final int SHOW_LANDMARK_DETAILS
     41:45:public GoogleLandmarkOverlay(com.jstakun.gms.android.landmarks.LandmarkManager,android.os.Handler,java.lang.String[])
@@ -3132,6 +3118,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int Layer_Groupon_desc
     public static final int Layer_Hotels_Combined_desc
     public static final int Layer_Hotwire_desc
+    public static final int Layer_Instagram_desc
     public static final int Layer_LastFM_desc
     public static final int Layer_Loaded
     public static final int Layer_Loading
@@ -3428,7 +3415,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int yesButton
     public static final int zoomin
     public static final int zoomout
-    395:395:public R$string()
+    396:396:public R$string()
 com.jstakun.gms.android.google.maps.R$style
 com.jstakun.gms.android.google.maps.R$styleable
 com.jstakun.gms.android.google.maps.R$xml
@@ -3436,11 +3423,13 @@ com.jstakun.gms.android.landmarks.AbstractJsonReader:
     private static final int DEFAULT_LIMIT
     private static final int DEFAULT_DEAL_LIMIT
     public abstract java.lang.String readRemoteLayer(java.util.List,double,double,int,int,int,java.lang.String,com.jstakun.gms.android.utils.GMSAsyncTask)
+com.jstakun.gms.android.landmarks.AbstractSerialReader:
+    private static final int DEFAULT_LIMIT
+    private static final int DEFAULT_DEAL_LIMIT
 com.jstakun.gms.android.landmarks.ExtendedLandmark:
-    101:102:public void setAddress(android.location.Address)
-    123:124:public void setCreationDate(long)
-    140:141:public void setLatitudeE6(int)
-    157:158:public void setLongitudeE6(int)
+    110:111:public void setCreationDate(long)
+    127:128:public void setLatitudeE6(int)
+    144:145:public void setLongitudeE6(int)
 com.jstakun.gms.android.landmarks.HotwireReader
 com.jstakun.gms.android.landmarks.KMLParser:
     private static final java.lang.String KML2_2NSO
@@ -3450,8 +3439,8 @@ com.jstakun.gms.android.landmarks.KMLParser:
 com.jstakun.gms.android.landmarks.LandmarkFactory:
     15:15:public LandmarkFactory()
 com.jstakun.gms.android.landmarks.LandmarkManager:
-    990:991:public void setSelectedLandmark(com.jstakun.gms.android.landmarks.ExtendedLandmark,double)
-    994:994:public boolean hasSelectedLandmark()
+    987:988:public void setSelectedLandmark(com.jstakun.gms.android.landmarks.ExtendedLandmark,double)
+    991:991:public boolean hasSelectedLandmark()
 com.jstakun.gms.android.landmarks.LandmarkPaintManager:
     40:41:protected void addLandmarkToFocusQueue(com.jstakun.gms.android.landmarks.ExtendedLandmark)
     83:83:protected boolean hasSelectedLandmark()
@@ -3480,7 +3469,7 @@ com.jstakun.gms.android.landmarks.LayerManager:
     public static final int LAYER_FILESYSTEM
     public static final int LAYER_ICON_SMALL
     public static final int LAYER_ICON_LARGE
-    298:302:public java.lang.String getLayerDesc(java.lang.String)
+    299:303:public java.lang.String getLayerDesc(java.lang.String)
 com.jstakun.gms.android.landmarks.LayerXMLParser
 com.jstakun.gms.android.landmarks.UpcomingReader
 com.jstakun.gms.android.location.AndroidDevice:
@@ -3543,19 +3532,33 @@ com.jstakun.gms.android.service.AutoCheckinScheduleReceiver:
     private static final long DEFAULT_REPEAT_TIME
 com.jstakun.gms.android.service.AutoCheckinService$GMSBinder:
     53:53:public com.jstakun.gms.android.service.AutoCheckinService getService()
+com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver:
+    private static final long THRITY_MINS
 com.jstakun.gms.android.social.AbstractSocialUtils:
     public abstract boolean initOnTokenPresent(org.json.JSONObject)
     public abstract void storeAccessToken(com.jstakun.gms.android.utils.Token)
-    29:29:public boolean hasAccessToken()
 com.jstakun.gms.android.social.AbstractSocialUtils$SendPostTask
 com.jstakun.gms.android.social.FacebookUtils:
     public static final java.lang.String FB_OAUTH_ERROR
-com.jstakun.gms.android.social.ISocialUtils:
-    public abstract boolean hasAccessToken()
+    private static final java.lang.String FB_AUTH_KEY
+com.jstakun.gms.android.social.FoursquareUtils:
+    private static final java.lang.String FS_AUTH_KEY
+com.jstakun.gms.android.social.GMSUtils:
+    15:15:public GMSUtils()
+com.jstakun.gms.android.social.GoogleUtils:
+    private static final java.lang.String GL_AUTH_KEY
+    private static final java.lang.String GL_REFRESH_TOKEN
+    private static final java.lang.String GL_AUTH_SECRET_KEY
+com.jstakun.gms.android.social.LinkedInUtils:
+    private static final java.lang.String LN_AUTH_KEY
+    private static final java.lang.String LN_AUTH_SECRET_KEY
 com.jstakun.gms.android.social.OAuthServiceFactory:
     public static final java.lang.String CALLBACK_URL
     public static final java.lang.String CALLBACK_ERROR_URL
     14:14:public OAuthServiceFactory()
+com.jstakun.gms.android.social.TwitterUtils:
+    private static final java.lang.String TWEET_AUTH_KEY
+    private static final java.lang.String TWEET_AUTH_SECRET_KEY
 com.jstakun.gms.android.ui.AbstractLandmarkList:
     public static final int ORDER_BY_NAME
     private static final int ORDER_BY_DIST
@@ -3593,14 +3596,14 @@ com.jstakun.gms.android.ui.AlertDialogBuilder:
     public static final java.lang.String OPEN_DIALOG
 com.jstakun.gms.android.ui.AsyncTaskManager:
     public static final int SHOW_ROUTE_MESSAGE
-    74:88:public void cancelTask(java.lang.Integer,boolean)
-    93:99:public void cancelAll()
-    107:108:public void cancelNotification(int)
-    431:438:public void executeClearCacheTask(java.lang.String)
+    75:89:public void cancelTask(java.lang.Integer,boolean)
+    94:100:public void cancelAll()
+    108:109:public void cancelNotification(int)
+    432:439:public void executeClearCacheTask(java.lang.String)
 com.jstakun.gms.android.ui.AsyncTaskManager$ClearCacheTask
 com.jstakun.gms.android.ui.CheckinManager$CheckinCandidatePredicate:
     private static final long ONE_HOUR
-    143:143:private boolean rule1(com.jstakun.gms.android.data.FavouritesDAO)
+    141:141:private boolean rule1(com.jstakun.gms.android.data.FavouritesDAO)
 com.jstakun.gms.android.ui.DealCategoryArrayAdapter$PositionClickListener:
     public static final int LEFT
     public static final int RIGHT
@@ -3654,7 +3657,7 @@ com.jstakun.gms.android.ui.Intents:
     484:497:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
     501:523:public void commentButtonPressedAction()
     526:531:public void saveRouteAction()
-    859:863:public void setRepeatingAlarm(java.lang.Class)
+    852:856:public void setRepeatingAlarm(java.lang.Class)
 com.jstakun.gms.android.ui.LandmarkListActivity:
     public static final java.lang.String LANDMARK
 com.jstakun.gms.android.ui.LayerListActivity:
@@ -3870,7 +3873,7 @@ com.jstakun.gms.android.ui.lib.R$id:
     public static final int showDodCheckbox
     public static final int statusBar
     public static final int validityLabel
-    219:219:public R$id()
+    220:220:public R$id()
 com.jstakun.gms.android.ui.lib.R$layout:
     public static final int adview
     public static final int closing
@@ -3878,14 +3881,14 @@ com.jstakun.gms.android.ui.lib.R$layout:
     public static final int landmarkdetails
     public static final int loading
     public static final int statusbar
-    354:354:public R$layout()
+    355:355:public R$layout()
 com.jstakun.gms.android.ui.lib.R$menu:
-    381:381:public R$menu()
+    382:382:public R$menu()
 com.jstakun.gms.android.ui.lib.R$raw:
     public static final int route_a
     public static final int route_b
     public static final int route_c
-    386:386:public R$raw()
+    387:387:public R$raw()
 com.jstakun.gms.android.ui.lib.R$string:
     public static final int Authn_error
     public static final int Category_Loading_1
@@ -4034,7 +4037,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int validityLabel
     public static final int zoomin
     public static final int zoomout
-    395:395:public R$string()
+    396:396:public R$string()
 com.jstakun.gms.android.ui.lib.R$style
 com.jstakun.gms.android.ui.lib.R$styleable
 com.jstakun.gms.android.ui.lib.R$xml
@@ -4090,7 +4093,7 @@ com.jstakun.gms.android.utils.HttpUtils:
     private static final java.lang.String LNG_HEADER
     private static final int RETRY_COUNT
 com.jstakun.gms.android.utils.HttpUtils$SSLSocketFactoryHelper:
-    570:570:private HttpUtils$SSLSocketFactoryHelper()
+    655:655:private HttpUtils$SSLSocketFactoryHelper()
 com.jstakun.gms.android.utils.LayerPoint:
     private static final int INTERVAL
 com.jstakun.gms.android.utils.Locale:
@@ -4181,59 +4184,28 @@ com.openlapi.AddressInfo:
     public static final int STREET
     public static final int URL
     private static final int NUM_FIELDS
-    public java.lang.String getField(int)
-    public void setField(int,java.lang.String)
-com.openlapi.CategorisedLandmark
 com.openlapi.Coordinates:
     public static final int DD_MM
     public static final int DD_MM_SS
-    public static java.lang.String convert(double,int)
-    private static java.lang.String doubleFormat(double,int,int)
-    private static double tenPow(int)
-    private static java.lang.String cullTrailingZeros(java.lang.String)
-    public static double convert(java.lang.String)
-    private static boolean convertIsValidChar(char)
-    private static java.lang.String[] convertSplit(java.lang.String)
-    private static boolean isEast(double,double)
-    private static boolean isNorth(double,double)
-    public float azimuthTo(com.openlapi.Coordinates)
-    public float distance(com.openlapi.Coordinates)
-    private double arctan(double)
-    private double arctan2(double,double)
-    private float distance2(com.openlapi.Coordinates,boolean)
-    private double square(double)
-com.openlapi.Criteria
-com.openlapi.Landmark:
-    public com.openlapi.AddressInfo getAddressInfo()
-com.openlapi.LandmarkException
-com.openlapi.LandmarkStore
-com.openlapi.Location
-com.openlapi.LocationBackendListener
-com.openlapi.LocationDaemon
-com.openlapi.LocationDaemon$1
-com.openlapi.LocationDaemon$FirstValidLocation
-com.openlapi.LocationException
-com.openlapi.LocationListener
-com.openlapi.LocationProvider
-com.openlapi.LocationProviderBTGPS
-com.openlapi.LocationProviderBTGPS$1
-com.openlapi.LocationProviderBTGPS$2
-com.openlapi.LocationProviderKML
-com.openlapi.LocationProviderKML$TrailDaemon
-com.openlapi.LocationProviderLMS
-com.openlapi.LocationProviderLMS$RandomLocationDaemon
-com.openlapi.LocationProviderNMEA
-com.openlapi.LocationProviderNMEA$1
-com.openlapi.LocationProviderNMEA$NMEAReader
-com.openlapi.LocationProviderSimplified
-com.openlapi.NMEADaemon
-com.openlapi.NMEADaemon$ValidStreamCallback
+    73:95:public static java.lang.String convert(double,int)
+    101:121:private static java.lang.String doubleFormat(double,int,int)
+    125:129:private static double tenPow(int)
+    133:141:private static java.lang.String cullTrailingZeros(java.lang.String)
+    205:299:public static double convert(java.lang.String)
+    310:313:private static boolean convertIsValidChar(char)
+    324:348:private static java.lang.String[] convertSplit(java.lang.String)
+    358:363:private static boolean isEast(double,double)
+    373:378:private static boolean isNorth(double,double)
+    448:448:public float azimuthTo(com.openlapi.Coordinates)
+    464:464:public float distance(com.openlapi.Coordinates)
+    560:588:private double arctan(double)
+    606:633:private double arctan2(double,double)
+    655:801:private float distance2(com.openlapi.Coordinates,boolean)
+    812:812:private double square(double)
 com.openlapi.OpenLAPICommon
-com.openlapi.Orientation
-com.openlapi.ProximityListener
 com.openlapi.QualifiedCoordinates:
-    public float getHorizontalAccuracy()
-    public float getVerticalAccuracy()
+    87:87:public float getHorizontalAccuracy()
+    98:98:public float getVerticalAccuracy()
 com.skyhookwireless._sdka
 com.skyhookwireless._sdkab
 com.skyhookwireless._sdkac
@@ -4678,7 +4650,6 @@ javax.measure.Measurable:
     public abstract long longValue(javax.measure.unit.Unit)
     public abstract float floatValue(javax.measure.unit.Unit)
 javax.measure.Measure:
-    private static final long serialVersionUID
     184:184:public long round(javax.measure.unit.Unit)
     197:197:public javax.measure.Measure toSI()
     214:217:public javax.measure.Measure to(javax.measure.unit.Unit)
@@ -4692,43 +4663,16 @@ javax.measure.Measure:
     407:407:public static javax.measure.Measure valueOf(java.lang.CharSequence)
     420:420:public static javax.measure.Measure valueOf(int,javax.measure.unit.Unit)
     529:529:public static javax.measure.Measure valueOf(float,javax.measure.unit.Unit)
-javax.measure.Measure$DecimalMeasure:
-    private static final long serialVersionUID
-javax.measure.Measure$DoubleMeasure:
-    private static final long serialVersionUID
 javax.measure.Measure$FloatMeasure
 javax.measure.Measure$IntegerMeasure
 javax.measure.Measure$LongMeasure:
-    private static final long serialVersionUID
     502:502:public long longValue(javax.measure.unit.Unit)
 javax.measure.MeasureFormat:
-    private static final long serialVersionUID
     133:133:public static javax.measure.MeasureFormat getInstance()
     267:269:public final java.lang.StringBuilder format(javax.measure.Measure,java.lang.StringBuilder)
-javax.measure.MeasureFormat$NumberSpaceUnit:
-    private static final long serialVersionUID
-javax.measure.MeasureFormat$Standard:
-    private static final long serialVersionUID
-javax.measure.converter.AddConverter:
-    private static final long serialVersionUID
 javax.measure.converter.ConversionException:
-    private static final long serialVersionUID
     123:124:public ConversionException(java.lang.String,java.lang.Throwable)
     132:133:public ConversionException(java.lang.Throwable)
-javax.measure.converter.ExpConverter:
-    private static final long serialVersionUID
-javax.measure.converter.LogConverter:
-    private static final long serialVersionUID
-javax.measure.converter.MultiplyConverter:
-    private static final long serialVersionUID
-javax.measure.converter.RationalConverter:
-    private static final long serialVersionUID
-javax.measure.converter.UnitConverter:
-    private static final long serialVersionUID
-javax.measure.converter.UnitConverter$CompoundImpl:
-    private static final long serialVersionUID
-javax.measure.converter.UnitConverter$Identity:
-    private static final long serialVersionUID
 javax.measure.quantity.Acceleration
 javax.measure.quantity.Action
 javax.measure.quantity.AmountOfSubstance
@@ -4772,18 +4716,8 @@ javax.measure.quantity.VolumetricDensity
 javax.measure.quantity.VolumetricFlowRate
 javax.measure.quantity.Wavenumber
 javax.measure.unit.AlternateUnit:
-    private static final long serialVersionUID
     157:157:public final javax.measure.unit.Unit getParent()
-javax.measure.unit.AnnotatedUnit:
-    private static final long serialVersionUID
-javax.measure.unit.BaseUnit:
-    private static final long serialVersionUID
-javax.measure.unit.CompoundUnit:
-    private static final long serialVersionUID
-javax.measure.unit.DerivedUnit:
-    private static final long serialVersionUID
 javax.measure.unit.Dimension:
-    private static final long serialVersionUID
     196:196:public final javax.measure.unit.Dimension divide(javax.measure.unit.Dimension)
     226:226:public int getDimensionCount()
     238:239:public javax.measure.unit.Dimension getDimension(int)
@@ -4804,10 +4738,7 @@ javax.measure.unit.NonSI:
 javax.measure.unit.NonSI$BinaryPrefix
 javax.measure.unit.NonSI$IndianPrefix
 javax.measure.unit.ProductUnit:
-    private static final long serialVersionUID
     292:301:static javax.measure.unit.Unit getPowInstance(javax.measure.unit.Unit,int)
-javax.measure.unit.ProductUnit$Element:
-    private static final long serialVersionUID
 javax.measure.unit.SI:
     128:128:public static final javax.measure.unit.SI getInstance()
     467:467:public java.util.Set getUnits()
@@ -4830,23 +4761,18 @@ javax.measure.unit.SI$MetricPrefix:
     716:716:public static javax.measure.unit.Unit YOCTO(javax.measure.unit.Unit)
 javax.measure.unit.SystemOfUnits:
     public abstract java.util.Set getUnits()
-javax.measure.unit.TransformedUnit:
-    private static final long serialVersionUID
 javax.measure.unit.UCUM:
     117:117:public static javax.measure.unit.UCUM getInstance()
     142:142:public java.util.Set getUnits()
 javax.measure.unit.Unit:
-    private static final long serialVersionUID
     228:228:public final boolean isCompatible(javax.measure.unit.Unit)
     586:586:public static javax.measure.unit.Unit valueOf(java.lang.CharSequence)
     618:618:public java.lang.String toStringLocale()
 javax.measure.unit.UnitFormat:
-    private static final long serialVersionUID
     public abstract javax.measure.unit.UnitFormat$SymbolMap getSymbolMap()
     219:221:public final java.lang.StringBuilder format(javax.measure.unit.Unit,java.lang.StringBuilder)
 javax.measure.unit.UnitFormat$SymbolMap
 javax.measure.unit.format.LocalFormat:
-    private static final long serialVersionUID
     private static final char MIDDLE_DOT
     private static final int ADDITION_PRECEDENCE
     private static final int PRODUCT_PRECEDENCE
@@ -4856,7 +4782,6 @@ javax.measure.unit.format.LocalFormat:
     262:262:public javax.measure.unit.format.SymbolMapImpl getSymbolMap()
     184:184:public bridge synthetic javax.measure.unit.UnitFormat$SymbolMap getSymbolMap()
 javax.measure.unit.format.ParseException:
-    private static final long serialVersionUID
     140:141:public ParseException(java.lang.String)
 javax.measure.unit.format.SimpleCharStream:
     public static final boolean staticFlag
@@ -4886,19 +4811,16 @@ javax.measure.unit.format.SymbolMapImpl:
     204:206:public java.lang.String getPrefix(javax.measure.converter.UnitConverter)
     211:213:public javax.measure.converter.UnitConverter getConverter(java.lang.String)
 javax.measure.unit.format.Token:
-    private static final long serialVersionUID
     public javax.measure.unit.format.Token specialToken
     152:152:public java.lang.Object getValue()
     165:166:public Token(int)
     207:207:public static javax.measure.unit.format.Token newToken(int)
 javax.measure.unit.format.TokenMgrError:
-    private static final long serialVersionUID
     static final int LEXICAL_ERROR
     static final int STATIC_LEXER_ERROR
     static final int INVALID_LEXICAL_STATE
     static final int LOOP_DETECTED
 javax.measure.unit.format.UCUMFormat:
-    private static final long serialVersionUID
     137:137:public static javax.measure.unit.format.UCUMFormat getPrintInstance()
     142:142:public static javax.measure.unit.format.UCUMFormat getPrintInstance(javax.measure.unit.format.SymbolMapImpl)
     158:158:public static javax.measure.unit.format.UCUMFormat getCaseSensitiveInstance(javax.measure.unit.format.SymbolMapImpl)
@@ -4907,7 +4829,6 @@ javax.measure.unit.format.UCUMFormat:
     195:195:public javax.measure.unit.format.SymbolMapImpl getSymbolMap()
     123:123:public bridge synthetic javax.measure.unit.UnitFormat$SymbolMap getSymbolMap()
 javax.measure.unit.format.UCUMFormat$Parsing:
-    private static final long serialVersionUID
     419:419:public bridge synthetic javax.measure.unit.UnitFormat$SymbolMap getSymbolMap()
     419:419:static synthetic javax.measure.unit.format.UCUMFormat$Parsing access$200()
 javax.measure.unit.format.UCUMFormat$Print
@@ -4922,8 +4843,6 @@ javax.measure.unit.format.UCUMParser:
     467:472:public final javax.measure.unit.format.Token getToken(int)
     549:549:public final void enable_tracing()
     553:553:public final void disable_tracing()
-javax.measure.unit.format.UCUMParser$LookaheadSuccess:
-    private static final long serialVersionUID
 javax.measure.unit.format.UCUMParserConstants:
     public static final int EOF
     public static final int ATOM_CHAR
@@ -4991,22 +4910,6 @@ javax.measure.unit.format.UnitParserTokenManager:
     412:416:public void ReInit(javax.measure.unit.format.SimpleCharStream)
     428:430:public void ReInit(javax.measure.unit.format.SimpleCharStream,int)
     435:439:public void SwitchTo(int)
-javax.microedition.location.AddressInfo
-javax.microedition.location.Coordinates
-javax.microedition.location.Criteria
-javax.microedition.location.Landmark
-javax.microedition.location.LandmarkException
-javax.microedition.location.LandmarkStore
-javax.microedition.location.Location
-javax.microedition.location.LocationException
-javax.microedition.location.LocationListener
-javax.microedition.location.LocationProvider
-javax.microedition.location.LocationProvider$OpenLAPIWrappedLocationListener
-javax.microedition.location.LocationProvider$OpenLAPIWrappedProximityListener
-javax.microedition.location.LocationProvider$OpenLAPIWrapperProvider
-javax.microedition.location.Orientation
-javax.microedition.location.ProximityListener
-javax.microedition.location.QualifiedCoordinates
 microsoft.mappoint.TileSystem:
     private static final double EarthRadius
     private static final double MinLatitude
@@ -5335,8 +5238,6 @@ org.acra.ACRAConfiguration:
     514:515:public void setDisableSSLCertValidation(boolean)
     523:524:public void setHttpMethod(org.acra.sender.HttpSender$Method)
     533:534:public void setReportType(org.acra.sender.HttpSender$Type)
-org.acra.ACRAConfigurationException:
-    private static final long serialVersionUID
 org.acra.ACRAConstants:
     public static final java.lang.String REPORTFILE_EXTENSION
     static final java.lang.String APPROVED_SUFFIX
@@ -5406,8 +5307,6 @@ org.acra.collector.ConfigurationCollector:
     private static final java.lang.String PREFIX_KEYBOARD
     private static final java.lang.String PREFIX_HARDKEYBOARDHIDDEN
     42:42:public ConfigurationCollector()
-org.acra.collector.CrashReportData:
-    private static final long serialVersionUID
 org.acra.collector.CrashReportDataFactory:
     127:127:public java.lang.String putCustomData(java.lang.String,java.lang.String)
     138:138:public java.lang.String removeCustomData(java.lang.String)
@@ -5472,8 +5371,6 @@ org.acra.util.Installation:
     29:29:public Installation()
 org.acra.util.JSONReportBuilder:
     17:17:public JSONReportBuilder()
-org.acra.util.JSONReportBuilder$JSONReportException:
-    private static final long serialVersionUID
 org.acra.util.ReportUtils:
     24:24:public ReportUtils()
     86:105:public static java.lang.String sparseArrayToString(android.util.SparseArray)
@@ -5729,9 +5626,6 @@ org.apache.commons.lang.ObjectUtils:
     362:369:public static int compare(java.lang.Comparable,java.lang.Comparable,boolean)
     381:412:public static java.lang.Object clone(java.lang.Object)
     429:430:public static java.lang.Object cloneIfPossible(java.lang.Object)
-org.apache.commons.lang.ObjectUtils$Null:
-    private static final long serialVersionUID
-    470:470:private java.lang.Object readResolve()
 org.apache.commons.lang.RandomStringUtils
 org.apache.commons.lang.SerializationException
 org.apache.commons.lang.SerializationUtils
@@ -6601,7 +6495,6 @@ org.osmdroid.contributor.OSMUploader
 org.osmdroid.contributor.OSMUploader$1
 org.osmdroid.contributor.RouteRecorder
 org.osmdroid.contributor.util.RecordedGeoPoint:
-    private static final long serialVersionUID
     protected final long mTimeStamp
     protected final int mNumSatellites
     32:33:public RecordedGeoPoint(int,int)
@@ -6629,7 +6522,6 @@ org.osmdroid.tileprovider.ExpirableBitmapDrawable:
 org.osmdroid.tileprovider.IMapTileProviderCallback:
     public abstract boolean useDataConnection()
 org.osmdroid.tileprovider.LRUMapTileCache:
-    private static final long serialVersionUID
     86:87:public void setTileRemovedListener(org.osmdroid.tileprovider.LRUMapTileCache$TileRemovedListener)
 org.osmdroid.tileprovider.MapTile:
     public static final int MAPTILE_SUCCESS_ID
@@ -6694,10 +6586,7 @@ org.osmdroid.tileprovider.modules.MapTileFilesystemProvider:
 org.osmdroid.tileprovider.modules.MapTileModuleProviderBase:
     protected abstract java.lang.String getName()
     public abstract void setTileSource(org.osmdroid.tileprovider.tilesource.ITileSource)
-org.osmdroid.tileprovider.modules.MapTileModuleProviderBase$1:
-    private static final long serialVersionUID
 org.osmdroid.tileprovider.modules.MapTileModuleProviderBase$CantContinueException:
-    private static final long serialVersionUID
     288:290:public MapTileModuleProviderBase$CantContinueException(org.osmdroid.tileprovider.modules.MapTileModuleProviderBase,java.lang.String)
 org.osmdroid.tileprovider.modules.NetworkAvailabliltyCheck:
     33:34:public boolean getWiFiNetworkAvailable()
@@ -6709,7 +6598,6 @@ org.osmdroid.tileprovider.tilesource.BitmapTileSourceBase:
     52:52:public int ordinal()
     85:85:public java.lang.String localizedName(org.osmdroid.ResourceProxy)
 org.osmdroid.tileprovider.tilesource.BitmapTileSourceBase$LowMemoryException:
-    private static final long serialVersionUID
     145:147:public BitmapTileSourceBase$LowMemoryException(org.osmdroid.tileprovider.tilesource.BitmapTileSourceBase,java.lang.String)
 org.osmdroid.tileprovider.tilesource.CloudmadeTileSource:
     44:45:public void setStyle(java.lang.Integer)
@@ -6736,7 +6624,6 @@ org.osmdroid.tileprovider.util.CloudmadeUtil:
 org.osmdroid.tileprovider.util.StreamUtils:
     public static final int IO_BUFFER_SIZE
 org.osmdroid.util.BoundingBoxE6:
-    static final long serialVersionUID
     50:55:public BoundingBoxE6(double,double,double,double)
     65:65:public org.osmdroid.util.GeoPoint getCenter()
     70:70:public int getDiagonalLengthInMeters()
@@ -6769,7 +6656,6 @@ org.osmdroid.util.GEMFFile:
     533:534:public void acceptAnySource()
     540:546:public java.util.Set getZoomLevels()
 org.osmdroid.util.GeoPoint:
-    static final long serialVersionUID
     45:49:public GeoPoint(int,int,int)
     51:54:public GeoPoint(double,double)
     56:60:public GeoPoint(double,double,double)
@@ -7207,7 +7093,6 @@ org.slf4j.helpers.MessageFormatter:
     87:87:public MessageFormatter()
     114:114:public static final java.lang.String format(java.lang.String,java.lang.Object)
 org.slf4j.helpers.NOPLogger:
-    private static final long serialVersionUID
     73:73:public final boolean isTraceEnabled()
     79:79:public final void trace(java.lang.String)
     84:84:public final void trace(java.lang.String,java.lang.Object)
@@ -7231,12 +7116,9 @@ org.slf4j.helpers.NOPLogger:
     221:221:public final void error(java.lang.String,java.lang.Object)
     231:231:public final void error(java.lang.String,java.lang.Object[])
 org.slf4j.helpers.NOPMakerAdapter
-org.slf4j.helpers.NamedLoggerBase:
-    41:41:protected java.lang.Object readResolve()
 org.slf4j.helpers.Util:
     34:34:public Util()
 org.slf4j.impl.AndroidLogger:
-    private static final long serialVersionUID
     73:73:public boolean isTraceEnabled()
     79:80:public void trace(java.lang.String)
     85:86:public void trace(java.lang.String,java.lang.Object)
@@ -7316,11 +7198,3 @@ org.xmlpull.v1.XmlPullParserException:
     51:51:public int getColumnNumber()
 org.xmlpull.v1.XmlPullParserFactory
 org.xmlpull.v1.XmlSerializer
-thinktank.j2me.BluetoothDeviceDiscover
-thinktank.j2me.BluetoothDeviceDiscover$1
-thinktank.j2me.BluetoothDeviceDiscover$BluetoothHelper
-thinktank.j2me.BluetoothServiceDiscover
-thinktank.j2me.BluetoothServiceDiscover$1
-thinktank.j2me.BluetoothServiceDiscover$BluetoothHelper
-thinktank.j2me.TTUtils
-thinktank.j2me.TTUtils$ILogger

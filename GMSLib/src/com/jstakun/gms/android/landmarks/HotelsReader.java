@@ -16,10 +16,33 @@ import java.util.Locale;
  *
  * @author jstakun
  */
-public class HotelsReader extends AbstractJsonReader {
+public class HotelsReader extends AbstractSerialReader {
+
+	@Override
+	protected String readLayer(List<ExtendedLandmark> landmarks,
+			double latitude, double longitude, int zoom, int width, int height,
+			String layer, GMSAsyncTask<?, ?, ?> task) {
+		CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
+        if (cm == null || cm.isCategoryEnabled(CategoriesManager.CATEGORY_TRAVEL)) {
+            
+            //if (OsUtil.isIceCreamSandwichOrHigher()) {
+            //    limit = 100;
+            //}
+
+            String l = Locale.getDefault().getLanguage();
+
+            String url = ConfigurationManager.getInstance().getServicesUrl() + "hotelsProvider?"
+                    + "latitudeMin=" + coords[0] + "&longitudeMin=" + coords[1] + "&radius=" + radius
+                    + "&lang=" + l + "&limit=" + limit + "&version=3" + "&display=" + display + "&format=bin";
+
+            return parser.parse(url, landmarks, task, true, null);
+        } else {
+            return null;
+        }
+	}
 
     //private static final String[] prefixes = new String[] {"http://www.hotelscombined.com/Hotel/"};
-    public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
+    /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
         init(latitude, longitude, zoom, width, height);
         CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || cm.isCategoryEnabled(CategoriesManager.CATEGORY_TRAVEL)) {
@@ -38,5 +61,5 @@ public class HotelsReader extends AbstractJsonReader {
         } else {
             return null;
         }
-    }
+    }*/
 }
