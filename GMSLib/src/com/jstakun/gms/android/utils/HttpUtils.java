@@ -4,6 +4,7 @@
  */
 package com.jstakun.gms.android.utils;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -431,12 +432,13 @@ public class HttpUtils {
                     }
 
                     InputStream is = entity.getContent();
-                    
-                    ObjectInputStream ois = new ObjectInputStream(is);
-                    
-                    reply = ois.readObject();
-                    
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    ObjectInputStream ois = new ObjectInputStream(bis);
+                    if (bis.available() > 0) {
+                      reply = ois.readObject();
+                    }
                     ois.close();
+                    bis.close();
                     
                     entity.consumeContent();
                 }
