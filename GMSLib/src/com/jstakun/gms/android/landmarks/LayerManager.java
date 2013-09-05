@@ -278,21 +278,31 @@ public class LayerManager {
 
     public static Bitmap getLayerIcon(String layerName, int type, DisplayMetrics displayMetrics, Handler handler) {
         IconCache imageCache = IconCache.getInstance();
+        Bitmap layerIcon = null;
         try {
             Layer layer = layers.get(layerName);
-            if (type == LAYER_ICON_LARGE && (layer.getLargeIconPath() != null || layer.getLargeIconResource() != -1)) {
+            if (layer != null) {
+              if (type == LAYER_ICON_LARGE && (layer.getLargeIconPath() != null || layer.getLargeIconResource() != -1)) {
                 //layer has large icon
-                return imageCache.getLayerImageResource(layer.getName(), "_large", layer.getLargeIconPath(),
+            	  layerIcon = imageCache.getLayerImageResource(layer.getName(), "_large", layer.getLargeIconPath(),
                         layer.getLargeIconResource(), null, layer.getType(), displayMetrics, handler);
-            } else {
+              } else {
                 //SMALL icon default
-                return imageCache.getLayerImageResource(layer.getName(), "_small", layer.getSmallIconPath(),
+            	  layerIcon = imageCache.getLayerImageResource(layer.getName(), "_small", layer.getSmallIconPath(),
                         layer.getSmallIconResource(), null, layer.getType(), displayMetrics, handler);
-            }
+              }
+            } 
         } catch (Exception e) {
             LoggerUtils.error("LayerManager.getLayerIcon exception", e);
-            return imageCache.getImageResource(null);
         }
+        if (layerIcon == null) {
+        	if (type == LAYER_ICON_SMALL) {
+        		layerIcon = imageCache.getImageResource(IconCache.ICON_MISSING16);
+        	} else {
+        		layerIcon = imageCache.getImageResource(null);
+        	}	
+        }
+        return layerIcon;
     }
 
     public String getLayerDesc(String layerName) {

@@ -40,7 +40,7 @@ import java.util.Map;
 public class IconCache {
 
     private static final String ICON_MISSING32 = "icon-missing32";
-    private static final String ICON_MISSING16 = "icon-missing16";
+    public static final String ICON_MISSING16 = "icon-missing16";
     private static final String LOADING = "loading";
     //public static final String LOADING_ICON = "loading-icon";
     private static final String COMPASS = "compass";
@@ -228,7 +228,7 @@ public class IconCache {
             URL url = new URL(urlString);
             hash = BCTools.getMessageDigest(url.toString());
         } catch (Exception ex) {
-            LoggerUtils.error("IconCache.getThumbnailResource exception", ex);
+            LoggerUtils.error("IconCache.getThumbnailResource() exception for url " + urlString, ex);
         }
 
         Bitmap img = null;
