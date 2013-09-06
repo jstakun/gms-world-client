@@ -38,12 +38,17 @@ public class OsUtil {
      Android 4.1 Jelly Bean (API level 16)
      Android 4.2 Jelly Bean (API level 17)
      */
+	private static final int DONUT = 4;
     private static final int FROYO = 8;
     private static final int GINGERBREAD = 9;
     private static final int HONEYCOMB_3_0 = 11;
     private static final int HONEYCOMB_3_2 = 13;
     private static final int ICE_CREAM_SANDWICH = 14;
 
+    public static boolean isDonutOrHigher() {
+        return getSdkVersion() >= DONUT;
+    }
+    
     public static boolean isFroyoOrHigher() {
         return getSdkVersion() >= FROYO;
     }

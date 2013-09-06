@@ -2966,7 +2966,7 @@ com.jstakun.gms.android.data.FileManager$DeletingTilesTask
 com.jstakun.gms.android.data.FilenameFilterFactory
 com.jstakun.gms.android.data.IconCache:
     private static final java.lang.String ICON_MISSING32
-    private static final java.lang.String ICON_MISSING16
+    public static final java.lang.String ICON_MISSING16
     private static final java.lang.String LOADING
     private static final java.lang.String COMPASS
     private static final java.lang.String DOWNLOAD
@@ -3469,7 +3469,7 @@ com.jstakun.gms.android.landmarks.LayerManager:
     public static final int LAYER_FILESYSTEM
     public static final int LAYER_ICON_SMALL
     public static final int LAYER_ICON_LARGE
-    299:303:public java.lang.String getLayerDesc(java.lang.String)
+    309:313:public java.lang.String getLayerDesc(java.lang.String)
 com.jstakun.gms.android.landmarks.LayerXMLParser
 com.jstakun.gms.android.landmarks.UpcomingReader
 com.jstakun.gms.android.location.AndroidDevice:
@@ -4093,7 +4093,7 @@ com.jstakun.gms.android.utils.HttpUtils:
     private static final java.lang.String LNG_HEADER
     private static final int RETRY_COUNT
 com.jstakun.gms.android.utils.HttpUtils$SSLSocketFactoryHelper:
-    655:655:private HttpUtils$SSLSocketFactoryHelper()
+    657:657:private HttpUtils$SSLSocketFactoryHelper()
 com.jstakun.gms.android.utils.LayerPoint:
     private static final int INTERVAL
 com.jstakun.gms.android.utils.Locale:

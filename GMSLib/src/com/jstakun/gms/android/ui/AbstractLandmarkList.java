@@ -423,7 +423,7 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
 
             return value;
         }
-
+        
         private int getCategoryStats(int cat) {
             int value = 0;
             if (cat > 0) {
@@ -453,7 +453,27 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
         }
 
         private int comp(LandmarkParcelable s0, LandmarkParcelable s1) {
-            if (s0.getRating() > s1.getRating()) {
+        	int r0 = (int) s0.getRating();
+        	int r1 = (int) s1.getRating();
+            if (r0 > r1) {
+                return 1;
+            } else if (r0 == r1) {
+            	int n0 = (int) s0.getNumberOfReviews();
+            	int n1 = (int) s1.getNumberOfReviews();
+                if (n0 > n1) {
+                    return 1;
+                } else if (n0 == n1) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            } else {
+                return -1;
+            }
+        }
+        
+        /*private int comp(LandmarkParcelable s0, LandmarkParcelable s1) {
+        	if (s0.getRating() > s1.getRating()) {
                 return 1;
             } else if (s0.getRating() == s1.getRating()) {
                 if (s0.getNumberOfReviews() > s1.getNumberOfReviews()) {
@@ -466,7 +486,7 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
             } else {
                 return -1;
             }
-        }
+        }*/
     }
 
     private class RevelanceComparator implements Comparator<LandmarkParcelable> {
