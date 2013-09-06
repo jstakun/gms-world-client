@@ -4,7 +4,6 @@
  */
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
@@ -24,17 +23,10 @@ public class HotelsReader extends AbstractSerialReader {
 			String layer, GMSAsyncTask<?, ?, ?> task) {
 		CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || cm.isCategoryEnabled(CategoriesManager.CATEGORY_TRAVEL)) {
-            
-            //if (OsUtil.isIceCreamSandwichOrHigher()) {
-            //    limit = 100;
-            //}
-
             String l = Locale.getDefault().getLanguage();
-
             String url = ConfigurationManager.getInstance().getServicesUrl() + "hotelsProvider?"
                     + "latitudeMin=" + coords[0] + "&longitudeMin=" + coords[1] + "&radius=" + radius
                     + "&lang=" + l + "&limit=" + limit + "&version=3" + "&display=" + display + "&format=bin";
-
             return parser.parse(url, landmarks, task, true, null);
         } else {
             return null;
