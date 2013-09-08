@@ -453,13 +453,13 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
         }
 
         private int comp(LandmarkParcelable s0, LandmarkParcelable s1) {
-        	int r0 = (int) s0.getRating();
-        	int r1 = (int) s1.getRating();
+        	int r0 = s0.getRating();
+        	int r1 = s1.getRating();
             if (r0 > r1) {
                 return 1;
             } else if (r0 == r1) {
-            	int n0 = (int) s0.getNumberOfReviews();
-            	int n1 = (int) s1.getNumberOfReviews();
+            	int n0 = s0.getNumberOfReviews();
+            	int n1 = s1.getNumberOfReviews();
                 if (n0 > n1) {
                     return 1;
                 } else if (n0 == n1) {

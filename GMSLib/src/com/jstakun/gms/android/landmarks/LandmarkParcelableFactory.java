@@ -58,7 +58,7 @@ public class LandmarkParcelableFactory {
             name = StringUtil.formatCommaSeparatedString(name);
         }
 
-        return new LandmarkParcelable(id, name, key, layerName, desc, distance, l.getCreationDate(), l.getCategoryId(), l.getSubCategoryId(), l.getRating(), l.getNumberOfReviews(), l.getThumbnail(), l.getRevelance());
+        return new LandmarkParcelable(id, name, key, layerName, desc, distance, l.getCreationDate(), l.getCategoryId(), l.getSubCategoryId(), (int)l.getRating(), l.getNumberOfReviews(), l.getThumbnail(), l.getRevelance());
     }
 
     public static LandmarkParcelable getLandmarkParcelable(FavouritesDAO f, double lat, double lng) {

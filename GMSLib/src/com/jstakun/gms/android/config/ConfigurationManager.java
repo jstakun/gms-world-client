@@ -351,6 +351,8 @@ public final class ConfigurationManager {
 
     public void setLocation(Location loc) {
         putObject(LOCATION, loc);
+        putDouble(LATITUDE, loc.getLatitude());
+        putDouble(LONGITUDE, loc.getLongitude());
     }
 
     public Location getLocation() {

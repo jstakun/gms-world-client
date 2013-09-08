@@ -83,10 +83,10 @@ public class AndroidDevice implements LocationListener {
 
         if (lastKnownLocation != null) {
             setMyLocation(lastKnownLocation);
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.SET_LAST_KNOWN_LOC_AT_STARTUP) || ConfigurationManager.getInstance().isDefaultCoordinate()) {
-                ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, lastKnownLocation.getLatitude());
-                ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, lastKnownLocation.getLongitude());
-            }
+            //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.SET_LAST_KNOWN_LOC_AT_STARTUP) || ConfigurationManager.getInstance().isDefaultCoordinate()) {
+            //    ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, lastKnownLocation.getLatitude());
+            //    ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, lastKnownLocation.getLongitude());
+            //}
         }
     }
 

@@ -39,7 +39,7 @@ public class SerialParser {
             	//deduplicate
             	List<ExtendedLandmark> received = (List<ExtendedLandmark>)reply;
             	if (landmarks.isEmpty()) {
-            		landmarks.addAll(received);
+            		landmarks.addAll(Collections2.filter(received, new NotNullPredicate()));
             	} else {
             		landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
             	}
@@ -69,7 +69,14 @@ public class SerialParser {
     	}
     	
         public boolean apply(ExtendedLandmark landmark) {
-            return !source.contains(landmark);
+            return (landmark != null && !source.contains(landmark));
+        }
+    }
+    
+    private class NotNullPredicate implements Predicate<ExtendedLandmark> {
+
+    	public boolean apply(ExtendedLandmark landmark) {
+            return (landmark != null);
         }
     }
 }   
