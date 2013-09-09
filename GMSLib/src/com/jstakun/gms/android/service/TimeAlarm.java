@@ -31,7 +31,7 @@ public class TimeAlarm extends BroadcastReceiver {
         CharSequence message = "New version available...";
         Intent view = new Intent(Intent.ACTION_VIEW, Uri.parse(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL)));
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, view, 0);
-        Notification notif = new Notification(R.drawable.icon, message, System.currentTimeMillis());
+        Notification notif = new Notification(R.drawable.globecompass, message, System.currentTimeMillis());
         notif.flags |= Notification.FLAG_AUTO_CANCEL;
         notif.setLatestEventInfo(context, from, message, contentIntent);
         nm.notify(1, notif);

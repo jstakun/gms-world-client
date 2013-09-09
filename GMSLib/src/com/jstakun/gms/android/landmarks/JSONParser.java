@@ -217,7 +217,7 @@ public class JSONParser {
                                 } else if (descr instanceof String) {
                                     String descs = (String) descr;
                                     if (descs.length() > 0) {
-                                        desc = String.format(Locale.getMessage(R.string.description, descs));
+                                        desc = Locale.getMessage(R.string.description, descs);
                                     }
                                 }
                             }

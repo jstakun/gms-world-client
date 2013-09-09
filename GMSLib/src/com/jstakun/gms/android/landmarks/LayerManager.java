@@ -293,7 +293,7 @@ public class LayerManager {
               }
             } 
         } catch (Exception e) {
-            LoggerUtils.error("LayerManager.getLayerIcon exception", e);
+            LoggerUtils.error("LayerManager.getLayerIcon() exception", e);
         }
         if (layerIcon == null) {
         	if (type == LAYER_ICON_SMALL) {

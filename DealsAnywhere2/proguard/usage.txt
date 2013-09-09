@@ -2873,9 +2873,9 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String GL_BIRTHDAY
     public static final java.lang.String USER_EMAIL
     255:255:public java.util.Map getConfiguration()
-    456:459:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
+    458:461:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
 com.jstakun.gms.android.config.ConfigurationManager$UserManager:
-    732:732:public boolean isUserLoggedInFully()
+    734:734:public boolean isUserLoggedInFully()
 com.jstakun.gms.android.data.AndroidPersistenceManager:
     private static final java.lang.String CONFIGURATION_FILE
     private static final java.lang.String MAP_FILE
@@ -4123,20 +4123,22 @@ com.jstakun.gms.android.utils.MessageStack:
     public static final int STATUS_GONE
     public static final int STATUS_VISIBLE
 com.jstakun.gms.android.utils.OsUtil:
+    private static final int DONUT
     private static final int FROYO
     private static final int GINGERBREAD
     private static final int HONEYCOMB_3_0
     private static final int HONEYCOMB_3_2
     private static final int ICE_CREAM_SANDWICH
     22:22:public OsUtil()
-    48:48:public static boolean isFroyoOrHigher()
-    97:109:public static boolean hasSystemSharedLibraryInstalled(android.content.Context,java.lang.String)
-    115:122:public static boolean isGoogleMapActivityInstalled()
-    128:131:public static boolean isGoogleMapsInstalled(android.content.Context)
+    49:49:public static boolean isDonutOrHigher()
+    53:53:public static boolean isFroyoOrHigher()
+    102:114:public static boolean hasSystemSharedLibraryInstalled(android.content.Context,java.lang.String)
+    120:127:public static boolean isGoogleMapActivityInstalled()
+    133:136:public static boolean isGoogleMapsInstalled(android.content.Context)
 com.jstakun.gms.android.utils.OsUtil$BuildVersionHelperInternal:
-    174:174:private OsUtil$BuildVersionHelperInternal()
+    179:179:private OsUtil$BuildVersionHelperInternal()
 com.jstakun.gms.android.utils.OsUtil$DisplayHelperInternal:
-    181:181:private OsUtil$DisplayHelperInternal()
+    186:186:private OsUtil$DisplayHelperInternal()
 com.jstakun.gms.android.utils.OsmMercator
 com.jstakun.gms.android.utils.ServicesUtils:
     16:16:public ServicesUtils()

@@ -137,7 +137,6 @@ public final class R {
 		public static final int ic_menu_refresh = 0x7f020040;
 		public static final int ic_menu_search = 0x7f020041;
 		public static final int ic_menu_star = 0x7f020042;
-		public static final int icon = 0x7f020043;
 		public static final int image_missing16 = 0x7f020044;
 		public static final int image_missing32 = 0x7f020045;
 		public static final int instagram_16 = 0x7f020046;

@@ -617,7 +617,7 @@ public final class Intents {
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, Locale.getMessage(R.string.app_name));
 
-        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(activity, R.drawable.icon);
+        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(activity, R.drawable.globecompass);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
 
         activity.setResult(Activity.RESULT_OK, intent);
@@ -870,15 +870,17 @@ public final class Intents {
                     JSONObject json = new JSONObject(resp);
                     int version = Integer.valueOf(json.optString("value", "0"));
                     PackageInfo info = ConfigurationManager.getAppUtils().getPackageInfo();
-                    int versionCode = info.versionCode;
-                    if (version > versionCode) {
-                        response = true;
+                    if (info != null) {
+                    	int versionCode = info.versionCode;
+                    	if (version > versionCode) {
+                    		response = true;
+                    	}
+                    	LoggerUtils.debug("Current version: " + versionCode + ", server version " + version);
                     }
-                    LoggerUtils.debug("Current version: " + versionCode + ", server version " + version);
                 }
             }
         } catch (Exception ex) {
-            LoggerUtils.error("Intents.isNewerVersionAvailable exception", ex);
+            LoggerUtils.error("Intents.isNewerVersionAvailable() exception:", ex);
         } finally {
             try {
                 if (utils != null) {

@@ -11,7 +11,7 @@
                 android:angle="270" />
             <stroke
                 android:width="3dp"
-                color="@color/white" />
+                android:color="@color/white" />
         </shape>
     </item>
 
@@ -24,7 +24,7 @@
                 android:angle="270" />
             <stroke
                 android:width="3dp"
-                color="@color/yellow" />
+                android:color="@color/yellow" />
         </shape>
     </item>
 
@@ -37,7 +37,7 @@
                 android:angle="270" />
             <stroke
                 android:width="3dp"
-                color="@color/red" />
+                android:color="@color/red" />
         </shape>
     </item>
 </selector>

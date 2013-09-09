@@ -434,8 +434,11 @@ public class HttpUtils {
                     InputStream is = entity.getContent();
                     BufferedInputStream bis = new BufferedInputStream(is);
                     ObjectInputStream ois = new ObjectInputStream(bis);
-                    if (bis.available() > 0) {
+                    int available = bis.available();
+                    if (available > 0) {
                       reply = ois.readObject();
+                      increaseCounter(0, available);
+                      LoggerUtils.debug("File " + url + " size: " + available + " bytes");//, Compressed = " + compressed);
                     }
                     ois.close();
                     bis.close();

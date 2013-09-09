@@ -41,7 +41,6 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         this.context = context;
         this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         this.routesManager = ConfigurationManager.getInstance().getRoutesManager();
-        //intents = new Intents(context, landmarkManager);
     }
 
     @Override
