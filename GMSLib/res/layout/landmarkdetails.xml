@@ -28,7 +28,7 @@ android:gravity="center"
 style="@android:style/TextAppearance.Large"
 android:textColor="#d3d3d3"/>
     </RelativeLayout>
-    <LinearLayout
+    <!--LinearLayout
  android:layout_width="wrap_content"
  android:layout_height="wrap_content"
  android:layout_marginTop="10dip"
@@ -48,7 +48,19 @@ android:layout_height="wrap_content"
 android:layout_gravity="center_vertical"
 style="@android:style/TextAppearance.Small"
 android:textColor="#fffafa"/>
-    </LinearLayout>
+    </LinearLayout-->
+        <TextView
+ android:id="@+id/lvname"
+ android:layout_width="wrap_content"
+ android:layout_height="wrap_content"
+ android:layout_marginTop="10dip"
+ android:layout_marginBottom="5dip"
+ android:layout_gravity="center_vertical"
+ style="@android:style/TextAppearance.Small"
+ android:textColor="#fffafa"
+ android:gravity="left"
+ android:drawablePadding="5dip"
+ android:drawableLeft="@drawable/image_missing16"/>
     <ScrollView
 android:layout_width="fill_parent"
 android:layout_height="fill_parent"

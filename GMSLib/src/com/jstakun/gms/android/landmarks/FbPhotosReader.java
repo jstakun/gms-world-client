@@ -4,16 +4,15 @@
  */
 package com.jstakun.gms.android.landmarks;
 
+import java.net.URLEncoder;
+import java.util.List;
+
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.social.FacebookUtils;
 import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import java.net.URLEncoder;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *

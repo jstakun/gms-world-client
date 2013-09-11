@@ -11,7 +11,6 @@ import android.content.pm.ResolveInfo;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.jstakun.gms.android.ui.lib.R;
 import java.util.List;
@@ -31,15 +30,11 @@ public class IntentArrayAdapter extends ArrayAdapter<ResolveInfo> {
     }
 
     @Override
-    public View getView(int position, View convertView,
-                          ViewGroup parent) {
-
+    public View getView(int position, View convertView, ViewGroup parent) {
       if (convertView == null) {
         convertView = newView(parent);
       }
-
       bindView(position, convertView);
-
       return(convertView);
     }
 
@@ -49,11 +44,10 @@ public class IntentArrayAdapter extends ArrayAdapter<ResolveInfo> {
 
     private void bindView(int position, View row) {
       TextView label=(TextView)row.findViewById(R.id.intentLabel);
-
       label.setText(getItem(position).loadLabel(pm));
-
-      ImageView icon=(ImageView)row.findViewById(R.id.intentIcon);
-
-      icon.setImageDrawable(getItem(position).loadIcon(pm));
+      //ImageView icon=(ImageView)row.findViewById(R.id.intentIcon);
+      //icon.setImageDrawable(getItem(position).loadIcon(pm));
+      //label.setCompoundDrawables(getItem(position).loadIcon(pm), null, null, null);
+      label.setCompoundDrawablesWithIntrinsicBounds(getItem(position).loadIcon(pm), null, null, null);
     }
   }

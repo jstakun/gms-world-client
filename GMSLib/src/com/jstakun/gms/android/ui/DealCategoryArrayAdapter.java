@@ -4,17 +4,18 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.util.List;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.jstakun.gms.android.deals.Category;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import java.util.List;
 
 /**
  *
@@ -43,7 +44,7 @@ public class DealCategoryArrayAdapter extends ArrayAdapter<String> {
             holder.detailText = (TextView) rowView.findViewById(R.id.categoryDetailsHeader);
             holder.listButton = rowView.findViewById(R.id.categoryListButton);
             holder.separator = rowView.findViewById(R.id.categorySeparator);
-            holder.categoryImage = (ImageView) rowView.findViewById(R.id.categoryIcon);
+            //holder.categoryImage = (ImageView) rowView.findViewById(R.id.categoryIcon);
 
             rowView.setTag(holder);
         } else {
@@ -72,7 +73,8 @@ public class DealCategoryArrayAdapter extends ArrayAdapter<String> {
                 if (c.getSubcategoryID() != -1) {
                     c = context.getParentCategory(c.getCategoryID());
                 }
-                holder.categoryImage.setImageResource(c.getIcon());
+                //holder.categoryImage.setImageResource(c.getIcon());
+                holder.headerText.setCompoundDrawablesWithIntrinsicBounds(c.getIcon(), 0, 0, 0);
             }
         } catch (Exception e) {
             LoggerUtils.error("DealCategoryArrayAdapter.getView error", e);
@@ -88,7 +90,7 @@ public class DealCategoryArrayAdapter extends ArrayAdapter<String> {
         protected View listButton;
         protected TextView headerText;
         protected TextView detailText;
-        protected ImageView categoryImage;
+        //protected ImageView categoryImage;
         protected View separator;
     }
 

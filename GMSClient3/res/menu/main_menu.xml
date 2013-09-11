@@ -51,8 +51,8 @@
           android:title="@string/recentLandmarks"/>
             <item android:id="@+id/showMyLandmarks"
           android:title="@string/showMyLandmarks"/>
-            <item android:id="@+id/events"
-          android:title="@string/events"/>
+            <!--item android:id="@+id/events"
+          android:title="@string/events"/-->
             <item android:id="@+id/newestLandmarks"
           android:title="@string/newestLandmarks"/>
             <item android:id="@+id/loadPoiFile"

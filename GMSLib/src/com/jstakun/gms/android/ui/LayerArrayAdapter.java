@@ -4,6 +4,7 @@
  */
 package com.jstakun.gms.android.ui;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jstakun.gms.android.config.Commons;
@@ -53,7 +53,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
             rowView = inflater.inflate(R.layout.layerrow, null, true);
             holder = new ViewHolder();
             holder.headerText = (TextView) rowView.findViewById(R.id.layerStatusHeader);
-            holder.layerImage = (ImageView) rowView.findViewById(R.id.layerIcon);
+            //holder.layerImage = (ImageView) rowView.findViewById(R.id.layerIcon);
             holder.layerCheckbox = (CheckBox) rowView.findViewById(R.id.layerStatusCheckbox);
             holder.detailText = (TextView) rowView.findViewById(R.id.layerDetailsHeader);
 
@@ -73,12 +73,19 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
-                holder.layerImage.setImageBitmap(LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-                        context.getResources().getDisplayMetrics(), null));
+                BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
+                        context.getResources().getDisplayMetrics(), null);
+                holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+            	//holder.layerImage.setImageBitmap(LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
+                //        context.getResources().getDisplayMetrics(), null));
             }
         };
-        holder.layerImage.setImageBitmap(LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-                context.getResources().getDisplayMetrics(), handler));
+        
+        BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
+                        context.getResources().getDisplayMetrics(), handler);
+        holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+        //holder.layerImage.setImageBitmap(LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
+        //        context.getResources().getDisplayMetrics(), handler));
 
         holder.layerCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -131,7 +138,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
 
     private static class ViewHolder {
 
-        protected ImageView layerImage;
+        //protected ImageView layerImage;
         protected CheckBox layerCheckbox;
         protected TextView headerText;
         protected TextView detailText;

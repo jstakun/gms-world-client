@@ -24,7 +24,7 @@ public final class Deal implements Serializable {
     private String dealType;
     private boolean isDealOfTheDay;
     private String currencyCode;
-    private long endDate;
+    private long endDate = -1;
 
     public Deal(double price, double discount, double save, String dealType, String currencyCode) {
         this.price = price;

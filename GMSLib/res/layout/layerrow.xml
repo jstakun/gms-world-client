@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content" android:layout_height="wrap_content" 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content" 
 	android:orientation="vertical"
-    android:background="@drawable/defaultbg" android:padding="5dip">
-    <LinearLayout
+    android:background="@drawable/defaultbg"
+    android:paddingLeft="3dip">
+    <!--LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
@@ -21,27 +22,25 @@
                   android:id="@+id/layerStatusHeader"
                   android:layout_gravity="center_vertical"
 				  android:textColor="#000000"/>
-    </LinearLayout>
-    <RelativeLayout
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content">
-        <CheckBox 
+    </LinearLayout-->
+    <TextView android:layout_width="wrap_content"
+                  style="@android:style/TextAppearance.Large"
+		  		  android:layout_height="wrap_content"
+                  android:id="@+id/layerStatusHeader"
+                  android:layout_gravity="center_vertical"
+				  android:textColor="#000000"
+				  android:gravity="left"
+				  android:drawablePadding="5dip"
+				  android:drawableLeft="@drawable/image_missing16"/>
+    <CheckBox 
             android:id="@+id/layerStatusCheckbox" 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" 
-            android:layout_alignParentTop="true" 
-            android:textColor="#000000"
-            android:layout_alignParentLeft="true"/>
-    </RelativeLayout>
-    <RelativeLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content">
-        <TextView 
+            android:textColor="#000000"/>
+    <TextView 
             android:layout_width="wrap_content" 
             style="@android:style/TextAppearance.Small"
 			android:layout_height="wrap_content" 
 			android:id="@+id/layerDetailsHeader"
-			android:layout_alignParentTop="true"
 			android:textColor="#000000"/>
-    </RelativeLayout>
 </LinearLayout>

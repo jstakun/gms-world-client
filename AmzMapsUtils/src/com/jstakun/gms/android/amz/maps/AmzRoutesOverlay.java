@@ -61,7 +61,7 @@ public class AmzRoutesOverlay extends Overlay {
 
         if (shadow == false) {
             Projection projection = mapView.getProjection();
-            Bitmap b = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, mapView.getResources().getDisplayMetrics(), null);
+            Bitmap b = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, mapView.getResources().getDisplayMetrics(), null).getBitmap();
             path.rewind();
 
             if (!isCurrentlyRecording && routeSize > 1) {

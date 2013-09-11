@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jstakun.gms.android.config.Commons;
@@ -50,7 +49,6 @@ public class LoginArrayAdapter extends ArrayAdapter<String> {
       }
 
       bindView(position, convertView);
-
       return(convertView);
     }
 
@@ -60,11 +58,9 @@ public class LoginArrayAdapter extends ArrayAdapter<String> {
 
     private void bindView(int position, View row) {
       TextView label=(TextView)row.findViewById(R.id.intentLabel);
-
       label.setText(getItem(position));
-
-      ImageView icon=(ImageView)row.findViewById(R.id.intentIcon);
-
-      icon.setImageResource(icons.get(getItem(position)));
+      //ImageView icon=(ImageView)row.findViewById(R.id.intentIcon);
+      //icon.setImageResource(icons.get(getItem(position)));
+      label.setCompoundDrawablesWithIntrinsicBounds(icons.get(getItem(position)), 0, 0, 0);
     }
 }

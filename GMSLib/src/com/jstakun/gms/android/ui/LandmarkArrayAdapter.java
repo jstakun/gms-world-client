@@ -7,6 +7,7 @@ package com.jstakun.gms.android.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -56,7 +57,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             rowView = inflater.inflate(R.layout.landmarkrow, null, true);
             holder = new ViewHolder();
             holder.landmarkNameText = (TextView) rowView.findViewById(R.id.landmarkNameText);
-            holder.layerIconImage = (ImageView) rowView.findViewById(R.id.landmarkIcon);
+            //holder.layerIconImage = (ImageView) rowView.findViewById(R.id.landmarkIcon);
             holder.landmarkDescText = (TextView) rowView.findViewById(R.id.landmarkDescText);
             holder.landmarkDescText.setMovementMethod(null);
             holder.thunbnailImage = (ImageView) rowView.findViewById(R.id.landmarkThumbnail);
@@ -71,18 +72,21 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
         if (StringUtils.isNotEmpty(landmark.getLayer())) {
             if (landmark.getCategoryid() != -1) {
                 int image = LayerManager.getDealCategoryIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, context.getResources().getDisplayMetrics(), landmark.getCategoryid());
-                holder.layerIconImage.setImageResource(image);
+                //holder.layerIconImage.setImageResource(image);
+                holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, 0, 0, 0);
             } else {
                 final Handler handler = new Handler() {
 
                     @Override
                     public void handleMessage(Message message) {
-                        Bitmap image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, context.getResources().getDisplayMetrics(), null);
-                        holder.layerIconImage.setImageBitmap(image);
+                        BitmapDrawable image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, context.getResources().getDisplayMetrics(), null);
+                        //holder.layerIconImage.setImageBitmap(image);
+                        holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
                     }
                 };
-                Bitmap image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, context.getResources().getDisplayMetrics(), handler);
-                holder.layerIconImage.setImageBitmap(image);
+                BitmapDrawable image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, context.getResources().getDisplayMetrics(), handler);
+                //holder.layerIconImage.setImageBitmap(image);
+                holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
             }
         } else {
             String filename = landmark.getName();
@@ -92,12 +96,14 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
 
                 @Override
                 public void handleMessage(Message message) {
-                    Bitmap image = IconCache.getInstance().getLayerImageResource(layerName, "_small", iconPath, -1, null, LayerManager.LAYER_FILESYSTEM, context.getResources().getDisplayMetrics(), null);
-                    holder.layerIconImage.setImageBitmap(image);
+                    BitmapDrawable image = IconCache.getInstance().getLayerImageResource(layerName, "_small", iconPath, -1, null, LayerManager.LAYER_FILESYSTEM, context.getResources().getDisplayMetrics(), null);
+                    //holder.layerIconImage.setImageBitmap(image);
+                    holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
                 }
             };
-            Bitmap image = IconCache.getInstance().getLayerImageResource(layerName, "_small", iconPath, -1, null, LayerManager.LAYER_FILESYSTEM, context.getResources().getDisplayMetrics(), handler);
-            holder.layerIconImage.setImageBitmap(image);
+            BitmapDrawable image = IconCache.getInstance().getLayerImageResource(layerName, "_small", iconPath, -1, null, LayerManager.LAYER_FILESYSTEM, context.getResources().getDisplayMetrics(), handler);
+            //holder.layerIconImage.setImageBitmap(image);
+            holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
         }
 
         holder.landmarkNameText.setText(landmark.getName());
@@ -155,7 +161,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
 
     private static class ViewHolder {
 
-        protected ImageView layerIconImage;
+        //protected ImageView layerIconImage;
         protected TextView landmarkNameText;
         protected TextView landmarkDescText;
         protected ImageView thunbnailImage;

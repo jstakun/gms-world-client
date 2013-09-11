@@ -15,6 +15,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
@@ -39,7 +41,7 @@ import java.util.Map;
  */
 public class IconCache {
 
-    private static final String ICON_MISSING32 = "icon-missing32";
+    public static final String ICON_MISSING32 = "icon-missing32";
     public static final String ICON_MISSING16 = "icon-missing16";
     private static final String LOADING = "loading";
     //public static final String LOADING_ICON = "loading-icon";
@@ -139,7 +141,7 @@ public class IconCache {
         return instance;
     }
 
-    public final Bitmap getImageResource(String resourceName) {
+    private Bitmap getImageResource(String resourceName) {
         Bitmap img;
 
         if (resourceName != null && isImageLoaded(resourceName)) {
@@ -148,14 +150,18 @@ public class IconCache {
             img = images.get(ICON_MISSING32);
         }
 
-        return img; // returns null for network retrievals
+        return img; 
+    }
+    
+    public final BitmapDrawable getImageDrawable(String resourceName) {
+    	return getBitmapDrawable(getImageResource(resourceName));
     }
 
-    public boolean isImageLoaded(String resourceName) {
-        return (images.containsKey(resourceName)); //.get(resourceName) != null);
+    private boolean isImageLoaded(String resourceName) {
+        return (images.containsKey(resourceName));
     }
 
-    public Bitmap getLayerImageResource(String layerName, String suffix, String url, int resourceId, String resourceIdStr, int type, DisplayMetrics displayMetrics, Handler handler) {
+    public BitmapDrawable getLayerImageResource(String layerName, String suffix, String url, int resourceId, String resourceIdStr, int type, DisplayMetrics displayMetrics, Handler handler) {
         Bitmap img = null;
         boolean serverLoading = false;
         String resourceName = layerName + suffix;
@@ -218,7 +224,7 @@ public class IconCache {
                 img = images.get(ICON_MISSING16);
             }
         }
-        return img;
+        return getBitmapDrawable(img);
     }
 
     public Bitmap getThumbnailResource(String urlString, DisplayMetrics displayMetrics, Handler handler) {
@@ -315,48 +321,49 @@ public class IconCache {
      return null;
      }
      }*/
-    public void setResource(String name, Bitmap resource) {
+    
+    protected void setResource(String name, Bitmap resource) {
         images.put(name, resource);
     }
 
-    public Bitmap getLayerBitmap(Bitmap b, String layerName, int color, boolean frame, DisplayMetrics displayMetrics) {
+    public Drawable getLayerBitmap(BitmapDrawable bd, String layerName, int color, boolean frame, DisplayMetrics displayMetrics) {
         if (frame) {
             String resourceName = layerName + "_selected_" + Integer.toString(color);
             if (isImageLoaded(resourceName)) {
-                return getImageResource(resourceName);
+                return getImageDrawable(resourceName);
             } else {
                 Context ctx = ConfigurationManager.getInstance().getContext();
                 if (ctx != null) {
-                    return createLayerBitmap(ctx, b, color, resourceName);
+                    return createLayerBitmap(ctx, bd.getBitmap(), color, resourceName);
                 } else {
                     return null;
                 }
             }
         } else {
-            return b;
+            return bd;
         }
     }
 
-    public Bitmap getLayerBitmap(int res, String layerName, int color, boolean frame, DisplayMetrics displayMetrics) {
+    public Drawable getLayerBitmap(int res, String layerName, int color, boolean frame, DisplayMetrics displayMetrics) {
         Context ctx = ConfigurationManager.getInstance().getContext();
         if (ctx != null) {
             if (frame) {
                 String resourceName = layerName + "_selected_" + Integer.toString(color);
                 if (isImageLoaded(resourceName)) {
-                    return getImageResource(resourceName);
+                    return getImageDrawable(resourceName);
                 } else {
                     Bitmap b = BitmapFactory.decodeResource(ctx.getResources(), res);
                     return createLayerBitmap(ctx, b, color, resourceName);
                 }
             } else {
-                return BitmapFactory.decodeResource(ctx.getResources(), res);
+                return ctx.getResources().getDrawable(res); //getBitmapDrawable(BitmapFactory.decodeResource(ctx.getResources(), res));
             }
         } else {
             return null;
         }
     }
 
-    private Bitmap createLayerBitmap(Context ctx, Bitmap b, int color, String resourceName) {
+    private Drawable createLayerBitmap(Context ctx, Bitmap b, int color, String resourceName) {
         Bitmap bottom = images.get(GRID);
         final int bottomSpace = (bottom.getHeight() / 2) + 5;
         int w = 4 * b.getWidth() / 3;
@@ -432,7 +439,7 @@ public class IconCache {
             setResource(resourceName, bmp);
         }
 
-        return bmp;
+        return getBitmapDrawable(bmp);
     }
 
     public void clearAll() {
@@ -522,6 +529,24 @@ public class IconCache {
                 loadingTasks.remove(resourceName);
             }
             return null;
+        }
+    }
+    
+    private static BitmapDrawable getBitmapDrawable(Bitmap bitmap) {
+    	try {
+    		//API version >= 4
+    		Context ctx = ConfigurationManager.getInstance().getContext();
+    		return BitmapDrawableHelperInternal.getBitmapDrawable(bitmap, ctx.getResources());
+    	} catch (Throwable e) {
+    		//API version 3
+    		return new BitmapDrawable(bitmap);
+    	}
+    }
+    
+    private static class BitmapDrawableHelperInternal { 
+
+        private static BitmapDrawable getBitmapDrawable(Bitmap bitmap, Resources res) {
+            return new BitmapDrawable(res, bitmap);
         }
     }
 }

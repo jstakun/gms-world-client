@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jstakun.gms.android.config.Commons;
@@ -66,7 +65,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             holder = new ViewHolder();
             holder.headerText = (TextView) rowView.findViewById(R.id.socialStatusHeader);
             holder.statusText = (TextView) rowView.findViewById(R.id.socialStatusText);
-            holder.socialImage = (ImageView) rowView.findViewById(R.id.socialIcon);
+            //holder.socialImage = (ImageView) rowView.findViewById(R.id.socialIcon);
             holder.socialCheckbox = (CheckBox) rowView.findViewById(R.id.socialStatusCheckbox);
             holder.loginButton = (Button) rowView.findViewById(R.id.socialLoginButton);
 
@@ -134,7 +133,9 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusno, getItem(position)));
         }
 
-        holder.socialImage.setImageResource(icons[position]);
+        holder.headerText.setCompoundDrawablesWithIntrinsicBounds(icons[position], 0, 0, 0);
+        
+        //holder.socialImage.setImageResource(icons[position]);
 
         holder.loginButton.setOnClickListener(new PositionClickListener(position));
 
@@ -149,7 +150,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
     private static class ViewHolder {
 
-        protected ImageView socialImage;
+        //protected ImageView socialImage;
         protected CheckBox socialCheckbox;
         protected TextView headerText;
         protected TextView statusText;

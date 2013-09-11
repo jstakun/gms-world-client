@@ -5,8 +5,6 @@
 package com.jstakun.gms.android.ui;
 
 import android.content.Context;
-import android.os.Bundle;
-
 import com.google.common.base.Predicate;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;

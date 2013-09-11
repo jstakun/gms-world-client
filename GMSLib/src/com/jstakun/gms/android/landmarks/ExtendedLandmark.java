@@ -159,7 +159,7 @@ public final class ExtendedLandmark extends Landmark implements Serializable {
     }
 
     public boolean isDeal() {
-        return categoryId > 0 || (deal != null && (deal.getPrice() >= 0 || StringUtils.isNotEmpty(deal.getDealType())));
+        return (deal != null && (deal.getPrice() >= 0 || StringUtils.isNotEmpty(deal.getDealType())));
     }
 
     @Override

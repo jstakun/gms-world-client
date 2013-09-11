@@ -4,7 +4,6 @@
  */
 package com.jstakun.gms.android.landmarks;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -202,144 +201,6 @@ public class LandmarkManager {
         }
     }
 
-    /*public void paintLandmarks(Canvas c, ProjectionInterface projection, int width, int height, String[] excluded, DisplayMetrics displayMetrics) {
-     //long start = System.currentTimeMillis();
-     //System.out.println("paintLandmarks");
-     //Debug.startAllocCounting();
-
-     landmarkPaintManager.clearLandmarkDrawables();
-     landmarkPaintManager.setSelectedLandmarkDrawable(null);
-     ArrayList<LayerPoint> drawablePoints = new ArrayList<LayerPoint>();
-     ExtendedLandmark selectedLandmark = getSeletedLandmarkUI();
-     int total_counter = 0;
-     VisibleLandmarkPredicate visiblePredicate = new VisibleLandmarkPredicate(projection);
-     Collection<ExtendedLandmark> recentlyOpenedLandmarks = Collections2.filter(landmarkPaintManager.getRecentlyOpenedLandmarks(), visiblePredicate);
-
-     for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedAndEnabledPredicate(excluded))) {
-     List<ExtendedLandmark> layer = getLandmarkStoreLayer(key);
-     boolean isMyPosLayer = key.equals(LayerManager.MY_POSITION_LAYER);
-     int layer_counter = 0;
-     //System.out.println("Layer " + key + " size " + layer.size());
-
-     Iterable<ExtendedLandmark> col = Iterables.filter(layer, visiblePredicate);
-     //System.out.println("Layer " + key + " size: " + col.size());
-
-     for (ExtendedLandmark landmark : col) {
-     LayerPoint point = (LayerPoint) pointsPool.newObject();
-     projection.toPixels(landmark.getLatitudeE6(), landmark.getLongitudeE6(), point);
-     layer_counter++;
-     total_counter++;
-
-     if (selectedLandmark == null || !selectedLandmark.equals(landmark) && !recentlyOpenedLandmarks.contains(landmark)) {
-     //LayerPoint point = new LayerPoint(p.x, p.y);
-     if (isMyPosLayer || !drawablePoints.contains(point)) {
-     drawablePoints.add(point);
-     int color = COLOR_WHITE;
-     if (landmark.hasCheckinsOrPhotos()) {
-     color = COLOR_LIGHT_SALMON;
-     } else if (landmark.getRating() >= 0.85) {
-     color = COLOR_PALE_GREEN;
-     }
-
-     Bitmap frame;
-     if (landmark.getCategoryId() != -1) {
-     int icon = LayerManager.getDealCategoryIcon(key, LayerManager.LAYER_ICON_LARGE, displayMetrics, landmark.getCategoryId());
-     frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
-     } else {
-     //if layer icon is loading, frame can't be cached
-     Bitmap icon = LayerManager.getLayerIcon(key, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-     frame = IconCache.getInstance().getLayerBitmap(icon, key, color, !isMyPosLayer, displayMetrics);
-     }
-
-     if (frame != null) {
-     landmarkPaintManager.addLandmarkDrawable(getBitmapDrawable(frame, point));
-     }
-     }
-     } else {
-     pointsPool.freeObject(point);
-     }
-
-     if (layer_counter >= LAYER_LIMIT || total_counter >= TOTAL_LIMIT) {
-     break;
-     }
-     }
-
-     if (total_counter >= TOTAL_LIMIT) {
-     break;
-     }
-     }
-
-     //draw recently opened landmarks
-     if (!recentlyOpenedLandmarks.isEmpty()) {
-     //System.out.println("Layer " + key + " size: " + col.size());
-     for (ExtendedLandmark landmark : recentlyOpenedLandmarks) {
-
-     boolean isMyPosLayer = landmark.getLayer().equals(LayerManager.MY_POSITION_LAYER);
-
-     //Point p = new Point(0, 0);
-     LayerPoint point = (LayerPoint) pointsPool.newObject();
-     projection.toPixels(landmark.getLatitudeE6(), landmark.getLongitudeE6(), point);
-
-     if (selectedLandmark == null || !selectedLandmark.equals(landmark)) {
-     //LayerPoint point = new LayerPoint(p.x, p.y);
-     drawablePoints.add(point);
-     Bitmap frame;
-
-     if (landmark.getCategoryId() != -1) {
-     int icon = LayerManager.getDealCategoryIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, landmark.getCategoryId());
-     frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), COLOR_DODGER_BLUE, !isMyPosLayer, displayMetrics);
-     } else {
-     Bitmap icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-     frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), COLOR_DODGER_BLUE, !isMyPosLayer, displayMetrics);
-     }
-
-     if (frame != null) {
-     landmarkPaintManager.addLandmarkDrawable(getBitmapDrawable(frame, point));
-     }
-     } else {
-     pointsPool.freeObject(point);
-     }
-     }
-     }
-
-     //draw selected landmark when not in visible layer
-     if (selectedLandmark != null && StringUtils.indexOfAny(selectedLandmark.getLayer(), excluded) < 0) {
-     int lat = selectedLandmark.getLatitudeE6();
-     int lon = selectedLandmark.getLongitudeE6();
-
-     if (visiblePredicate.apply(selectedLandmark)) {
-
-     LayerPoint point = (LayerPoint) pointsPool.newObject();
-     projection.toPixels(lat, lon, point);
-     drawablePoints.add(point);
-     Bitmap frame;
-     boolean isMyPosLayer = selectedLandmark.getLayer().equals(LayerManager.MY_POSITION_LAYER);
-
-     if (selectedLandmark.getCategoryId() != -1) {
-     int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, selectedLandmark.getCategoryId());
-     frame = IconCache.getInstance().getLayerBitmap(icon, selectedLandmark.getLayer(), COLOR_YELLOW, !isMyPosLayer, displayMetrics);
-     } else {
-     Bitmap icon = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-     frame = IconCache.getInstance().getLayerBitmap(icon, selectedLandmark.getLayer(), COLOR_YELLOW, !isMyPosLayer, displayMetrics);
-     }
-
-     if (frame != null) {
-     landmarkPaintManager.setSelectedLandmarkDrawable(getBitmapDrawable(frame, point));
-     } else {
-     pointsPool.freeObject(point);
-     }
-     }
-     }
-
-     //free layer points for reuse
-     for (LayerPoint point : drawablePoints) {
-     pointsPool.freeObject(point);
-     }
-
-     //Debug.stopAllocCounting();
-     //int ac = Debug.getThreadAllocCount();
-     //System.out.println(ac + " ac");
-     }*/
     public void paintLandmarks(Canvas c, ProjectionInterface projection, int width, int height, String[] excluded, DisplayMetrics displayMetrics) {
         //long start = System.currentTimeMillis();
         //System.out.println("paintLandmarks");
@@ -371,18 +232,20 @@ public class LandmarkManager {
                 if (selectedLandmark == null || !selectedLandmark.equals(landmark)) {
                     recentlyOpenedLandmarks.add(landmark);
                     drawablePoints.add(point);
-                    Bitmap frame;
+                    Drawable frame;
 
                     if (landmark.getCategoryId() != -1) {
                         int icon = LayerManager.getDealCategoryIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, landmark.getCategoryId());
                         frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), COLOR_DODGER_BLUE, !isMyPosLayer, displayMetrics);
                     } else {
-                        Bitmap icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
+                        BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
                         frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), COLOR_DODGER_BLUE, !isMyPosLayer, displayMetrics);
                     }
 
                     if (frame != null) {
-                        recentlyOpenedDrawables.add(getBitmapDrawable(frame, point));
+                    	int w = frame.getIntrinsicWidth() / 2;
+                        frame.setBounds(point.x - w, point.y - frame.getIntrinsicHeight(), point.x + w, point.y);
+                        recentlyOpenedDrawables.add(frame);
                     }
                 } else {
                     pointsPool.freeObject(point);
@@ -420,18 +283,21 @@ public class LandmarkManager {
                             color = COLOR_PALE_GREEN;
                         }
 
-                        Bitmap frame;
+                        Drawable frame;
+                        
                         if (landmark.getCategoryId() != -1) {
                             int icon = LayerManager.getDealCategoryIcon(key, LayerManager.LAYER_ICON_LARGE, displayMetrics, landmark.getCategoryId());
                             frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
                         } else {
                             //if layer icon is loading, frame can't be cached
-                            Bitmap icon = LayerManager.getLayerIcon(key, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
+                            BitmapDrawable icon = LayerManager.getLayerIcon(key, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
                             frame = IconCache.getInstance().getLayerBitmap(icon, key, color, !isMyPosLayer, displayMetrics);
                         }
 
                         if (frame != null) {
-                            landmarkPaintManager.addLandmarkDrawable(getBitmapDrawable(frame, point));
+                        	int w = frame.getIntrinsicWidth() / 2;
+                            frame.setBounds(point.x - w, point.y - frame.getIntrinsicHeight(), point.x + w, point.y);
+                            landmarkPaintManager.addLandmarkDrawable(frame);
                         }
                     } else {
                         pointsPool.freeObject(point);
@@ -460,19 +326,21 @@ public class LandmarkManager {
 
             if (projection.isVisible(point)) {
                 drawablePoints.add(point);
-                Bitmap frame;
+                Drawable frame;
                 boolean isMyPosLayer = selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
 
                 if (selectedLandmark.getCategoryId() != -1) {
                     int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, selectedLandmark.getCategoryId());
                     frame = IconCache.getInstance().getLayerBitmap(icon, selectedLandmark.getLayer(), COLOR_YELLOW, !isMyPosLayer, displayMetrics);
                 } else {
-                    Bitmap icon = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
+                	BitmapDrawable icon = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
                     frame = IconCache.getInstance().getLayerBitmap(icon, selectedLandmark.getLayer(), COLOR_YELLOW, !isMyPosLayer, displayMetrics);
                 }
 
                 if (frame != null) {
-                    landmarkPaintManager.setSelectedLandmarkDrawable(getBitmapDrawable(frame, point));
+                	int w = frame.getIntrinsicWidth() / 2;
+                    frame.setBounds(point.x - w, point.y - frame.getIntrinsicHeight(), point.x + w, point.y);
+                    landmarkPaintManager.setSelectedLandmarkDrawable(frame);
                 }
             } else {
                 pointsPool.freeObject(point);
@@ -487,14 +355,6 @@ public class LandmarkManager {
         //Debug.stopAllocCounting();
         //int ac = Debug.getThreadAllocCount();
         //System.out.println(ac + " ac");
-    }
-
-    private static Drawable getBitmapDrawable(Bitmap frame, LayerPoint p) {
-        int w = frame.getWidth() / 2;
-        //int h = frame.getHeight() / 2;
-        BitmapDrawable bd = new BitmapDrawable(frame); //API 4 minimum to change
-        bd.setBounds(p.x - w, p.y - frame.getHeight(), p.x + w, p.y);
-        return bd;
     }
 
     public void getCheckinableLandmarks(List<LandmarkParcelable> checkinable, double lat, double lng) {

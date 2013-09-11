@@ -18,14 +18,14 @@ public class TileFactory {
 
     public static Tile getTileMissing() {
         if (missing == null) {
-            missing = new Tile(IconCache.getInstance().getImageResource(IconCache.IMAGE_MISSING), -999.0, -999.0, -1, -1, -1, false);
+            missing = new Tile(IconCache.getInstance().getImageDrawable(IconCache.IMAGE_MISSING).getBitmap(), -999.0, -999.0, -1, -1, -1, false);
         }
         return missing;
     }
 
     public static Tile getTileLoading() {
         if (loading == null) {
-            loading = new Tile(IconCache.getInstance().getImageResource(IconCache.IMAGE_LOADING_TILE), -999.0, -999.0, -1, -1, -1, false);
+            loading = new Tile(IconCache.getInstance().getImageDrawable(IconCache.IMAGE_LOADING_TILE).getBitmap(), -999.0, -999.0, -1, -1, -1, false);
         }
         return loading;
     }

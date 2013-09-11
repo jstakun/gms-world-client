@@ -4,7 +4,6 @@
  */
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.utils.GMSAsyncTask;

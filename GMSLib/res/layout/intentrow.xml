@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
   android:orientation="horizontal"
@@ -20,4 +20,16 @@
     android:layout_gravity="center_vertical"
     android:padding="2dip"
     android:textColor="#000000"/>
-</LinearLayout>
+</LinearLayout-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/intentLabel"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@android:style/TextAppearance.Large"
+    android:layout_gravity="center_vertical"
+    android:padding="2dip"
+    android:textColor="#000000"
+    android:drawablePadding="6dip"
+    android:gravity="left"
+    android:paddingTop="10dip"
+    android:paddingBottom="10dip"/>

@@ -5,7 +5,7 @@
 package com.jstakun.gms.android.landmarks;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -255,20 +255,13 @@ public class LayerManager {
         int icon = 0;
         try {
             CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-
             if (type == LAYER_ICON_LARGE) {
-                //String icon = cm.getCategory(categoryId).getLargeIcon();
-                //return imageCache.getLayerImageRecource(categoryId + "_dealCategory", "_large", null,
-                //        -1, icon, LayerManager.LAYER_LOCAL, displayMetrics);
-                icon = cm.getCategory(categoryId).getLargeIcon();
+            	icon = cm.getCategory(categoryId).getLargeIcon();
             } else {
-                //String icon = cm.getCategory(categoryId).getIcon();
-                //return imageCache.getLayerImageRecource(categoryId + "_dealCategory", "_small", null,
-                //        -1, icon, LayerManager.LAYER_LOCAL, displayMetrics);
                 icon = cm.getCategory(categoryId).getIcon();
             }
         } catch (Exception e) {
-            LoggerUtils.error("LayerManager.getDealCategoryIcon exception", e);
+            LoggerUtils.error("LayerManager.getDealCategoryIcon() exception:", e);
         }
         if (icon == 0) {
             icon = R.drawable.image_missing32;
@@ -276,33 +269,33 @@ public class LayerManager {
         return icon;
     }
 
-    public static Bitmap getLayerIcon(String layerName, int type, DisplayMetrics displayMetrics, Handler handler) {
+    public static BitmapDrawable getLayerIcon(String layerName, int type, DisplayMetrics displayMetrics, Handler handler) {
         IconCache imageCache = IconCache.getInstance();
-        Bitmap layerIcon = null;
+        BitmapDrawable layerDrawable = null;
         try {
             Layer layer = layers.get(layerName);
             if (layer != null) {
               if (type == LAYER_ICON_LARGE && (layer.getLargeIconPath() != null || layer.getLargeIconResource() != -1)) {
                 //layer has large icon
-            	  layerIcon = imageCache.getLayerImageResource(layer.getName(), "_large", layer.getLargeIconPath(),
+            	  layerDrawable = imageCache.getLayerImageResource(layer.getName(), "_large", layer.getLargeIconPath(),
                         layer.getLargeIconResource(), null, layer.getType(), displayMetrics, handler);
               } else {
                 //SMALL icon default
-            	  layerIcon = imageCache.getLayerImageResource(layer.getName(), "_small", layer.getSmallIconPath(),
+            	  layerDrawable = imageCache.getLayerImageResource(layer.getName(), "_small", layer.getSmallIconPath(),
                         layer.getSmallIconResource(), null, layer.getType(), displayMetrics, handler);
               }
             } 
         } catch (Exception e) {
             LoggerUtils.error("LayerManager.getLayerIcon() exception", e);
         }
-        if (layerIcon == null) {
+        if (layerDrawable == null) {
         	if (type == LAYER_ICON_SMALL) {
-        		layerIcon = imageCache.getImageResource(IconCache.ICON_MISSING16);
+        		layerDrawable = imageCache.getImageDrawable(IconCache.ICON_MISSING16);
         	} else {
-        		layerIcon = imageCache.getImageResource(null);
+        		layerDrawable = imageCache.getImageDrawable(IconCache.ICON_MISSING32);
         	}	
         }
-        return layerIcon;
+        return layerDrawable;
     }
 
     public String getLayerDesc(String layerName) {

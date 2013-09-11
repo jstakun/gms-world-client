@@ -22,6 +22,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -299,9 +300,6 @@ public final class Intents {
     }
 
     public void startLocationCheckinActivity(double[] currentLocation) {
-        //List<LandmarkParcelable> checkinable = new ArrayList<LandmarkParcelable>();
-        //landmarkManager.getCheckinableLandmarks(checkinable, currentLocation[0], currentLocation[1]);
-        //startLandmarkListActivity(checkinable, INTENT_CHECKIN, -1, -1, R.string.Location_checkin_error);
         startLandmarkListActivity(INTENT_CHECKIN, null, LandmarkListActivity.SOURCE.CHECKIN, currentLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
     }
 
@@ -311,11 +309,6 @@ public final class Intents {
     }
 
     public void showLandmarksInDay(double[] currentLocation, int year, int month, int day) {
-        //if (landmarkManager.findLandmarksInDay(year, month, day)) {
-        //    startMultiLandmarkIntent(currentLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
-        //} else {
-        //    showInfoToast(Locale.getMessage(R.string.Landmarks_day_empty));
-        //}
         Intent src = new Intent();
         src.putExtra("year", year);
         src.putExtra("month", month);
@@ -649,7 +642,7 @@ public final class Intents {
     public void showLandmarkDetailsView(final ExtendedLandmark selectedLandmark, final View lvView, double[] currentLocation, boolean loadAd) {
         TextView name = (TextView) lvView.findViewById(R.id.lvname);
         TextView header = (TextView) lvView.findViewById(R.id.lvheader);
-        ImageView layerImage = (ImageView) lvView.findViewById(R.id.lvLayerImage);
+        //ImageView layerImage = (ImageView) lvView.findViewById(R.id.lvLayerImage);
         ImageButton lvActionButton = (ImageButton) lvView.findViewById(R.id.lvActionButton);
         ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
         View lvOpenButton = lvView.findViewById(R.id.lvOpenButton);
@@ -703,10 +696,12 @@ public final class Intents {
 
         if (selectedLandmark.getCategoryId() != -1) {
             int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL, activity.getResources().getDisplayMetrics(), selectedLandmark.getCategoryId());
-            layerImage.setImageResource(icon);
+            //layerImage.setImageResource(icon);
+            name.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
         } else {
-            Bitmap icon = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL, activity.getResources().getDisplayMetrics(), null);
-            layerImage.setImageBitmap(icon);
+            BitmapDrawable icon = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL, activity.getResources().getDisplayMetrics(), null);
+            //layerImage.setImageBitmap(icon);
+            name.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
         }
 
         if (selectedLandmark.getThumbnail() != null) {
@@ -811,7 +806,7 @@ public final class Intents {
             visibleButtons -= 2;
         }
         float dip = activity.getResources().getDisplayMetrics().density;
-        //API 8 minimum
+        //API 8 minimum to replace getWidth()
         if (visibleButtons == 5 && activity.getWindowManager().getDefaultDisplay().getWidth() < (360f * dip)) {
             lvCommentButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
