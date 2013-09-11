@@ -11,7 +11,7 @@
                android:id="@+id/right_arrow"
                android:layout_alignParentRight="true" />
     <LinearLayout
-             android:layout_width="fill_parent"
+             android:layout_width="wrap_content"
              android:layout_height="fill_parent"
              android:id="@+id/landmarkLayout"
              android:layout_toLeftOf="@+id/right_arrow"
@@ -49,7 +49,7 @@
 				android:drawablePadding="5dip"
 				android:drawableLeft="@drawable/image_missing16"/>                        
         <RelativeLayout
-             android:layout_width="fill_parent"
+             android:layout_width="wrap_content"
              android:layout_height="wrap_content">
             <ImageView
               android:id="@+id/landmarkThumbnail"
@@ -58,7 +58,7 @@
               android:layout_height="wrap_content"
               android:padding="3dip"/>
             <TextView 
-                  android:layout_width="fill_parent"
+                  android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_toRightOf="@id/landmarkThumbnail"
                   style="@android:style/TextAppearance.Small"
