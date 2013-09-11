@@ -14,11 +14,11 @@ import java.util.List;
  *
  * @author jstakun
  */
-public class LMServerReader extends AbstractJsonReader {
+public class LMServerReader extends AbstractSerialReader {
 
     private static final String[] LM_SERVER_PREFIX = new String[] {ConfigurationManager.SERVER_URL, ConfigurationManager.BITLY_URL};
 
-    public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
+    /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
         init(latitude, longitude, zoom, width, height);
         
         String url = ConfigurationManager.getInstance().getServicesUrl() + "downloadLandmark?" +
@@ -26,10 +26,21 @@ public class LMServerReader extends AbstractJsonReader {
                      "&format=json&version=5" + "&limit=" + limit + "&display=" + display + "&radius=" + radius;
 
         return parser.parse(url, landmarks, layer, LM_SERVER_PREFIX , -1, -1, task, true, limit);
-    }
+    }*/
+    
+    
 
     @Override
     public String[] getUrlPrefix() {
         return LM_SERVER_PREFIX;
     }
+
+	@Override
+	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
+		String url = ConfigurationManager.getInstance().getServicesUrl() + "downloadLandmark?" +
+                "latitudeMin=" + coords[0] + "&longitudeMin=" + coords[1] + "&layer=" + layer +
+                "&format=bin&version=5" + "&limit=" + limit + "&display=" + display + "&radius=" + radius;
+
+		return parser.parse(url, landmarks, task, true, null);
+	}
 }

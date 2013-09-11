@@ -83,7 +83,7 @@ public class WebViewActivity extends Activity {
         WebSettings settings = webView.getSettings();
 
         settings.setJavaScriptEnabled(true);
-        settings.setSupportZoom(true);	    													 //if ROM supports Multi-Touch
+        settings.setSupportZoom(true);	    													
         settings.setBuiltInZoomControls(true);
         settings.setAllowFileAccess(true);
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
