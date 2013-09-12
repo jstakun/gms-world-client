@@ -130,20 +130,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             }
         }
     };
-    /*private final Handler gpsPositionHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle b = msg.getData();
-            if (b.containsKey("lat") && b.containsKey("lng") && b.containsKey("alt") && b.containsKey("acc")) {
-                double lat = b.getDouble("lat");
-                double lng = b.getDouble("lng");
-                float altitude = b.getFloat("alt");
-                if (landmarkManager != null) {
-                    landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), LayerManager.MY_POSITION_LAYER, false);
-                }
-            }
-        }
-    };*/
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = myLocation.getMyLocation();

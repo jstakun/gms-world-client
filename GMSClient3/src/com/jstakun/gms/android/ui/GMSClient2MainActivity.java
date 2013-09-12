@@ -1,5 +1,6 @@
 package com.jstakun.gms.android.ui;
 
+import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.List;
 
@@ -93,47 +94,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private long startingMillis;
     private boolean appInitialized = false,
             initLandmarkManager = false, isRouteDisplayed = false;
-    //Handlers and Runnable callbacks
-    private final Handler loadingHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-            if (msg.what == MessageStack.STATUS_MESSAGE) {
-                statusBar.setText(messageStack.getMessage());
-            } else if (msg.what == MessageStack.STATUS_VISIBLE) {
-                loadingImage.setVisibility(View.VISIBLE);
-            } else if (msg.what == MessageStack.STATUS_GONE) {
-                loadingImage.setVisibility(View.GONE);
-            } else if (msg.what == LayerLoader.LAYER_LOADED) {
-                postInvalidate();
-            } else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-                if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
-                    asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), intents.takeScreenshot());
-                }
-            } else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
-                intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
-            } else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS
-                    || msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-                landmarkDetailsAction();
-            } else if (msg.what == SHOW_MAP_VIEW) {
-                View loading = findViewById(R.id.mapCanvasWidgetL);
-                View mapCanvas = findViewById(R.id.mapCanvasWidgetM);
-                loading.setVisibility(View.GONE);
-                mapCanvas.setVisibility(View.VISIBLE);
-                if (lvView == null || !lvView.isShown()) {
-                    getActionBar().show();
-                }
-            } else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
-                showRouteAction((String) msg.obj);
-            } else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION
-                    || msg.what == OsmMyLocationOverlay.UPDATE_LOCATION) {
-                Location location = (Location) msg.obj;
-                updateGpsLocation(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), location.getAccuracy(), location.getSpeed());
-            }
-        }
-    };
-    
+    private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             IGeoPoint location = LocationServicesManager.getMyLocation();
@@ -196,6 +157,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         OsUtil.setDisplayType(getResources().getConfiguration());
         getActionBar().hide();
+        loadingHandler = new LoadingHandler(this);
 
         LoggerUtils.debug("Map provider is " + mapProvider);
 
@@ -308,7 +270,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                     }
                 }
             };
-            //myLocation.runOnFirstFix(r);
             LocationServicesManager.runOnFirstFix(r);
         }
     }
@@ -1186,5 +1147,52 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         routesManager.clearRoutesStore();
         postInvalidate();
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
+    }
+    
+    private static class LoadingHandler extends Handler {
+    	
+    	private WeakReference<GMSClient2MainActivity> parentActivity;
+    	
+    	public LoadingHandler(GMSClient2MainActivity parentActivity) {
+    		this.parentActivity = new WeakReference<GMSClient2MainActivity>(parentActivity);
+    	}
+    	
+        @Override
+        public void handleMessage(Message msg) {
+        	GMSClient2MainActivity activity = parentActivity.get();
+        	if (activity != null && !activity.isFinishing()) {
+        		if (msg.what == MessageStack.STATUS_MESSAGE) {
+        			activity.statusBar.setText(activity.messageStack.getMessage());
+            	} else if (msg.what == MessageStack.STATUS_VISIBLE) {
+            		activity.loadingImage.setVisibility(View.VISIBLE);
+            	} else if (msg.what == MessageStack.STATUS_GONE) {
+            		activity.loadingImage.setVisibility(View.GONE);
+            	} else if (msg.what == LayerLoader.LAYER_LOADED) {
+            		activity.postInvalidate();
+            	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
+                	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
+                		activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
+                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot());
+                	}
+            	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
+            		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
+            	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
+            		activity.landmarkDetailsAction();
+            	} else if (msg.what == SHOW_MAP_VIEW) {
+                	View loading = activity.findViewById(R.id.mapCanvasWidgetL);
+                	View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);
+                	loading.setVisibility(View.GONE);
+                	mapCanvas.setVisibility(View.VISIBLE);
+                	if (activity.lvView == null || !activity.lvView.isShown()) {
+                		activity.getActionBar().show();
+                	}
+            	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
+            		activity.showRouteAction((String) msg.obj);
+            	} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION || msg.what == OsmMyLocationOverlay.UPDATE_LOCATION) {
+                	Location location = (Location) msg.obj;
+                	activity.updateGpsLocation(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), location.getAccuracy(), location.getSpeed());
+            	}
+        	}
+        }
     }
 }

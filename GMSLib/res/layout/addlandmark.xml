@@ -83,18 +83,15 @@ android:layout_height="wrap_content"
 android:text="@string/cancelButton"
 android:layout_alignParentTop="true"
 android:layout_alignParentRight="true"
-android:layout_marginLeft="5dip"
->
-                </Button>
+android:layout_marginLeft="5dip"/>
+              
                 <Button
 android:id="@+id/addButton"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:text="@string/addButton"
 android:layout_alignParentTop="true"
-android:layout_toLeftOf="@+id/cancelButton"
->
-                </Button>
+android:layout_toLeftOf="@+id/cancelButton"/>
             </RelativeLayout>
            
             <include layout="@layout/adview"/>

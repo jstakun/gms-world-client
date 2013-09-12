@@ -4,6 +4,7 @@
  */
 package com.jstakun.gms.android.ui;
 
+import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +24,8 @@ import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
+
+import java.lang.ref.WeakReference;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
@@ -32,13 +35,13 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LayerArrayAdapter extends ArrayAdapter<String> {
 
-    private final LayerListActivity context;
+    private final LayerListActivity parentActivity;
     private final LandmarkManager landmarkManager;
     private final RoutesManager routesManager;
 
     public LayerArrayAdapter(LayerListActivity context, List<String> names) {
         super(context, R.layout.layerrow, names);
-        this.context = context;
+        this.parentActivity = context;
         this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         this.routesManager = ConfigurationManager.getInstance().getRoutesManager();
     }
@@ -49,11 +52,10 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         final ViewHolder holder;
         View rowView = convertView;
         if (rowView == null) {
-            LayoutInflater inflater = context.getLayoutInflater();
+            LayoutInflater inflater = parentActivity.getLayoutInflater();
             rowView = inflater.inflate(R.layout.layerrow, null, true);
             holder = new ViewHolder();
             holder.headerText = (TextView) rowView.findViewById(R.id.layerStatusHeader);
-            //holder.layerImage = (ImageView) rowView.findViewById(R.id.layerIcon);
             holder.layerCheckbox = (CheckBox) rowView.findViewById(R.id.layerStatusCheckbox);
             holder.detailText = (TextView) rowView.findViewById(R.id.layerDetailsHeader);
 
@@ -70,23 +72,19 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
 
         holder.headerText.setText(layerName);
 
-        final Handler handler = new Handler() {
+        /*final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-                        context.getResources().getDisplayMetrics(), null);
+                        getContext().getResources().getDisplayMetrics(), null);
                 holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-            	//holder.layerImage.setImageBitmap(LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-                //        context.getResources().getDisplayMetrics(), null));
             }
-        };
+        };*/
         
         BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-                        context.getResources().getDisplayMetrics(), handler);
+                        getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));
         holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-        //holder.layerImage.setImageBitmap(LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-        //        context.getResources().getDisplayMetrics(), handler));
-
+  
         holder.layerCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -131,14 +129,12 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         }
         holder.detailText.setText(message);
 
-        rowView.setOnCreateContextMenuListener(context);
+        rowView.setOnCreateContextMenuListener(parentActivity);
 
         return rowView;
     }
 
     private static class ViewHolder {
-
-        //protected ImageView layerImage;
         protected CheckBox layerCheckbox;
         protected TextView headerText;
         protected TextView detailText;
@@ -153,7 +149,28 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         }
 
         public void onClick(View v) {
-            context.layerAction(LayerListActivity.ACTION_OPEN, position);
+            parentActivity.layerAction(LayerListActivity.ACTION_OPEN, position);
+        }
+    }
+    
+    private static class LayerImageLoadingHandler extends Handler {
+    	
+    	private WeakReference<ViewHolder> viewHolder;
+    	private WeakReference<Activity> parentActivity;
+    	private WeakReference<String> layerName;
+    	
+    	public LayerImageLoadingHandler(ViewHolder viewHolder, Activity parentActivity, String layerName) {
+    	    this.viewHolder = new WeakReference<ViewHolder>(viewHolder);
+    	    this.parentActivity = new WeakReference<Activity>(parentActivity);  	    
+    	    this.layerName = new WeakReference<String>(layerName);
+    	}
+    	
+    	@Override
+        public void handleMessage(Message message) {
+    		if (!parentActivity.get().isFinishing()) {
+    			BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, parentActivity.get().getResources().getDisplayMetrics(), null);
+                viewHolder.get().headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+    		}
         }
     }
 }

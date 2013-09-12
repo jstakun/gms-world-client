@@ -5,6 +5,7 @@
 package com.jstakun.gms.android.ui;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -93,50 +94,18 @@ public final class Intents {
     private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
     private List<ResolveInfo> activities;
-    private final Handler thumbnailLoadedHandler = new Handler() {
-        @Override
-        public void handleMessage(Message message) {
-            String url = message.getData().getString("url");
-            //System.out.println("Refreshing thumbnail icon " + url + " -----------------------------------------------------");
-
-            try {
-                View lvView = activity.findViewById(R.id.lvView);
-                ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
-                TextView desc = (TextView) lvView.findViewById(R.id.lvdesc);
-                ExtendedLandmark selectedLandmark = (ExtendedLandmark) thumbnail.getTag();
-
-                if (selectedLandmark != null && StringUtils.equals(url, selectedLandmark.getThumbnail())) {
-                    Bitmap image = IconCache.getInstance().getThumbnailResource(url, activity.getResources().getDisplayMetrics(), null);
-                    if (image != null && image.getWidth() < lvView.getWidth() * 0.5) {
-                        thumbnail.setImageBitmap(image);
-                        String descr = "";
-                        double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
-                        double lng = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
-                        float dist = DistanceUtils.distanceInKilometer(lat, lng, selectedLandmark.getQualifiedCoordinates().getLatitude(), selectedLandmark.getQualifiedCoordinates().getLongitude());
-                        if (dist >= 0.001f) {
-                            descr += Locale.getMessage(R.string.Landmark_distance, DistanceUtils.formatDistance(dist)) + "<br/>";
-                        }
-                        if (selectedLandmark.getDescription() != null) {
-                            descr += selectedLandmark.getDescription();
-                        }
-                        if (StringUtils.isNotEmpty(descr)) {
-                            FlowTextHelper.tryFlowText(descr, thumbnail, desc, activity.getWindowManager().getDefaultDisplay(), 3, imgGetter);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                LoggerUtils.error("Intents.thumbnailLoadedHandler exception:", e);
-            }
-        }
-    };
-    private final ImageGetter imgGetter = new Html.ImageGetter() {
+    
+    private static final ImageGetter imgGetter = new Html.ImageGetter() {
         @Override
         public Drawable getDrawable(String source) {
             Drawable drawable = null;
-            int resId = activity.getResources().getIdentifier(source, "drawable", activity.getPackageName());
-            if (resId > 0) {
-                drawable = activity.getResources().getDrawable(resId);
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            Context context = ConfigurationManager.getInstance().getContext();
+            if (context != null) {
+            	int resId = context.getResources().getIdentifier(source, "drawable", context.getPackageName());
+            	if (resId > 0) {
+                	drawable = context.getResources().getDrawable(resId);
+                	drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            	}
             }
             return drawable;
         }
@@ -706,7 +675,7 @@ public final class Intents {
 
         if (selectedLandmark.getThumbnail() != null) {
 
-            Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), activity.getResources().getDisplayMetrics(), thumbnailLoadedHandler);
+            Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), activity.getResources().getDisplayMetrics(), new ThumbnailLoadedHandler(activity));
             if (image != null && image.getWidth() < lvView.getWidth() * 0.5) {
                 thumbnail.setImageBitmap(image);
                 thumbnail.setTag(null);
@@ -1150,6 +1119,52 @@ public final class Intents {
                     startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.LAYER, myLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
                 }
             }
+        }
+    }
+    
+    private static class ThumbnailLoadedHandler extends Handler {
+    	
+    	private WeakReference<Activity> parentActivity;
+    	
+    	public ThumbnailLoadedHandler(Activity parentActivity) {
+    		this.parentActivity = new WeakReference<Activity>(parentActivity);  	
+    	}
+    	
+        @Override
+        public void handleMessage(Message message) {
+        	if (! parentActivity.get().isFinishing()) {
+        		String url = message.getData().getString("url");
+             	//System.out.println("Refreshing thumbnail icon " + url + " -----------------------------------------------------");
+
+             	try {
+             		View lvView = parentActivity.get().findViewById(R.id.lvView);
+             		ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
+             		TextView desc = (TextView) lvView.findViewById(R.id.lvdesc);
+             		ExtendedLandmark selectedLandmark = (ExtendedLandmark) thumbnail.getTag();
+
+                	if (selectedLandmark != null && StringUtils.equals(url, selectedLandmark.getThumbnail())) {
+                    	Bitmap image = IconCache.getInstance().getThumbnailResource(url, parentActivity.get().getResources().getDisplayMetrics(), null);
+                    	if (image != null && image.getWidth() < lvView.getWidth() * 0.5) {
+                        	thumbnail.setImageBitmap(image);
+                        	String descr = "";
+                        	double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
+                        	double lng = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
+                        	float dist = DistanceUtils.distanceInKilometer(lat, lng, selectedLandmark.getQualifiedCoordinates().getLatitude(), selectedLandmark.getQualifiedCoordinates().getLongitude());
+                        	if (dist >= 0.001f) {
+                            	descr += Locale.getMessage(R.string.Landmark_distance, DistanceUtils.formatDistance(dist)) + "<br/>";
+                        	}
+                        	if (selectedLandmark.getDescription() != null) {
+                            	descr += selectedLandmark.getDescription();
+                        	}
+                        	if (StringUtils.isNotEmpty(descr)) {
+                            	FlowTextHelper.tryFlowText(descr, thumbnail, desc, parentActivity.get().getWindowManager().getDefaultDisplay(), 3, imgGetter);
+                        	}
+                    	}
+                	}
+             	} catch (Exception e) {
+            	 	LoggerUtils.error("Intents.thumbnailLoadedHandler exception:", e);
+                }
+        	}   
         }
     }
 }

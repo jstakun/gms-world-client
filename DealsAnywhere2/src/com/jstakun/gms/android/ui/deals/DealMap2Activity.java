@@ -142,7 +142,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 initOnLocationChanged(location);
             } else {
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
-                    //start only if helpactivity not on top
+                    //start only if help activity not on top
                     if (!ConfigurationManager.getInstance().containsObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class)) {
                         intents.startPickLocationActivity();
                     }

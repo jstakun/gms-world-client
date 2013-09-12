@@ -26,7 +26,7 @@ public class AdMobUtils {
         AdView adView = (AdView) activity.findViewById(R.id.adView);
         if (adReq == null) {
             adReq = new AdRequest();
-            adReq.addTestDevice(AdRequest.TEST_EMULATOR);
+            //adReq.addTestDevice(AdRequest.TEST_EMULATOR);
             if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.FB_GENDER)) {
                 String gender = ConfigurationManager.getInstance().getString(ConfigurationManager.FB_GENDER);
                 if (gender == null) {

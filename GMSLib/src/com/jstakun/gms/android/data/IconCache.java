@@ -161,7 +161,7 @@ public class IconCache {
         return (images.containsKey(resourceName));
     }
 
-    public BitmapDrawable getLayerImageResource(String layerName, String suffix, String url, int resourceId, String resourceIdStr, int type, DisplayMetrics displayMetrics, Handler handler) {
+    public BitmapDrawable getLayerImageResource(String layerName, String suffix, String uri, int resourceId, String resourceIdStr, int type, DisplayMetrics displayMetrics, Handler handler) {
         Bitmap img = null;
         boolean serverLoading = false;
         String resourceName = layerName + suffix;
@@ -188,7 +188,7 @@ public class IconCache {
                 if (!loadingTasks.containsKey(resourceName)) {
                     //check if image exists in file cache
                     try {
-                        URL imageURL = new URL(url);
+                        URL imageURL = new URL(uri);
                         String[] pathTokens = imageURL.getFile().split("/");
                         img = PersistenceManagerFactory.getFileManager().readImageFile(FileManager.getIconsFolderPath(), pathTokens[pathTokens.length - 1], displayMetrics);
                     } catch (Exception ex) {
@@ -198,7 +198,7 @@ public class IconCache {
 
                     if (img == null) {
                         LoadExternalImageTask loadingTask = new LoadExternalImageTask(displayMetrics, false, handler);
-                        loadingTask.execute(layerName, suffix, url);
+                        loadingTask.execute(layerName, suffix, uri);
                         //AsyncTaskExecutor.executeTask(loadingTask, null, layerName, suffix, url);
                         loadingTasks.put(resourceName, loadingTask);
                     }
@@ -211,7 +211,7 @@ public class IconCache {
                     serverLoading = true;
                 }
             } else if (type == LayerManager.LAYER_FILESYSTEM) {
-                img = PersistenceManagerFactory.getFileManager().readImageFile(FileManager.getIconsFolderPath(), url, displayMetrics);
+                img = PersistenceManagerFactory.getFileManager().readImageFile(FileManager.getIconsFolderPath(), uri, displayMetrics);
             }
 
             if (img != null) {
