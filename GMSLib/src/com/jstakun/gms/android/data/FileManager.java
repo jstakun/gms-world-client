@@ -1072,10 +1072,12 @@ public class FileManager implements PersistenceManager {
         @Override
         protected Void doInBackground(Long... interval) {
             File[] fileList = cacheDir.listFiles();
+            java.util.Locale currentLocale = ConfigurationManager.getInstance().getCurrentLocale();
             for (int i = 0; i < fileList.length; i++) {
                 File f = fileList[i];
                 if (f.lastModified() < interval[0]) {
-                    LoggerUtils.debug("Deleting file " + f.getAbsolutePath());
+                    LoggerUtils.debug("Deleting file " + f.getAbsolutePath() + 
+                    		" created on " + DateTimeUtils.getShortDateTimeString(f.lastModified(), currentLocale));
                     f.delete();
                 }
             }

@@ -900,7 +900,7 @@ public final class Intents {
         		startHelpActivity();
         	}
         
-        	if (versionCode == 1086 || versionCode == 86) { //2.0.7
+        	if ((versionCode >= 1086 && buildVersion < 1086 && buildVersion > 100) || (versionCode >= 86 && buildVersion < 86)) { //2.0.7
         		boolean notify = false;
         		//logout user due to user management changes
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS) && ConfigurationManager.getInstance().containsKey("username") && ConfigurationManager.getInstance().containsKey("password")) {

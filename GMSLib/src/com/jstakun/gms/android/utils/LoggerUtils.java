@@ -5,7 +5,8 @@
 package com.jstakun.gms.android.utils;
 
 import android.util.Log;
-import org.acra.ErrorReporter;
+
+import org.acra.ACRA;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 
@@ -56,7 +57,7 @@ public class LoggerUtils {
         }
         //ifDebug() send crash report
         if (isDebug()) {
-            ErrorReporter.getInstance().handleSilentException(t);
+            ACRA.getErrorReporter().handleSilentException(t);
         }
     }
     

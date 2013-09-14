@@ -199,10 +199,6 @@ public class UserTracker {
             String errorMessage = null;
 
             if (ConfigurationManager.getInstance().getLocation() != null) {
-                //if (!ConfigurationManager.getInstance().isUserLoggedIn()) {
-                //    ConfigurationManager.getInstance().setMyPosUser();
-                //}
-
                 if (!dryRun) {
                     try {
                     	AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
@@ -215,10 +211,6 @@ public class UserTracker {
                 } else {
                     LoggerUtils.error("Sending my location at startup is dryRun mode.");
                 }
-
-                //if (ConfigurationManager.getInstance().isMyPosUser()) {
-                //    ConfigurationManager.getInstance().resetUser(false);
-                //}
             } else {
             	LoggerUtils.debug("Can't send my location is missing");
             }

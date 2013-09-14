@@ -59,6 +59,8 @@ import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
+
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class DealMapActivity extends MapActivity implements OnClickListener {
@@ -88,43 +90,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private boolean isRouteDisplayed = false;
     private AmzInfoOverlay infoOverlay;
     //Handlers
-    private final Handler loadingHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == MessageStack.STATUS_MESSAGE) {
-                statusBar.setText(messageStack.getMessage());
-            } else if (msg.what == MessageStack.STATUS_VISIBLE) {
-                loadingImage.setVisibility(View.VISIBLE);
-            } else if (msg.what == MessageStack.STATUS_GONE) {
-                loadingImage.setVisibility(View.GONE);
-            } else if (msg.what == LayerLoader.LAYER_LOADED) {
-                amzMapsView.postInvalidate();
-            } else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-                showRecommendedDeal(false);
-                if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
-                    asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(amzMapsView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(amzMapsView.getMapCenter().getLongitudeE6()), intents.takeScreenshot());
-                }
-            } else if (msg.what == AmzLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-                landmarkDetailsAction();
-            } else if (msg.what == SHOW_MAP_VIEW) {
-                View loading = findViewById(R.id.loadingWidgetP);
-                View mapCanvas = findViewById(R.id.mapCanvasWidgetM);
-                loading.setVisibility(View.GONE);
-                mapCanvas.setVisibility(View.VISIBLE);
-                if (lvView == null || !lvView.isShown()) {
-                    getActionBar().show();
-                }
-            } else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
-                showRouteAction((String)msg.obj);
-            } else if (msg.what == AmzMyLocationOverlay.UPDATE_LOCATION) {
-                Location location = (Location) msg.obj;
-                if (landmarkManager != null) {
-                    landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
-                }
-            }
-        }
-    };
+    private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = getMyLocation();
@@ -177,6 +143,8 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
             setContentView(R.layout.mapcanvasview);
             getActionBar().setDisplayHomeAsUpEnabled(true);
+            
+            loadingHandler = new LoadingHandler(this);
 
             initComponents();
         }
@@ -965,4 +933,51 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         //        + "shownDeals: " + ConfigurationManager.getInstance().getString(ConfigurationManager.RECOMMENDED_DEALS_SHOWN));
         //}
     }
+    
+    private static class LoadingHandler extends Handler {
+    	private WeakReference<DealMapActivity> parentActivity;
+    	
+    	public LoadingHandler(DealMapActivity parentActivity) {
+    		this.parentActivity = new WeakReference<DealMapActivity>(parentActivity);
+    	}
+    	
+        @Override
+        public void handleMessage(Message msg) {
+        	DealMapActivity activity = parentActivity.get();
+        	if (activity != null && !activity.isFinishing()) {
+        		if (msg.what == MessageStack.STATUS_MESSAGE) {
+        			activity.statusBar.setText(activity.messageStack.getMessage());
+                } else if (msg.what == MessageStack.STATUS_VISIBLE) {
+                	activity.loadingImage.setVisibility(View.VISIBLE);
+                } else if (msg.what == MessageStack.STATUS_GONE) {
+                	activity.loadingImage.setVisibility(View.GONE);
+                } else if (msg.what == LayerLoader.LAYER_LOADED) {
+                	activity.amzMapsView.postInvalidate();
+                } else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
+                	activity.showRecommendedDeal(false);
+                    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
+                    	activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.amzMapsView.getMapCenter().getLatitudeE6()),
+                                MathUtils.coordIntToDouble(activity.amzMapsView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot());
+                    }
+                } else if (msg.what == AmzLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
+                	activity.landmarkDetailsAction();
+                } else if (msg.what == SHOW_MAP_VIEW) {
+                    View loading = activity.findViewById(R.id.loadingWidgetP);
+                    View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);
+                    loading.setVisibility(View.GONE);
+                    mapCanvas.setVisibility(View.VISIBLE);
+                    if (activity.lvView == null || !activity.lvView.isShown()) {
+                    	activity.getActionBar().show();
+                    }
+                } else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
+                	activity.showRouteAction((String)msg.obj);
+                } else if (msg.what == AmzMyLocationOverlay.UPDATE_LOCATION) {
+                    Location location = (Location) msg.obj;
+                    if (activity.landmarkManager != null) {
+                    	activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
+                    }
+                }
+            }
+        }	
+    }    	 
 }

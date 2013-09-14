@@ -131,14 +131,13 @@ public class HttpUtils {
             if (postRequest == null) {
                 postRequest = new HttpPost(url);
 
-                //postRequest.addHeader("User-Agent", buildInfo);
                 postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
                 postRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
                 postRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
                 postRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
                 if (auth) {
-                    setBasicAuth(postRequest);
+                    setBasicAuth(postRequest, url.contains("services"));
                 }
 
                 postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
@@ -208,16 +207,13 @@ public class HttpUtils {
             if (postRequest == null) {
                 postRequest = new HttpPost(url);
 
-                //postRequest.addHeader("User-Agent", buildInfo);
-                //postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-                //postRequest.addHeader("Content-Type", "multipart/mixed");
                 postRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
                 postRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
                 postRequest.addHeader(LAT_HEADER, StringUtil.formatCoordE6(latitude));
                 postRequest.addHeader(LNG_HEADER, StringUtil.formatCoordE6(longitude));
 
                 if (auth) {
-                    setBasicAuth(postRequest);
+                    setBasicAuth(postRequest, url.contains("services"));
                     String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (StringUtils.isNotEmpty(username)) {
                         postRequest.addHeader("username", username);
@@ -302,7 +298,7 @@ public class HttpUtils {
 
                 // HTTP Response
                 if (auth) {
-                    setBasicAuth(getRequest);
+                    setBasicAuth(getRequest, url.contains("services"));
                 }
             } else {
                 getRequest.setURI(new URI(url));
@@ -406,7 +402,7 @@ public class HttpUtils {
 
                 // HTTP Response
                 if (auth) {
-                    setBasicAuth(getRequest);
+                    setBasicAuth(getRequest, url.contains("services"));
                 }
             } else {
                 getRequest.setURI(new URI(url));
@@ -519,7 +515,7 @@ public class HttpUtils {
         return new String[]{ds, dr, sd};
     }
 
-    private static void setBasicAuth(HttpRequest request) throws IOException {
+    private static void setBasicAuth(HttpRequest request, boolean throwIfEmpty) throws IOException {
     	String username = null, password = null;
     	boolean decodePassword = true, decodeUsername = true;
     	
@@ -553,6 +549,9 @@ public class HttpUtils {
         
     	if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
     		request.addHeader("Authorization", getAuthorizationHeader(username, decodeUsername, password, decodePassword));
+    	} else if (throwIfEmpty) {
+    		LoggerUtils.error("Authorization header is empty for user " + username);
+    		throw new SecurityException("Authorization header is empty for user " + username);
     	}
     }
     

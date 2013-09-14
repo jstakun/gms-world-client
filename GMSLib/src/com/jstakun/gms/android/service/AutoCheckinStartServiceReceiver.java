@@ -3,16 +3,10 @@ package com.jstakun.gms.android.service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.location.GpsDeviceFactory;
-import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
 public class AutoCheckinStartServiceReceiver extends BroadcastReceiver {

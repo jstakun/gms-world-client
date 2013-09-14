@@ -199,7 +199,7 @@
      <string name="Authn.error">Authentication error!</string>
      <string name="Authz.error">Authorization error!</string>
      <string name="Http.error">Operation failed with code %1$s!</string>
-     <string name="GPS.location.missing.error">I can\'t read your location!</string>
+     <string name="GPS.location.missing.error">Still searching for your location&#8230;</string>
      <string name="Pick.location.failed.error">Failed to find location %1$s due to: %2$s</string>
      <string name="Login.required.error">This function is available only for logged in users!</string>
      <string name="Checkin.required.error">This function requires Facebook or Foursquare login!</string>

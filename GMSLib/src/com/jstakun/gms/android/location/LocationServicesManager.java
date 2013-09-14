@@ -27,13 +27,6 @@ public class LocationServicesManager {
 
     public static void initLocationServicesManager(Context context, Handler locationHandler, IMyLocationOverlay imyLocation) {
 
-        /*LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-         if (locationManager != null) {
-         List<String> providers = locationManager.getProviders(false);
-         for (String provider : providers) {
-         System.out.println(provider);
-         }
-         }*/
         if (imyLocation != null && isGpsHardwarePresent(context)) {
             LoggerUtils.debug("GPS is present !!!");
             isGpsHardwarePresent = true;
