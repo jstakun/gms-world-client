@@ -984,15 +984,15 @@ public class AsyncTaskManager {
     }
 
     public void executeUploadImageTask(double lat, double lng, byte[] file) {
+    	//TODO check if (ServicesUtils.isWifiActive(context)) {
         if (file != null) {
-            //loading time & sdk version & num of landmarks
+            //loading time & sdk version & number of landmarks
             long loadingTime = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
             int version = OsUtil.getSdkVersion();
             int numOfLandmarks = landmarkManager.getAllLayersSize();
             int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
             String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version
                     + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
-            //AsyncTaskExecutor.execute(new UploadImageTask(file, filename), activity, lat, lng);
             new UploadImageTask(file, filename).execute(lat, lng);
         }
     }

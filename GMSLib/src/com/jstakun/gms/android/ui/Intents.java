@@ -356,9 +356,6 @@ public final class Intents {
     }
 
     public void startNewestLandmarkIntent(double[] currentLocation, String[] excluded, int sortOrder, int maxDays) {
-        //List<LandmarkParcelable> newest = new ArrayList<LandmarkParcelable>();
-        //landmarkManager.findNewestLandmarks(newest, maxDays, excluded, currentLocation[0], currentLocation[1]);
-        //startLandmarkListActivity(newest, INTENT_MULTILANDMARK, sortOrder, -1, R.string.Landmark_search_empty_result);
         Intent src = new Intent();
         src.putExtra("excluded", excluded);
         src.putExtra("maxDays", maxDays);
@@ -366,54 +363,24 @@ public final class Intents {
     }
 
     public void startFriendsCheckinsIntent(double[] currentLocation) {
-        //List<LandmarkParcelable> landmarks = new ArrayList<LandmarkParcelable>();
-        //landmarkManager.findFriendsCheckinLandmarks(landmarks, currentLocation[0], currentLocation[1]);
-        //startLandmarkListActivity(landmarks, INTENT_MULTILANDMARK, sortOrder, -1, R.string.Landmark_search_empty_result);
         startLandmarkListActivity(INTENT_MULTILANDMARK, null, LandmarkListActivity.SOURCE.FRIENDS_CHECKINS, currentLocation, AbstractLandmarkList.ORDER_BY_DATE_DESC);
     }
 
     public void startDealsOfTheDayIntent(double[] currentLocation, String[] excluded) {
-        //List<LandmarkParcelable> deals = new ArrayList<LandmarkParcelable>();
-        //landmarkManager.findDealsOfTheDay(deals, excluded, currentLocation[0], currentLocation[1]);
-        //startLandmarkListActivity(deals, INTENT_MULTILANDMARK, AbstractLandmarkList.ORDER_BY_CAT_STATS, -1, R.string.Landmark_search_empty_result);
         Intent src = new Intent();
         src.putExtra("excluded", excluded);
         startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.DOD, currentLocation, AbstractLandmarkList.ORDER_BY_CAT_STATS);
     }
 
     public void startRecentLandmarksIntent(double[] currentLocation) {
-        //List<LandmarkParcelable> recentlySelected = new ArrayList<LandmarkParcelable>();
-        //landmarkManager.getRecentlyOpenedLandmarks(recentlySelected, currentLocation[0], currentLocation[1]);
-        //startLandmarkListActivity(recentlySelected, INTENT_MULTILANDMARK, sortOrder, -1, R.string.Landmark_search_empty_result);
         startLandmarkListActivity(INTENT_MULTILANDMARK, null, LandmarkListActivity.SOURCE.RECENT, currentLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
     }
 
     public void startMultiLandmarkIntent(double[] currentLocation, int sortOrder) {
-        /*List<LandmarkParcelable> parcels = new ArrayList<LandmarkParcelable>();
-         java.util.Locale locale = ConfigurationManager.getInstance().getCurrentLocale();
-         List<ExtendedLandmark> landmarks = landmarkManager.getLandmarkToFocusQueue();
-         for (int i = 0; i < landmarks.size(); i++) {
-         parcels.add(LandmarkParcelableFactory.getLandmarkParcelable(landmarks.get(i), i, Integer.toString(i), currentLocation[0], currentLocation[1], locale));
-         }
-         startLandmarkListActivity(parcels, INTENT_MULTILANDMARK, sortOrder, -1, R.string.Landmark_search_empty_result);*/
         startLandmarkListActivity(INTENT_MULTILANDMARK, null, LandmarkListActivity.SOURCE.MULTI_LANDMARK, currentLocation, sortOrder);
     }
 
     public void startMyLandmarksIntent(double[] currentLocation) {
-        /*List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-         landmarks.addAll(landmarkManager.getUnmodifableLayer(LayerManager.LOCAL_LAYER));
-         List<ExtendedLandmark> mypos = landmarkManager.getUnmodifableLayer(LayerManager.MY_POSITION_LAYER);
-         if (!mypos.isEmpty()) {
-         landmarks.add(mypos.get(0));
-         }
-
-         List<LandmarkParcelable> parcels = new ArrayList<LandmarkParcelable>();
-         java.util.Locale locale = ConfigurationManager.getInstance().getCurrentLocale();
-         for (int i = 0; i < landmarks.size(); i++) {
-         parcels.add(LandmarkParcelableFactory.getLandmarkParcelable(landmarks.get(i), i, Integer.toString(i), currentLocation[0], currentLocation[1], locale));
-         }
-
-         startLandmarkListActivity(parcels, INTENT_MYLANDMARKS, AbstractLandmarkList.ORDER_BY_DIST_ASC, -1, R.string.Landmark_NoLandmarks);*/
         startLandmarkListActivity(INTENT_MYLANDMARKS, null, LandmarkListActivity.SOURCE.MY_LANDMARKS, currentLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
     }
 

@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.util.encoders.Base64;
@@ -34,8 +35,11 @@ import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.DateTimeUtils;
+import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MessageStack;
+import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.openlapi.QualifiedCoordinates;
 
@@ -117,6 +121,7 @@ public final class ConfigurationManager {
     public static final String CHECKIN_TIME_INTERVAL = "checkinTimeInterval";
     public static final String MAX_CURRENT_DISTANCE = "maxCurrentDistance";
     public static final String APP_URL = "appUrl";
+    public static final String NETWORK_MODE = "networkStatus";
     private static final String DEFAULT_LATITUDE = "defaultLatitude";
     private static final String DEFAULT_LONGITUDE = "defaultLongitude";
     
@@ -148,6 +153,9 @@ public final class ConfigurationManager {
     public static final int PHRASE_SEARCH = 0;
     public static final int WORDS_SEARCH = 1;
     public static final int FUZZY_SEARCH = 2;
+    public static final int NETWORK_ALL = 0;
+    public static final int NETWORK_TEXT = 1;
+    public static final int NETWORK_NONE = 2;
     
     //User Manager
     public static final String GMS_USERNAME = "gmsUsername";
@@ -446,7 +454,7 @@ public final class ConfigurationManager {
         if (context != null) {
             return context.getResources().getConfiguration().locale;
         } else {
-        	return Locale.getDefault();
+        	return java.util.Locale.getDefault();
         }
     }
 
@@ -474,6 +482,11 @@ public final class ConfigurationManager {
         } else {
             return default_locations.get("USA");
         }
+    }
+    
+    public boolean isNetworkModeAccepted() {
+    	return getInt(NETWORK_MODE, NETWORK_ALL) == NETWORK_ALL ||
+    		   getInt(NETWORK_MODE, NETWORK_ALL) == NETWORK_TEXT && ServicesUtils.isNetworkActive(getContext()); 	
     }
 
     public static AppUtils getAppUtils() {
@@ -623,11 +636,48 @@ public final class ConfigurationManager {
 
         	return ReturnVal;
     	}
+    	
+    	public String getAboutMessage() throws NameNotFoundException {
+    		PackageInfo info = getPackageInfo(); 
+            int versionCode = info.versionCode;
+            String versionName = info.versionName;
+            String app_name = Locale.getMessage(R.string.app_name);
+            String message = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), ConfigurationManager.SERVER_URL);
+    	    return message;
+    	}
+    	
+    	private String getBuildDate() {
+    		ZipFile zf = null;
+    		String s = "recently";
+    		try{
+    		     ApplicationInfo ai = getApplicationInfo();
+    		     zf = new ZipFile(ai.sourceDir);
+    		     ZipEntry ze = zf.getEntry("classes.dex");
+    		     long time = ze.getTime();
+    		     s = DateTimeUtils.getShortDateTimeString(time, getCurrentLocale());
+
+    		 } catch(Exception e) {
+    		 } finally {
+    			  try {
+    				  if (zf != null) {
+    					  zf.close();
+    				  }
+    			  } catch (Exception e) {
+    			  }
+    		 }
+    		 return s;
+    	}
     
     	public PackageInfo getPackageInfo() throws NameNotFoundException {    
     		PackageManager pm = getContext().getPackageManager();
     		PackageInfo pi = pm.getPackageInfo(getContext().getPackageName(), 0);
     		return pi;
+    	}
+    	
+    	public ApplicationInfo getApplicationInfo() throws NameNotFoundException {
+    		PackageManager pm = getContext().getPackageManager();
+    		ApplicationInfo ai = pm.getApplicationInfo(getContext().getPackageName(), 0);
+    		return ai;
     	}
     }
     
@@ -840,6 +890,5 @@ public final class ConfigurationManager {
     	public String getUserEmail() {
     		return getStringDecrypted(USER_EMAIL);
     	}
-    
     }
 }

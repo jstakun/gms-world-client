@@ -7,7 +7,6 @@ package com.jstakun.gms.android.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -81,20 +80,12 @@ public class AlertDialogBuilder {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         final TextView text = new TextView(activity);
-        //LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
-        //text.setLayoutParams(params);
         text.setPadding(10, 5, 10, 5);
         try {
-            PackageInfo info = activity.getPackageManager().getPackageInfo(ConfigurationManager.getInstance().getString(ConfigurationManager.PACKAGE_NAME), 0);
-            int versionCode = info.versionCode;
-            String versionName = info.versionName;
-            String app_name = Locale.getMessage(R.string.app_name);
-            String message = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, ConfigurationManager.SERVER_URL);
-
+            String message = ConfigurationManager.getAppUtils().getAboutMessage();
             text.setText(message);
             Linkify.addLinks(text, Linkify.WEB_URLS);
             text.setMovementMethod(LinkMovementMethod.getInstance());
-
         } catch (NameNotFoundException ex) {
             LoggerUtils.error("AlertDialogBuilder.createInfoAlertDialog error", ex);
         }

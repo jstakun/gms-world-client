@@ -195,7 +195,7 @@
      <string name="Authn.error">B\u0142\u0105d logowania!</string>
      <string name="Authz.error">B\u0142\u0105d autoryzacji!</string>
      <string name="Http.error">B\u0142\u0105d po\u0142\u0105czenia %1$s!</string>
-     <string name="GPS.location.missing.error">Trwa odczytywanie Twojej pozycji&#8230;</string>
+     <string name="GPS.location.missing.error">Czekam na rozpoznanie lokalizacji&#8230;</string>
      <string name="Pick.location.failed.error">Nie mog\u0119 znale\u017a\u0107 lokalizacji %1$s z powodu: %2$s</string>
      <string name="Login.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w!</string>
      <string name="Checkin.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w Facebook lub Foursquare!</string>

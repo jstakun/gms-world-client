@@ -166,23 +166,26 @@ public class FileManager implements PersistenceManager {
     }
 
     protected void saveImageFileToCache(Bitmap map, String filename) {
-        File fc;
-        OutputStream out = null;
-        try {
-            fc = new File(cacheDir, filename);
-            out = new FileOutputStream(fc);
-            map.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-        } catch (Exception ioe) {
-            LoggerUtils.error("FileManager.saveFile exception", ioe);
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException ex) {
-                    LoggerUtils.debug("FileManager.saveFile exception", ex);
-                }
-            }
+        if (map != null) {
+        	OutputStream out = null;
+        	try {
+        		File fc = new File(cacheDir, filename);
+        		out = new FileOutputStream(fc);
+        		map.compress(Bitmap.CompressFormat.PNG, 100, out);
+        		out.flush();
+        	} catch (Exception ioe) {
+        		LoggerUtils.error("FileManager.saveFile exception", ioe);
+        	} finally {
+        		if (out != null) {
+        			try {
+        				out.close();
+        			} catch (IOException ex) {
+        				LoggerUtils.debug("FileManager.saveFile exception", ex);
+        			}
+        		}
+        	}
+        } else {
+        	LoggerUtils.debug("Bitamp " + filename + " is empty!");
         }
     }
 

@@ -182,7 +182,7 @@ public class IconCache {
                         }
                     }
                 } catch (Exception ex) {
-                    LoggerUtils.error("IconCache.getLayerImageResource exception 0", ex);
+                    LoggerUtils.error("IconCache.getLayerImageResource() exception 0", ex);
                 }
             } else if (type == LayerManager.LAYER_EXTERNAL) {
                 if (!loadingTasks.containsKey(resourceName)) {
@@ -192,15 +192,16 @@ public class IconCache {
                         String[] pathTokens = imageURL.getFile().split("/");
                         img = PersistenceManagerFactory.getFileManager().readImageFile(FileManager.getIconsFolderPath(), pathTokens[pathTokens.length - 1], displayMetrics);
                     } catch (Exception ex) {
-                        LoggerUtils.error("IconCache.getLayerImageResource exception 1", ex);
+                        LoggerUtils.error("IconCache.getLayerImageResource() exception 1", ex);
                     }
-                    //
-
-                    if (img == null) {
-                        LoadExternalImageTask loadingTask = new LoadExternalImageTask(displayMetrics, false, handler);
-                        loadingTask.execute(layerName, suffix, uri);
-                        //AsyncTaskExecutor.executeTask(loadingTask, null, layerName, suffix, url);
-                        loadingTasks.put(resourceName, loadingTask);
+                    if (ConfigurationManager.getInstance().isNetworkModeAccepted()) {
+                    	if (img == null) {
+                    		LoadExternalImageTask loadingTask = new LoadExternalImageTask(displayMetrics, false, handler);
+                    		loadingTask.execute(layerName, suffix, uri);
+                    		loadingTasks.put(resourceName, loadingTask);
+                    	}
+                    } else {
+                    	LoggerUtils.debug("Skipping image loading " + uri + " due to lack of wi-fi...");
                     }
                 } else if (loadingTasks.containsKey(resourceName)) {
                     LoadExternalImageTask loadingTask = (LoadExternalImageTask) loadingTasks.get(resourceName);
@@ -254,28 +255,24 @@ public class IconCache {
                 if (img != null) {
                     images.put(hash, img);
                 }
-                //
-
                 if (img == null) {
-                    try {
-                        LoadExternalImageTask loadingTask = new LoadExternalImageTask(displayMetrics, true, handler);
-                        loadingTask.execute(hash, "", urlString);
-                        //AsyncTaskExecutor.executeTask(loadingTask, null, hash, "", urlString);
-                        loadingTasks.put(hash, loadingTask);
-                    } catch (Exception ex) {
-                        LoggerUtils.error("IconCache.getThunbnailResource exception 2", ex);
-                    }
+                	if (ConfigurationManager.getInstance().isNetworkModeAccepted()) {                        
+                		try {
+                			LoadExternalImageTask loadingTask = new LoadExternalImageTask(displayMetrics, true, handler);
+                			loadingTask.execute(hash, "", urlString);
+                			loadingTasks.put(hash, loadingTask);
+                		} catch (Exception ex) {
+                			LoggerUtils.error("IconCache.getThunbnailResource exception 2", ex);
+                		}
+                	} else {
+                		LoggerUtils.debug("Skipping image loading " + urlString + " due to lack of wi-fi...");
+                	}
                 }
             } else if (loadingTasks.containsKey(hash)) {
                 LoadExternalImageTask loadingTask = (LoadExternalImageTask) loadingTasks.get(hash);
                 loadingTask.setHandler(handler);
             }
         }
-
-        //if (img == null || displayMetrics.widthPixels < 2 * img.getWidth()) {
-        //    img = images.get(DOWNLOAD48);
-        //}
-
         return img;
     }
 
@@ -484,7 +481,6 @@ public class IconCache {
                         String[] pathTokens = imageURL.getFile().split("/");
                         PersistenceManagerFactory.getFileManager().saveIconFile(b, pathTokens[pathTokens.length - 1]);
                     } else {
-                        //PersistenceManagerFactory.getFileManager().saveImageFile(b, layer);
                         PersistenceManagerFactory.getFileManager().saveImageFileToCache(b, layer);
                     }
                     //

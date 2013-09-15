@@ -199,7 +199,7 @@
      <string name="Authn.error">Authentication error!</string>
      <string name="Authz.error">Authorization error!</string>
      <string name="Http.error">Operation failed with code %1$s!</string>
-     <string name="GPS.location.missing.error">Still searching for your location&#8230;</string>
+     <string name="GPS.location.missing.error">I\'m still waiting for your location&#8230;</string>
      <string name="Pick.location.failed.error">Failed to find location %1$s due to: %2$s</string>
      <string name="Login.required.error">This function is available only for logged in users!</string>
      <string name="Checkin.required.error">This function requires Facebook or Foursquare login!</string>
@@ -380,7 +380,7 @@
      <!-- English only -->
      <string name="Crash.error">An unexpected error occurred. Crash raport has been sent to developer and the issue will be fixed soon!</string>
      <string name="Status.bar.default">Landmark Manager</string>
-     <string name="Info.about">%1$s (R)\nVersion: %2$s-%3$d\nCopyright &#169; 2010&#8211;13 GMS World\n%4$s</string>
+     <string name="Info.about">%1$s (R)\nVersion: %2$s-%3$d built on %4$s\nCopyright &#169; 2010&#8211;13 GMS World\n%5$s</string>
      <string name="checkboxDodDialog">Show deal of the day at startup</string>
      <string name="Action.canceled">action canceled by you!</string>
      <string name="Zoom.info">Zoom %1$d/%2$d</string>
