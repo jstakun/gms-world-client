@@ -115,7 +115,7 @@ public class FileManager implements PersistenceManager {
         try {
             fc = new File(cacheDir, filename);
             if (!fc.exists()) {
-                LoggerUtils.debug("No saved file at " + fc.getAbsolutePath());
+                LoggerUtils.debug("File " + fc.getAbsolutePath() + " doesn't exists...");
             } else {
                 Bitmap b = BitmapFactory.decodeStream(new FileInputStream(fc));
                 if (b != null && !b.isRecycled()) {

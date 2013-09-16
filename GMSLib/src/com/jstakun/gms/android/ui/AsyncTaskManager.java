@@ -984,8 +984,7 @@ public class AsyncTaskManager {
     }
 
     public void executeUploadImageTask(double lat, double lng, byte[] file) {
-    	//TODO check if (ServicesUtils.isWifiActive(context)) {
-        if (file != null) {
+    	if (file != null && ConfigurationManager.getInstance().isNetworkModeAccepted()) {
             //loading time & sdk version & number of landmarks
             long loadingTime = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
             int version = OsUtil.getSdkVersion();
@@ -994,7 +993,9 @@ public class AsyncTaskManager {
             String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version
                     + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
             new UploadImageTask(file, filename).execute(lat, lng);
-        }
+        } else {
+    		LoggerUtils.debug("Skipping image upload due to lack of wi-fi...");
+    	}
     }
 
     private class UploadImageTask extends GMSAsyncTask<Double, Void, Void> {

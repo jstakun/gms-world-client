@@ -121,7 +121,7 @@ public final class ConfigurationManager {
     public static final String CHECKIN_TIME_INTERVAL = "checkinTimeInterval";
     public static final String MAX_CURRENT_DISTANCE = "maxCurrentDistance";
     public static final String APP_URL = "appUrl";
-    public static final String NETWORK_MODE = "networkStatus";
+    public static final String NETWORK_MODE = "networkMode";
     private static final String DEFAULT_LATITUDE = "defaultLatitude";
     private static final String DEFAULT_LONGITUDE = "defaultLongitude";
     
@@ -153,9 +153,9 @@ public final class ConfigurationManager {
     public static final int PHRASE_SEARCH = 0;
     public static final int WORDS_SEARCH = 1;
     public static final int FUZZY_SEARCH = 2;
-    public static final int NETWORK_ALL = 0;
-    public static final int NETWORK_TEXT = 1;
-    public static final int NETWORK_NONE = 2;
+    private static final int NETWORK_ALL = 0;
+    private static final int NETWORK_TEXT = 1;
+    //private static final int NETWORK_NONE = 2;
     
     //User Manager
     public static final String GMS_USERNAME = "gmsUsername";
@@ -485,8 +485,9 @@ public final class ConfigurationManager {
     }
     
     public boolean isNetworkModeAccepted() {
-    	return getInt(NETWORK_MODE, NETWORK_ALL) == NETWORK_ALL ||
-    		   getInt(NETWORK_MODE, NETWORK_ALL) == NETWORK_TEXT && ServicesUtils.isNetworkActive(getContext()); 	
+    	int networkMode = getInt(NETWORK_MODE);
+    	boolean isWifiActive = ServicesUtils.isWifiActive(getContext());
+    	return networkMode == NETWORK_ALL || (networkMode == NETWORK_TEXT && isWifiActive); 	
     }
 
     public static AppUtils getAppUtils() {

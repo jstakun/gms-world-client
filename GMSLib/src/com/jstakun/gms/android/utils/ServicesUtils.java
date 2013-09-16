@@ -41,9 +41,9 @@ public class ServicesUtils {
             final ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();       
             boolean isWifiAvailable = networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-            if (!isWifiAvailable) {
-               LoggerUtils.error("Wifi not available. Skipping image upload!"); 
-            }
+            //if (!isWifiAvailable) {
+            //   LoggerUtils.debug("Wifi not available. Skipping image download or upload!"); 
+            //}
             return isWifiAvailable;
         } catch (Exception e) {
             LoggerUtils.error("ServiceUtils.isNetworkActive exception:", e);
