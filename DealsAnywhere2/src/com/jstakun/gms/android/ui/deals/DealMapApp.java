@@ -26,6 +26,7 @@ import org.acra.annotation.ReportsCrashes;
 @ReportsCrashes(formKey = "",
 formUri = ConfigurationManager.CRASH_REPORT_URL,
 mode = ReportingInteractionMode.TOAST,
+socketTimeout = 30000,
 resToastText = R.string.Crash_error)
 public class DealMapApp extends Application {
 

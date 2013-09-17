@@ -13,6 +13,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public abstract class DateTimeUtils {
 
     public static final long ONE_MINUTE = 60 * 1000;
+    public static final long THIRTY_SECONDS = 30 * 1000;
     public static final long ONE_HOUR = 60 * ONE_MINUTE;
     public static final long FIVE_MINUTES = 5 * ONE_MINUTE;
     public static final long ONE_DAY = 24 * ONE_HOUR;

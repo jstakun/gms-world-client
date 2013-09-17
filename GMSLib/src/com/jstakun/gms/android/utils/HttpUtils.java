@@ -25,6 +25,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -41,6 +42,7 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
@@ -61,7 +63,7 @@ import com.jstakun.gms.android.ui.lib.R;
  */
 public class HttpUtils {
 
-    private static HttpClient httpClient = null;
+    private static DefaultHttpClient httpClient = null;
     private String errorMessage = null;
     private HttpPost postRequest;
     private HttpGet getRequest;
@@ -72,20 +74,21 @@ public class HttpUtils {
     private static final String LAT_HEADER = "X-GMS-Lat";
     private static final String LNG_HEADER = "X-GMS-Lng";
     private static java.util.Locale locale;
-    private static final int RETRY_COUNT = 1;
     private int responseCode;
 
     private static HttpClient getHttpClient() {
         if (httpClient == null) {
 
             HttpParams params = new BasicHttpParams();
-            params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, (int) DateTimeUtils.ONE_MINUTE);
-            params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, (int) DateTimeUtils.ONE_MINUTE);
+            params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, (int) DateTimeUtils.THIRTY_SECONDS);
+            params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, (int) DateTimeUtils.THIRTY_SECONDS);
 
             ConnPerRouteBean connPerRoute = new ConnPerRouteBean();
             connPerRoute.setDefaultMaxPerRoute(12);
-            HttpHost gmsHost = new HttpHost(ConfigurationManager.SERVER_HOST, 80);
-            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost), 32);
+            HttpHost gmsHost1 = new HttpHost(ConfigurationManager.SERVER_HOST, 443);
+            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost1), 32);
+            HttpHost gmsHost2 = new HttpHost("www.gms-world.net", 80);
+            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost2), 32);
             ConnManagerParams.setMaxConnectionsPerRoute(params, connPerRoute);
 
             if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.BUILD_INFO, String.class)) {
@@ -98,9 +101,9 @@ public class HttpUtils {
                     new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
             schemeRegistry.register(
                     new Scheme("https", getSSLSocketFactory(), 443));
-
+            
             httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schemeRegistry), params);
-
+            httpClient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(2, true));
         }
 
         return httpClient;
@@ -108,14 +111,8 @@ public class HttpUtils {
 
     public void sendPostRequest(String url, List<NameValuePair> params, boolean auth) {
         getThreadSafeClientConnManagerStats();
-        sendPostRequest(url, params, auth, RETRY_COUNT);
-    }
-
-    private void sendPostRequest(String url, List<NameValuePair> params, boolean auth, int retryCount) {
-
         InputStream is = null;
-        boolean needRetry = false;
-
+        
         if (locale == null) {
             locale = ConfigurationManager.getInstance().getCurrentLocale();
         }
@@ -127,21 +124,20 @@ public class HttpUtils {
         }*/
 
         try {
-            // Open an HTTP Connection object
-            if (postRequest == null) {
-                postRequest = new HttpPost(url);
+        	URI uri = new URI(url);
+        	
+            postRequest = new HttpPost(uri);
 
-                postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-                postRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
-                postRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-                postRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+            postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
+            postRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
+            postRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            postRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
-                if (auth) {
-                    setBasicAuth(postRequest, url.contains("services"));
-                }
-
-                postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+            if (auth) {
+               setBasicAuth(postRequest, url.contains("services"));
             }
+           
+            postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             HttpResponse httpResponse = getHttpClient().execute(postRequest);
 
@@ -168,18 +164,14 @@ public class HttpUtils {
             }
             if (responseCode == HttpStatus.SC_OK) {
                 readHeaders(httpResponse, "key", "name", "hash");
-            } else if (retryCount > 0) {
-                needRetry = true;
             } else {
                 errorMessage = handleHttpStatus(responseCode);
             }
+            
+            entity.consumeContent();
         } catch (Exception e) {
             LoggerUtils.debug("HttpUtils.loadHttpFile exception: ", e);
             errorMessage = handleHttpException(e);
-            if (responseCode != HttpStatus.SC_OK && retryCount > 0) {
-                needRetry = true;
-            } else {
-            }
         } finally {
             try {
                 if (is != null) {
@@ -188,14 +180,6 @@ public class HttpUtils {
             } catch (IOException e) {
             }
         }
-
-        if (needRetry) {
-            try {
-                Thread.sleep(1000L);
-            } catch (InterruptedException ie) {
-            }
-            sendPostRequest(url, params, auth, retryCount - 1);
-        }
     }
 
     public void uploadFile(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
@@ -203,36 +187,35 @@ public class HttpUtils {
         InputStream is = null;
         
         try {
-            // Open an HTTP Connection object
-            if (postRequest == null) {
-                postRequest = new HttpPost(url);
+        	URI uri = new URI(url);
+        	
+            postRequest = new HttpPost(uri);
 
-                postRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-                postRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
-                postRequest.addHeader(LAT_HEADER, StringUtil.formatCoordE6(latitude));
-                postRequest.addHeader(LNG_HEADER, StringUtil.formatCoordE6(longitude));
+            postRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            postRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+            postRequest.addHeader(LAT_HEADER, StringUtil.formatCoordE6(latitude));
+            postRequest.addHeader(LNG_HEADER, StringUtil.formatCoordE6(longitude));
 
-                if (auth) {
+            if (auth) {
                     setBasicAuth(postRequest, url.contains("services"));
                     String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (StringUtils.isNotEmpty(username)) {
                         postRequest.addHeader("username", username);
                     }                      
-                }
-
-                ByteArrayBody bab = new ByteArrayBody(file, filename);
-                MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-                entity.addPart("screenshot", bab);
-
-                postRequest.setEntity(entity);
             }
+    
+            ByteArrayBody bab = new ByteArrayBody(file, filename);
+            MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+            entity.addPart("screenshot", bab);
+
+            postRequest.setEntity(entity);        
 
             HttpResponse httpResponse = getHttpClient().execute(postRequest);
 
             responseCode = httpResponse.getStatusLine().getStatusCode();
 
-            HttpEntity entity = httpResponse.getEntity();
-            is = entity.getContent();
+            HttpEntity respEntity = httpResponse.getEntity();
+            is = respEntity.getContent();
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             byte[] buffer = new byte[512];
@@ -254,8 +237,9 @@ public class HttpUtils {
             } else {
                 errorMessage = handleHttpStatus(responseCode);
             }
+            respEntity.consumeContent();
         } catch (Exception e) {
-            LoggerUtils.debug("HttpUtils.loadHttpFile exception: ", e);
+            LoggerUtils.debug("HttpUtils.loadHttpFile() exception: ", e);
             errorMessage = handleHttpException(e);
         } finally {
             try {
@@ -268,17 +252,11 @@ public class HttpUtils {
     }
 
     public byte[] loadHttpFile(String url, boolean auth, String format) {
-        getThreadSafeClientConnManagerStats();
-        return loadHttpFile(url, auth, format, RETRY_COUNT);
-    }
-
-    private byte[] loadHttpFile(String url, boolean auth, String format, int retryCount) {
-
+        getThreadSafeClientConnManagerStats();     
         byte[] byteBuffer = null;
-        boolean needRetry = false;
-
+        
         try {
-            LoggerUtils.debug("Loading file: " + url + ", retry count " + retryCount);
+            LoggerUtils.debug("Loading file: " + url);
             //boolean compressed = false;
             InputStream is;
 
@@ -286,24 +264,22 @@ public class HttpUtils {
                 locale = ConfigurationManager.getInstance().getCurrentLocale();
             }
 
-            if (getRequest == null) {
-                getRequest = new HttpGet(url);
+            URI uri = new URI(url);
+            
+            getRequest = new HttpGet(uri);
 
-                getRequest.addHeader("Accept-Encoding", "gzip, deflate");
-                //getRequest.addHeader("User-Agent", buildInfo);
-                getRequest.addHeader("Connection", "close");
-                getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-                getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-                getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+            getRequest.addHeader("Accept-Encoding", "gzip, deflate");
+            getRequest.addHeader("Connection", "close");
+            getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
+            getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
-                // HTTP Response
-                if (auth) {
-                    setBasicAuth(getRequest, url.contains("services"));
-                }
-            } else {
-                getRequest.setURI(new URI(url));
+            // HTTP Response
+            if (auth) {
+                  setBasicAuth(getRequest, url.contains("services"));
+            	  //getRequest.addHeader(BasicScheme.authenticate(getUsernamePasswordCredentials(url.contains("services")), "UTF-8", false));
             }
-
+            
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
 
             responseCode = httpResponse.getStatusLine().getStatusCode();
@@ -352,62 +328,44 @@ public class HttpUtils {
                 }
             } else {
                 LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
-                needRetry = true;
                 errorMessage = handleHttpStatus(responseCode);
             }
         } catch (Exception e) {
             byteBuffer = null;
             LoggerUtils.error("HttpUtils.loadHttpFile Exception: ", e);
-            needRetry = true;
             errorMessage = handleHttpException(e);
         }
 
-        if (needRetry && retryCount > 0) {
-            try {
-                Thread.sleep(1000L);
-            } catch (InterruptedException ie) {
-            }
-            return loadHttpFile(url, auth, format, retryCount - 1);
-        } else {
-            return byteBuffer;
-        }
+        return byteBuffer;
     }
     
     public Object loadObject(String url, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();
-        return loadObject(url, auth, format, RETRY_COUNT);
-    }
-
-    private Object loadObject(String url, boolean auth, String format, int retryCount) {
-
+        
         Object reply = null;
-        boolean needRetry = false;
-
+        
         try {
-            LoggerUtils.debug("Loading file: " + url + ", retry count " + retryCount);
+            LoggerUtils.debug("Loading file: " + url);
             
             if (locale == null) {
                 locale = ConfigurationManager.getInstance().getCurrentLocale();
             }
 
-            if (getRequest == null) {
-                getRequest = new HttpGet(url);
+            URI uri = new URI(url);
+            
+            getRequest = new HttpGet(uri);
 
-                getRequest.addHeader("Accept-Encoding", "gzip, deflate");
-                //getRequest.addHeader("User-Agent", buildInfo);
-                getRequest.addHeader("Connection", "close");
-                getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-                getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-                getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+            getRequest.addHeader("Accept-Encoding", "gzip, deflate");
+            getRequest.addHeader("Connection", "close");
+            getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
+            getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
-                // HTTP Response
-                if (auth) {
-                    setBasicAuth(getRequest, url.contains("services"));
-                }
-            } else {
-                getRequest.setURI(new URI(url));
+            // HTTP Response
+            if (auth) {
+               setBasicAuth(getRequest, url.contains("services"));
             }
-
+            
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
 
             responseCode = httpResponse.getStatusLine().getStatusCode();
@@ -443,24 +401,14 @@ public class HttpUtils {
                 }
             } else {
                 LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
-                needRetry = true;
                 errorMessage = handleHttpStatus(responseCode);
             }
         } catch (Exception e) {
             LoggerUtils.error("HttpUtils.loadObject() exception: ", e);
-            needRetry = true;
             errorMessage = handleHttpException(e);
         }
 
-        if (needRetry && retryCount > 0) {
-            try {
-                Thread.sleep(1000L);
-            } catch (InterruptedException ie) {
-            }
-            return loadObject(url, auth, format, retryCount - 1);
-        } else {
-            return reply;
-        }
+        return reply;
     }
 
     public void close() throws IOException {
@@ -515,6 +463,54 @@ public class HttpUtils {
         return new String[]{ds, dr, sd};
     }
 
+    private static UsernamePasswordCredentials getUsernamePasswordCredentials(boolean throwIfEmpty) {
+    	String username = null, password = null;
+    	boolean decodePassword = true, decodeUsername = true;
+    	
+    	if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_USERNAME, String.class) && 
+    			ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_PASSWORD, String.class)) {
+        	//user in process of login to gms world
+    		username = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_USERNAME, String.class);
+    		password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
+    		decodeUsername = false;
+    		decodePassword = false;
+        } else if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
+    		//user is logged in
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
+        		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);
+        		password = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_PASSWORD);
+        		decodeUsername = false;
+        	} else {
+        		username = Commons.GMS_APP_USER;
+                password = Commons.APP_USER_PWD;
+        	}
+    	} else if (ConfigurationManager.getInstance().containsObject(Commons.MY_POS_CODE, String.class)) {
+    		//mypos request
+    		username = Commons.MY_POS_USER;
+            password = Commons.APP_USER_PWD;
+            ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
+        } else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) == 1) {
+    		//da app request
+    		username = Commons.DA_APP_USER;
+            password = Commons.APP_USER_PWD;
+    	}	
+    	
+    	if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
+    		if (decodeUsername) {
+    	        username = new String(Base64.decode(username));
+    	    } 
+    		
+    		if (decodePassword) {
+    	    	password = new String(Base64.decode(password));
+    	    } 
+    		return new UsernamePasswordCredentials(username, password);
+    	} else if (throwIfEmpty) {
+    		LoggerUtils.error("Authorization header is empty for user " + username);
+    		throw new SecurityException("Authorization header is empty for user " + username);
+    	}
+    	return null;
+    }
+    
     private static void setBasicAuth(HttpRequest request, boolean throwIfEmpty) throws IOException {
     	String username = null, password = null;
     	boolean decodePassword = true, decodeUsername = true;
@@ -661,7 +657,7 @@ public class HttpUtils {
         private static SSLSocketFactory getSSLSocketFactory() {
             try {
                 SSLSessionCache sessionCache = new SSLSessionCache(ConfigurationManager.getInstance().getContext());
-                return SSLCertificateSocketFactory.getHttpSocketFactory((int) DateTimeUtils.ONE_MINUTE, sessionCache);
+                return SSLCertificateSocketFactory.getHttpSocketFactory((int) DateTimeUtils.THIRTY_SECONDS, sessionCache);
             } catch (Throwable e) {
             }
             return SSLSocketFactory.getSocketFactory();

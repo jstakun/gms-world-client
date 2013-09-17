@@ -26,7 +26,8 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 @ReportsCrashes(formKey = "",
 formUri = ConfigurationManager.CRASH_REPORT_URL,
 mode = ReportingInteractionMode.TOAST,
-resToastText = R.string.Crash_error)
+resToastText = R.string.Crash_error,
+socketTimeout = 30000)
 public class DealMapApp extends Application {
 
     @Override
