@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -41,13 +42,16 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HttpContext;
 import org.bouncycastle.util.encoders.Base64;
 
 import android.net.SSLCertificateSocketFactory;
@@ -75,13 +79,15 @@ public class HttpUtils {
     private static final String LNG_HEADER = "X-GMS-Lng";
     private static java.util.Locale locale;
     private int responseCode;
-
+    private static final int REQUEST_RETRY_COUNT = 2;
+    private static final int SOCKET_TIMEOUT = (int)DateTimeUtils.THIRTY_SECONDS; //DateTimeUtils.ONE_MINUTE;
+	
     private static HttpClient getHttpClient() {
         if (httpClient == null) {
 
             HttpParams params = new BasicHttpParams();
-            params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, (int) DateTimeUtils.THIRTY_SECONDS);
-            params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, (int) DateTimeUtils.THIRTY_SECONDS);
+            params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, SOCKET_TIMEOUT);
+            params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, SOCKET_TIMEOUT);
 
             ConnPerRouteBean connPerRoute = new ConnPerRouteBean();
             connPerRoute.setDefaultMaxPerRoute(12);
@@ -103,7 +109,7 @@ public class HttpUtils {
                     new Scheme("https", getSSLSocketFactory(), 443));
             
             httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schemeRegistry), params);
-            httpClient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(2, true));
+            httpClient.setHttpRequestRetryHandler(new SocketTimeOutRetryHandler(params, REQUEST_RETRY_COUNT, true));
         }
 
         return httpClient;
@@ -276,8 +282,8 @@ public class HttpUtils {
 
             // HTTP Response
             if (auth) {
-                  setBasicAuth(getRequest, url.contains("services"));
-            	  //getRequest.addHeader(BasicScheme.authenticate(getUsernamePasswordCredentials(url.contains("services")), "UTF-8", false));
+                  //setBasicAuth(getRequest, url.contains("services"));
+            	  getRequest.addHeader(new BasicScheme().authenticate(getUsernamePasswordCredentials(url.contains("services")), getRequest));
             }
             
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
@@ -499,10 +505,11 @@ public class HttpUtils {
     		if (decodeUsername) {
     	        username = new String(Base64.decode(username));
     	    } 
-    		
+    		System.out.println(password);
     		if (decodePassword) {
     	    	password = new String(Base64.decode(password));
     	    } 
+    		System.out.println(password);
     		return new UsernamePasswordCredentials(username, password);
     	} else if (throwIfEmpty) {
     		LoggerUtils.error("Authorization header is empty for user " + username);
@@ -657,7 +664,7 @@ public class HttpUtils {
         private static SSLSocketFactory getSSLSocketFactory() {
             try {
                 SSLSessionCache sessionCache = new SSLSessionCache(ConfigurationManager.getInstance().getContext());
-                return SSLCertificateSocketFactory.getHttpSocketFactory((int) DateTimeUtils.THIRTY_SECONDS, sessionCache);
+                return SSLCertificateSocketFactory.getHttpSocketFactory(SOCKET_TIMEOUT, sessionCache);
             } catch (Throwable e) {
             }
             return SSLSocketFactory.getSocketFactory();
@@ -686,5 +693,36 @@ public class HttpUtils {
 	        return null;
 		}
     	
+    }
+    
+    private static class SocketTimeOutRetryHandler extends DefaultHttpRequestRetryHandler {
+    	
+    	 private HttpParams httpParams;
+    	
+    	 public SocketTimeOutRetryHandler(HttpParams httpParams, int retryCount, boolean requestSentRetryEnabled) {
+    		 super(retryCount, requestSentRetryEnabled);
+    		 this.httpParams = httpParams;
+    	 }
+    	 
+    	 @Override
+         public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
+             if (exception instanceof SocketTimeoutException) {
+                 if (executionCount <= getRetryCount()) {
+                	 if (httpParams != null) {
+                         final int newSocketTimeOut = HttpConnectionParams.getSoTimeout(httpParams) * 2;
+                         HttpConnectionParams.setSoTimeout(httpParams, newSocketTimeOut);
+                         LoggerUtils.debug("SocketTimeOut - increasing time out to " + newSocketTimeOut
+                                 + " millis and trying again");
+                     } else {
+                    	 LoggerUtils.debug("SocketTimeOut - no HttpParams, cannot increase time out. Trying again with current settings");
+                     }
+                     return true;
+                 } else {
+                	 return false;
+                 }
+             } else {
+            	 return super.retryRequest(exception, executionCount, context);
+             }
+    	 }   
     }
 }
