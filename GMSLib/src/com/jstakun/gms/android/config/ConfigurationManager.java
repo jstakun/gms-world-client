@@ -503,6 +503,7 @@ public final class ConfigurationManager {
     
     	public void initApp(Context applicationContext) {
     		setContext(applicationContext);
+    		LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
     		String buildInfo = collectSystemInformation();
     		setDefaultConfiguration();
 

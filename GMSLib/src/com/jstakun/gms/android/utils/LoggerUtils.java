@@ -16,16 +16,11 @@ import com.jstakun.gms.android.config.ConfigurationManager;
  */
 public class LoggerUtils {
 
-    private static final String TAG = "LandmarkManager";
+    private static String TAG = "GMS World";
 
-    //public static void initialize() {
-        //set log level
-        
-    //}
-
-    //public static void close() {
-        
-    //}
+    public static void setTag(String tag) {
+        TAG = tag;
+    }
 
     public static void debug(String msg) {
         //System.out.println(msg);

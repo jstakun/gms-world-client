@@ -26,7 +26,6 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -42,7 +41,6 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -92,9 +90,9 @@ public class HttpUtils {
             ConnPerRouteBean connPerRoute = new ConnPerRouteBean();
             connPerRoute.setDefaultMaxPerRoute(12);
             HttpHost gmsHost1 = new HttpHost(ConfigurationManager.SERVER_HOST, 443);
-            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost1), 32);
+            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost1), 16);
             HttpHost gmsHost2 = new HttpHost("www.gms-world.net", 80);
-            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost2), 32);
+            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost2), 16);
             ConnManagerParams.setMaxConnectionsPerRoute(params, connPerRoute);
 
             if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.BUILD_INFO, String.class)) {
@@ -282,8 +280,7 @@ public class HttpUtils {
 
             // HTTP Response
             if (auth) {
-                  //setBasicAuth(getRequest, url.contains("services"));
-            	  getRequest.addHeader(new BasicScheme().authenticate(getUsernamePasswordCredentials(url.contains("services")), getRequest));
+               setBasicAuth(getRequest, url.contains("services"));
             }
             
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
@@ -338,7 +335,7 @@ public class HttpUtils {
             }
         } catch (Exception e) {
             byteBuffer = null;
-            LoggerUtils.error("HttpUtils.loadHttpFile Exception: ", e);
+            LoggerUtils.error("HttpUtils.loadHttpFile() exception: ", e);
             errorMessage = handleHttpException(e);
         }
 
@@ -469,55 +466,6 @@ public class HttpUtils {
         return new String[]{ds, dr, sd};
     }
 
-    private static UsernamePasswordCredentials getUsernamePasswordCredentials(boolean throwIfEmpty) {
-    	String username = null, password = null;
-    	boolean decodePassword = true, decodeUsername = true;
-    	
-    	if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_USERNAME, String.class) && 
-    			ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_PASSWORD, String.class)) {
-        	//user in process of login to gms world
-    		username = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_USERNAME, String.class);
-    		password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
-    		decodeUsername = false;
-    		decodePassword = false;
-        } else if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-    		//user is logged in
-        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
-        		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);
-        		password = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_PASSWORD);
-        		decodeUsername = false;
-        	} else {
-        		username = Commons.GMS_APP_USER;
-                password = Commons.APP_USER_PWD;
-        	}
-    	} else if (ConfigurationManager.getInstance().containsObject(Commons.MY_POS_CODE, String.class)) {
-    		//mypos request
-    		username = Commons.MY_POS_USER;
-            password = Commons.APP_USER_PWD;
-            ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
-        } else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) == 1) {
-    		//da app request
-    		username = Commons.DA_APP_USER;
-            password = Commons.APP_USER_PWD;
-    	}	
-    	
-    	if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
-    		if (decodeUsername) {
-    	        username = new String(Base64.decode(username));
-    	    } 
-    		System.out.println(password);
-    		if (decodePassword) {
-    	    	password = new String(Base64.decode(password));
-    	    } 
-    		System.out.println(password);
-    		return new UsernamePasswordCredentials(username, password);
-    	} else if (throwIfEmpty) {
-    		LoggerUtils.error("Authorization header is empty for user " + username);
-    		throw new SecurityException("Authorization header is empty for user " + username);
-    	}
-    	return null;
-    }
-    
     private static void setBasicAuth(HttpRequest request, boolean throwIfEmpty) throws IOException {
     	String username = null, password = null;
     	boolean decodePassword = true, decodeUsername = true;
