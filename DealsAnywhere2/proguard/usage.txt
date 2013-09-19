@@ -1012,6 +1012,7 @@ com.google.ads.AdRequest:
     524:529:public com.google.ads.AdRequest addMediationExtra(java.lang.String,java.lang.Object)
     549:549:public android.location.Location getLocation()
     564:565:public com.google.ads.AdRequest setTesting(boolean)
+    687:692:public com.google.ads.AdRequest addTestDevice(java.lang.String)
 com.google.ads.AdSize:
     public static final int FULL_WIDTH
     public static final int AUTO_HEIGHT
@@ -2812,6 +2813,7 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String CHECKIN_TIME_INTERVAL
     public static final java.lang.String MAX_CURRENT_DISTANCE
     public static final java.lang.String APP_URL
+    public static final java.lang.String NETWORK_MODE
     private static final java.lang.String DEFAULT_LATITUDE
     private static final java.lang.String DEFAULT_LONGITUDE
     private static final java.lang.String ON
@@ -2841,6 +2843,8 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final int PHRASE_SEARCH
     public static final int WORDS_SEARCH
     public static final int FUZZY_SEARCH
+    private static final int NETWORK_ALL
+    private static final int NETWORK_TEXT
     public static final java.lang.String GMS_USERNAME
     public static final java.lang.String GMS_PASSWORD
     public static final java.lang.String GMS_NAME
@@ -2872,10 +2876,10 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String GL_GENDER
     public static final java.lang.String GL_BIRTHDAY
     public static final java.lang.String USER_EMAIL
-    255:255:public java.util.Map getConfiguration()
-    458:461:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
+    263:263:public java.util.Map getConfiguration()
+    466:469:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
 com.jstakun.gms.android.config.ConfigurationManager$UserManager:
-    734:734:public boolean isUserLoggedInFully()
+    786:786:public boolean isUserLoggedInFully()
 com.jstakun.gms.android.data.AndroidPersistenceManager:
     private static final java.lang.String CONFIGURATION_FILE
     private static final java.lang.String MAP_FILE
@@ -2946,22 +2950,22 @@ com.jstakun.gms.android.data.FileManager:
     108:109:public void saveImageFile(android.graphics.Bitmap)
     141:158:public void saveFile(byte[],java.lang.String,java.lang.String)
     161:162:public void saveImageFile(android.graphics.Bitmap,java.lang.String)
-    229:274:public void saveLandmarkStore(java.util.List)
-    280:318:public void saveConfigurationFile()
-    436:461:public java.lang.String readTextFile(int,android.content.Context)
-    560:591:public void saveTilesCache(com.jstakun.gms.android.maps.TilesCache)
-    596:664:public int readTilesCache(com.jstakun.gms.android.maps.TilesCache)
-    730:731:public void deleteFile()
-    754:755:public void deleteTile()
-    758:768:public int deleteTilesCache()
-    792:792:public boolean tileExists(java.lang.String)
-    797:816:public java.util.List readFolder(java.lang.String,java.io.FilenameFilter)
-    821:838:public java.util.ArrayList readFolderAsLandmarkParcelable(java.lang.String,java.io.FilenameFilter,java.lang.String)
-    875:888:private static int getExternalStorageStatus()
-    893:893:public java.io.File getRouteFile(java.lang.String)
-    897:907:public static java.io.Writer openKmlRouteFile(java.io.File)
-    911:917:public static void closeKmlRouteFile(java.io.Writer)
-    1020:1042:public static void copyDatabaseToSdCard(java.lang.String,java.lang.String)
+    232:277:public void saveLandmarkStore(java.util.List)
+    283:321:public void saveConfigurationFile()
+    439:464:public java.lang.String readTextFile(int,android.content.Context)
+    563:594:public void saveTilesCache(com.jstakun.gms.android.maps.TilesCache)
+    599:667:public int readTilesCache(com.jstakun.gms.android.maps.TilesCache)
+    733:734:public void deleteFile()
+    757:758:public void deleteTile()
+    761:771:public int deleteTilesCache()
+    795:795:public boolean tileExists(java.lang.String)
+    800:819:public java.util.List readFolder(java.lang.String,java.io.FilenameFilter)
+    824:841:public java.util.ArrayList readFolderAsLandmarkParcelable(java.lang.String,java.io.FilenameFilter,java.lang.String)
+    878:891:private static int getExternalStorageStatus()
+    896:896:public java.io.File getRouteFile(java.lang.String)
+    900:910:public static java.io.Writer openKmlRouteFile(java.io.File)
+    914:920:public static void closeKmlRouteFile(java.io.Writer)
+    1023:1045:public static void copyDatabaseToSdCard(java.lang.String,java.lang.String)
 com.jstakun.gms.android.data.FileManager$DeletingTilesTask
 com.jstakun.gms.android.data.FilenameFilterFactory
 com.jstakun.gms.android.data.IconCache:
@@ -2977,9 +2981,9 @@ com.jstakun.gms.android.data.IconCache:
     public static final java.lang.String IMAGE_LOADING_TILE
     public static final java.lang.String IMAGE_LOADING_MAP
     public static final java.lang.String IMAGE_MISSING
-    283:284:public void clearImageCache()
+    280:281:public void clearImageCache()
 com.jstakun.gms.android.data.IconCache$BitmapDrawableHelperInternal:
-    546:546:private IconCache$BitmapDrawableHelperInternal()
+    542:542:private IconCache$BitmapDrawableHelperInternal()
 com.jstakun.gms.android.data.KMLFilenameFilter
 com.jstakun.gms.android.data.LandmarkDbSQLiteOpenHelper:
     public static final java.lang.String TABLE_NAME
@@ -3640,26 +3644,26 @@ com.jstakun.gms.android.ui.Intents:
     public static final int INTENT_AUTO_CHECKIN
     public static final int INTENT_CALENDAR
     private static final java.lang.String SCAN_INTENT
-    163:164:public void startAddLandmarkActivity()
-    167:168:public void startAddLayerActivity()
-    171:172:public void startBlogeoActivity()
-    175:187:public boolean startRouteLoadingActivity()
-    191:203:public boolean startFilesLoadingActivity()
-    207:208:public void startSocialListActivity()
-    211:212:public void startLayersListActivity()
-    230:233:public void startRegisterActivity()
-    248:270:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
-    285:288:public boolean isIntentAvailable(java.lang.String)
-    292:300:public void startQrCodeCheckinActivity(double[])
-    303:304:public void startLocationCheckinActivity(double[])
-    320:339:public void startAutoCheckinListActivity(double[])
-    403:404:public void startFriendsCheckinsIntent(double[])
-    460:467:public void startAutoCheckinBroadcast()
-    470:474:public void stopAutoCheckinService()
-    477:490:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
-    494:516:public void commentButtonPressedAction()
-    519:524:public void saveRouteAction()
-    847:851:public void setRepeatingAlarm(java.lang.Class)
+    132:133:public void startAddLandmarkActivity()
+    136:137:public void startAddLayerActivity()
+    140:141:public void startBlogeoActivity()
+    144:156:public boolean startRouteLoadingActivity()
+    160:172:public boolean startFilesLoadingActivity()
+    176:177:public void startSocialListActivity()
+    180:181:public void startLayersListActivity()
+    199:202:public void startRegisterActivity()
+    217:239:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
+    254:257:public boolean isIntentAvailable(java.lang.String)
+    261:269:public void startQrCodeCheckinActivity(double[])
+    272:273:public void startLocationCheckinActivity(double[])
+    289:308:public void startAutoCheckinListActivity(double[])
+    366:367:public void startFriendsCheckinsIntent(double[])
+    396:403:public void startAutoCheckinBroadcast()
+    406:410:public void stopAutoCheckinService()
+    413:426:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
+    430:452:public void commentButtonPressedAction()
+    455:460:public void saveRouteAction()
+    783:787:public void setRepeatingAlarm(java.lang.Class)
 com.jstakun.gms.android.ui.LandmarkListActivity:
     public static final java.lang.String LANDMARK
 com.jstakun.gms.android.ui.LayerListActivity:
@@ -4052,23 +4056,23 @@ com.jstakun.gms.android.utils.BoundingBox:
     19:19:public boolean equals(com.jstakun.gms.android.utils.BoundingBox)
 com.jstakun.gms.android.utils.DateTimeUtils:
     public static final long ONE_MINUTE
+    public static final long THIRTY_SECONDS
     public static final long ONE_HOUR
     public static final long FIVE_MINUTES
     public static final long ONE_DAY
     public static final long ONE_MONTH
     13:13:public DateTimeUtils()
-    46:48:public static java.lang.String convertToDateStamp(java.util.Date)
-    88:90:public static java.lang.String getUniversalDateStamp(long)
-    100:102:public static java.lang.String getUniversalDateStamp(java.util.Date)
-    112:135:public static java.lang.String getUniversalDateStamp(java.util.Calendar)
-    142:142:public static java.lang.String convertToTimeStamp(long)
-    149:149:public static java.lang.String convertToTimeStamp(java.util.Date)
-    156:156:public static java.lang.String convertToTimeStamp(java.util.Calendar)
-    164:164:public static java.lang.String convertToTimeStamp(long,boolean)
-    172:174:public static java.lang.String convertToTimeStamp(java.util.Date,boolean)
-    183:198:private static java.lang.String convertToTimeStamp(java.util.Calendar,boolean)
-    263:263:public static java.lang.String getShortDateTimeString(long,java.util.Locale)
-    290:293:public static boolean isAtMostNMonthsAgo(long,int)
+    47:49:public static java.lang.String convertToDateStamp(java.util.Date)
+    89:91:public static java.lang.String getUniversalDateStamp(long)
+    101:103:public static java.lang.String getUniversalDateStamp(java.util.Date)
+    113:136:public static java.lang.String getUniversalDateStamp(java.util.Calendar)
+    143:143:public static java.lang.String convertToTimeStamp(long)
+    150:150:public static java.lang.String convertToTimeStamp(java.util.Date)
+    157:157:public static java.lang.String convertToTimeStamp(java.util.Calendar)
+    165:165:public static java.lang.String convertToTimeStamp(long,boolean)
+    173:175:public static java.lang.String convertToTimeStamp(java.util.Date,boolean)
+    184:199:private static java.lang.String convertToTimeStamp(java.util.Calendar,boolean)
+    291:294:public static boolean isAtMostNMonthsAgo(long,int)
 com.jstakun.gms.android.utils.DistanceUtils:
     24:24:public DistanceUtils()
     54:55:public static float distanceInKilometer(int,int,double,double,int)
@@ -4091,16 +4095,16 @@ com.jstakun.gms.android.utils.HttpUtils:
     private static final java.lang.String USE_COUNT_HEADER
     private static final java.lang.String LAT_HEADER
     private static final java.lang.String LNG_HEADER
-    private static final int RETRY_COUNT
+    private static final int REQUEST_RETRY_COUNT
+    private static final int SOCKET_TIMEOUT
 com.jstakun.gms.android.utils.HttpUtils$SSLSocketFactoryHelper:
-    660:660:private HttpUtils$SSLSocketFactoryHelper()
+    610:610:private HttpUtils$SSLSocketFactoryHelper()
 com.jstakun.gms.android.utils.LayerPoint:
     private static final int INTERVAL
 com.jstakun.gms.android.utils.Locale:
     15:15:public Locale()
 com.jstakun.gms.android.utils.LoggerUtils:
-    private static final java.lang.String TAG
-    16:16:public LoggerUtils()
+    17:17:public LoggerUtils()
 com.jstakun.gms.android.utils.MathUtils:
     12:12:public MathUtils()
     15:23:public static double pow(double,int)
@@ -4143,7 +4147,6 @@ com.jstakun.gms.android.utils.OsmMercator
 com.jstakun.gms.android.utils.ServicesUtils:
     16:16:public ServicesUtils()
     20:24:public static boolean isGpsActive(android.content.Context)
-    41:50:public static boolean isWifiActive(android.content.Context)
 com.jstakun.gms.android.utils.Sha1
 com.jstakun.gms.android.utils.StringUtil:
     14:14:public StringUtil()
