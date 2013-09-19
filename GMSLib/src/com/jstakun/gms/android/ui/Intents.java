@@ -867,7 +867,7 @@ public final class Intents {
         		startHelpActivity();
         	}
         
-        	if ((versionCode >= 1086 && buildVersion < 1086 && buildVersion > 100) || (versionCode >= 86 && buildVersion < 86)) { //2.0.7
+        	if ((versionCode >= 1086 && buildVersion < 1086 && buildVersion > 500) || (versionCode >= 86 && buildVersion < 86)) { //2.0.7
         		boolean notify = false;
         		//logout user due to user management changes
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS) && ConfigurationManager.getInstance().containsKey("username") && ConfigurationManager.getInstance().containsKey("password")) {
@@ -953,25 +953,13 @@ public final class Intents {
             if (resultCode == Activity.RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 if (StringUtils.equals(action, "show")) {
-                    //startMultiLandmarkIntent(myLocation, AbstractLandmarkList.ORDER_BY_DATE_DESC);
                     Intent src = new Intent();
                     src.putExtras(intent);
-                    //String category = intent.getStringExtra("layer");
-                    //int cat = intent.getIntExtra("catId", -1);
-                    //int subCat = intent.getIntExtra("subCatId", -1);
                     startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.CATEGORY, myLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
                 } else if (StringUtils.equals(action, "noshow")) { //DealCategoryListActivity
-                    //int category = intent.getIntExtra("category", -1);
-                    //int subcategory = intent.getIntExtra("subcategory", -1);
                     Intent result = new Intent();
-                    //result.putExtra("subcategory", subcategory);
-                    //result.putExtra("category", category);
                     result.putExtras(intent);
-                    //if (StringUtils.equals(action, "noshow")) {
                     result.putExtra("action", "show");
-                    //} //else {
-                    //    result.putExtra("action", action);
-                    //}
                     activity.setResult(Activity.RESULT_OK, result);
                     activity.finish();
                 }
@@ -1061,17 +1049,11 @@ public final class Intents {
                     } else {
                         showInfoToast(Locale.getMessage(R.string.Social_checkin_failure, "unknown error"));
                     }
-                } //else if (action.equals("delete")) {
-                //delete landmark
-                //intents.showInfoToast(Locale.getMessage(R.string.Landmark_delete_not_allowed_error));
-                //}
+                } 
             }
         } else if (requestCode == Intents.INTENT_LAYERS) {
             if (resultCode == Activity.RESULT_OK) {
                 String action = intent.getStringExtra("action");
-                //if (StringUtils.equals(action, "start")) {
-                //    startMultiLandmarkIntent(myLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
-                //} else 
                 if (StringUtils.equals(action, "load")) {
                     String layer = intent.getStringExtra("layer");
                     loadLayersAction(true, layer, false, false, layerLoader,
@@ -1080,7 +1062,6 @@ public final class Intents {
                     loadLayersAction(true, null, false, true, layerLoader,
                             mapCenter[0], mapCenter[1], zoomLevel);
                 } else if (StringUtils.equals(action, "show")) {
-                    //String layer = intent.getStringExtra("layer");
                     Intent src = new Intent();
                     src.putExtras(intent);
                     startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.LAYER, myLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
