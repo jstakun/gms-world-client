@@ -69,6 +69,7 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.StringUtil;
+import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *
@@ -573,6 +574,56 @@ public final class Intents {
             Display display = activity.getWindowManager().getDefaultDisplay();
             layerLoader.loadLayers(latitude, longitude, zoomLevel, display.getWidth(), display.getHeight(), loadExternal, selectedLayer, loadServerLayers);
         }
+    }
+    
+    public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, int sortOrder, CategoriesManager cm) {
+    	int[] coordsE6 = null;
+    	if (id >= 0) {
+            ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
+            if (selectedLandmark != null) {
+                landmarkManager.setSelectedLandmark(selectedLandmark);
+                landmarkManager.clearLandmarkOnFocusQueue();
+                coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, layerLoader, zoomLevel, sortOrder, cm);
+            } else {
+                showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+            }
+        } else {
+            showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
+        }
+    	return coordsE6;
+    }
+    
+    public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, int sortOrder, CategoriesManager cm) {
+        int[] anitmateTo = null;
+    	ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
+        if (selectedLandmark != null) {
+            if (!selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
+                landmarkManager.setSeletedLandmarkUI();
+            }
+
+            if (selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
+                startMultiLandmarkIntent(currentLocation, sortOrder);
+            } else {
+                UserTracker.getInstance().trackEvent("Clicks", activity.getLocalClassName() + ".ShowSelectedLandmarkView", selectedLandmark.getLayer(), 0);
+                ActionBarHelper.hide(activity);
+                showLandmarkDetailsView(selectedLandmark, lvView, currentLocation, true);
+                
+                if (cm != null) {
+                	cm.addSubCategoryStats(selectedLandmark.getCategoryId(), selectedLandmark.getSubCategoryId());
+                }
+                
+                if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
+                    loadLayersAction(true, null, false, true, layerLoader,
+                    		selectedLandmark.getQualifiedCoordinates().getLatitude(), 
+                    		selectedLandmark.getQualifiedCoordinates().getLongitude(),
+                            zoomLevel);
+                }
+                anitmateTo = new int[]{selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6()};
+            }
+        } else {
+            LoggerUtils.debug(Locale.getMessage(R.string.Landmark_opening_error));
+        }
+        return anitmateTo;
     }
 
     public void showLandmarkDetailsView(final ExtendedLandmark selectedLandmark, final View lvView, double[] currentLocation, boolean loadAd) {

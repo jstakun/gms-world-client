@@ -97,6 +97,9 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
         editor.putBoolean(ConfigurationManager.TRACK_USER, ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER));
 
+        editor.putString(ConfigurationManager.NETWORK_MODE, ConfigurationManager.getInstance().getString(ConfigurationManager.NETWORK_MODE));
+        setPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
+        
         editor.commit();
     }
 
@@ -180,6 +183,10 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             } else {
                 ConfigurationManager.getInstance().setOff(ConfigurationManager.TRACK_USER);
             }
+        } else if (key.equals(ConfigurationManager.NETWORK_MODE)) {
+            tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.NETWORK_MODE, 0);
+            ConfigurationManager.getInstance().putInteger(ConfigurationManager.NETWORK_MODE, tmp);
+            setPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
         }
     }
 

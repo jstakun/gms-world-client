@@ -20,8 +20,7 @@ public class SuggestionProviderUtil {
         if (suggestions == null) {
             String authority = (String) ConfigurationManager.getInstance().getObject("SuggestionsProviderAuthority", String.class);
             int mode = (Integer) ConfigurationManager.getInstance().getObject("SuggestionsProviderMode", Integer.class);
-            suggestions = new SearchRecentSuggestions(ConfigurationManager.getInstance().getContext(),
-                    authority, mode);
+            suggestions = new SearchRecentSuggestions(ConfigurationManager.getInstance().getContext(), authority, mode);
         }
         return suggestions;
     }

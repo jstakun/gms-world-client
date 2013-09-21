@@ -44,6 +44,7 @@
     <string name="listMode">Lista</string>
     <string name="newestLandmarks">Najnowsze miejsca</string>
     <string name="rateUs">Oce\u0144 nas</string>
+    <string name="imageLoading">\u015aci\u0105ganie obraz\u00f3w</string>
 
     <!-- preferences -->
     <string name="mapProvider">Dostawca map</string>

@@ -3318,6 +3318,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int googleMaps
     public static final int googleMapsKey
     public static final int homepage
+    public static final int imageLoading
     public static final int keywordsHint
     public static final int keywordsLabel
     public static final int label_empty
@@ -3421,7 +3422,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int yesButton
     public static final int zoomin
     public static final int zoomout
-    389:389:public R$string()
+    390:390:public R$string()
 com.jstakun.gms.android.google.maps.R$style
 com.jstakun.gms.android.google.maps.R$styleable
 com.jstakun.gms.android.google.maps.R$xml
@@ -3644,26 +3645,26 @@ com.jstakun.gms.android.ui.Intents:
     public static final int INTENT_AUTO_CHECKIN
     public static final int INTENT_CALENDAR
     private static final java.lang.String SCAN_INTENT
-    132:133:public void startAddLandmarkActivity()
-    136:137:public void startAddLayerActivity()
-    140:141:public void startBlogeoActivity()
-    144:156:public boolean startRouteLoadingActivity()
-    160:172:public boolean startFilesLoadingActivity()
-    176:177:public void startSocialListActivity()
-    180:181:public void startLayersListActivity()
-    199:202:public void startRegisterActivity()
-    217:239:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
-    254:257:public boolean isIntentAvailable(java.lang.String)
-    261:269:public void startQrCodeCheckinActivity(double[])
-    272:273:public void startLocationCheckinActivity(double[])
-    289:308:public void startAutoCheckinListActivity(double[])
-    366:367:public void startFriendsCheckinsIntent(double[])
-    396:403:public void startAutoCheckinBroadcast()
-    406:410:public void stopAutoCheckinService()
-    413:426:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
-    430:452:public void commentButtonPressedAction()
-    455:460:public void saveRouteAction()
-    783:787:public void setRepeatingAlarm(java.lang.Class)
+    133:134:public void startAddLandmarkActivity()
+    137:138:public void startAddLayerActivity()
+    141:142:public void startBlogeoActivity()
+    145:157:public boolean startRouteLoadingActivity()
+    161:173:public boolean startFilesLoadingActivity()
+    177:178:public void startSocialListActivity()
+    181:182:public void startLayersListActivity()
+    200:203:public void startRegisterActivity()
+    218:240:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
+    255:258:public boolean isIntentAvailable(java.lang.String)
+    262:270:public void startQrCodeCheckinActivity(double[])
+    273:274:public void startLocationCheckinActivity(double[])
+    290:309:public void startAutoCheckinListActivity(double[])
+    367:368:public void startFriendsCheckinsIntent(double[])
+    397:404:public void startAutoCheckinBroadcast()
+    407:411:public void stopAutoCheckinService()
+    414:427:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
+    431:453:public void commentButtonPressedAction()
+    456:461:public void saveRouteAction()
+    834:838:public void setRepeatingAlarm(java.lang.Class)
 com.jstakun.gms.android.ui.LandmarkListActivity:
     public static final java.lang.String LANDMARK
 com.jstakun.gms.android.ui.LayerListActivity:
@@ -3741,6 +3742,7 @@ com.jstakun.gms.android.ui.lib.R$array:
     public static final int codes6
     public static final int empty
     public static final int googleMaps
+    public static final int imageLoading
     public static final int landmarkPersist
     public static final int logLevel
     public static final int mapLoad
@@ -3767,9 +3769,9 @@ com.jstakun.gms.android.ui.lib.R$color:
     public static final int trans_light_gray
     public static final int white
     public static final int yellow
-    45:45:public R$color()
+    46:46:public R$color()
 com.jstakun.gms.android.ui.lib.R$dimen:
-    63:63:public R$dimen()
+    64:64:public R$dimen()
 com.jstakun.gms.android.ui.lib.R$drawable:
     public static final int arrow_black_left
     public static final int arrow_black_right
@@ -3841,7 +3843,7 @@ com.jstakun.gms.android.ui.lib.R$drawable:
     public static final int upcoming
     public static final int walk32
     public static final int webcam_24
-    72:72:public R$drawable()
+    73:73:public R$drawable()
 com.jstakun.gms.android.ui.lib.R$id:
     public static final int addLayerSeparator
     public static final int bottomPanel
@@ -3877,7 +3879,7 @@ com.jstakun.gms.android.ui.lib.R$id:
     public static final int showDodCheckbox
     public static final int statusBar
     public static final int validityLabel
-    219:219:public R$id()
+    220:220:public R$id()
 com.jstakun.gms.android.ui.lib.R$layout:
     public static final int adview
     public static final int closing
@@ -3885,14 +3887,14 @@ com.jstakun.gms.android.ui.lib.R$layout:
     public static final int landmarkdetails
     public static final int loading
     public static final int statusbar
-    348:348:public R$layout()
+    349:349:public R$layout()
 com.jstakun.gms.android.ui.lib.R$menu:
-    375:375:public R$menu()
+    376:376:public R$menu()
 com.jstakun.gms.android.ui.lib.R$raw:
     public static final int route_a
     public static final int route_b
     public static final int route_c
-    380:380:public R$raw()
+    381:381:public R$raw()
 com.jstakun.gms.android.ui.lib.R$string:
     public static final int Authn_error
     public static final int Category_Loading_1
@@ -3979,6 +3981,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int friendsCheckins
     public static final int googleMaps
     public static final int googleMapsKey
+    public static final int imageLoading
     public static final int keywordsHint
     public static final int keywordsLabel
     public static final int landmarkPersist
@@ -4041,7 +4044,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int validityLabel
     public static final int zoomin
     public static final int zoomout
-    389:389:public R$string()
+    390:390:public R$string()
 com.jstakun.gms.android.ui.lib.R$style
 com.jstakun.gms.android.ui.lib.R$styleable
 com.jstakun.gms.android.ui.lib.R$xml
@@ -4156,7 +4159,7 @@ com.jstakun.gms.android.utils.StringUtil:
     145:148:public static java.lang.String getHashFromUrl(java.lang.String)
 com.jstakun.gms.android.utils.SuggestionProviderUtil:
     15:15:public SuggestionProviderUtil()
-    39:43:public static void clearHistory()
+    38:42:public static void clearHistory()
 com.jstakun.gms.android.utils.TapForTapUtils
 com.jstakun.gms.android.utils.TapForTapUtils$1
 com.jstakun.gms.android.utils.UserTracker:

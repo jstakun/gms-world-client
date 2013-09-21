@@ -136,7 +136,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         startingMillis = System.currentTimeMillis();
 
         UserTracker.getInstance().startSession(this);
-        //TODO comment in production
+        //comment in production
         //UserTracker.getInstance().setDebug(true);
         //UserTracker.getInstance().setDryRun(true);
         //
@@ -268,7 +268,10 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-            showSelectedLandmark(searchQueryResult);
+            int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+            if (coordsE6 != null) {
+            	animateTo(coordsE6);
+            }
         } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
             ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
             intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
@@ -415,10 +418,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             } //System.out.println("key back pressed in activity");
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            try {
-                landmarkDetailsAction();
-            } catch (Exception e) {
-                LoggerUtils.error("GMSClientMainActivity.onKeyDown error", e);
+        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+            if (coordsE6 != null) {
+            	animateTo(coordsE6);
             }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_8) { //key *
@@ -820,20 +822,23 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         }
     }
 
-    private void showSelectedLandmark(int id) {
+    /*private void showSelectedLandmark(int id) {
         if (id >= 0) {
             ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
             if (selectedLandmark != null) {
                 landmarkManager.setSelectedLandmark(selectedLandmark);
                 landmarkManager.clearLandmarkOnFocusQueue();
-                landmarkDetailsAction();
+                int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+                if (coordsE6 != null) {
+                	animateTo(coordsE6);
+                }
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
         }
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -870,7 +875,10 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    showSelectedLandmark(id);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+                    if (coordsE6 != null) {
+                    	animateTo(coordsE6);
+                    }
                 }
             }
         } else if (requestCode == Intents.INTENT_MYLANDMARKS) {
@@ -909,7 +917,10 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    showSelectedLandmark(id);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+                    if (coordsE6 != null) {
+                    	animateTo(coordsE6);
+                    }
                 }
             }
         } else {
@@ -917,7 +928,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         }
     }
 
-    private void landmarkDetailsAction() {
+    /*private void landmarkDetailsAction() {
         ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
         if (selectedLandmark != null) {
             if (!selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
@@ -927,21 +938,22 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             if (selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
                 intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_DIST_ASC);
             } else {
-                intents.showLandmarkDetailsView(selectedLandmark, lvView, getMyPosition(), true);
+            	UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowSelectedLandmarkView", selectedLandmark.getLayer(), 0);
                 GeoPoint g = new GeoPoint(selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6());
                 mapController.animateTo(g);
-
+                intents.showLandmarkDetailsView(selectedLandmark, lvView, getMyPosition(), true);
+                
                 if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
                     intents.loadLayersAction(true, null, false, true, layerLoader,
-                            MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                            mapView.getZoomLevel());
+                    		selectedLandmark.getQualifiedCoordinates().getLatitude(), 
+                    		selectedLandmark.getQualifiedCoordinates().getLongitude(),
+                    		mapView.getZoomLevel());
                 }
             }
         } else {
             LoggerUtils.debug(Locale.getMessage(R.string.Landmark_opening_error));
         }
-    }
+    }*/
 
     private void openButtonPressedAction(ExtendedLandmark landmark) {
         intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
@@ -1098,6 +1110,11 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
     }
     
+    private void animateTo(int[] coordsE6) {
+    	GeoPoint g = new GeoPoint(coordsE6[0], coordsE6[1]);
+        mapController.animateTo(g);
+    }
+    
     private static class LoadingHandler extends Handler {
     	
     	private WeakReference<GMSClientOSMMainActivity> parentActivity;
@@ -1126,7 +1143,10 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         		} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
         			activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
         		} else if (msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-        			activity.landmarkDetailsAction();
+        			int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+                    if (coordsE6 != null) {
+                    	activity.animateTo(coordsE6);
+                    }
         		} else if (msg.what == SHOW_MAP_VIEW) {
         			View loading = activity.findViewById(R.id.mapCanvasWidgetL);
         			View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);

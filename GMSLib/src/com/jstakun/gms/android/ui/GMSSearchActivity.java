@@ -162,8 +162,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				// boolean res =
 				// imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(),
 				// 0); // InputMethodManager.HIDE_IMPLICIT_ONLY);
-				// System.out.println("hide soft input: " + res);
-
+				
 				if (StringUtils.endsWith(query, "/l")) {
 					AlertDialog addLayerDialog = alertBuilder.getAlertDialog(
 							AlertDialogBuilder.ADD_LAYER_DIALOG, null,

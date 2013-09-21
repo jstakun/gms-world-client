@@ -275,13 +275,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 break;
             case R.id.nearbyDeals:
                 if (!lvView.isShown()) {
-                    //AmzLandmarkProjection projection = new AmzLandmarkProjection(amzMapsView);
-                    //landmarkManager.findVisibleLandmarks(projection, true);
-                    //System.out.println("0 -----------------------------------------");
-                    //response = intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_CAT_STATS);
-                    //if (StringUtils.isNotEmpty(response)) {
-                    //    intents.showInfoToast(response);
-                    //}
                     intents.showNearbyLandmarks(getMyPosition(), new AmzLandmarkProjection(amzMapsView), AbstractLandmarkList.ORDER_BY_CAT_STATS);
                 }
                 break;
@@ -402,20 +395,23 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         }
     }
 
-    private void showSelectedLandmark(int id) {
+    /*private void showSelectedLandmark(int id) {
         if (id >= 0) {
             ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
             if (selectedLandmark != null) {
                 landmarkManager.setSelectedLandmark(selectedLandmark);
                 landmarkManager.clearLandmarkOnFocusQueue();
-                landmarkDetailsAction();
+                int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, amzMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
+                if (coordsE6 != null) {
+                	animateTo(coordsE6);
+                }
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
         }
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -426,28 +422,13 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    /*ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-                     if (selectedLandmark != null) {
-                     landmarkManager.setSelectedLandmark(selectedLandmark);
-                     landmarkManager.clearLandmarkOnFocusQueue();
-                     landmarkDetailsAction();
-                     } else {
-                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-                     }*/
-                    showSelectedLandmark(id);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, amzMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
+                    if (coordsE6 != null) {
+                    	animateTo(coordsE6);
+                    }
                 }
             }
-        } /*else if (requestCode == Intents.INTENT_CATEGORIES) {
-         if (resultCode == RESULT_OK) {
-         String action = intent.getStringExtra("action");
-         if (StringUtils.equals(action, "show")) {
-         String response = intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_CAT_STATS);
-         if (StringUtils.isNotEmpty(response)) {
-         intents.showInfoToast(response);
-         }
-         }
-         }
-         }*/ else if (requestCode == Intents.INTENT_PICKLOCATION) {
+        } else if (requestCode == Intents.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
                 String lats = intent.getStringExtra("lat");
                 String lngs = intent.getStringExtra("lng");
@@ -465,9 +446,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(names), "", Commons.LOCAL_LAYER, true);
 
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
-                //String name = intent.getStringExtra("name");
-                //String message = intent.getStringExtra("message");
-                //intents.showInfoToast(Locale.getMessage(R.string.Pick_location_failed_error, name, message));
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
@@ -479,17 +457,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             } else if (resultCode != RESULT_CANCELED) { //if (!appInitialized) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             }
-        } /*else if (requestCode == Intents.INTENT_PREFS) {
-         if (resultCode == RESULT_OK) {
-         String[] names = intent.getStringArrayExtra("names");
-         String[] codes = intent.getStringArrayExtra("codes");
-         if (intent.getStringExtra("deals") != null) {
-         cm.saveCategoriesAction(names, codes);
-         } else {
-         landmarkManager.getLayerManager().saveLayersAction(names, codes);
-         }
-         }
-         }*/ else if (requestCode == Intents.INTENT_MYLANDMARKS) {
+        } else if (requestCode == Intents.INTENT_MYLANDMARKS) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
@@ -514,15 +482,10 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    /*ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-                     if (selectedLandmark != null) {
-                     landmarkManager.setSelectedLandmark(selectedLandmark);
-                     landmarkManager.clearLandmarkOnFocusQueue();
-                     landmarkDetailsAction();
-                     } else {
-                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-                     }*/
-                    showSelectedLandmark(id);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, amzMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
+                    if (coordsE6 != null) {
+                    	animateTo(coordsE6);
+                    }
                 }
             }
         } else {
@@ -579,27 +542,12 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         asyncTaskManager.setActivity(this);
 
-        /*String searchQueryResult = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, String.class);
-         if (StringUtils.equals(searchQueryResult, "true")) {
-         GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE)),
-         MathUtils.coordDoubleToInt(ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE)));
-         pickPositionAction(location, false, false, false);
-         landmarkManager.clearLandmarkOnFocusQueue();
-         try {
-         landmarkDetailsAction();
-         } catch (Exception e) {
-         LoggerUtils.error("DealMapActivity.onResume error", e);
-         }
-         } else if (StringUtils.equals(searchQueryResult, "false")) {
-         intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
-         } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
-         ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
-         getActionBar().hide();
-         intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
-         }*/
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-            showSelectedLandmark(searchQueryResult);
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, amzMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
+            if (coordsE6 != null) {
+            	animateTo(coordsE6);
+            }
         } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
             getActionBar().hide();
             ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
@@ -715,12 +663,10 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             //System.out.println("key back pressed in activity");
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            try {
-                landmarkDetailsAction();
-            } catch (Exception e) {
-                LoggerUtils.error("GMSClientMainActivity.onKeyDown error", e);
-            }
-            return true;
+        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, amzMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
+            if (coordsE6 != null) {
+            	animateTo(coordsE6);
+            }return true;
         } else if (keyCode == KeyEvent.KEYCODE_8) { //key *
             mapController.zoomIn();
             return true;
@@ -764,7 +710,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         PersistenceManagerFactory.getFileManager().clearImageCache(System.currentTimeMillis() - DateTimeUtils.ONE_MONTH);
     }
 
-    private void landmarkDetailsAction() {
+    /*private void landmarkDetailsAction() {
         ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
 
         if (selectedLandmark != null) {
@@ -793,7 +739,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         } else {
             LoggerUtils.debug(Locale.getMessage(R.string.Landmark_opening_error));
         }
-    }
+    }*/
 
     protected double[] getMyPosition() {
         return landmarkManager.getMyPosition(amzMapsView.getMapCenter().getLatitudeE6(),
@@ -934,6 +880,11 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         //}
     }
     
+    private void animateTo(int[] coordsE6) {
+    	GeoPoint g = new GeoPoint(coordsE6[0], coordsE6[1]);
+        mapController.animateTo(g);
+    }
+    
     private static class LoadingHandler extends Handler {
     	private WeakReference<DealMapActivity> parentActivity;
     	
@@ -960,7 +911,10 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                                 MathUtils.coordIntToDouble(activity.amzMapsView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot());
                     }
                 } else if (msg.what == AmzLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-                	activity.landmarkDetailsAction();
+                	int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.amzMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, activity.cm);
+                    if (coordsE6 != null) {
+                    	activity.animateTo(coordsE6);
+                    }
                 } else if (msg.what == SHOW_MAP_VIEW) {
                     View loading = activity.findViewById(R.id.loadingWidgetP);
                     View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);

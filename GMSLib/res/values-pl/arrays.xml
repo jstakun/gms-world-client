@@ -42,6 +42,12 @@
         <item>Wyrazy we frazie</item>
         <item>Rozmyte</item>
     </string-array>
+    <string-array name="imageLoading">
+        <item>Zawsze</item>
+        <item>Tylko Wifi</item>
+        <item>Nigdy</item>
+    </string-array>
+    
     <string-array name="radius">
         <item>Wielko\u015b\u0107 mapy</item>
         <item>5</item>

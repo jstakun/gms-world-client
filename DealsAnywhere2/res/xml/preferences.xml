@@ -38,6 +38,12 @@
 			android:summary="@string/summary"
                         android:dialogTitle="@string/enable" />
         <ListPreference
+            android:key="networkMode"
+            android:title="@string/imageLoading"
+            android:entries="@array/imageLoading"
+            android:entryValues="@array/codes3"
+            android:dialogTitle="@string/select" />
+        <ListPreference
 			android:key="routeType"
 			android:title="@string/routeType"
 			android:entries="@array/routeType"

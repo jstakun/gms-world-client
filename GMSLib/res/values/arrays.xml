@@ -67,6 +67,11 @@
         <item>Phrase words</item>
         <item>Fuzzy</item>
     </string-array>
+    <string-array name="imageLoading">
+        <item>Always</item>
+        <item>Wifi only</item>
+        <item>Never</item>
+    </string-array>
     <string-array name="radius">
         <item>Map size</item>
         <item>5</item>

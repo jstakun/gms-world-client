@@ -44,6 +44,7 @@
     <string name="listMode">List</string>
     <string name="newestLandmarks">Newest landmarks</string>
     <string name="rateUs">Rate us</string>
+    <string name="imageLoading">Image download</string>
     
     <!-- preferences -->
     <string name="mapProvider">Map provider</string>
