@@ -78,7 +78,7 @@ public class HttpUtils {
     private static java.util.Locale locale;
     private int responseCode;
     private static final int REQUEST_RETRY_COUNT = 2;
-    private static final int SOCKET_TIMEOUT = (int)DateTimeUtils.THIRTY_SECONDS; //DateTimeUtils.ONE_MINUTE;
+    private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
 	
     private static HttpClient getHttpClient() {
         if (httpClient == null) {
@@ -90,9 +90,9 @@ public class HttpUtils {
             ConnPerRouteBean connPerRoute = new ConnPerRouteBean();
             connPerRoute.setDefaultMaxPerRoute(12);
             HttpHost gmsHost1 = new HttpHost(ConfigurationManager.SERVER_HOST, 443);
-            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost1), 16);
+            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost1), 32);
             HttpHost gmsHost2 = new HttpHost("www.gms-world.net", 80);
-            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost2), 16);
+            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost2), 32);
             ConnManagerParams.setMaxConnectionsPerRoute(params, connPerRoute);
 
             if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.BUILD_INFO, String.class)) {
