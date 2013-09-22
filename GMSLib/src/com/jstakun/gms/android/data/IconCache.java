@@ -35,6 +35,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  *
  * @author jstakun
@@ -231,11 +233,13 @@ public class IconCache {
     public Bitmap getThumbnailResource(String urlString, DisplayMetrics displayMetrics, Handler handler) {
         String hash = null;
 
-        try {
-            URL url = new URL(urlString);
-            hash = BCTools.getMessageDigest(url.toString());
-        } catch (Exception ex) {
-            LoggerUtils.error("IconCache.getThumbnailResource() exception for url " + urlString, ex);
+        if (StringUtils.isNotEmpty(urlString)) {
+        	try {
+        		URL url = new URL(urlString);
+        		hash = BCTools.getMessageDigest(url.toString());
+        	} catch (Exception ex) {
+        		LoggerUtils.error("IconCache.getThumbnailResource() exception for url " + urlString + "!", ex);
+        	}
         }
 
         Bitmap img = null;
@@ -249,7 +253,7 @@ public class IconCache {
                 try {
                     img = PersistenceManagerFactory.getFileManager().readImageFileFromCache(hash, displayMetrics);
                 } catch (Exception ex) {
-                    LoggerUtils.error("IconCache.getThumbnailResource exception 1", ex);
+                    LoggerUtils.error("IconCache.getThumbnailResource() exception reading image file from cache", ex);
                 }
 
                 if (img != null) {
@@ -262,7 +266,7 @@ public class IconCache {
                 			loadingTask.execute(hash, "", urlString);
                 			loadingTasks.put(hash, loadingTask);
                 		} catch (Exception ex) {
-                			LoggerUtils.error("IconCache.getThunbnailResource exception 2", ex);
+                			LoggerUtils.error("IconCache.getThunbnailResource() exception running LoadExternalImageTask", ex);
                 		}
                 	} else {
                 		LoggerUtils.debug("Skipping image loading " + urlString + " due to lack of wi-fi...");

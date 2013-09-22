@@ -775,14 +775,14 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             if (selectedLandmark != null) {
                 UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
                 boolean authStatus = intents.checkAuthStatus(selectedLandmark);
-                FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-                if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)
-                        && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)
-                        && authStatus && (fdb == null || !fdb.hasLandmark(selectedLandmark))) {
-                    //dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName())));
-                	checkinManager.checkinAction(true, false, selectedLandmark);
-                } else if (authStatus) {
-                    checkinManager.checkinAction(false, false, selectedLandmark);
+                if (authStatus) {
+                	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)
+                        && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
+                		//dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName())));
+                		checkinManager.checkinAction(true, false, selectedLandmark);
+                	} else  {
+                		checkinManager.checkinAction(false, false, selectedLandmark);
+                	}
                 }
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));

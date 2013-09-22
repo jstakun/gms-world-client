@@ -40,8 +40,10 @@ public class CheckinManager {
     public boolean checkinAction(boolean addToFavourites, boolean silent, ExtendedLandmark selectedLandmark) {
         if (addToFavourites) {
             FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-            String key = getLandmarkKey(selectedLandmark);
-            fdb.addLandmark(selectedLandmark, key);
+            if (fdb != null && !fdb.hasLandmark(selectedLandmark)) {
+            	String key = getLandmarkKey(selectedLandmark);
+                fdb.addLandmark(selectedLandmark, key);
+            }
         }
         return checkinAction(selectedLandmark.getLayer(), selectedLandmark.getName(), getLandmarkKey(selectedLandmark), silent);
     }
