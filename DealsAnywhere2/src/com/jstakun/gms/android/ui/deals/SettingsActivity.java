@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
@@ -76,16 +77,16 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         SharedPreferences.Editor editor = prefs.edit();
 
         editor.putString(ConfigurationManager.LOG_LEVEL, ConfigurationManager.getInstance().getString(ConfigurationManager.LOG_LEVEL));
-        setPreference(ConfigurationManager.LOG_LEVEL, R.array.logLevel);
+        setListPreference(ConfigurationManager.LOG_LEVEL, R.array.logLevel);
 
         editor.putString(ConfigurationManager.UNIT_OF_LENGHT, ConfigurationManager.getInstance().getString(ConfigurationManager.UNIT_OF_LENGHT));
-        setPreference(ConfigurationManager.UNIT_OF_LENGHT, R.array.unitOfLength);
+        setListPreference(ConfigurationManager.UNIT_OF_LENGHT, R.array.unitOfLength);
 
         editor.putString(ConfigurationManager.GOOGLE_MAPS_TYPE, ConfigurationManager.getInstance().getString(ConfigurationManager.GOOGLE_MAPS_TYPE));
-        setPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
+        setListPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
 
         editor.putString(ConfigurationManager.ROUTE_TYPE, ConfigurationManager.getInstance().getString(ConfigurationManager.ROUTE_TYPE));
-        setPreference(ConfigurationManager.ROUTE_TYPE, R.array.routeType);
+        setListPreference(ConfigurationManager.ROUTE_TYPE, R.array.routeType);
 
         editor.putInt(ConfigurationManager.DEAL_LIMIT, ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_LIMIT));
         //setPreference(ConfigurationManager.DEAL_LIMIT, R.array.dealLimit);
@@ -98,7 +99,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         editor.putBoolean(ConfigurationManager.TRACK_USER, ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER));
 
         editor.putString(ConfigurationManager.NETWORK_MODE, ConfigurationManager.getInstance().getString(ConfigurationManager.NETWORK_MODE));
-        setPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
+        setListPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
         
         editor.commit();
     }
@@ -131,7 +132,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         if (key.equals(ConfigurationManager.UNIT_OF_LENGHT)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.UNIT_OF_LENGHT, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.UNIT_OF_LENGHT, tmp);
-            setPreference(ConfigurationManager.UNIT_OF_LENGHT, R.array.unitOfLength);
+            setListPreference(ConfigurationManager.UNIT_OF_LENGHT, R.array.unitOfLength);
         } else if (key.equals(ConfigurationManager.LAYERS)) {
             String rawval = sharedPreferences.getString(ConfigurationManager.LAYERS, "");
             String[] selected = ListPreferenceMultiSelect.parseStoredValue(rawval);
@@ -152,15 +153,15 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         } else if (key.equals(ConfigurationManager.LOG_LEVEL)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.LOG_LEVEL, 3);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.LOG_LEVEL, tmp);
-            setPreference(ConfigurationManager.LOG_LEVEL, R.array.logLevel);
+            setListPreference(ConfigurationManager.LOG_LEVEL, R.array.logLevel);
         } else if (key.equals(ConfigurationManager.GOOGLE_MAPS_TYPE)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.GOOGLE_MAPS_TYPE, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.GOOGLE_MAPS_TYPE, tmp);
-            setPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
+            setListPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
         } else if (key.equals(ConfigurationManager.ROUTE_TYPE)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.ROUTE_TYPE, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.ROUTE_TYPE, tmp);
-            setPreference(ConfigurationManager.ROUTE_TYPE, R.array.routeType);
+            setListPreference(ConfigurationManager.ROUTE_TYPE, R.array.routeType);
         } else if (key.equals(ConfigurationManager.DEAL_LIMIT)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.DEAL_LIMIT, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.DEAL_LIMIT, tmp);
@@ -186,12 +187,12 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         } else if (key.equals(ConfigurationManager.NETWORK_MODE)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.NETWORK_MODE, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.NETWORK_MODE, tmp);
-            setPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
+            setListPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
         }
     }
 
-    private void setPreference(String preferenceName, int arrayId) {
-        Preference preference = findPreference(preferenceName);
+    private void setListPreference(String preferenceName, int arrayId) {
+    	ListPreference preference = (ListPreference)findPreference(preferenceName);
         if (preference != null) {
             String[] array = getResources().getStringArray(arrayId);
             int pos = ConfigurationManager.getInstance().getInt(preferenceName);
@@ -199,6 +200,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
                 pos = 0;
             }
             preference.setSummary(Locale.getMessage(R.string.Settings_Summary, array[pos]));
+            preference.setValueIndex(pos);
         }
     }
 

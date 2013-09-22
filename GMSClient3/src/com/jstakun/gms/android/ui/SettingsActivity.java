@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
@@ -82,28 +83,28 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         SharedPreferences.Editor editor = prefs.edit();
 
         editor.putString(ConfigurationManager.MAP_PROVIDER, ConfigurationManager.getInstance().getString(ConfigurationManager.MAP_PROVIDER));
-        setPreference(ConfigurationManager.MAP_PROVIDER, R.array.mapProvider);
+        setListPreference(ConfigurationManager.MAP_PROVIDER, R.array.mapProvider);
 
         editor.putString(ConfigurationManager.LOG_LEVEL, ConfigurationManager.getInstance().getString(ConfigurationManager.LOG_LEVEL));
-        setPreference(ConfigurationManager.LOG_LEVEL, R.array.logLevel);
+        setListPreference(ConfigurationManager.LOG_LEVEL, R.array.logLevel);
 
         editor.putString(ConfigurationManager.PERSIST_METHOD, ConfigurationManager.getInstance().getString(ConfigurationManager.PERSIST_METHOD));
-        setPreference(ConfigurationManager.PERSIST_METHOD, R.array.landmarkPersist);
+        setListPreference(ConfigurationManager.PERSIST_METHOD, R.array.landmarkPersist);
 
         editor.putString(ConfigurationManager.UNIT_OF_LENGHT, ConfigurationManager.getInstance().getString(ConfigurationManager.UNIT_OF_LENGHT));
-        setPreference(ConfigurationManager.UNIT_OF_LENGHT, R.array.unitOfLength);
+        setListPreference(ConfigurationManager.UNIT_OF_LENGHT, R.array.unitOfLength);
 
         editor.putString(ConfigurationManager.GOOGLE_MAPS_TYPE, ConfigurationManager.getInstance().getString(ConfigurationManager.GOOGLE_MAPS_TYPE));
-        setPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
+        setListPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
 
         editor.putString(ConfigurationManager.OSM_MAPS_TYPE, ConfigurationManager.getInstance().getString(ConfigurationManager.OSM_MAPS_TYPE));
-        setPreference(ConfigurationManager.OSM_MAPS_TYPE, R.array.osmMaps);
+        setListPreference(ConfigurationManager.OSM_MAPS_TYPE, R.array.osmMaps);
 
         editor.putString(ConfigurationManager.ROUTE_TYPE, ConfigurationManager.getInstance().getString(ConfigurationManager.ROUTE_TYPE));
-        setPreference(ConfigurationManager.ROUTE_TYPE, R.array.routeType);
+        setListPreference(ConfigurationManager.ROUTE_TYPE, R.array.routeType);
 
         editor.putString(ConfigurationManager.SEARCH_TYPE, ConfigurationManager.getInstance().getString(ConfigurationManager.SEARCH_TYPE));
-        setPreference(ConfigurationManager.SEARCH_TYPE, R.array.searchType);
+        setListPreference(ConfigurationManager.SEARCH_TYPE, R.array.searchType);
 
         editor.putInt(ConfigurationManager.LANDMARKS_PER_LAYER, ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER));
         //setPreference(ConfigurationManager.LANDMARKS_PER_LAYER, R.array.landmarksPerLayer);
@@ -116,7 +117,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         editor.putBoolean(ConfigurationManager.TRACK_USER, ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER));
 
         editor.putString(ConfigurationManager.NETWORK_MODE, ConfigurationManager.getInstance().getString(ConfigurationManager.NETWORK_MODE));
-        setPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
+        setListPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
         
         editor.commit();
     }
@@ -147,7 +148,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         if (key.equals(ConfigurationManager.UNIT_OF_LENGHT)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.UNIT_OF_LENGHT, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.UNIT_OF_LENGHT, tmp);
-            setPreference(ConfigurationManager.UNIT_OF_LENGHT, R.array.unitOfLength);
+            setListPreference(ConfigurationManager.UNIT_OF_LENGHT, R.array.unitOfLength);
         } else if (key.equals(ConfigurationManager.LAYERS)) {
             String rawval = sharedPreferences.getString(ConfigurationManager.LAYERS, "");
             String[] selected = ListPreferenceMultiSelect.parseStoredValue(rawval);
@@ -159,42 +160,42 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         } else if (key.equals(ConfigurationManager.MAP_PROVIDER)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.MAP_PROVIDER, ConfigurationManager.OSM_TILES);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.MAP_PROVIDER, tmp);
-            setPreference(ConfigurationManager.MAP_PROVIDER, R.array.mapProvider);
+            setListPreference(ConfigurationManager.MAP_PROVIDER, R.array.mapProvider);
 
             if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS) {
                 settings.addPreference(osmMapsType);
                 settings.removePreference(googleMapsType);
-                setPreference(ConfigurationManager.OSM_MAPS_TYPE, R.array.osmMaps);
+                setListPreference(ConfigurationManager.OSM_MAPS_TYPE, R.array.osmMaps);
             } else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.GOOGLE_MAPS) {
                 settings.addPreference(googleMapsType);
                 settings.removePreference(osmMapsType);
-                setPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
+                setListPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
             }
 
         } else if (key.equals(ConfigurationManager.LOG_LEVEL)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.LOG_LEVEL, 3);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.LOG_LEVEL, tmp);
-            setPreference(ConfigurationManager.LOG_LEVEL, R.array.logLevel);
+            setListPreference(ConfigurationManager.LOG_LEVEL, R.array.logLevel);
         } else if (key.equals(ConfigurationManager.PERSIST_METHOD)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.PERSIST_METHOD, ConfigurationManager.PERSIST_SERVER);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.PERSIST_METHOD, tmp);
-            setPreference(ConfigurationManager.PERSIST_METHOD, R.array.landmarkPersist);
+            setListPreference(ConfigurationManager.PERSIST_METHOD, R.array.landmarkPersist);
         } else if (key.equals(ConfigurationManager.GOOGLE_MAPS_TYPE)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.GOOGLE_MAPS_TYPE, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.GOOGLE_MAPS_TYPE, tmp);
-            setPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
+            setListPreference(ConfigurationManager.GOOGLE_MAPS_TYPE, R.array.googleMaps);
         } else if (key.equals(ConfigurationManager.OSM_MAPS_TYPE)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.OSM_MAPS_TYPE, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.OSM_MAPS_TYPE, tmp);
-            setPreference(ConfigurationManager.OSM_MAPS_TYPE, R.array.osmMaps);
+            setListPreference(ConfigurationManager.OSM_MAPS_TYPE, R.array.osmMaps);
         } else if (key.equals(ConfigurationManager.ROUTE_TYPE)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.ROUTE_TYPE, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.ROUTE_TYPE, tmp);
-            setPreference(ConfigurationManager.ROUTE_TYPE, R.array.routeType);
+            setListPreference(ConfigurationManager.ROUTE_TYPE, R.array.routeType);
         } else if (key.equals(ConfigurationManager.SEARCH_TYPE)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.SEARCH_TYPE, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.SEARCH_TYPE, tmp);
-            setPreference(ConfigurationManager.SEARCH_TYPE, R.array.searchType);
+            setListPreference(ConfigurationManager.SEARCH_TYPE, R.array.searchType);
         } else if (key.equals(ConfigurationManager.LANDMARKS_PER_LAYER)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.LANDMARKS_PER_LAYER, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.LANDMARKS_PER_LAYER, tmp);
@@ -220,12 +221,12 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         } else if (key.equals(ConfigurationManager.NETWORK_MODE)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.NETWORK_MODE, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.NETWORK_MODE, tmp);
-            setPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
+            setListPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
         }
     }
 
-    private void setPreference(String preferenceName, int arrayId) {
-        Preference preference = findPreference(preferenceName);
+    private void setListPreference(String preferenceName, int arrayId) {
+    	ListPreference preference = (ListPreference)findPreference(preferenceName);
         if (preference != null) {
             String[] array = getResources().getStringArray(arrayId);
             int pos = ConfigurationManager.getInstance().getInt(preferenceName);
@@ -233,6 +234,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
                 pos = 0;
             }
             preference.setSummary(Locale.getMessage(R.string.Settings_Summary, array[pos]));
+            preference.setValueIndex(pos);
         }
     }
 

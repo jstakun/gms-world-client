@@ -44,7 +44,7 @@
     </string-array>
     <string-array name="imageLoading">
         <item>Zawsze</item>
-        <item>Tylko Wifi</item>
+        <item>Tylko przez Wi-Fi</item>
         <item>Nigdy</item>
     </string-array>
     

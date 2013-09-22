@@ -53,6 +53,6 @@ dealReccomendCatStats;5
 useCount;0
 radius;10
 searchType;1
-networkMode;1
+networkMode;0
 appUrl;http://www.amazon.com/gp/mas/dl/android?p=com.jstakun.gms.android.ui.deals
 # End of file.
