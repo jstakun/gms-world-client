@@ -16,7 +16,10 @@
  */
 package com.openlapi;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -29,7 +32,7 @@ import java.util.Vector;
  * This class also provides convenience methods for converting between a string coordinate
  * representation and the double representation used in this class.
  */
-public class Coordinates implements Serializable {
+public class Coordinates implements Externalizable {
 
 	/**
 	 * 
@@ -48,6 +51,9 @@ public class Coordinates implements Serializable {
 	 */
 	public static final int DD_MM_SS = 1;
 
+	public Coordinates() {
+		
+	}
 	/**
 	 * Converts a double representation of a coordinate with decimal degrees into a string
 	 * representation. There are string syntaxes supported are the same as for the
@@ -810,5 +816,18 @@ public class Coordinates implements Serializable {
 	 */
 	private double square(double x) {
 		return x * x;
+	}
+
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeDouble(latitude);
+		out.writeDouble(longitude);
+		out.writeFloat(altitude);
+	}
+
+	public void readExternal(ObjectInput in) throws IOException,
+			ClassNotFoundException {
+		this.latitude = in.readDouble();
+		this.longitude = in.readDouble();
+		this.altitude = in.readFloat();
 	}
 }

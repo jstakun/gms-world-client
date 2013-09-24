@@ -4,7 +4,10 @@
  */
 package com.jstakun.gms.android.deals;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -12,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author jstakun
  */
-public final class Deal implements Serializable {
+public final class Deal implements Externalizable {
 
     /**
 	 * 
@@ -25,7 +28,10 @@ public final class Deal implements Serializable {
     private boolean isDealOfTheDay;
     private String currencyCode;
     private long endDate = -1;
-
+    
+    public Deal() {
+    }
+    
     public Deal(double price, double discount, double save, String dealType, String currencyCode) {
         this.price = price;
         this.discount = discount;
@@ -137,4 +143,25 @@ public final class Deal implements Serializable {
     public void setEndDate(long endDate) {
         this.endDate = endDate;
     }
+
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeDouble(price);
+		out.writeDouble(discount);
+		out.writeDouble(save);
+		out.writeUTF(dealType);
+		out.writeBoolean(isDealOfTheDay);
+		out.writeUTF(currencyCode);
+		out.writeLong(endDate);
+	}
+
+	public void readExternal(ObjectInput in) throws IOException,
+			ClassNotFoundException {
+		this.price = in.readDouble();
+		this.discount = in.readDouble();
+		this.save = in.readDouble();
+		this.dealType = in.readUTF();
+		this.isDealOfTheDay = in.readBoolean();
+		this.currencyCode = in.readUTF();
+		this.endDate = in.readLong();		
+	}
 }

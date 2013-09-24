@@ -21,7 +21,7 @@ public class YelpReader extends AbstractSerialReader{
 		int dist = radius * 1000;
         String url = ConfigurationManager.getInstance().getServicesUrl() + "yelpProvider?lat=" + coords[0] + "&lng=" + coords[1] +
                 "&radius=" + dist + "&limit=" + limit + "&display=" + display + "&version=2&format=bin";
-        return parser.parse(url, landmarks, task, true, null);	
+        return parser.parse(url, landmarks, task, true, null, 1);	
 	}
 	
     /*@Override

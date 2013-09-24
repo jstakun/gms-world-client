@@ -21,8 +21,10 @@ public class CouponsReader extends AbstractSerialReader {
 	protected String readLayer(List<ExtendedLandmark> landmarks,
 			double latitude, double longitude, int zoom, int width, int height,
 			String layer, GMSAsyncTask<?, ?, ?> task) {
-		String url = ConfigurationManager.getInstance().getServicesUrl() + "couponsProvider?latitude=" + coords[0] + 
-                "&longitude=" + coords[1] + "&radius=" + radius + "&version=4" + "&dealLimit=" + dealLimit + "&display=" + display + "&format=bin";
+		int version = 2;
+        String url = ConfigurationManager.getInstance().getServicesUrl() + 
+		            "couponsProvider?latitude=" + coords[0] + "&longitude=" + coords[1] + "&radius=" + radius + 
+                    "&version=" + version + "&dealLimit=" + dealLimit + "&display=" + display + "&format=bin";
         
         CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm != null) {
@@ -32,7 +34,7 @@ public class CouponsReader extends AbstractSerialReader {
             }
         }
 
-        return parser.parse(url, landmarks, task, true, null);
+        return parser.parse(url, landmarks, task, true, null, version);
 	}
 
     /*@Override

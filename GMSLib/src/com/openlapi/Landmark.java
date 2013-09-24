@@ -16,7 +16,10 @@
  */
 package com.openlapi;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * The Landmark class represents a landmark, i.e. a known location with a name. A landmark
@@ -40,7 +43,7 @@ import java.io.Serializable;
  * returns objects where the parameters have values set as described for their semantics
  * in this class.
  */
-public class Landmark implements Serializable {
+public class Landmark implements Externalizable {
 
 	/**
 	 * 
@@ -71,6 +74,9 @@ public class Landmark implements Serializable {
 	 */
 	private String name;
 
+	public Landmark() {
+		
+	}
 	/**
 	 * Constructs a new Landmark object with the values specified.
 	 *
@@ -182,5 +188,20 @@ public class Landmark implements Serializable {
 	 */
 	public void setQualifiedCoordinates(QualifiedCoordinates coordinates) {
 		this.coordinates = coordinates;
+	}
+
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeUTF(name);
+		out.writeUTF(description);
+		out.writeObject(addressInfo);
+		out.writeObject(coordinates);
+	}
+
+	public void readExternal(ObjectInput in) throws IOException,
+			ClassNotFoundException {
+		this.name = in.readUTF();
+		this.description = in.readUTF();
+		this.addressInfo = (AddressInfo)in.readObject();
+		this.coordinates = (QualifiedCoordinates)in.readObject();		
 	}
 }

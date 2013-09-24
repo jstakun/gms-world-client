@@ -588,7 +588,7 @@ public final class R {
 		public static final int Your_Location = 0x7f0a00be;
 		public static final int Zoom_info = 0x7f0a0146;
 		public static final int about = 0x7f0a0027;
-		public static final int adUnitId = 0x7f0a0002;
+		public static final int adUnitId = 0x7f0a0004;
 		public static final int addButton = 0x7f0a004d;
 		public static final int addLandmark = 0x7f0a000e;
 		public static final int addLayer = 0x7f0a000f;
@@ -646,7 +646,7 @@ public final class R {
 		public static final int foundLandmarks = 0x7f0a0073;
 		public static final int foundLandmarksLow = 0x7f0a0074;
 		public static final int friendsCheckins = 0x7f0a000d;
-		public static final int gaId = 0x7f0a0004;
+		public static final int gaId = 0x7f0a0003;
 		public static final int googleMaps = 0x7f0a0039;
 		public static final int googleMapsKey = 0x7f0a0000;
 		public static final int homepage = 0x7f0a009f;
@@ -737,7 +737,7 @@ public final class R {
 		public static final int start_date = 0x7f0a008e;
 		public static final int summary = 0x7f0a004b;
 		public static final int taken_date = 0x7f0a0093;
-		public static final int tapForTapId = 0x7f0a0003;
+		public static final int tapForTapId = 0x7f0a0002;
 		public static final int tileCache = 0x7f0a0037;
 		public static final int trackPos = 0x7f0a000a;
 		public static final int trackUserSummaryOff = 0x7f0a0047;

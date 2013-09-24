@@ -13,7 +13,7 @@ public class InstagramReader extends AbstractSerialReader {
 				"lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius  +
 				"&limit=" + limit + "&display=" + display + "&format=bin";
 		
-		return parser.parse(url, landmarks, task, true, null);
+		return parser.parse(url, landmarks, task, true, null, 1);
 	}
 
 }

@@ -4,7 +4,10 @@
  */
 package com.jstakun.gms.android.landmarks;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import com.google.common.base.Objects;
 import com.jstakun.gms.android.deals.Deal;
@@ -18,7 +21,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author jstakun
  */
-public final class ExtendedLandmark extends Landmark implements Serializable {
+public final class ExtendedLandmark extends Landmark implements Externalizable {
 
     /**
 	 * 
@@ -27,17 +30,21 @@ public final class ExtendedLandmark extends Landmark implements Serializable {
 	private String layer;
     private int categoryId = -1;
     private int subCategoryId = -1;
-    private long creationDate = 0;
+    private long creationDate = -1;
     private int latitudeE6 = -1;
     private int longitudeE6 = -1;
     private boolean hasCheckins = false;
     private double rating = -1.0;
     private int numberOfReviews = 0;
     private String thumbnail = null;
+    private Deal deal = null;
     private int revelance = 0;
-    private String searchTerm;
+    private String searchTerm = null;
     private String serverKey = null;
-    private Deal deal;
+    
+    public ExtendedLandmark() {
+		
+	}
     
     protected ExtendedLandmark(String name, String desc, QualifiedCoordinates qc, String layer, AddressInfo address, long creationDate, String searchTerm) {
         super(name, desc, qc, address);
@@ -266,5 +273,50 @@ public final class ExtendedLandmark extends Landmark implements Serializable {
 
 	public void setServerKey(String serverKey) {
 		this.serverKey = serverKey;
+	}
+	
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		super.writeExternal(out);
+		out.writeUTF(layer);
+		out.writeInt(categoryId);
+		out.writeInt(subCategoryId);
+		out.writeLong(creationDate);
+		out.writeBoolean(hasCheckins);
+		out.writeDouble(rating);
+		out.writeInt(numberOfReviews);
+		out.writeInt(revelance);
+		if (thumbnail != null) {
+			out.writeBoolean(true);
+			out.writeUTF(thumbnail);
+		} else {
+			out.writeBoolean(false);
+		}
+		if (isDeal()) {
+			out.writeBoolean(true);
+			out.writeObject(deal);
+		} else {
+			out.writeBoolean(false);
+		}
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException,
+			ClassNotFoundException {
+		super.readExternal(in);
+		this.layer = in.readUTF();
+		this.categoryId = in.readInt();
+		this.subCategoryId = in.readInt();
+		this.creationDate = in.readLong();
+		this.hasCheckins = in.readBoolean();
+		this.rating = in.readDouble();
+		this.numberOfReviews = in.readInt();
+		this.revelance = in.readInt();
+		if (in.readBoolean()) {
+			this.thumbnail = in.readUTF();
+		}
+		if (in.readBoolean()) {
+			this.deal = (Deal)in.readObject();
+		}
 	}
 }

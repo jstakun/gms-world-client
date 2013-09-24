@@ -16,13 +16,16 @@
  */
 package com.openlapi;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * The QualifiedCoordinates class represents coordinates as latitude-longitude-altitude
  * values that are associated with an accuracy value.
  */
-public class QualifiedCoordinates extends Coordinates implements Serializable {
+public class QualifiedCoordinates extends Coordinates implements Externalizable {
 
 	/**
 	 * 
@@ -39,6 +42,9 @@ public class QualifiedCoordinates extends Coordinates implements Serializable {
 	 */
 	private float verticalAccuracy;
 
+	public QualifiedCoordinates() {
+		
+	}
 	/**
 	 * Constructs a new QualifiedCoordinates object with the values specified. The
 	 * latitude and longitude parameters are expressed in degrees using floating point
@@ -136,5 +142,20 @@ public class QualifiedCoordinates extends Coordinates implements Serializable {
 		if (verticalAccuracy < 0.0)
 			throw new IllegalArgumentException();
 		this.verticalAccuracy = verticalAccuracy;
+	}
+	
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		super.writeExternal(out);
+		out.writeFloat(horizontalAccuracy);
+		out.writeFloat(verticalAccuracy);
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException,
+			ClassNotFoundException {
+		super.readExternal(in);
+		this.horizontalAccuracy = in.readFloat();
+		this.verticalAccuracy = in.readFloat();
 	}
 }

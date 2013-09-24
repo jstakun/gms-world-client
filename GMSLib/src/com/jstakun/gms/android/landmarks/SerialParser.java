@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.landmarks;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Predicate;
@@ -28,22 +29,31 @@ public class SerialParser {
         }
     }
 	
-    public String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) {
+    public String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService, int version) {
         
         String errorMessage = null;
         
         try {
             //System.out.println("Loading file " + url);
-            Object reply = utils.loadObject(url, true, "x-java-serialized-object");
-            if (reply instanceof List && !task.isCancelled()) {
-            	//deduplicate
-            	List<ExtendedLandmark> received = (List<ExtendedLandmark>)reply;
-            	if (landmarks.isEmpty()) {
-            		landmarks.addAll(Collections2.filter(received, new NotNullPredicate()));
-            	} else {
-            		landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
-            	}
-            } 
+        	if (version == 2) {
+        		List<ExtendedLandmark> received = utils.loadLandmarkList(url, true, "x-java-serialized-object");
+        		if (landmarks.isEmpty()) {
+        			landmarks.addAll(received);
+        		} else {
+        			landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
+        		}
+        	} else {
+        		Object reply = utils.loadObject(url, true, "x-java-serialized-object");
+        		if (reply instanceof List && !task.isCancelled()) {
+        			//deduplicate
+        			List<ExtendedLandmark> received = (List<ExtendedLandmark>)reply;
+        			if (landmarks.isEmpty()) {
+        				landmarks.addAll(Collections2.filter(received, new NotNullPredicate()));
+        			} else {
+        				landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
+        			}
+        		} 
+        	}
         } catch (Exception ex) {
             LoggerUtils.error("SerialParser.parse() exception: ", ex);
         } finally {

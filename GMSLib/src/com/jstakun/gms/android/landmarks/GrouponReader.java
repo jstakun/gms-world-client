@@ -44,6 +44,6 @@ public class GrouponReader extends AbstractSerialReader {
                 url += "&categoryid=" + categoryid;
             }
         }
-        return parser.parse(url, landmarks, task, true, null);
+        return parser.parse(url, landmarks, task, true, null, 1);
 	}
 }

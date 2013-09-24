@@ -16,7 +16,12 @@
  */
 package com.openlapi;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * <p>
@@ -136,13 +141,14 @@ import java.io.Serializable;
  * </tr>
  * </table>
  */
-public class AddressInfo implements Serializable {
+public class AddressInfo implements Externalizable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private static final byte BYTE_ONE = (byte) 1;
 	/**
 	 * Address field denoting a building floor.
 	 */
@@ -290,4 +296,55 @@ public class AddressInfo implements Serializable {
 		// set the field
 		fields[field - 1] = value;
 	}
+
+	public void writeExternal(ObjectOutput out) throws IOException {
+		byte[] attributeFlags = new byte[NUM_FIELDS];
+		int attributeCount = 0;
+		for (int i=1;i<= NUM_FIELDS;i++) {
+			if (getField(i) != null) {
+				attributeFlags[i-1] = BYTE_ONE;
+				attributeCount++;
+			}
+		}
+		
+		out.write(attributeCount);
+		
+		if (attributeCount > 0) {
+		
+			Integer[] attributes = new Integer[attributeCount];
+			 
+			int j = attributeCount;
+			 
+			for (int i = 0; i < NUM_FIELDS; i++) {
+				if (attributeFlags[i] == BYTE_ONE) {
+					j--;
+					attributes[j] = i;
+				}
+			}
+		
+			out.writeUTF(StringUtils.join(attributes, ","));
+	    
+			for (int i = 0; i < attributeCount; i++) {
+				int attribute = attributes[i];
+				out.writeUTF(getField(attribute+1));
+			}
+	    
+		}
+		
+	}
+
+	public void readExternal(ObjectInput in) throws IOException,
+			ClassNotFoundException {
+		int attributeCount = in.read();
+		
+		if (attributeCount > 0) {
+		
+			String[] attributes = StringUtils.split(in.readUTF(), ",");
+		
+   	    	for (int i = 0; i < attributeCount; i++) {
+   			 	int attribute = Integer.valueOf(attributes[i]);
+   			 	setField(attribute+1, in.readUTF());
+   	    	}
+		}
+	}    
 }

@@ -41,6 +41,6 @@ public class LMServerReader extends AbstractSerialReader {
                 "latitudeMin=" + coords[0] + "&longitudeMin=" + coords[1] + "&layer=" + layer +
                 "&format=bin&version=5" + "&limit=" + limit + "&display=" + display + "&radius=" + radius;
 
-		return parser.parse(url, landmarks, task, true, null);
+		return parser.parse(url, landmarks, task, true, null, 1);
 	}
 }

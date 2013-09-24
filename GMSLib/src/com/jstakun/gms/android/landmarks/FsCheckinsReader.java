@@ -33,7 +33,7 @@ public class FsCheckinsReader extends AbstractSerialReader {
 
                try {
                   String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsCheckins?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
-                  errorMessage = parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
+                  errorMessage = parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, 1);
                } catch (Exception e) {
                   errorMessage = e.getMessage();
                   LoggerUtils.error("FsCheckinsReader exception: ", e);

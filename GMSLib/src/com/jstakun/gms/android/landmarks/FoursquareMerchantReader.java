@@ -97,7 +97,7 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
                 }
             }
 
-            return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
+            return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, 1);
 
         } catch (Exception e) {
             LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: ", e);
