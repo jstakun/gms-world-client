@@ -148,10 +148,15 @@ public final class Deal implements Externalizable {
 		out.writeDouble(price);
 		out.writeDouble(discount);
 		out.writeDouble(save);
-		out.writeUTF(dealType);
 		out.writeBoolean(isDealOfTheDay);
 		out.writeUTF(currencyCode);
 		out.writeLong(endDate);
+		if (dealType != null) {
+			out.writeBoolean(true);
+			out.writeUTF(dealType);
+		} else {
+			out.writeBoolean(false);
+		}
 	}
 
 	public void readExternal(ObjectInput in) throws IOException,
@@ -159,9 +164,11 @@ public final class Deal implements Externalizable {
 		this.price = in.readDouble();
 		this.discount = in.readDouble();
 		this.save = in.readDouble();
-		this.dealType = in.readUTF();
 		this.isDealOfTheDay = in.readBoolean();
 		this.currencyCode = in.readUTF();
-		this.endDate = in.readLong();		
+		this.endDate = in.readLong();
+		if (in.readBoolean()) {
+			this.dealType = in.readUTF();
+		}
 	}
 }

@@ -33,7 +33,7 @@ public class CouponsReader extends AbstractSerialReader {
             }
         }
 
-        return parser.parse(url, landmarks, task, true, null, SERIAL_VERSION);
+        return parser.parse(url, landmarks, task, true, null);
 	}
 
     /*@Override

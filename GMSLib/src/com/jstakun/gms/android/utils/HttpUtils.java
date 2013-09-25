@@ -466,16 +466,18 @@ public class HttpUtils {
                     BufferedInputStream bis = new BufferedInputStream(is);
                     ObjectInputStream ois = new ObjectInputStream(bis);
                     int available = bis.available();
-                    int size = ois.readInt();
-                    if (size > 0) {
-                    	for(int i = 0;i < size;i++) {
-                    		ExtendedLandmark landmark = new ExtendedLandmark(); 
-                    		landmark.readExternal(ois);
-                    		reply.add(landmark);
+                    if (available > 0) {
+                    	int size = ois.readInt();
+                    	if (size > 0) {
+                    		for(int i = 0;i < size;i++) {
+                    			ExtendedLandmark landmark = new ExtendedLandmark(); 
+                    			landmark.readExternal(ois);
+                    			reply.add(landmark);
+                    		}
                     	}
+                    	increaseCounter(0, available);
+                    	LoggerUtils.debug("File " + url + " size: " + available + " bytes");
                     }
-                    increaseCounter(0, available);
-                    LoggerUtils.debug("File " + url + " size: " + available + " bytes");
                     ois.close();
                     bis.close();
                     

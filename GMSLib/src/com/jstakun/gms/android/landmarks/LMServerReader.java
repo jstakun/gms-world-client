@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class LMServerReader extends AbstractSerialReader {
 
-    private static final String[] LM_SERVER_PREFIX = new String[] {ConfigurationManager.SERVER_URL, ConfigurationManager.BITLY_URL};
+    //private static final String[] LM_SERVER_PREFIX = new String[] {ConfigurationManager.SERVER_URL, ConfigurationManager.BITLY_URL};
 
     /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
         init(latitude, longitude, zoom, width, height);
@@ -26,14 +26,12 @@ public class LMServerReader extends AbstractSerialReader {
                      "&format=json&version=5" + "&limit=" + limit + "&display=" + display + "&radius=" + radius;
 
         return parser.parse(url, landmarks, layer, LM_SERVER_PREFIX , -1, -1, task, true, limit);
-    }*/
+    }
     
-    
-
     @Override
     public String[] getUrlPrefix() {
         return LM_SERVER_PREFIX;
-    }
+    }*/
 
 	@Override
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
@@ -41,6 +39,6 @@ public class LMServerReader extends AbstractSerialReader {
                 "latitudeMin=" + coords[0] + "&longitudeMin=" + coords[1] + "&layer=" + layer +
                 "&format=bin&version=" + SERIAL_VERSION + "&limit=" + limit + "&display=" + display + "&radius=" + radius;
 
-		return parser.parse(url, landmarks, task, true, null, SERIAL_VERSION);
+		return parser.parse(url, landmarks, task, true, null);
 	}
 }

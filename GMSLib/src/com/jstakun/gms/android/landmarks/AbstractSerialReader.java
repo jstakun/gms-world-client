@@ -11,12 +11,11 @@ import com.jstakun.gms.android.utils.StringUtil;
 public abstract class AbstractSerialReader implements LayerReader {
 	private static final int DEFAULT_LIMIT = 30;
     private static final int DEFAULT_DEAL_LIMIT = 300;
-    protected static final int SERIAL_VERSION = 5; //2
-    
     protected SerialParser parser = null;
     protected String[] coords = null;
     protected int radius, limit = DEFAULT_LIMIT, dealLimit = DEFAULT_DEAL_LIMIT;
     protected String display = null;
+	protected static final int SERIAL_VERSION = 11;
      
     private void init(double latitude, double longitude, int zoom, int width, int height) {
         parser = new SerialParser();

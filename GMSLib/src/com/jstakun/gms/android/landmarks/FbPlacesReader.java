@@ -91,9 +91,9 @@ public class FbPlacesReader extends AbstractSerialReader {
         		url = ConfigurationManager.getInstance().getSecuredServicesUrl() +
                     "facebookProvider?" + queryString + "&token=" + URLEncoder.encode(token, "UTF-8");
         	} else {
-        		url = ConfigurationManager.SERVER_URL + "facebookProvider?" + queryString;
+        		url = ConfigurationManager.getInstance().getServicesUrl() + "facebookProvider?" + queryString;
         	}
-        	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK, SERIAL_VERSION);
+        	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK);
         } catch (Exception e) {
             LoggerUtils.error("FBPlacesReader.readLayer() exception: ", e);
         }	

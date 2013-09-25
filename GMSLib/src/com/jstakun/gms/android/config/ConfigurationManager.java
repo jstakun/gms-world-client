@@ -324,17 +324,17 @@ public final class ConfigurationManager {
 
     public String getServicesUrl() {
         if (getUserManager().isUserLoggedIn()) {
-            return SERVER_SERVICES_URL;
+            return SERVER_SERVICES_URL; //"http://10.0.2.2:8888/services/"; //
         } else {
-            return SERVER_URL;
+            return SERVER_URL; //"http://10.0.2.2:8888/"; //
         }
     }
 
     public String getSecuredServicesUrl() {
         if (getUserManager().isUserLoggedIn()) {
-            return SSL_SERVER_SERVICES_URL;
+            return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8888/services/"; //
         } else {
-            return SSL_SERVER_URL;
+            return SSL_SERVER_URL; //"http://10.0.2.2:8888/"; //
         }
     }
 
@@ -696,7 +696,6 @@ public final class ConfigurationManager {
     	
     	public void saveConfiguration(boolean force) {
         	if (force || !changedConfig.isEmpty()) {
-            	//PersistenceManagerFactory.getPersistenceManagerInstance().saveConfigurationFile();
             	ConfigDbDataSource cdb = getConfigDatabase();
             	if (force) {
                 	cdb.putAll(configuration);
@@ -710,7 +709,6 @@ public final class ConfigurationManager {
     	private void readConfiguration() {
         	ConfigDbDataSource cdb = getConfigDatabase();
         	putAll(cdb.fetchAllConfig());
-        	//PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();
         	changedConfig.clear();
     	}
 

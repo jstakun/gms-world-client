@@ -43,7 +43,7 @@ public class FbCheckinsReader extends AbstractSerialReader {
                 	queryString += "&token=" + URLEncoder.encode(token, "UTF-8");
 
                 	String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbCheckins?" + queryString;
-                	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK, SERIAL_VERSION);
+                	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK);
 
                 } else {
                 	LoggerUtils.error("FbCheckinsReader.readLayer() exception: token is null");

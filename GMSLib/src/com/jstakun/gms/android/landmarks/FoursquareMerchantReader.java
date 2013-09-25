@@ -81,10 +81,10 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
                 	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "foursquareMerchant?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
                 } else {
                 	LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: token is null!");
-                    url = ConfigurationManager.SERVER_URL + "foursquareMerchant?" + query_string;
+                    url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareMerchant?" + query_string;
                 }
             } else {
-                url = ConfigurationManager.SERVER_URL + "foursquareMerchant?" + query_string;
+                url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareMerchant?" + query_string;
             }
 
             CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
@@ -95,7 +95,7 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
                 }
             }
 
-            return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, SERIAL_VERSION);
+            return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
 
         } catch (Exception e) {
             LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: ", e);

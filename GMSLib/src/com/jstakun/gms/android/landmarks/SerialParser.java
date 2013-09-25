@@ -13,7 +13,6 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 public class SerialParser {
 
 	private HttpUtils utils;
-    
 	protected SerialParser() {
 		utils = new HttpUtils();
 	}
@@ -28,21 +27,21 @@ public class SerialParser {
         }
     }
 	
-    protected String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService, int version) {
+    protected String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) {
         
         String errorMessage = null;
         
         try {
             //System.out.println("Loading file " + url);
-        	if (version == 2) {
-        		List<ExtendedLandmark> received = utils.loadLandmarkList(url, true, "x-java-serialized-object");
-        		if (landmarks.isEmpty()) {
-        			landmarks.addAll(received);
-        		} else {
-        			landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
-        		}
+        	//if (version == SERIAL_VERSION) {
+        	List<ExtendedLandmark> received = utils.loadLandmarkList(url, true, "x-java-serialized-object");
+        	if (landmarks.isEmpty()) {
+        		landmarks.addAll(received);
         	} else {
-        		Object reply = utils.loadObject(url, true, "x-java-serialized-object");
+        		landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
+        	}
+        	//} else {
+        		/*Object reply = utils.loadObject(url, true, "x-java-serialized-object");
         		if (reply instanceof List && !task.isCancelled()) {
         			//deduplicate
         			List<ExtendedLandmark> received = (List<ExtendedLandmark>)reply;
@@ -51,8 +50,8 @@ public class SerialParser {
         			} else {
         				landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
         			}
-        		} 
-        	}
+        		}*/ 
+        	//}
         } catch (Exception ex) {
             LoggerUtils.error("SerialParser.parse() exception: ", ex);
         } finally {

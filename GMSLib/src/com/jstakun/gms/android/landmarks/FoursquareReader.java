@@ -44,6 +44,6 @@ public class FoursquareReader extends AbstractSerialReader {
 		String url = ConfigurationManager.getInstance().getServicesUrl() + 
         		"foursquareProvider?lat=" + coords[0] + "&lng=" + coords[1]
                 + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&version=" + SERIAL_VERSION + "&format=bin";
-		return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, SERIAL_VERSION);
+		return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
 	}
 }
