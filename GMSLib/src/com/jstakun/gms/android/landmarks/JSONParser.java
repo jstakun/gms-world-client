@@ -623,7 +623,7 @@ public class JSONParser {
             } else if (key.equals("twitter")) {
                 others.add(Locale.getMessage(R.string.twitter, getLink("http://mobile.twitter.com/" + value, "@" + value)));
             } else if (key.equals("facebook")) {
-                others.add(getLink(FbPlacesReader.FBPLACES_PREFIX[0] + value, "Facebook"));
+                others.add(getLink("http://touch.facebook.com/profile.php?id=" + value, "Facebook"));
             } else if (key.equals("menu")) {
                 others.add(getLink(value, Locale.getMessage(R.string.menu)));
             } else if (key.equals("photo")) {

@@ -20,7 +20,7 @@ import com.jstakun.gms.android.utils.LoggerUtils;
  */
 public class FbPlacesReader extends AbstractSerialReader {
 
-    public static final String[] FBPLACES_PREFIX = {"http://touch.facebook.com/profile.php?id="};
+    //public static final String[] FBPLACES_PREFIX = {"http://touch.facebook.com/profile.php?id="};
 
     /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
 
@@ -65,12 +65,12 @@ public class FbPlacesReader extends AbstractSerialReader {
         }
 
         return response;
-    }*/
+    }
 
     @Override
     public String[] getUrlPrefix() {
         return FBPLACES_PREFIX;
-    }
+    }*/
 
 	@Override
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
@@ -82,7 +82,7 @@ public class FbPlacesReader extends AbstractSerialReader {
         }
         
         String queryString = "lat=" + coords[0] + "&lng=" + coords[1] + "&distance=" +
-                dist + "&limit=" + limit + "&display=" + display + "&version=2&format=bin";
+                dist + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
 
         try {
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
@@ -93,7 +93,7 @@ public class FbPlacesReader extends AbstractSerialReader {
         	} else {
         		url = ConfigurationManager.SERVER_URL + "facebookProvider?" + queryString;
         	}
-        	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK, 1);
+        	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK, SERIAL_VERSION);
         } catch (Exception e) {
             LoggerUtils.error("FBPlacesReader.readLayer() exception: ", e);
         }	

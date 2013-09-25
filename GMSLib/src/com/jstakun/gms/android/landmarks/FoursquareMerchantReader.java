@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class FoursquareMerchantReader extends AbstractSerialReader {
 
-    private static final String[] FOURSQUARE_PREFIX = {"http://foursquare.com/mobile/venue/"};
+    //private static final String[] FOURSQUARE_PREFIX = {"http://foursquare.com/mobile/venue/"};
 
     /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
         try {
@@ -59,14 +59,12 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
             LoggerUtils.error("FoursquareMerchantReader exception: ", e);
         }
         return null;
-    }*/
+    }
     
-    
-
     @Override
     public String[] getUrlPrefix() {
         return FOURSQUARE_PREFIX;
-    }
+    }*/
 
 	@Override
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
@@ -74,7 +72,7 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
             String l = Locale.getDefault().getLanguage();
             String url = null;
             String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + 
-                    "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&version=3&format=bin";
+                    "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
 
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
                 ISocialUtils fsUtils = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE);
@@ -97,7 +95,7 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
                 }
             }
 
-            return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, 1);
+            return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, SERIAL_VERSION);
 
         } catch (Exception e) {
             LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: ", e);

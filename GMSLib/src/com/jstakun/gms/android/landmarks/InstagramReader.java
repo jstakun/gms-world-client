@@ -11,9 +11,9 @@ public class InstagramReader extends AbstractSerialReader {
 	public String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		String url = ConfigurationManager.getInstance().getServicesUrl() + "instagramProvider?" +
 				"lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius  +
-				"&limit=" + limit + "&display=" + display + "&format=bin";
+				"&limit=" + limit + "&display=" + display + "&format=bin&version=" + SERIAL_VERSION;
 		
-		return parser.parse(url, landmarks, task, true, null, 1);
+		return parser.parse(url, landmarks, task, true, null, SERIAL_VERSION);
 	}
 
 }

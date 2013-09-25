@@ -1,7 +1,6 @@
 package com.jstakun.gms.android.landmarks;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Predicate;
@@ -15,11 +14,11 @@ public class SerialParser {
 
 	private HttpUtils utils;
     
-	public SerialParser() {
+	protected SerialParser() {
 		utils = new HttpUtils();
 	}
 	
-	public void close() {
+	protected void close() {
         try {
             if (utils != null) {
                 utils.close();
@@ -29,7 +28,7 @@ public class SerialParser {
         }
     }
 	
-    public String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService, int version) {
+    protected String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService, int version) {
         
         String errorMessage = null;
         

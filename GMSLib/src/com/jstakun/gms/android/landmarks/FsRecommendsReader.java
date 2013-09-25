@@ -30,11 +30,11 @@ public class FsRecommendsReader extends AbstractSerialReader {
             ISocialUtils fsUtils = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE);
             String token = fsUtils.getAccessToken().getToken();
             if (token != null) {
-            	String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&format=bin&version=3";
+            	String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&format=bin&version=" + SERIAL_VERSION;
 
             	try {
             		String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsRecommended?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
-            		errorMessage = parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, 1);
+            		errorMessage = parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, SERIAL_VERSION);
             	} catch (Exception e) {
             		errorMessage = e.getMessage();
             		LoggerUtils.error("FsRecommendsReader exception: ", e);

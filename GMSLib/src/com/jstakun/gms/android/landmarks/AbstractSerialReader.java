@@ -11,6 +11,7 @@ import com.jstakun.gms.android.utils.StringUtil;
 public abstract class AbstractSerialReader implements LayerReader {
 	private static final int DEFAULT_LIMIT = 30;
     private static final int DEFAULT_DEAL_LIMIT = 300;
+    protected static final int SERIAL_VERSION = 5; //2
     
     protected SerialParser parser = null;
     protected String[] coords = null;

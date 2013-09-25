@@ -20,8 +20,8 @@ public class YelpReader extends AbstractSerialReader{
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		int dist = radius * 1000;
         String url = ConfigurationManager.getInstance().getServicesUrl() + "yelpProvider?lat=" + coords[0] + "&lng=" + coords[1] +
-                "&radius=" + dist + "&limit=" + limit + "&display=" + display + "&version=2&format=bin";
-        return parser.parse(url, landmarks, task, true, null, 1);	
+                "&radius=" + dist + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
+        return parser.parse(url, landmarks, task, true, null, SERIAL_VERSION);	
 	}
 	
     /*@Override

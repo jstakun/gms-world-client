@@ -17,7 +17,7 @@ import java.util.Locale;
  */
 public class FoursquareReader extends AbstractSerialReader {
 
-    protected static final String[] FOURSQUARE_PREFIX = {"http://foursquare.com/mobile/venue/"};
+    //protected static final String[] FOURSQUARE_PREFIX = {"http://foursquare.com/mobile/venue/"};
 
     //JSON method
     /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
@@ -31,20 +31,19 @@ public class FoursquareReader extends AbstractSerialReader {
         close();
 
         return errorMessage;
-    }*/
+    }
 
     @Override
     public String[] getUrlPrefix() {
         return FOURSQUARE_PREFIX;
-    }
+    }*/
 
 	@Override
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		String l = Locale.getDefault().getLanguage();
-		int version = 2;
-        String url = ConfigurationManager.getInstance().getServicesUrl() + 
+		String url = ConfigurationManager.getInstance().getServicesUrl() + 
         		"foursquareProvider?lat=" + coords[0] + "&lng=" + coords[1]
-                + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&version=" + version + "&format=bin";
-		return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, version);
+                + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&version=" + SERIAL_VERSION + "&format=bin";
+		return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE, SERIAL_VERSION);
 	}
 }

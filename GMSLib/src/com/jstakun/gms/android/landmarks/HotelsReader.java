@@ -26,8 +26,8 @@ public class HotelsReader extends AbstractSerialReader {
             String l = Locale.getDefault().getLanguage();
             String url = ConfigurationManager.getInstance().getServicesUrl() + "hotelsProvider?"
                     + "latitudeMin=" + coords[0] + "&longitudeMin=" + coords[1] + "&radius=" + radius
-                    + "&lang=" + l + "&limit=" + limit + "&version=3" + "&display=" + display + "&format=bin";
-            return parser.parse(url, landmarks, task, true, null, 1);
+                    + "&lang=" + l + "&limit=" + limit + "&version=" + SERIAL_VERSION + "&display=" + display + "&format=bin";
+            return parser.parse(url, landmarks, task, true, null, SERIAL_VERSION);
         } else {
             return null;
         }

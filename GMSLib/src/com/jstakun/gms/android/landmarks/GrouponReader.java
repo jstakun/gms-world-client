@@ -36,7 +36,7 @@ public class GrouponReader extends AbstractSerialReader {
 			double latitude, double longitude, int zoom, int width, int height,
 			String layer, GMSAsyncTask<?, ?, ?> task) {
 		String url = ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider?lat=" + coords[0] + 
-                "&lng=" + coords[1] + "&radius=" + (radius * 4) + "&version=4" + "&dealLimit=" + dealLimit + "&display=" + display + "&format=bin";
+                "&lng=" + coords[1] + "&radius=" + (radius * 4) + "&version=" + SERIAL_VERSION + "&dealLimit=" + dealLimit + "&display=" + display + "&format=bin";
         CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm != null) {
             String categoryid = cm.getEnabledCategoriesString();
@@ -44,6 +44,6 @@ public class GrouponReader extends AbstractSerialReader {
                 url += "&categoryid=" + categoryid;
             }
         }
-        return parser.parse(url, landmarks, task, true, null, 1);
+        return parser.parse(url, landmarks, task, true, null, SERIAL_VERSION);
 	}
 }

@@ -35,7 +35,7 @@ public class FbCheckinsReader extends AbstractSerialReader {
                 }
 
                 String queryString = "lat=" + coords[0] + "&lng=" + coords[1] + "&distance="
-                        + dist + "&limit=" + limit + "&display=" + display + "&version=2&format=bin";
+                        + dist + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
 
                 ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
                 String token = fbUtils.getAccessToken().getToken();
@@ -43,7 +43,7 @@ public class FbCheckinsReader extends AbstractSerialReader {
                 	queryString += "&token=" + URLEncoder.encode(token, "UTF-8");
 
                 	String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbCheckins?" + queryString;
-                	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK, 1);
+                	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK, SERIAL_VERSION);
 
                 } else {
                 	LoggerUtils.error("FbCheckinsReader.readLayer() exception: token is null");
