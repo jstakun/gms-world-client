@@ -23,7 +23,6 @@ public final class GMSUtils {
             String url = ConfigurationManager.SSL_SERVER_SERVICES_URL + "authenticate";
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("mobile", "true"));
-            //utils.sendPostRequest(url, params, true);
             byte[] resp = utils.loadHttpFile(url, true, "text/json");
             if (resp != null && resp.length > 0) {
                 String jsonResp = new String(resp, "UTF-8");   
