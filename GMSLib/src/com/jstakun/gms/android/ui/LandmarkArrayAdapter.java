@@ -174,7 +174,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     	}
     	@Override
         public void handleMessage(Message message) {           
-    	    if (!parentActivity.get().isFinishing()) {
+    	    if (parentActivity != null && !parentActivity.get().isFinishing()) {
     	    	landmarkArrayAdapter.get().notifyDataSetChanged();
     	    } 
         }
