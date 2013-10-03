@@ -21,7 +21,7 @@ public class GooglePlacesReader extends AbstractSerialReader {
         init(latitude, longitude, zoom, width, height);
         String lang = Locale.getDefault().getLanguage();
         String url = ConfigurationManager.getInstance().getServicesUrl() + "googlePlacesProvider?latitude=" + coords[0] + 
-                "&longitude=" + coords[1] + "&radius=" + (radius*1000) + "&language=" + lang + "&limit=" + limit + "&display=" + display + "&version=2";
+                "&longitude=" + coords[1] + "&radius=" + radius + "&language=" + lang + "&limit=" + limit + "&display=" + display + "&version=2";
         return parser.parse(url, landmarks, Commons.GOOGLE_PLACES_LAYER, null, -1, -1, task, true, limit);
     }*/
 
@@ -30,7 +30,7 @@ public class GooglePlacesReader extends AbstractSerialReader {
 			double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		String lang = Locale.getDefault().getLanguage();
 		String url = ConfigurationManager.getInstance().getServicesUrl() + "googlePlacesProvider?latitude=" + coords[0] + 
-                "&longitude=" + coords[1] + "&radius=" + (radius*1000) + "&language=" + lang + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
+                "&longitude=" + coords[1] + "&radius=" + radius + "&language=" + lang + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
 		return parser.parse(url, landmarks, task, true, null);
 	}
 }

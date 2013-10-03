@@ -36,7 +36,7 @@ public class GMSClientApp extends Application {
         LoggerUtils.debug("GMSClientApp.onCreate...");
         ACRA.init(this);  
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Authorization", HttpUtils.getAuthorizationHeader(Commons.GMS_APP_USER, true, Commons.APP_USER_PWD, true));
+        headers.put("Authorization", HttpUtils.getBasicAuthHeader(Commons.GMS_APP_USER, true, Commons.APP_USER_PWD, true));
         ACRA.getConfig().setHttpHeaders(headers);
         ConfigurationManager.getAppUtils().initApp(getApplicationContext());    
     }

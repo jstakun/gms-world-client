@@ -140,7 +140,7 @@ public class HttpUtils {
             postRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
             if (auth) {
-               setBasicAuth(postRequest, url.contains("services"));
+               setBasicAuthHeader(postRequest, url.contains("services"));
             }
            
             postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
@@ -203,7 +203,7 @@ public class HttpUtils {
             postRequest.addHeader(LNG_HEADER, StringUtil.formatCoordE6(longitude));
 
             if (auth) {
-                    setBasicAuth(postRequest, url.contains("services"));
+                    setBasicAuthHeader(postRequest, url.contains("services"));
                     String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (StringUtils.isNotEmpty(username)) {
                         postRequest.addHeader("username", username);
@@ -282,7 +282,7 @@ public class HttpUtils {
 
             // HTTP Response
             if (auth) {
-               setBasicAuth(getRequest, url.contains("services"));
+               setBasicAuthHeader(getRequest, url.contains("services"));
             }
             
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
@@ -368,7 +368,7 @@ public class HttpUtils {
 
             // HTTP Response
             if (auth) {
-               setBasicAuth(getRequest, url.contains("services"));
+               setBasicAuthHeader(getRequest, url.contains("services"));
             }
             
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
@@ -440,7 +440,7 @@ public class HttpUtils {
 
             // HTTP Response
             if (auth) {
-               setBasicAuth(getRequest, url.contains("services"));
+               setBasicAuthHeader(getRequest, url.contains("services"));
             }
             
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
@@ -488,7 +488,7 @@ public class HttpUtils {
                 errorMessage = handleHttpStatus(responseCode);
             }
         } catch (Exception e) {
-            LoggerUtils.error("HttpUtils.loadObject() exception: ", e);
+            LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
             errorMessage = handleHttpException(e);
         }
 
@@ -547,7 +547,7 @@ public class HttpUtils {
         return new String[]{ds, dr, sd};
     }
 
-    private static void setBasicAuth(HttpRequest request, boolean throwIfEmpty) throws IOException {
+    private static void setBasicAuthHeader(HttpRequest request, boolean throwIfEmpty) throws IOException {
     	String username = null, password = null;
     	boolean decodePassword = true, decodeUsername = true;
     	
@@ -580,14 +580,14 @@ public class HttpUtils {
     	}
         
     	if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
-    		request.addHeader("Authorization", getAuthorizationHeader(username, decodeUsername, password, decodePassword));
+    		request.addHeader("Authorization", getBasicAuthHeader(username, decodeUsername, password, decodePassword));
     	} else if (throwIfEmpty) {
     		LoggerUtils.error("Authorization header is empty for user " + username);
     		throw new SecurityException("Authorization header is empty for user " + username);
     	}
     }
     
-    public static String getAuthorizationHeader(String username, boolean decodeUsername, String password, boolean decodePassword) {
+    public static String getBasicAuthHeader(String username, boolean decodeUsername, String password, boolean decodePassword) {
     	byte[] usr, pwd;
     	
     	if (decodeUsername) {

@@ -31,8 +31,8 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
     private int categoryId = -1;
     private int subCategoryId = -1;
     private long creationDate = -1;
-    private int latitudeE6 = -1;
-    private int longitudeE6 = -1;
+    private transient int latitudeE6 = -1;
+    private transient int longitudeE6 = -1;
     private boolean hasCheckins = false;
     private double rating = -1.0;
     private int numberOfReviews = 0;

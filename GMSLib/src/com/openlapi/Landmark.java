@@ -96,7 +96,11 @@ public class Landmark implements Externalizable {
 			QualifiedCoordinates coordinates, AddressInfo addressInfo)
 			throws NullPointerException {
 		setName(name);
-		setDescription(description);
+		if (description != null) {
+			setDescription(description);
+		} else {
+			setDescription("");
+		}
 		setQualifiedCoordinates(coordinates);
 		setAddressInfo(addressInfo);
 	}
