@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.landmarks;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 import com.google.common.base.Predicate;
@@ -27,31 +28,17 @@ public class SerialParser {
         }
     }
 	
-    protected String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) {
-        
+    protected String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) { 	
         String errorMessage = null;
         
         try {
-            //System.out.println("Loading file " + url);
-        	//if (version == SERIAL_VERSION) {
-        	List<ExtendedLandmark> received = utils.loadLandmarkList(url, true, "x-java-serialized-object");
+        	URI uri = new URI(url);
+        	List<ExtendedLandmark> received = utils.loadLandmarkList(uri, true, "x-java-serialized-object");
         	if (landmarks.isEmpty()) {
         		landmarks.addAll(received);
         	} else {
         		landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
         	}
-        	//} else {
-        		/*Object reply = utils.loadObject(url, true, "x-java-serialized-object");
-        		if (reply instanceof List && !task.isCancelled()) {
-        			//deduplicate
-        			List<ExtendedLandmark> received = (List<ExtendedLandmark>)reply;
-        			if (landmarks.isEmpty()) {
-        				landmarks.addAll(Collections2.filter(received, new NotNullPredicate()));
-        			} else {
-        				landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
-        			}
-        		}*/ 
-        	//}
         } catch (Exception ex) {
             LoggerUtils.error("SerialParser.parse() exception: ", ex);
         } finally {
@@ -81,10 +68,10 @@ public class SerialParser {
         }
     }
     
-    private class NotNullPredicate implements Predicate<ExtendedLandmark> {
+    /*private class NotNullPredicate implements Predicate<ExtendedLandmark> {
 
     	public boolean apply(ExtendedLandmark landmark) {
             return (landmark != null);
         }
-    }
+    }*/
 }   

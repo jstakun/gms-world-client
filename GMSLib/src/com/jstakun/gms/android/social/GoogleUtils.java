@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
@@ -175,11 +176,12 @@ public final class GoogleUtils extends AbstractSocialUtils {
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();
-	        if (message == null) {
-	                message = Locale.getMessage(R.string.Social_checkin_success, name);
-	                onCheckin(reference);
+		    int responseCode = utils.getResponseCode();
+	        if (responseCode == HttpStatus.SC_OK) {
+	           message = Locale.getMessage(R.string.Social_checkin_success, name);
+	           onCheckin(reference);
 	        } else {
-	                message = Locale.getMessage(R.string.Social_checkin_failure, message);
+	           message = Locale.getMessage(R.string.Social_checkin_failure, message);
 	        }
 	        
 		    

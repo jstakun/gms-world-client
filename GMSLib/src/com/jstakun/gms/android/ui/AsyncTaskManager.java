@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -586,8 +587,9 @@ public class AsyncTaskManager {
     	   HttpUtils utils = new HttpUtils();
     	   utils.sendPostRequest(url, params, true);
     	   String msg = utils.getResponseCodeErrorMessage();
+    	   int responseCode = utils.getResponseCode();
 
-    	   if (msg == null) {
+    	   if (responseCode == HttpStatus.SC_OK) {
     		   String nameP = name;
     		   if (nameP == null) {
     			   nameP = utils.getHeader("name");

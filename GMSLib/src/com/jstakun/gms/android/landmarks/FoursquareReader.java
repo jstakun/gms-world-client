@@ -11,6 +11,9 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+
 /**
  *
  * @author jstakun
@@ -41,9 +44,9 @@ public class FoursquareReader extends AbstractSerialReader {
 	@Override
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		String l = Locale.getDefault().getLanguage();
-		String url = ConfigurationManager.getInstance().getServicesUrl() + 
-        		"foursquareProvider?lat=" + coords[0] + "&lng=" + coords[1]
-                + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&version=" + SERIAL_VERSION + "&format=bin";
+		params.add(new BasicNameValuePair("lang", l));
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareProvider?" + URLEncodedUtils.format(params, "UTF-8");
+        //"lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&version=" + SERIAL_VERSION + "&format=bin";
 		return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
 	}
 }

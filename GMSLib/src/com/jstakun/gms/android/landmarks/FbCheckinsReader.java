@@ -10,8 +10,10 @@ import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import java.net.URLEncoder;
 import java.util.List;
+
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
@@ -29,22 +31,21 @@ public class FbCheckinsReader extends AbstractSerialReader {
         try {
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
 
-                int dist = radius;
-                if (dist > 6371) {
-                    dist = 6371;
-                }
+                //int dist = radius;
+                //if (dist > 6371) {
+                //    dist = 6371;
+                //}
+                //params.add(new BasicNameValuePair("distance", Integer.toString(dist)));
 
-                String queryString = "lat=" + coords[0] + "&lng=" + coords[1] + "&distance="
-                        + dist + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
+                //String queryString = "lat=" + coords[0] + "&lng=" + coords[1] + "&distance="
+                //        + dist + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
 
                 ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
                 String token = fbUtils.getAccessToken().getToken();
                 if (token != null) {
-                	queryString += "&token=" + URLEncoder.encode(token, "UTF-8");
-
-                	String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbCheckins?" + queryString;
+                	params.add(new BasicNameValuePair("token", token));
+                	String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbCheckins?" + URLEncodedUtils.format(params, "UTF-8");
                 	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK);
-
                 } else {
                 	LoggerUtils.error("FbCheckinsReader.readLayer() exception: token is null");
                 }

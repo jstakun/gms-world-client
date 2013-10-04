@@ -10,6 +10,8 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
@@ -32,18 +34,21 @@ public class GrouponReader extends AbstractSerialReader {
     }*/
 
 	@Override
-	protected String readLayer(List<ExtendedLandmark> landmarks,
-			double latitude, double longitude, int zoom, int width, int height,
-			String layer, GMSAsyncTask<?, ?, ?> task) {
-		String url = ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider?lat=" + coords[0] + 
-                "&lng=" + coords[1] + "&radius=" + (radius * 4) + "&version=" + SERIAL_VERSION + "&dealLimit=" + dealLimit + "&display=" + display + "&format=bin";
+	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
+		int dist = radius * 4;
+		params.remove(0); //remove default radius parameter
+		params.add(new BasicNameValuePair("radius", Integer.toString(dist)));
+		//String url = ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider?lat=" + coords[0] + 
+        //        "&lng=" + coords[1] + "&radius=" + (radius * 4) + "&version=" + SERIAL_VERSION + "&dealLimit=" + dealLimit + "&display=" + display + "&format=bin";
         CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm != null) {
             String categoryid = cm.getEnabledCategoriesString();
             if (StringUtils.isNotEmpty(categoryid)) {
-                url += "&categoryid=" + categoryid;
+            	params.add(new BasicNameValuePair("categoryid", categoryid));
             }
         }
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider?" + URLEncodedUtils.format(params, "UTF-8");
+        		
         return parser.parse(url, landmarks, task, true, null);
 	}
 }

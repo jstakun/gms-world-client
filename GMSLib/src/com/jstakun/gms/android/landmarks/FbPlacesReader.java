@@ -4,8 +4,10 @@
  */
 package com.jstakun.gms.android.landmarks;
 
-import java.net.URLEncoder;
 import java.util.List;
+
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -76,23 +78,22 @@ public class FbPlacesReader extends AbstractSerialReader {
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		String url = null, response = null;
 
-		int dist = radius;
-        if (dist > 6371) {
-            dist = 6371;
-        }
+		//int dist = radius;
+        //if (dist > 6371) {
+        //    dist = 6371;
+        //}
+        //params.add(new BasicNameValuePair("distance", Integer.toString(dist)));
         
-        String queryString = "lat=" + coords[0] + "&lng=" + coords[1] + "&distance=" +
-                dist + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
+        //String queryString = "lat=" + coords[0] + "&lng=" + coords[1] + "&distance=" +
+        //        dist + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
 
         try {
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
         		ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
         		String token = fbUtils.getAccessToken().getToken();
-        		url = ConfigurationManager.getInstance().getSecuredServicesUrl() +
-                    "facebookProvider?" + queryString + "&token=" + URLEncoder.encode(token, "UTF-8");
-        	} else {
-        		url = ConfigurationManager.getInstance().getServicesUrl() + "facebookProvider?" + queryString;
-        	}
+        		params.add(new BasicNameValuePair("token", token));
+        	} 
+        	url = ConfigurationManager.getInstance().getServicesUrl() + "facebookProvider?" + URLEncodedUtils.format(params, "UTF-8");
         	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK);
         } catch (Exception e) {
             LoggerUtils.error("FBPlacesReader.readLayer() exception: ", e);

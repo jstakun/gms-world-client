@@ -10,9 +10,11 @@ import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
@@ -29,10 +31,11 @@ public class FsCheckinsReader extends AbstractSerialReader {
             ISocialUtils fsUtils = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE);
             String token = fsUtils.getAccessToken().getToken();
             if (token != null) {
-               String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&format=bin&version=" + SERIAL_VERSION;
-
+               //String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&format=bin&version=" + SERIAL_VERSION;
+               params.add(new BasicNameValuePair("lang", l));
                try {
-                  String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsCheckins?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
+            	  params.add(new BasicNameValuePair("token", token));   
+            	  String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsCheckins?" + URLEncodedUtils.format(params, "UTF-8");
                   errorMessage = parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
                } catch (Exception e) {
                   errorMessage = e.getMessage();

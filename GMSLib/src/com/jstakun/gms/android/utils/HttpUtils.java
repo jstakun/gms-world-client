@@ -416,20 +416,18 @@ public class HttpUtils {
         return reply;
     }
     
-    public List<ExtendedLandmark> loadLandmarkList(String url, boolean auth, String format) {
+    public List<ExtendedLandmark> loadLandmarkList(URI uri, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();
         
         List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
         
         try {
-            LoggerUtils.debug("Loading file: " + url);
+            LoggerUtils.debug("Loading file: " + uri.toString());
             
             if (locale == null) {
                 locale = ConfigurationManager.getInstance().getCurrentLocale();
             }
 
-            URI uri = new URI(url);
-            
             getRequest = new HttpGet(uri);
 
             getRequest.addHeader("Accept-Encoding", "gzip, deflate");
@@ -440,7 +438,7 @@ public class HttpUtils {
 
             // HTTP Response
             if (auth) {
-               setBasicAuthHeader(getRequest, url.contains("services"));
+               setBasicAuthHeader(getRequest, uri.getPath().contains("services"));
             }
             
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
@@ -455,11 +453,11 @@ public class HttpUtils {
                     if (contentType != null) {
                         String contentTypeValue = contentType.getValue();
                         if (!contentTypeValue.contains(format)) {
-                            throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + url);
+                            throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + uri.toString());
                         }
                     } else {
-                        //throw new IOException("Missing content type! Expected: " + format + " at url: " + url);
-                    	LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + url);
+                        //throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
+                    	LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + uri.toString());
                     }
 
                     InputStream is = entity.getContent();
@@ -476,7 +474,7 @@ public class HttpUtils {
                     		}
                     	}
                     	increaseCounter(0, available);
-                    	LoggerUtils.debug("File " + url + " size: " + available + " bytes");
+                    	LoggerUtils.debug("File " + uri.toString() + " size: " + available + " bytes");
                     }
                     ois.close();
                     bis.close();
@@ -484,7 +482,7 @@ public class HttpUtils {
                     entity.consumeContent();
                 }
             } else {
-                LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
+                LoggerUtils.error(uri.toString() + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
                 errorMessage = handleHttpStatus(responseCode);
             }
         } catch (Exception e) {

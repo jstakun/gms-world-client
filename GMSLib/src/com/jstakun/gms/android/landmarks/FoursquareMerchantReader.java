@@ -11,10 +11,11 @@ import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
@@ -70,33 +71,33 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		try {
             String l = Locale.getDefault().getLanguage();
+            params.add(new BasicNameValuePair("lang", l));
             String url = null;
-            String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + 
-                    "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
-
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
-                ISocialUtils fsUtils = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE);
-                String token = fsUtils.getAccessToken().getToken();
-                if (token != null) {
-                	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "foursquareMerchant?" + query_string + "&token=" + URLEncoder.encode(token, "UTF-8");
-                } else {
-                	LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: token is null!");
-                    url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareMerchant?" + query_string;
-                }
-            } else {
-                url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareMerchant?" + query_string;
-            }
+            //String query_string = "lat=" + coords[0] + "&lng=" + coords[1] + 
+            //        "&radius=" + radius + "&lang=" + l + "&limit=" + limit + "&display=" + display + "&version=" + SERIAL_VERSION + "&format=bin";
 
             CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
             if (cm != null) {
                 String categoryid = cm.getEnabledCategoriesString();
                 if (StringUtils.isNotEmpty(categoryid)) {
-                    url += "&categoryid=" + categoryid;
+                	params.add(new BasicNameValuePair("&categoryid", categoryid));
                 }
             }
-
+            
+            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
+                ISocialUtils fsUtils = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE);
+                String token = fsUtils.getAccessToken().getToken();
+                if (token != null) {
+                	params.add(new BasicNameValuePair("token", token));
+                	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
+                } else {
+                	LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: token is null!");
+                    url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
+                }
+            } else {
+                url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
+            }
             return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
-
         } catch (Exception e) {
             LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: ", e);
         }

@@ -5,22 +5,21 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.Commons;
+import java.util.List;
+
+import org.apache.http.client.utils.URLEncodedUtils;
+
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
-import com.jstakun.gms.android.utils.MathUtils;
-import com.jstakun.gms.android.utils.MercatorUtils;
-import java.util.List;
 
 /**
  *
  * @author jstakun
  */
-//http://api.eventful.com/rest/events/search?location=32.746682,-117.162741&within=0.5&date=Future&app_key=key&units=km&page_size=100
 
-public class EventfulReader extends AbstractJsonReader {
+public class EventfulReader extends AbstractSerialReader {
 
-    public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
+    /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
 
         init(latitude, longitude, zoom, width, height);
 
@@ -32,8 +31,14 @@ public class EventfulReader extends AbstractJsonReader {
 
         String url = ConfigurationManager.getInstance().getServicesUrl() + "eventfulProvider?" +
                      "location=" + coords[0] + "," + coords[1] + "&within=" + within +
-                     "&date=Future&units=km&format=json&page_size=" + limit + "&version=4" + "&display=" + display;
+                     "&date=Future&units=km&format=json&page_size=" + limit + "&version=4" + "&display=" + display;      
 
         return parser.parse(url, landmarks, Commons.EVENTFUL_LAYER, null, -1, -1, task, true, limit);
-    }
+    }*/
+
+	@Override
+	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
+		String url = ConfigurationManager.getInstance().getServicesUrl() + "eventfulProvider?" + URLEncodedUtils.format(params, "UTF-8");
+		return parser.parse(url, landmarks, task, true, null);
+	}
 }
