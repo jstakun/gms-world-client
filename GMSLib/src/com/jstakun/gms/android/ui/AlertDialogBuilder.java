@@ -124,14 +124,7 @@ public class AlertDialogBuilder {
                 setCancelable(true).
                 setOnCancelListener(dialogCancelListener);
 
-        /*if (!items.isEmpty()) {
-            String[] loginItems = new String[items.size()];
-            for (int i = 0; i < items.size(); i++) {
-                loginItems[i] = items.get(i).split(";")[0];
-            }
-           //builder.setItems(loginItems, loginListener);*/
-            loginDialog = builder.create();
-        //}
+        loginDialog = builder.create();
     }
 
     private void createSaveRouteDialog(DialogInterface.OnClickListener saveRouteListener) {

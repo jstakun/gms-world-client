@@ -50,9 +50,9 @@ import com.openlapi.QualifiedCoordinates;
 public final class ConfigurationManager {
 
     private static final Map<String, ExtendedLandmark> default_locations = new HashMap<String, ExtendedLandmark>();
-    private static final Map<String, String> configuration = new HashMap<String, String>();
-    private static final Map<String, String> changedConfig = new ConcurrentHashMap<String, String>();
-    private static final Map<String, Object> objectCache = new HashMap<String, Object>();
+    private static volatile Map<String, String> configuration = new HashMap<String, String>();
+    private static volatile Map<String, String> changedConfig = new ConcurrentHashMap<String, String>();
+    private static volatile Map<String, Object> objectCache = new HashMap<String, Object>();
     private static ConfigurationManager instance = null;
     private static UserManager userManager = null;
     private static DatabaseManager databaseManager = null;

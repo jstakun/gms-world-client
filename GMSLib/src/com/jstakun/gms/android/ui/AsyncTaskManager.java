@@ -860,9 +860,6 @@ public class AsyncTaskManager {
         LoginTask loginTask = new LoginTask();
         String notificationId = createNotification(-1, message, message, true);
         loginTask.execute("", notificationId, login, password);
-        //if (!AsyncTaskExecutor.execute(loginTask, activity, "", Integer.toString(notificationId), login, password)) {
-        //    loginTask.clear();
-        //}
     }
 
     private class LoginTask extends GenericTask {
@@ -889,9 +886,6 @@ public class AsyncTaskManager {
         ClearStatsTask clearTasks = new ClearStatsTask();
         String notificationId = createNotification(-1, message, message, true);
         clearTasks.execute("", notificationId);
-        //if (!AsyncTaskExecutor.execute(clearTasks, activity, "", Integer.toString(notificationId))) {
-        //    clearTasks.clear();
-        //}
     }
 
     private class ClearStatsTask extends GenericTask {
@@ -956,7 +950,6 @@ public class AsyncTaskManager {
     }
 
     public void executeNewVersionCheckTask() {
-        //return AsyncTaskExecutor.executeBooleanTask(new NewVersionCheckTask(), activity);
         new NewVersionCheckTask().execute();
     }
 
@@ -985,10 +978,18 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeUploadImageTask(double lat, double lng, byte[] file) {
+    public void executeUploadImageTask(double lat, double lng, byte[] file, boolean notify) {
+    	if (notify) {
+    		String message = Locale.getMessage(R.string.shareScreenshot);
+    		intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+    	}
     	if (file != null && ConfigurationManager.getInstance().isNetworkModeAccepted()) {
             //loading time & sdk version & number of landmarks
-            long loadingTime = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
+            long loadingTime = 0; 
+            Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
+            if (l != null) {
+                 loadingTime = l.longValue();
+            }
             int version = OsUtil.getSdkVersion();
             int numOfLandmarks = landmarkManager.getAllLayersSize();
             int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);

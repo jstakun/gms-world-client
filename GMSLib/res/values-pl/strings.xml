@@ -45,7 +45,7 @@
     <string name="newestLandmarks">Najnowsze miejsca</string>
     <string name="rateUs">Oce\u0144 nas</string>
     <string name="imageLoading">\u015aci\u0105ganie obraz\u00f3w</string>
-
+    <string name="shareScreenshot">Zrzut ekranu</string>
     <!-- preferences -->
     <string name="mapProvider">Dostawca map</string>
     <string name="logLevel">Poziom logowania</string>

@@ -45,6 +45,7 @@
     <string name="newestLandmarks">Newest landmarks</string>
     <string name="rateUs">Rate us</string>
     <string name="imageLoading">Image download</string>
+    <string name="shareScreenshot">Share screenshot</string>
     
     <!-- preferences -->
     <string name="mapProvider">Map provider</string>

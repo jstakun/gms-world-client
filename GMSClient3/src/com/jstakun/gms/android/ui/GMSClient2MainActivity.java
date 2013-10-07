@@ -795,6 +795,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                         intents.showNearbyLandmarks(getMyPosition(), ProjectionFactory.getProjection(mapView, googleMapsView), AbstractLandmarkList.ORDER_BY_DIST_ASC);
                     }
                     break;
+                case R.id.shareScreenshot:
+                	asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+                            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), intents.takeScreenshot(), true);
+                	break;
                 default:
                     return super.onOptionsItemSelected(item);
             }
@@ -1188,7 +1192,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
                 	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
                 		activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot());
+                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot(), false);
                 	}
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));

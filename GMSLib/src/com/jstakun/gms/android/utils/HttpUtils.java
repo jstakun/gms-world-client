@@ -27,6 +27,9 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -436,9 +439,9 @@ public class HttpUtils {
             getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
             getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
-            // HTTP Response
             if (auth) {
-               setBasicAuthHeader(getRequest, uri.getPath().contains("services"));
+                //setUserCredentials(uri);
+            	setBasicAuthHeader(getRequest, uri.getPath().contains("services"));
             }
             
             HttpResponse httpResponse = getHttpClient().execute(getRequest);
@@ -551,7 +554,7 @@ public class HttpUtils {
     	
     	if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_USERNAME, String.class) && 
     			ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_PASSWORD, String.class)) {
-        	//user in process of login to gms world
+        	//user is in process of login to gms world
     		username = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_USERNAME, String.class);
     		password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
     		decodeUsername = false;
@@ -567,7 +570,7 @@ public class HttpUtils {
                 password = Commons.APP_USER_PWD;
         	}
     	} else if (ConfigurationManager.getInstance().containsObject(Commons.MY_POS_CODE, String.class)) {
-    		//mypos request
+    		//my pos request
     		username = Commons.MY_POS_USER;
             password = Commons.APP_USER_PWD;
             ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
@@ -684,6 +687,57 @@ public class HttpUtils {
     	sslSocketFactory.setHostnameVerifier(SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER); 
     	//SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
     	return sslSocketFactory;
+    }
+    
+    private static void setUserCredentials(URI uri) throws UnsupportedEncodingException { 
+    	String username = null, password = null;
+    	boolean decodePassword = true, decodeUsername = true;
+    	
+    	if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_USERNAME, String.class) && 
+    			ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_PASSWORD, String.class)) {
+        	//user in process of login to gms world
+    		username = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_USERNAME, String.class);
+    		password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
+    		decodeUsername = false;
+    		decodePassword = false;
+        } else if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
+    		//user is logged in
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
+        		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);
+        		password = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_PASSWORD);
+        		decodeUsername = false;
+        	} else {
+        		username = Commons.GMS_APP_USER;
+                password = Commons.APP_USER_PWD;
+        	}
+    	} else if (ConfigurationManager.getInstance().containsObject(Commons.MY_POS_CODE, String.class)) {
+    		//mypos request
+    		username = Commons.MY_POS_USER;
+            password = Commons.APP_USER_PWD;
+            ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
+        } else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) == 1) {
+    		//da app request
+    		username = Commons.DA_APP_USER;
+            password = Commons.APP_USER_PWD;
+    	}
+    	
+        byte[] usr, pwd;
+    	
+    	if (decodeUsername) {
+    	   usr = Base64.decode(username);
+    	} else {
+    	   usr = username.getBytes();	
+    	}
+    	
+    	if (decodePassword) {
+    		pwd = Base64.decode(password);
+    	} else {
+    		pwd = password.getBytes();
+    	}
+    	
+    	Credentials creds = new UsernamePasswordCredentials(new String(usr, "US-ASCII"), new String(pwd, "US-ASCII"));
+    	
+    	httpClient.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort(), AuthScope.ANY_REALM), creds);
     }
 
     private static class SSLSocketFactoryHelper {

@@ -878,7 +878,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			activity.showRecommendedDeal(false);
         			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
         				activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.googleMapsView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(activity.googleMapsView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot());
+                            MathUtils.coordIntToDouble(activity.googleMapsView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot(), false);
         			}
         		} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
         			int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.googleMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, activity.cm);
