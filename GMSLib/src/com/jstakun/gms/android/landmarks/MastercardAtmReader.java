@@ -5,19 +5,26 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 
 import java.util.List;
 
+import org.apache.http.client.utils.URLEncodedUtils;
+
 /**
  *
  * @author jstakun
  */
-public class MastercardAtmReader extends AbstractJsonReader {
+public class MastercardAtmReader extends AbstractSerialReader {
 
-    @Override
+	@Override
+	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
+		String url = ConfigurationManager.getInstance().getServicesUrl() + "atmProvider?" + URLEncodedUtils.format(params, "UTF-8");
+		return parser.parse(url, landmarks, task, true, null);
+	}
+
+    /*@Override
     public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
         init(latitude, longitude, zoom, width, height);
 
@@ -25,5 +32,5 @@ public class MastercardAtmReader extends AbstractJsonReader {
                 "&longitude=" + coords[1] + "&radius=" + radius + "&limit=" + limit + "&display=" + display;
 
         return parser.parse(url, landmarks, Commons.MC_ATM_LAYER, null, -1, -1, task, true, limit);
-    }
+    }*/
 }
