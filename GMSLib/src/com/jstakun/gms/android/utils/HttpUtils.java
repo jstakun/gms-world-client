@@ -4,7 +4,7 @@
  */
 package com.jstakun.gms.android.utils;
 
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
@@ -347,7 +349,7 @@ public class HttpUtils {
         return byteBuffer;
     }
     
-    public Object loadObject(String url, boolean auth, String format) {
+    /*public Object loadObject(String url, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();
         
         Object reply = null;
@@ -417,7 +419,7 @@ public class HttpUtils {
         }
 
         return reply;
-    }
+    }*/
     
     public List<ExtendedLandmark> loadLandmarkList(URI uri, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();
@@ -452,6 +454,7 @@ public class HttpUtils {
                 HttpEntity entity = httpResponse.getEntity();
 
                 if (entity != null) {
+                	
                     Header contentType = entity.getContentType();
                     if (contentType != null) {
                         String contentTypeValue = contentType.getValue();
@@ -464,10 +467,29 @@ public class HttpUtils {
                     }
 
                     InputStream is = entity.getContent();
-                    BufferedInputStream bis = new BufferedInputStream(is);
-                    ObjectInputStream ois = new ObjectInputStream(bis);
-                    int available = bis.available();
-                    if (available > 0) {
+                    
+                    //1. read bytes stream
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();				
+            		byte[] buffer = new byte[1024];
+            		int read = 0;
+            		while ((read = is.read(buffer, 0, buffer.length)) != -1) {
+            			baos.write(buffer, 0, read);
+            		}		
+            		baos.flush();
+            		is.close();
+                    
+            		int bufferSize = baos.size();
+                    LoggerUtils.debug("File " + uri.toString() + " size: " + bufferSize + " bytes");
+            		
+                    if (bufferSize > 0) {
+                    	increaseCounter(0, bufferSize);
+                    	ObjectInputStream ois = null;
+                    	if (contentType != null && contentType.getValue().indexOf("deflate") != -1) {
+                        	ois = new ObjectInputStream(new InflaterInputStream(new ByteArrayInputStream(baos.toByteArray()), new Inflater(false)));
+                    	} else {
+                        	ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+                    	}
+                   
                     	int size = ois.readInt();
                     	if (size > 0) {
                     		for(int i = 0;i < size;i++) {
@@ -476,11 +498,9 @@ public class HttpUtils {
                     			reply.add(landmark);
                     		}
                     	}
-                    	increaseCounter(0, available);
-                    	LoggerUtils.debug("File " + uri.toString() + " size: " + available + " bytes");
+                    
+                    	ois.close();
                     }
-                    ois.close();
-                    bis.close();
                     
                     entity.consumeContent();
                 }

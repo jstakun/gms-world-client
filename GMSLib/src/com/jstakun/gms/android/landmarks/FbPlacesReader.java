@@ -6,11 +6,13 @@ package com.jstakun.gms.android.landmarks;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.social.FacebookUtils;
 import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
@@ -92,9 +94,19 @@ public class FbPlacesReader extends AbstractSerialReader {
         		ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
         		String token = fbUtils.getAccessToken().getToken();
         		params.add(new BasicNameValuePair("token", token));
-        	} 
-        	url = ConfigurationManager.getInstance().getServicesUrl() + "facebookProvider?" + URLEncodedUtils.format(params, "UTF-8");
+        		url = ConfigurationManager.getInstance().getSecuredServicesUrl() +
+                        "facebookProvider?" + URLEncodedUtils.format(params, "UTF-8");
+        	} else {
+        		url = ConfigurationManager.SERVER_URL + "facebookProvider?" + URLEncodedUtils.format(params, "UTF-8");
+        	}
+        	       	
         	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK);
+        	
+        	//retry without token
+        	if (StringUtils.equals(response, FacebookUtils.FB_OAUTH_ERROR)) {             
+                url = ConfigurationManager.SERVER_URL + "facebookProvider?" + URLEncodedUtils.format(params, "UTF-8");
+                response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK);
+        	}    
         } catch (Exception e) {
             LoggerUtils.error("FBPlacesReader.readLayer() exception: ", e);
         }	

@@ -33,7 +33,12 @@ public class SerialParser {
         
         try {
         	URI uri = new URI(url);
-        	List<ExtendedLandmark> received = utils.loadLandmarkList(uri, true, "x-java-serialized-object");
+        	List<ExtendedLandmark> received = utils.loadLandmarkList(uri, true, "deflate");
+        	//TODO
+        	//add lm to dynamic layers
+            //if (landmarkManager != null) {
+            //    landmarkManager.addLandmarkToDynamicLayer(lm);
+            //}
         	if (landmarks.isEmpty()) {
         		landmarks.addAll(received);
         	} else {

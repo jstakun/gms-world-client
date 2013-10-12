@@ -324,9 +324,9 @@ public final class ConfigurationManager {
 
     public String getServicesUrl() {
         if (getUserManager().isUserLoggedIn()) {
-            return SERVER_SERVICES_URL; //"http://10.0.2.2:8888/services/"; //
+            return SERVER_SERVICES_URL; //"http://10.0.2.2:8888/services/";
         } else {
-            return SERVER_URL; //"http://10.0.2.2:8888/"; //
+            return SERVER_URL; //"http://10.0.2.2:8888/";
         }
     }
 

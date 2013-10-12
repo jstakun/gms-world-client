@@ -779,6 +779,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                         intents.showNearbyLandmarks(getMyPosition(), new OsmLandmarkProjection(mapView), AbstractLandmarkList.ORDER_BY_DIST_ASC);
                     }
                     break;
+                case R.id.shareScreenshot:
+                	asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+                            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), intents.takeScreenshot(), true);
+                	break;    
                 default:
                     return super.onOptionsItemSelected(item);
             }

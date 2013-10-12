@@ -19,7 +19,7 @@ public abstract class AbstractSerialReader implements LayerReader {
     //protected String[] coords = null;
     protected int radius; //, limit = DEFAULT_LIMIT, dealLimit = DEFAULT_DEAL_LIMIT;
     //protected String display = null;
-	private static final String SERIAL_VERSION = "11";
+	private static final String SERIAL_VERSION = "12";
 	protected List<NameValuePair> params = new ArrayList<NameValuePair>();
      
     private void init(double latitude, double longitude, int zoom, int width, int height) {
@@ -35,6 +35,7 @@ public abstract class AbstractSerialReader implements LayerReader {
         if (dealLimit == DEFAULT_DEAL_LIMIT && OsUtil.isIceCreamSandwichOrHigher()) {
             dealLimit = (int) (1.5 * dealLimit);
         }
+        params.clear();
         params.add(new BasicNameValuePair("radius", Integer.toString(radius)));
         params.add(new BasicNameValuePair("latitude", StringUtil.formatCoordE6(latitude)));
         params.add(new BasicNameValuePair("longitude", StringUtil.formatCoordE6(longitude)));

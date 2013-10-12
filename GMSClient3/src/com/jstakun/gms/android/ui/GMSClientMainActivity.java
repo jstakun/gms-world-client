@@ -795,6 +795,10 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             case R.id.rateUs:
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
+            case R.id.shareScreenshot:
+            	asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), intents.takeScreenshot(), true);
+            	break;    
             default:
                 return super.onOptionsItemSelected(item);
         }

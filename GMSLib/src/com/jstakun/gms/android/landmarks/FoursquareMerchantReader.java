@@ -92,10 +92,10 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
                 	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
                 } else {
                 	LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: token is null!");
-                    url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
+                    url = ConfigurationManager.SERVER_URL + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
                 }
             } else {
-                url = ConfigurationManager.getInstance().getServicesUrl() + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
+                url = ConfigurationManager.SERVER_URL + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
             }
             return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
         } catch (Exception e) {
