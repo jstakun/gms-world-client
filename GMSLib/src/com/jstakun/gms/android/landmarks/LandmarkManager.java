@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1062,6 +1063,21 @@ public class LandmarkManager {
             if (searchPredicate.apply(landmark)) {
                 layer.incrementCount();
             }
+        }
+    }
+    
+    protected void addLandmarkListToDynamicLayer(Collection<ExtendedLandmark> landmarks) {
+        if (!landmarks.isEmpty()) {
+        	List<String> dynamicLayers = layerManager.getDynamicLayers();
+        	for (String key : dynamicLayers) {
+        		Layer layer = layerManager.getLayer(key);
+        		Predicate<ExtendedLandmark> searchPredicate = new FuzzySearchPredicate(layer.getKeywords(), false, null);
+        		for (ExtendedLandmark landmark : landmarks) {
+        			if (searchPredicate.apply(landmark)) {
+        				layer.incrementCount();
+        			}
+        		}
+        	}
         }
     }
 

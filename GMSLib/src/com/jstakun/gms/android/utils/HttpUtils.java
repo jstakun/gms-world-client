@@ -349,79 +349,7 @@ public class HttpUtils {
         return byteBuffer;
     }
     
-    /*public Object loadObject(String url, boolean auth, String format) {
-        getThreadSafeClientConnManagerStats();
-        
-        Object reply = null;
-        
-        try {
-            LoggerUtils.debug("Loading file: " + url);
-            
-            if (locale == null) {
-                locale = ConfigurationManager.getInstance().getCurrentLocale();
-            }
-
-            URI uri = new URI(url);
-            
-            getRequest = new HttpGet(uri);
-
-            getRequest.addHeader("Accept-Encoding", "gzip, deflate");
-            getRequest.addHeader("Connection", "close");
-            getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-            getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-            getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
-
-            // HTTP Response
-            if (auth) {
-               setBasicAuthHeader(getRequest, url.contains("services"));
-            }
-            
-            HttpResponse httpResponse = getHttpClient().execute(getRequest);
-
-            responseCode = httpResponse.getStatusLine().getStatusCode();
-
-            if (responseCode == HttpStatus.SC_OK) {
-                HttpEntity entity = httpResponse.getEntity();
-
-                if (entity != null) {
-                    Header contentType = entity.getContentType();
-                    if (contentType != null) {
-                        String contentTypeValue = contentType.getValue();
-                        if (!contentTypeValue.contains(format)) {
-                            throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + url);
-                        }
-                    } else {
-                        //throw new IOException("Missing content type! Expected: " + format + " at url: " + url);
-                    	LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + url);
-                    }
-
-                    InputStream is = entity.getContent();
-                    BufferedInputStream bis = new BufferedInputStream(is);
-                    ObjectInputStream ois = new ObjectInputStream(bis);
-                    int available = bis.available();
-                    if (available > 0) {
-                    	reply = ois.readObject();
-                    	increaseCounter(0, available);
-                    	LoggerUtils.debug("File " + url + " size: " + available + " bytes");//, Compressed = " + compressed);
-                    }
-                    ois.close();
-                    bis.close();
-                    
-                    entity.consumeContent();
-                }
-            } else {
-                LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
-                errorMessage = handleHttpStatus(responseCode);
-            }
-        } catch (Exception e) {
-            LoggerUtils.error("HttpUtils.loadObject() exception: ", e);
-            errorMessage = handleHttpException(e);
-        }
-
-        return reply;
-    }*/
-    
-    public List<ExtendedLandmark> loadLandmarkList(URI uri, boolean auth, String format) {
+    public List<ExtendedLandmark> loadLandmarkList(URI uri, List<NameValuePair> params, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();
         
         List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
@@ -433,20 +361,36 @@ public class HttpUtils {
                 locale = ConfigurationManager.getInstance().getCurrentLocale();
             }
 
-            getRequest = new HttpGet(uri);
+            //getRequest = new HttpGet(uri);
 
-            getRequest.addHeader("Accept-Encoding", "gzip, deflate");
-            getRequest.addHeader("Connection", "close");
-            getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-            getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-            getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+            //getRequest.addHeader("Accept-Encoding", "gzip, deflate");
+            //getRequest.addHeader("Connection", "close");
+            //getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
+            //getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            //getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+
+            //if (auth) {
+                //setUserCredentials(uri);
+            	//setBasicAuthHeader(getRequest, uri.getPath().contains("services"));
+            //}
+            
+            //HttpResponse httpResponse = getHttpClient().execute(getRequest);
+
+            postRequest = new HttpPost(uri);
+
+            postRequest.addHeader("Accept-Encoding", "gzip, deflate");
+            postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
+            postRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
+            postRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            postRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
             if (auth) {
-                //setUserCredentials(uri);
-            	setBasicAuthHeader(getRequest, uri.getPath().contains("services"));
+               setBasicAuthHeader(postRequest, uri.getPath().contains("services"));
             }
-            
-            HttpResponse httpResponse = getHttpClient().execute(getRequest);
+           
+            postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+            HttpResponse httpResponse = getHttpClient().execute(postRequest);
 
             responseCode = httpResponse.getStatusLine().getStatusCode();
 

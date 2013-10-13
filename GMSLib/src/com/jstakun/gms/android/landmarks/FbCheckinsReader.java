@@ -12,7 +12,6 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import java.util.List;
 
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
@@ -44,8 +43,8 @@ public class FbCheckinsReader extends AbstractSerialReader {
                 String token = fbUtils.getAccessToken().getToken();
                 if (token != null) {
                 	params.add(new BasicNameValuePair("token", token));
-                	String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbCheckins?" + URLEncodedUtils.format(params, "UTF-8");
-                	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK);
+                	String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbCheckins";
+                	response = parser.parse(url, params, landmarks, task, true, Commons.FACEBOOK);
                 } else {
                 	LoggerUtils.error("FbCheckinsReader.readLayer() exception: token is null");
                 }

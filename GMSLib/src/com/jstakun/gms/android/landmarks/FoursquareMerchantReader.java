@@ -4,18 +4,19 @@
  */
 package com.jstakun.gms.android.landmarks;
 
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.message.BasicNameValuePair;
+
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.social.ISocialUtils;
+import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.social.OAuthServiceFactory;
-import java.util.List;
-import java.util.Locale;
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
@@ -89,15 +90,15 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
                 String token = fsUtils.getAccessToken().getToken();
                 if (token != null) {
                 	params.add(new BasicNameValuePair("token", token));
-                	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
+                	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "foursquareMerchant";
                 } else {
                 	LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: token is null!");
-                    url = ConfigurationManager.SERVER_URL + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
+                    url = ConfigurationManager.SERVER_URL + "foursquareMerchant";
                 }
             } else {
-                url = ConfigurationManager.SERVER_URL + "foursquareMerchant?" + URLEncodedUtils.format(params, "UTF-8");
+                url = ConfigurationManager.SERVER_URL + "foursquareMerchant";
             }
-            return parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
+            return parser.parse(url, params, landmarks, task, true, Commons.FOURSQUARE);
         } catch (Exception e) {
             LoggerUtils.error("FoursquareMerchantReader.readLayer() exception: ", e);
         }

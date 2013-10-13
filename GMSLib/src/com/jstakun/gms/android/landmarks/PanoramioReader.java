@@ -6,7 +6,6 @@ package com.jstakun.gms.android.landmarks;
 
 import java.util.List;
 
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -43,7 +42,7 @@ public class PanoramioReader extends AbstractSerialReader {
 		params.add(new BasicNameValuePair("miny", StringUtil.formatCoordE2(bbox.south)));
 		params.add(new BasicNameValuePair("maxx", StringUtil.formatCoordE2(bbox.east)));  
 		params.add(new BasicNameValuePair("maxy", StringUtil.formatCoordE2(bbox.north)));
-		String url = ConfigurationManager.getInstance().getServicesUrl() + "panoramio2Provider?" + URLEncodedUtils.format(params, "UTF-8");
-		return parser.parse(url, landmarks, task, true, null);
+		String url = ConfigurationManager.getInstance().getServicesUrl() + "panoramio2Provider";
+		return parser.parse(url, params, landmarks, task, true, null);
 	}
 }

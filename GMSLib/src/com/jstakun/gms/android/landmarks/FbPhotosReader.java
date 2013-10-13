@@ -6,7 +6,6 @@ package com.jstakun.gms.android.landmarks;
 
 import java.util.List;
 
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.config.Commons;
@@ -42,8 +41,8 @@ public class FbPhotosReader extends AbstractSerialReader {
                 String token = fbUtils.getAccessToken().getToken();
                 if (token != null) {
                 	params.add(new BasicNameValuePair("token", token));
-                	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbPhotos?" + URLEncodedUtils.format(params, "UTF-8");
-                	response = parser.parse(url, landmarks, task, true, Commons.FACEBOOK);
+                	url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbPhotos";
+                	response = parser.parse(url, params, landmarks, task, true, Commons.FACEBOOK);
                 } else {
                 	LoggerUtils.error("FbPhotosReader.readLayer() exception: token is null");
                 }

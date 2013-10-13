@@ -10,7 +10,6 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 
 import java.util.List;
 
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
@@ -42,10 +41,10 @@ public class LMServerReader extends AbstractSerialReader {
 		params.add(new BasicNameValuePair("longitudeMin", Double.toString(longitude)));
 		params.add(new BasicNameValuePair("layer", layer));
         
-		String url = ConfigurationManager.getInstance().getServicesUrl() + "downloadLandmark?" + URLEncodedUtils.format(params, "UTF-8");
+		String url = ConfigurationManager.getInstance().getServicesUrl() + "downloadLandmark";
                 //"latitudeMin=" + coords[0] + "&longitudeMin=" + coords[1] + "&layer=" + layer +
                 //"&format=bin&version=" + SERIAL_VERSION + "&limit=" + limit + "&display=" + display + "&radius=" + radius;
 
-		return parser.parse(url, landmarks, task, true, null);
+		return parser.parse(url, params, landmarks, task, true, null);
 	}
 }

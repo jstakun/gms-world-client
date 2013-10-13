@@ -2,10 +2,14 @@ package com.jstakun.gms.android.landmarks;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
+
+import org.apache.http.NameValuePair;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
@@ -28,21 +32,24 @@ public class SerialParser {
         }
     }
 	
-    protected String parse(String url, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) { 	
+    protected String parse(String url, List<NameValuePair> params, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) { 	
         String errorMessage = null;
+        LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         
         try {
         	URI uri = new URI(url);
-        	List<ExtendedLandmark> received = utils.loadLandmarkList(uri, true, "deflate");
-        	//TODO
-        	//add lm to dynamic layers
-            //if (landmarkManager != null) {
-            //    landmarkManager.addLandmarkToDynamicLayer(lm);
-            //}
+        	List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, "deflate");
         	if (landmarks.isEmpty()) {
         		landmarks.addAll(received);
+        		if (landmarkManager != null) {
+        			landmarkManager.addLandmarkListToDynamicLayer(received);
+        		}
         	} else {
-        		landmarks.addAll(Collections2.filter(received, new ExistsPredicate(landmarks)));
+        		Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
+        		landmarks.addAll(filtered);
+        		if (landmarkManager != null) {
+        			landmarkManager.addLandmarkListToDynamicLayer(filtered);
+        		}
         	}
         } catch (Exception ex) {
             LoggerUtils.error("SerialParser.parse() exception: ", ex);

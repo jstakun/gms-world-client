@@ -10,8 +10,6 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 
 import java.util.List;
 
-import org.apache.http.client.utils.URLEncodedUtils;
-
 /**
  *
  * @author jstakun
@@ -20,8 +18,8 @@ public class MastercardAtmReader extends AbstractSerialReader {
 
 	@Override
 	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
-		String url = ConfigurationManager.getInstance().getServicesUrl() + "atmProvider?" + URLEncodedUtils.format(params, "UTF-8");
-		return parser.parse(url, landmarks, task, true, null);
+		String url = ConfigurationManager.getInstance().getServicesUrl() + "atmProvider";
+		return parser.parse(url, params, landmarks, task, true, null);
 	}
 
     /*@Override

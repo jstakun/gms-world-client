@@ -267,6 +267,13 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
         return searchTerm;
     }
 
+    /**
+     * @param searchTerm the searchTerm to set
+     */
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
+    }
+
 	public String getServerKey() {
 		return serverKey;
 	}

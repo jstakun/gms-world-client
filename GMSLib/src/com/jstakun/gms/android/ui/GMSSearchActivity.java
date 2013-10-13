@@ -4,6 +4,16 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.net.URI;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -19,7 +29,7 @@ import android.widget.ListView;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.landmarks.JSONParser;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.social.ISocialUtils;
@@ -34,15 +44,6 @@ import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.SuggestionProviderUtil;
 import com.jstakun.gms.android.utils.UserTracker;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * 
@@ -469,13 +470,13 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 		private String searchServerAction(GMSAsyncTask<?, ? ,?> task) {
 			HttpUtils utils = new HttpUtils();
-			JSONParser jsonParser = new JSONParser();
+			//JSONParser jsonParser = new JSONParser();
 			String errorMessage = null;
 
 			try {
-				String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "search";			
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				//String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "search";			
 				
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("lat",StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lat))));
 				params.add(new BasicNameValuePair("lng", StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lng))));
 				params.add(new BasicNameValuePair("radius", Integer.toString(radius)));				
@@ -504,11 +505,16 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					}
 				}
 
-				utils.sendPostRequest(url, params, true);
+				//utils.sendPostRequest(url, params, true);
+				
+				params.add(new BasicNameValuePair("format", "bin"));
+				String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "search";
+				List<ExtendedLandmark> received = utils.loadLandmarkList(new URI(url), params, true, "deflate");
 				
 				errorMessage = utils.getResponseCodeErrorMessage();
-				String response = utils.getPostResponse();
-				if (StringUtils.startsWith(response, "{")) {
+				//String response = utils.getPostResponse();
+				
+				/*if (StringUtils.startsWith(response, "{")) {
 					JSONObject jsonRoot = new JSONObject(response);
 					JSONObject jsonLayers = jsonRoot.getJSONObject("ResultSet");
 
@@ -521,21 +527,29 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 						i++;
 						publishProgress(i, layerCount);
 						if (resultSet.length() > 0) {
-							jsonParser.parseJSonArray(resultSet,
-									landmarkManager
-											.getLandmarkStoreLayer(layerName),
-									layerName, landmarkManager
-											.getLayerUrlPrefix(layerName), -1,
-									-1, task, 50, query);
+							jsonParser.parseJSonArray(resultSet, landmarkManager.getLandmarkStoreLayer(layerName), layerName, landmarkManager.getLayerUrlPrefix(layerName), -1, -1, task, 50, query);
 						}
 					}
+				}*/
+				
+				//process received landmark list
+				int landmarkCount = received.size();
+				if (landmarkCount > 0) {
+					int i = 0; 	
+					for (ExtendedLandmark landmark : received) {
+						i++;
+						publishProgress(i, landmarkCount); 
+						String layer = landmark.getLayer();
+						landmark.setSearchTerm(query);
+						landmarkManager.getLandmarkStoreLayer(layer).add(landmark);
+						landmarkManager.addLandmarkToDynamicLayer(landmark);
+					}	 
 				}
+				//
+				
 			} catch (Exception ex) {
-				LoggerUtils
-						.error("GMSSearchActivity.SearchTask.searchServerAction() exception",
-								ex);
-				errorMessage = Locale.getMessage(R.string.Http_error,
-						ex.getMessage());
+				LoggerUtils.error("GMSSearchActivity.SearchTask.searchServerAction() exception", ex);
+				errorMessage = Locale.getMessage(R.string.Http_error, ex.getMessage());
 			} finally {
 				try {
 					if (utils != null) {

@@ -10,7 +10,6 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
@@ -47,8 +46,8 @@ public class GrouponReader extends AbstractSerialReader {
             	params.add(new BasicNameValuePair("categoryid", categoryid));
             }
         }
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider?" + URLEncodedUtils.format(params, "UTF-8");
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider";
         		
-        return parser.parse(url, landmarks, task, true, null);
+        return parser.parse(url, params, landmarks, task, true, null);
 	}
 }

@@ -10,7 +10,6 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
@@ -29,8 +28,8 @@ public class CouponsReader extends AbstractSerialReader {
             	params.add(new BasicNameValuePair("categoryid", categoryid));
             }
         }
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "couponsProvider?" + URLEncodedUtils.format(params, "UTF-8");
-        return parser.parse(url, landmarks, task, true, null);
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "couponsProvider";
+        return parser.parse(url, params, landmarks, task, true, null);
 	}
 
     /*@Override

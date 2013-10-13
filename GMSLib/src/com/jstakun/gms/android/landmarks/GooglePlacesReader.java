@@ -10,7 +10,6 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
@@ -33,7 +32,7 @@ public class GooglePlacesReader extends AbstractSerialReader {
 			double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
 		String lang = Locale.getDefault().getLanguage();
 		params.add(new BasicNameValuePair("language", lang));
-		String url = ConfigurationManager.getInstance().getServicesUrl() + "googlePlacesProvider?" + URLEncodedUtils.format(params, "UTF-8"); 
- 		return parser.parse(url, landmarks, task, true, null);
+		String url = ConfigurationManager.getInstance().getServicesUrl() + "googlePlacesProvider";
+ 		return parser.parse(url, params, landmarks, task, true, null);
 	}
 }

@@ -10,7 +10,6 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
@@ -25,10 +24,10 @@ public class HotelsReader extends AbstractSerialReader {
 		    params.add(new BasicNameValuePair("latitudeMin", Double.toString(latitude)));
 			params.add(new BasicNameValuePair("longitudeMin", Double.toString(longitude)));
 			params.add(new BasicNameValuePair("lang", l));
-			String url = ConfigurationManager.getInstance().getServicesUrl() + "hotelsProvider?" + URLEncodedUtils.format(params, "UTF-8");
+			String url = ConfigurationManager.getInstance().getServicesUrl() + "hotelsProvider";
                     //+ "latitudeMin=" + coords[0] + "&longitudeMin=" + coords[1] + "&radius=" + radius
                     //+ "&lang=" + l + "&limit=" + limit + "&version=" + SERIAL_VERSION + "&display=" + display + "&format=bin";
-            return parser.parse(url, landmarks, task, true, null);    
+            return parser.parse(url, params, landmarks, task, true, null);    
 	}
 
     //private static final String[] prefixes = new String[] {"http://www.hotelscombined.com/Hotel/"};

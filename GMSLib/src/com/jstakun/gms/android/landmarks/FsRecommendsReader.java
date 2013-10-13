@@ -5,17 +5,17 @@
 
 package com.jstakun.gms.android.landmarks;
 
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.http.message.BasicNameValuePair;
+
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
@@ -36,8 +36,8 @@ public class FsRecommendsReader extends AbstractSerialReader {
             	params.add(new BasicNameValuePair("lang", l));
             	try {
             		params.add(new BasicNameValuePair("token", token));
-            		String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsRecommended?" + URLEncodedUtils.format(params, "UTF-8");
-            		errorMessage = parser.parse(url, landmarks, task, true, Commons.FOURSQUARE);
+            		String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsRecommended";
+            		errorMessage = parser.parse(url, params, landmarks, task, true, Commons.FOURSQUARE);
             	} catch (Exception e) {
             		errorMessage = e.getMessage();
             		LoggerUtils.error("FsRecommendsReader exception: ", e);

@@ -5,13 +5,12 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.utils.GMSAsyncTask;
-
 import java.util.List;
 
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
+
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.GMSAsyncTask;
 
 /**
  *
@@ -24,8 +23,8 @@ public class YelpReader extends AbstractSerialReader{
 		int dist = radius * 1000;
 		params.remove(0); //remove default radius parameter
 		params.add(new BasicNameValuePair("radius", Integer.toString(dist)));
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "yelpProvider?" + URLEncodedUtils.format(params, "UTF-8");
-        return parser.parse(url, landmarks, task, true, null);	
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "yelpProvider";
+        return parser.parse(url, params, landmarks, task, true, null);	
 	}
 	
     /*@Override
