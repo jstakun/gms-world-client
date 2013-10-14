@@ -23,38 +23,29 @@ import com.jstakun.gms.android.utils.StringUtil;
 public class OsmReader extends AbstractSerialReader {
 
 	@Override
-	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
+	protected void init(double latitude, double longitude, int zoom, int width, int height) {
+		super.init(latitude, longitude, zoom, width, height);
         BoundingBox bbox = MercatorUtils.getBoundingBox(width, height, latitude, longitude, zoom);
         params.add(new BasicNameValuePair("longitudeMin", StringUtil.formatCoordE2(bbox.west)));
 		params.add(new BasicNameValuePair("latitudeMin", StringUtil.formatCoordE2(bbox.south)));
 		params.add(new BasicNameValuePair("longitudeMax", StringUtil.formatCoordE2(bbox.east)));  
 		params.add(new BasicNameValuePair("latitudeMax", StringUtil.formatCoordE2(bbox.north)));
 		
-        String amenity = "atm"; //Commons.OSM_ATM_LAYER
+    }
+	
+	@Override
+	public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
+		init(latitude, longitude, zoom, width, height);
+		String amenity = "atm"; //Commons.OSM_ATM_LAYER
         if (layer.equals(Commons.OSM_PARKING_LAYER)){
             amenity = "parking";
         }
         params.add(new BasicNameValuePair("amenity", amenity));
-        
-		String url = ConfigurationManager.getInstance().getServicesUrl() + "osmProvider";
-		return parser.parse(url, params, landmarks, task, true, null);
+	    return parser.parse(getUrl(), params, landmarks, task, true, layer);	
+    }
+
+	@Override
+	protected String getUrl() {
+		return ConfigurationManager.getInstance().getServicesUrl() + "osmProvider";
 	}
-
-    /*@Override
-    public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
-        init(latitude, longitude, zoom, width, height);
-        BoundingBox bbox = MercatorUtils.getBoundingBox(width, height, latitude, longitude, zoom);
-        
-        String amenity = "atm"; //Commons.OSM_ATM_LAYER
-        if (layer.equals(Commons.OSM_PARKING_LAYER)){
-            amenity = "parking";
-        }
-
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "osmProvider?" +
-                     "latitudeMin=" + StringUtil.formatCoordE2(bbox.south) + "&latitudeMax=" + StringUtil.formatCoordE2(bbox.north) +
-                     "&longitudeMin=" + StringUtil.formatCoordE2(bbox.west) + "&longitudeMax=" + StringUtil.formatCoordE2(bbox.east) +
-                     "&amenity=" + amenity + "&limit=" + limit + "&display=" + display;
-
-        return parser.parse(url, landmarks, layer, null , -1, -1, task, true, limit);
-    }*/
 }

@@ -44,12 +44,14 @@ public class LandmarkParcelableFactory {
             if (StringUtils.isNotEmpty(desc)) {
                 desc += "<br/>";
             }
-            desc += Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(l.getCreationDate(), locale));
+            if (l.getCreationDate() > 0) {
+            	desc += Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(l.getCreationDate(), locale));
+            }
         } else {
             desc = l.getDescription();
         }
         
-        if (!StringUtils.isNotEmpty(desc)){
+        if (!StringUtils.isNotEmpty(desc) && l.getCreationDate() > 0){
         	desc = Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(l.getCreationDate(), locale));
         }
         
@@ -63,7 +65,6 @@ public class LandmarkParcelableFactory {
 
     public static LandmarkParcelable getLandmarkParcelable(FavouritesDAO f, double lat, double lng) {
         float distance = DistanceUtils.distanceInKilometer(lat, lng, f.getLatitude(), f.getLongitude());
-        String maxDistance = DistanceUtils.formatDistance(f.getMaxDistance() / 1000.0d);
         long fromLastCheckinTime = System.currentTimeMillis() - f.getLastCheckinDate();
         CharSequence lastCheckinDate = DateUtils.getRelativeTimeSpanString(f.getLastCheckinDate(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
         String fromLastCheckin = "<font color=\"green\">" + lastCheckinDate + "</font>";
@@ -71,6 +72,8 @@ public class LandmarkParcelableFactory {
         if (fromLastCheckinTime < (1000 * 60 * 60 * ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL))) {
             fromLastCheckin = "<font color=\"red\">" + lastCheckinDate + "</font>";
         }
+        
+        //String maxDistance = DistanceUtils.formatDistance(f.getMaxDistance() / 1000.0d);
         //String distanceStatus = "red";
         //if (f.getMaxDistance() > ConfigurationManager.getInstance().getLong(ConfigurationManager.MIN_CHECKIN_DISTANCE)) {
         //    distanceStatus = "green";

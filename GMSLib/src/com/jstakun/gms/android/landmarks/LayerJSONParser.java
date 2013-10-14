@@ -79,7 +79,7 @@ public class LayerJSONParser {
             boolean searchable = true;
 
             List<LayerReader> layerReader = new ArrayList<LayerReader>();
-            layerReader.add(new LMServerReader());
+            layerReader.add(new GMSWorldReader());
             Layer l = LayerFactory.getLayer(lname, false, manageable, enabled, checkinable, searchable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, desc, formatted);
 
             if (!(layer == null || l.getName().equals(Commons.LM_SERVER_LAYER))) {

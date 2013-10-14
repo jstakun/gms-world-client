@@ -68,12 +68,12 @@ public class OAuthServiceFactory {
                 twitterUtils = new TwitterUtils();
             }
             return twitterUtils;
-        } else if (service.equals(Commons.FACEBOOK)) {
+        } else if (service.equals(Commons.FACEBOOK) || service.equals(Commons.FACEBOOK_LAYER)) {
             if (facebookUtils == null) {
                 facebookUtils = new FacebookUtils();
             }
             return facebookUtils;
-        } else if (service.equals(Commons.FOURSQUARE)) {
+        } else if (service.equals(Commons.FOURSQUARE) || service.equals(Commons.FOURSQUARE_LAYER) || service.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {
             if (foursquareUtils == null) {
                 foursquareUtils = new FoursquareUtils();
             }

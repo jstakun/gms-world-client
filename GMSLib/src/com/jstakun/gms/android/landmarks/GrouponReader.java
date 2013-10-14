@@ -6,9 +6,6 @@ package com.jstakun.gms.android.landmarks;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
-import com.jstakun.gms.android.utils.GMSAsyncTask;
-
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -18,36 +15,23 @@ import org.apache.http.message.BasicNameValuePair;
  */
 public class GrouponReader extends AbstractSerialReader {
 
-    /*public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
-        init(latitude, longitude, zoom, width, height);
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider?lat=" + coords[0] + 
-                "&lng=" + coords[1] + "&radius=" + (radius * 4) + "&version=4" + "&dealLimit=" + dealLimit + "&display=" + display;
-        CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-        if (cm != null) {
-            String categoryid = cm.getEnabledCategoriesString();
-            if (StringUtils.isNotEmpty(categoryid)) {
-                url += "&categoryid=" + categoryid;
-            }
-        }
-        return parser.parse(url, landmarks, Commons.GROUPON_LAYER, null, -1, -1, task, true, 10);
-    }*/
-
-	@Override
-	protected String readLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
-		int dist = radius * 4;
+   	@Override
+	protected void init(double latitude, double longitude, int zoom, int width, int height) {
+		super.init(latitude, longitude, zoom, width, height);
+   		int dist = radius * 4;
 		params.remove(0); //remove default radius parameter
 		params.add(new BasicNameValuePair("radius", Integer.toString(dist)));
-		//String url = ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider?lat=" + coords[0] + 
-        //        "&lng=" + coords[1] + "&radius=" + (radius * 4) + "&version=" + SERIAL_VERSION + "&dealLimit=" + dealLimit + "&display=" + display + "&format=bin";
-        CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
+	    CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm != null) {
             String categoryid = cm.getEnabledCategoriesString();
             if (StringUtils.isNotEmpty(categoryid)) {
             	params.add(new BasicNameValuePair("categoryid", categoryid));
             }
         }
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider";
-        		
-        return parser.parse(url, params, landmarks, task, true, null);
+    }
+
+	@Override
+	protected String getUrl() {
+		return ConfigurationManager.getInstance().getServicesUrl() + "grouponProvider";
 	}
 }
