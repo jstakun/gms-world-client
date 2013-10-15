@@ -82,7 +82,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private View lvCloseButton, lvCallButton, lvOpenButton,
             lvView, lvSendMailButton, lvRouteButton,
             thumbnailButton, loadingImage;
-    private long startingMillis;
     private boolean appAbort = false;
     private boolean isStopped = false;
     private boolean initLandmarkManager = false;
@@ -134,7 +133,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         if (!appAbort) {
             ConfigurationManager.getInstance().setContext(getApplicationContext());
-            startingMillis = System.currentTimeMillis();
             skyhook = new SkyhookUtils(this, loadingHandler);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
@@ -694,7 +692,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         skyhook.disableMyLocation();
 
-        ConfigurationManager.getInstance().putString(ConfigurationManager.LAST_STARTING_DATE, Long.toString(startingMillis));
         softClose();
 
         //SuggestionProviderUtil.clearHistory();
@@ -709,37 +706,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         PersistenceManagerFactory.getFileManager().clearImageCache(System.currentTimeMillis() - DateTimeUtils.ONE_MONTH);
     }
-
-    /*private void landmarkDetailsAction() {
-        ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
-
-        if (selectedLandmark != null) {
-            if (!selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                landmarkManager.setSeletedLandmarkUI();
-            }
-
-            if (selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                //System.out.println("2 -----------------------------------------");
-                intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_CAT_STATS);
-            } else {
-                UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowSelectedDealView", selectedLandmark.getLayer(), selectedLandmark.getCategoryId());
-                cm.addSubCategoryStats(selectedLandmark.getCategoryId(), selectedLandmark.getSubCategoryId());
-                getActionBar().hide();
-                intents.showLandmarkDetailsView(selectedLandmark, lvView, getMyPosition(), true);
-                GeoPoint g = new GeoPoint(selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6());
-                mapController.animateTo(g);
-
-                if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-                    intents.loadLayersAction(true, null, false, false, layerLoader,
-                            MathUtils.coordIntToDouble(amzMapsView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(amzMapsView.getMapCenter().getLongitudeE6()),
-                            amzMapsView.getZoomLevel());
-                }
-            }
-        } else {
-            LoggerUtils.debug(Locale.getMessage(R.string.Landmark_opening_error));
-        }
-    }*/
 
     protected double[] getMyPosition() {
         return landmarkManager.getMyPosition(amzMapsView.getMapCenter().getLatitudeE6(),

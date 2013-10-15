@@ -91,7 +91,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             lvOpenButton, lvView, lvSendMailButton,
             thumbnailButton, lvActionButton, lvRouteButton, loadingImage;
     private int mapProvider;
-    private long startingMillis;
+    //private long startingMillis;
     private boolean appInitialized = false,
             initLandmarkManager = false, isRouteDisplayed = false;
     private Handler loadingHandler;
@@ -142,8 +142,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         LoggerUtils.debug("onCreate");
         LoggerUtils.debug("GMSClientMainActivity.onCreate called...");
-        startingMillis = System.currentTimeMillis();
-
+        
         UserTracker.getInstance().startSession(this);
         //comment in production
         //UserTracker.getInstance().setDebug(true);
@@ -416,7 +415,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         LocationServicesManager.disableMyLocation();
 
         ConfigurationManager.getInstance().setOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
-        ConfigurationManager.getInstance().putString(ConfigurationManager.LAST_STARTING_DATE, Long.toString(startingMillis));
         softClose();
 
         //SuggestionProviderUtil.clearHistory();

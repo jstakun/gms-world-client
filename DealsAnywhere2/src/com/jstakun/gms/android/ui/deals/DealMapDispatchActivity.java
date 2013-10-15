@@ -7,9 +7,14 @@ package com.jstakun.gms.android.ui.deals;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.Intents;
+import com.jstakun.gms.android.utils.DateTimeUtils;
+import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
-import org.acra.ErrorReporter;
+
+import org.acra.ACRA;
 
 /**
  *
@@ -31,7 +36,7 @@ public class DealMapDispatchActivity extends Activity {
             //Alcatel OT-980 issue java.lang.NoClassDefFoundError
             super.onCreate(icicle);
         } catch (Throwable t) {
-            ErrorReporter.getInstance().handleSilentException(t);
+            ACRA.getErrorReporter().handleSilentException(t);
             intents.showInfoToast("Sorry. Your device is currently unsupported :(");
             abort = true;
         }
@@ -44,6 +49,10 @@ public class DealMapDispatchActivity extends Activity {
                 intents.setupShortcut();
                 abort = true;
             } else {
+            	long lastStartupTime = ConfigurationManager.getInstance().getLong(ConfigurationManager.LAST_STARTING_DATE);
+                LoggerUtils.debug("Last startup time is: " + DateTimeUtils.getDefaultDateTimeString(lastStartupTime, ConfigurationManager.getInstance().getCurrentLocale()));
+                ConfigurationManager.getInstance().putString(ConfigurationManager.LAST_STARTING_DATE, Long.toString(System.currentTimeMillis()));
+                
                 Intent mapActivity;
                 if (OsUtil.isHoneycombOrHigher()) {
                    mapActivity = new Intent(this, DealMap2Activity.class); 

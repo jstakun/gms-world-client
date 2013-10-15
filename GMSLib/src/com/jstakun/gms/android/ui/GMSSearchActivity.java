@@ -196,13 +196,12 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				progressDialog = (ProgressDialog) dialog;
 				if (query != null) {
 					String q;
-					if (query.lastIndexOf("/") == query.length()-2) {
+					if (query.length() > 1 && query.lastIndexOf("/") == query.length()-2) {
 						q = query.substring(0, query.length()-2);
 					} else {
 						q = query;
 					}
-					progressDialog.setMessage(Html.fromHtml(Locale.getMessage(
-							R.string.Searching_dialog_message, q)));
+					progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Searching_dialog_message, q)));
 				}
 			}
 			return dialog;

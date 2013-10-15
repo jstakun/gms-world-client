@@ -81,7 +81,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private View lvCloseButton, lvCallButton, lvOpenButton,
             lvView, lvSendMailButton, lvRouteButton,
             thumbnailButton, loadingImage;
-    private long startingMillis;
     private boolean isStopped = false;
     private boolean initLandmarkManager = false;
     private boolean appInitialized = false;
@@ -121,8 +120,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         ConfigurationManager.getInstance().setContext(getApplicationContext());
-
-        startingMillis = System.currentTimeMillis();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
@@ -664,7 +661,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         loadingHandler.removeCallbacks(gpsRunnable);
 
-        ConfigurationManager.getInstance().putString(ConfigurationManager.LAST_STARTING_DATE, Long.toString(startingMillis));
         softClose();
 
         //SuggestionProviderUtil.clearHistory();

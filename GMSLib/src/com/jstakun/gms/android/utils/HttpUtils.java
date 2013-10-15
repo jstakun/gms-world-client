@@ -361,21 +361,6 @@ public class HttpUtils {
                 locale = ConfigurationManager.getInstance().getCurrentLocale();
             }
 
-            //getRequest = new HttpGet(uri);
-
-            //getRequest.addHeader("Accept-Encoding", "gzip, deflate");
-            //getRequest.addHeader("Connection", "close");
-            //getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-            //getRequest.addHeader(APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-            //getRequest.addHeader(USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
-
-            //if (auth) {
-                //setUserCredentials(uri);
-            	//setBasicAuthHeader(getRequest, uri.getPath().contains("services"));
-            //}
-            
-            //HttpResponse httpResponse = getHttpClient().execute(getRequest);
-
             postRequest = new HttpPost(uri);
 
             postRequest.addHeader("Accept-Encoding", "gzip, deflate");

@@ -164,6 +164,14 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		super.onStop();
 		UserTracker.getInstance().stopSession();
 	}
+	
+	@Override
+	public void onDestroy() {
+		if (webView != null) {
+			webView.removeAllViews();
+		}
+		super.onDestroy();
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

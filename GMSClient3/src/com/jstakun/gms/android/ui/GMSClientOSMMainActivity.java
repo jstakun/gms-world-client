@@ -82,7 +82,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             lvOpenButton, lvView, lvSendMailButton,
             newestButton, listButton, layersButton,
             lvActionButton, lvRouteButton, thumbnailButton, loadingImage;
-    private long startingMillis;
     private boolean appInitialized = false;
     private boolean initLandmarkManager = false;
     //Handlers
@@ -133,8 +132,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         super.onCreate(savedInstanceState);
         LoggerUtils.debug("onCreate");
         LoggerUtils.debug("GMSClientMainActivity.onCreate called...");
-        startingMillis = System.currentTimeMillis();
-
+        
         UserTracker.getInstance().startSession(this);
         //comment in production
         //UserTracker.getInstance().setDebug(true);
@@ -379,7 +377,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         LocationServicesManager.disableMyLocation();
 
         ConfigurationManager.getInstance().setOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
-        ConfigurationManager.getInstance().putString(ConfigurationManager.LAST_STARTING_DATE, Long.toString(startingMillis));
         softClose();
 
         //SuggestionProviderUtil.clearHistory();

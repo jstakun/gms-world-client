@@ -8,8 +8,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.DateTimeUtils;
+import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
-import org.acra.ErrorReporter;
+
+import org.acra.ACRA;
 
 /**
  *
@@ -27,10 +30,10 @@ public class GMSClientDispatchActivity extends Activity {
         boolean abort = false;
 
         try {
-            //Alcatel OT-980 issue java.lang.NoClassDefFoundError
+            //handle java.lang.NoClassDefFoundError
             super.onCreate(icicle);
         } catch (Throwable t) {
-            ErrorReporter.getInstance().handleSilentException(t);
+        	ACRA.getErrorReporter().handleSilentException(t);
             intents.showInfoToast("Sorry. Your device is currently unsupported :(");
             abort = true;
         }
@@ -43,7 +46,11 @@ public class GMSClientDispatchActivity extends Activity {
                 intents.setupShortcut();
                 abort = true;
             } else {
-                Intent mapActivity;
+            	long lastStartupTime = ConfigurationManager.getInstance().getLong(ConfigurationManager.LAST_STARTING_DATE);
+                LoggerUtils.debug("Last startup time is: " + DateTimeUtils.getDefaultDateTimeString(lastStartupTime, ConfigurationManager.getInstance().getCurrentLocale()));
+                ConfigurationManager.getInstance().putString(ConfigurationManager.LAST_STARTING_DATE, Long.toString(System.currentTimeMillis()));
+                
+            	Intent mapActivity;
                 if (OsUtil.isHoneycombOrHigher()) {
                     if (OsUtil.isGoogleMapActivityInstalled() && OsUtil.hasSystemSharedLibraryInstalled(this, "com.google.android.maps")) {
                         mapActivity = new Intent(this, GMSClient2MainActivity.class);
