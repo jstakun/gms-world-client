@@ -11,14 +11,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class AutoCheckinScheduleReceiver extends BroadcastReceiver {
+public class GMSScheduleReceiver extends BroadcastReceiver {
 
 	 // Restart service every x seconds
-	  private static final long DEFAULT_REPEAT_TIME = 1000 * 300;
+	  private static final long DEFAULT_REPEAT_TIME = 300;
 
 	  @Override
 	  public void onReceive(Context context, Intent intent) {
-		  LoggerUtils.debug("AutoCheckinScheduleReceiver.onReceive() executed...");
+		  LoggerUtils.debug("GMSScheduleReceiver.onReceive() executed...");
+		  //run auto check-in broadcast
 		  if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
 			  AlarmManager service = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 			  Intent i = new Intent(context, AutoCheckinStartServiceReceiver.class);
@@ -27,12 +28,15 @@ public class AutoCheckinScheduleReceiver extends BroadcastReceiver {
 			  // Start x seconds after boot completed
 			  cal.add(Calendar.SECOND, 60);
 			  // Fetch every x seconds
-			  long repeat_time = ConfigurationManager.getInstance().getLong(ConfigurationManager.AUTO_CHECKIN_REPEAT_TIME) * 1000;
-			  if (repeat_time == -1000) {
+			  long repeat_time = ConfigurationManager.getInstance().getLong(ConfigurationManager.AUTO_CHECKIN_REPEAT_TIME);
+			  if (repeat_time == -1) {
 				  repeat_time = DEFAULT_REPEAT_TIME;
-			  }
-			  LoggerUtils.debug("AutoCheckinScheduleReceiver.onReceive() setting auto checkin interval " + repeat_time + " milliseconds...");
+			  }   
+			  repeat_time = repeat_time * 1000;
+			  LoggerUtils.debug("GMSScheduleReceiver.onReceive() setting auto checkin interval " + repeat_time + " milliseconds...");
 			  service.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), repeat_time, pending);
 		  }
+		  //TODO run notification broadcast once a day
+		  //after successful run update last_starting_date to current
 	  }
 }

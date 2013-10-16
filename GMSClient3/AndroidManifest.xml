@@ -80,7 +80,7 @@
         <activity android:name="com.exina.android.calendar.CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider"/>
         <service android:name="com.jstakun.gms.android.service.AutoCheckinService"></service>
-        <receiver android:name="com.jstakun.gms.android.service.AutoCheckinScheduleReceiver">
+        <receiver android:name="com.jstakun.gms.android.service.GMSScheduleReceiver">
             <intent-filter>
                 <action android:name="com.jstakun.gms.android.autocheckinbroadcast" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
