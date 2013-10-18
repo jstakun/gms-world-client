@@ -147,9 +147,14 @@ public final class FacebookUtils extends AbstractSocialUtils {
 		String message = null;
 
 		try {
+			String token = accessToken.getToken();
+			if (token == null) {
+				logout();
+				throw new NullPointerException("Missing FB authentication token!");
+			}
 			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "socialCheckin";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("accessToken", accessToken.getToken()));
+		    params.add(new BasicNameValuePair("accessToken", token));
 		    params.add(new BasicNameValuePair("venueId", placeId));
 		    params.add(new BasicNameValuePair("name", name));
 		    params.add(new BasicNameValuePair("service", Commons.FACEBOOK));
@@ -161,6 +166,9 @@ public final class FacebookUtils extends AbstractSocialUtils {
 	           message = Locale.getMessage(R.string.Social_checkin_success, name);
 	           onCheckin(placeId);
 	        } else {
+	           if (responseCode == HttpStatus.SC_UNAUTHORIZED) {
+		          logout();
+		       }	
 	           message = Locale.getMessage(R.string.Social_checkin_failure, message);
 	        }
 	        

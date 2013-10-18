@@ -107,12 +107,12 @@ public class ConfigDbDataSource {
             getDatabase().setTransactionSuccessful();
         } catch (Exception e) {
             success = false;
-            LoggerUtils.error("ConfigDbDataSource.putAll exception:", e);
+            LoggerUtils.error("ConfigDbDataSource.putAll() exception:", e);
         } finally {
             try {
                 getDatabase().endTransaction();
             } catch (Exception e) {
-                LoggerUtils.error("ConfigDbDataSource.putAll exception:", e);
+                LoggerUtils.error("ConfigDbDataSource.putAll() exception:", e);
             }
         }
         return success;

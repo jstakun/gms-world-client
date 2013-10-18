@@ -98,9 +98,14 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 		String message = null;
 
 		try {
+			String token = accessToken.getToken();
+			if (token == null) {
+				logout();
+				throw new NullPointerException("Missing FS authentication token!");
+			}
 			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "socialCheckin";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("accessToken", accessToken.getToken()));
+		    params.add(new BasicNameValuePair("accessToken", token));
 		    params.add(new BasicNameValuePair("venueId", venueId));
 		    params.add(new BasicNameValuePair("name", name));
 		    params.add(new BasicNameValuePair("service", Commons.FOURSQUARE));
@@ -112,11 +117,14 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 	           message = Locale.getMessage(R.string.Social_checkin_success, name);
 	           onCheckin(venueId);
 	        } else {
+	           if (responseCode == HttpStatus.SC_UNAUTHORIZED) {
+	        	   logout();
+	           }
 	           message = Locale.getMessage(R.string.Social_checkin_failure, message);
 	        }
 		} catch (Exception ex) {
 			LoggerUtils.error("FoursquareUtils.checkin() exception", ex);
-			message = Locale.getMessage(R.string.Http_error,ex.getMessage());
+			message = Locale.getMessage(R.string.Http_error, ex.getMessage());
 		} finally {
 			try {
 				if (utils != null) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.jstakun.gms.android.ui"
-      android:versionCode="1088"
+      android:versionCode="1089"
       android:versionName="2.0.7">
     <uses-sdk android:minSdkVersion="3"
               android:targetSdkVersion="17"/>
@@ -87,6 +87,8 @@
             </intent-filter>
         </receiver>
         <receiver android:name="com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver" >
+        </receiver>
+         <receiver android:name="com.jstakun.gms.android.service.NotificationReceiver" >
         </receiver>
         <meta-data android:name="CLOUDMADE_KEY" android:value="@string/cloudmadeKey" />
     </application>    

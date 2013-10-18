@@ -745,16 +745,19 @@ public final class ConfigurationManager {
         	ConfigDbDataSource cdb = (ConfigDbDataSource) getObject("CONFIGDB", ConfigDbDataSource.class);
         	if (cdb != null) {
             	cdb.close();
+            	objectCache.remove("CONFIGDB");
         	}
 
         	LandmarkDbDataSource db = (LandmarkDbDataSource) getObject("LANDMARKDB", LandmarkDbDataSource.class);
         	if (db != null) {
             	db.close();
+            	objectCache.remove("LANDMARKDB");
         	}
 
         	FavouritesDbDataSource fdb = (FavouritesDbDataSource) getObject("FAVOURITESDB", FavouritesDbDataSource.class);
         	if (fdb != null) {
             	fdb.close();
+            	objectCache.remove("FAVOURITESDB");
         	}
     	}
     
