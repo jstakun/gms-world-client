@@ -694,16 +694,18 @@ public final class ConfigurationManager {
     
     	private DatabaseManager() {}
     	
-    	public void saveConfiguration(boolean force) {
+    	public boolean saveConfiguration(boolean force) {
+    		boolean status = false;
         	if (force || !changedConfig.isEmpty()) {
             	ConfigDbDataSource cdb = getConfigDatabase();
             	if (force) {
-                	cdb.putAll(configuration);
+                	status = cdb.putAll(configuration);
             	} else {
-                	cdb.putAll(changedConfig);
+                	status = cdb.putAll(changedConfig);
             	}
             	changedConfig.clear();
         	}
+        	return status;
     	}
 
     	private void readConfiguration() {

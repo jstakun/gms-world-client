@@ -78,12 +78,9 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 				ConfigurationManager.getUserManager().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
 			}
 			
-			ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-			
-            result = true;
+			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);		
         } catch (Exception ex) {
             LoggerUtils.error("FoursquareUtils.sendPost exception", ex);
-            result = false;
         } finally {
             if (!result) {
                 logout();
@@ -142,9 +139,14 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 		String message = null;
 
 		try {
+			String token = accessToken.getToken();
+			if (token == null) {
+				logout();
+				throw new NullPointerException("Missing FS authentication token!");
+			}
 			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "socialComment";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("accessToken", accessToken.getToken()));
+		    params.add(new BasicNameValuePair("accessToken", token));
 		    params.add(new BasicNameValuePair("venueId", venueId));
 		    params.add(new BasicNameValuePair("text", tip));
 		    params.add(new BasicNameValuePair("name", name));
@@ -152,10 +154,14 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();
-		    if (message == null) {
+		    int responseCode = utils.getResponseCode();
+	        if (responseCode == HttpStatus.SC_OK) {
 	            message = Locale.getMessage(R.string.Social_comment_sent);
 	        } else {
-	            message = Locale.getMessage(R.string.Social_comment_failed, message);
+	        	if (responseCode == HttpStatus.SC_UNAUTHORIZED) {
+		             logout();
+		        }
+		        message = Locale.getMessage(R.string.Social_comment_failed, message);
 	        }
 		} catch (Exception ex) {
 			LoggerUtils.error("FoursqureUtils.sendComment() exception", ex);
@@ -177,9 +183,14 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 		String message = null;
 
 		try {
+			String token = accessToken.getToken();
+			if (token == null) {
+				logout();
+				throw new NullPointerException("Missing FS authentication token!");
+			}
 			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsAddVenue";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("accessToken", accessToken.getToken()));
+		    params.add(new BasicNameValuePair("accessToken", token));
 		    params.add(new BasicNameValuePair("ll", Double.toString(lat) + "," + Double.toString(lng)));
 	        params.add(new BasicNameValuePair("desc", desc));
 	        params.add(new BasicNameValuePair("name", name));
@@ -188,10 +199,14 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();
-		    if (message == null) {
+		    int responseCode = utils.getResponseCode();
+	        if (responseCode == HttpStatus.SC_OK) {
 	            message = Locale.getMessage(R.string.venueCreated_success);
 	        } else {
-	            message = Locale.getMessage(R.string.venueCreated_failed, message);
+	        	if (responseCode == HttpStatus.SC_UNAUTHORIZED) {
+		             logout();
+		        }
+		        message = Locale.getMessage(R.string.venueCreated_failed, message);
 	        }
 		} catch (Exception ex) {
 			LoggerUtils.error("FoursqureUtils.sendComment() exception", ex);

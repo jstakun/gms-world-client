@@ -104,7 +104,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 	public boolean initOnTokenPresent(JSONObject json) {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.GL_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.GL_SEND_STATUS);
-		
+		boolean result = false;
 		try {
 			long expires_in = json.optLong(ConfigurationManager.GL_EXPIRES_IN, -1);
 			
@@ -155,13 +155,15 @@ public final class GoogleUtils extends AbstractSocialUtils {
 				ConfigurationManager.getUserManager().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
 			}
 			
-			ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-            return true;
-		} catch (Exception ex) {
-			logout();
+			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
+        } catch (Exception ex) {
 			LoggerUtils.error("GoogleUtils.initOnTokenPresent() exception", ex);
-			return false;
-		}
+		} finally {
+            if (!result) {
+                logout();
+            }
+        }
+        return result;
 	}
 
 	public String checkin(String reference, String name) {

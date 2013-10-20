@@ -34,7 +34,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 	public boolean initOnTokenPresent(JSONObject json) {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.FB_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.FB_SEND_STATUS);
-		
+		boolean result = false;
 		try {
 			ConfigurationManager.getInstance().putString(ConfigurationManager.FB_USERNAME, json.getString(ConfigurationManager.FB_USERNAME) + "@fb");
 
@@ -58,14 +58,16 @@ public final class FacebookUtils extends AbstractSocialUtils {
 				ConfigurationManager.getInstance().putLong(ConfigurationManager.FB_EXPIRES_IN, System.currentTimeMillis() + (expires_in * 1000));
 			}
 				
-			ConfigurationManager.getDatabaseManager().saveConfiguration(false);
+			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 				
-			return true;
 		} catch (Exception ex) {
-			logout();
 			LoggerUtils.error("FacebookUtils.initOnTokenPresent error:", ex);
-			return false;
+		} finally {
+			if (!result) {
+				logout();
+			}
 		}
+		return result;
 	}
 
 	public void storeAccessToken(Token accessToken) {

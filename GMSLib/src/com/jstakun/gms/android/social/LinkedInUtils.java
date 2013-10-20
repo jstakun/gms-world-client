@@ -42,34 +42,28 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 	public boolean initOnTokenPresent(JSONObject json) {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.LN_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.LN_SEND_STATUS);
+		boolean result = false;
 		
 		String id = json.optString(ConfigurationManager.LN_USERNAME);
 		if (id != null) {
-			ConfigurationManager.getInstance().putString(
-					ConfigurationManager.LN_USERNAME, id + "@ln");
+			ConfigurationManager.getInstance().putString(ConfigurationManager.LN_USERNAME, id + "@ln");
 			String name = json.optString(ConfigurationManager.LN_NAME);
 
-			long expires_in = json.optLong(ConfigurationManager.LN_EXPIRES_IN,
-					-1);
+			long expires_in = json.optLong(ConfigurationManager.LN_EXPIRES_IN,-1);
 
 			if (expires_in > 0) {
-				ConfigurationManager.getInstance().putLong(
-						ConfigurationManager.LN_EXPIRES_IN,
+				ConfigurationManager.getInstance().putLong(ConfigurationManager.LN_EXPIRES_IN,
 						System.currentTimeMillis() + (expires_in * 1000));
 			}
 			if (name != null) {
-				ConfigurationManager.getInstance().putString(
-						ConfigurationManager.LN_NAME, name);
-				ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-				return true;
-			} else {
-				logout();
-				return false;
-			}
-		} else {
+				ConfigurationManager.getInstance().putString(ConfigurationManager.LN_NAME, name);
+				result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
+			} 
+		} 
+		if (!result) {
 			logout();
-			return false;
-		}
+        }
+        return result;
 	}
 
 	public String sendPost(ExtendedLandmark landmark, int type) {

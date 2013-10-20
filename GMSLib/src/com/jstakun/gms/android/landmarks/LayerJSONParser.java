@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,20 +36,25 @@ public class LayerJSONParser {
         try {
             int radius = DistanceUtils.radiusInKilometer();
 
-            String url = ConfigurationManager.getInstance().getServicesUrl() + "listLayers?format=json&" +
-                         "latitudeMin=" + StringUtil.formatCoordE6(latitude) + "&longitudeMin=" + StringUtil.formatCoordE6(longitude) + "&version=2&radius=" + radius;
+            String url = ConfigurationManager.getInstance().getServicesUrl() + "listLayers";
 
-            byte[] resp = utils.loadHttpFile(url, true, "json");
-            if (resp != null && resp.length > 0) {
-                //long start = System.currentTimeMillis();
-                String jsonResp = new String(resp, "UTF-8");
-                //System.out.println("Json: " + jsonResp);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("format","json"));
+			params.add(new BasicNameValuePair("latitudeMin",StringUtil.formatCoordE6(latitude)));
+			params.add(new BasicNameValuePair("longitudeMin", StringUtil.formatCoordE6(longitude)));
+			params.add(new BasicNameValuePair("version","2"));
+			params.add(new BasicNameValuePair("radius",Integer.toString(radius)));
+            
+            utils.sendPostRequest(url, params, true);
+            
+            String jsonResp = utils.getPostResponse();
+            int responseCode = utils.getResponseCode();
+            
+            if (responseCode == HttpStatus.SC_OK) {
                 JSONObject jsonRoot = new JSONObject(jsonResp);
-
                 if (jsonRoot.has("ResultSet")) {
                     parseJSonArray(jsonRoot, layers, excluded);
                 }
-                //System.out.println("Processed layer " + layer + " containing " + landmarks.size() + " in " + (System.currentTimeMillis() - start) + " millis.");
             }
         } catch (Exception ex) {
             LoggerUtils.error("JSonParser error: ", ex);

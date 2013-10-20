@@ -162,16 +162,16 @@ public class LayerLoader {
         if (!concurrentLayerLoader.isEmpty() || !initialized
                 || (currentLayerIndex != -1 && !concurrentLayerLoader.isCancelled()
                 && currentLayerIndex < landmarkManager.getLayerManager().getLayers().size())) {
-            //System.out.println("LayerLoader.isLoading() true");
+            System.out.println("LayerLoader.isLoading() true");
             return true;
         } else {
-            //System.out.println("LayerLoader.isLoading() false");
+            System.out.println("LayerLoader.isLoading() false");
             return false;
         }
     }
     
     public void stopLoading() {
-        //System.out.println("LayerLoader.stopLoading()");
+        System.out.println("LayerLoader.stopLoading()");
 
         if (initLayerLoadingTask != null && initLayerLoadingTask.getStatus() == GMSAsyncTask.Status.RUNNING) {
             try {

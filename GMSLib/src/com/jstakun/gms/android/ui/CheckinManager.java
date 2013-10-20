@@ -38,14 +38,14 @@ public class CheckinManager {
     }
 
     public boolean checkinAction(boolean addToFavourites, boolean silent, ExtendedLandmark selectedLandmark) {
+    	String key = getLandmarkKey(selectedLandmark);
         if (addToFavourites) {
             FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
             if (fdb != null && !fdb.hasLandmark(selectedLandmark)) {
-            	String key = getLandmarkKey(selectedLandmark);
-                fdb.addLandmark(selectedLandmark, key);
+            	fdb.addLandmark(selectedLandmark, key);
             }
         }
-        return checkinAction(selectedLandmark.getLayer(), selectedLandmark.getName(), getLandmarkKey(selectedLandmark), silent);
+        return checkinAction(selectedLandmark.getLayer(), selectedLandmark.getName(), key, silent);
     }
 
     private boolean checkinAction(String selectedLayer, String name, String venueid, boolean silent) {
@@ -109,14 +109,14 @@ public class CheckinManager {
     		venueid = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).getKey(selectedLandmark.getUrl());            
     	} else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER))  {
     		venueid = selectedLandmark.getAddressInfo().getField(AddressInfo.EXTENSION);
-    	} else { //if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)) {
-    		if (venueid != null) {
-    			String[] s = venueid.split("=");
-    			if (s.length > 0) {
-    				venueid = s[s.length - 1];
-    			}
-    		}
-    	}
+    	} //else { //if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)) {
+    		//if (venueid != null) {
+    			//String[] s = venueid.split("=");
+    			//if (s.length > 0) {
+    				//venueid = s[s.length - 1];
+    			//} 
+    		//}
+    	//}
         return venueid;
     }
     

@@ -51,6 +51,7 @@ public final class TwitterUtils extends AbstractSocialUtils {
     public boolean initOnTokenPresent(JSONObject json) {
         ConfigurationManager.getInstance().setOn(ConfigurationManager.TWEET_AUTH_STATUS);
         ConfigurationManager.getInstance().setOn(ConfigurationManager.TWEET_SEND_STATUS);
+        boolean result = false;
         
         String id = json.optString(ConfigurationManager.TWEET_USERNAME);
 		if (id != null) {
@@ -61,12 +62,12 @@ public final class TwitterUtils extends AbstractSocialUtils {
 			} else {
 				ConfigurationManager.getInstance().putString(ConfigurationManager.TWEET_NAME, id);	
 			}
-			ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-			return true;
-		} else {
+			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
+		} 
+		if (!result) {
 			logout();
-			return false;
 		}
+		return result;
     }
 
     public String sendPost(ExtendedLandmark landmark, int type) {
