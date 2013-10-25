@@ -151,8 +151,18 @@ public class CheckinManager {
                     && distInMeter < ConfigurationManager.getInstance().getInt(ConfigurationManager.MAX_CURRENT_DISTANCE));
         }
         
+        //rule2
+        //last check-in xx hours ago or max distance xx meters
+        //current distance xx meters max
+        private boolean rule3(FavouritesDAO favourite) {
+        	return (((System.currentTimeMillis() - favourite.getLastCheckinDate()) > (ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL) * ONE_HOUR)
+                    || favourite.getMaxDistance() >= ConfigurationManager.getInstance().getInt(ConfigurationManager.MIN_CHECKIN_DISTANCE))
+        			&& distInMeter < ConfigurationManager.getInstance().getInt(ConfigurationManager.MAX_CURRENT_DISTANCE));
+        }
+        
         public boolean apply(FavouritesDAO favourite) {
-        	return rule2(favourite);
+        	return rule3(favourite);
+        	//return rule2(favourite);
         	//return rule1(favourite);
         }
     }

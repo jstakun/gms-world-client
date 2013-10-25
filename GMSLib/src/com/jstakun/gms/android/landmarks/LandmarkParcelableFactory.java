@@ -73,14 +73,14 @@ public class LandmarkParcelableFactory {
             fromLastCheckin = "<font color=\"red\">" + lastCheckinDate + "</font>";
         }
         
-        //String maxDistance = DistanceUtils.formatDistance(f.getMaxDistance() / 1000.0d);
-        //String distanceStatus = "red";
-        //if (f.getMaxDistance() > ConfigurationManager.getInstance().getLong(ConfigurationManager.MIN_CHECKIN_DISTANCE)) {
-        //    distanceStatus = "green";
-        //}
+        String maxDistance = DistanceUtils.formatDistance(f.getMaxDistance() / 1000.0d);
+        String distanceStatus = "red";
+        if (f.getMaxDistance() > ConfigurationManager.getInstance().getLong(ConfigurationManager.MIN_CHECKIN_DISTANCE)) {
+            distanceStatus = "green";
+        }
 
-        String desc = Locale.getMessage(R.string.lastCheckinDate, fromLastCheckin); 
-        // + ", " + Locale.getMessage(R.string.Landmark_distance_max, "<font color=\"" + distanceStatus + "\">" + maxDistance + "</font>");
+        String desc = Locale.getMessage(R.string.lastCheckinDate, fromLastCheckin) +  ", " +
+        		Locale.getMessage(R.string.Landmark_distance_max, "<font color=\"" + distanceStatus + "\">" + maxDistance + "</font>");
         return new LandmarkParcelable(f.getId(), f.getName(), "", f.getLayer(), desc, distance, f.getLastCheckinDate(), -1, -1, -1, 0, null, 0);
     }
 

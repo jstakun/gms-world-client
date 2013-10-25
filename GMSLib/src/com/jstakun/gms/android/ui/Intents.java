@@ -12,6 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -842,13 +845,15 @@ public final class Intents {
         boolean response = false;
 
         try {
-            String appId = ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID);
-            String url = ConfigurationManager.getInstance().getServicesUrl() + "notifications?type=v&appId=" + appId;
+        	List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("appId", ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID)));
+			params.add(new BasicNameValuePair("type", "v")); 
+            String url = ConfigurationManager.getInstance().getServicesUrl() + "notifications";
 
-            byte[] res = utils.loadHttpFile(url, true, "json");
-            if (res != null) {
-                String resp = new String(res);
-                if (resp.startsWith("{")) {
+            utils.sendPostRequest(url, params, true);
+            if (utils.getResponseCode() == HttpStatus.SC_OK) {
+                String resp = utils.getPostResponse();
+                if (StringUtils.startsWith(resp, "{")) {
                     JSONObject json = new JSONObject(resp);
                     int version = Integer.valueOf(json.optString("value", "0"));
                     PackageInfo info = ConfigurationManager.getAppUtils().getPackageInfo();
@@ -857,10 +862,10 @@ public final class Intents {
                     	if (version > versionCode) {
                     		response = true;
                     	}
-                    	LoggerUtils.debug("Current version: " + versionCode + ", server version " + version);
+                    	LoggerUtils.debug("Current version: " + versionCode + ", GMS World server version " + version);
                     }
                 }
-            }
+            }    
         } catch (Exception ex) {
             LoggerUtils.error("Intents.isNewerVersionAvailable() exception:", ex);
         } finally {

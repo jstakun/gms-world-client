@@ -89,7 +89,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationCountrySpinner.setAdapter(adapter);
         locationCountrySpinner.setOnItemSelectedListener(new MyOnItemSelectedListener());
-
+        
         String iso3Country = ConfigurationManager.getInstance().getString(ConfigurationManager.ISO3COUNTRY);
         if (StringUtils.isEmpty(iso3Country)) {
             iso3Country = "USA";
@@ -105,7 +105,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         }
 
         locationCountrySpinner.setSelection(selection);
-
+        country = (String)adapter.getItem(selection); 
         AdsUtils.loadAd(this);
 
         pickButton.setOnClickListener(PickLocationActivity.this);
