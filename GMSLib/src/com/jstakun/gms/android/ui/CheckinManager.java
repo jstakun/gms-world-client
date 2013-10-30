@@ -69,7 +69,9 @@ public class CheckinManager {
         } else if (selectedLayer.equals(Commons.MY_POSITION_LAYER)) {
             asyncTaskManager.executeSocialSendMyLocationTask(silent);
             result = true;
-        } else { //if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer) && ConfigurationManager.getInstance().isUserLoggedIn()) {
+        } else if (ConfigurationManager.getUserManager().isUserLoggedIn() && 
+        		!(selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER) ||
+        		selectedLayer.equals(Commons.FACEBOOK_LAYER) || selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER))) {
             asyncTaskManager.executeLocationCheckInTask(-1, venueid, Locale.getMessage(R.string.searchcheckin), name, silent);
             result = true;
         }

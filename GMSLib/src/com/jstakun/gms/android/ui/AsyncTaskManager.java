@@ -589,6 +589,8 @@ public class AsyncTaskManager {
     	   String msg = utils.getResponseCodeErrorMessage();
     	   int responseCode = utils.getResponseCode();
 
+    	   LoggerUtils.debug("Location check-in at " + checkinLandmarkCode + " response: " + msg);
+    	   
     	   if (responseCode == HttpStatus.SC_OK) {
     		   String nameP = name;
     		   if (nameP == null) {

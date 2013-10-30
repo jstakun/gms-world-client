@@ -422,9 +422,13 @@ public class HttpUtils {
                     	int size = ois.readInt();
                     	if (size > 0) {
                     		for(int i = 0;i < size;i++) {
-                    			ExtendedLandmark landmark = new ExtendedLandmark(); 
-                    			landmark.readExternal(ois);
-                    			reply.add(landmark);
+                    			try {
+                    				ExtendedLandmark landmark = new ExtendedLandmark(); 
+                    				landmark.readExternal(ois);
+                    				reply.add(landmark);
+                    			} catch (IOException e) {
+                    				LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
+                    			}
                     		}
                     	}
                     
