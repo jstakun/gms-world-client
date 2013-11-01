@@ -671,9 +671,14 @@ public final class ConfigurationManager {
     	}
     
     	public PackageInfo getPackageInfo() throws NameNotFoundException {    
-    		PackageManager pm = getContext().getPackageManager();
-    		PackageInfo pi = pm.getPackageInfo(getContext().getPackageName(), 0);
-    		return pi;
+    		Context c = getContext();
+    		if (c != null) {
+    			PackageManager pm = c.getPackageManager();
+    			PackageInfo pi = pm.getPackageInfo(c.getPackageName(), 0);
+    			return pi;
+    		} else {
+    			return null;
+    		}
     	}
     	
     	public ApplicationInfo getApplicationInfo() throws NameNotFoundException {
