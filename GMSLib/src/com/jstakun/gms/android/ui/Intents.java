@@ -6,6 +6,7 @@ package com.jstakun.gms.android.ui;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -333,7 +334,41 @@ public final class Intents {
         }
     }
 
-    public void startLandmarkDetailsActivity(final String url, String title) {
+    public void openButtonPressedAction(ExtendedLandmark landmark) {
+    	final String[] actionLayers = new String[]{Commons.YOUTUBE_LAYER, Commons.PANORAMIO_LAYER, Commons.COUPONS_LAYER, 
+        		Commons.FLICKR_LAYER, Commons.GOOGLE_PLACES_LAYER};
+        
+    	String url = buildUrl(landmark);
+        
+        if (StringUtils.indexOfAny(landmark.getLayer(), actionLayers) >= 0) {
+            startActionViewIntent(url);
+        } else {
+            Intent intent = new Intent(activity, WebViewActivity.class);
+            intent.putExtra("url", url);
+            if (StringUtils.isNotEmpty(landmark.getName())) {
+                intent.putExtra("title", landmark.getName());
+            }
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activity.startActivity(intent);
+        }
+    }
+    
+    private static String buildUrl(ExtendedLandmark landmark) {
+    	String url = ConfigurationManager.SERVER_URL + "landmarkRedirect?lat=" + StringUtil.formatCoordE6(landmark.getQualifiedCoordinates().getLatitude()) +
+	             "&lng=" + StringUtil.formatCoordE6(landmark.getQualifiedCoordinates().getLongitude()) + "&layer=" + landmark.getLayer();
+   
+    	if (landmark.getUrl() != null) {
+    		try {
+    			url += "&url=" + URLEncoder.encode(landmark.getUrl(), "UTF-8");
+    		} catch (Exception e) {
+    			LoggerUtils.error("Intents.builUrl()", e);
+    		}
+    	}
+    	
+		return url;
+   }
+    
+    /*public void startLandmarkDetailsActivity(final String url, String title) {
         if (url != null) {
             final String[] layers = new String[]{"youtube", "panoramio", "8coupons", "flickr", "google"};
 
@@ -351,7 +386,7 @@ public final class Intents {
         } else {
             showInfoToast(Locale.getMessage(R.string.Landmark_url_empty_error));
         }
-    }
+    }*/
 
     public void startActionViewIntent(final String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -492,7 +527,7 @@ public final class Intents {
             String subject = Locale.getMessage(R.string.Landmark_see, selectedLandmark.getName());
             String message = "";
             String email;
-            String url = landmarkManager.getLandmarkURL(selectedLandmark);
+            String url = buildUrl(selectedLandmark);
 
             if (StringUtils.indexOf(packageName, "facebook") > 0 || StringUtils.indexOf(packageName, "zxing") > 0) {
                 message = url;

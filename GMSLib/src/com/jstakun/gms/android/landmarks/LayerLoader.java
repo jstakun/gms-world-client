@@ -233,9 +233,9 @@ public class LayerLoader {
                             || ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                         for (LayerReader reader : readers) {
                         	currentReader = reader;
-                        	String errorMessage = reader.readRemoteLayer(landmarkManager.getLandmarkStoreLayer(key), latitude, longitude, zoom, width, height, key, this);
-                        	if (!isCancelled()) {
-                        		if (errorMessage != null) {
+                        	if (!concurrentLayerLoader.isCancelled() && !isCancelled()) {
+                        		String errorMessage = reader.readRemoteLayer(landmarkManager.getLandmarkStoreLayer(key), latitude, longitude, zoom, width, height, key, this);
+                            	if (errorMessage != null) {
                         			messageStack.addMessage(errorMessage, 10, -1, -1);
                         			if (repaintHandler != null && errorMessage.equals(FacebookUtils.FB_OAUTH_ERROR)) {
                         				repaintHandler.sendEmptyMessage(FB_TOKEN_EXPIRED);

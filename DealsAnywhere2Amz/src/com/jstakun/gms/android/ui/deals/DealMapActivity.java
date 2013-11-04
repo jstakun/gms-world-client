@@ -75,7 +75,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private AsyncTaskManager asyncTaskManager;
     private RoutesManager routesManager;
     private CategoriesManager cm;
-    private Intents intents;
+    protected Intents intents;
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
@@ -502,7 +502,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         } else if (v == lvOpenButton || v == thumbnailButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
-            openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+            intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
         } else if (v == lvCallButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
@@ -720,9 +720,9 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         intents.startPhoneCallActivity(landmark);
     }
 
-    protected void openButtonPressedAction(ExtendedLandmark landmark) {
-        intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    }
+    //protected void openButtonPressedAction(ExtendedLandmark landmark) {
+    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
+    //}
 
     protected void sendMessageAction() {
         List<ResolveInfo> intentList = intents.getSendIntentsList();

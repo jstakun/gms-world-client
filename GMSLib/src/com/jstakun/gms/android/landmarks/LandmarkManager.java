@@ -977,7 +977,7 @@ public class LandmarkManager {
         return landmarkPaintManager.getSelectedLandmarkDrawable();
     }
 
-    public String getLandmarkURL(ExtendedLandmark landmark) {
+    /*public String getLandmarkURL(ExtendedLandmark landmark) {
         String url = null;
         final String[] remote = new String[]{Commons.LOCAL_LAYER, Commons.MY_POSITION_LAYER,
             Commons.MC_ATM_LAYER, Commons.OSM_ATM_LAYER, Commons.OSM_PARKING_LAYER};
@@ -992,7 +992,7 @@ public class LandmarkManager {
             }
         }
         return url;
-    }
+    }*/
 
     public double[] getMyPosition(int lat, int lon) {
         double latt, lonn;

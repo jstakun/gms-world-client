@@ -39,17 +39,19 @@ public class SerialParser {
         
         try {
         	URI uri = new URI(url);
-        	List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, "deflate");
-        	if (landmarks.isEmpty()) {
-        		landmarks.addAll(received);
-        		if (landmarkManager != null) {
-        			landmarkManager.addLandmarkListToDynamicLayer(received);
-        		}
-        	} else {
-        		Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
-        		landmarks.addAll(filtered);
-        		if (landmarkManager != null) {
-        			landmarkManager.addLandmarkListToDynamicLayer(filtered);
+        	if (!task.isCancelled()) {
+        		List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, "deflate");
+        		if (landmarks.isEmpty()) {
+        			landmarks.addAll(received);
+        			if (landmarkManager != null) {
+        				landmarkManager.addLandmarkListToDynamicLayer(received);
+        			}
+        		} else {
+        			Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
+        			landmarks.addAll(filtered);
+        			if (landmarkManager != null) {
+        				landmarkManager.addLandmarkListToDynamicLayer(filtered);
+        			}
         		}
         	}
         } catch (Exception ex) {

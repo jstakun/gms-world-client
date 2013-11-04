@@ -814,7 +814,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 }
         	} else if (v == lvOpenButton || v == thumbnailButton) {
             	UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
-            	openButtonPressedAction(selectedLandmark);
+            	intents.openButtonPressedAction(selectedLandmark);
         	} else if (v == lvCallButton) {
             	UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
             	intents.startPhoneCallActivity(selectedLandmark);
@@ -969,9 +969,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
     }*/
 
-    private void openButtonPressedAction(ExtendedLandmark landmark) {
-        intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    }
+    //private void openButtonPressedAction(ExtendedLandmark landmark) {
+    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
+    //}
 
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean clearMap) {
         mapController.setCenter(newCenter);

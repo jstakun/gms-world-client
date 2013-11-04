@@ -90,7 +90,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
         } else if (v == lvOpenButton) {
             UserTracker.getInstance().trackEvent("Clicks", "DealOfTheDayDialog.OpenURLSelectedDeal", recommended.getLayer(), 0);
-            activity.openButtonPressedAction(recommended);
+            activity.intents.openButtonPressedAction(recommended);
         } else if (v == lvCallButton) {
             UserTracker.getInstance().trackEvent("Clicks", "DealOfTheDayDialog.CallSelectedDeal", recommended.getLayer(), 0);
             activity.callButtonPressedAction(recommended);

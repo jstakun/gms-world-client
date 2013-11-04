@@ -28,6 +28,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
@@ -72,24 +73,25 @@ import com.jstakun.gms.android.ui.lib.R;
  */
 public class HttpUtils {
 
+	private static final String APP_HEADER = "X-GMS-AppId";
+    private static final String USE_COUNT_HEADER = "X-GMS-UseCount";
+    private static final String LAT_HEADER = "X-GMS-Lat";
+    private static final String LNG_HEADER = "X-GMS-Lng";
+    private static final int REQUEST_RETRY_COUNT = 2;
+    private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
     private static DefaultHttpClient httpClient = null;
-    private String errorMessage = null;
+    private static java.util.Locale locale;
+    private static boolean closeConnManager = false;
+	private String errorMessage = null;
     private HttpPost postRequest;
     private HttpGet getRequest;
     private Map<String, String> headers = new HashMap<String, String>();
     private String postResponse = null;
-    private static final String APP_HEADER = "X-GMS-AppId";
-    private static final String USE_COUNT_HEADER = "X-GMS-UseCount";
-    private static final String LAT_HEADER = "X-GMS-Lat";
-    private static final String LNG_HEADER = "X-GMS-Lng";
-    private static java.util.Locale locale;
     private int responseCode;
-    private static final int REQUEST_RETRY_COUNT = 2;
-    private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
-	
+    
     private static HttpClient getHttpClient() {
         if (httpClient == null) {
-
+        	closeConnManager = false;
             HttpParams params = new BasicHttpParams();
             params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, SOCKET_TIMEOUT);
             params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, SOCKET_TIMEOUT);
@@ -106,6 +108,10 @@ public class HttpUtils {
                 String buildInfo = (String) ConfigurationManager.getInstance().getObject(ConfigurationManager.BUILD_INFO, String.class);
                 HttpProtocolParams.setUserAgent(params, buildInfo);
             }
+            
+            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+            HttpProtocolParams.setUseExpectContinue(params, false);
+            HttpConnectionParams.setStaleCheckingEnabled(params, false);
 
             SchemeRegistry schemeRegistry = new SchemeRegistry();
             schemeRegistry.register(
@@ -374,72 +380,75 @@ public class HttpUtils {
             }
            
             postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+            
+            if (!postRequest.isAborted() && !closeConnManager) {
 
-            HttpResponse httpResponse = getHttpClient().execute(postRequest);
+            	HttpResponse httpResponse = getHttpClient().execute(postRequest);
 
-            responseCode = httpResponse.getStatusLine().getStatusCode();
+            	responseCode = httpResponse.getStatusLine().getStatusCode();
 
-            if (responseCode == HttpStatus.SC_OK) {
-                HttpEntity entity = httpResponse.getEntity();
+            	if (responseCode == HttpStatus.SC_OK) {
+                	HttpEntity entity = httpResponse.getEntity();
 
-                if (entity != null) {
+                	if (entity != null) {
                 	
-                    Header contentType = entity.getContentType();
-                    if (contentType != null) {
-                        String contentTypeValue = contentType.getValue();
-                        if (!contentTypeValue.contains(format)) {
-                            throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + uri.toString());
-                        }
-                    } else {
-                        //throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
-                    	LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + uri.toString());
-                    }
-
-                    InputStream is = entity.getContent();
-                    
-                    //1. read bytes stream
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();				
-            		byte[] buffer = new byte[1024];
-            		int read = 0;
-            		while ((read = is.read(buffer, 0, buffer.length)) != -1) {
-            			baos.write(buffer, 0, read);
-            		}		
-            		baos.flush();
-            		is.close();
-                    
-            		int bufferSize = baos.size();
-                    LoggerUtils.debug("File " + uri.toString() + " size: " + bufferSize + " bytes");
-            		
-                    if (bufferSize > 0) {
-                    	increaseCounter(0, bufferSize);
-                    	ObjectInputStream ois = null;
-                    	if (contentType != null && contentType.getValue().indexOf("deflate") != -1) {
-                        	ois = new ObjectInputStream(new InflaterInputStream(new ByteArrayInputStream(baos.toByteArray()), new Inflater(false)));
+                    	Header contentType = entity.getContentType();
+                    	if (contentType != null) {
+                        	String contentTypeValue = contentType.getValue();
+                        	if (!contentTypeValue.contains(format)) {
+                            	throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + uri.toString());
+                        	}
                     	} else {
-                        	ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+                        	//throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
+                    		LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + uri.toString());
                     	}
+
+                    	InputStream is = entity.getContent();
+                    
+                    	//1. read bytes stream
+                    	ByteArrayOutputStream baos = new ByteArrayOutputStream();				
+            			byte[] buffer = new byte[1024];
+            			int read = 0;
+            			while ((read = is.read(buffer, 0, buffer.length)) != -1) {
+            				baos.write(buffer, 0, read);
+            			}		
+            			baos.flush();
+            			is.close();
+                    
+            			int bufferSize = baos.size();
+                    	LoggerUtils.debug("File " + uri.toString() + " size: " + bufferSize + " bytes");
+            		
+                    	if (bufferSize > 0) {
+                    		increaseCounter(0, bufferSize);
+                    		ObjectInputStream ois = null;
+                    		if (contentType != null && contentType.getValue().indexOf("deflate") != -1) {
+                        		ois = new ObjectInputStream(new InflaterInputStream(new ByteArrayInputStream(baos.toByteArray()), new Inflater(false)));
+                    		} else {
+                        		ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+                    		}
                    
-                    	int size = ois.readInt();
-                    	if (size > 0) {
-                    		for(int i = 0;i < size;i++) {
-                    			try {
-                    				ExtendedLandmark landmark = new ExtendedLandmark(); 
-                    				landmark.readExternal(ois);
-                    				reply.add(landmark);
-                    			} catch (IOException e) {
-                    				LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
+                    		int size = ois.readInt();
+                    		if (size > 0) {
+                    			for(int i = 0;i < size;i++) {
+                    				try {
+                    					ExtendedLandmark landmark = new ExtendedLandmark(); 
+                    					landmark.readExternal(ois);
+                    					reply.add(landmark);
+                    				} catch (IOException e) {
+                    					LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
+                    				}
                     			}
                     		}
+                    
+                    		ois.close();
                     	}
                     
-                    	ois.close();
-                    }
-                    
-                    entity.consumeContent();
-                }
-            } else {
-                LoggerUtils.error(uri.toString() + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
-                errorMessage = handleHttpStatus(responseCode);
+                    	entity.consumeContent();
+                	}
+            	} else {
+                	LoggerUtils.error(uri.toString() + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
+                	errorMessage = handleHttpStatus(responseCode);
+            	}
             }
         } catch (Exception e) {
             LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
@@ -562,6 +571,7 @@ public class HttpUtils {
     }
 
     public static void closeConnManager() {
+    	closeConnManager = true;
         new HttpClientClosingTask(1).execute();
     }
 

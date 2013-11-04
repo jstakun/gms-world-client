@@ -474,7 +474,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         } else if (v == lvOpenButton || v == thumbnailButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
-            openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+            intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
         } else if (v == lvCallButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
@@ -730,9 +730,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         intents.startPhoneCallActivity(landmark);
     }
 
-    private void openButtonPressedAction(ExtendedLandmark landmark) {
-        intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    }
+    //private void openButtonPressedAction(ExtendedLandmark landmark) {
+    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
+    //}
 
     private void sendMessageAction() {
         intents.shareLandmarkAction(dialogManager);
@@ -859,7 +859,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			activity.loadingImage.setVisibility(View.GONE);
         		} else if (msg.what == DealOfTheDayDialog.OPEN) {
         			ExtendedLandmark recommended = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class);
-        			activity.openButtonPressedAction(recommended);
+        			activity.intents.openButtonPressedAction(recommended);
         		} else if (msg.what == DealOfTheDayDialog.CALL) {
         			ExtendedLandmark recommended = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class);
         			activity.callButtonPressedAction(recommended);

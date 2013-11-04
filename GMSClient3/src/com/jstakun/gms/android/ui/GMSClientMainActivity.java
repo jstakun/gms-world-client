@@ -838,7 +838,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         } else if (v == lvOpenButton || v == thumbnailButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
-            openButtonPressedAction(selectedLandmark);
+            intents.openButtonPressedAction(selectedLandmark);
         } else if (v == lvCallButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
@@ -1004,9 +1004,9 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         }
     }*/
 
-    private void openButtonPressedAction(ExtendedLandmark landmark) {
-        intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    }
+    //private void openButtonPressedAction(ExtendedLandmark landmark) {
+    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
+    //}
 
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean clearMap) {
         mapController.setCenter(new org.osmdroid.google.wrapper.GeoPoint(newCenter));
