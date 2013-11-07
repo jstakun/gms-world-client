@@ -1081,9 +1081,9 @@ public final class Intents {
                 String name = intent.getStringExtra("name");
                 String desc = intent.getStringExtra("desc");
                 String layer = intent.getStringExtra("layer");
-                String fsCategory = null;
-                if (intent.hasExtra("fsCategory")) {
-                    fsCategory = intent.getStringExtra("fsCategory");
+                String fsCategory = intent.getStringExtra("fsCategory"); 
+                if (fsCategory == null) {
+                    fsCategory = "4d4b7105d754a06375d81259"; //Professional & Other Places;
                 }
                 boolean addVenue = intent.getBooleanExtra("addVenue", false);
                 asyncTaskManager.executeAddLandmarkTask(name, desc, layer, activity.getString(R.string.addLandmark), mapCenter[0], mapCenter[1], addVenue, fsCategory);

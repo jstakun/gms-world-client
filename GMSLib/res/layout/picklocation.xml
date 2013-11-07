@@ -11,7 +11,7 @@ android:visible="false">
 android:id="@+id/mapCanvasLoadingImage"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
-android:src="@drawable/globeconnected"
+android:src="@drawable/discover"
 android:layout_centerVertical="true"
 android:layout_centerHorizontal="true"/>
     <TextView

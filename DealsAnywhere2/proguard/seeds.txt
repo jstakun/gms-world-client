@@ -465,9 +465,10 @@ com.jstakun.gms.android.deals.Deal: long serialVersionUID
 com.jstakun.gms.android.landmarks.ExtendedLandmark: long serialVersionUID
 com.jstakun.gms.android.landmarks.LandmarkParcelable
 com.jstakun.gms.android.landmarks.LandmarkParcelable: android.os.Parcelable$Creator CREATOR
-com.jstakun.gms.android.service.AutoCheckinScheduleReceiver
 com.jstakun.gms.android.service.AutoCheckinService
 com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver
+com.jstakun.gms.android.service.GMSScheduleReceiver
+com.jstakun.gms.android.service.NotificationReceiver
 com.jstakun.gms.android.service.TimeAlarm
 com.jstakun.gms.android.ui.AbstractLandmarkList
 com.jstakun.gms.android.ui.AbstractLandmarkList: AbstractLandmarkList()

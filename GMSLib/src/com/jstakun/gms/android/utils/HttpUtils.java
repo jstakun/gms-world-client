@@ -355,7 +355,7 @@ public class HttpUtils {
         return byteBuffer;
     }
     
-    public List<ExtendedLandmark> loadLandmarkList(URI uri, List<NameValuePair> params, boolean auth, String format) {
+    public synchronized List<ExtendedLandmark> loadLandmarkList(URI uri, List<NameValuePair> params, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();
         
         List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
@@ -382,8 +382,7 @@ public class HttpUtils {
             postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
             
             if (!postRequest.isAborted() && !closeConnManager) {
-
-            	HttpResponse httpResponse = getHttpClient().execute(postRequest);
+                HttpResponse httpResponse = getHttpClient().execute(postRequest);
 
             	responseCode = httpResponse.getStatusLine().getStatusCode();
 
@@ -458,7 +457,7 @@ public class HttpUtils {
         return reply;
     }
 
-    public void close() throws IOException {
+    public synchronized void close() throws IOException {
         if (getRequest != null) {
             getRequest.abort();
         } else if (postRequest != null) {
@@ -735,8 +734,7 @@ public class HttpUtils {
 	        }
 	        httpClient = null;
 	        return null;
-		}
-    	
+		}   	
     }
     
     private static class SocketTimeOutRetryHandler extends DefaultHttpRequestRetryHandler {

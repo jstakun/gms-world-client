@@ -758,9 +758,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 case R.id.socialNetworks:
                     intents.startSocialListActivity();
                     break;
-                //case R.id.layers:
-                //    intents.startLayersListActivity();
-                //    break;
                 case R.id.dataPacket:
                     dialogManager.showAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, null);
                     break;

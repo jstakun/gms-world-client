@@ -2879,7 +2879,7 @@ com.jstakun.gms.android.config.ConfigurationManager:
     263:263:public java.util.Map getConfiguration()
     466:469:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
 com.jstakun.gms.android.config.ConfigurationManager$UserManager:
-    786:786:public boolean isUserLoggedInFully()
+    789:789:public boolean isUserLoggedInFully()
 com.jstakun.gms.android.data.AndroidPersistenceManager:
     private static final java.lang.String CONFIGURATION_FILE
     private static final java.lang.String MAP_FILE
@@ -2917,8 +2917,6 @@ com.jstakun.gms.android.data.FavouritesDAO:
     127:128:public void setLastCheckinDate(long)
     141:142:public void setKey(java.lang.String)
 com.jstakun.gms.android.data.FavouritesDbDataSource:
-    private android.database.sqlite.SQLiteStatement countStatement
-    77:87:public boolean hasLandmark(com.jstakun.gms.android.landmarks.ExtendedLandmark)
     113:129:public com.jstakun.gms.android.data.FavouritesDAO getLandmark(long)
 com.jstakun.gms.android.data.FavouritesDbSQLiteOpenHelper:
     public static final java.lang.String TABLE_NAME
@@ -2981,9 +2979,9 @@ com.jstakun.gms.android.data.IconCache:
     public static final java.lang.String IMAGE_LOADING_TILE
     public static final java.lang.String IMAGE_LOADING_MAP
     public static final java.lang.String IMAGE_MISSING
-    280:281:public void clearImageCache()
+    284:285:public void clearImageCache()
 com.jstakun.gms.android.data.IconCache$BitmapDrawableHelperInternal:
-    542:542:private IconCache$BitmapDrawableHelperInternal()
+    546:546:private IconCache$BitmapDrawableHelperInternal()
 com.jstakun.gms.android.data.KMLFilenameFilter
 com.jstakun.gms.android.data.LandmarkDbSQLiteOpenHelper:
     public static final java.lang.String TABLE_NAME
@@ -3035,6 +3033,7 @@ com.jstakun.gms.android.deals.CategoriesManager:
     private static final java.lang.String KEY_FORMAT
     39:39:public java.util.List getCategories()
     53:53:public java.util.List getSubcategories()
+    216:224:public boolean isCategoryEnabled(int)
 com.jstakun.gms.android.deals.Category:
     56:57:public void setCategoryID(int)
     70:71:public void setCategory(java.lang.String)
@@ -3045,7 +3044,7 @@ com.jstakun.gms.android.deals.Category:
 com.jstakun.gms.android.deals.CategoryJsonParser:
     22:22:public CategoryJsonParser()
 com.jstakun.gms.android.deals.Deal:
-    110:111:public void setIsDealOfTheDay(boolean)
+    116:117:public void setIsDealOfTheDay(boolean)
 com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay:
     public static final int SHOW_LANDMARK_DETAILS
     41:45:public GoogleLandmarkOverlay(com.jstakun.gms.android.landmarks.LandmarkManager,android.os.Handler,java.lang.String[])
@@ -3396,6 +3395,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int select_value
     public static final int sendButton
     public static final int settings
+    public static final int shareScreenshot
     public static final int showLayers
     public static final int showMyLandmarks
     public static final int showMyPos
@@ -3430,13 +3430,16 @@ com.jstakun.gms.android.landmarks.AbstractJsonReader:
     private static final int DEFAULT_LIMIT
     private static final int DEFAULT_DEAL_LIMIT
     public abstract java.lang.String readRemoteLayer(java.util.List,double,double,int,int,int,java.lang.String,com.jstakun.gms.android.utils.GMSAsyncTask)
+    50:50:public java.lang.String[] getUrlPrefix()
 com.jstakun.gms.android.landmarks.AbstractSerialReader:
     private static final int DEFAULT_LIMIT
     private static final int DEFAULT_DEAL_LIMIT
+    private static final java.lang.String SERIAL_VERSION
+    57:57:public final java.lang.String[] getUrlPrefix()
 com.jstakun.gms.android.landmarks.ExtendedLandmark:
-    110:111:public void setCreationDate(long)
-    127:128:public void setLatitudeE6(int)
-    144:145:public void setLongitudeE6(int)
+    117:118:public void setCreationDate(long)
+    134:135:public void setLatitudeE6(int)
+    151:152:public void setLongitudeE6(int)
 com.jstakun.gms.android.landmarks.HotwireReader
 com.jstakun.gms.android.landmarks.KMLParser:
     private static final java.lang.String KML2_2NSO
@@ -3446,15 +3449,16 @@ com.jstakun.gms.android.landmarks.KMLParser:
 com.jstakun.gms.android.landmarks.LandmarkFactory:
     15:15:public LandmarkFactory()
 com.jstakun.gms.android.landmarks.LandmarkManager:
-    847:848:public void setSelectedLandmark(com.jstakun.gms.android.landmarks.ExtendedLandmark,double)
-    851:851:public boolean hasSelectedLandmark()
+    183:188:public java.lang.String[] getLayerUrlPrefix(java.lang.String)
+    848:849:public void setSelectedLandmark(com.jstakun.gms.android.landmarks.ExtendedLandmark,double)
+    852:852:public boolean hasSelectedLandmark()
 com.jstakun.gms.android.landmarks.LandmarkPaintManager:
     40:41:protected void addLandmarkToFocusQueue(com.jstakun.gms.android.landmarks.ExtendedLandmark)
     83:83:protected boolean hasSelectedLandmark()
 com.jstakun.gms.android.landmarks.LandmarkParcelableFactory:
     25:25:public LandmarkParcelableFactory()
-    65:81:public static com.jstakun.gms.android.landmarks.LandmarkParcelable getLandmarkParcelable(com.jstakun.gms.android.data.FavouritesDAO,double,double)
-    85:88:public static com.jstakun.gms.android.landmarks.LandmarkParcelable getLandmarkParcelable(java.io.File,int,java.lang.String,java.util.Locale)
+    67:84:public static com.jstakun.gms.android.landmarks.LandmarkParcelable getLandmarkParcelable(com.jstakun.gms.android.data.FavouritesDAO,double,double)
+    88:91:public static com.jstakun.gms.android.landmarks.LandmarkParcelable getLandmarkParcelable(java.io.File,int,java.lang.String,java.util.Locale)
 com.jstakun.gms.android.landmarks.Layer:
     129:129:public boolean isSearchable()
 com.jstakun.gms.android.landmarks.LayerFactory:
@@ -3477,8 +3481,10 @@ com.jstakun.gms.android.landmarks.LayerManager:
     public static final int LAYER_ICON_SMALL
     public static final int LAYER_ICON_LARGE
     302:306:public java.lang.String getLayerDesc(java.lang.String)
+com.jstakun.gms.android.landmarks.LayerReader:
+    public abstract java.lang.String[] getUrlPrefix()
 com.jstakun.gms.android.landmarks.LayerXMLParser
-com.jstakun.gms.android.landmarks.UpcomingReader
+com.jstakun.gms.android.landmarks.YouTubeReader
 com.jstakun.gms.android.location.AndroidDevice:
     private static final int MAX_REASONABLE_SPEED
     private static final int MILLIS
@@ -3535,12 +3541,13 @@ com.jstakun.gms.android.routes.RoutesManager:
     76:76:public java.util.Set getRoutes()
     80:107:public double[] calculateRouteCenter(java.lang.String)
     111:125:public int calculateRouteZoom(java.lang.Object)
-com.jstakun.gms.android.service.AutoCheckinScheduleReceiver:
-    private static final long DEFAULT_REPEAT_TIME
 com.jstakun.gms.android.service.AutoCheckinService$GMSBinder:
     53:53:public com.jstakun.gms.android.service.AutoCheckinService getService()
 com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver:
     private static final long THRITY_MINS
+com.jstakun.gms.android.service.GMSScheduleReceiver:
+    private static final long DEFAULT_REPEAT_TIME
+    private static final long ONE_DAY
 com.jstakun.gms.android.social.AbstractSocialUtils:
     public abstract boolean initOnTokenPresent(org.json.JSONObject)
     public abstract void storeAccessToken(com.jstakun.gms.android.utils.Token)
@@ -3603,14 +3610,14 @@ com.jstakun.gms.android.ui.AlertDialogBuilder:
     public static final java.lang.String OPEN_DIALOG
 com.jstakun.gms.android.ui.AsyncTaskManager:
     public static final int SHOW_ROUTE_MESSAGE
-    74:88:public void cancelTask(java.lang.Integer,boolean)
-    93:99:public void cancelAll()
-    107:108:public void cancelNotification(int)
-    431:438:public void executeClearCacheTask(java.lang.String)
+    75:89:public void cancelTask(java.lang.Integer,boolean)
+    94:100:public void cancelAll()
+    108:109:public void cancelNotification(int)
+    432:439:public void executeClearCacheTask(java.lang.String)
 com.jstakun.gms.android.ui.AsyncTaskManager$ClearCacheTask
 com.jstakun.gms.android.ui.CheckinManager$CheckinCandidatePredicate:
     private static final long ONE_HOUR
-    139:139:private boolean rule1(com.jstakun.gms.android.data.FavouritesDAO)
+    141:141:private boolean rule1(com.jstakun.gms.android.data.FavouritesDAO)
 com.jstakun.gms.android.ui.DealCategoryArrayAdapter$PositionClickListener:
     public static final int LEFT
     public static final int RIGHT
@@ -3843,6 +3850,7 @@ com.jstakun.gms.android.ui.lib.R$drawable:
     public static final int upcoming
     public static final int walk32
     public static final int webcam_24
+    public static final int youtube_icon
     73:73:public R$drawable()
 com.jstakun.gms.android.ui.lib.R$id:
     public static final int addLayerSeparator
@@ -3911,6 +3919,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int Layer_Loading_1
     public static final int Layer_My_Location_desc
     public static final int Layer_Upcoming_desc
+    public static final int Layer_YouTube_desc
     public static final int Layer_action
     public static final int Location_checkin_error
     public static final int Login_required_error
@@ -4100,8 +4109,9 @@ com.jstakun.gms.android.utils.HttpUtils:
     private static final java.lang.String LNG_HEADER
     private static final int REQUEST_RETRY_COUNT
     private static final int SOCKET_TIMEOUT
+    642:690:private static void setUserCredentials(java.net.URI)
 com.jstakun.gms.android.utils.HttpUtils$SSLSocketFactoryHelper:
-    610:610:private HttpUtils$SSLSocketFactoryHelper()
+    692:692:private HttpUtils$SSLSocketFactoryHelper()
 com.jstakun.gms.android.utils.LayerPoint:
     private static final int INTERVAL
 com.jstakun.gms.android.utils.Locale:
@@ -4111,6 +4121,7 @@ com.jstakun.gms.android.utils.LoggerUtils:
 com.jstakun.gms.android.utils.MathUtils:
     12:12:public MathUtils()
     15:23:public static double pow(double,int)
+    31:31:public static double abs(double)
 com.jstakun.gms.android.utils.MercatorUtils:
     11:11:public MercatorUtils()
     51:63:public static int[] coordsToXY(int,int,double,double,com.jstakun.gms.android.utils.BoundingBox)
@@ -4174,6 +4185,7 @@ com.mnm.seekbarpreference.SeekBarPreference:
     private static final int DEFAULT_MIN_VALUE
     private static final int DEFAULT_MAX_VALUE
 com.openlapi.AddressInfo:
+    private static final byte BYTE_ONE
     public static final int BUILDING_FLOOR
     public static final int BUILDING_NAME
     public static final int BUILDING_ROOM
@@ -4195,25 +4207,25 @@ com.openlapi.AddressInfo:
 com.openlapi.Coordinates:
     public static final int DD_MM
     public static final int DD_MM_SS
-    73:95:public static java.lang.String convert(double,int)
-    101:121:private static java.lang.String doubleFormat(double,int,int)
-    125:129:private static double tenPow(int)
-    133:141:private static java.lang.String cullTrailingZeros(java.lang.String)
-    205:299:public static double convert(java.lang.String)
-    310:313:private static boolean convertIsValidChar(char)
-    324:348:private static java.lang.String[] convertSplit(java.lang.String)
-    358:363:private static boolean isEast(double,double)
-    373:378:private static boolean isNorth(double,double)
-    448:448:public float azimuthTo(com.openlapi.Coordinates)
-    464:464:public float distance(com.openlapi.Coordinates)
-    560:588:private double arctan(double)
-    606:633:private double arctan2(double,double)
-    655:801:private float distance2(com.openlapi.Coordinates,boolean)
-    812:812:private double square(double)
+    79:101:public static java.lang.String convert(double,int)
+    107:127:private static java.lang.String doubleFormat(double,int,int)
+    131:135:private static double tenPow(int)
+    139:147:private static java.lang.String cullTrailingZeros(java.lang.String)
+    211:305:public static double convert(java.lang.String)
+    316:319:private static boolean convertIsValidChar(char)
+    330:354:private static java.lang.String[] convertSplit(java.lang.String)
+    364:369:private static boolean isEast(double,double)
+    379:384:private static boolean isNorth(double,double)
+    454:454:public float azimuthTo(com.openlapi.Coordinates)
+    470:470:public float distance(com.openlapi.Coordinates)
+    566:594:private double arctan(double)
+    612:639:private double arctan2(double,double)
+    661:807:private float distance2(com.openlapi.Coordinates,boolean)
+    818:818:private double square(double)
 com.openlapi.OpenLAPICommon
 com.openlapi.QualifiedCoordinates:
-    87:87:public float getHorizontalAccuracy()
-    98:98:public float getVerticalAccuracy()
+    93:93:public float getHorizontalAccuracy()
+    104:104:public float getVerticalAccuracy()
 com.skyhookwireless._sdka
 com.skyhookwireless._sdkab
 com.skyhookwireless._sdkac
@@ -5289,6 +5301,7 @@ org.acra.CrashReportPersister:
     private static final int IGNORE
     private static final java.lang.String LINE_SEPARATOR
 org.acra.ErrorReporter:
+    216:216:public static org.acra.ErrorReporter getInstance()
     229:230:public void addCustomData(java.lang.String,java.lang.String)
     254:254:public java.lang.String putCustomData(java.lang.String,java.lang.String)
     267:267:public java.lang.String removeCustomData(java.lang.String)
