@@ -268,7 +268,7 @@ public class HttpUtils {
         }
     }
 
-    public byte[] loadHttpFile(String url, boolean auth, String format) {
+    public synchronized byte[] loadHttpFile(String url, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();     
         byte[] byteBuffer = null;
         
@@ -296,55 +296,56 @@ public class HttpUtils {
                setBasicAuthHeader(getRequest, url.contains("services"));
             }
             
-            HttpResponse httpResponse = getHttpClient().execute(getRequest);
+            if (!getRequest.isAborted() && !closeConnManager) {
+            	HttpResponse httpResponse = getHttpClient().execute(getRequest);
 
-            responseCode = httpResponse.getStatusLine().getStatusCode();
+            	responseCode = httpResponse.getStatusLine().getStatusCode();
 
-            if (responseCode == HttpStatus.SC_OK) {
-                HttpEntity entity = httpResponse.getEntity();
+            	if (responseCode == HttpStatus.SC_OK) {
+            		HttpEntity entity = httpResponse.getEntity();
 
-                if (entity != null) {
-                    Header contentEncoding = entity.getContentEncoding();
+            		if (entity != null) {
+            			Header contentEncoding = entity.getContentEncoding();
 
-                    Header contentType = entity.getContentType();
-                    if (contentType != null) {
-                        String contentTypeValue = contentType.getValue();
-                        if (!contentTypeValue.contains(format)) {
-                            throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + url);
-                        }
-                    } else {
-                    //    throw new IOException("Missing content type! Expected: " + format + " at url: " + url);
-                    	LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + url);
-                    }
+            			Header contentType = entity.getContentType();
+            			if (contentType != null) {
+            				String contentTypeValue = contentType.getValue();
+            				if (!contentTypeValue.contains(format)) {
+            					throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + url);
+            				}
+            			} else {
+            				//throw new IOException("Missing content type! Expected: " + format + " at url: " + url);
+            				LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + url);
+            			}
 
-                    if (contentEncoding != null && contentEncoding.getValue().indexOf("gzip") != -1) {
-                        is = new GZIPInputStream(entity.getContent());
-                    } else {
-                        is = entity.getContent();
-                    }
+            			if (contentEncoding != null && contentEncoding.getValue().indexOf("gzip") != -1) {
+            				is = new GZIPInputStream(entity.getContent());
+            			} else {
+            				is = entity.getContent();
+            			}
 
-                    try {
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[512];
-                        int count;
-                        while ((count = is.read(buffer)) >= 0) {
-                            bos.write(buffer, 0, count);
-                        }
+                    	try {
+                        	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        	byte[] buffer = new byte[512];
+                        	int count;
+                        	while ((count = is.read(buffer)) >= 0) {
+                            	bos.write(buffer, 0, count);
+                        	}
 
-                        byteBuffer = bos.toByteArray();
-                        increaseCounter(0, byteBuffer.length);
-                        LoggerUtils.debug("File " + url + " size: " + byteBuffer.length + " bytes");//, Compressed = " + compressed);
-                    } finally {
-                        if (is != null) {
-                            is.close();
-                        }
-                    }
-
-                    entity.consumeContent();
-                }
-            } else {
-                LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
-                errorMessage = handleHttpStatus(responseCode);
+                        	byteBuffer = bos.toByteArray();
+                        	increaseCounter(0, byteBuffer.length);
+                        	LoggerUtils.debug("File " + url + " size: " + byteBuffer.length + " bytes");//, Compressed = " + compressed);
+                    	} finally {
+                        	if (is != null) {
+                            	is.close();
+                        	}
+                    	}
+                    	entity.consumeContent();
+                	}
+            	} else {
+                	LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
+                	errorMessage = handleHttpStatus(responseCode);
+            	}
             }
         } catch (Exception e) {
             byteBuffer = null;

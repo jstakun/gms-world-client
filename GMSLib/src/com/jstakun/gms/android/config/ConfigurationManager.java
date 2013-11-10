@@ -190,6 +190,8 @@ public final class ConfigurationManager {
     public static final String GL_BIRTHDAY = "glBirthday";
     public static final String USER_EMAIL = "userEmail";
     //
+	//Restart service every x seconds
+	  public static final long DEFAULT_REPEAT_TIME = 300;
     
     private ConfigurationManager() {
     }

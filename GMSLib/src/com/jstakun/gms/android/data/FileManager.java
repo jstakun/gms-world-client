@@ -872,7 +872,7 @@ public class FileManager implements PersistenceManager {
         return new File(Environment.getExternalStorageDirectory() + absolutePath);
     }
 
-    private static int getExternalStorageStatus() {
+    /*private static int getExternalStorageStatus() {
         //boolean mExternalStorageAvailable = false;
         //boolean mExternalStorageWriteable = false;
         String state = Environment.getExternalStorageState();
@@ -890,7 +890,7 @@ public class FileManager implements PersistenceManager {
             //mExternalStorageAvailable = mExternalStorageWriteable = false;
             return 0;
         }
-    }
+    }*/
 
     public File getRouteFile(String filename) {
         return getExternalDirectory(getRoutesFolderPath(), filename);

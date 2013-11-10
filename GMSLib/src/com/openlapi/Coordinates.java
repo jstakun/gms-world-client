@@ -327,7 +327,7 @@ public class Coordinates implements Externalizable {
 	 */
 	private static String[] convertSplit(String in)
 			throws IllegalArgumentException {
-		Vector parts = new Vector(4);
+		Vector<String> parts = new Vector<String>(4);
 
 		int start = 0;
 		int length = in.length();
@@ -347,7 +347,7 @@ public class Coordinates implements Externalizable {
 			throw new IllegalArgumentException();
 		// return an array
 		String[] partsArray = new String[parts.size()];
-		Enumeration en = parts.elements();
+		Enumeration<String> en = parts.elements();
 		for (int i = 0; en.hasMoreElements(); i++) {
 			partsArray[i] = (String) en.nextElement();
 		}

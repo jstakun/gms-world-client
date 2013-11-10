@@ -34,7 +34,7 @@ public class LoginArrayAdapter extends ArrayAdapter<String> {
         icons.put(OAuthServiceFactory.getServiceName(Commons.GOOGLE), R.drawable.google_plus);
         icons.put(OAuthServiceFactory.getServiceName(Commons.TWITTER), R.drawable.twitter_icon);
         icons.put(OAuthServiceFactory.getServiceName(Commons.LINKEDIN), R.drawable.linkedin_icon);
-        icons.put(ConfigurationManager.GMS_WORLD,R.drawable.globecompass_16);
+        icons.put(ConfigurationManager.GMS_WORLD,R.drawable.globe16_new);
     };
 
     public LoginArrayAdapter(Activity context, List<String> logins) {

@@ -4,6 +4,8 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.util.List;
+
 import android.content.Context;
 import com.google.common.base.Predicate;
 import com.jstakun.gms.android.config.Commons;
@@ -83,10 +85,11 @@ public class CheckinManager {
         int checkinCount = 0;
     	FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
         if (fdb != null) {
-        	for (FavouritesDAO favourite : fdb.fetchAllLandmarks()) {
+        	List<FavouritesDAO> favourites = fdb.fetchAllLandmarks();
+        	for (FavouritesDAO favourite : favourites) {
             	long distInMeter = (long) DistanceUtils.distanceInMeter(lat, lon, favourite.getLatitude(), favourite.getLongitude());
             	//System.out.println("Checking landmark " + favourite.getName() + " in distance " + distInMeter + " meter.");
-            	CheckinCandidatePredicate candidatePredicate = new CheckinCandidatePredicate(distInMeter);
+            	CheckinCandidatePredicate candidatePredicate = new CheckinCandidatePredicate(distInMeter, favourites);
             	if (candidatePredicate.apply(favourite)) {
                 	if (checkinAction(favourite.getLayer(), favourite.getName(), favourite.getKey(), silent)) {
                     	checkinCount++;
@@ -126,9 +129,11 @@ public class CheckinManager {
 
         private long distInMeter;
         private static final long ONE_HOUR = 60 * 60 * 1000;
+        private List<FavouritesDAO> favourites;
 
-        public CheckinCandidatePredicate(long distInMeter) {
+        public CheckinCandidatePredicate(long distInMeter, List<FavouritesDAO> favourites) {
             this.distInMeter = distInMeter;
+            this.favourites = favourites;
         }
 
         //checkinTimeInterval;8
@@ -139,27 +144,43 @@ public class CheckinManager {
         //last check-in xx hours ago, 
         //max distance xx meters, 
         //current distance xx meters max
-        private boolean rule1(FavouritesDAO favourite) {
+        /*private boolean rule1(FavouritesDAO favourite) {
         	return ((System.currentTimeMillis() - favourite.getLastCheckinDate()) > (ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL) * ONE_HOUR)
                     && favourite.getMaxDistance() >= ConfigurationManager.getInstance().getInt(ConfigurationManager.MIN_CHECKIN_DISTANCE)  
                     && distInMeter < ConfigurationManager.getInstance().getInt(ConfigurationManager.MAX_CURRENT_DISTANCE));
-        }
+        }*/
         
         //rule2
         //last check-in xx hours ago
         //current distance xx meters max
-        private boolean rule2(FavouritesDAO favourite) {
+        /*private boolean rule2(FavouritesDAO favourite) {
         	return ((System.currentTimeMillis() - favourite.getLastCheckinDate()) > (ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL) * ONE_HOUR)
                     && distInMeter < ConfigurationManager.getInstance().getInt(ConfigurationManager.MAX_CURRENT_DISTANCE));
+        }*/
+        
+        //rule3
+        //current distance xx meters max
+        //last check-in xx hours ago or max distance xx meters or checked-in to other landmark in the meantime
+        private boolean rule3(FavouritesDAO favourite) {
+        	return (distInMeter < ConfigurationManager.getInstance().getInt(ConfigurationManager.MAX_CURRENT_DISTANCE) &&
+        		   ((System.currentTimeMillis() - favourite.getLastCheckinDate()) > (ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL) * ONE_HOUR)
+                   || favourite.getMaxDistance() >= ConfigurationManager.getInstance().getInt(ConfigurationManager.MIN_CHECKIN_DISTANCE)
+                   || checkinToLayer(favourite, favourites)));
         }
         
-        //rule2
-        //last check-in xx hours ago or max distance xx meters
-        //current distance xx meters max
-        private boolean rule3(FavouritesDAO favourite) {
-        	return (((System.currentTimeMillis() - favourite.getLastCheckinDate()) > (ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL) * ONE_HOUR)
-                    || favourite.getMaxDistance() >= ConfigurationManager.getInstance().getInt(ConfigurationManager.MIN_CHECKIN_DISTANCE))
-        			&& distInMeter < ConfigurationManager.getInstance().getInt(ConfigurationManager.MAX_CURRENT_DISTANCE));
+        private boolean checkinToLayer(FavouritesDAO favourite, List<FavouritesDAO> favourites) {
+        	//String layer = favourite.getLayer();
+        	long lastCheckin = favourite.getLastCheckinDate() + (ConfigurationManager.DEFAULT_REPEAT_TIME * 1000);
+        	
+        	boolean checkinToLayer = false;
+        	
+        	for (FavouritesDAO fav : favourites) {
+        		if (!fav.equals(favourite) && fav.getLastCheckinDate() >= lastCheckin) { //&& fav.getLayer().equals(layer)) {
+        			return true;
+        		}
+        	}
+        	
+        	return checkinToLayer;
         }
         
         public boolean apply(FavouritesDAO favourite) {

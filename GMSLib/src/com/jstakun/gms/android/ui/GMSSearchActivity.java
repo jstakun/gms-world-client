@@ -187,7 +187,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 		}
 		return searchTask;
 	}
-
+	
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		if (id == ID_DIALOG_PROGRESS) {
@@ -506,32 +506,11 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					}
 				}
 
-				//utils.sendPostRequest(url, params, true);
-				
 				params.add(new BasicNameValuePair("format", "bin"));
 				String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "search";
 				List<ExtendedLandmark> received = utils.loadLandmarkList(new URI(url), params, true, "deflate");
 				
 				errorMessage = utils.getResponseCodeErrorMessage();
-				//String response = utils.getPostResponse();
-				
-				/*if (StringUtils.startsWith(response, "{")) {
-					JSONObject jsonRoot = new JSONObject(response);
-					JSONObject jsonLayers = jsonRoot.getJSONObject("ResultSet");
-
-					int layerCount = jsonLayers.length();
-					int i = 0;
-					for (Iterator<String> layerNames = jsonLayers.keys(); layerNames.hasNext();) {
-						String layerName = layerNames.next();
-						JSONObject layer = jsonLayers.getJSONObject(layerName);
-						JSONArray resultSet = layer.optJSONArray("ResultSet");
-						i++;
-						publishProgress(i, layerCount);
-						if (resultSet.length() > 0) {
-							jsonParser.parseJSonArray(resultSet, landmarkManager.getLandmarkStoreLayer(layerName), layerName, landmarkManager.getLayerUrlPrefix(layerName), -1, -1, task, 50, query);
-						}
-					}
-				}*/
 				
 				//process received landmark list
 				int landmarkCount = received.size();

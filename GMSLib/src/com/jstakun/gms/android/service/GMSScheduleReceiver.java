@@ -13,8 +13,6 @@ import android.content.Intent;
 
 public class GMSScheduleReceiver extends BroadcastReceiver {
 
-	  //Restart service every x seconds
-	  private static final long DEFAULT_REPEAT_TIME = 300;
 	  private static final long ONE_DAY = 24 * 60 * 60 * 1000;
 	  //private static final long ONE_HOUR = 60 * 60 * 1000;
 			  
@@ -33,7 +31,7 @@ public class GMSScheduleReceiver extends BroadcastReceiver {
 			  // Fetch every x seconds
 			  long repeat_time = ConfigurationManager.getInstance().getLong(ConfigurationManager.AUTO_CHECKIN_REPEAT_TIME);
 			  if (repeat_time == -1) {
-				  repeat_time = DEFAULT_REPEAT_TIME;
+				  repeat_time = ConfigurationManager.DEFAULT_REPEAT_TIME;
 			  }   
 			  repeat_time = repeat_time * 1000;
 			  LoggerUtils.debug("GMSScheduleReceiver.onReceive() setting AutoCheckinStartServiceReceiver interval " + repeat_time + " milliseconds...");

@@ -542,7 +542,9 @@ public final class Intents {
                     String date = DateTimeUtils.getDefaultDateTimeString(selectedLandmark.getDescription(), ConfigurationManager.getInstance().getCurrentLocale());
                     message = Locale.getMessage(R.string.Last_update, date);
                 } else {
-                    message = Html.fromHtml(selectedLandmark.getDescription()).toString();
+                	//TODO extract alt from img and replace img tag 
+                	String htmlBody = selectedLandmark.getDescription().replaceAll("<img.+/(img)*>", "");
+                    message = Html.fromHtml(htmlBody).toString();
                 }
 
                 message += "\nLink: " + url;
@@ -585,7 +587,7 @@ public final class Intents {
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, Locale.getMessage(R.string.app_name));
 
-        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(activity, R.drawable.globecompass);
+        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(activity, R.drawable.globe64_new);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
 
         activity.setResult(Activity.RESULT_OK, intent);

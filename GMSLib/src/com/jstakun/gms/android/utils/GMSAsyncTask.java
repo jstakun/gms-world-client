@@ -503,10 +503,9 @@ public abstract class GMSAsyncTask<Params, Progress, Result> {
      *
      * @see #execute(Object[])
      */
-    public final GMSAsyncTask<Params, Progress, Result> executeOnExecutor(Executor exec,
-            Params... params) {
+    public final GMSAsyncTask<Params, Progress, Result> executeOnExecutor(Executor exec, Params... params) {
         
-        collectThreadPoolExecutorStats();
+        //collectThreadPoolExecutorStats();
         
         if (mStatus != Status.PENDING) {
             switch (mStatus) {
@@ -613,17 +612,15 @@ public abstract class GMSAsyncTask<Params, Progress, Result> {
         }
     }
 
-    private static void collectThreadPoolExecutorStats() {
+    /*private static void collectThreadPoolExecutorStats() {
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) THREAD_POOL_EXECUTOR;
-        /*LoggerUtils.debug("THREAD_POOL_EXECUTOR stats: "
+        LoggerUtils.debug("THREAD_POOL_EXECUTOR stats: "
                 + "\nCore pool size: " + threadPoolExecutor.getCorePoolSize()
                 + "\nCurrent pool size: " + threadPoolExecutor.getPoolSize()
                 + "\nMaximum pool size: " + threadPoolExecutor.getMaximumPoolSize()
                 + "\nActive threads count: " + threadPoolExecutor.getActiveCount()
-                + "\nQueue size: " + threadPoolExecutor.getQueue().size());
-         */  
-    }
-    
+                + "\nQueue size: " + threadPoolExecutor.getQueue().size());  
+    }*/
     
     protected static class ComparableFutureTask<Result> extends FutureTask<Result> {
 

@@ -37,7 +37,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
     private static final String[] auth_status = {ConfigurationManager.GMS_AUTH_STATUS, ConfigurationManager.FB_AUTH_STATUS, ConfigurationManager.FS_AUTH_STATUS,
         ConfigurationManager.GL_AUTH_STATUS, ConfigurationManager.TWEET_AUTH_STATUS, ConfigurationManager.LN_AUTH_STATUS};
     private static final boolean[] checkbox_status = {false, true, false, true, true, true};
-    private static final int[] icons = {R.drawable.globecompass_16, R.drawable.facebook_icon, R.drawable.foursquare,
+    private static final int[] icons = {R.drawable.globe16_new, R.drawable.facebook_icon, R.drawable.foursquare,
         R.drawable.google_plus, R.drawable.twitter_icon, R.drawable.linkedin_icon};
     
     public SocialArrayAdapter(Activity context, TextView footer) {

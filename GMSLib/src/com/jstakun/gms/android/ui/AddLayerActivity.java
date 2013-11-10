@@ -40,10 +40,11 @@ public class AddLayerActivity extends Activity implements OnClickListener {
     private String name;
     private static final int ID_DIALOG_PROGRESS = 0;
     private LandmarkManager landmarkManager;
+    private static final String NAME = "name";
 
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setTitle(R.string.addLayer);
         setContentView(R.layout.addlayer);
 
@@ -54,10 +55,14 @@ public class AddLayerActivity extends Activity implements OnClickListener {
 
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
 
-        Object retained = getLastNonConfigurationInstance();
-        if (retained instanceof String) {
-            name = (String) retained;
-        }
+        //Object retained = getLastNonConfigurationInstance();
+        //if (retained instanceof String) {
+        //    name = (String) retained;
+        //}
+        
+        if (savedInstanceState != null) {
+        	name = savedInstanceState.getString(NAME);
+        } 
 
         initComponents();
     }
@@ -82,10 +87,15 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         }
     }
 
+    //@Override
+    //public Object onRetainNonConfigurationInstance() {
+    //    return name;
+    //}
+    
     @Override
-    public Object onRetainNonConfigurationInstance() {
-        return name;
-    }
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+    	savedInstanceState.putString(NAME, name);
+    }	
 
     private void initComponents() {
         addButton = findViewById(R.id.addButton);

@@ -30,12 +30,12 @@ import com.jstakun.gms.android.utils.MercatorUtils;
  */
 public class AndroidDevice implements LocationListener {
 
-    private static final int MAX_REASONABLE_SPEED = 90; //324 km/h
+    //private static final int MAX_REASONABLE_SPEED = 90; //324 km/h
     private static final int MILLIS = 0; //5000;
     private static final int METERS = 0; //5;
     //private static final int TWO_MINUTES = 1000 * 60 * 2;
     private static final int THREE_MINUTES = 1000 * 60 * 3;
-    private float maxAcceptableAccuracy = 100f;
+    //private float maxAcceptableAccuracy = 100f;
     private LocationManager locationManager;
     private Location previousLocation;
     protected Handler positionHandler = null;
@@ -231,7 +231,7 @@ public class AndroidDevice implements LocationListener {
         }
     }
 
-    private Location filterLocation(Location proposedLocation) {
+    /*private Location filterLocation(Location proposedLocation) {
         // Do no include log wrong 0.0 lat 0.0 long, skip to next value in while-loop
         if (proposedLocation != null && (proposedLocation.getLatitude() == 0.0d || proposedLocation.getLongitude() == 0.0d)) {
             LoggerUtils.debug("A wrong location was received, 0.0 latitude and 0.0 longitude... ");
@@ -267,7 +267,7 @@ public class AndroidDevice implements LocationListener {
         }
 
         return proposedLocation;
-    }
+    }*/
 
     public void onProviderDisabled(String provider) {
         LoggerUtils.debug("Provider Disabled: " + provider);

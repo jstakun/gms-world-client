@@ -50,7 +50,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     private Intents intents;
     private AlertDialog deleteLayerDialog;
     private List<String> names = null;
-    private String categoryName;
+    //private String categoryName;
  
     @Override
     public void onCreate(Bundle icicle) {
@@ -97,10 +97,10 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
         createDeleteLayerAlertDialog();
 
-        Object retained = getLastNonConfigurationInstance();
-        if (retained instanceof String) {
-            categoryName = (String) retained;
-        }
+        //Object retained = getLastNonConfigurationInstance();
+        //if (retained instanceof String) {
+        //    categoryName = (String) retained;
+        //}
 
         registerForContextMenu(getListView());
     }
@@ -195,10 +195,10 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         setListAdapter(new DealCategoryArrayAdapter(this, names));
     }
 
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return categoryName;
-    }
+    //@Override
+    //public Object onRetainNonConfigurationInstance() {
+    //    return categoryName;
+    //}
 
     @Override
     public boolean onSearchRequested() {

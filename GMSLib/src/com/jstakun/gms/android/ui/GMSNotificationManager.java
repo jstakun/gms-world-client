@@ -32,7 +32,7 @@ public class GMSNotificationManager {
     public int createNotification(int icon, String ticker, String title, boolean delete) {
         int drawble = icon;
         if (drawble == -1) {
-            drawble = R.drawable.globecompass_24;        // icon from resources
+            drawble = R.drawable.globe24_new;        // icon from resources
         }
 
         int num = notificationCounter;

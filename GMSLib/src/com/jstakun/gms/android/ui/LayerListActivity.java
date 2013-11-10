@@ -49,10 +49,11 @@ public class LayerListActivity extends ListActivity {
     private RoutesManager routesManager;
     private int currentPos = -1;
     private String layerName;
+    private static final String NAME = "layerName";
 
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         setTitle(R.string.layers);
 
@@ -78,10 +79,14 @@ public class LayerListActivity extends ListActivity {
 
         registerForContextMenu(getListView());
 
-        Object retained = getLastNonConfigurationInstance();
-        if (retained instanceof String) {
-            layerName = (String) retained;
-        }
+        //Object retained = getLastNonConfigurationInstance();
+        //if (retained instanceof String) {
+        //    layerName = (String) retained;
+        //}
+        
+        if (savedInstanceState != null) {
+        	layerName = savedInstanceState.getString(NAME);
+        } 
     }
 
     @Override
@@ -124,9 +129,14 @@ public class LayerListActivity extends ListActivity {
         AdsUtils.destroyAdView(this);
     }
 
+    //@Override
+    //public Object onRetainNonConfigurationInstance() {
+    //    return layerName;
+    //}
+    
     @Override
-    public Object onRetainNonConfigurationInstance() {
-        return layerName;
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+    	savedInstanceState.putString(NAME, layerName);
     }
 
     @Override
