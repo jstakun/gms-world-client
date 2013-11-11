@@ -439,8 +439,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-    	if (ConfigurationManager.getUserManager().isUserLoggedIn() || ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0) < 10 || 
-    			keyCode == KeyEvent.KEYCODE_BACK) {	
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK) {	
             //System.out.println("Key pressed in activity: " + keyCode);
     		if (keyCode == KeyEvent.KEYCODE_BACK) {
     			if (lvView.isShown()) {
@@ -640,8 +639,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
         if (appInitialized) {
         	int itemId = item.getItemId();
-        	if (ConfigurationManager.getUserManager().isUserLoggedIn() || ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0) < 10 || 
-        			itemId == android.R.id.home || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
+        	if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == android.R.id.home || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
         		switch (itemId) {
                 	case R.id.settings:
                 		intents.startSettingsActivity(SettingsActivity.class);
@@ -818,8 +816,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     public void onClick(View v) {
-    	if (ConfigurationManager.getUserManager().isUserLoggedIn() || ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0) < 10 || 
-    			v == lvCloseButton) {	
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton) {	
         	ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
         	if (selectedLandmark != null) {
         		if (v == lvCloseButton) {

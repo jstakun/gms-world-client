@@ -419,6 +419,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+      if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK) {		
         //System.out.println("Key pressed in activity: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (lvView.isShown()) {
@@ -446,6 +447,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         } else {
             return super.onKeyDown(keyCode, event);
         }
+      }  else {
+  		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+  		return true;
+  	  }
     }
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
@@ -616,7 +621,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
         if (appInitialized) {
-            switch (item.getItemId()) {
+        	int itemId = item.getItemId();
+        	if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == android.R.id.home || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
+        	  switch (itemId) {
                 case R.id.settings:
                     intents.startSettingsActivity(SettingsActivity.class);
                     break;
@@ -782,14 +789,16 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 	break;    
                 default:
                     return super.onOptionsItemSelected(item);
-            }
+             }
+        	}	  
         }
         return true;
     }
 
     public void onClick(View v) {
-    	ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-        if (selectedLandmark != null) {
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton) {
+    	 ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+         if (selectedLandmark != null) {
         	if (v == lvCloseButton) {
         		UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", selectedLandmark.getLayer(), 0);
         		lvView.setVisibility(View.GONE);
@@ -829,29 +838,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             	UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
             	intents.shareLandmarkAction(dialogManager);
         	}
-        } else {
+         } else {
             intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-        }
+         }
+    	}
     
     }
-
-    /*private void showSelectedLandmark(int id) {
-        if (id >= 0) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-            if (selectedLandmark != null) {
-                landmarkManager.setSelectedLandmark(selectedLandmark);
-                landmarkManager.clearLandmarkOnFocusQueue();
-                int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
-                if (coordsE6 != null) {
-                	animateTo(coordsE6);
-                }
-            } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-            }
-        } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
-        }
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -940,38 +932,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader);
         }
     }
-
-    /*private void landmarkDetailsAction() {
-        ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
-        if (selectedLandmark != null) {
-            if (!selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                landmarkManager.setSeletedLandmarkUI();
-            }
-
-            if (selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_DIST_ASC);
-            } else {
-                UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowSelectedLandmarkView", selectedLandmark.getLayer(), 0);
-                getActionBar().hide();
-                GeoPoint g = new GeoPoint(selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6());
-                mapController.animateTo(g);
-                intents.showLandmarkDetailsView(selectedLandmark, lvView, getMyPosition(), true);
-                 
-                if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-                    intents.loadLayersAction(true, null, false, true, layerLoader,
-                    		selectedLandmark.getQualifiedCoordinates().getLatitude(), 
-                    		selectedLandmark.getQualifiedCoordinates().getLongitude(),
-                            mapView.getZoomLevel());
-                }
-            }
-        } else {
-            LoggerUtils.debug(Locale.getMessage(R.string.Landmark_opening_error));
-        }
-    }*/
-
-    //private void openButtonPressedAction(ExtendedLandmark landmark) {
-    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    //}
 
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean clearMap) {
         mapController.setCenter(newCenter);

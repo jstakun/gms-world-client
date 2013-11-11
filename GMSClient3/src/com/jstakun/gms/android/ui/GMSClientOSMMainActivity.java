@@ -403,7 +403,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //System.out.println("Key pressed in activity: " + keyCode);
+      if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK) {	
+            //System.out.println("Key pressed in activity: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (lvView.isShown()) {
                 landmarkManager.clearLandmarkOnFocusQueue();
@@ -429,6 +430,10 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         } else {
             return super.onKeyDown(keyCode, event);
         }
+      } else {
+  		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+  		return true;
+      }		
     }
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
@@ -599,7 +604,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
-        switch (item.getItemId()) {
+        int itemId = item.getItemId();
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == android.R.id.home || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
+    	  switch (itemId) {
             case R.id.settings:
                 intents.startSettingsActivity(SettingsActivity.class);
                 break;
@@ -756,11 +763,13 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             	break;    
             default:
                 return super.onOptionsItemSelected(item);
-        }
+          }
+    	}
         return true;
     }
 
     public void onClick(View v) {
+      if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton) {	
         if (v == lvCloseButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", "", 0);
             lvView.setVisibility(View.GONE);
@@ -821,25 +830,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
             intents.shareLandmarkAction(dialogManager);
         }
+      }  
     }
-
-    /*private void showSelectedLandmark(int id) {
-        if (id >= 0) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-            if (selectedLandmark != null) {
-                landmarkManager.setSelectedLandmark(selectedLandmark);
-                landmarkManager.clearLandmarkOnFocusQueue();
-                int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
-                if (coordsE6 != null) {
-                	animateTo(coordsE6);
-                }
-            } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-            }
-        } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
-        }
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

@@ -902,5 +902,9 @@ public final class ConfigurationManager {
     	public String getUserEmail() {
     		return getStringDecrypted(USER_EMAIL);
     	}
+    	
+    	public boolean isUserAllowedAction() {
+    		return (isUserLoggedIn() || getInt(ConfigurationManager.USE_COUNT, 0) < 15);
+    	}
     }
 }
