@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
@@ -542,9 +544,26 @@ public final class Intents {
                     String date = DateTimeUtils.getDefaultDateTimeString(selectedLandmark.getDescription(), ConfigurationManager.getInstance().getCurrentLocale());
                     message = Locale.getMessage(R.string.Last_update, date);
                 } else {
-                	//TODO extract alt from img and replace img tag 
-                	String htmlBody = selectedLandmark.getDescription().replaceAll("<img.+/(img)*>", "");
-                    message = Html.fromHtml(htmlBody).toString();
+                	//extract alt from img and replace img tag 
+                	
+                	String htmlBody = selectedLandmark.getDescription();
+                	Pattern p = Pattern.compile("alt=\"(.*?)\"");
+                    Matcher m = p.matcher(htmlBody);
+                    List<String> alts = new ArrayList<String>();
+                    while (m.find()) {
+                    	alts.add(m.group(1));
+                    }
+                    
+                    StringBuffer sb = new StringBuffer();
+                    p = Pattern.compile("[<](/)?img[^>]*[>]"); 
+                    m = p.matcher(htmlBody);
+                    int i=0;
+                    while (m.find()) {
+                    	m.appendReplacement(sb, alts.get(i));
+                    	i++;
+                    }
+                    m.appendTail(sb);
+                    message = Html.fromHtml(sb.toString()).toString();
                 }
 
                 message += "\nLink: " + url;
