@@ -30,6 +30,7 @@ fsAuthStatus;0
 fsSendStatus;0
 gwAuthStatus;0
 gwSendStatus;0
+gmsAuthStatus;0
 showGrid;0
 sendMyPos;1
 sendMyPosAtStartup;1
@@ -41,14 +42,13 @@ memoryCacheSize;48
 routeType;0
 Google Places_status;0
 Groupon_status;0
-Hotwire_status;0
 Coupons_status;0
 Eventful_status;0
 Picasa_status;0
 Flickr_status;0
-YouTube_status;0
 MasterCard ATMs_status;0
 Qype_status;0
+Expedia_status;0
 loadDisabledLayers;1
 bitmapType;0
 layerPaintLimit;15
@@ -64,8 +64,6 @@ dynamicLayers;restaurant
 useCount;0
 appRated;0
 radius;10
-Expedia_status;0
-gmsAuthStatus;0
 searchType;0
 autoCheckinRepeatTime;180
 networkMode;0

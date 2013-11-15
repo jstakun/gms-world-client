@@ -226,14 +226,14 @@ public class SkyhookUtils {
                     LoggerUtils.debug("User not registered ...");
                     Thread.sleep(1000L);
                 } catch (InterruptedException ex) {
-                    LoggerUtils.error("SkyhookUtils.GetLocationTask exception", ex);
+                    //LoggerUtils.error("SkyhookUtils.GetLocationTask exception", ex);
                 }
             }
 
             try {
                 Thread.sleep(1000L);
             } catch (InterruptedException ex) {
-                LoggerUtils.error("SkyhookUtils.GetLocationTask exception", ex);
+                //LoggerUtils.error("SkyhookUtils.GetLocationTask exception", ex);
             }
 
             while (isRegistering && !isCancelled()) {
@@ -241,7 +241,7 @@ public class SkyhookUtils {
                     Thread.sleep(1000L);
                     LoggerUtils.debug("Finishing registration ...");
                 } catch (InterruptedException ex) {
-                    LoggerUtils.error("SkyhookUtils.GetLocationTask exception", ex);
+                    //LoggerUtils.error("SkyhookUtils.GetLocationTask exception", ex);
                 }
             }
 

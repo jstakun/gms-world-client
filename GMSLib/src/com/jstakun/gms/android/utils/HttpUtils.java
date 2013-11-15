@@ -421,25 +421,29 @@ public class HttpUtils {
                     	if (bufferSize > 0) {
                     		increaseCounter(0, bufferSize);
                     		ObjectInputStream ois = null;
+                    		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
                     		if (contentType != null && contentType.getValue().indexOf("deflate") != -1) {
-                        		ois = new ObjectInputStream(new InflaterInputStream(new ByteArrayInputStream(baos.toByteArray()), new Inflater(false)));
+                        		ois = new ObjectInputStream(new InflaterInputStream(bais, new Inflater(false)));
                     		} else {
-                        		ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+                        		ois = new ObjectInputStream(bais);
                     		}
                    
-                    		int size = ois.readInt();
-                    		if (size > 0) {
-                    			for(int i = 0;i < size;i++) {
-                    				try {
-                    					ExtendedLandmark landmark = new ExtendedLandmark(); 
-                    					landmark.readExternal(ois);
-                    					reply.add(landmark);
-                    				} catch (IOException e) {
-                    					LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
+                    		if (bais.available() > 0) {
+                    			int size = ois.readInt();
+                    			if (size > 0) {
+                    				for(int i = 0;i < size;i++) {
+                    					try {
+                    						ExtendedLandmark landmark = new ExtendedLandmark(); 
+                    						landmark.readExternal(ois);
+                    						reply.add(landmark);
+                    					} catch (IOException e) {
+                    						LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
+                    					}
                     				}
                     			}
                     		}
-                    
+                            
+                    		bais.close();
                     		ois.close();
                     	}
                     

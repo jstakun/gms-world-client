@@ -47,8 +47,8 @@ public class WebViewActivity extends Activity {
     };
 
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
 
         UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
@@ -121,11 +121,11 @@ public class WebViewActivity extends Activity {
             }
         });
 
-        if (icicle == null && url != null) {
-            //System.out.println("Icicle == null ------------------------------------------");
+        if (savedState == null && url != null) {
+            //System.out.println("Icicle == null " + url + " ------------------------------------------");
             webView.loadUrl(url);
-        } else if ((icicle != null && !icicle.getBoolean(WEBVIEW_STATE_PRESENT, false)) && url != null) {
-            //System.out.println("Icicle != null and web view status absent -------------------------------------");
+        } else if ((savedState != null && !savedState.getBoolean(WEBVIEW_STATE_PRESENT, false)) && url != null) {
+            //System.out.println("Icicle != null and web view status absent " + url + " -------------------------------------");
             webView.loadUrl(url);
         }
     }

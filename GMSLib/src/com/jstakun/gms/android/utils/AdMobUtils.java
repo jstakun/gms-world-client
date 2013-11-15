@@ -5,12 +5,16 @@
 package com.jstakun.gms.android.utils;
 
 import android.app.Activity;
+import android.view.ViewGroup;
+
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -19,8 +23,8 @@ import java.util.Date;
 public class AdMobUtils {
 
     private static AdRequest adReq = null;
-    private static final SimpleDateFormat fbFormat = new SimpleDateFormat("yyyyMMdd");
-    private static final SimpleDateFormat ggFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat fbFormat = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
+    private static final SimpleDateFormat ggFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
 
     protected static void loadAd(Activity activity) {
         AdView adView = (AdView) activity.findViewById(R.id.adView);
@@ -33,9 +37,9 @@ public class AdMobUtils {
                     gender = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_GENDER);
                 }
                 if (gender != null) {
-                    if (gender.toLowerCase().equals("male")) {
+                    if (StringUtils.equalsIgnoreCase(gender, "male")) {
                         adReq.setGender(AdRequest.Gender.MALE);
-                    } else if (gender.toLowerCase().equals("female")) {
+                    } else if (StringUtils.equalsIgnoreCase(gender, "female")) {
                         adReq.setGender(AdRequest.Gender.FEMALE);
                     }
                 }
@@ -78,7 +82,13 @@ public class AdMobUtils {
         AdView adView = (AdView) activity.findViewById(R.id.adView);
 
         if (adView != null) {
-            adView.destroy();
+            //WebView.destroy() called while still attached!
+        	final ViewGroup viewGroup = (ViewGroup) adView.getParent();
+            if (viewGroup != null)
+            {
+            	viewGroup.removeView(adView);
+            }
+        	adView.destroy();
         }
     }
 }

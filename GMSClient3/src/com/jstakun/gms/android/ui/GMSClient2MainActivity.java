@@ -91,7 +91,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             lvOpenButton, lvView, lvSendMailButton,
             thumbnailButton, lvActionButton, lvRouteButton, loadingImage;
     private int mapProvider;
-    //private long startingMillis;
     private boolean appInitialized = false,
             initLandmarkManager = false, isRouteDisplayed = false;
     private Handler loadingHandler;
@@ -833,8 +832,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
         			boolean authStatus = intents.checkAuthStatus(selectedLandmark);
         			if (authStatus) {
-        				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)
-        						&& !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
+        				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
         					//dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Html.fromHtml(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName()))));
         					checkinManager.checkinAction(true, false, selectedLandmark);
         				} else {

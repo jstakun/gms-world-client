@@ -341,11 +341,11 @@ public final class Intents {
         		Commons.FLICKR_LAYER, Commons.GOOGLE_PLACES_LAYER};
         
     	String url = buildUrl(landmark);
-        
-        if (StringUtils.indexOfAny(landmark.getLayer(), actionLayers) >= 0) {
-            startActionViewIntent(url);
+    	
+    	if (StringUtils.indexOfAny(landmark.getLayer(), actionLayers) >= 0) {
+    		startActionViewIntent(url);
         } else {
-            Intent intent = new Intent(activity, WebViewActivity.class);
+        	Intent intent = new Intent(activity, WebViewActivity.class);
             intent.putExtra("url", url);
             if (StringUtils.isNotEmpty(landmark.getName())) {
                 intent.putExtra("title", landmark.getName());
@@ -368,28 +368,8 @@ public final class Intents {
     	}
     	
 		return url;
-   }
+    }
     
-    /*public void startLandmarkDetailsActivity(final String url, String title) {
-        if (url != null) {
-            final String[] layers = new String[]{"youtube", "panoramio", "8coupons", "flickr", "google"};
-
-            if (StringUtils.indexOfAny(url, layers) > 0) {
-                startActionViewIntent(url);
-            } else {
-                Intent intent = new Intent(activity, WebViewActivity.class);
-                intent.putExtra("url", url);
-                if (StringUtils.isNotEmpty(title)) {
-                    intent.putExtra("title", title);
-                }
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                activity.startActivity(intent);
-            }
-        } else {
-            showInfoToast(Locale.getMessage(R.string.Landmark_url_empty_error));
-        }
-    }*/
-
     public void startActionViewIntent(final String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
