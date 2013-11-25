@@ -4,6 +4,8 @@
  */
 package com.jstakun.gms.android.utils;
 
+import com.jstakun.gms.android.config.ConfigurationManager;
+
 import android.content.Context;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -32,6 +34,15 @@ public class ServicesUtils {
             return (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnectedOrConnecting());
         } catch (Exception e) {
             LoggerUtils.error("ServiceUtils.isNetworkActive exception:", e);
+            return false;
+        }
+    }
+    
+    public static boolean isNetworkActive() {
+        Context context = ConfigurationManager.getInstance().getContext();
+        if (context != null) {
+            return isNetworkActive(context);
+        } else {
             return false;
         }
     }

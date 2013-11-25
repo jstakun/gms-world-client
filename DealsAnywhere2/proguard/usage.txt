@@ -2876,10 +2876,12 @@ com.jstakun.gms.android.config.ConfigurationManager:
     public static final java.lang.String GL_GENDER
     public static final java.lang.String GL_BIRTHDAY
     public static final java.lang.String USER_EMAIL
-    263:263:public java.util.Map getConfiguration()
-    466:469:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
+    public static final long DEFAULT_REPEAT_TIME
+    265:265:public java.util.Map getConfiguration()
+    468:471:public java.util.List getLandmarkList(java.lang.String,java.lang.Class)
 com.jstakun.gms.android.config.ConfigurationManager$UserManager:
-    789:789:public boolean isUserLoggedInFully()
+    796:796:public boolean isUserLoggedInFully()
+    907:907:public boolean isUserAllowedAction()
 com.jstakun.gms.android.data.AndroidPersistenceManager:
     private static final java.lang.String CONFIGURATION_FILE
     private static final java.lang.String MAP_FILE
@@ -2959,7 +2961,6 @@ com.jstakun.gms.android.data.FileManager:
     795:795:public boolean tileExists(java.lang.String)
     800:819:public java.util.List readFolder(java.lang.String,java.io.FilenameFilter)
     824:841:public java.util.ArrayList readFolderAsLandmarkParcelable(java.lang.String,java.io.FilenameFilter,java.lang.String)
-    878:891:private static int getExternalStorageStatus()
     896:896:public java.io.File getRouteFile(java.lang.String)
     900:910:public static java.io.Writer openKmlRouteFile(java.io.File)
     914:920:public static void closeKmlRouteFile(java.io.Writer)
@@ -3422,7 +3423,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int yesButton
     public static final int zoomin
     public static final int zoomout
-    390:390:public R$string()
+    384:384:public R$string()
 com.jstakun.gms.android.google.maps.R$style
 com.jstakun.gms.android.google.maps.R$styleable
 com.jstakun.gms.android.google.maps.R$xml
@@ -3450,8 +3451,8 @@ com.jstakun.gms.android.landmarks.LandmarkFactory:
     15:15:public LandmarkFactory()
 com.jstakun.gms.android.landmarks.LandmarkManager:
     183:188:public java.lang.String[] getLayerUrlPrefix(java.lang.String)
-    848:849:public void setSelectedLandmark(com.jstakun.gms.android.landmarks.ExtendedLandmark,double)
-    852:852:public boolean hasSelectedLandmark()
+    850:851:public void setSelectedLandmark(com.jstakun.gms.android.landmarks.ExtendedLandmark,double)
+    854:854:public boolean hasSelectedLandmark()
 com.jstakun.gms.android.landmarks.LandmarkPaintManager:
     40:41:protected void addLandmarkToFocusQueue(com.jstakun.gms.android.landmarks.ExtendedLandmark)
     83:83:protected boolean hasSelectedLandmark()
@@ -3480,17 +3481,15 @@ com.jstakun.gms.android.landmarks.LayerManager:
     public static final int LAYER_FILESYSTEM
     public static final int LAYER_ICON_SMALL
     public static final int LAYER_ICON_LARGE
-    302:306:public java.lang.String getLayerDesc(java.lang.String)
+    303:307:public java.lang.String getLayerDesc(java.lang.String)
 com.jstakun.gms.android.landmarks.LayerReader:
     public abstract java.lang.String[] getUrlPrefix()
 com.jstakun.gms.android.landmarks.LayerXMLParser
 com.jstakun.gms.android.landmarks.YouTubeReader
 com.jstakun.gms.android.location.AndroidDevice:
-    private static final int MAX_REASONABLE_SPEED
     private static final int MILLIS
     private static final int METERS
     private static final int THREE_MINUTES
-    private float maxAcceptableAccuracy
     private android.location.LocationManager locationManager
     private boolean isListening
     private android.location.GpsStatus$Listener gpsStatusListener
@@ -3501,7 +3500,6 @@ com.jstakun.gms.android.location.AndroidDevice:
     152:159:public static int getBearingIndex(android.location.Location)
     163:198:private android.location.Location getLastKnownLocation()
     202:205:private void setMyLocation(android.location.Location)
-    236:269:private android.location.Location filterLocation(android.location.Location)
     39:39:static synthetic android.location.LocationManager access$0(com.jstakun.gms.android.location.AndroidDevice)
 com.jstakun.gms.android.location.AndroidDevice$1
 com.jstakun.gms.android.location.GpsDeviceFactory
@@ -3546,7 +3544,6 @@ com.jstakun.gms.android.service.AutoCheckinService$GMSBinder:
 com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver:
     private static final long THRITY_MINS
 com.jstakun.gms.android.service.GMSScheduleReceiver:
-    private static final long DEFAULT_REPEAT_TIME
     private static final long ONE_DAY
 com.jstakun.gms.android.social.AbstractSocialUtils:
     public abstract boolean initOnTokenPresent(org.json.JSONObject)
@@ -3591,6 +3588,7 @@ com.jstakun.gms.android.ui.AddLandmarkActivity:
     private static final int ID_DIALOG_CATEGORIES
 com.jstakun.gms.android.ui.AddLayerActivity:
     private static final int ID_DIALOG_PROGRESS
+    private static final java.lang.String NAME
 com.jstakun.gms.android.ui.AlertDialogBuilder:
     public static final int EXIT_DIALOG
     public static final int INFO_DIALOG
@@ -3617,7 +3615,6 @@ com.jstakun.gms.android.ui.AsyncTaskManager:
 com.jstakun.gms.android.ui.AsyncTaskManager$ClearCacheTask
 com.jstakun.gms.android.ui.CheckinManager$CheckinCandidatePredicate:
     private static final long ONE_HOUR
-    141:141:private boolean rule1(com.jstakun.gms.android.data.FavouritesDAO)
 com.jstakun.gms.android.ui.DealCategoryArrayAdapter$PositionClickListener:
     public static final int LEFT
     public static final int RIGHT
@@ -3652,26 +3649,26 @@ com.jstakun.gms.android.ui.Intents:
     public static final int INTENT_AUTO_CHECKIN
     public static final int INTENT_CALENDAR
     private static final java.lang.String SCAN_INTENT
-    133:134:public void startAddLandmarkActivity()
-    137:138:public void startAddLayerActivity()
-    141:142:public void startBlogeoActivity()
-    145:157:public boolean startRouteLoadingActivity()
-    161:173:public boolean startFilesLoadingActivity()
-    177:178:public void startSocialListActivity()
-    181:182:public void startLayersListActivity()
-    200:203:public void startRegisterActivity()
-    218:240:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
-    255:258:public boolean isIntentAvailable(java.lang.String)
-    262:270:public void startQrCodeCheckinActivity(double[])
-    273:274:public void startLocationCheckinActivity(double[])
-    290:309:public void startAutoCheckinListActivity(double[])
-    367:368:public void startFriendsCheckinsIntent(double[])
-    397:404:public void startAutoCheckinBroadcast()
-    407:411:public void stopAutoCheckinService()
-    414:427:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
-    431:453:public void commentButtonPressedAction()
-    456:461:public void saveRouteAction()
-    834:838:public void setRepeatingAlarm(java.lang.Class)
+    139:140:public void startAddLandmarkActivity()
+    143:144:public void startAddLayerActivity()
+    147:148:public void startBlogeoActivity()
+    151:163:public boolean startRouteLoadingActivity()
+    167:179:public boolean startFilesLoadingActivity()
+    183:184:public void startSocialListActivity()
+    187:188:public void startLayersListActivity()
+    206:209:public void startRegisterActivity()
+    224:246:public boolean checkAuthStatus(com.jstakun.gms.android.landmarks.ExtendedLandmark)
+    261:264:public boolean isIntentAvailable(java.lang.String)
+    268:276:public void startQrCodeCheckinActivity(double[])
+    279:280:public void startLocationCheckinActivity(double[])
+    296:315:public void startAutoCheckinListActivity(double[])
+    387:388:public void startFriendsCheckinsIntent(double[])
+    417:424:public void startAutoCheckinBroadcast()
+    427:431:public void stopAutoCheckinService()
+    434:447:private void startCommentActivity(java.lang.String,java.lang.String,java.lang.String)
+    451:473:public void commentButtonPressedAction()
+    476:481:public void saveRouteAction()
+    873:877:public void setRepeatingAlarm(java.lang.Class)
 com.jstakun.gms.android.ui.LandmarkListActivity:
     public static final java.lang.String LANDMARK
 com.jstakun.gms.android.ui.LayerListActivity:
@@ -3679,6 +3676,7 @@ com.jstakun.gms.android.ui.LayerListActivity:
     protected static final int ACTION_REFRESH
     protected static final int ACTION_CLEAR
     protected static final int ACTION_DELETE
+    private static final java.lang.String NAME
 com.jstakun.gms.android.ui.ListPreferenceMultiSelect:
     private static final java.lang.String SEPARATOR
 com.jstakun.gms.android.ui.LoginArrayAdapter
@@ -3686,6 +3684,7 @@ com.jstakun.gms.android.ui.OAuth2Activity:
     private static final int ID_DIALOG_PROGRESS
 com.jstakun.gms.android.ui.PickLocationActivity:
     private static final int ID_DIALOG_PROGRESS
+    private static final java.lang.String NAME
 com.jstakun.gms.android.ui.PinchImageView:
     public static final int GROW
     public static final int SHRINK
@@ -3792,21 +3791,15 @@ com.jstakun.gms.android.ui.lib.R$drawable:
     public static final int close
     public static final int comment
     public static final int currency_dollar
+    public static final int discover
     public static final int dollar_24
     public static final int email_send
     public static final int full_star
-    public static final int globe
-    public static final int globe_24
-    public static final int globe_small
-    public static final int globecompasssilver
-    public static final int globeconnected
-    public static final int globedisconnected
     public static final int gotourl
     public static final int grey_star
     public static final int hot_deals
     public static final int hotwire
     public static final int ic_dialog_alert
-    public static final int ic_launcher
     public static final int ic_menu_login
     public static final int ic_menu_mark
     public static final int ic_menu_refresh
@@ -3887,7 +3880,7 @@ com.jstakun.gms.android.ui.lib.R$id:
     public static final int showDodCheckbox
     public static final int statusBar
     public static final int validityLabel
-    220:220:public R$id()
+    214:214:public R$id()
 com.jstakun.gms.android.ui.lib.R$layout:
     public static final int adview
     public static final int closing
@@ -3895,14 +3888,14 @@ com.jstakun.gms.android.ui.lib.R$layout:
     public static final int landmarkdetails
     public static final int loading
     public static final int statusbar
-    349:349:public R$layout()
+    343:343:public R$layout()
 com.jstakun.gms.android.ui.lib.R$menu:
-    376:376:public R$menu()
+    370:370:public R$menu()
 com.jstakun.gms.android.ui.lib.R$raw:
     public static final int route_a
     public static final int route_b
     public static final int route_c
-    381:381:public R$raw()
+    375:375:public R$raw()
 com.jstakun.gms.android.ui.lib.R$string:
     public static final int Authn_error
     public static final int Category_Loading_1
@@ -3914,6 +3907,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int Landmark_NoLandmarks
     public static final int Landmark_delete_not_allowed_error
     public static final int Landmark_distance_max
+    public static final int Landmark_url_empty_error
     public static final int Landmarks_day_empty
     public static final int Layer_Hotwire_desc
     public static final int Layer_Loading_1
@@ -4053,12 +4047,12 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int validityLabel
     public static final int zoomin
     public static final int zoomout
-    390:390:public R$string()
+    384:384:public R$string()
 com.jstakun.gms.android.ui.lib.R$style
 com.jstakun.gms.android.ui.lib.R$styleable
 com.jstakun.gms.android.ui.lib.R$xml
 com.jstakun.gms.android.utils.AdMobUtils:
-    19:19:public AdMobUtils()
+    23:23:public AdMobUtils()
 com.jstakun.gms.android.utils.AdsUtils:
     private static final int ADMOB
     private static final int TAPFORTAP
@@ -4099,7 +4093,7 @@ com.jstakun.gms.android.utils.GMSAsyncTask:
     416:416:public final java.lang.Object get()
     436:436:public final java.lang.Object get(long,java.util.concurrent.TimeUnit)
 com.jstakun.gms.android.utils.GMSAsyncTask$ComparableFutureTask:
-    633:635:public GMSAsyncTask$ComparableFutureTask(java.lang.Runnable,java.lang.Object,int)
+    630:632:public GMSAsyncTask$ComparableFutureTask(java.lang.Runnable,java.lang.Object,int)
 com.jstakun.gms.android.utils.GoogleMercator:
     13:13:public GoogleMercator()
 com.jstakun.gms.android.utils.HttpUtils:
@@ -4109,9 +4103,9 @@ com.jstakun.gms.android.utils.HttpUtils:
     private static final java.lang.String LNG_HEADER
     private static final int REQUEST_RETRY_COUNT
     private static final int SOCKET_TIMEOUT
-    642:690:private static void setUserCredentials(java.net.URI)
+    665:713:private static void setUserCredentials(java.net.URI)
 com.jstakun.gms.android.utils.HttpUtils$SSLSocketFactoryHelper:
-    692:692:private HttpUtils$SSLSocketFactoryHelper()
+    715:715:private HttpUtils$SSLSocketFactoryHelper()
 com.jstakun.gms.android.utils.LayerPoint:
     private static final int INTERVAL
 com.jstakun.gms.android.utils.Locale:
@@ -4159,8 +4153,8 @@ com.jstakun.gms.android.utils.OsUtil$DisplayHelperInternal:
     186:186:private OsUtil$DisplayHelperInternal()
 com.jstakun.gms.android.utils.OsmMercator
 com.jstakun.gms.android.utils.ServicesUtils:
-    16:16:public ServicesUtils()
-    20:24:public static boolean isGpsActive(android.content.Context)
+    18:18:public ServicesUtils()
+    22:26:public static boolean isGpsActive(android.content.Context)
 com.jstakun.gms.android.utils.Sha1
 com.jstakun.gms.android.utils.StringUtil:
     14:14:public StringUtil()

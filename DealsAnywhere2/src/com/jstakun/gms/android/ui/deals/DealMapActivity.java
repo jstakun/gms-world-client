@@ -493,12 +493,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         } else if (v == listButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleDeals", "", 0);
             if (!lvView.isShown()) {
-                //GoogleLandmarkProjection projection = new GoogleLandmarkProjection(googleMapsView);
-                //landmarkManager.findVisibleLandmarks(projection, true);
-                //String response = intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_CAT_STATS);
-                //if (StringUtils.isNotEmpty(response)) {
-                //    intents.showInfoToast(response);
-                //}
                 intents.showNearbyLandmarks(getMyPosition(), new GoogleLandmarkProjection(googleMapsView), AbstractLandmarkList.ORDER_BY_CAT_STATS);
             }
         } else if (v == categoriesButton) {

@@ -546,6 +546,8 @@ public class LandmarkManager {
         for (String key : getLayerManager().getLayers()) {
             getLayerManager().getLayer(key).setCount(0);
         }
+        
+        landmarkPaintManager.clearRecentlyOpenedLandmarks();
     }
 
     public String persistToServer(ExtendedLandmark landmark, String layer, String validityDate, String username) {

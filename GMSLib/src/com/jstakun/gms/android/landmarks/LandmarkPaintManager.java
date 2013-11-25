@@ -132,4 +132,8 @@ public class LandmarkPaintManager {
             recentlyOpenedLandmarks.add(landmark);
         }
     }
+    
+    protected void clearRecentlyOpenedLandmarks() {
+        recentlyOpenedLandmarks.clear();
+    }
 }

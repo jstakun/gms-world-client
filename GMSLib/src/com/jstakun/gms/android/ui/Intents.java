@@ -1172,7 +1172,7 @@ public final class Intents {
     	
         @Override
         public void handleMessage(Message message) {
-        	if (! parentActivity.get().isFinishing()) {
+        	if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
         		String url = message.getData().getString("url");
              	//System.out.println("Refreshing thumbnail icon " + url + " -----------------------------------------------------");
 

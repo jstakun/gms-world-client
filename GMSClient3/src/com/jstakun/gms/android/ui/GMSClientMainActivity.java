@@ -969,37 +969,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         }
     }
 
-    /*private void landmarkDetailsAction() {
-        ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
-        if (selectedLandmark != null) {
-            if (!selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                landmarkManager.setSeletedLandmarkUI();
-            }
-
-            if (selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_DIST_ASC);
-            } else {
-                UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowSelectedLandmarkView", selectedLandmark.getLayer(), 0);
-                GeoPoint g = new GeoPoint(selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6());
-                mapController.animateTo(new org.osmdroid.google.wrapper.GeoPoint(g));
-                intents.showLandmarkDetailsView(selectedLandmark, lvView, getMyPosition(), true);
-                
-                if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-                    intents.loadLayersAction(true, null, false, true, layerLoader,
-                    		selectedLandmark.getQualifiedCoordinates().getLatitude(), 
-                    		selectedLandmark.getQualifiedCoordinates().getLongitude(),
-                    		mapView.getZoomLevel());
-                }
-            }
-        } else {
-            LoggerUtils.debug(Locale.getMessage(R.string.Landmark_opening_error));
-        }
-    }*/
-
-    //private void openButtonPressedAction(ExtendedLandmark landmark) {
-    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    //}
-
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean clearMap) {
         mapController.setCenter(new org.osmdroid.google.wrapper.GeoPoint(newCenter));
         if (loadLayers) {

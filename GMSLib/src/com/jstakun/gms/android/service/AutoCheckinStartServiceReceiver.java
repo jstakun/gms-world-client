@@ -35,9 +35,17 @@ public class AutoCheckinStartServiceReceiver extends BroadcastReceiver {
 		if (location == null) {
 			LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 			if (locationManager != null) {
-				location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+				try {
+					location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+				} catch (Exception e) {
+					LoggerUtils.error("AutoCheckinStartServiceReceiver.onReceive() exception:", e);
+				}
 				if (location == null) {
-					location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+					try {
+						location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+					} catch (Exception e) {
+						LoggerUtils.error("AutoCheckinStartServiceReceiver.onReceive() exception:", e);
+					}
 				}
 				if (location == null) {
 					LoggerUtils.debug("AutoCheckinStartServiceReceiver.doReceive() no location from location manager available");

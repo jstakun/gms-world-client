@@ -362,6 +362,7 @@ public class HttpUtils {
         List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
         
         try {
+         if (ServicesUtils.isNetworkActive()) { 	
             LoggerUtils.debug("Loading file: " + uri.toString());
             
             if (locale == null) {
@@ -454,6 +455,10 @@ public class HttpUtils {
                 	errorMessage = handleHttpStatus(responseCode);
             	}
             }
+         } else {
+        	 errorMessage = Locale.getMessage(R.string.Network_connection_error_title);
+        	 LoggerUtils.error("HttpUtils.loadLandmarkList() exception: " + errorMessage);
+         }
         } catch (Exception e) {
             LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
             errorMessage = handleHttpException(e);
