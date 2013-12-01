@@ -252,7 +252,11 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         
         @Override
         protected void onPreExecute() {
-            showDialog(ID_DIALOG_PROGRESS);
+        	try {
+        		showDialog(ID_DIALOG_PROGRESS);
+        	} catch (Exception e) {
+        		LoggerUtils.error("PickLocationTask.onPreExecute() exception", e);
+            }
         }
 
         @Override
@@ -325,7 +329,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
                 message = utils.getResponseCodeErrorMessage();
             }
         } catch (Exception ex) {
-            LoggerUtils.error("PickLocationActivity.pickLocationAction exception", ex);
+            LoggerUtils.error("PickLocationActivity.pickLocationAction() exception", ex);
             message = Locale.getMessage(R.string.Http_error, ex.getMessage());
         } finally {
             try {
