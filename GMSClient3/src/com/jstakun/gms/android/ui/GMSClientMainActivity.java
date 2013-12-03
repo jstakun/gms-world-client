@@ -448,7 +448,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-      if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK) {		
+      if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {		
         //System.out.println("Key pressed in activity: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (lvView.isShown()) {
@@ -817,68 +817,65 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     public void onClick(View v) {
       if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton) {		
-        if (v == lvCloseButton) {
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", "", 0);
-            lvView.setVisibility(View.GONE);
-            landmarkManager.clearLandmarkOnFocusQueue();
-            landmarkManager.setSelectedLandmark(null);
-            landmarkManager.setSeletedLandmarkUI();
-        } else if (v == lvCommentButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CommentSelectedLandmark", selectedLandmark.getLayer(), 0);
-            intents.commentButtonPressedAction();
-        } else if (v == lvActionButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            if (selectedLandmark != null) {
-                UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
-                boolean authStatus = intents.checkAuthStatus(selectedLandmark);
-                if (authStatus) {
-                	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)
-                        && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
-                		//dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName())));
-                		checkinManager.checkinAction(true, false, selectedLandmark);
-                	} else {
-                    	checkinManager.checkinAction(false, false, selectedLandmark);
-                	}
-                }
-            } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-            }
-        } else if (v == lvOpenButton || v == thumbnailButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
-            intents.openButtonPressedAction(selectedLandmark);
-        } else if (v == lvCallButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
-            intents.startPhoneCallActivity(selectedLandmark);
-        } else if (v == lvRouteButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
-            if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-                asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
-            } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
-            }
-        } else if (v == newestButton) {
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestLandmarks", "", 0);
-            final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
-            intents.startNewestLandmarkIntent(getMyPosition(), excluded, AbstractLandmarkList.ORDER_BY_DATE_DESC, 7);
-        } else if (v == listButton) {
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleLandmarks", "", 0);
-            if (!lvView.isShown()) {
-                intents.showNearbyLandmarks(getMyPosition(), ProjectionFactory.getProjection(mapView, googleMapsView), AbstractLandmarkList.ORDER_BY_DIST_ASC);
-            }
-        } else if (v == layersButton) {
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowLayersList", "", 0);
-            intents.startLayersListActivity();
-        } else if (v == lvSendMailButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
-            intents.shareLandmarkAction(dialogManager);
-        }
-      }  
-    }
+    	  ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();	  
+    	  if (selectedLandmark != null) {
+    		  if (v == lvCloseButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", "", 0);
+    			lvView.setVisibility(View.GONE);
+    			landmarkManager.clearLandmarkOnFocusQueue();
+    			landmarkManager.setSelectedLandmark(null);
+    			landmarkManager.setSeletedLandmarkUI();
+    		  } else if (v == lvCommentButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CommentSelectedLandmark", selectedLandmark.getLayer(), 0);
+    			intents.commentButtonPressedAction();
+    		  } else if (v == lvActionButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
+    			boolean authStatus = intents.checkAuthStatus(selectedLandmark);
+    			if (authStatus) {
+    				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)
+    							&& !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
+    						//dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName())));
+    						checkinManager.checkinAction(true, false, selectedLandmark);
+    				} else {
+    						checkinManager.checkinAction(false, false, selectedLandmark);
+    				}
+    			} 
+    		  } else if (v == lvOpenButton || v == thumbnailButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
+    			intents.openButtonPressedAction(selectedLandmark);
+    		  } else if (v == lvCallButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
+    			intents.startPhoneCallActivity(selectedLandmark);
+    		  } else if (v == lvRouteButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
+    			if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
+    				asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
+    			} else {
+    				intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+    			}
+    		  } else if (v == lvSendMailButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
+    			intents.shareLandmarkAction(dialogManager);
+    		  }
+    	   } else if (v == newestButton) {
+   				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestLandmarks", "", 0);
+   				final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
+   				intents.startNewestLandmarkIntent(getMyPosition(), excluded, AbstractLandmarkList.ORDER_BY_DATE_DESC, 7);
+   		  	} else if (v == listButton) {
+   		  		UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleLandmarks", "", 0);
+   		  		if (!lvView.isShown()) {
+   		  			intents.showNearbyLandmarks(getMyPosition(), ProjectionFactory.getProjection(mapView, googleMapsView), AbstractLandmarkList.ORDER_BY_DIST_ASC);
+   		  		}
+   		  	} else if (v == layersButton) {
+   		  		UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowLayersList", "", 0);
+   		  		intents.startLayersListActivity();
+   		  	} else {
+   		  		intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+   		  	}
+       	} else {
+       		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+       	}
+    }  
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

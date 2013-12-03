@@ -57,6 +57,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.bouncycastle.util.encoders.Base64;
 
 import android.net.SSLCertificateSocketFactory;
@@ -161,16 +162,16 @@ public class HttpUtils {
             responseCode = httpResponse.getStatusLine().getStatusCode();
 
             HttpEntity entity = httpResponse.getEntity();
-            is = entity.getContent();
+            /*is = entity.getContent();
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             byte[] buffer = new byte[512];
             int count;
             while ((count = is.read(buffer)) >= 0) {
                 bos.write(buffer, 0, count);
-            }
+            }*/
 
-            byte[] byteBuffer = bos.toByteArray();
+            byte[] byteBuffer = EntityUtils.toByteArray(entity); //bos.toByteArray();
 
             postResponse = new String(byteBuffer, "UTF-8");
 
@@ -232,16 +233,16 @@ public class HttpUtils {
             responseCode = httpResponse.getStatusLine().getStatusCode();
 
             HttpEntity respEntity = httpResponse.getEntity();
-            is = respEntity.getContent();
+            /*is = respEntity.getContent();
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             byte[] buffer = new byte[512];
             int count;
             while ((count = is.read(buffer)) >= 0) {
                 bos.write(buffer, 0, count);
-            }
+            }*/
 
-            byte[] byteBuffer = bos.toByteArray();
+            byte[] byteBuffer = EntityUtils.toByteArray(entity); //bos.toByteArray();
 
             postResponse = new String(byteBuffer, "UTF-8");
 
@@ -404,9 +405,9 @@ public class HttpUtils {
                     		LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + uri.toString());
                     	}
 
-                    	InputStream is = entity.getContent();
-                    
                     	//1. read bytes stream
+                    	
+                    	/*InputStream is = entity.getContent();
                     	ByteArrayOutputStream baos = new ByteArrayOutputStream();				
             			byte[] buffer = new byte[1024];
             			int read = 0;
@@ -415,22 +416,28 @@ public class HttpUtils {
             			}		
             			baos.flush();
             			is.close();
-                    
+            			
             			int bufferSize = baos.size();
-                    	LoggerUtils.debug("File " + uri.toString() + " size: " + bufferSize + " bytes");
+                    	*/
+                    	
+                    	byte[] buffer = EntityUtils.toByteArray(entity);
+                    	int bufferSize = buffer.length;
+                    
+            			LoggerUtils.debug("File " + uri.toString() + " size: " + bufferSize + " bytes");
             		
                     	if (bufferSize > 0) {
                     		increaseCounter(0, bufferSize);
                     		ObjectInputStream ois = null;
-                    		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+                    		ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
                     		if (contentType != null && contentType.getValue().indexOf("deflate") != -1) {
                         		ois = new ObjectInputStream(new InflaterInputStream(bais, new Inflater(false)));
                     		} else {
                         		ois = new ObjectInputStream(bais);
                     		}
                    
-                    		if (bais.available() > 0) {
+                    		if (ois.available() > 0) {
                     			int size = ois.readInt();
+                    			LoggerUtils.debug("Reading " + size + " landmarks...");
                     			if (size > 0) {
                     				for(int i = 0;i < size;i++) {
                     					try {
@@ -446,7 +453,7 @@ public class HttpUtils {
                             
                     		bais.close();
                     		ois.close();
-                    	}
+                    	} 
                     
                     	entity.consumeContent();
                 	}
