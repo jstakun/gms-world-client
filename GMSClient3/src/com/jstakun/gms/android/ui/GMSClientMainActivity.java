@@ -143,18 +143,17 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         LoggerUtils.debug("onCreate");
         LoggerUtils.debug("GMSClientMainActivity.onCreate called...");
         
-        UserTracker.getInstance().startSession(this);
-        //comment in production
-        //UserTracker.getInstance().setDebug(true);
-        //UserTracker.getInstance().setDryRun(true);
+        //TODO comment in production
+        //UserTracker.getInstance().setDebug(true, this);
+        //UserTracker.getInstance().setDryRun(true, this);
         //
+        UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         ConfigurationManager.getInstance().setContext(getApplicationContext());
         mapProvider = ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         
         loadingHandler = new LoadingHandler(this);
 
@@ -374,7 +373,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
 
     @Override

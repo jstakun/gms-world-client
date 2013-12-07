@@ -6,7 +6,9 @@
 package com.jstakun.gms.android.ui.deals;
 
 import android.content.SearchRecentSuggestionsProvider;
-import com.jstakun.gms.android.config.ConfigurationManager;
+
+import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.SuggestionProviderUtil;
 /**
  *
  * @author jstakun
@@ -18,9 +20,11 @@ public class DealsSuggestionProvider extends SearchRecentSuggestionsProvider {
     public DealsSuggestionProvider() {
         super();
 
-        ConfigurationManager.getInstance().putObject("SuggestionsProviderAuthority", AUTHORITY);
-        ConfigurationManager.getInstance().putObject("SuggestionsProviderMode", MODE);
-
+        LoggerUtils.debug("Running DealsSuggestionProvider() ...");
+        
+        SuggestionProviderUtil.seAuthority(AUTHORITY);
+        SuggestionProviderUtil.setMode(MODE);
+        
         setupSuggestions(AUTHORITY, MODE);
     }
 }

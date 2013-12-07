@@ -162,7 +162,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		UserTracker.getInstance().stopSession();
+		UserTracker.getInstance().stopSession(this);
 	}
 	
 	@Override

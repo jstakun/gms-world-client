@@ -126,7 +126,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     public void onStop() {
         super.onStop();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
 
     @Override

@@ -266,7 +266,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
 
     @Override

@@ -5,7 +5,8 @@
 package com.jstakun.gms.android.ui;
 
 import android.content.SearchRecentSuggestionsProvider;
-import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.SuggestionProviderUtil;
 
 /**
  *
@@ -19,9 +20,11 @@ public class LandmarksSuggestionProvider extends SearchRecentSuggestionsProvider
     public LandmarksSuggestionProvider() {
         super();
 
-        ConfigurationManager.getInstance().putObject("SuggestionsProviderAuthority", AUTHORITY);
-        ConfigurationManager.getInstance().putObject("SuggestionsProviderMode", MODE);
-
+        LoggerUtils.debug("Running LandmarksSuggestionProvider() ...");
+        
+        SuggestionProviderUtil.seAuthority(AUTHORITY);
+        SuggestionProviderUtil.setMode(MODE);
+        
         setupSuggestions(AUTHORITY, MODE);
     }
 }

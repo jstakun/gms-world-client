@@ -233,16 +233,16 @@ public class HttpUtils {
             responseCode = httpResponse.getStatusLine().getStatusCode();
 
             HttpEntity respEntity = httpResponse.getEntity();
-            /*is = respEntity.getContent();
+            is = respEntity.getContent();
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             byte[] buffer = new byte[512];
             int count;
             while ((count = is.read(buffer)) >= 0) {
                 bos.write(buffer, 0, count);
-            }*/
+            }
 
-            byte[] byteBuffer = EntityUtils.toByteArray(entity); //bos.toByteArray();
+            byte[] byteBuffer = bos.toByteArray(); //EntityUtils.toByteArray(entity); 
 
             postResponse = new String(byteBuffer, "UTF-8");
 

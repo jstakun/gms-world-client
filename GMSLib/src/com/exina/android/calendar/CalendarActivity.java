@@ -70,7 +70,7 @@ public class CalendarActivity extends Activity implements CalendarView.OnCellTou
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
 
     @Override

@@ -120,7 +120,7 @@ public class LayerListActivity extends ListActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
 
     @Override

@@ -344,7 +344,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
 
     @Override

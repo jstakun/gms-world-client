@@ -108,7 +108,7 @@ public final class HelpActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
     
     @Override

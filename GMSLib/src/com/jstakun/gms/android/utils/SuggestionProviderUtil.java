@@ -15,11 +15,11 @@ import android.provider.SearchRecentSuggestions;
 public class SuggestionProviderUtil {
 
     private static SearchRecentSuggestions suggestions = null;
-
+    private static Integer mode;
+    private static String authority;
+    
     private static SearchRecentSuggestions getSuggestions() {
         if (suggestions == null) {
-            String authority = (String) ConfigurationManager.getInstance().getObject("SuggestionsProviderAuthority", String.class);
-            int mode = (Integer) ConfigurationManager.getInstance().getObject("SuggestionsProviderMode", Integer.class);
             suggestions = new SearchRecentSuggestions(ConfigurationManager.getInstance().getContext(), authority, mode);
         }
         return suggestions;
@@ -29,7 +29,7 @@ public class SuggestionProviderUtil {
         try {
             getSuggestions().saveRecentQuery(query, line2);
         } catch (Exception e) {
-            LoggerUtils.error("SuggestionProviderUtil.saveRecentQuery exception", e);
+            LoggerUtils.error("SuggestionProviderUtil.saveRecentQuery() exception", e);
         }
     }
 
@@ -37,7 +37,15 @@ public class SuggestionProviderUtil {
         try {
             getSuggestions().clearHistory();
         } catch (Exception e) {
-            LoggerUtils.error("SuggestionProviderUtil.clearHistory exception", e);
+            LoggerUtils.error("SuggestionProviderUtil.clearHistory() exception", e);
         }
+    }
+    
+    public static void setMode(Integer m) {
+    	mode = m;
+    }
+    
+    public static void seAuthority(String a) {
+    	authority = a;
     }
 }

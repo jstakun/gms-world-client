@@ -89,7 +89,7 @@ public class CommentActivity extends Activity implements OnClickListener {
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
 
     @Override

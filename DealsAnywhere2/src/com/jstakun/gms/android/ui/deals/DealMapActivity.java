@@ -612,7 +612,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             ConfigurationManager.getInstance().putObject(AlertDialogBuilder.OPEN_DIALOG, AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG);
             dealOfTheDayDialog.dismiss();
         }
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
 
     @Override

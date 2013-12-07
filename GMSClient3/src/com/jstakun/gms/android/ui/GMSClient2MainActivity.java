@@ -142,11 +142,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         LoggerUtils.debug("onCreate");
         LoggerUtils.debug("GMSClientMainActivity.onCreate called...");
         
-        UserTracker.getInstance().startSession(this);
-        //comment in production
-        //UserTracker.getInstance().setDebug(true);
-        //UserTracker.getInstance().setDryRun(true);
+        //TODO comment in production
+        //UserTracker.getInstance().setDebug(true, this);
+        //UserTracker.getInstance().setDryRun(true, this);
         //
+        UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         mapProvider = ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER);
@@ -365,7 +365,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession();
+        UserTracker.getInstance().stopSession(this);
     }
 
     @Override

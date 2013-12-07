@@ -4,13 +4,18 @@
  */
 package com.jstakun.gms.android.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+
+import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.google.analytics.tracking.android.Logger;
+import com.google.analytics.tracking.android.Tracker;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.lib.R;
-
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  *
@@ -18,13 +23,11 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class UserTracker {
 
-    private static GoogleAnalyticsTracker tracker;
-    private TrackerThread trackerThread;
+	private static Tracker tracker;
+	//private static GoogleAnalytics analytics;
     private boolean running = false;
     private boolean dryRun = false;
-    private final LinkedBlockingQueue<Runnable> trackerQueue = new LinkedBlockingQueue<Runnable>();
-    private final Object lock = new Object();
-    private static UserTracker userTracker;
+    private static UserTracker userTracker = null;
 
     private UserTracker() {
     }
@@ -37,95 +40,74 @@ public class UserTracker {
     }
 
     public void startSession(final Context context) {
-        if (tracker == null) {
-            tracker = GoogleAnalyticsTracker.getInstance();
-        }
+    	try {
+    		if (tracker == null) {
+        		tracker = GoogleAnalytics.getInstance(context).getTracker(getId(context));
+        	}
+    	} catch (Throwable t) {
+    		LoggerUtils.error("UserTracker.setDebug() error:", t);
+    	}
 
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
-
-            if (trackerThread == null) {
-                trackerThread = new TrackerThread();
-                trackerThread.start();
-            }
-
-            if (!running) {
-                running = true;
-                queueToTrackerThreadIfEnabled(new Runnable() {
-                    @Override
-                    public void run() {
-                        String gaid = context.getResources().getString(R.string.gaId);
-                        tracker.startNewSession(gaid, context);
-                        tracker.trackEvent("", "", "", 0);
-                    };
-                });
-            }
+        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && !running) {
+            trackEvent("SessionStart", "", "", 0);
+            running = true;
         }
     }
 
-    public void stopSession() {
+    public void stopSession(final Context context) {
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && running) {
-            queueToTrackerThreadIfEnabled(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        tracker.trackEvent("", "", "", 0);
-                    } catch (Exception e) {
-                        LoggerUtils.error("UserTracker.stopSession() exception: ", e);
-                    } finally {
-                        tracker.stopSession();
-                    }
-                }
-            ;
-        }
-    
-
-    );
+            trackEvent("SessionStop", "", "", 0);
+        	running = false;
         }
     }
-
-    //public boolean isRunning() {
-    //    return running;
-    //}
 
     public void trackActivity(final String activityName) {
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
-            queueToTrackerThreadIfEnabled(new Runnable() {
-                @Override
-                public void run() {
-                    tracker.trackPageView(activityName);
-                }
-            ;
-            });
-            dispatch();
+            Map<String, String> hitParameters = new HashMap<String, String>();
+        	hitParameters.put(Fields.HIT_TYPE, "appview");
+        	hitParameters.put(Fields.SCREEN_NAME, activityName);
+        	tracker.send(hitParameters);
         }
     }
 
     public void trackEvent(final String category, final String action, final String label, final int value) {
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
-            queueToTrackerThreadIfEnabled(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        tracker.trackEvent(category, action, label, value);
-                    } catch (Exception e) {
-                        LoggerUtils.error("UserTrecker.trackEvent() exception", e);
-                    }
-                }
-            ;
-            });
-            dispatch();
+            HashMap<String, String> hitParameters = new HashMap<String, String>();
+        	hitParameters.put(Fields.EVENT_CATEGORY, category);
+        	hitParameters.put(Fields.EVENT_ACTION, action);
+        	hitParameters.put(Fields.EVENT_LABEL, label);
+        	hitParameters.put(Fields.EVENT_VALUE, Integer.toString(value));
+        	tracker.send(hitParameters);
         }
     }
 
-    public void setDebug(boolean debug) {
-        tracker.setDebug(debug);
+    public void setDebug(boolean debug, Context context) {
+    	try {
+    		Logger.LogLevel logLevel = Logger.LogLevel.ERROR;
+    		if (debug) {
+    			logLevel = Logger.LogLevel.VERBOSE;
+    		}
+    		GoogleAnalytics.getInstance(context).getLogger().setLogLevel(logLevel);
+    	} catch (Throwable t) {
+    		LoggerUtils.error("UserTracker.setDebug() error:", t);
+    	}
     }
 
-    public void setDryRun(boolean dryRun) {
-        this.dryRun = dryRun;
-        tracker.setDryRun(dryRun);
+    public void setDryRun(boolean dryRun, Context context) {
+    	try {
+    		this.dryRun = dryRun;
+    		GoogleAnalytics.getInstance(context).setDryRun(dryRun);
+    	} catch (Throwable t) {
+    		LoggerUtils.error("UserTracker.setDryRun() error:", t);
+    	}
     }
-
+    
+    private String getId(final Context context) {
+    	return context.getResources().getString(R.string.gaId);
+    }
+    
+    //send my location action
+    
     public void sendMyLocation() {
         int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0);
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
@@ -135,56 +117,8 @@ public class UserTracker {
             ConfigurationManager.getDatabaseManager().saveConfiguration(false);
             LoggerUtils.debug("Sending my location at startup.");
             new SendMyLocationTask(10).execute();
-        } //else {
-        //	System.out.println("Skipping sending my location at startup " +
-        //			ConfigurationManager.getInstance().getInt(ConfigurationManager.TRACK_USER) + " " +
-        //			ConfigurationManager.getInstance().getInt(ConfigurationManager.SEND_MY_POS_AT_STARTUP) +
-        //			"-----------------------------------");
-        //}
-    }
-
-    private void dispatch() {
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
-            queueToTrackerThreadIfEnabled(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        tracker.dispatch();
-                    } catch (Exception e) {
-                        LoggerUtils.error("TrackerThread.dispatch() exception", e);
-                    }
-                }
-            ;
-        }
-    
-
-    );
-        }
-    }
-    
-    private void queueToTrackerThreadIfEnabled(Runnable r) {
-        synchronized (lock) {
-            trackerQueue.add(r);
-        }
-    }
-
-    private class TrackerThread extends Thread {
-
-        TrackerThread() {
-            super("TrackerThread");
-        }
-
-        @Override
-        public void run() {
-            while (true) {
-                Runnable r;
-                try {
-                    r = trackerQueue.take();
-                    r.run();
-                } catch (InterruptedException e) {
-                    LoggerUtils.error("TrackerThread.run() exception", e);
-                }
-            }
+        } else {
+        	LoggerUtils.debug("Skipping sending my location at startup.");
         }
     }
 
