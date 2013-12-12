@@ -408,6 +408,7 @@
      <string name="Layer.Hotwire.desc">Hotel daily deals around your current location</string>
      <string name="Layer.Expedia.desc">Hotel booking offers around your current location</string>
      <string name="Layer.Wikipedia.desc">Free, collaborative, web-based encyclopedia project</string>
+     <string name="Layer.Freebase.desc">A community-curated database of well-known people, places, and things</string>
      <string name="Layer.Panoramio.desc">Geolocation oriented photo sharing service</string>
      <string name="Layer.Flickr.desc">Geolocation oriented photo sharing service</string>
      <string name="Layer.Picasa.desc">Geolocation oriented photo sharing service</string>
