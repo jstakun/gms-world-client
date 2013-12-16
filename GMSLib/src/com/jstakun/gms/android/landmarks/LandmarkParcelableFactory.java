@@ -67,16 +67,16 @@ public class LandmarkParcelableFactory {
         float distance = DistanceUtils.distanceInKilometer(lat, lng, f.getLatitude(), f.getLongitude());
         long fromLastCheckinTime = System.currentTimeMillis() - f.getLastCheckinDate();
         CharSequence lastCheckinDate = DateUtils.getRelativeTimeSpanString(f.getLastCheckinDate(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-        String fromLastCheckin = "<font color=\"green\">" + lastCheckinDate + "</font>";
+        String fromLastCheckin = "<font color=\"#339933\">" + lastCheckinDate + "</font>";
 
         if (fromLastCheckinTime < (1000 * 60 * 60 * ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL))) {
-            fromLastCheckin = "<font color=\"red\">" + lastCheckinDate + "</font>";
+            fromLastCheckin = "<font color=\"#FF0000\">" + lastCheckinDate + "</font>";
         }
         
         String maxDistance = DistanceUtils.formatDistance(f.getMaxDistance() / 1000.0d);
-        String distanceStatus = "red";
+        String distanceStatus = "#FF0000";
         if (f.getMaxDistance() > ConfigurationManager.getInstance().getLong(ConfigurationManager.MIN_CHECKIN_DISTANCE)) {
-            distanceStatus = "green";
+            distanceStatus = "#339933";
         }
 
         String desc = Locale.getMessage(R.string.lastCheckinDate, fromLastCheckin) +  ", " +

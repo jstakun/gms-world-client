@@ -10,9 +10,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +29,10 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
@@ -657,15 +670,25 @@ public class HttpUtils {
     }
 
     private static SSLSocketFactory getSSLSocketFactory() {
-    	SSLSocketFactory sslSocketFactory = null;
+    	/*SSLSocketFactory sslSocketFactory = null;
     	if (OsUtil.isGingerbreadOrHigher()) {
     		sslSocketFactory = SSLSocketFactoryHelper.getSSLSocketFactory();
         } else {
         	sslSocketFactory = SSLSocketFactory.getSocketFactory();
         }
-    	sslSocketFactory.setHostnameVerifier(SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER); 
-    	//SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-    	return sslSocketFactory;
+    	sslSocketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);*/
+        //SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER); 
+    	try {
+    		KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+    		trustStore.load(null, null);
+
+    		SSLSocketFactory sslSocketFactory = TrustAllSSLSocketFactory.getSSLSocketFactory(trustStore);
+    		sslSocketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+    		return sslSocketFactory;
+    	} catch (Exception e) {
+    		LoggerUtils.error("HttpUtils.getSSLSocketFactory() exception", e);
+    		return null;
+    	}
     }
     
     private static void setUserCredentials(URI uri) throws UnsupportedEncodingException { 
@@ -719,7 +742,7 @@ public class HttpUtils {
     	httpClient.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort(), AuthScope.ANY_REALM), creds);
     }
 
-    private static class SSLSocketFactoryHelper {
+    /*private static class SSLSocketFactoryHelper {
 
         private static SSLSocketFactory getSSLSocketFactory() {
             try {
@@ -729,7 +752,7 @@ public class HttpUtils {
             }
             return SSLSocketFactory.getSocketFactory();
         }
-    }
+    }*/
     
     private static class HttpClientClosingTask extends GMSAsyncTask<Void, Void, Void> {
 
@@ -783,5 +806,50 @@ public class HttpUtils {
             	 return super.retryRequest(exception, executionCount, context);
              }
     	 }   
+    }
+    
+    private static class TrustAllSSLSocketFactory extends SSLSocketFactory {
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        private static TrustAllSSLSocketFactory instance; 
+        
+        public static SSLSocketFactory getSSLSocketFactory(KeyStore truststore) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+        	instance = new TrustAllSSLSocketFactory(truststore);
+        	return instance;
+        }
+        
+        private TrustAllSSLSocketFactory(KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
+            super(truststore);
+
+            TrustManager tm = new X509TrustManager() {
+
+				@Override
+				public void checkClientTrusted(X509Certificate[] chain,
+						String authType) throws CertificateException {
+				}
+
+				@Override
+				public void checkServerTrusted(X509Certificate[] chain,
+						String authType) throws CertificateException {
+				}
+
+				@Override
+				public X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+                
+            };
+
+            sslContext.init(null, new TrustManager[] { tm }, null);
+        }
+
+        @Override
+        public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
+            return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
+        }
+
+        @Override
+        public Socket createSocket() throws IOException {
+            return sslContext.getSocketFactory().createSocket();
+        }
     }
 }

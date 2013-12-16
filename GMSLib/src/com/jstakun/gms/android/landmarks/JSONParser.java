@@ -48,7 +48,7 @@ public class JSONParser {
     private String thumbnail;
     private LandmarkManager landmarkManager;
     
-    public JSONParser() {
+    protected JSONParser() {
         utils = new HttpUtils();
         locale = ConfigurationManager.getInstance().getCurrentLocale();
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
@@ -63,7 +63,7 @@ public class JSONParser {
         }
     }
     
-    public String parse(String url, List<ExtendedLandmark> landmarks, String layer, String[] urlPrefix, int defaultCategory, int defaultSubcategory, GMSAsyncTask<?,?,?> task, boolean close, int cacheLimit) {
+    protected String parse(String url, List<ExtendedLandmark> landmarks, String layer, String[] urlPrefix, int defaultCategory, int defaultSubcategory, GMSAsyncTask<?,?,?> task, boolean close, int cacheLimit) {
         
         String errorMessage = null;
         boolean hasJsonError = false;
@@ -121,7 +121,7 @@ public class JSONParser {
         return errorMessage;
     }
     
-    public void close() {
+    protected void close() {
         try {
             if (utils != null) {
                 utils.close();
@@ -131,7 +131,7 @@ public class JSONParser {
         }
     }
     
-    public void parseJSonArray(JSONArray jsonLandmarks, List<ExtendedLandmark> landmarks, String layer, String[] urlPrefix, int defaultCategory, int defaultSubcategory, GMSAsyncTask<?,?,?> task, int cacheLimit, String searchTerm) throws JSONException {
+    private void parseJSonArray(JSONArray jsonLandmarks, List<ExtendedLandmark> landmarks, String layer, String[] urlPrefix, int defaultCategory, int defaultSubcategory, GMSAsyncTask<?,?,?> task, int cacheLimit, String searchTerm) throws JSONException {
         List<ExtendedLandmark> localCache = new ArrayList<ExtendedLandmark>(cacheLimit);
         List<ExtendedLandmark> origLandmarks = new ArrayList<ExtendedLandmark>(landmarks);
 
