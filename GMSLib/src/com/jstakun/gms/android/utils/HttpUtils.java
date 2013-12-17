@@ -73,9 +73,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.bouncycastle.util.encoders.Base64;
 
-import android.net.SSLCertificateSocketFactory;
-import android.net.SSLSessionCache;
-
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;

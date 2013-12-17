@@ -177,7 +177,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     	@Override
         public void handleMessage(Message message) {
     		//System.out.println("Running handleMessage for " + landmark.get().getName() + "...");
-    		if (!parentActivity.get().isFinishing()) {
+    		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
     			Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.get().getThunbnail(), parentActivity.get().getResources().getDisplayMetrics(), null);
                 if (image != null && image.getWidth() < view.get().getWidth() * 0.5) {
                 	ViewHolder holder = (ViewHolder) view.get().getTag();
@@ -203,7 +203,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     	
     	@Override
         public void handleMessage(Message message) {
-    		if (!parentActivity.get().isFinishing()) {
+    		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
     			BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, parentActivity.get().getResources().getDisplayMetrics(), null);
     			if (image != null) {
     				viewHolder.get().layerIconImage.setImageDrawable(image);
