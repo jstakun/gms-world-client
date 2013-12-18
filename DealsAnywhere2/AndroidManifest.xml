@@ -60,7 +60,6 @@
           </intent-filter>
           <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
         </activity>
-        <activity android:name="com.exina.android.calendar.CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <provider android:authorities="com.jstakun.gms.android.deals" android:name="com.jstakun.gms.android.ui.deals.DealsSuggestionProvider"/>
     </application>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>

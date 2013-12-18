@@ -6,68 +6,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#ffffffff">
-
-    <ScrollView
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content">
-
-        <LinearLayout
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerVertical="true"
-    android:layout_centerHorizontal="true">
-
-            <TextView
-        android:paddingTop="20dip"
+  
+            <CalendarView
+        android:id="@+id/calendar"
         android:layout_width="fill_parent"
-    	android:id="@+id/currentMonth"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-    	android:text="@string/app_name"
-        style="@android:style/TextAppearance.Large" />
-
-            <com.exina.android.calendar.CalendarView
-            android:id="@+id/calendar"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-            android:gravity="center"/>
-
-            <LinearLayout
-           android:orientation="horizontal"
-           android:layout_width="fill_parent"
-           android:layout_height="wrap_content"
-           android:paddingTop="20dip"
-           android:paddingBottom="20dip"
-           android:weightSum="2">
-                <LinearLayout
-              android:orientation="horizontal"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="right"
-              android:paddingRight="10dip">
-                    <ImageView
-              android:id="@+id/leftArrow"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:src="@drawable/arrow_black_left"/>
-                </LinearLayout>
-                <LinearLayout
-              android:orientation="horizontal"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="left"
-              android:paddingLeft="10dip">
-                    <ImageView
-              android:id="@+id/rightArrow"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:src="@drawable/arrow_black_right"/>
-                </LinearLayout>
-            </LinearLayout>
+	    android:layout_height="fill_parent"
+            android:gravity="center" />
+ 
             <include layout="@layout/adview"/>
-        </LinearLayout>
-    </ScrollView>
+
 </RelativeLayout>

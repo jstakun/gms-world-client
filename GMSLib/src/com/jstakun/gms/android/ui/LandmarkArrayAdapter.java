@@ -145,23 +145,6 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
         //protected ViewGroup landmarkDescLayout;
     }
     
-    /*private static class DataChangeHandler extends Handler {
-    	
-    	private WeakReference<LandmarkArrayAdapter> landmarkArrayAdapter;
-    	private WeakReference<Activity> parentActivity;
-
-    	public DataChangeHandler(LandmarkArrayAdapter landmarkArrayAdapter, Activity parentActivity) {
-    	    this.landmarkArrayAdapter = new WeakReference<LandmarkArrayAdapter>(landmarkArrayAdapter);
-    	    this.parentActivity = new WeakReference<Activity>(parentActivity);  	    
-    	}
-    	@Override
-        public void handleMessage(Message message) {           
-    	    if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
-    	    	landmarkArrayAdapter.get().notifyDataSetChanged();
-    	    } 
-        }
-    }*/
-    
     private static class LandmarkThumbnailLoadingHandler extends Handler {
     	
     	private WeakReference<View> view;

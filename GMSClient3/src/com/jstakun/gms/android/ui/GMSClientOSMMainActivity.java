@@ -578,6 +578,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
             MenuItem saveRoute = menu.findItem(R.id.saveRoute);
             MenuItem login = menu.findItem(R.id.login);
+            menu.findItem(R.id.events).setVisible(false);
 
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
@@ -750,9 +751,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
                 intents.startNewestLandmarkIntent(getMyPosition(), excluded, AbstractLandmarkList.ORDER_BY_DATE_DESC, 2);
                 break;
-            case R.id.events:
-                intents.startCalendarActivity(getMyPosition());
-                break;
+            //case R.id.events:
+                //intents.startCalendarActivity(getMyPosition());
+                //break;
             case R.id.rateUs:
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;

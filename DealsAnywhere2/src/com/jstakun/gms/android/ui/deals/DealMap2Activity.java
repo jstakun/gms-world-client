@@ -292,9 +292,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             case R.id.discoverPlaces:
                 intents.startActionViewIntent(ConfigurationManager.LM_MARKET_URL);
                 break;
-            case R.id.events:
-                intents.startCalendarActivity(getMyPosition());
-                break;
+            //case R.id.events:
+                //intents.startCalendarActivity(getMyPosition());
+                //break;
             case R.id.rateUs:
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;

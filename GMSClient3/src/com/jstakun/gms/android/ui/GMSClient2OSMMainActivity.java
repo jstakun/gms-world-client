@@ -749,8 +749,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                     intents.startSocialListActivity();
                     break;
                 //case R.id.layers:
-                //    intents.startLayersListActivity();
-                //    break;
+                    //intents.startLayersListActivity();
+                    //break;
                 case R.id.dataPacket:
                     dialogManager.showAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, null);
                     break;

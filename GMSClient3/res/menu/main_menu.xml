@@ -51,8 +51,8 @@
           android:title="@string/recentLandmarks"/>
             <item android:id="@+id/showMyLandmarks"
           android:title="@string/showMyLandmarks"/>
-            <!--item android:id="@+id/events"
-          android:title="@string/events"/-->
+            <item android:id="@+id/events"
+          android:title="@string/events"/>
             <item android:id="@+id/newestLandmarks"
           android:title="@string/newestLandmarks"/>
             <item android:id="@+id/loadPoiFile"
@@ -61,8 +61,8 @@
     </item>
     <item android:id="@+id/socialNetworks"
           android:title="@string/socialNetworks" />
-    <item android:id="@+id/events"
-          android:title="@string/events" android:icon="@android:drawable/ic_menu_month"/>
+    <!-- item android:id="@+id/events"
+          android:title="@string/events" android:icon="@android:drawable/ic_menu_month"/-->
     <item android:id="@+id/router"
           android:title="@string/routes">
         <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/routes">

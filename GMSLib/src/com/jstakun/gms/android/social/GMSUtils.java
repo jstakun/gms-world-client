@@ -8,6 +8,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import android.os.Handler;
+
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -60,6 +62,10 @@ public final class GMSUtils {
             }
             ConfigurationManager.getInstance().setOn(ConfigurationManager.GMS_AUTH_STATUS);
             ConfigurationManager.getDatabaseManager().saveConfiguration(false);
+            Handler uiHandler = (Handler)ConfigurationManager.getInstance().removeObject("GMSLoginHandler", Handler.class);
+            if (uiHandler != null) {
+            	uiHandler.sendEmptyMessage(0);
+            } 
         }
         
         return errorMessage;

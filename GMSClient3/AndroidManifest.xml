@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.jstakun.gms.android.ui"
-      android:versionCode="1092"
+      android:versionCode="1093"
       android:versionName="2.0.7">
     <uses-sdk android:minSdkVersion="3"
               android:targetSdkVersion="18"/>
@@ -67,6 +67,7 @@
         <activity android:name="LayerListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="AutoCheckinListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="HelpActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="CommentActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name="DealCategoryListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
             <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
@@ -77,7 +78,6 @@
             </intent-filter>
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
         </activity>
-        <activity android:name="com.exina.android.calendar.CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider"/>
         <service android:name="com.jstakun.gms.android.service.AutoCheckinService"></service>
         <receiver android:name="com.jstakun.gms.android.service.GMSScheduleReceiver">

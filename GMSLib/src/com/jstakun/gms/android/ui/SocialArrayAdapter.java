@@ -8,7 +8,11 @@ package com.jstakun.gms.android.ui;
  *
  * @author jstakun
  */
+import java.lang.ref.WeakReference;
+
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -147,6 +151,10 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
         return rowView;
     }
+    
+    private void setHandler() {
+    	ConfigurationManager.getInstance().putObject("GMSLoginHandler", new DataChangeHandler(this, context));
+    }
 
     private static class ViewHolder {
 
@@ -182,6 +190,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
                 } else if (ConfigurationManager.getInstance().isOff(auth_status[0])) {
                     //login
+                	setHandler();
                     intents.startLoginActivity();
                 }
             } else { //OAuth
@@ -204,5 +213,22 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                 }
             }
         }
+    }
+    
+    private static class DataChangeHandler extends Handler {
+	
+	private WeakReference<SocialArrayAdapter> socialArrayAdapter;
+	private WeakReference<Activity> parentActivity;
+
+		public DataChangeHandler(SocialArrayAdapter socialArrayAdapter, Activity parentActivity) {
+	    	this.socialArrayAdapter = new WeakReference<SocialArrayAdapter>(socialArrayAdapter);
+	    	this.parentActivity = new WeakReference<Activity>(parentActivity);  	    
+		}
+		@Override
+    	public void handleMessage(Message message) {           
+			if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
+	    		socialArrayAdapter.get().notifyDataSetChanged();
+	    	} 
+    	}
     }
 }
