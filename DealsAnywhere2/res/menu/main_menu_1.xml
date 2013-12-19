@@ -17,7 +17,6 @@
     <item android:id="@+id/showMyLandmarks" android:title="@string/showMyLandmarks"/>
     <item android:id="@+id/recentLandmarks" android:title="@string/recentLandmarks"/>
     <item android:id="@+id/showDoD" android:title="@string/titleDod"/>
-    <!-- item android:id="@+id/events" android:title="@string/events"/-->
     <item android:id="@+id/discoverPlaces" android:title="@string/discoverPlaces"/>
     <item android:id="@+id/releaseNotes"
           android:title="@string/releaseNotes" />

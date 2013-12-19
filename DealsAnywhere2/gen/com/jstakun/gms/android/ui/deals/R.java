@@ -236,7 +236,7 @@ containing a value of this type.
         public static final int youtube_icon=0x7f020089;
     }
     public static final class id {
-        public static final int about=0x7f0d0095;
+        public static final int about=0x7f0d0096;
         public static final int adView=0x7f0d000a;
         public static final int addButton=0x7f0d0007;
         public static final int addLayer=0x7f0d007e;
@@ -261,10 +261,11 @@ containing a value of this type.
         public static final int dateButton=0x7f0d0041;
         public static final int descLabel=0x7f0d0002;
         public static final int descText=0x7f0d0003;
-        public static final int discoverPlaces=0x7f0d0092;
+        public static final int discoverPlaces=0x7f0d0093;
         public static final int done_button=0x7f0d003b;
         public static final int enableLayers=0x7f0d0086;
-        public static final int exit=0x7f0d0096;
+        public static final int events=0x7f0d0092;
+        public static final int exit=0x7f0d0097;
         public static final int fsAddVenueCheckbox=0x7f0d0005;
         public static final int help_contents=0x7f0d0039;
         public static final int hotDeals=0x7f0d0088;
@@ -343,10 +344,10 @@ containing a value of this type.
         public static final int passwordText=0x7f0d005d;
         public static final int pickLocationForm=0x7f0d006f;
         public static final int pickMyPos=0x7f0d008b;
-        public static final int rateUs=0x7f0d0094;
+        public static final int rateUs=0x7f0d0095;
         public static final int recentLandmarks=0x7f0d0090;
         public static final int refreshLayers=0x7f0d0085;
-        public static final int releaseNotes=0x7f0d0093;
+        public static final int releaseNotes=0x7f0d0094;
         public static final int right_arrow=0x7f0d004d;
         public static final int search=0x7f0d007f;
         public static final int searchButton=0x7f0d0045;

@@ -8,11 +8,7 @@ package com.jstakun.gms.android.ui;
  *
  * @author jstakun
  */
-import java.lang.ref.WeakReference;
-
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -57,7 +53,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
         this.footer = footer;
         intents = new Intents(context, null, null);
     }
-
+    
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
@@ -72,6 +68,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             //holder.socialImage = (ImageView) rowView.findViewById(R.id.socialIcon);
             holder.socialCheckbox = (CheckBox) rowView.findViewById(R.id.socialStatusCheckbox);
             holder.loginButton = (Button) rowView.findViewById(R.id.socialLoginButton);
+            holder.footer = footer;
 
             rowView.setTag(holder);
         } else {
@@ -96,13 +93,13 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     }
                 }
             }
-        });
+        });    
 
-        holder.socialCheckbox.setText(Locale.getMessage(R.string.Social_allow_sending, getItem(position)));
-
+        String adapter = getItem(position);
+        
         if (checkbox_status[position] && !ConfigurationManager.getInstance().isDisabled(send_status[position])
                 && ConfigurationManager.getInstance().isOn(auth_status[position])) {
-
+        	holder.socialCheckbox.setText(Locale.getMessage(R.string.Social_allow_sending, adapter));
             holder.socialCheckbox.setVisibility(View.VISIBLE);
             holder.socialCheckbox.setEnabled(true);
             holder.socialCheckbox.setOnClickListener(new OnClickListener() {
@@ -124,7 +121,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             holder.socialCheckbox.setVisibility(View.GONE);
         }
 
-        holder.headerText.setText(getItem(position));
+        holder.headerText.setText(adapter);
         if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
         	String username;
         	if (position == 0) {
@@ -134,26 +131,22 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
         	}
             holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusyes, username));
         } else {
-            holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusno, getItem(position)));
+            holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusno, adapter));
         }
 
         holder.headerText.setCompoundDrawablesWithIntrinsicBounds(icons[position], 0, 0, 0);
         
         //holder.socialImage.setImageResource(icons[position]);
 
-        holder.loginButton.setOnClickListener(new PositionClickListener(position));
+        holder.loginButton.setOnClickListener(new PositionClickListener(position, holder, intents, context, this));
 
         if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
-            holder.loginButton.setText(Locale.getMessage(R.string.Social_logoutButton, getItem(position)));
+            holder.loginButton.setText(Locale.getMessage(R.string.Social_logoutButton, adapter));
         } else {
-            holder.loginButton.setText(Locale.getMessage(R.string.Social_loginButton, getItem(position)));
+            holder.loginButton.setText(Locale.getMessage(R.string.Social_loginButton, adapter));
         }
-
+        
         return rowView;
-    }
-    
-    private void setHandler() {
-    	ConfigurationManager.getInstance().putObject("GMSLoginHandler", new DataChangeHandler(this, context));
     }
 
     private static class ViewHolder {
@@ -163,48 +156,56 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
         protected TextView headerText;
         protected TextView statusText;
         protected Button loginButton;
+        protected TextView footer;
     }
 
-    private class PositionClickListener implements View.OnClickListener {
+    private static class PositionClickListener implements View.OnClickListener {
 
         private int position;
-
-        public PositionClickListener(int pos) {
+        private ViewHolder holder;
+        private Intents intents;
+        private Activity context;
+        private SocialArrayAdapter socialAdapter;
+        
+        public PositionClickListener(int pos, ViewHolder holder, Intents intents, Activity context, SocialArrayAdapter socialAdapter) {
             this.position = pos;
+            this.holder = holder;
+            this.intents = intents;
+            this.context = context;
+            this.socialAdapter = socialAdapter;
         }
 
         public void onClick(View v) {
             if (position == 0) { //GMS World
                 if (ConfigurationManager.getInstance().isOn(auth_status[0])) {
-                    //logout
+                    //gms logout
                 	GMSUtils.logout();
-                	notifyDataSetChanged();
+                	socialAdapter.notifyDataSetChanged();
                     intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
-
+                    //refresh listview footer
                     String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (username != null) {
-                        footer.setText(Locale.getMessage(R.string.Social_login_string, username));
+                        holder.footer.setText(Locale.getMessage(R.string.Social_login_string, username));
                     } else {
-                        footer.setText(Locale.getMessage(R.string.Social_notLogged));
+                    	holder.footer.setText(Locale.getMessage(R.string.Social_notLogged));
                     }
-
                 } else if (ConfigurationManager.getInstance().isOff(auth_status[0])) {
-                    //login
-                	setHandler();
-                    intents.startLoginActivity();
+                    //gms login
+                	intents.startLoginActivity();
+                    context.finish();
                 }
             } else { //OAuth
                 if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
                     //oauth logout
                     OAuthServiceFactory.getSocialUtils(services[position]).logout();
-                    notifyDataSetChanged();
+                    socialAdapter.notifyDataSetChanged();
                     intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
                     //refresh listview footer
                     String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (username != null) {
-                        footer.setText(Locale.getMessage(R.string.Social_login_string, username));
+                    	holder.footer.setText(Locale.getMessage(R.string.Social_login_string, username));
                     } else {
-                        footer.setText(Locale.getMessage(R.string.Social_notLogged));
+                    	holder.footer.setText(Locale.getMessage(R.string.Social_notLogged));
                     }
                     //
                 } else if (ConfigurationManager.getInstance().isOff(auth_status[position])) {
@@ -213,22 +214,5 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                 }
             }
         }
-    }
-    
-    private static class DataChangeHandler extends Handler {
-	
-	private WeakReference<SocialArrayAdapter> socialArrayAdapter;
-	private WeakReference<Activity> parentActivity;
-
-		public DataChangeHandler(SocialArrayAdapter socialArrayAdapter, Activity parentActivity) {
-	    	this.socialArrayAdapter = new WeakReference<SocialArrayAdapter>(socialArrayAdapter);
-	    	this.parentActivity = new WeakReference<Activity>(parentActivity);  	    
-		}
-		@Override
-    	public void handleMessage(Message message) {           
-			if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
-	    		socialArrayAdapter.get().notifyDataSetChanged();
-	    	} 
-    	}
     }
 }

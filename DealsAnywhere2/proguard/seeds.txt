@@ -38,13 +38,6 @@ android.support.v4.widget.SlidingPaneLayout$LayoutParams
 android.support.v4.widget.SlidingPaneLayout$LayoutParams: SlidingPaneLayout$LayoutParams(android.content.Context,android.util.AttributeSet)
 android.support.v4.widget.SlidingPaneLayout$SavedState
 android.support.v4.widget.SlidingPaneLayout$SavedState: android.os.Parcelable$Creator CREATOR
-com.exina.android.calendar.CalendarActivity
-com.exina.android.calendar.CalendarActivity: CalendarActivity()
-com.exina.android.calendar.CalendarActivity: void onClick(android.view.View)
-com.exina.android.calendar.CalendarView
-com.exina.android.calendar.CalendarView: CalendarView(android.content.Context)
-com.exina.android.calendar.CalendarView: CalendarView(android.content.Context,android.util.AttributeSet)
-com.exina.android.calendar.CalendarView: CalendarView(android.content.Context,android.util.AttributeSet,int)
 com.google.ads.AdActivity
 com.google.ads.AdActivity: AdActivity()
 com.google.ads.AdActivity: void onClick(android.view.View)
@@ -73,7 +66,112 @@ com.google.ads.util.AdUtil$a: com.google.ads.util.AdUtil$a[] values()
 com.google.ads.util.AdUtil$a: com.google.ads.util.AdUtil$a valueOf(java.lang.String)
 com.google.ads.util.b$a: com.google.ads.util.b$a[] values()
 com.google.ads.util.b$a: com.google.ads.util.b$a valueOf(java.lang.String)
-com.google.android.apps.analytics.AnalyticsReceiver
+com.google.analytics.containertag.common.FunctionType: com.google.analytics.containertag.common.FunctionType[] values()
+com.google.analytics.containertag.common.FunctionType: com.google.analytics.containertag.common.FunctionType valueOf(java.lang.String)
+com.google.analytics.containertag.common.Key: com.google.analytics.containertag.common.Key[] values()
+com.google.analytics.containertag.common.Key: com.google.analytics.containertag.common.Key valueOf(java.lang.String)
+com.google.analytics.containertag.proto.Debug$DataLayerEventEvaluationInfo: long serialVersionUID
+com.google.analytics.containertag.proto.Debug$DataLayerEventEvaluationInfo: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Debug$DebugEvents: long serialVersionUID
+com.google.analytics.containertag.proto.Debug$DebugEvents: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Debug$EventInfo: long serialVersionUID
+com.google.analytics.containertag.proto.Debug$EventInfo: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Debug$EventInfo$EventType: com.google.analytics.containertag.proto.Debug$EventInfo$EventType[] values()
+com.google.analytics.containertag.proto.Debug$EventInfo$EventType: com.google.analytics.containertag.proto.Debug$EventInfo$EventType valueOf(java.lang.String)
+com.google.analytics.containertag.proto.Debug$MacroEvaluationInfo: long serialVersionUID
+com.google.analytics.containertag.proto.Debug$MacroEvaluationInfo: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Debug$ResolvedFunctionCall: long serialVersionUID
+com.google.analytics.containertag.proto.Debug$ResolvedFunctionCall: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Debug$ResolvedProperty: long serialVersionUID
+com.google.analytics.containertag.proto.Debug$ResolvedProperty: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Debug$ResolvedRule: long serialVersionUID
+com.google.analytics.containertag.proto.Debug$ResolvedRule: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Debug$RuleEvaluationStepInfo: long serialVersionUID
+com.google.analytics.containertag.proto.Debug$RuleEvaluationStepInfo: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableDebug$DataLayerEventEvaluationInfo: long serialVersionUID
+com.google.analytics.containertag.proto.MutableDebug$DataLayerEventEvaluationInfo: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableDebug$DebugEvents: long serialVersionUID
+com.google.analytics.containertag.proto.MutableDebug$DebugEvents: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableDebug$EventInfo: long serialVersionUID
+com.google.analytics.containertag.proto.MutableDebug$EventInfo: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableDebug$EventInfo$EventType: com.google.analytics.containertag.proto.MutableDebug$EventInfo$EventType[] values()
+com.google.analytics.containertag.proto.MutableDebug$EventInfo$EventType: com.google.analytics.containertag.proto.MutableDebug$EventInfo$EventType valueOf(java.lang.String)
+com.google.analytics.containertag.proto.MutableDebug$MacroEvaluationInfo: long serialVersionUID
+com.google.analytics.containertag.proto.MutableDebug$MacroEvaluationInfo: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableDebug$ResolvedFunctionCall: long serialVersionUID
+com.google.analytics.containertag.proto.MutableDebug$ResolvedFunctionCall: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableDebug$ResolvedProperty: long serialVersionUID
+com.google.analytics.containertag.proto.MutableDebug$ResolvedProperty: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableDebug$ResolvedRule: long serialVersionUID
+com.google.analytics.containertag.proto.MutableDebug$ResolvedRule: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableDebug$RuleEvaluationStepInfo: long serialVersionUID
+com.google.analytics.containertag.proto.MutableDebug$RuleEvaluationStepInfo: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableServing$CacheOption: long serialVersionUID
+com.google.analytics.containertag.proto.MutableServing$CacheOption: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableServing$CacheOption$CacheLevel: com.google.analytics.containertag.proto.MutableServing$CacheOption$CacheLevel[] values()
+com.google.analytics.containertag.proto.MutableServing$CacheOption$CacheLevel: com.google.analytics.containertag.proto.MutableServing$CacheOption$CacheLevel valueOf(java.lang.String)
+com.google.analytics.containertag.proto.MutableServing$Container: long serialVersionUID
+com.google.analytics.containertag.proto.MutableServing$Container: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableServing$FunctionCall: long serialVersionUID
+com.google.analytics.containertag.proto.MutableServing$FunctionCall: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableServing$OptionalResource: long serialVersionUID
+com.google.analytics.containertag.proto.MutableServing$OptionalResource: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableServing$Property: long serialVersionUID
+com.google.analytics.containertag.proto.MutableServing$Property: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableServing$Resource: long serialVersionUID
+com.google.analytics.containertag.proto.MutableServing$Resource: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableServing$ResourceState: com.google.analytics.containertag.proto.MutableServing$ResourceState[] values()
+com.google.analytics.containertag.proto.MutableServing$ResourceState: com.google.analytics.containertag.proto.MutableServing$ResourceState valueOf(java.lang.String)
+com.google.analytics.containertag.proto.MutableServing$ResourceType: com.google.analytics.containertag.proto.MutableServing$ResourceType[] values()
+com.google.analytics.containertag.proto.MutableServing$ResourceType: com.google.analytics.containertag.proto.MutableServing$ResourceType valueOf(java.lang.String)
+com.google.analytics.containertag.proto.MutableServing$Rule: long serialVersionUID
+com.google.analytics.containertag.proto.MutableServing$Rule: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.MutableServing$ServingValue: long serialVersionUID
+com.google.analytics.containertag.proto.MutableServing$ServingValue: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Serving$CacheOption: long serialVersionUID
+com.google.analytics.containertag.proto.Serving$CacheOption: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Serving$CacheOption$CacheLevel: com.google.analytics.containertag.proto.Serving$CacheOption$CacheLevel[] values()
+com.google.analytics.containertag.proto.Serving$CacheOption$CacheLevel: com.google.analytics.containertag.proto.Serving$CacheOption$CacheLevel valueOf(java.lang.String)
+com.google.analytics.containertag.proto.Serving$Container: long serialVersionUID
+com.google.analytics.containertag.proto.Serving$Container: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Serving$FunctionCall: long serialVersionUID
+com.google.analytics.containertag.proto.Serving$FunctionCall: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Serving$OptionalResource: long serialVersionUID
+com.google.analytics.containertag.proto.Serving$OptionalResource: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Serving$Property: long serialVersionUID
+com.google.analytics.containertag.proto.Serving$Property: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Serving$Resource: long serialVersionUID
+com.google.analytics.containertag.proto.Serving$Resource: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Serving$ResourceState: com.google.analytics.containertag.proto.Serving$ResourceState[] values()
+com.google.analytics.containertag.proto.Serving$ResourceState: com.google.analytics.containertag.proto.Serving$ResourceState valueOf(java.lang.String)
+com.google.analytics.containertag.proto.Serving$ResourceType: com.google.analytics.containertag.proto.Serving$ResourceType[] values()
+com.google.analytics.containertag.proto.Serving$ResourceType: com.google.analytics.containertag.proto.Serving$ResourceType valueOf(java.lang.String)
+com.google.analytics.containertag.proto.Serving$Rule: long serialVersionUID
+com.google.analytics.containertag.proto.Serving$Rule: java.lang.Object writeReplace()
+com.google.analytics.containertag.proto.Serving$ServingValue: long serialVersionUID
+com.google.analytics.containertag.proto.Serving$ServingValue: java.lang.Object writeReplace()
+com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value: long serialVersionUID
+com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value: java.lang.Object writeReplace()
+com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value$Escaping: com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value$Escaping[] values()
+com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value$Escaping: com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value$Escaping valueOf(java.lang.String)
+com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value$Type: com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value$Type[] values()
+com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value$Type: com.google.analytics.midtier.proto.containertag.MutableTypeSystem$Value$Type valueOf(java.lang.String)
+com.google.analytics.midtier.proto.containertag.TypeSystem$Value: long serialVersionUID
+com.google.analytics.midtier.proto.containertag.TypeSystem$Value: java.lang.Object writeReplace()
+com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Escaping: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Escaping[] values()
+com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Escaping: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Escaping valueOf(java.lang.String)
+com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Type: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Type[] values()
+com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Type: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Type valueOf(java.lang.String)
+com.google.analytics.tracking.android.CampaignTrackingReceiver
+com.google.analytics.tracking.android.CampaignTrackingService
+com.google.analytics.tracking.android.GAServiceProxy$ConnectState: com.google.analytics.tracking.android.GAServiceProxy$ConnectState[] values()
+com.google.analytics.tracking.android.GAServiceProxy$ConnectState: com.google.analytics.tracking.android.GAServiceProxy$ConnectState valueOf(java.lang.String)
+com.google.analytics.tracking.android.GAUsage$Field: com.google.analytics.tracking.android.GAUsage$Field[] values()
+com.google.analytics.tracking.android.GAUsage$Field: com.google.analytics.tracking.android.GAUsage$Field valueOf(java.lang.String)
+com.google.analytics.tracking.android.Logger$LogLevel: com.google.analytics.tracking.android.Logger$LogLevel[] values()
+com.google.analytics.tracking.android.Logger$LogLevel: com.google.analytics.tracking.android.Logger$LogLevel valueOf(java.lang.String)
+com.google.android.gms.analytics.internal.Command
+com.google.android.gms.analytics.internal.Command: android.os.Parcelable$Creator CREATOR
 com.google.common.base.AbstractIterator$State: com.google.common.base.AbstractIterator$State[] values()
 com.google.common.base.AbstractIterator$State: com.google.common.base.AbstractIterator$State valueOf(java.lang.String)
 com.google.common.base.CaseFormat: com.google.common.base.CaseFormat[] values()
@@ -461,6 +559,44 @@ com.google.common.util.concurrent.Service$State: com.google.common.util.concurre
 com.google.common.util.concurrent.Service$State: com.google.common.util.concurrent.Service$State valueOf(java.lang.String)
 com.google.common.util.concurrent.UncheckedExecutionException: long serialVersionUID
 com.google.common.util.concurrent.UncheckedTimeoutException: long serialVersionUID
+com.google.tagmanager.Container$RefreshFailure: com.google.tagmanager.Container$RefreshFailure[] values()
+com.google.tagmanager.Container$RefreshFailure: com.google.tagmanager.Container$RefreshFailure valueOf(java.lang.String)
+com.google.tagmanager.Container$RefreshType: com.google.tagmanager.Container$RefreshType[] values()
+com.google.tagmanager.Container$RefreshType: com.google.tagmanager.Container$RefreshType valueOf(java.lang.String)
+com.google.tagmanager.ContainerOpener$OpenType: com.google.tagmanager.ContainerOpener$OpenType[] values()
+com.google.tagmanager.ContainerOpener$OpenType: com.google.tagmanager.ContainerOpener$OpenType valueOf(java.lang.String)
+com.google.tagmanager.InstallReferrerReceiver
+com.google.tagmanager.InstallReferrerService
+com.google.tagmanager.JoinerMacro$EscapeType: com.google.tagmanager.JoinerMacro$EscapeType[] values()
+com.google.tagmanager.JoinerMacro$EscapeType: com.google.tagmanager.JoinerMacro$EscapeType valueOf(java.lang.String)
+com.google.tagmanager.LoadCallback$Failure: com.google.tagmanager.LoadCallback$Failure[] values()
+com.google.tagmanager.LoadCallback$Failure: com.google.tagmanager.LoadCallback$Failure valueOf(java.lang.String)
+com.google.tagmanager.Logger$LogLevel: com.google.tagmanager.Logger$LogLevel[] values()
+com.google.tagmanager.Logger$LogLevel: com.google.tagmanager.Logger$LogLevel valueOf(java.lang.String)
+com.google.tagmanager.PreviewActivity
+com.google.tagmanager.PreviewManager$PreviewMode: com.google.tagmanager.PreviewManager$PreviewMode[] values()
+com.google.tagmanager.PreviewManager$PreviewMode: com.google.tagmanager.PreviewManager$PreviewMode valueOf(java.lang.String)
+com.google.tagmanager.TagManager$RefreshMode: com.google.tagmanager.TagManager$RefreshMode[] values()
+com.google.tagmanager.TagManager$RefreshMode: com.google.tagmanager.TagManager$RefreshMode valueOf(java.lang.String)
+com.google.tagmanager.proto.MutableResource$ResourceWithMetadata: long serialVersionUID
+com.google.tagmanager.proto.MutableResource$ResourceWithMetadata: java.lang.Object writeReplace()
+com.google.tagmanager.proto.Resource$ResourceWithMetadata: long serialVersionUID
+com.google.tagmanager.proto.Resource$ResourceWithMetadata: java.lang.Object writeReplace()
+com.google.tagmanager.protobuf.CodedOutputStream$OutOfSpaceException: long serialVersionUID
+com.google.tagmanager.protobuf.GeneratedMessageLite: long serialVersionUID
+com.google.tagmanager.protobuf.GeneratedMessageLite: java.lang.Object writeReplace()
+com.google.tagmanager.protobuf.GeneratedMessageLite$SerializedForm: long serialVersionUID
+com.google.tagmanager.protobuf.GeneratedMessageLite$SerializedForm: java.lang.Object readResolve()
+com.google.tagmanager.protobuf.GeneratedMutableMessageLite: long serialVersionUID
+com.google.tagmanager.protobuf.GeneratedMutableMessageLite: java.lang.Object writeReplace()
+com.google.tagmanager.protobuf.GeneratedMutableMessageLite$SerializedForm: long serialVersionUID
+com.google.tagmanager.protobuf.GeneratedMutableMessageLite$SerializedForm: java.lang.Object readResolve()
+com.google.tagmanager.protobuf.InvalidProtocolBufferException: long serialVersionUID
+com.google.tagmanager.protobuf.UninitializedMessageException: long serialVersionUID
+com.google.tagmanager.protobuf.WireFormat$FieldType: com.google.tagmanager.protobuf.WireFormat$FieldType[] values()
+com.google.tagmanager.protobuf.WireFormat$FieldType: com.google.tagmanager.protobuf.WireFormat$FieldType valueOf(java.lang.String)
+com.google.tagmanager.protobuf.WireFormat$JavaType: com.google.tagmanager.protobuf.WireFormat$JavaType[] values()
+com.google.tagmanager.protobuf.WireFormat$JavaType: com.google.tagmanager.protobuf.WireFormat$JavaType valueOf(java.lang.String)
 com.jstakun.gms.android.deals.Deal: long serialVersionUID
 com.jstakun.gms.android.landmarks.ExtendedLandmark: long serialVersionUID
 com.jstakun.gms.android.landmarks.LandmarkParcelable
@@ -481,6 +617,8 @@ com.jstakun.gms.android.ui.AddLayerActivity
 com.jstakun.gms.android.ui.AddLayerActivity: AddLayerActivity()
 com.jstakun.gms.android.ui.AddLayerActivity: void onClick(android.view.View)
 com.jstakun.gms.android.ui.AutoCheckinListActivity
+com.jstakun.gms.android.ui.CalendarActivity
+com.jstakun.gms.android.ui.CalendarActivity: CalendarActivity()
 com.jstakun.gms.android.ui.CommentActivity
 com.jstakun.gms.android.ui.CommentActivity: void onClick(android.view.View)
 com.jstakun.gms.android.ui.DealCategoryListActivity

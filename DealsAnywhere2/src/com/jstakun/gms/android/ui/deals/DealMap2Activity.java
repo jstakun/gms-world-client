@@ -292,9 +292,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             case R.id.discoverPlaces:
                 intents.startActionViewIntent(ConfigurationManager.LM_MARKET_URL);
                 break;
-            //case R.id.events:
-                //intents.startCalendarActivity(getMyPosition());
-                //break;
+            case R.id.events:
+                intents.startCalendarActivity(getMyPosition());
+                break;
             case R.id.rateUs:
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
@@ -361,24 +361,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             appInitialized = true;
         }
     }
-
-    /*private void showSelectedLandmark(int id) {
-        if (id >= 0) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-            if (selectedLandmark != null) {
-                landmarkManager.setSelectedLandmark(selectedLandmark);
-                landmarkManager.clearLandmarkOnFocusQueue();
-                int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
-                if (coordsE6 != null) {
-                	animateTo(coordsE6);
-                }
-            } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-            }
-        } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
-        }
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -676,36 +658,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         PersistenceManagerFactory.getFileManager().clearImageCache(System.currentTimeMillis() - DateTimeUtils.ONE_MONTH);
     }
 
-    /*private void landmarkDetailsAction() {
-        ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
-
-        if (selectedLandmark != null) {
-            if (!selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                landmarkManager.setSeletedLandmarkUI();
-            }
-
-            if (selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_CAT_STATS);
-            } else {
-                UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowSelectedDealView", selectedLandmark.getLayer(), selectedLandmark.getCategoryId());
-                cm.addSubCategoryStats(selectedLandmark.getCategoryId(), selectedLandmark.getSubCategoryId());
-                getActionBar().hide();
-                intents.showLandmarkDetailsView(selectedLandmark, lvView, getMyPosition(), true);
-                GeoPoint g = new GeoPoint(selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6());
-                mapController.animateTo(g);
-
-                if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-                    intents.loadLayersAction(true, null, false, false, layerLoader,
-                            MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLongitudeE6()),
-                            googleMapsView.getZoomLevel());
-                }
-            }
-        } else {
-            LoggerUtils.debug(Locale.getMessage(R.string.Landmark_opening_error));
-        }
-    }*/
-
     private GeoPoint getMyLocation() {
         Location location = ConfigurationManager.getInstance().getLocation();
         if (location != null) {
@@ -729,10 +681,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private void callButtonPressedAction(ExtendedLandmark landmark) {
         intents.startPhoneCallActivity(landmark);
     }
-
-    //private void openButtonPressedAction(ExtendedLandmark landmark) {
-    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    //}
 
     private void sendMessageAction() {
         intents.shareLandmarkAction(dialogManager);

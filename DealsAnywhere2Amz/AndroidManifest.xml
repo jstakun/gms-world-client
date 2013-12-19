@@ -50,6 +50,7 @@
         </activity>
         <activity android:name="com.google.ads.AdActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
         <activity android:name="com.jstakun.gms.android.ui.HelpActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="com.jstakun.gms.android.ui.CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="com.jstakun.gms.android.ui.AddLayerActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="com.jstakun.gms.android.ui.GMSSearchActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
           <intent-filter>
