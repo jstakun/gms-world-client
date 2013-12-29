@@ -47,7 +47,6 @@ Eventful_status;0
 Picasa_status;0
 Flickr_status;0
 MasterCard ATMs_status;0
-Qype_status;0
 Expedia_status;0
 loadDisabledLayers;1
 bitmapType;0

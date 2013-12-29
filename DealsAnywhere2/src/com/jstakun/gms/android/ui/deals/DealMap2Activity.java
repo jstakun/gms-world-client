@@ -446,30 +446,31 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     }
 
     public void onClick(View v) {
-        if (v == lvCloseButton) {
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
-            lvView.setVisibility(View.GONE);
-            getActionBar().show();
-            landmarkManager.clearLandmarkOnFocusQueue();
-            landmarkManager.setSelectedLandmark(null);
-            landmarkManager.setSeletedLandmarkUI();
-        } else if (v == lvOpenButton || v == thumbnailButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
-            intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
-        } else if (v == lvCallButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
-            callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
-        } else if (v == lvRouteButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
-            loadRoutePressedAction(landmarkManager.getSeletedLandmarkUI());
-        } else if (v == lvSendMailButton) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
-            sendMessageAction();
-        }
+    	ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+    		if (selectedLandmark != null) {
+    			if (v == lvCloseButton) {
+    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
+    				lvView.setVisibility(View.GONE);
+    				getActionBar().show();
+    				landmarkManager.clearLandmarkOnFocusQueue();
+    				landmarkManager.setSelectedLandmark(null);
+    				landmarkManager.setSeletedLandmarkUI();
+    			} else if (v == lvOpenButton || v == thumbnailButton) {
+    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
+    				intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+    			} else if (v == lvCallButton) {
+    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
+    				callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+    			} else if (v == lvRouteButton) {
+    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
+    				loadRoutePressedAction(landmarkManager.getSeletedLandmarkUI());
+    			} else if (v == lvSendMailButton) {
+    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
+    				sendMessageAction();
+    			}
+    	} else {
+    		intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+    	}
     }
 
     @Override
