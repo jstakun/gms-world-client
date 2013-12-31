@@ -86,7 +86,8 @@ public class WebViewActivity extends Activity {
         settings.setSupportZoom(true);	    													
         settings.setBuiltInZoomControls(true);
         settings.setAllowFileAccess(true);
-        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        //settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
         try {
             HelperInternal.setCacheSettings(getApplicationContext(), settings);

@@ -10,9 +10,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.location.Location;
@@ -21,7 +18,6 @@ import android.os.Message;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
@@ -533,7 +529,7 @@ public class AsyncTaskManager {
             qrformat = fileData[3];
             if (checkinLandmarkCode.matches("[a-zA-z0-9]*")) {
                 if (qrformat.equals("QR_CODE")) {
-                    return gmsWorldCheckin("qrCodeCheckIn", checkinLandmarkCode, null);
+                    return GMSUtils.checkin("qrCodeCheckIn", checkinLandmarkCode, null);
                 } else {
                     return Locale.getMessage(R.string.Social_Checkin_wrong_key_1, qrformat);
                 }
@@ -551,9 +547,9 @@ public class AsyncTaskManager {
            }
            LocationCheckInTask checkInTask = new LocationCheckInTask();
            checkInTask.execute("", notificationId, checkinLandmarkCode, name, Boolean.toString(silent));
-        }
+     }
 
-        private class LocationCheckInTask extends GenericTask {
+     private class LocationCheckInTask extends GenericTask {
 
            private boolean silent = false;
            
@@ -571,54 +567,11 @@ public class AsyncTaskManager {
                String checkinLandmarkCode = checkinData[2];
                String name = checkinData[3];
                silent = Boolean.parseBoolean(checkinData[4]);
-               return gmsWorldCheckin("locationCheckIn", checkinLandmarkCode, name);
+               return GMSUtils.checkin("locationCheckIn", checkinLandmarkCode, name);
            }
-       }
+    }
 
-       private String gmsWorldCheckin(String service, String checkinLandmarkCode, String name) {
-    	   String url = ConfigurationManager.SERVER_SERVICES_URL + service;
-    	   List<NameValuePair> params = new ArrayList<NameValuePair>();
-    	   params.add(new BasicNameValuePair("key", checkinLandmarkCode));
-    	   String username = ConfigurationManager.getUserManager().getLoggedInUsername();
-    	   if (username != null) {
-    		   params.add(new BasicNameValuePair("username",username));
-    	   } 
-
-    	   HttpUtils utils = new HttpUtils();
-    	   utils.sendPostRequest(url, params, true);
-    	   String msg = utils.getResponseCodeErrorMessage();
-    	   int responseCode = utils.getResponseCode();
-
-    	   LoggerUtils.debug("Location check-in at " + checkinLandmarkCode + " response: " + msg);
-    	   
-    	   if (responseCode == HttpStatus.SC_OK) {
-    		   String nameP = name;
-    		   if (nameP == null) {
-    			   nameP = utils.getHeader("name");
-    			   if (nameP == null) {
-    				   nameP = "Landmark";
-    			   }
-    		   }
-    		   FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-    		   LoggerUtils.debug("Updating check-in with key " + checkinLandmarkCode);
-    	       if (fdb != null) {
-               	  fdb.updateOnCheckin(checkinLandmarkCode);
-               } else {
-            	   LoggerUtils.debug("AsyncTaskmanager.gmsWorldCheckin() fdb == null");
-               }
-    		   msg = Locale.getMessage(R.string.Social_checkin_success, nameP);
-    	   } else {
-    		   msg = Locale.getMessage(R.string.Social_checkin_failure, msg);
-    	   }
-    	   try {
-    		   if (utils != null) {
-    			   utils.close();
-    		   }
-    	   } catch (Exception ioe) {
-    	   }
-
-    	   return msg;
-       }
+       
 
     public void executeSocialSendMyLocationTask(boolean executeInTask) {
         if (executeInTask) {
@@ -815,45 +768,12 @@ public class AsyncTaskManager {
             String name = commentData[5];
             if (service.equals(Commons.FACEBOOK) || service.equals(Commons.FOURSQUARE)) {
                 return OAuthServiceFactory.getSocialUtils(service).sendComment(placeId, commentText, name);
-            } else if (service.equals("gms")) {
-                return addCommentToServer(placeId, commentText);
+            } else if (service.equals(Commons.GMS_WORLD)) {
+                return GMSUtils.sendComment(placeId, commentText);
             } else {
                 return null;
             }
         }
-    }
-
-    private String addCommentToServer(String placeId, String commentText) {
-        String url = ConfigurationManager.SERVER_SERVICES_URL + "addComment";
-        String message = "";
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("key", placeId));
-        params.add(new BasicNameValuePair("message", commentText));
-        String username = ConfigurationManager.getUserManager().getLoggedInUsername();
-        if (username != null) {
-            params.add(new BasicNameValuePair("username", username));
-        } 
-        HttpUtils utils = new HttpUtils();
-        try {
-            utils.sendPostRequest(url, params, true);
-            message = utils.getResponseCodeErrorMessage();
-            if (message == null) {
-                message = Locale.getMessage(R.string.Social_comment_sent);
-            } else {
-                message = Locale.getMessage(R.string.Social_comment_failed, message);
-            }
-        } catch (Exception ex) {
-            LoggerUtils.error("CommentActivity.addCommentToServer exception", ex);
-            message = Locale.getMessage(R.string.Social_comment_failed, ex.getMessage());
-        } finally {
-            try {
-                if (utils != null) {
-                    utils.close();
-                }
-            } catch (Exception ioe) {
-            }
-        }
-        return message;
     }
 
     public void executeLoginTask(String login, String password) {

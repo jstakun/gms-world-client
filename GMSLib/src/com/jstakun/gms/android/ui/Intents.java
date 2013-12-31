@@ -446,28 +446,24 @@ public final class Intents {
     }
 
     public void commentButtonPressedAction() {
-        //only FS, FB and GMS World only
+        //FS, FB and GMS World only
         ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-        if (selectedLandmark.getLayer().equals(Commons.FOURSQUARE_LAYER)) {
-            String venueid = selectedLandmark.getUrl();
-            if (venueid != null) {
-                String[] s = venueid.split("/");
-                if (s.length > 0) {
-                    venueid = s[s.length - 1];
-                }
-            }
+        String selectedLayer = selectedLandmark.getLayer();
+        if (selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {
+            String venueid = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).getKey(selectedLandmark.getUrl()); 
             startCommentActivity(Commons.FOURSQUARE, venueid, null);
-        } else if (selectedLandmark.getLayer().equals(Commons.FACEBOOK_LAYER)) {
-            startCommentActivity(Commons.FACEBOOK, selectedLandmark.getUrl(), selectedLandmark.getName());
+        } else if (selectedLayer.equals(Commons.FACEBOOK_LAYER)) {
+        	String venueid = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).getKey(selectedLandmark.getUrl()); 
+            startCommentActivity(Commons.FACEBOOK, venueid, selectedLandmark.getName());
         } else {
             String venueid = selectedLandmark.getUrl();
-            if (venueid != null) {
+            /*if (venueid != null) {
                 String[] s = venueid.split("=");
                 if (s.length > 0) {
                     venueid = s[s.length - 1];
                 }
-            }
-            startCommentActivity("gms", venueid, null);
+            }*/
+            startCommentActivity(Commons.GMS_WORLD, venueid, null);
         }
     }
 

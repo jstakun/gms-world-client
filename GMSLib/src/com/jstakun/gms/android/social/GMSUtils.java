@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FavouritesDbDataSource;
+import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.HttpUtils;
+import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
 public final class GMSUtils {
@@ -74,4 +78,82 @@ public final class GMSUtils {
         ConfigurationManager.getDatabaseManager().saveConfiguration(false);
         
 	}
+	
+	public static String sendComment(String placeId, String commentText) {
+        String url = ConfigurationManager.SERVER_SERVICES_URL + "addComment";
+        String message = "";
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("key", placeId));
+        params.add(new BasicNameValuePair("message", commentText));
+        String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+        if (username != null) {
+            params.add(new BasicNameValuePair("username", username));
+        } 
+        HttpUtils utils = new HttpUtils();
+        try {
+            utils.sendPostRequest(url, params, true);
+            message = utils.getResponseCodeErrorMessage();
+            if (message == null) {
+                message = Locale.getMessage(R.string.Social_comment_sent);
+            } else {
+                message = Locale.getMessage(R.string.Social_comment_failed, message);
+            }
+        } catch (Exception ex) {
+            LoggerUtils.error("CommentActivity.addCommentToServer exception", ex);
+            message = Locale.getMessage(R.string.Social_comment_failed, ex.getMessage());
+        } finally {
+            try {
+                if (utils != null) {
+                    utils.close();
+                }
+            } catch (Exception ioe) {
+            }
+        }
+        return message;
+    }
+	
+	public static String checkin(String service, String checkinLandmarkCode, String name) {
+ 	   String url = ConfigurationManager.SERVER_SERVICES_URL + service;
+ 	   List<NameValuePair> params = new ArrayList<NameValuePair>();
+ 	   params.add(new BasicNameValuePair("key", checkinLandmarkCode));
+ 	   String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+ 	   if (username != null) {
+ 		   params.add(new BasicNameValuePair("username",username));
+ 	   } 
+
+ 	   HttpUtils utils = new HttpUtils();
+ 	   utils.sendPostRequest(url, params, true);
+ 	   String msg = utils.getResponseCodeErrorMessage();
+ 	   int responseCode = utils.getResponseCode();
+
+ 	   LoggerUtils.debug("Location check-in at " + checkinLandmarkCode + " response: " + msg);
+ 	   
+ 	   if (responseCode == HttpStatus.SC_OK) {
+ 		   String nameP = name;
+ 		   if (nameP == null) {
+ 			   nameP = utils.getHeader("name");
+ 			   if (nameP == null) {
+ 				   nameP = "Landmark";
+ 			   }
+ 		   }
+ 		   FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+ 		   LoggerUtils.debug("Updating check-in with key " + checkinLandmarkCode);
+ 	       if (fdb != null) {
+            	  fdb.updateOnCheckin(checkinLandmarkCode);
+            } else {
+         	   LoggerUtils.debug("AsyncTaskmanager.gmsWorldCheckin() fdb == null");
+            }
+ 		   msg = Locale.getMessage(R.string.Social_checkin_success, nameP);
+ 	   } else {
+ 		   msg = Locale.getMessage(R.string.Social_checkin_failure, msg);
+ 	   }
+ 	   try {
+ 		   if (utils != null) {
+ 			   utils.close();
+ 		   }
+ 	   } catch (Exception ioe) {
+ 	   }
+
+ 	   return msg;
+    }
 }

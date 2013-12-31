@@ -161,7 +161,7 @@ public class Layer {
     /**
      * @param count the count to set
      */
-    public void setCount(int count) {
+    public synchronized void setCount(int count) {
         this.count = count;
     }
 
