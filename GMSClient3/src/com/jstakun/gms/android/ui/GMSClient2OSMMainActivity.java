@@ -32,7 +32,7 @@ import com.jstakun.gms.android.osm.maps.OsmInfoOverlay;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkProjection;
 import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
-import com.jstakun.gms.android.osm.maps.OsmMyLocationOverlay;
+import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
@@ -56,17 +56,17 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.List;
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.api.IMyLocationOverlay;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MyLocationOverlay;
 
 public class GMSClient2OSMMainActivity extends Activity implements OnClickListener {
 
     private static final int SHOW_MAP_VIEW = 0;
     private MapView mapView;
-    private MapController mapController;
-    private MyLocationOverlay myLocation;
+    private IMapController mapController;
+    private IMyLocationOverlay myLocation;
     private OsmInfoOverlay infoOverlay;
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
@@ -159,7 +159,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         mapView.setMultiTouchControls(true);
         mapView.setBuiltInZoomControls(true);
 
-        myLocation = new OsmMyLocationOverlay(this, mapView, loadingHandler);
+        myLocation = new OsmMyLocationNewOverlay(this, mapView, loadingHandler);
         LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
         infoOverlay = new OsmInfoOverlay(this);
 
@@ -1127,7 +1127,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 	}
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
-            	} else if (msg.what == OsmMyLocationOverlay.UPDATE_LOCATION) {
+            	} else if (msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
                 	Location location = (Location) msg.obj;
                 	activity.updateLocation(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed());
             	}

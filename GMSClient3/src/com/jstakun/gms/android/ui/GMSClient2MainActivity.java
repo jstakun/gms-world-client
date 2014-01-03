@@ -50,7 +50,7 @@ import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.osm.maps.OsmInfoOverlay;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
 import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
-import com.jstakun.gms.android.osm.maps.OsmMyLocationOverlay;
+import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
@@ -163,7 +163,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             setContentView(R.layout.osmdroidcanvasview);
             mapView = (IMapView) findViewById(R.id.mapCanvas);
             ((org.osmdroid.views.MapView) mapView).setMultiTouchControls(true);
-            myLocation = new OsmMyLocationOverlay(this, (org.osmdroid.views.MapView) mapView, loadingHandler);
+            myLocation = new OsmMyLocationNewOverlay(this, (org.osmdroid.views.MapView) mapView, loadingHandler);
             infoOverlay = new OsmInfoOverlay(this);
         } else {
             //default view is Google
@@ -1171,7 +1171,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 	}
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
-            	} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION || msg.what == OsmMyLocationOverlay.UPDATE_LOCATION) {
+            	} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION || msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
                 	Location location = (Location) msg.obj;
                 	activity.updateGpsLocation(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), location.getAccuracy(), location.getSpeed());
             	}

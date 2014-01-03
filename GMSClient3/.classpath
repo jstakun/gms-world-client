@@ -6,5 +6,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/GMSLib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GoogleMapsUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/OsmMapsUtils"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
