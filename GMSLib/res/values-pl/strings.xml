@@ -229,6 +229,7 @@
      <string name="Location.sent">Lokalizacja przes\u0142ana</string>
      <string name="Close.app.prompt">Zamkn\u0105\u0107 aplikacj\u0119?</string>
      <string name="Searching.dialog.message"><![CDATA[Wyszukiwanie: <br/><b>%1$s</b>...]]></string>
+     <string name="Searching.calendar.message">Wyszukiwanie miejsc z dnia %1$s</string>
      <string name="Oauth.progress.message"><![CDATA[Logowanie do <b>%1$s</b>...]]></string>
      <string name="rate.us.message">U\u017cywa\u0142e(a)\u015b ten program %1$d razy. Czy chcesz go teraz oceni\u0107?</string>
      <string name="New.version.short.message">Nowa wersja</string>

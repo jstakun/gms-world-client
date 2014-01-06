@@ -225,16 +225,16 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
             finish();
         } else {
-            if (requestCode == Intents.INTENT_MYLANDMARKS) {
+        	//if (source == SOURCE.DAY_LANDMARKS) {
+            intents.showInfoToast(Locale.getMessage(R.string.foundLandmarks, getLandmarksTask.getLandmarks().size()));
+            //}
+            
+        	if (requestCode == Intents.INTENT_MYLANDMARKS) {
                 setTitle(R.string.listLocations);
             } else {
                 setTitle(R.string.listSelection);
             }
             
-            if (source == SOURCE.DAY_LANDMARKS) {
-            	//TODO localize
-            	intents.showInfoToast("Found " + getLandmarksTask.getLandmarks().size() + " landmarks");
-            }
             setListAdapter(new LandmarkArrayAdapter(this, getLandmarksTask.getLandmarks()));
             //getListView().setBackgroundResource(0);
             sort();

@@ -135,7 +135,7 @@
      <!-- LandmarkList -->
      <string name="listSelection">Select landmark</string>
      <string name="listLocations">Select location</string>
-     <string name="foundLandmarks">Found %1$d landmarks meeting your search criteria</string>
+     <string name="foundLandmarks">Found %1$d matching landmarks</string>
      <string name="foundLandmarksLow">
          If you want to improve search results go to Menu -> Settings -> Search type
      </string>
@@ -233,6 +233,7 @@
      <string name="Location.sent">Location uploaded</string>
      <string name="Close.app.prompt">Exit Landmark Manager?</string>
      <string name="Searching.dialog.message"><![CDATA[Searching for: <br/><b>%1$s</b>...]]></string>
+     <string name="Searching.calendar.message">Searching for landmarks on %1$s</string>
      <string name="Oauth.progress.message"><![CDATA[Authenticating to <b>%1$s</b>...]]></string>
      <string name="rate.us.message">You\'ve been using our app for %1$d times. Do you want to rate our app?</string>
      <string name="New.version.short.message">New version</string>
