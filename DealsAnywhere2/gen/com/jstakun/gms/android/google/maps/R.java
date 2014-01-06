@@ -350,17 +350,19 @@ public final class R {
 		public static final int help = 0x7f03000b;
 		public static final int intentrow = 0x7f03000c;
 		public static final int landmarkdetails = 0x7f03000d;
-		public static final int landmarklist = 0x7f03000e;
-		public static final int landmarkrow = 0x7f03000f;
-		public static final int layerrow = 0x7f030010;
-		public static final int loading = 0x7f030011;
-		public static final int login = 0x7f030012;
-		public static final int mylist = 0x7f030015;
-		public static final int mywebview = 0x7f030016;
-		public static final int newwebview = 0x7f030017;
-		public static final int picklocation = 0x7f030018;
-		public static final int socialrow = 0x7f030019;
-		public static final int statusbar = 0x7f03001a;
+		public static final int landmarkdetails_1094 = 0x7f03000e;
+		public static final int landmarklist = 0x7f03000f;
+		public static final int landmarkrow = 0x7f030010;
+		public static final int landmarkrow_1094 = 0x7f030011;
+		public static final int layerrow = 0x7f030012;
+		public static final int loading = 0x7f030013;
+		public static final int login = 0x7f030014;
+		public static final int mylist = 0x7f030017;
+		public static final int mywebview = 0x7f030018;
+		public static final int newwebview = 0x7f030019;
+		public static final int picklocation = 0x7f03001a;
+		public static final int socialrow = 0x7f03001b;
+		public static final int statusbar = 0x7f03001c;
 	}
 	public static final class menu {
 		public static final int deal_menu = 0x7f0c0000;

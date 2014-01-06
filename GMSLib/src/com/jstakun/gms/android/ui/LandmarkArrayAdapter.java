@@ -4,6 +4,11 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.lang.ref.WeakReference;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,11 +18,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
 import android.text.Html.ImageGetter;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,10 +33,6 @@ import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -61,7 +60,6 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     public LandmarkArrayAdapter(Activity parentListActivity, List<LandmarkParcelable> landmarks) {
         super(parentListActivity, R.layout.landmarkrow, landmarks);
         this.parentListActivity = parentListActivity;
-        //maxDistance = ConfigurationManager.getInstance().getLong(ConfigurationManager.MAX_CURRENT_DISTANCE) / 1000d;
     }
 
     @Override
@@ -78,7 +76,6 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             holder.landmarkDescText = (TextView) rowView.findViewById(R.id.landmarkDescText);
             holder.landmarkDescText.setMovementMethod(null);
             holder.thunbnailImage = (ImageView) rowView.findViewById(R.id.landmarkThumbnail);
-            //holder.landmarkDescLayout = (ViewGroup) rowView.findViewById(R.id.landmarkDescLayout);
             rowView.setTag(holder);
         } else {
             rowView = convertView;
@@ -128,9 +125,10 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             }
             holder.thunbnailImage.setVisibility(View.VISIBLE);
             
-            WindowManager wm = (WindowManager) parentListActivity.getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            FlowTextHelper.tryFlowText(desc, holder.thunbnailImage, holder.landmarkDescText, display, 3, imgGetter);
+            //WindowManager wm = (WindowManager) parentListActivity.getSystemService(Context.WINDOW_SERVICE);
+            //Display display = wm.getDefaultDisplay();
+            //FlowTextHelper.tryFlowText(desc, holder.thunbnailImage, holder.landmarkDescText, display, 3, imgGetter);
+            holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
         } else {
         	holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
             holder.thunbnailImage.setVisibility(View.GONE);
@@ -142,7 +140,6 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
         protected TextView landmarkNameText;
         protected TextView landmarkDescText;
         protected ImageView thunbnailImage;
-        //protected ViewGroup landmarkDescLayout;
     }
     
     private static class LandmarkThumbnailLoadingHandler extends Handler {
@@ -160,11 +157,12 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     	@Override
         public void handleMessage(Message message) {
     		//System.out.println("Running handleMessage for " + landmark.get().getName() + "...");
-    		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
+    		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing() && view.get() != null) {
     			Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.get().getThunbnail(), parentActivity.get().getResources().getDisplayMetrics(), null);
-                if (image != null && image.getWidth() < view.get().getWidth() * 0.5) {
-                	ViewHolder holder = (ViewHolder) view.get().getTag();
-                	buildView(landmark.get(), holder, view.get(), parentActivity.get());
+                View v = view.get();
+    			if (image != null && image.getWidth() < v.getWidth() * 0.75) {
+                	ViewHolder holder = (ViewHolder) v.getTag();
+                	buildView(landmark.get(), holder, v, parentActivity.get());
                 } else {
                 	LoggerUtils.debug(landmark.get().getThunbnail() + " size is too big: " + image.getWidth() + "x" + image.getHeight() + "!");
                 }

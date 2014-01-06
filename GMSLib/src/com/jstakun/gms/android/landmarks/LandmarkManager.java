@@ -979,23 +979,6 @@ public class LandmarkManager {
         return landmarkPaintManager.getSelectedLandmarkDrawable();
     }
 
-    /*public String getLandmarkURL(ExtendedLandmark landmark) {
-        String url = null;
-        final String[] remote = new String[]{Commons.LOCAL_LAYER, Commons.MY_POSITION_LAYER,
-            Commons.MC_ATM_LAYER, Commons.OSM_ATM_LAYER, Commons.OSM_PARKING_LAYER};
-
-        if (landmark != null) {
-            if (StringUtils.indexOfAny(landmark.getLayer(), remote) < 0 && landmark.getUrl() != null) {
-                url = landmark.getUrl();
-            } else {
-                url = String.format("%s?lat=%s&lon=%s", ConfigurationManager.SHOW_LOCATION_URL,
-                        Double.toString(landmark.getQualifiedCoordinates().getLatitude()),
-                        Double.toString(landmark.getQualifiedCoordinates().getLongitude()));
-            }
-        }
-        return url;
-    }*/
-
     public double[] getMyPosition(int lat, int lon) {
         double latt, lonn;
 
@@ -1031,19 +1014,24 @@ public class LandmarkManager {
 
     public void findLandmarksInDay(List<LandmarkParcelable> landmarkParcelable, int year, int month, int day, double lat, double lng) {
         List<ExtendedLandmark> dayLandmarks = new ArrayList<ExtendedLandmark>();
-
-        if (year > 0 && month > 0 && day > 0) {
-            Calendar cal = Calendar.getInstance();
-
+        
+        if (year > 0 && month >= 0 && day > 0) {
+        	Calendar selectedDay = Calendar.getInstance();
+            selectedDay.set(year, month, day);
+            Calendar landmarkDate = Calendar.getInstance();
             for (String key : Iterables.filter(layerManager.getLayers(), new LayerExistsPredicate())) {
                 for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
                     if (landmark.isDeal()) {
-                        cal.setTimeInMillis(landmark.getDeal().getEndDate());
+                        landmarkDate.setTimeInMillis(landmark.getDeal().getEndDate());
                     } else {
-                        cal.setTimeInMillis(landmark.getCreationDate());
+                        landmarkDate.setTimeInMillis(landmark.getCreationDate());
                     }
-                    if (year == cal.get(Calendar.YEAR) && month == cal.get(Calendar.MONTH) && day == cal.get(Calendar.DAY_OF_MONTH)) {
-                        dayLandmarks.add(landmark);
+                    //if (year == cal.get(Calendar.YEAR) && month == cal.get(Calendar.MONTH) && day == cal.get(Calendar.DAY_OF_MONTH)) {
+                    //    dayLandmarks.add(landmark);
+                    //}
+                    if (selectedDay.get(Calendar.DAY_OF_YEAR) == landmarkDate.get(Calendar.DAY_OF_YEAR) &&
+                    		selectedDay.get(Calendar.YEAR) == landmarkDate.get(Calendar.YEAR)) {
+                    	dayLandmarks.add(landmark);
                     }
                 }
             }

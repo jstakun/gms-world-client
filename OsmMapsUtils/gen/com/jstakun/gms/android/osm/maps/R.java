@@ -384,17 +384,19 @@ containing a value of this type.
         public static int help=0x7f03000b;
         public static int intentrow=0x7f03000c;
         public static int landmarkdetails=0x7f03000d;
-        public static int landmarklist=0x7f03000e;
-        public static int landmarkrow=0x7f03000f;
-        public static int layerrow=0x7f030010;
-        public static int loading=0x7f030011;
-        public static int login=0x7f030012;
-        public static int mylist=0x7f030013;
-        public static int mywebview=0x7f030014;
-        public static int newwebview=0x7f030015;
-        public static int picklocation=0x7f030016;
-        public static int socialrow=0x7f030017;
-        public static int statusbar=0x7f030018;
+        public static int landmarkdetails_1094=0x7f03000e;
+        public static int landmarklist=0x7f03000f;
+        public static int landmarkrow=0x7f030010;
+        public static int landmarkrow_1094=0x7f030011;
+        public static int layerrow=0x7f030012;
+        public static int loading=0x7f030013;
+        public static int login=0x7f030014;
+        public static int mylist=0x7f030015;
+        public static int mywebview=0x7f030016;
+        public static int newwebview=0x7f030017;
+        public static int picklocation=0x7f030018;
+        public static int socialrow=0x7f030019;
+        public static int statusbar=0x7f03001a;
     }
     public static final class menu {
         public static int deal_menu=0x7f0c0000;

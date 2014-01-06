@@ -663,7 +663,6 @@ public final class Intents {
     public void showLandmarkDetailsView(final ExtendedLandmark selectedLandmark, final View lvView, double[] currentLocation, boolean loadAd) {
         TextView name = (TextView) lvView.findViewById(R.id.lvname);
         TextView header = (TextView) lvView.findViewById(R.id.lvheader);
-        //ImageView layerImage = (ImageView) lvView.findViewById(R.id.lvLayerImage);
         ImageButton lvActionButton = (ImageButton) lvView.findViewById(R.id.lvActionButton);
         ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
         View lvOpenButton = lvView.findViewById(R.id.lvOpenButton);
@@ -736,7 +735,8 @@ public final class Intents {
                 thumbnail.setTag(selectedLandmark);
             }
             if (StringUtils.isNotEmpty(descr)) {
-                FlowTextHelper.tryFlowText(descr, thumbnail, desc, activity.getWindowManager().getDefaultDisplay(), 3, imgGetter);
+                //FlowTextHelper.tryFlowText(descr, thumbnail, desc, activity.getWindowManager().getDefaultDisplay(), 3, imgGetter);
+            	desc.setText(Html.fromHtml(descr, imgGetter, null));
             }
             if (thumbnail != null) {
                 thumbnail.setVisibility(View.VISIBLE);
@@ -840,6 +840,10 @@ public final class Intents {
     public void showInfoToast(String msg) {
         Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
+    
+    public void showShortToast(String msg) {
+        Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
 
     public boolean isClearLandmarksRequired(ProjectionInterface projection, int mapCenterLatE6,
             int mapCenterLngE6, int myLocLat, int myLocLng) {
@@ -935,9 +939,10 @@ public final class Intents {
 
         try {
             PackageInfo info = ConfigurationManager.getAppUtils().getPackageInfo();
-            versionCode = info.versionCode;
-            versionName = info.versionName;
-            //info.versionName ends with m;
+            if (info != null) {
+            	versionCode = info.versionCode;
+            	versionName = info.versionName;
+            }
             LoggerUtils.debug("Version code: " + versionCode);
         } catch (Exception ex) {
             LoggerUtils.error("Intents.checkAppVersion() exception", ex);
@@ -950,7 +955,8 @@ public final class Intents {
         
         if (buildVersion < versionCode) {
         
-        	if (StringUtils.endsWithIgnoreCase(versionName, "m")) {
+        	//info.versionName ends with m;
+            if (StringUtils.endsWithIgnoreCase(versionName, "m")) {
         		startHelpActivity();
         	}
         
@@ -1179,7 +1185,7 @@ public final class Intents {
 
                 	if (selectedLandmark != null && StringUtils.equals(url, selectedLandmark.getThumbnail())) {
                     	Bitmap image = IconCache.getInstance().getThumbnailResource(url, parentActivity.get().getResources().getDisplayMetrics(), null);
-                    	if (image != null && image.getWidth() < lvView.getWidth() * 0.5) {
+                    	if (image != null && image.getWidth() < lvView.getWidth() * 0.75) {
                         	thumbnail.setImageBitmap(image);
                         	String descr = "";
                         	double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
@@ -1192,7 +1198,8 @@ public final class Intents {
                             	descr += selectedLandmark.getDescription();
                         	}
                         	if (StringUtils.isNotEmpty(descr)) {
-                            	FlowTextHelper.tryFlowText(descr, thumbnail, desc, parentActivity.get().getWindowManager().getDefaultDisplay(), 3, imgGetter);
+                            	//FlowTextHelper.tryFlowText(descr, thumbnail, desc, parentActivity.get().getWindowManager().getDefaultDisplay(), 3, imgGetter);
+                        		desc.setText(Html.fromHtml(descr, imgGetter, null));
                         	}
                     	}
                 	}

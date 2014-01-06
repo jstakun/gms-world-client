@@ -43,6 +43,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     private double lat, lng;
     private GetLandmarksTask getLandmarksTask;
     private View progress;
+    private SOURCE source;
 
     public enum SOURCE {
 
@@ -76,7 +77,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             getLandmarksTask = (GetLandmarksTask) retained;
             getLandmarksTask.setActivity(this);
         } else {
-            SOURCE source = (SOURCE) intent.getSerializableExtra("source");
+            source = (SOURCE) intent.getSerializableExtra("source");
             if (source != null) {
                 getLandmarksTask = new GetLandmarksTask(this);
                 getLandmarksTask.execute();
@@ -228,6 +229,11 @@ public class LandmarkListActivity extends AbstractLandmarkList {
                 setTitle(R.string.listLocations);
             } else {
                 setTitle(R.string.listSelection);
+            }
+            
+            if (source == SOURCE.DAY_LANDMARKS) {
+            	//TODO localize
+            	intents.showInfoToast("Found " + getLandmarksTask.getLandmarks().size() + " landmarks");
             }
             setListAdapter(new LandmarkArrayAdapter(this, getLandmarksTask.getLandmarks()));
             //getListView().setBackgroundResource(0);

@@ -307,4 +307,13 @@ public abstract class DateTimeUtils {
     	cal.set(Calendar.MONTH, month);
     	return yearMonthFormat.format(cal.getTime());
     }
+    
+    public static String getDateString(long date, int style, Locale locale) {
+    	DateFormat formatter = DateFormat.getDateInstance(style, locale);
+    	return formatter.format(date);
+    }
+    
+    public static String getShortDateString(long date, Locale locale) {
+    	return getDateString(date, DateFormat.SHORT, locale);
+    }
 }
