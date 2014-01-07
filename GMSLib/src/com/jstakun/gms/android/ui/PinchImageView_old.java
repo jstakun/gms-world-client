@@ -12,7 +12,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
 
-public class PinchImageView extends ImageView implements OnTouchListener {
+public class PinchImageView_old extends ImageView implements OnTouchListener {
 
     public static final int GROW = 0;
     public static final int SHRINK = 1;
@@ -36,17 +36,17 @@ public class PinchImageView extends ImageView implements OnTouchListener {
     public int zoomScale = 0;
     public int zoomType = -1;
 
-    public PinchImageView(Context context, AttributeSet attr) {
+    public PinchImageView_old(Context context, AttributeSet attr) {
         super(context, attr);
         _init();
     }
 
-    public PinchImageView(Context context) {
+    public PinchImageView_old(Context context) {
         super(context);
         _init();
     }
 
-    public PinchImageView(ImageView im) {
+    public PinchImageView_old(ImageView im) {
         super(im.getContext());
         _init();
         this.im = im;

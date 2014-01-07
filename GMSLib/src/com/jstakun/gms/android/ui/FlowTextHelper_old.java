@@ -17,7 +17,7 @@ import android.widget.TextView;
  *
  * @author jstakun
  */
-public class FlowTextHelper {
+public class FlowTextHelper_old {
 
     private static boolean mNewClassAvailable;         /* class initialization fails when this throws an exception */
 
@@ -57,7 +57,7 @@ public class FlowTextHelper {
             int lines = (int) Math.round((height - padding) / textLineHeight);
             //For an html text you can use this line:
             SpannableStringBuilder ss = (SpannableStringBuilder) Html.fromHtml(text, imageGetter, null);
-            ss.setSpan(new GMSLeadingMarginSpan2(lines, width), 0, ss.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            ss.setSpan(new GMSLeadingMarginSpan2_old(lines, width), 0, ss.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             messageView.setText(ss);
             // Align the text with the image by removing the rule that the text is to the right of the image
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) messageView.getLayoutParams();

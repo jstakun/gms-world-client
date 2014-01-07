@@ -13,12 +13,12 @@ import android.text.style.LeadingMarginSpan;
  *
  * @author jstakun
  */
-public class GMSLeadingMarginSpan2 implements LeadingMarginSpan.LeadingMarginSpan2 {
+public class GMSLeadingMarginSpan2_old implements LeadingMarginSpan.LeadingMarginSpan2 {
 
     private int margin;
     private int lines;
 
-    public GMSLeadingMarginSpan2(int lines, int margin) {
+    public GMSLeadingMarginSpan2_old(int lines, int margin) {
         this.margin = margin;
         this.lines = lines;
     }
