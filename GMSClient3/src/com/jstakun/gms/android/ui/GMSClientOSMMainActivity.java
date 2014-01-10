@@ -764,6 +764,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             default:
                 return super.onOptionsItemSelected(item);
           }
+    	} else {
+    		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
     	}
         return true;
     }

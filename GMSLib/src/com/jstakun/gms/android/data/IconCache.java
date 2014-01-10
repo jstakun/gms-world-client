@@ -429,12 +429,14 @@ public class IconCache {
 
         c.drawPath(bounds, paint);
 
-        //draw layer bitmap
-        Rect src = new Rect(0, 0, b.getWidth(), b.getHeight());
-        Rect dest = new Rect(src);
-        dest.offset(b.getWidth() / 6, b.getHeight() / 6);
-        c.drawBitmap(b, src, dest, paint);
-
+        if (!b.isRecycled()) {
+        	//draw layer bitmap
+        	Rect src = new Rect(0, 0, b.getWidth(), b.getHeight());
+        	Rect dest = new Rect(src);
+        	dest.offset(b.getWidth() / 6, b.getHeight() / 6);
+        	c.drawBitmap(b, src, dest, paint);
+        }
+        
         //if b == DOWNLOAD don't cache
         if (!b.equals(images.get(DOWNLOAD))) {
             setResource(resourceName, bmp);

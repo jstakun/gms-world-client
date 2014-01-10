@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.jstakun.gms.android.ui"
-      android:versionCode="1095"
+      android:versionCode="1096"
       android:versionName="2.0.7">
     <uses-sdk android:minSdkVersion="3"
               android:targetSdkVersion="18"/>

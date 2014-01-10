@@ -644,8 +644,8 @@ com.jstakun.gms.android.ui.OAuth2Activity
 com.jstakun.gms.android.ui.PickLocationActivity
 com.jstakun.gms.android.ui.PickLocationActivity: PickLocationActivity()
 com.jstakun.gms.android.ui.PickLocationActivity: void onClick(android.view.View)
-com.jstakun.gms.android.ui.PinchImageView
-com.jstakun.gms.android.ui.PinchImageView: PinchImageView(android.content.Context,android.util.AttributeSet)
+com.jstakun.gms.android.ui.PinchImageView_old
+com.jstakun.gms.android.ui.PinchImageView_old: PinchImageView_old(android.content.Context,android.util.AttributeSet)
 com.jstakun.gms.android.ui.ResizableTextView
 com.jstakun.gms.android.ui.ResizableTextView: ResizableTextView(android.content.Context,android.util.AttributeSet)
 com.jstakun.gms.android.ui.ResizableTextView: ResizableTextView(android.content.Context)
@@ -842,6 +842,8 @@ org.osmdroid.ResourceProxy$bitmap: org.osmdroid.ResourceProxy$bitmap[] values()
 org.osmdroid.ResourceProxy$bitmap: org.osmdroid.ResourceProxy$bitmap valueOf(java.lang.String)
 org.osmdroid.ResourceProxy$string: org.osmdroid.ResourceProxy$string[] values()
 org.osmdroid.ResourceProxy$string: org.osmdroid.ResourceProxy$string valueOf(java.lang.String)
+org.osmdroid.api.Marker$Anchor: org.osmdroid.api.Marker$Anchor[] values()
+org.osmdroid.api.Marker$Anchor: org.osmdroid.api.Marker$Anchor valueOf(java.lang.String)
 org.osmdroid.contributor.util.RecordedGeoPoint
 org.osmdroid.contributor.util.RecordedGeoPoint: long serialVersionUID
 org.osmdroid.tileprovider.LRUMapTileCache: long serialVersionUID
@@ -854,8 +856,8 @@ org.osmdroid.util.BoundingBoxE6: android.os.Parcelable$Creator CREATOR
 org.osmdroid.util.GeoPoint
 org.osmdroid.util.GeoPoint: long serialVersionUID
 org.osmdroid.util.GeoPoint: android.os.Parcelable$Creator CREATOR
-org.osmdroid.views.MapController$AnimationType: org.osmdroid.views.MapController$AnimationType[] values()
-org.osmdroid.views.MapController$AnimationType: org.osmdroid.views.MapController$AnimationType valueOf(java.lang.String)
+org.osmdroid.views.MapControllerOld$AnimationType: org.osmdroid.views.MapControllerOld$AnimationType[] values()
+org.osmdroid.views.MapControllerOld$AnimationType: org.osmdroid.views.MapControllerOld$AnimationType valueOf(java.lang.String)
 org.osmdroid.views.MapView
 org.osmdroid.views.MapView: MapView(android.content.Context,android.util.AttributeSet)
 org.osmdroid.views.MapView$LayoutParams
