@@ -42,6 +42,8 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
         favourites = getIntent().getParcelableArrayListExtra("favourites");
 
+        intents = new Intents(this, null, null);
+
         if (favourites != null) {
 
             UserTracker.getInstance().startSession(this);
@@ -53,14 +55,13 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
             registerForContextMenu(getListView());
 
-            intents = new Intents(this, null, null);
-
             searchButton.setVisibility(View.GONE);
             ratingButton.setVisibility(View.GONE);
 
             createDeleteFileAlertDialog();
 
         } else {
+        	intents.showInfoToast(Locale.getMessage(R.string.autoCheckinListEmpty));
             finish();
         }
     }
