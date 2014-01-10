@@ -41,8 +41,6 @@ import java.util.Map;
 public abstract class AbstractLandmarkList extends ListActivity implements View.OnClickListener {
 
     private enum ORDER {ASC, DESC};
-    //private static final int ASC = 0;
-    //private static final int DESC = 1;
     public static final int ORDER_BY_NAME = 0;
     private static final int ORDER_BY_DIST = 1;
     private static final int ORDER_BY_DATE = 2;
