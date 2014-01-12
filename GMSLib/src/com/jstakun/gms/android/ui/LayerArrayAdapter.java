@@ -72,15 +72,6 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
 
         holder.headerText.setText(layerName);
 
-        /*final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-                        getContext().getResources().getDisplayMetrics(), null);
-                holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-            }
-        };*/
-        
         BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
                         getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));
         holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);

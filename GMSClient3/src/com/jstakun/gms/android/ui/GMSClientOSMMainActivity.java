@@ -145,7 +145,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         loadingHandler = new LoadingHandler(this);
         
-        setContentView(R.layout.osmdroidcanvasview_1);
+        setContentView(R.layout.osmdroidcanvasview);
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setMultiTouchControls(true);
         myLocation = new OsmMyLocationNewOverlay(this, mapView, loadingHandler);

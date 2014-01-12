@@ -65,7 +65,6 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             holder = new ViewHolder();
             holder.headerText = (TextView) rowView.findViewById(R.id.socialStatusHeader);
             holder.statusText = (TextView) rowView.findViewById(R.id.socialStatusText);
-            //holder.socialImage = (ImageView) rowView.findViewById(R.id.socialIcon);
             holder.socialCheckbox = (CheckBox) rowView.findViewById(R.id.socialStatusCheckbox);
             holder.loginButton = (Button) rowView.findViewById(R.id.socialLoginButton);
             holder.footer = footer;
@@ -136,8 +135,6 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
         holder.headerText.setCompoundDrawablesWithIntrinsicBounds(icons[position], 0, 0, 0);
         
-        //holder.socialImage.setImageResource(icons[position]);
-
         holder.loginButton.setOnClickListener(new PositionClickListener(position, holder, intents, context, this));
 
         if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
@@ -151,7 +148,6 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
     private static class ViewHolder {
 
-        //protected ImageView socialImage;
         protected CheckBox socialCheckbox;
         protected TextView headerText;
         protected TextView statusText;

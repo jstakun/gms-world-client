@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+    android:id="@+id/mapCanvasWidgetL"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffffff"
+    android:layout_centerInParent="true">
+        <ImageView
+    android:id="@+id/mapCanvasLoadingImage"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/discover"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"/>
+        <TextView
+    android:id="@+id/mapCanvasLoadingText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@style/LoadingText"
+    android:layout_below="@+id/mapCanvasLoadingImage"
+    android:text="@string/loadingText"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+    <android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    	<FrameLayout
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:id="@+id/mapCanvasWidgetM"
+    	android:background="#ffffffff"
+    	android:visibility="gone">
+        	 <org.osmdroid.views.MapView
+    		android:id="@+id/mapCanvas"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent"/>
+       		<include layout="@layout/statusbar"/> 
+    	</FrameLayout>
+    	<ExpandableListView android:id="@+id/left_drawer"
+        	android:layout_width="240dip"
+        	android:layout_height="match_parent"
+        	android:layout_gravity="start"
+        	android:choiceMode="singleChoice"
+        	android:dividerHeight="1dip"
+        	android:background="#FFFFFF"
+        	android:divider="@color/trans_dim_gray"/>
+	</android.support.v4.widget.DrawerLayout>
+
+    <include layout="@layout/landmarkdetails"/>
+
+</merge>

@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/showLayers"
                  android:title="@string/layers" android:showAsAction="ifRoom|withText"
-                 android:icon="@drawable/layers"/>
+                 android:icon="@drawable/layers"/> 
     <item android:id="@+id/search"
           android:title="@string/search" android:icon="@drawable/ic_menu_search"
-          android:showAsAction="ifRoom|withText"/>
+          android:showAsAction="ifRoom|withText"/> 
     <item android:id="@+id/login" android:showAsAction="ifRoom|withText"
-          android:title="@string/login" android:icon="@drawable/ic_menu_login"/>
+          android:title="@string/login" android:icon="@drawable/ic_menu_login"/> 
     <item android:id="@+id/listLandmarks" android:icon="@android:drawable/ic_menu_compass"
-                 android:title="@string/landmarksNearby" android:showAsAction="ifRoom|withText"/>
+                 android:title="@string/landmarksNearby" android:showAsAction="ifRoom|withText"/> 
     <item android:id="@+id/addLandmark" android:showAsAction="ifRoom|withText"
-          android:title="@string/addLandmark" android:icon="@android:drawable/ic_menu_add" />
+          android:title="@string/addLandmark" android:icon="@android:drawable/ic_menu_add" /> 
     <item android:id="@+id/pickMyPos" android:showAsAction="ifRoom|withText"
-          android:title="@string/pickMyPos" android:icon="@android:drawable/ic_menu_mapmode"/>
+          android:title="@string/pickMyPos" android:icon="@android:drawable/ic_menu_mapmode"/> 
     <item android:id="@+id/showMyPos" android:showAsAction="ifRoom|withText"
           android:title="@string/showMyPos" android:icon="@android:drawable/ic_menu_mylocation"/>
     <item android:id="@+id/settings" android:showAsAction="ifRoom|withText"
@@ -33,17 +33,6 @@
           android:title="@string/friendsCheckins"/>
     <item android:id="@+id/deals"
           android:title="@string/deals"/>
-    <!--item android:id="@+id/layers"
-          android:title="@string/layers">
-          <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/layers">
-              <item android:id="@+id/addLayer"
-                 android:title="@string/addLayer"/>
-              <item android:id="@+id/refreshLayers"
-                 android:title="@string/refreshLayers"/>
-              <item android:id="@+id/showLayers"
-                 android:title="@string/showLayers"/>
-          </menu>
-    </item-->
     <item android:id="@+id/landmarks"
           android:title="@string/landmarks">
         <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/landmarks">
@@ -61,8 +50,6 @@
     </item>
     <item android:id="@+id/socialNetworks"
           android:title="@string/socialNetworks" />
-    <!-- item android:id="@+id/events"
-          android:title="@string/events" android:icon="@android:drawable/ic_menu_month"/-->
     <item android:id="@+id/router"
           android:title="@string/routes">
         <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/routes">
@@ -82,21 +69,21 @@
             <item android:id="@+id/shareScreenshot"
           android:title="@string/shareScreenshot" />
             <item android:id="@+id/register"
-          android:title="@string/register" />
+          android:title="@string/register" /> 
             <item android:id="@+id/blogeo"
-          android:title="@string/blogeo" />
+          android:title="@string/blogeo" /> 
             <item android:id="@+id/clearMap"
-          android:title="@string/clearMap" />
+          android:title="@string/clearMap" /> 
             <item android:id="@+id/dataPacket"
-          android:title="@string/dataPacket" />
+          android:title="@string/dataPacket" /> 
             <item android:id="@+id/releaseNotes"
-          android:title="@string/releaseNotes" />
+          android:title="@string/releaseNotes" /> 
             <item android:id="@+id/rateUs"
           android:title="@string/rateUs" />
             <item android:id="@+id/about"
-          android:title="@string/about" />
+          android:title="@string/about" /> 
             <item android:id="@+id/exit"
-          android:title="@string/exit" />
+          android:title="@string/exit" /> 
         </menu>
     </item>
 </menu>

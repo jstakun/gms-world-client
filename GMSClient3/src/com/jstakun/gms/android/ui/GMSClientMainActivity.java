@@ -160,14 +160,14 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         LoggerUtils.debug("Map provider is " + mapProvider);
 
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            setContentView(R.layout.osmdroidcanvasview_1);
+            setContentView(R.layout.osmdroidcanvasview);
             mapView = (IMapView) findViewById(R.id.mapCanvas);
             ((org.osmdroid.views.MapView) mapView).setMultiTouchControls(true);
             myLocation = new OsmMyLocationNewOverlay(this.getApplicationContext(), (org.osmdroid.views.MapView) mapView, loadingHandler);
             infoOverlay = new OsmInfoOverlay(this);
         } else {
             //default view is Google
-            setContentView(R.layout.googlemapscanvasview_1);
+            setContentView(R.layout.googlemapscanvasview);
             googleMapsView = (MapView) findViewById(R.id.mapCanvas);
             mapView = new org.osmdroid.google.wrapper.MapView(googleMapsView);
             myLocation = new GoogleIMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
