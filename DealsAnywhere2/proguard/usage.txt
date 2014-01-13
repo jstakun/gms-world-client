@@ -3,14 +3,13 @@ android.support.v4.accessibilityservice.AccessibilityServiceInfoCompat$Accessibi
 android.support.v4.accessibilityservice.AccessibilityServiceInfoCompat$AccessibilityServiceInfoStubImpl
 android.support.v4.accessibilityservice.AccessibilityServiceInfoCompat$AccessibilityServiceInfoVersionImpl
 android.support.v4.accessibilityservice.AccessibilityServiceInfoCompatIcs
-android.support.v4.app.ActionBarDrawerToggle
-android.support.v4.app.ActionBarDrawerToggle$1
-android.support.v4.app.ActionBarDrawerToggle$ActionBarDrawerToggleImpl
-android.support.v4.app.ActionBarDrawerToggle$ActionBarDrawerToggleImplBase
-android.support.v4.app.ActionBarDrawerToggle$ActionBarDrawerToggleImplHC
-android.support.v4.app.ActionBarDrawerToggle$SlideDrawable
-android.support.v4.app.ActionBarDrawerToggleHoneycomb
-android.support.v4.app.ActionBarDrawerToggleHoneycomb$SetIndicatorInfo
+android.support.v4.app.ActionBarDrawerToggle:
+    private static final int ID_HOME
+    199:210:public void setDrawerIndicatorEnabled(boolean)
+    217:217:public boolean isDrawerIndicatorEnabled()
+android.support.v4.app.ActionBarDrawerToggleHoneycomb:
+    private static final java.lang.String TAG
+    39:92:ActionBarDrawerToggleHoneycomb()
 android.support.v4.app.ActivityCompat
 android.support.v4.app.ActivityCompatHoneycomb:
     27:27:ActivityCompatHoneycomb()
@@ -836,20 +835,11 @@ android.support.v4.widget.DrawerLayout:
     private static final int PEEK_DELAY
     private static final int MIN_FLING_VELOCITY
     private static final boolean ALLOW_EDGE_LOCK
-    213:214:public DrawerLayout(android.content.Context)
-    261:271:public void setDrawerShadow(android.graphics.drawable.Drawable,int)
-    281:282:public void setDrawerShadow(int,int)
     290:292:public void setScrimColor(int)
-    301:302:public void setDrawerListener(android.support.v4.widget.DrawerLayout$DrawerListener)
     318:320:public void setDrawerLockMode(int)
     390:395:public void setDrawerLockMode(int,android.view.View)
     405:412:public int getDrawerLockMode(int)
     532:540:void moveDrawerToOffset(android.view.View,float)
-    995:1004:public void openDrawer(int)
-    1038:1047:public void closeDrawer(int)
-    1060:1063:public boolean isDrawerOpen(android.view.View)
-    1076:1080:public boolean isDrawerOpen(int)
-    1107:1111:public boolean isDrawerVisible(int)
 android.support.v4.widget.DrawerLayout$LayoutParams:
     1466:1468:public DrawerLayout$LayoutParams(int,int,int)
 android.support.v4.widget.DrawerLayout$SimpleDrawerListener
@@ -5081,7 +5071,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int yesButton
     public static final int zoomin
     public static final int zoomout
-    381:381:public R$string()
+    387:387:public R$string()
 com.jstakun.gms.android.google.maps.R$style
 com.jstakun.gms.android.google.maps.R$styleable
 com.jstakun.gms.android.google.maps.R$xml
@@ -5286,9 +5276,6 @@ com.jstakun.gms.android.ui.DealCategoryArrayAdapter$PositionClickListener:
 com.jstakun.gms.android.ui.FilesActivity:
     public static final int FILES
     public static final int ROUTES
-com.jstakun.gms.android.ui.FlowTextHelper_old
-com.jstakun.gms.android.ui.FlowTextHelper_old$HelperInternal
-com.jstakun.gms.android.ui.GMSLeadingMarginSpan2_old
 com.jstakun.gms.android.ui.GMSNotificationManager:
     70:71:public void cancelAll()
 com.jstakun.gms.android.ui.HelpActivity:
@@ -5349,18 +5336,6 @@ com.jstakun.gms.android.ui.OAuth2Activity:
 com.jstakun.gms.android.ui.PickLocationActivity:
     private static final int ID_DIALOG_PROGRESS
     private static final java.lang.String NAME
-com.jstakun.gms.android.ui.PinchImageView_old:
-    public static final int GROW
-    public static final int SHRINK
-    public static final int TOUCH_INTERVAL
-    public static final float MIN_SCALE
-    public static final float MAX_SCALE
-    public static final float ZOOM
-    45:47:public PinchImageView_old(android.content.Context)
-    50:55:public PinchImageView_old(android.widget.ImageView)
-    169:170:public void zoomMax()
-    173:174:public void zoomMin()
-    232:235:protected void zoomTo(float)
 com.jstakun.gms.android.ui.TransparentLinearLayout:
     42:43:public void setInnerPaint(android.graphics.Paint)
     46:47:public void setBorderPaint(android.graphics.Paint)
@@ -5456,6 +5431,7 @@ com.jstakun.gms.android.ui.lib.R$drawable:
     public static final int currency_dollar
     public static final int discover
     public static final int dollar_24
+    public static final int drawer_shadow
     public static final int email_send
     public static final int full_star
     public static final int gotourl
@@ -5463,6 +5439,7 @@ com.jstakun.gms.android.ui.lib.R$drawable:
     public static final int hot_deals
     public static final int hotwire
     public static final int ic_dialog_alert
+    public static final int ic_drawer
     public static final int ic_menu_login
     public static final int ic_menu_mark
     public static final int ic_menu_refresh
@@ -5519,6 +5496,8 @@ com.jstakun.gms.android.ui.lib.R$id:
     public static final int closingWidgetP
     public static final int commentLabel
     public static final int descLabel
+    public static final int drawer_child_text
+    public static final int drawer_parent_text
     public static final int keywordsLabel
     public static final int landmarkDescLayout
     public static final int landmarkLayout
@@ -5545,24 +5524,26 @@ com.jstakun.gms.android.ui.lib.R$id:
     public static final int showDodCheckbox
     public static final int statusBar
     public static final int validityLabel
-    212:212:public R$id()
+    214:214:public R$id()
 com.jstakun.gms.android.ui.lib.R$layout:
     public static final int adview
     public static final int closing
     public static final int dod
+    public static final int drawerrow_child
+    public static final int drawerrow_parent
     public static final int landmarkdetails
     public static final int landmarkdetails_1094
     public static final int landmarkrow_1094
     public static final int loading
     public static final int statusbar
-    338:338:public R$layout()
+    342:342:public R$layout()
 com.jstakun.gms.android.ui.lib.R$menu:
-    367:367:public R$menu()
+    373:373:public R$menu()
 com.jstakun.gms.android.ui.lib.R$raw:
     public static final int route_a
     public static final int route_b
     public static final int route_c
-    372:372:public R$raw()
+    378:378:public R$raw()
 com.jstakun.gms.android.ui.lib.R$string:
     public static final int Authn_error
     public static final int Category_Loading_1
@@ -5622,7 +5603,6 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int address
     public static final int addressLabel
     public static final int artist
-    public static final int autoCheckinListEmpty
     public static final int autoCheckinMessage
     public static final int autoCheckinSummaryOff
     public static final int autoCheckinSummaryOn
@@ -5743,7 +5723,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int venue
     public static final int zoomin
     public static final int zoomout
-    381:381:public R$string()
+    387:387:public R$string()
 com.jstakun.gms.android.ui.lib.R$style
 com.jstakun.gms.android.ui.lib.R$styleable
 com.jstakun.gms.android.ui.lib.R$xml

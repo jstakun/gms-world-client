@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.SpannableString;
 import android.view.KeyEvent;
@@ -201,6 +202,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         getActionBar().setHomeButtonEnabled(true);
         
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         
         drawerList = (ExpandableListView) findViewById(R.id.left_drawer);
         drawerList.setAdapter(new NavigationDrawerExpandableListAdapter(this));
@@ -621,13 +623,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        //if (appInitialized) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
+        inflater.inflate(R.menu.main_menu_2, menu);
         return true;
-        //} else {
-        //    return false;
-        //}
     }
 
     @Override
@@ -638,8 +636,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             MenuItem routeRecording = menu.findItem(R.id.trackPos);
             MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
             MenuItem saveRoute = menu.findItem(R.id.saveRoute);
-            MenuItem login = menu.findItem(R.id.login);
-
+            
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
                 saveRoute.setVisible(false);
@@ -655,6 +652,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 }
             }
 
+            MenuItem login = menu.findItem(R.id.login);
             login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
 
             return super.onPrepareOptionsMenu(menu);

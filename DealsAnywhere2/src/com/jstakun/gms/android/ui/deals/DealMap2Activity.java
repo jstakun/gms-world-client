@@ -3,11 +3,15 @@ package com.jstakun.gms.android.ui.deals;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +20,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -81,6 +88,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private View lvCloseButton, lvCallButton, lvOpenButton,
             lvView, lvSendMailButton, lvRouteButton,
             thumbnailButton, loadingImage;
+    private DrawerLayout drawerLayout;
+    private ListView drawerList;
+    private ActionBarDrawerToggle drawerToggle;
     private boolean isStopped = false;
     private boolean initLandmarkManager = false;
     private boolean appInitialized = false;
@@ -126,9 +136,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         OsUtil.setDisplayType(getResources().getConfiguration());
         getActionBar().hide();
 
-        setContentView(R.layout.mapcanvasview);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        setContentView(R.layout.mapcanvasview_2);
+        
         loadingHandler = new LoadingHandler(this);
         
         initComponents();
@@ -162,6 +171,31 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         googleMapsView = (MapView) findViewById(R.id.mapCanvas);
         googleMapsView.setBuiltInZoomControls(true);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerList = (ListView) findViewById(R.id.left_drawer);
+
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        drawerList.setAdapter(new NavigationDrawerListAdapter(this, R.layout.drawerrow_parent, getResources().getStringArray(R.array.navigation)));
+        drawerList.setOnItemClickListener(new DrawerItemClickListener());
+        
+        drawerToggle = new ActionBarDrawerToggle(
+                this, drawerLayout,  R.drawable.ic_drawer, 
+                R.string.app_name,  /* "open drawer" description for accessibility */
+                R.string.app_name  /* "close drawer" description for accessibility */
+                ) {
+            public void onDrawerClosed(View view) {
+                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        drawerLayout.setDrawerListener(drawerToggle);
+        
         infoOverlay = new GoogleInfoOverlay();
 
         StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
@@ -226,14 +260,23 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
+        inflater.inflate(R.menu.main_menu_2, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
-        switch (item.getItemId()) {
+    	if (drawerToggle.onOptionsItemSelected(item)) {
+    		UserTracker.getInstance().trackEvent("NavigationDrawerClicks", item.getTitle().toString(), "", 0);
+            return true;
+        } else {
+        	UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
+        	return onMenuItemSelected(item.getItemId());
+        }
+    }
+
+	private boolean onMenuItemSelected(int itemId) {
+		switch (itemId) {
             case R.id.hotDeals:
                 intents.startDealsOfTheDayIntent(getMyPosition(), null);
                 break;
@@ -277,9 +320,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             case R.id.exit:
                 dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
                 break;
-            case android.R.id.home:
-                dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
-                break;
+            //case android.R.id.home:
+            //    dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+            //    break;
             case R.id.about:
                 dialogManager.showAlertDialog(AlertDialogBuilder.INFO_DIALOG, null, null);
                 break;
@@ -299,10 +342,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
             default:
-                return super.onOptionsItemSelected(item);
+                return true;
         }
         return true;
-    }
+	}
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
         if (!appInitialized) {
@@ -600,6 +643,20 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+    
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //System.out.println("Key pressed in activity: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -786,6 +843,15 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private void animateTo(int[] coordsE6) {
     	GeoPoint g = new GeoPoint(coordsE6[0], coordsE6[1]);
         mapController.animateTo(g);
+    }
+    
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        	drawerList.setItemChecked(position, true);
+            drawerLayout.closeDrawer(drawerList);
+            onMenuItemSelected((int)id);
+        }
     }
     
     private static class LoadingHandler extends Handler {

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+android:id="@+id/loadingWidgetP"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent">
+        <RelativeLayout
+android:id="@+id/loadingWidgetC"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:background="#ffffffff"
+android:layout_centerInParent="true"
+>
+            <ImageView
+android:id="@+id/loadingImage"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:src="@drawable/currency_dollar"
+android:layout_centerVertical="true"
+android:layout_centerHorizontal="true"/>
+            <TextView
+android:id="@+id/loadingText"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+style="@style/LoadingText"
+android:layout_below="@+id/loadingImage"
+android:text="@string/loadingText"
+android:layout_centerVertical="true"
+android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    <android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    	<FrameLayout
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:id="@+id/mapCanvasWidgetM"
+    	android:background="#ddd3d3d3"
+    	android:visibility="gone">
+        	<com.google.android.maps.MapView
+    		android:id="@+id/mapCanvas"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent"
+    		android:clickable="true"
+    		android:apiKey="@string/googleMapsKey"/> 
+       		<include layout="@layout/statusbar"/>
+    	</FrameLayout>
+    	<ListView android:id="@+id/left_drawer"
+        	android:layout_width="240dip"
+        	android:layout_height="match_parent"
+        	android:layout_gravity="start"
+        	android:choiceMode="singleChoice"
+        	android:dividerHeight="1dip"
+        	android:background="#FFFFFF"
+        	android:divider="@color/trans_dim_gray"/>
+	</android.support.v4.widget.DrawerLayout>
+    <include layout="@layout/landmarkdetails"/>
+
+<!--/FrameLayout-->
+</merge>

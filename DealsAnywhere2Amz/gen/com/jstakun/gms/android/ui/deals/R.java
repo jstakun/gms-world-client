@@ -408,7 +408,7 @@ containing a value of this type.
         public static final int layerrow=0x7f030014;
         public static final int loading=0x7f030015;
         public static final int login=0x7f030016;
-        public static final int mapcanvasview=0x7f030017;
+        public static final int mapcanvasview_amz=0x7f030017;
         public static final int mylist=0x7f030018;
         public static final int mywebview=0x7f030019;
         public static final int newwebview=0x7f03001a;

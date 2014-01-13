@@ -26,11 +26,11 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
 
     private View lvCloseButton, lvCallButton, lvOpenButton, lvSendMailButton, lvRouteButton;
     private CheckBox showAtStratup;
-    private DealMapActivity activity;
+    private DealMapAmzActivity activity;
     private ExtendedLandmark recommended;
     private Intents intents;
     
-    public DealOfTheDayDialog(DealMapActivity activity, ExtendedLandmark recommended) {
+    public DealOfTheDayDialog(DealMapAmzActivity activity, ExtendedLandmark recommended) {
         super(activity);
         this.activity = activity;
         this.recommended = recommended;

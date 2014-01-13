@@ -25,6 +25,7 @@ android.support.v4.view.ViewPager$LayoutParams: ViewPager$LayoutParams(android.c
 android.support.v4.view.ViewPager$SavedState
 android.support.v4.view.ViewPager$SavedState: android.os.Parcelable$Creator CREATOR
 android.support.v4.widget.DrawerLayout
+android.support.v4.widget.DrawerLayout: DrawerLayout(android.content.Context)
 android.support.v4.widget.DrawerLayout: DrawerLayout(android.content.Context,android.util.AttributeSet)
 android.support.v4.widget.DrawerLayout: DrawerLayout(android.content.Context,android.util.AttributeSet,int)
 android.support.v4.widget.DrawerLayout$LayoutParams
@@ -644,8 +645,6 @@ com.jstakun.gms.android.ui.OAuth2Activity
 com.jstakun.gms.android.ui.PickLocationActivity
 com.jstakun.gms.android.ui.PickLocationActivity: PickLocationActivity()
 com.jstakun.gms.android.ui.PickLocationActivity: void onClick(android.view.View)
-com.jstakun.gms.android.ui.PinchImageView_old
-com.jstakun.gms.android.ui.PinchImageView_old: PinchImageView_old(android.content.Context,android.util.AttributeSet)
 com.jstakun.gms.android.ui.ResizableTextView
 com.jstakun.gms.android.ui.ResizableTextView: ResizableTextView(android.content.Context,android.util.AttributeSet)
 com.jstakun.gms.android.ui.ResizableTextView: ResizableTextView(android.content.Context)

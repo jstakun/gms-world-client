@@ -139,7 +139,7 @@
      <string name="foundLandmarksLow">
          If you want to improve search results go to Menu -> Settings -> Search type
      </string>
-     <string name="foundDeals">Found %1$d deals meeting your search criteria</string>
+     <string name="foundDeals">Found %1$d matching deals</string>
      <string name="foundDealsLow">
          If you want to improve search results go to Menu -> Settings -> Search type
      </string>
@@ -277,7 +277,7 @@
      <string name="Landmark.distance">Distance: %1$s</string>
      <string name="Landmark.distance.max">Max distance: %1$s</string>
      <string name="Landmark.MultiLandmark">Multiple landmarks: %1$s</string>
-     <string name="Landmark.search.empty.result">No landmarks matching your selection criteria!</string>
+     <string name="Landmark.search.empty.result">No matching landmarks!</string>
      <string name="Landmark.deals.in.category">Number of deals in category: %1$d</string>
      <string name="Landmark.in.layer.count">Number of landmarks in layer: %1$d</string>
      <string name="Landmark.NoLandmarks">No landmarks in folder.</string>

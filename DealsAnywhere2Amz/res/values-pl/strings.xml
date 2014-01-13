@@ -29,15 +29,14 @@
     <string name="checkboxDodDialog">Poka\u017c okazj\u0119 dnia przy starcie</string>
 
      <!-- closing -->
-     <string name="closingText">Zamykanie Deals Anywhere...</string>
+     <string name="closingText">Zamykanie Deals Anywhere&#8230;</string>
 
      <!-- loading -->
-     <string name="loadingText">\u0141adowanie Deals Anywhere...</string>
+     <string name="loadingText">\u0141adowanie Deals Anywhere&#8230;</string>
 
      <!-- LandmarkList -->
      <string name="listSelection">Wybierz okazj\u0119</string>
-     <string name="foundDeals">Znaleziono %1$d pasuj\u0105cych okazji</string>
-
+     
      <!-- Deals list -->
      <string name="searchDeals">Dost\u0119pne okazje</string>
 
@@ -50,7 +49,8 @@
      <string name="Landmark.deals.in.category">Ilo\u015b\u0107 okazji w kategorii: %1$d</string>
      <string name="Landmark.share">Udost\u0119pnij okazj\u0119</string>
      <string name="Landmarks.day.empty">Brak okazji w tym dniu</string>
-     <string name="Landmark.Loading">\u0141adowanie okazji...</string>
+     <string name="Landmark.Loading">\u0141adowanie okazji&#8230;</string>
      <string name="Layer.Loaded">Warstwy za\u0142adowane. Znaleziono %1$d okazji!</string>
+     <string name="foundLandmarks">Znaleziono %1$d pasuj\u0105cych okazji</string>
     
 </resources>

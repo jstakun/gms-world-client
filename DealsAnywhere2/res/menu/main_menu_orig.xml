@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/listMode" android:showAsAction="ifRoom|withText"
+          android:title="@string/listMode" android:icon="@android:drawable/ic_menu_agenda"/> <!-- n  -->
+    <item android:id="@+id/search" android:showAsAction="ifRoom|withText"
+          android:title="@string/search" android:icon="@drawable/ic_menu_search"/> <!-- a  -->
+    <item android:id="@+id/hotDeals" android:showAsAction="ifRoom|withText"
+          android:title="@string/hotDeals" android:icon="@drawable/hot_deals"/> <!-- n -->
+    <item android:id="@+id/newestDeals" android:showAsAction="ifRoom|withText"
+          android:title="@string/newestDeals" android:icon="@drawable/newest"/> <!-- n -->
+    <item android:id="@+id/nearbyDeals" android:showAsAction="ifRoom|withText"
+          android:title="@string/landmarksNearby" android:icon="@drawable/layers"/> <!-- n  -->
+    <item android:id="@+id/pickMyPos"
+          android:title="@string/pickMyPos" android:icon="@android:drawable/ic_menu_mapmode"/> <!-- n -->
+    <item android:id="@+id/showMyPos"
+          android:title="@string/showMyPos" android:icon="@android:drawable/ic_menu_mylocation"/> <!-- a -->
+    <item android:id="@+id/refreshLayers"
+          android:title="@string/refreshLayers" android:icon="@drawable/ic_menu_refresh"/> <!-- a -->
+    <item android:id="@+id/showMyLandmarks" android:title="@string/showMyLandmarks"/> <!-- n -->
+    <item android:id="@+id/more"
+          android:title="@string/more">
+        <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/more">
+            <item android:id="@+id/settings" android:title="@string/settings"/> <!-- a -->
+            <item android:id="@+id/recentLandmarks" android:title="@string/recentLandmarks"/> <!-- n -->
+            <item android:id="@+id/showDoD" android:title="@string/titleDod"/> <!-- n -->
+            <item android:id="@+id/events" android:title="@string/events"/> <!-- n -->
+            <item android:id="@+id/discoverPlaces" android:title="@string/discoverPlaces"/> <!-- a -->
+            <item android:id="@+id/releaseNotes" android:title="@string/releaseNotes" /> <!-- a -->
+            <item android:id="@+id/rateUs" android:title="@string/rateUs" /> <!-- a -->
+            <item android:id="@+id/about" android:title="@string/about" /> <!-- a -->
+            <item android:id="@+id/exit" android:title="@string/exit" /> <!-- a -->
+        </menu>
+    </item>
+</menu>
+

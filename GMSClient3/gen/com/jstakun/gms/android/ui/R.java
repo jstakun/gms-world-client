@@ -464,7 +464,6 @@ containing a value of this type.
         public static final int layers_menu=0x7f0c0002;
         public static final int main_menu=0x7f0c0003;
         public static final int main_menu_2=0x7f0c0004;
-        public static final int main_menu_orig=0x7f0c0005;
     }
     public static final class raw {
         public static final int category=0x7f060000;

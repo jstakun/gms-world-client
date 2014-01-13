@@ -30,15 +30,14 @@
     <string name="noDodAvailable">At the moment we have no special offer for you. Please check again later!</string>
 
      <!-- closing -->
-     <string name="closingText">Closing Deals Anywhere...</string>
+     <string name="closingText">Closing Deals Anywhere&#8230;</string>
 
      <!-- loading -->
-     <string name="loadingText">Loading Deals Anywhere...</string>
+     <string name="loadingText">Loading Deals Anywhere&#8230;</string>
      
      <!-- LandmarkList -->
      <string name="listSelection">Select deal</string>
-     <string name="foundDeals">Found %1$d deals meeting your search criteria</string>
-
+     
      <!-- Deals list -->
      <string name="searchDeals">Available deals</string>
 
@@ -47,15 +46,15 @@
      <string name="search_hint">Find a deal nearby</string>
      
      <!-- Landmark -->
-     <string name="Landmark.search.empty.result">No deals matching selection criteria!</string>
+     <string name="Landmark.search.empty.result">No matching deals!</string>
      <string name="Landmark.deals.in.category">Number of deals in category: %1$d</string>
      <string name="Landmark.share">Share deal</string>
      <string name="Landmarks.day.empty">No deals for the day</string>
-     <string name="Landmark.Loading">Loading deals...</string>
+     <string name="Landmark.Loading">Loading deals&#8230;</string>
+     <string name="foundLandmarks">Found %1$d matching deals</string>
 
      <!-- english only -->
      <string name="Status.bar.default">Deals Anywhere</string>
-     <string name="adUnitId">a14eeba18aa02a7</string>
      <string name="Layer.Loaded">Layers loaded. Found %1$d deals!</string> 
 
 </resources>

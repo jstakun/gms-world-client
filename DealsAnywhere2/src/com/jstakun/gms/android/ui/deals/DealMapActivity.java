@@ -117,7 +117,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        setContentView(R.layout.mapcanvasview_1);
+        setContentView(R.layout.mapcanvasview);
         ConfigurationManager.getInstance().setContext(getApplicationContext());
 
         loadingHandler = new LoadingHandler(this);
@@ -235,7 +235,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         if (appInitialized) {
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.main_menu_1, menu);
+            inflater.inflate(R.menu.main_menu, menu);
             return true;
         } else {
             return false;
