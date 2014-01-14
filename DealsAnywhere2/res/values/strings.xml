@@ -44,6 +44,7 @@
      <!-- Misc -->
      <string name="Close.app.prompt">Exit Deals Anywhere?</string>
      <string name="search_hint">Find a deal nearby</string>
+     <string name="Searching.calendar.message">Searching for deals on %1$s</string>
      
      <!-- Landmark -->
      <string name="Landmark.search.empty.result">No matching deals!</string>

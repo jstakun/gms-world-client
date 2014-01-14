@@ -34,8 +34,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         addPreferencesFromResource(R.xml.preferences);
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
-        
-        
+            
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {

@@ -36,7 +36,7 @@ import com.openlapi.QualifiedCoordinates;
  *
  * @author jstakun
  */
-public class JSONParser {
+public class JSONParser_old {
     
     private HttpUtils utils;
     private long creationDate = 0, endDate = 0;
@@ -48,7 +48,7 @@ public class JSONParser {
     private String thumbnail;
     private LandmarkManager landmarkManager;
     
-    protected JSONParser() {
+    protected JSONParser_old() {
         utils = new HttpUtils();
         locale = ConfigurationManager.getInstance().getCurrentLocale();
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();

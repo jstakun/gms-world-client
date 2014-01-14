@@ -5071,11 +5071,11 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int yesButton
     public static final int zoomin
     public static final int zoomout
-    387:387:public R$string()
+    386:386:public R$string()
 com.jstakun.gms.android.google.maps.R$style
 com.jstakun.gms.android.google.maps.R$styleable
 com.jstakun.gms.android.google.maps.R$xml
-com.jstakun.gms.android.landmarks.AbstractJsonReader
+com.jstakun.gms.android.landmarks.AbstractJsonReader_old
 com.jstakun.gms.android.landmarks.AbstractSerialReader:
     private static final int DEFAULT_LIMIT
     private static final int DEFAULT_DEAL_LIMIT
@@ -5093,8 +5093,8 @@ com.jstakun.gms.android.landmarks.ExtendedLandmark:
     218:219:public void setRating(double)
     232:233:public void setNumberOfReviews(int)
     246:247:public void setThumbnail(java.lang.String)
-com.jstakun.gms.android.landmarks.JSONParser
-com.jstakun.gms.android.landmarks.JSONParser$JSonParserTask
+com.jstakun.gms.android.landmarks.JSONParser_old
+com.jstakun.gms.android.landmarks.JSONParser_old$JSonParserTask
 com.jstakun.gms.android.landmarks.KMLParser:
     private static final java.lang.String KML2_2NSO
     private static final java.lang.String KML2_2NS
@@ -5136,11 +5136,10 @@ com.jstakun.gms.android.landmarks.LayerManager:
     public static final int LAYER_FILESYSTEM
     public static final int LAYER_ICON_SMALL
     public static final int LAYER_ICON_LARGE
-    304:308:public java.lang.String getLayerDesc(java.lang.String)
+    301:305:public java.lang.String getLayerDesc(java.lang.String)
 com.jstakun.gms.android.landmarks.LayerReader:
     public abstract java.lang.String[] getUrlPrefix()
 com.jstakun.gms.android.landmarks.LayerXMLParser
-com.jstakun.gms.android.landmarks.YouTubeReader
 com.jstakun.gms.android.location.AndroidDevice:
     private static final int MILLIS
     private static final int METERS
@@ -5437,7 +5436,6 @@ com.jstakun.gms.android.ui.lib.R$drawable:
     public static final int gotourl
     public static final int grey_star
     public static final int hot_deals
-    public static final int hotwire
     public static final int ic_dialog_alert
     public static final int ic_drawer
     public static final int ic_menu_login
@@ -5485,7 +5483,6 @@ com.jstakun.gms.android.ui.lib.R$drawable:
     public static final int upcoming
     public static final int walk32
     public static final int webcam_24
-    public static final int youtube_icon
     73:73:public R$drawable()
 com.jstakun.gms.android.ui.lib.R$id:
     public static final int addLayerSeparator
@@ -5524,7 +5521,7 @@ com.jstakun.gms.android.ui.lib.R$id:
     public static final int showDodCheckbox
     public static final int statusBar
     public static final int validityLabel
-    214:214:public R$id()
+    213:213:public R$id()
 com.jstakun.gms.android.ui.lib.R$layout:
     public static final int adview
     public static final int closing
@@ -5536,14 +5533,14 @@ com.jstakun.gms.android.ui.lib.R$layout:
     public static final int landmarkrow_1094
     public static final int loading
     public static final int statusbar
-    342:342:public R$layout()
+    341:341:public R$layout()
 com.jstakun.gms.android.ui.lib.R$menu:
-    373:373:public R$menu()
+    372:372:public R$menu()
 com.jstakun.gms.android.ui.lib.R$raw:
     public static final int route_a
     public static final int route_b
     public static final int route_c
-    378:378:public R$raw()
+    377:377:public R$raw()
 com.jstakun.gms.android.ui.lib.R$string:
     public static final int Authn_error
     public static final int Category_Loading_1
@@ -5562,7 +5559,6 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int Layer_My_Location_desc
     public static final int Layer_Qype_desc
     public static final int Layer_Upcoming_desc
-    public static final int Layer_YouTube_desc
     public static final int Layer_action
     public static final int Location_checkin_error
     public static final int Login_required_error
@@ -5723,7 +5719,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int venue
     public static final int zoomin
     public static final int zoomout
-    387:387:public R$string()
+    386:386:public R$string()
 com.jstakun.gms.android.ui.lib.R$style
 com.jstakun.gms.android.ui.lib.R$styleable
 com.jstakun.gms.android.ui.lib.R$xml

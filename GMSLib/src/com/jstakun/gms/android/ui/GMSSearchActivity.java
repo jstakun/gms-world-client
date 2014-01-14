@@ -300,7 +300,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 	private void checkIfRepeatedQuery() {
 		String q;
-		if (query.lastIndexOf("/") == query.length()-2) {
+		if (query.length() > 2 && query.lastIndexOf("/") == query.length()-2) {
 			q = query.substring(0, query.length()-2);
 		} else {
 			q = query;
@@ -391,7 +391,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					}
 					
 					String q;
-					if (query.lastIndexOf("/") == query.length()-2) {
+					if (query.length() > 2 && query.lastIndexOf("/") == query.length()-2) {
 						q = query.substring(0, query.length()-2);
 					} else {
 						q = query;
@@ -424,15 +424,13 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 			if (landmarkList != null) {
 				if (type == TYPE.DEALS) {
 					//if (landmarkList.size() > 2) {
-						message = Locale.getMessage(R.string.foundDeals,
-								landmarkList.size());
+						message = Locale.getMessage(R.string.foundDeals, landmarkList.size());
 					//} else {
 					//	message = Locale.getMessage(R.string.foundDealsLow);
 					//}
 				} else if (type == TYPE.LANDMARKS) {
 					//if (landmarkList.size() > 2) {
-						message = Locale.getMessage(R.string.foundLandmarks,
-								landmarkList.size());
+						message = Locale.getMessage(R.string.foundLandmarks, landmarkList.size());
 					//} else {
 					//	message = Locale.getMessage(R.string.foundLandmarksLow);
 					//}

@@ -90,8 +90,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         editor.putInt(ConfigurationManager.DEAL_LIMIT, ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_LIMIT));
         //setPreference(ConfigurationManager.DEAL_LIMIT, R.array.dealLimit);
 
-        editor.putString(ConfigurationManager.SEARCH_RADIUS, ConfigurationManager.getInstance().getString(ConfigurationManager.SEARCH_RADIUS));
-        setListPreference(ConfigurationManager.SEARCH_RADIUS, R.array.radius);
+        editor.putInt(ConfigurationManager.SEARCH_RADIUS, ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_RADIUS));
+        //setListPreference(ConfigurationManager.SEARCH_RADIUS, R.array.radius);
 
         editor.putBoolean(ConfigurationManager.SHOW_DEAL_OF_THE_DAY, ConfigurationManager.getInstance().isOn(ConfigurationManager.SHOW_DEAL_OF_THE_DAY));
 

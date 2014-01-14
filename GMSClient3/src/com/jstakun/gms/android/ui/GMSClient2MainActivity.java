@@ -211,7 +211,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         thumbnailButton.setOnClickListener(this);
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        //getActionBar().setHomeButtonEnabled(true);
         
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);

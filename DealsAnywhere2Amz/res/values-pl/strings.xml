@@ -43,6 +43,7 @@
      <!-- Misc -->
      <string name="Close.app.prompt">Zamkn\u0105\u0107 aplikacj\u0119?</string>
      <string name="search_hint">Szukaj okazji w okolicy</string>
+     <string name="Searching.calendar.message">Wyszukiwanie okazji z dnia %1$s</string>
 
      <!-- Landmark -->
      <string name="Landmark.search.empty.result">Brak okazji spe\u0142niaj\u0105cych kryteria wyboru!</string>

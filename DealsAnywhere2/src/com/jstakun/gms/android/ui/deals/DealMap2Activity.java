@@ -21,7 +21,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.google.android.maps.GeoPoint;
@@ -172,7 +171,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         googleMapsView.setBuiltInZoomControls(true);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
         
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) findViewById(R.id.left_drawer);
