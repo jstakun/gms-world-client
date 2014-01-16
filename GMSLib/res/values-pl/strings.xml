@@ -117,7 +117,8 @@
      <string name="countryLabel">Kraj</string>
      <string name="addressLabel">Miasto lub miejsce</string>
      <string name="Pick.location.default">\u0141aduj\u0119 domy\u015bln\u0105 lokalizacj\u0119 %1$s&#8230;\nW celu wyszukania innych lokalizacji kliknij Menu->Szukaj lokalizacji.</string>
-
+     <string name="Action.canceled">Wyszukiwanie lokalizacji wstrzymane!</string>
+     
       <!-- comment -->
      <string name="commentLabel">Tw\u00f3j komentarz:</string>
      <string name="commentTitle">Wpisz tw\u00f3j komentarz</string>
@@ -131,11 +132,9 @@
      <!-- LandmarkList -->
      <string name="listSelection">Wybierz miejsce</string>
      <string name="listLocations">Wybierz lokalizacj\u0119</string>
-     <string name="foundLandmarks">Znaleziono %1$d pasuj\u0105cych miejsc</string>
      <string name="foundLandmarksLow">
          Je\u017celi chcesz poprawi\u0107 wyniki wyszukiwania id\u017a do Menu -> Ustawienia -> Typ wyszukiwania
      </string>
-     <string name="foundDeals">Znaleziono %1$d pasuj\u0105cych okazji</string>
      <string name="foundDealsLow">
          Je\u017celi chcesz poprawi\u0107 wyniki wyszukiwania id\u017a do Menu -> Ustawienia -> Typ wyszukiwania
      </string>
@@ -176,8 +175,6 @@
      <string name="creation_date">Data utworzenia: %1$s</string>
      <string name="upload_date">Data przes\u0142ania: %1$s</string>
      <string name="taken_date">Data wykonania: %1$s</string>
-     <string name="numberOfReviews.single">1 opinia</string>
-     <string name="numberOfReviews.multiple">%1$s opinii</string>
      <string name="price">Cena: %1$s</string>
      <string name="discount">, obni\u017cka: %1$s, oszcz\u0119dzasz: %2$s</string>
      <string name="dealOfTheDay">To jest okazja dnia!</string>
@@ -361,7 +358,6 @@
     <string name="Layer.Loading.1"><![CDATA[\u0141adowanie warstwy <b>%1$s</b>...]]></string>
     <string name="Layer.Loading.counter">\u0141adowanie warstwy (%1$d/%2$d)&#8230;</string>
     <string name="Layer.Loading.processing">Zapisywanie za\u0142adowanych warstw&#8230;</string>
-    <string name="Layer.Loaded">Warstwy za\u0142adowane. Znaleziono %1$d miejsc!</string>
     <string name="Layer.action">Wybierz akcj\u0119 dla warstwy %1$s</string>
     <string name="Layer.cleared">Warstwa %1$s wyczyszczona!</string>
     <string name="Layer.exists">Warstwa ju\u017c istnieje!</string>

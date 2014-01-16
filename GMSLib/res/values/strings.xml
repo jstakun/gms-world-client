@@ -121,7 +121,8 @@
      <string name="countryLabel">Country</string>
      <string name="addressLabel">City or place</string>
      <string name="Pick.location.default">Loading default location %1$s&#8230;\nIn order to search for other locations go to Menu->Search location.</string>
-
+     <string name="Action.canceled">Location search cancelled!</string>
+     
      <!-- comment -->
      <string name="commentTitle">Enter your comment</string>
      <string name="commentLabel">Your comment:</string>
@@ -135,11 +136,9 @@
      <!-- LandmarkList -->
      <string name="listSelection">Select landmark</string>
      <string name="listLocations">Select location</string>
-     <string name="foundLandmarks">Found %1$d matching landmarks</string>
      <string name="foundLandmarksLow">
          If you want to improve search results go to Menu -> Settings -> Search type
      </string>
-     <string name="foundDeals">Found %1$d matching deals</string>
      <string name="foundDealsLow">
          If you want to improve search results go to Menu -> Settings -> Search type
      </string>
@@ -179,8 +178,6 @@
      <string name="creation_date">Creation date: %1$s</string>
      <string name="upload_date">Upload date: %1$s</string>
      <string name="taken_date">Date taken: %1$s</string>
-     <string name="numberOfReviews.single">1 review</string>
-     <string name="numberOfReviews.multiple">%1$s reviews</string>
      <string name="rating">Rating: %1$s</string>
      <string name="price">Price: %1$s</string>
      <string name="discount">, discount: %1$s, save: %2$s off</string>
@@ -366,7 +363,6 @@
      <string name="Layer.Loading.1"><![CDATA[Loading layer <b>%1$s</b>...]]></string>
      <string name="Layer.Loading.counter">Loading layer (%1$d/%2$d)&#8230;</string>
      <string name="Layer.Loading.processing">Processing loaded layers&#8230;</string>
-     <string name="Layer.Loaded">Layers loaded. Found %1$d landmarks!</string>
      <string name="Layer.action">Select action for layer %1$s</string>
      <string name="Layer.cleared">Layer %1$s cleared!</string>
      <string name="Layer.exists">Layer already exists!</string>
@@ -385,7 +381,6 @@
      <string name="Status.bar.default">Landmark Manager</string>
      <string name="Info.about">%1$s (R)\nVersion: %2$s-%3$d built on %4$s\nCopyright &#169; 2010&#8211;14 GMS World\n%5$s</string>
      <string name="checkboxDodDialog">Show deal of the day at startup</string>
-     <string name="Action.canceled">action canceled by you!</string>
      <string name="Zoom.info">Zoom %1$d/%2$d</string>
 
      <!-- English only LayerManager layer descs -->

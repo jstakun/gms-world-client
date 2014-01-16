@@ -60,7 +60,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
             createDeleteFileAlertDialog();
             
-            intents.showInfoToast(Locale.getMessage(R.string.foundLandmarks, favourites.size()));
+            intents.showInfoToast(Locale.getQuantityMessage(R.plurals.foundLandmarks, favourites.size()));
         } else {
         	intents.showInfoToast(Locale.getMessage(R.string.autoCheckinListEmpty));
             finish();

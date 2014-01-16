@@ -424,13 +424,13 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 			if (landmarkList != null) {
 				if (type == TYPE.DEALS) {
 					//if (landmarkList.size() > 2) {
-						message = Locale.getMessage(R.string.foundDeals, landmarkList.size());
+						message = Locale.getQuantityMessage(R.plurals.foundDeals, landmarkList.size());
 					//} else {
 					//	message = Locale.getMessage(R.string.foundDealsLow);
 					//}
 				} else if (type == TYPE.LANDMARKS) {
 					//if (landmarkList.size() > 2) {
-						message = Locale.getMessage(R.string.foundLandmarks, landmarkList.size());
+						message = Locale.getQuantityMessage(R.plurals.foundLandmarks, landmarkList.size());
 					//} else {
 					//	message = Locale.getMessage(R.string.foundLandmarksLow);
 					//}

@@ -226,7 +226,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             finish();
         } else {
         	//if (source == SOURCE.DAY_LANDMARKS) {
-            intents.showInfoToast(Locale.getMessage(R.string.foundLandmarks, getLandmarksTask.getLandmarks().size()));
+            intents.showInfoToast(Locale.getQuantityMessage(R.plurals.foundLandmarks, getLandmarksTask.getLandmarks().size()));
             //}
             
         	if (requestCode == Intents.INTENT_MYLANDMARKS) {

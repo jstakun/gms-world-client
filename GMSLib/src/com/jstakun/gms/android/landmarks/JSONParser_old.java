@@ -554,11 +554,7 @@ public class JSONParser_old {
                 ratingStr += " ";
             }
             numberOfReviews = Integer.parseInt(val);
-            if (numberOfReviews == 1) {
-                ratingStr += Locale.getMessage(R.string.numberOfReviews_single);
-            } else {
-                ratingStr += Locale.getMessage(R.string.numberOfReviews_multiple, val);
-            }
+            ratingStr += Locale.getQuantityMessage(R.plurals.numberOfReviews, numberOfReviews);
         }
         
         if (ratingStr.length() > 0) {

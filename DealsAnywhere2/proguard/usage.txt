@@ -4710,6 +4710,7 @@ com.jstakun.gms.android.google.maps.R$drawable
 com.jstakun.gms.android.google.maps.R$id
 com.jstakun.gms.android.google.maps.R$layout
 com.jstakun.gms.android.google.maps.R$menu
+com.jstakun.gms.android.google.maps.R$plurals
 com.jstakun.gms.android.google.maps.R$raw
 com.jstakun.gms.android.google.maps.R$string:
     public static final int Action_canceled
@@ -4773,7 +4774,6 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int Layer_Hotwire_desc
     public static final int Layer_Instagram_desc
     public static final int Layer_LastFM_desc
-    public static final int Layer_Loaded
     public static final int Layer_Loading
     public static final int Layer_Loading_1
     public static final int Layer_Loading_counter
@@ -4957,9 +4957,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int events
     public static final int exit
     public static final int expiration_date
-    public static final int foundDeals
     public static final int foundDealsLow
-    public static final int foundLandmarks
     public static final int foundLandmarksLow
     public static final int friendsCheckins
     public static final int gaId
@@ -5008,8 +5006,6 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int nameLabel
     public static final int newestLandmarks
     public static final int noButton
-    public static final int numberOfReviews_multiple
-    public static final int numberOfReviews_single
     public static final int okButton
     public static final int open
     public static final int osmMaps
@@ -5071,7 +5067,7 @@ com.jstakun.gms.android.google.maps.R$string:
     public static final int yesButton
     public static final int zoomin
     public static final int zoomout
-    386:386:public R$string()
+    392:392:public R$string()
 com.jstakun.gms.android.google.maps.R$style
 com.jstakun.gms.android.google.maps.R$styleable
 com.jstakun.gms.android.google.maps.R$xml
@@ -5369,6 +5365,7 @@ com.jstakun.gms.android.ui.deals.R$drawable
 com.jstakun.gms.android.ui.deals.R$id
 com.jstakun.gms.android.ui.deals.R$layout
 com.jstakun.gms.android.ui.deals.R$menu
+com.jstakun.gms.android.ui.deals.R$plurals
 com.jstakun.gms.android.ui.deals.R$raw
 com.jstakun.gms.android.ui.deals.R$string
 com.jstakun.gms.android.ui.deals.R$style
@@ -5536,11 +5533,14 @@ com.jstakun.gms.android.ui.lib.R$layout:
     341:341:public R$layout()
 com.jstakun.gms.android.ui.lib.R$menu:
     372:372:public R$menu()
+com.jstakun.gms.android.ui.lib.R$plurals:
+    public static final int numberOfReviews
+    377:377:public R$plurals()
 com.jstakun.gms.android.ui.lib.R$raw:
     public static final int route_a
     public static final int route_b
     public static final int route_c
-    377:377:public R$raw()
+    383:383:public R$raw()
 com.jstakun.gms.android.ui.lib.R$string:
     public static final int Authn_error
     public static final int Category_Loading_1
@@ -5669,8 +5669,6 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int more
     public static final int nameLabel
     public static final int newestLandmarks
-    public static final int numberOfReviews_multiple
-    public static final int numberOfReviews_single
     public static final int open
     public static final int osmMaps
     public static final int passwordLabel
@@ -5719,7 +5717,7 @@ com.jstakun.gms.android.ui.lib.R$string:
     public static final int venue
     public static final int zoomin
     public static final int zoomout
-    386:386:public R$string()
+    392:392:public R$string()
 com.jstakun.gms.android.ui.lib.R$style
 com.jstakun.gms.android.ui.lib.R$styleable
 com.jstakun.gms.android.ui.lib.R$xml

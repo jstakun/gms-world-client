@@ -52,9 +52,7 @@
      <string name="Landmark.share">Share deal</string>
      <string name="Landmarks.day.empty">No deals for the day</string>
      <string name="Landmark.Loading">Loading deals&#8230;</string>
-     <string name="foundLandmarks">Found %1$d matching deals</string>
-
+     
      <!-- english only -->
      <string name="Status.bar.default">Deals Anywhere</string>
-     <string name="Layer.Loaded">Layers loaded. Found %1$d deals!</string> 
 </resources>

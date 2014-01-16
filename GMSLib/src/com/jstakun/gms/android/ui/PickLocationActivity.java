@@ -55,6 +55,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     private Spinner locationCountrySpinner;
     private String country, lat, lng, name, message;
     private static final int ID_DIALOG_PROGRESS = 0;
+    private static final String DEFAULT_NAME = "unknown";
     private static final String NAME = "name";
 
     @Override
@@ -68,17 +69,12 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        //Object retained = getLastNonConfigurationInstance();
-        //if (retained instanceof String) {
-        //    name = (String)retained;
-        //} 
-        
         if (savedInstanceState != null) {
         	name = savedInstanceState.getString(NAME);
         } 
         
         if (name == null) {
-        	name = "unknown";
+        	name = DEFAULT_NAME;
         }
         
         initComponents();
@@ -203,11 +199,6 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         }
     }
 
-    //@Override
-    //public Object onRetainNonConfigurationInstance() {
-    //    return name;
-    //}
-    
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
     	savedInstanceState.putString(NAME, name);
@@ -238,8 +229,11 @@ public class PickLocationActivity extends Activity implements OnClickListener {
 
     private void cancelActivity() {
         Intent result = new Intent();
-        result.putExtra("message", Locale.getMessage(R.string.Action_canceled));
-        result.putExtra("name", name);
+        if (StringUtils.equals(name, PickLocationActivity.DEFAULT_NAME)) {
+        	result.putExtra("message", Locale.getMessage(R.string.Action_canceled));
+        } else {
+        	result.putExtra("message", Locale.getMessage(R.string.Pick_location_failed_error, name, message));
+        }
         setResult(RESULT_CANCELED, result);
         finish();
     }

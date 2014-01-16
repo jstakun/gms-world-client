@@ -30,4 +30,8 @@ public class Locale {
     public static String getMessage(int key, Object... args) {
         return String.format(res.getString(key), args);
     }
+    
+    public static String getQuantityMessage(int key, int quantity) {
+    	return res.getQuantityString(key, quantity, quantity);
+    }
 }

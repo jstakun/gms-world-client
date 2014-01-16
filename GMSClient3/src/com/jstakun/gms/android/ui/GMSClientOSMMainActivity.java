@@ -854,10 +854,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
                 initOnLocationChanged(location);
-            } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message") && intent.hasExtra("name")) {
-                String name = intent.getStringExtra("name");
+            } else if (resultCode == RESULT_CANCELED && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
-                intents.showInfoToast(Locale.getMessage(R.string.Pick_location_failed_error, name, message));
+                intents.showInfoToast(message);
             } else if (resultCode != RESULT_CANCELED) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             }

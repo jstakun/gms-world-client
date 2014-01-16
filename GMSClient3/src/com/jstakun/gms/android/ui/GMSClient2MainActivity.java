@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
@@ -938,10 +939,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
                 initOnLocationChanged(new org.osmdroid.google.wrapper.GeoPoint(location));
-            } else if (resultCode == RESULT_CANCELED && intent.hasExtra("message") && intent.hasExtra("name")) {
-                String name = intent.getStringExtra("name");
+            } else if (resultCode == RESULT_CANCELED && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
-                intents.showInfoToast(Locale.getMessage(R.string.Pick_location_failed_error, name, message));
+                intents.showInfoToast(message);
             } else if (resultCode != RESULT_CANCELED) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             }

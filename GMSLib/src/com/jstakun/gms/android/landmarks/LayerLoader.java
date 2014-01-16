@@ -145,7 +145,7 @@ public class LayerLoader {
                 if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
                         || (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION))) {
                     //System.out.println("Updating view...");
-                    messageStack.addMessage(Locale.getMessage(R.string.Layer_Loaded, landmarkManager.getAllLayersSize()), 3, -1, MessageStack.LAYER_LOADED);
+                    messageStack.addMessage(Locale.getQuantityMessage(R.plurals.LayerLoaded, landmarkManager.getAllLayersSize()), 3, -1, MessageStack.LAYER_LOADED);
                     long loadingTime = (System.currentTimeMillis() - loadingStartTime) / 1000;
                     ConfigurationManager.getInstance().putObject("LAYERS_LOADING_TIME_SEC", loadingTime);
                     sendFinishedMessage();

@@ -51,7 +51,5 @@
      <string name="Landmark.share">Udost\u0119pnij okazj\u0119</string>
      <string name="Landmarks.day.empty">Brak okazji w tym dniu</string>
      <string name="Landmark.Loading">\u0141adowanie okazji&#8230;</string>
-     <string name="Layer.Loaded">Warstwy za\u0142adowane. Znaleziono %1$d okazji!</string>
-     <string name="foundLandmarks">Znaleziono %1$d pasuj\u0105cych okazji</string>
-
+     
 </resources>
