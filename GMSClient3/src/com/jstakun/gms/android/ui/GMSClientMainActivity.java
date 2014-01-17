@@ -143,11 +143,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         LoggerUtils.debug("onCreate");
         LoggerUtils.debug("GMSClientMainActivity.onCreate called...");
         
-        //TODO comment in production
-        //UserTracker.getInstance().setDebug(true, this);
-        //UserTracker.getInstance().setDryRun(true, this);
-        //
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         ConfigurationManager.getInstance().setContext(getApplicationContext());
@@ -373,7 +369,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override
@@ -417,6 +413,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             layerLoader.stopLoading();
         }
 
+        UserTracker.getInstance().trackEvent("Exit", getLocalClassName() + ".hardClose", "", 0);
+        
         loadingHandler.removeCallbacks(gpsRunnable);
 
         LocationServicesManager.disableMyLocation();
@@ -447,37 +445,38 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-      if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {		
-        //System.out.println("Key pressed in activity: " + keyCode);
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (lvView.isShown()) {
-                landmarkManager.clearLandmarkOnFocusQueue();
-                landmarkManager.setSelectedLandmark(null);
-                landmarkManager.setSeletedLandmarkUI();
-                lvView.setVisibility(View.GONE);
-            } else {
-                dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
-            } //System.out.println("key back pressed in activity");
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
-            if (coordsE6 != null) {
-            	animateTo(coordsE6);
-            }
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_8) { //key *
-            mapController.zoomIn();
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_0) {
-            mapController.zoomOut();
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-      } else {
-  		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
-  		return true;
-  	  }   
+    	UserTracker.getInstance().trackEvent("onKeyDown", "", "", 0);
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {		
+    		//System.out.println("Key pressed in activity: " + keyCode);
+    		if (keyCode == KeyEvent.KEYCODE_BACK) {
+    			if (lvView.isShown()) {
+    				landmarkManager.clearLandmarkOnFocusQueue();
+    				landmarkManager.setSelectedLandmark(null);
+    				landmarkManager.setSeletedLandmarkUI();
+    				lvView.setVisibility(View.GONE);
+    			} else {
+    				dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+    			} //System.out.println("key back pressed in activity");
+    			return true;
+    		} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+    			if (coordsE6 != null) {
+    				animateTo(coordsE6);
+    			}
+    			return true;
+    		} else if (keyCode == KeyEvent.KEYCODE_8) { //key *
+    			mapController.zoomIn();
+    			return true;
+    		} else if (keyCode == KeyEvent.KEYCODE_0) {
+    			mapController.zoomOut();
+    			return true;
+    		} else {
+    			return super.onKeyDown(keyCode, event);
+    		}
+    	} else {
+    		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+    		return true;
+  	  	}   
     }
 
     private void initOnLocationChanged(IGeoPoint location) {

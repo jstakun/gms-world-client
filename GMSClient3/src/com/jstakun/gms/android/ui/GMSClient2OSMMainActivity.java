@@ -141,11 +141,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         LoggerUtils.debug("onCreate");
         LoggerUtils.debug("GMSClientMainActivity.onCreate called...");
     
-        UserTracker.getInstance().startSession(this);
-        //comment in production
-        //UserTracker.getInstance().setDebug(true);
-        //UserTracker.getInstance().setDryRun(true);
-        //
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         mapProvider = ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER);
@@ -217,6 +213,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 ) {
             public void onDrawerClosed(View view) {
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            	for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
+        			drawerList.collapseGroup(i);	
+        		}
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -378,7 +377,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override
@@ -433,7 +432,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         if (layerLoader != null && layerLoader.isLoading()) {
             layerLoader.stopLoading();
         }
-
+        
+        UserTracker.getInstance().trackEvent("Exit", getLocalClassName() + ".hardClose", "", 0);
+        
         loadingHandler.removeCallbacks(gpsRunnable);
 
         LocationServicesManager.disableMyLocation();
@@ -465,38 +466,39 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-      if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {		
-        //System.out.println("Key pressed in activity: " + keyCode);
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (lvView.isShown()) {
-                landmarkManager.clearLandmarkOnFocusQueue();
-                landmarkManager.setSelectedLandmark(null);
-                landmarkManager.setSeletedLandmarkUI();
-                lvView.setVisibility(View.GONE);
-                getActionBar().show();
-            } else {
-                dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
-            } //System.out.println("key back pressed in activity");
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
-            if (coordsE6 != null) {
-            	animateTo(coordsE6);
-            }
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_8) { //key *
-            mapController.zoomIn();
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_0) {
-            mapController.zoomOut();
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-      }  else {
-  		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
-  		return true;
-  	  }
+    	UserTracker.getInstance().trackEvent("onKeyDown", "", "", 0);
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {		
+    		//System.out.println("Key pressed in activity: " + keyCode);
+    		if (keyCode == KeyEvent.KEYCODE_BACK) {
+    			if (lvView.isShown()) {
+    				landmarkManager.clearLandmarkOnFocusQueue();
+    				landmarkManager.setSelectedLandmark(null);
+    				landmarkManager.setSeletedLandmarkUI();
+    				lvView.setVisibility(View.GONE);
+    				getActionBar().show();
+    			} else {
+    				dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+    			} //System.out.println("key back pressed in activity");
+    			return true;
+    		} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+    			if (coordsE6 != null) {
+    				animateTo(coordsE6);
+    			}
+    			return true;
+    		} else if (keyCode == KeyEvent.KEYCODE_8) { //key *
+    			mapController.zoomIn();
+    			return true;
+    		} else if (keyCode == KeyEvent.KEYCODE_0) {
+    			mapController.zoomOut();
+    			return true;
+    		} else {
+    			return super.onKeyDown(keyCode, event);
+    		}
+    	}  else {
+    		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+    		return true;
+  	  	}
     }
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
@@ -1144,9 +1146,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", "AddName", "", 0);
         	if (groupPosition == 1 || groupPosition == 4 || groupPosition == 5) {
         		drawerLayout.closeDrawer(drawerList);
-        		for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
-        			drawerList.collapseGroup(i);	
-        		}
         		onMenuItemSelected((int)id);
         	}
         	return false;
@@ -1158,9 +1157,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 			drawerLayout.closeDrawer(drawerList);
-    		for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
-    			drawerList.collapseGroup(i);	
-    		}
     		onMenuItemSelected((int)id);
 			return false;
 		}

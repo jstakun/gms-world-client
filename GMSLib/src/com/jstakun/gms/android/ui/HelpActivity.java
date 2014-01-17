@@ -58,7 +58,7 @@ public final class HelpActivity extends Activity {
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         webView = (WebView) findViewById(R.id.help_contents);
@@ -108,7 +108,7 @@ public final class HelpActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
     
     @Override

@@ -18,6 +18,7 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *
@@ -39,6 +40,7 @@ public class DealMapApp extends Application {
         headers.put("Authorization", HttpUtils.getBasicAuthHeader(Commons.DA_APP_USER, true, Commons.APP_USER_PWD, true));
         ACRA.getConfig().setHttpHeaders(headers);
         ConfigurationManager.getAppUtils().initApp(getApplicationContext());
+        UserTracker.getInstance().initialize(getApplicationContext());
     }
     
     @Override

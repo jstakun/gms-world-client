@@ -38,7 +38,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            UserTracker.getInstance().startSession(this);
+            //UserTracker.getInstance().startSession(this);
             UserTracker.getInstance().trackActivity(getClass().getName());
 
             showDod = (CheckBoxPreference) findPreference("showDealOfTheDay");
@@ -105,10 +105,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     @Override
     public void onStop() {
         super.onStop();
-
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override

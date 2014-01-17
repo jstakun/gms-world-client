@@ -63,7 +63,7 @@ public class LayerListActivity extends ListActivity {
 
         AdsUtils.loadAd(this);
 
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
@@ -120,7 +120,7 @@ public class LayerListActivity extends ListActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override

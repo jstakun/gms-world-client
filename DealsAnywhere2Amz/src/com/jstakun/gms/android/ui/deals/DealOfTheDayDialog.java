@@ -37,7 +37,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
 
         intents = new Intents(activity, ConfigurationManager.getInstance().getLandmarkManager(), null);
 
-        UserTracker.getInstance().startSession(getContext());
+        //UserTracker.getInstance().startSession(getContext());
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         setContentView(R.layout.dod);
@@ -86,7 +86,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
                 activity.getActionBar().show();
             }
             UserTracker.getInstance().trackEvent("Clicks", "DealOfTheDayDialog.CloseSelectedDealView", "", 0);
-            UserTracker.getInstance().stopSession(getContext());
+            //UserTracker.getInstance().stopSession(getContext());
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
         } else if (v == lvOpenButton) {
             UserTracker.getInstance().trackEvent("Clicks", "DealOfTheDayDialog.OpenURLSelectedDeal", recommended.getLayer(), 0);
@@ -114,7 +114,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
         if (!activity.findViewById(R.id.lvView).isShown()) {
             activity.getActionBar().show();
         }
-        UserTracker.getInstance().stopSession(getContext());
+        //UserTracker.getInstance().stopSession(getContext());
         ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
     }
 }

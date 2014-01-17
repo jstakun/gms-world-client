@@ -38,7 +38,7 @@ public class SendBlogeoPostActivity extends Activity implements OnClickListener 
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
         
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         intents = new Intents(this, null, null);
@@ -99,7 +99,7 @@ public class SendBlogeoPostActivity extends Activity implements OnClickListener 
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override

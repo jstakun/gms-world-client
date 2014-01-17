@@ -17,6 +17,7 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.UserTracker;
 
 
 /**
@@ -38,7 +39,12 @@ public class GMSClientApp extends Application {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", HttpUtils.getBasicAuthHeader(Commons.GMS_APP_USER, true, Commons.APP_USER_PWD, true));
         ACRA.getConfig().setHttpHeaders(headers);
-        ConfigurationManager.getAppUtils().initApp(getApplicationContext());    
+        ConfigurationManager.getAppUtils().initApp(getApplicationContext());  
+        UserTracker.getInstance().initialize(getApplicationContext());
+        //TODO comment in production
+        //UserTracker.getInstance().setDebug(true, this);
+        //UserTracker.getInstance().setDryRun(true, this);
+        //
     }
 
     @Override

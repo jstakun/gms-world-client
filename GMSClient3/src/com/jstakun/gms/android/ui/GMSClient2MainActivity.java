@@ -4,7 +4,6 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
@@ -151,11 +150,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         LoggerUtils.debug("onCreate");
         LoggerUtils.debug("GMSClientMainActivity.onCreate called...");
         
-        //TODO comment in production
-        //UserTracker.getInstance().setDebug(true, this);
-        //UserTracker.getInstance().setDryRun(true, this);
-        //
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         mapProvider = ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER);
@@ -230,6 +225,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 ) {
             public void onDrawerClosed(View view) {
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            	for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
+        			drawerList.collapseGroup(i);	
+        		}
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -400,7 +398,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override
@@ -457,6 +455,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             layerLoader.stopLoading();
         }
 
+        UserTracker.getInstance().trackEvent("Exit", getLocalClassName() + ".hardClose", "", 0);
+        
         loadingHandler.removeCallbacks(gpsRunnable);
 
         LocationServicesManager.disableMyLocation();
@@ -486,6 +486,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	UserTracker.getInstance().trackEvent("onKeyDown", "", "", 0);
     	if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {	
             //System.out.println("Key pressed in activity: " + keyCode);
     		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -1004,10 +1005,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         }
     }
 
-    //private void openButtonPressedAction(ExtendedLandmark landmark) {
-    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    //}
-
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean clearMap) {
         mapController.setCenter(new org.osmdroid.google.wrapper.GeoPoint(newCenter));
         if (loadLayers) {
@@ -1189,9 +1186,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", "AddName", "", 0);
         	if (groupPosition == 1 || groupPosition == 4 || groupPosition == 5) {
         		drawerLayout.closeDrawer(drawerList);
-        		for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
-        			drawerList.collapseGroup(i);	
-        		}
         		onMenuItemSelected((int)id);
         	}
         	return false;
@@ -1203,9 +1197,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 			drawerLayout.closeDrawer(drawerList);
-    		for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
-    			drawerList.collapseGroup(i);	
-    		}
     		onMenuItemSelected((int)id);
 			return false;
 		}

@@ -34,7 +34,7 @@ public class SocialListActivity extends ListActivity {
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         footer = new TextView(this);        
@@ -59,7 +59,7 @@ public class SocialListActivity extends ListActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override

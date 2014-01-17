@@ -50,7 +50,7 @@ public class WebViewActivity extends Activity {
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         Bundle extras = getIntent().getExtras();
@@ -134,7 +134,7 @@ public class WebViewActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override

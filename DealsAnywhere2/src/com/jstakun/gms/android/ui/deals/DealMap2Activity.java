@@ -125,7 +125,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         ConfigurationManager.getInstance().setContext(getApplicationContext());
@@ -620,7 +620,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             ConfigurationManager.getInstance().putObject(AlertDialogBuilder.OPEN_DIALOG, AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG);
             dealOfTheDayDialog.dismiss();
         }
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override
@@ -655,7 +655,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //System.out.println("Key pressed in activity: " + keyCode);
+    	UserTracker.getInstance().trackEvent("onKeyDown", "", "", 0);
+    	//System.out.println("Key pressed in activity: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (lvView.isShown()) {
                 landmarkManager.clearLandmarkOnFocusQueue();
@@ -695,6 +696,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         if (layerLoader != null && layerLoader.isLoading()) {
             layerLoader.stopLoading();
         }
+        
+        UserTracker.getInstance().trackEvent("Exit", getLocalClassName() + ".hardClose", "", 0);
 
         loadingHandler.removeCallbacks(gpsRunnable);
 

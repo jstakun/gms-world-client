@@ -97,7 +97,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		UserTracker.getInstance().startSession(this);
+		//UserTracker.getInstance().startSession(this);
 		UserTracker.getInstance().trackActivity(getClass().getName());
 
 		setTitle(R.string.listSelection);
@@ -235,7 +235,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		UserTracker.getInstance().stopSession(this);
+		//UserTracker.getInstance().stopSession(this);
 	}
 
 	@Override

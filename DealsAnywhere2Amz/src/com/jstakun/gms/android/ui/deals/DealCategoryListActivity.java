@@ -62,7 +62,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         setContentView(R.layout.categorylist);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
@@ -266,7 +266,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override

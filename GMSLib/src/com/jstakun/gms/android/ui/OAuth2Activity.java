@@ -59,7 +59,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 
 		ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
-		UserTracker.getInstance().startSession(this);
+		//UserTracker.getInstance().startSession(this);
 		UserTracker.getInstance().trackActivity(getClass().getName());
 
 		intents = new Intents(this, null, null);
@@ -162,7 +162,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		UserTracker.getInstance().stopSession(this);
+		//UserTracker.getInstance().stopSession(this);
 	}
 	
 	@Override

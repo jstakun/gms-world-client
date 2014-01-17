@@ -54,7 +54,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
@@ -114,11 +114,11 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         return true;
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        UserTracker.getInstance().stopSession(this);
-    }
+    //@Override
+    //protected void onStop() {
+    //    super.onStop();
+    //    UserTracker.getInstance().stopSession(this);
+    //}
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {

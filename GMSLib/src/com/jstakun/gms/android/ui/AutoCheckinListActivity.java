@@ -46,7 +46,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
         if (favourites != null) {
 
-            UserTracker.getInstance().startSession(this);
+            //UserTracker.getInstance().startSession(this);
             UserTracker.getInstance().trackActivity(getClass().getName());
 
             setListAdapter(new LandmarkArrayAdapter(this, favourites));
@@ -142,7 +142,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override

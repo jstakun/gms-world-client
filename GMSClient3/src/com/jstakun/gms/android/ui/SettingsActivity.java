@@ -43,7 +43,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             String[] codes = extras.getStringArray("codes");
             boolean[] enabled = extras.getBooleanArray("enabled");
 
-            UserTracker.getInstance().startSession(this);
+            //UserTracker.getInstance().startSession(this);
             UserTracker.getInstance().trackActivity(getClass().getName());
             //clear();
 
@@ -126,7 +126,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     public void onStop() {
         super.onStop();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override

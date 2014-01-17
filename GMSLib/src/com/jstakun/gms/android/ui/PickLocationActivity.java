@@ -66,7 +66,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
-        UserTracker.getInstance().startSession(this);
+        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         if (savedInstanceState != null) {
@@ -207,7 +207,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     @Override
     protected void onStop() {
         super.onStop();
-        UserTracker.getInstance().stopSession(this);
+        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override

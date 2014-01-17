@@ -24,8 +24,7 @@ import com.jstakun.gms.android.ui.lib.R;
 public class UserTracker {
 
 	private static Tracker tracker;
-	//private static GoogleAnalytics analytics;
-    private boolean running = false;
+	//private boolean running = false;
     private boolean dryRun = false;
     private static UserTracker userTracker = null;
 
@@ -39,15 +38,18 @@ public class UserTracker {
         return userTracker;
     }
 
-    public void startSession(final Context context) {
+    public void initialize(final Context context) {
     	try {
     		if (tracker == null) {
         		tracker = GoogleAnalytics.getInstance(context).getTracker(getId(context));
         	}
     	} catch (Throwable t) {
-    		LoggerUtils.error("UserTracker.setDebug() error:", t);
+    		LoggerUtils.error("UserTracker.initialize exception:", t);
     	}
-
+    }
+    
+    /*public void startSession(final Context context) {
+    	//System.out.println("UserTracker.startSession()");
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && !running) {
             trackEvent("SessionStart", "", "", 0);
             running = true;
@@ -55,13 +57,15 @@ public class UserTracker {
     }
 
     public void stopSession(final Context context) {
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && running) {
+    	//System.out.println("UserTracker.stopSession()");
+    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && running) {
             trackEvent("SessionStop", "", "", 0);
         	running = false;
         }
-    }
+    }*/
 
     public void trackActivity(final String activityName) {
+    	//System.out.println("UserTracker.trackAcivity() " + activityName);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
             Map<String, String> hitParameters = new HashMap<String, String>();
         	hitParameters.put(Fields.HIT_TYPE, "appview");
@@ -71,6 +75,7 @@ public class UserTracker {
     }
 
     public void trackEvent(final String category, final String action, final String label, final int value) {
+    	//System.out.println("UserTracker.trackEvent() " + category + " " + action);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
             HashMap<String, String> hitParameters = new HashMap<String, String>();
         	hitParameters.put(Fields.EVENT_CATEGORY, category);
