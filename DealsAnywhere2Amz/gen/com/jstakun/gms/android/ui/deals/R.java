@@ -894,7 +894,7 @@ containing a value of this type.
         public static final int summaryOffDod=0x7f0a016e;
         public static final int summaryOnDod=0x7f0a016d;
         public static final int taken_date=0x7f0a0093;
-        public static final int tapForTapId=0x7f0a0002;
+        public static final int tapForTapKey=0x7f0a0002;
         public static final int tileCache=0x7f0a0038;
         public static final int titleDealCategories=0x7f0a0166;
         public static final int titleDealPreferences=0x7f0a0169;

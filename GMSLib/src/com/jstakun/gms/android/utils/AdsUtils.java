@@ -18,7 +18,7 @@ public class AdsUtils {
     private static final int ADMOB = 0;
     private static final int TAPFORTAP = 1;
     //TODO set to one of above
-    private static final int selected = ADMOB; //TAPFORTAP;
+    private static final int selected = TAPFORTAP;
 
     public static void loadAd(Activity activity) {
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.SHOW_ADS)) {

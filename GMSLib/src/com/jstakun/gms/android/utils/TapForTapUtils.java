@@ -5,14 +5,15 @@
 package com.jstakun.gms.android.utils;
 
 import android.app.Activity;
+import android.view.View;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
-import com.tapfortap.AdView;
-import com.tapfortap.AdView.AdViewListener;
-import com.tapfortap.AdView.Gender;
+import com.tapfortap.Banner;
 import com.tapfortap.TapForTap;
+import com.tapfortap.TapForTap.Gender;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,43 +24,66 @@ import java.util.Date;
  */
 public class TapForTapUtils {
 
-    private static final SimpleDateFormat fbFormat = new SimpleDateFormat("yyyyMMdd");
-    private static final SimpleDateFormat ggFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat fbFormat = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
+    private static final SimpleDateFormat ggFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
 
     protected static void loadAd(final Activity activity) {
-        TapForTap.setDefaultAppId(activity.getResources().getString(R.string.tapForTapId));
-        TapForTap.checkIn(activity);
-
-        final AdView adView = (AdView) activity.findViewById(R.id.adView);
-        //adView.setVisibility(View.GONE);
-        adView.setListener(new AdViewListener() {
-            public void didReceiveAd() {
-                //System.out.println("AdViewListener.didReceiveAd() --------------------------------------------------");
-                float scale = activity.getResources().getDisplayMetrics().density;
-                adView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, (int)(50*scale)));
-                //adView.setVisibility(View.VISIBLE);
+    	/*TapForTap.initialize(activity, activity.getResources().getString(R.string.tapForTapKey), new TapForTap.InitializationListener() {
+			
+			@Override
+			public void onSuccess(boolean arg0) {
+				System.out.println("InitOnSuccess " + arg0);
+			}
+			
+			@Override
+			public void onFail(String arg0, Throwable t) {
+				System.out.println("InitOnFail " + arg0);
+            	LoggerUtils.error("InitOnFail", t);
+			}
+		});*/
+    	TapForTap.enableTapForTap();
+    	//TODO comment in production
+    	//TapForTap.enableTestMode();
+    	
+        final Banner adView = (Banner) activity.findViewById(R.id.adView);
+        adView.setListener(new Banner.BannerListener() {
+            @Override
+            public void bannerOnReceive(Banner Banner) {
+            	System.out.println("BannerOnReceive");
+                //float scale = activity.getResources().getDisplayMetrics().density;
+                //int width = (int)(320 * scale);
+                //int height = (int)(50 * scale);
+                //c.setLayoutParams(new LayoutParams(width, height));
+            	//adView.setVisibility(View.VISIBLE);
             }
-            public void didFailToReceiveAd(String reason) {
-                //System.out.println("AdViewListener.didFailToReceiveAd(): " + reason);
+
+            @Override
+            public void bannerOnFail(Banner Banner, String s, Throwable t) {
+            	System.out.println("BannerOnFail");
+            	LoggerUtils.error("BannerOnFail", t);
+            }
+
+            @Override
+            public void bannerOnTap(Banner Banner) {
+            	System.out.println("BannerOnTap");
             }
         });
-            
+        
         if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.FB_GENDER)) {
             String gender = ConfigurationManager.getInstance().getString(ConfigurationManager.FB_GENDER);
             if (gender == null) {
                 gender = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_GENDER);
             }
             if (gender != null) {
-                if (gender.toLowerCase().equals("male")) {
-                    adView.setGender(Gender.MALE);
-                } else if (gender.toLowerCase().equals("female")) {
-                    adView.setGender(Gender.FEMALE);
+                if (gender.toLowerCase(java.util.Locale.US).equals("male")) {
+                    TapForTap.setGender(Gender.MALE);
+                } else if (gender.toLowerCase(java.util.Locale.US).equals("female")) {
+                	TapForTap.setGender(Gender.FEMALE);
                 }
             }
         }
-        if (ConfigurationManager.getInstance().getLocation()
-                != null) {
-            adView.setLocation(ConfigurationManager.getInstance().getLocation());
+        if (ConfigurationManager.getInstance().getLocation() != null) {
+        	TapForTap.setLocation(ConfigurationManager.getInstance().getLocation());
         }
 
         if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.FB_BIRTHDAY)) {
@@ -84,22 +108,20 @@ public class TapForTapUtils {
 
             if (birthday != null) {
                 try {
-                    int age = getAge(birthday);
-                    adView.setAge(age);
+                    int yob = getYearOfBirth(birthday);
+                    TapForTap.setYearOfBirth(yob);
                 } catch (Exception e) {
                 }
             }
         }
-
-        adView.loadAds();
     }
 
     protected static void destroyAdView(Activity activity) {
-        AdView adView = (AdView) activity.findViewById(R.id.adView);
-        adView.stopLoadingAds();
+        //Banner adView = (Banner) activity.findViewById(R.id.adView);     
+    	TapForTap.disableTapForTap();
     }
 
-    private static int getAge(Date dateOfBirth) {
+    /*private static int getAge(Date dateOfBirth) {
         Calendar now = Calendar.getInstance();
         Calendar dob = Calendar.getInstance();
         dob.setTime(dateOfBirth);
@@ -111,5 +133,11 @@ public class TapForTapUtils {
             age--;
         }
         return age;
+    }*/
+    
+    private static int getYearOfBirth(Date dateOfBirth) {
+    	Calendar dob = Calendar.getInstance();
+        dob.setTime(dateOfBirth);
+        return dob.get(Calendar.YEAR);
     }
 }

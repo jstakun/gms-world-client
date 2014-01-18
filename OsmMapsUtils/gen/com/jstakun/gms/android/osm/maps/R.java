@@ -845,7 +845,7 @@ containing a value of this type.
         public static int start_date=0x7f0a008e;
         public static int summary=0x7f0a004c;
         public static int taken_date=0x7f0a0093;
-        public static int tapForTapId=0x7f0a0002;
+        public static int tapForTapKey=0x7f0a0002;
         public static int tileCache=0x7f0a0038;
         public static int trackPos=0x7f0a000a;
         public static int trackUserSummaryOff=0x7f0a0048;

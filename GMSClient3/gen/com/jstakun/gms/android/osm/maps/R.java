@@ -737,7 +737,7 @@ public final class R {
 		public static final int start_date = 0x7f0a008e;
 		public static final int summary = 0x7f0a004c;
 		public static final int taken_date = 0x7f0a0093;
-		public static final int tapForTapId = 0x7f0a0002;
+		public static final int tapForTapKey = 0x7f0a0002;
 		public static final int tileCache = 0x7f0a0038;
 		public static final int trackPos = 0x7f0a000a;
 		public static final int trackUserSummaryOff = 0x7f0a0048;

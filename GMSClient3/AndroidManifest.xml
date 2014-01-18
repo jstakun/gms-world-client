@@ -91,6 +91,8 @@
          <receiver android:name="com.jstakun.gms.android.service.NotificationReceiver" >
         </receiver>
         <meta-data android:name="CLOUDMADE_KEY" android:value="@string/cloudmadeKey" />
+        <meta-data android:name="com.tapfortap.API_KEY" android:value="@string/tapForTapKey"/>
+    	
     </application>    
     <!-- Allows an application to access fine (e.g., GPS) location  -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>

@@ -59,8 +59,6 @@ public class LayerListActivity extends ListActivity {
 
         setContentView(R.layout.mylist);
 
-        ActionBarHelper.setDisplayHomeAsUpEnabled(this);
-
         AdsUtils.loadAd(this);
 
         //UserTracker.getInstance().startSession(this);
@@ -73,6 +71,8 @@ public class LayerListActivity extends ListActivity {
 
         //footer = new TextView(this);
         //getListView().addFooterView(footer);
+
+        ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
         createDeleteLayerAlertDialog();
         createEnableAllLayersAlertDialog();
