@@ -4,19 +4,16 @@
  */
 package com.jstakun.gms.android.utils;
 
-import android.app.Activity;
-import android.view.View;
-import android.widget.LinearLayout.LayoutParams;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
+import android.app.Activity;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.tapfortap.Banner;
 import com.tapfortap.TapForTap;
 import com.tapfortap.TapForTap.Gender;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  *
@@ -28,44 +25,26 @@ public class TapForTapUtils {
     private static final SimpleDateFormat ggFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
 
     protected static void loadAd(final Activity activity) {
-    	/*TapForTap.initialize(activity, activity.getResources().getString(R.string.tapForTapKey), new TapForTap.InitializationListener() {
-			
-			@Override
-			public void onSuccess(boolean arg0) {
-				System.out.println("InitOnSuccess " + arg0);
-			}
-			
-			@Override
-			public void onFail(String arg0, Throwable t) {
-				System.out.println("InitOnFail " + arg0);
-            	LoggerUtils.error("InitOnFail", t);
-			}
-		});*/
     	TapForTap.enableTapForTap();
-    	//TODO comment in production
-    	//TapForTap.enableTestMode();
     	
         final Banner adView = (Banner) activity.findViewById(R.id.adView);
         adView.setListener(new Banner.BannerListener() {
             @Override
             public void bannerOnReceive(Banner Banner) {
-            	System.out.println("BannerOnReceive");
-                //float scale = activity.getResources().getDisplayMetrics().density;
-                //int width = (int)(320 * scale);
-                //int height = (int)(50 * scale);
-                //c.setLayoutParams(new LayoutParams(width, height));
-            	//adView.setVisibility(View.VISIBLE);
+            	//System.out.println("BannerOnReceive");
             }
 
             @Override
             public void bannerOnFail(Banner Banner, String s, Throwable t) {
-            	System.out.println("BannerOnFail");
-            	LoggerUtils.error("BannerOnFail", t);
+            	//System.out.println("BannerOnFail");
+            	if (TapForTap.isEnabled()) {
+            		LoggerUtils.error("TapForTapUtils.BannerOnFail() exception:", t);
+            	}
             }
 
             @Override
             public void bannerOnTap(Banner Banner) {
-            	System.out.println("BannerOnTap");
+            	//System.out.println("BannerOnTap");
             }
         });
         

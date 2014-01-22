@@ -1197,7 +1197,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 			drawerLayout.closeDrawer(drawerList);
-    		onMenuItemSelected((int)id);
+			onMenuItemSelected((int)id);
 			return false;
 		}
     	
