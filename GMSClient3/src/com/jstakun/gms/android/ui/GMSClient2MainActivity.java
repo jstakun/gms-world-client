@@ -179,10 +179,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         }
 
         LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
-        initComponents();
+        initComponents(savedInstanceState);
     }
 
-    private void initComponents() {
+    private void initComponents(Bundle savedInstanceState) {
 
         statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
