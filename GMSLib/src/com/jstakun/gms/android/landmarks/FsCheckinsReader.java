@@ -52,6 +52,6 @@ public class FsCheckinsReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsCheckins";
+		return ConfigurationManager.getInstance().getSecuredServerUrl() + "fsCheckins";
 	}
 }

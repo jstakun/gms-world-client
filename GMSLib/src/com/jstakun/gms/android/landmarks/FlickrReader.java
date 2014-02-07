@@ -15,6 +15,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public class FlickrReader extends AbstractSerialReader {
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "flickrProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "flickrProvider";
 	}
 }

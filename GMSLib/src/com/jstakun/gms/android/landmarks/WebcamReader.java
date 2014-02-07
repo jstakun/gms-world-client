@@ -15,6 +15,6 @@ public class WebcamReader extends AbstractSerialReader  {
 
     @Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "webcamProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "webcamProvider";
 	}
 }

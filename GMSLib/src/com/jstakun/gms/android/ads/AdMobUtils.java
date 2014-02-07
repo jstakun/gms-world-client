@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.gms.android.utils;
+package com.jstakun.gms.android.ads;
 
 import android.app.Activity;
 import android.view.ViewGroup;

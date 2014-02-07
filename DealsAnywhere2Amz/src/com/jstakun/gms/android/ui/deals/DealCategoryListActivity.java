@@ -23,7 +23,7 @@ import com.jstakun.gms.android.deals.Category;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.ui.AddLayerActivity;
 import com.jstakun.gms.android.ui.Intents;
-import com.jstakun.gms.android.utils.AdsUtils;
+import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.OsUtil;

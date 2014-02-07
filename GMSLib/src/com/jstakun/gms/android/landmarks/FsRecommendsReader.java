@@ -54,6 +54,6 @@ public class FsRecommendsReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsRecommended";
+		return ConfigurationManager.getInstance().getSecuredServerUrl() + "fsRecommended";
 	}
 }

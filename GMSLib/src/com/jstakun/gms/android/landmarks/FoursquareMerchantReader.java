@@ -49,7 +49,7 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
 	@Override
 	protected String getUrl() {
 		if (hasToken) {
-			return  ConfigurationManager.getInstance().getSecuredServicesUrl() + "foursquareMerchant";
+			return  ConfigurationManager.getInstance().getSecuredServerUrl() + "foursquareMerchant";
 		} else {
 			return ConfigurationManager.SERVER_URL + "foursquareMerchant";
 		}

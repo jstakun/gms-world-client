@@ -27,6 +27,6 @@ public class HotelsReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getSecuredServicesUrl() + "hotelsProvider";
+		return ConfigurationManager.getInstance().getSecuredServerUrl() + "hotelsProvider";
 	}
 }

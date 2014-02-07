@@ -18,12 +18,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.AdsUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;

@@ -143,7 +143,7 @@ public class RoutesManager {
         List<ExtendedLandmark> routePoints = new ArrayList<ExtendedLandmark>();
         String message = null;
 
-        String url = ConfigurationManager.SERVER_SERVICES_URL + "routeProvider?";
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "routeProvider?";
 
         url += "lat_start=" + lat_start;
         url += "&lng_start=" + lng_start;

@@ -12,8 +12,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TimePicker;
+
+import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.AdsUtils;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.UserTracker;

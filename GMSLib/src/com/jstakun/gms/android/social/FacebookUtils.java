@@ -114,7 +114,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 			HttpUtils utils = new HttpUtils();
 			
 			try {
-				String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbSendMessage";			
+				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "fbSendMessage";			
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 		    	params.add(new BasicNameValuePair("token", accessToken.getToken()));
 		    	if (landmark != null) {
@@ -154,7 +154,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 				logout();
 				throw new NullPointerException("Missing FB authentication token!");
 			}
-			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "socialCheckin";			
+			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialCheckin";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 		    params.add(new BasicNameValuePair("accessToken", token));
 		    params.add(new BasicNameValuePair("venueId", placeId));
@@ -195,7 +195,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 		String errorMessage = null;
 
 		try {
-			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "socialComment";			
+			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialComment";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 		    params.add(new BasicNameValuePair("accessToken", accessToken.getToken()));
 		    params.add(new BasicNameValuePair("venueId", placeId));

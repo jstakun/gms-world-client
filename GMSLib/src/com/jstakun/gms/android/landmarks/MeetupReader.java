@@ -15,6 +15,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public class MeetupReader extends AbstractSerialReader {
     @Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "meetupProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "meetupProvider";
 	}
 }

@@ -25,6 +25,6 @@ public class YelpReader extends AbstractSerialReader{
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "yelpProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "yelpProvider";
 	}
 }

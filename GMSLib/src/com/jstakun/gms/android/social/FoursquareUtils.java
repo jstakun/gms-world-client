@@ -100,7 +100,7 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 				logout();
 				throw new NullPointerException("Missing FS authentication token!");
 			}
-			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "socialCheckin";			
+			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialCheckin";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 		    params.add(new BasicNameValuePair("accessToken", token));
 		    params.add(new BasicNameValuePair("venueId", venueId));
@@ -144,7 +144,7 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 				logout();
 				throw new NullPointerException("Missing FS authentication token!");
 			}
-			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "socialComment";			
+			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialComment";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 		    params.add(new BasicNameValuePair("accessToken", token));
 		    params.add(new BasicNameValuePair("venueId", venueId));
@@ -188,7 +188,7 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 				logout();
 				throw new NullPointerException("Missing FS authentication token!");
 			}
-			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "fsAddVenue";			
+			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "fsAddVenue";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 		    params.add(new BasicNameValuePair("accessToken", token));
 		    params.add(new BasicNameValuePair("ll", Double.toString(lat) + "," + Double.toString(lng)));

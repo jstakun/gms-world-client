@@ -35,6 +35,6 @@ public class GMSWorldReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "downloadLandmark";
+		return ConfigurationManager.getInstance().getServerUrl() + "downloadLandmark";
 	}
 }

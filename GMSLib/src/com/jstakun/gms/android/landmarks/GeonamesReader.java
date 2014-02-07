@@ -15,6 +15,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public class GeonamesReader extends AbstractSerialReader {
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "geonamesProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "geonamesProvider";
 	}
 }

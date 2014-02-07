@@ -113,6 +113,7 @@ public class LandmarkManager {
         String normalizedDetails = null;
         if (details != null) {
             normalizedDetails = details.replace('\n', ' ').replace('\r', ' ');
+            normalizedDetails += "<br/>" + Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale()));
         }
         String normalizedName = name.replace('\n', ' ').replace('\r', ' ');
         QualifiedCoordinates qc = new QualifiedCoordinates(latitude, longitude, altitude, Float.NaN, Float.NaN);
@@ -556,7 +557,7 @@ public class LandmarkManager {
 
         double[] coords = MercatorUtils.normalizeE6(new double[]{landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()});
         double alt = MercatorUtils.normalizeE6(landmark.getQualifiedCoordinates().getAltitude());
-        String url = ConfigurationManager.SERVER_SERVICES_URL + "persistLandmark";
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "persistLandmark";
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("name", landmark.getName()));
         params.add(new BasicNameValuePair("description", landmark.getDescription()));
@@ -584,29 +585,30 @@ public class LandmarkManager {
 
         HttpUtils utils = new HttpUtils();
         utils.sendPostRequest(url, params, true);
-        //System.out.println("Persist landmark: " + result);
         errorMessage = utils.getResponseCodeErrorMessage();
 
-        if (errorMessage == null) {
+        //if (errorMessage == null) {
             //we are using bit.ly url shorter
-            String lmUrl = null;
-            String hash = utils.getHeader("hash");
-            String key = utils.getHeader("key");
+        String lmUrl = null;
+        String hash = utils.getHeader("hash");
+        String key = utils.getHeader("key");
             
-            if (hash != null) {
-                lmUrl = ConfigurationManager.BITLY_URL + hash;
-            } else if (key != null) {
-                lmUrl = ConfigurationManager.SHOW_LANDMARK_URL + key;
-            }
-            
-            if (key != null) {
-            	landmark.setServerKey(key);
-            }
-
-            if (lmUrl != null) {
-                landmark.setUrl(lmUrl);
-            }
+        if (hash != null) {
+           lmUrl = ConfigurationManager.BITLY_URL + hash;
+        } else if (key != null) {
+           lmUrl = ConfigurationManager.SHOW_LANDMARK_URL + key;
         }
+            
+        if (key != null) {
+           landmark.setServerKey(key);
+        }
+
+        if (lmUrl != null) {
+           landmark.setUrl(lmUrl);
+        }
+        //}
+        
+        //System.out.println("Set values: " + key + " " + lmUrl);
 
         try {
             if (utils != null) {

@@ -16,6 +16,6 @@ public class LastFmReader extends AbstractSerialReader {
 
     @Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "lastfmProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "lastfmProvider";
 	}
 }

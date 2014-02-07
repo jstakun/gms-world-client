@@ -505,7 +505,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				}
 
 				params.add(new BasicNameValuePair("format", "bin"));
-				String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "search";
+				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "search";
 				List<ExtendedLandmark> received = utils.loadLandmarkList(new URI(url), params, true, "deflate");
 				
 				errorMessage = utils.getResponseCodeErrorMessage();

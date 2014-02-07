@@ -15,6 +15,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public class MastercardAtmReader extends AbstractSerialReader {
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "atmProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "atmProvider";
 	}
 }

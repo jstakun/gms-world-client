@@ -80,7 +80,7 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 
 			try {
 				String url = ConfigurationManager.getInstance()
-						.getSecuredServicesUrl() + "lnSendUpdate";
+						.getSecuredServerUrl() + "lnSendUpdate";
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("token", accessToken
 						.getToken()));

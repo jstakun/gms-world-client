@@ -41,7 +41,7 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.utils.AdsUtils;
+import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DateTimeUtils;

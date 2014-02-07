@@ -136,12 +136,12 @@ public final class ConfigurationManager {
     public static final String SERVER_URL = "http://www.gms-world.net/";
     public static final String SSL_SERVER_URL = "https://" + SERVER_HOST + "/";
     public static final String SHOW_LANDMARK_URL = SERVER_URL + "showLandmark/";
-    public static final String SHOW_LOCATION_URL = SERVER_URL + "showLocation.do";
+    //private static final String SHOW_LOCATION_URL = SERVER_URL + "showLocation.do";
     public static final String BITLY_URL = "http://bit.ly/";
     public static final String REGISTER_URL = SERVER_URL + "m/register.jsp";
-    public static final String SERVER_SERVICES_URL = SERVER_URL + "services/";
+    private static final String SERVER_SERVICES_URL = SERVER_URL + "services/";
     public static final String CRASH_REPORT_URL = SERVER_SERVICES_URL + "crashReport";
-    public static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + "services/";
+    private static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + "services/";
     public static final String GMS_WORLD = "GMS World";
     public static final String LM_MARKET_URL = "http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     public static final int PERSIST_SERVER = 0;
@@ -325,6 +325,14 @@ public final class ConfigurationManager {
     }
 
     public String getServicesUrl() {
+    	return SERVER_SERVICES_URL; //"http://10.0.2.2:8080/services/"; //
+    }
+    
+    public String getSecuredServicesUrl() {
+    	return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/services/"; //
+    }
+    
+    public String getServerUrl() {
         if (getUserManager().isUserLoggedIn()) {
             return SERVER_SERVICES_URL; //"http://10.0.2.2:8080/services/"; //
         } else {
@@ -332,7 +340,7 @@ public final class ConfigurationManager {
         }
     }
 
-    public String getSecuredServicesUrl() {
+    public String getSecuredServerUrl() {
         if (getUserManager().isUserLoggedIn()) {
             return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/services/"; //
         } else {
@@ -341,12 +349,6 @@ public final class ConfigurationManager {
     }
 
     public void clearObjectCache() {
-        /*for (Iterator<Map.Entry<String, Object>> i = objectCache.entrySet().iterator(); i.hasNext();) {
-         Map.Entry<String, Object> entry = i.next();
-         String key = entry.getKey();
-         LoggerUtils.debug("Removing object " + key + " ...");
-         i.remove();
-         }*/
         objectCache.clear();
     }
 

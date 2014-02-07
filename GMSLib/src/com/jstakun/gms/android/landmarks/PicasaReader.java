@@ -28,6 +28,6 @@ public class PicasaReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "picasaProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "picasaProvider";
 	}
 }

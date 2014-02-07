@@ -15,7 +15,7 @@ public class TwitterReader extends AbstractSerialReader {
 
     @Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "twitterProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "twitterProvider";
 	}
     
 }

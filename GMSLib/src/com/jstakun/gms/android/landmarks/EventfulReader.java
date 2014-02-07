@@ -16,6 +16,6 @@ public class EventfulReader extends AbstractSerialReader {
 
     @Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "eventfulProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "eventfulProvider";
 	}
 }

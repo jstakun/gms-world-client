@@ -6,6 +6,6 @@ public class YouTubeReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "youTubeProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "youTubeProvider";
 	}
 }

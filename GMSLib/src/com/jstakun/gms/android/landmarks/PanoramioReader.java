@@ -30,6 +30,6 @@ public class PanoramioReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "panoramio2Provider";
+		return ConfigurationManager.getInstance().getServerUrl() + "panoramio2Provider";
 	}
 }

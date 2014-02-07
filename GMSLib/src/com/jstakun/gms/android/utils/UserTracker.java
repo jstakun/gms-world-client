@@ -4,14 +4,13 @@
  */
 package com.jstakun.gms.android.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.Context;
 
 import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.GAServiceManager;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Logger;
+import com.google.analytics.tracking.android.MapBuilder;
 import com.google.analytics.tracking.android.Tracker;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
@@ -42,6 +41,7 @@ public class UserTracker {
     	try {
     		if (tracker == null) {
         		tracker = GoogleAnalytics.getInstance(context).getTracker(getId(context));
+        		GAServiceManager.getInstance().setLocalDispatchPeriod(30);
         	}
     	} catch (Throwable t) {
     		LoggerUtils.error("UserTracker.initialize exception:", t);
@@ -67,22 +67,25 @@ public class UserTracker {
     public void trackActivity(final String activityName) {
     	//System.out.println("UserTracker.trackAcivity() " + activityName);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
-            Map<String, String> hitParameters = new HashMap<String, String>();
-        	hitParameters.put(Fields.HIT_TYPE, "appview");
-        	hitParameters.put(Fields.SCREEN_NAME, activityName);
-        	tracker.send(hitParameters);
+            //Map<String, String> hitParameters = new HashMap<String, String>();
+        	//hitParameters.put(Fields.HIT_TYPE, "appview");
+        	//hitParameters.put(Fields.SCREEN_NAME, activityName);
+        	//tracker.send(hitParameters);
+        	tracker.set(Fields.SCREEN_NAME, activityName);
+        	tracker.send(MapBuilder.createAppView().build());
         }
     }
 
-    public void trackEvent(final String category, final String action, final String label, final int value) {
+    public void trackEvent(final String category, final String action, final String label, final long value) {
     	//System.out.println("UserTracker.trackEvent() " + category + " " + action);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
-            HashMap<String, String> hitParameters = new HashMap<String, String>();
-        	hitParameters.put(Fields.EVENT_CATEGORY, category);
-        	hitParameters.put(Fields.EVENT_ACTION, action);
-        	hitParameters.put(Fields.EVENT_LABEL, label);
-        	hitParameters.put(Fields.EVENT_VALUE, Integer.toString(value));
-        	tracker.send(hitParameters);
+            //HashMap<String, String> hitParameters = new HashMap<String, String>();
+        	//hitParameters.put(Fields.EVENT_CATEGORY, category);
+        	//hitParameters.put(Fields.EVENT_ACTION, action);
+        	//hitParameters.put(Fields.EVENT_LABEL, label);
+        	//hitParameters.put(Fields.EVENT_VALUE, Integer.toString(value));
+        	//tracker.send(hitParameters);
+        	tracker.send(MapBuilder.createEvent(category, action, label, value).build());
         }
     }
 

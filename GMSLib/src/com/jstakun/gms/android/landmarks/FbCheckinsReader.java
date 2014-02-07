@@ -50,6 +50,6 @@ public class FbCheckinsReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbCheckins";
+		return ConfigurationManager.getInstance().getSecuredServerUrl() + "fbCheckins";
 	}
 }

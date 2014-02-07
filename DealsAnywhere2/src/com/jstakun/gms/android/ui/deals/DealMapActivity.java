@@ -42,7 +42,7 @@ import com.jstakun.gms.android.ui.Intents;
 import com.jstakun.gms.android.ui.LandmarkListActivity;
 import com.jstakun.gms.android.ui.StatusBarLinearLayout;
 import com.jstakun.gms.android.ui.ViewResizeListener;
-import com.jstakun.gms.android.utils.AdsUtils;
+import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DateTimeUtils;

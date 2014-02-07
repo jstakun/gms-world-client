@@ -72,7 +72,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 			HttpUtils utils = new HttpUtils();
 		
 			try {
-				String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "glSendPost";			
+				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "glSendPost";			
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				if (expires_in > System.currentTimeMillis()) {
 					params.add(new BasicNameValuePair("token", accessToken.getToken()));
@@ -171,7 +171,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 		String message = null;
 
 		try {
-			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "socialCheckin";			
+			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialCheckin";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 		    params.add(new BasicNameValuePair("reference", reference));
 		    params.add(new BasicNameValuePair("service", Commons.GOOGLE));

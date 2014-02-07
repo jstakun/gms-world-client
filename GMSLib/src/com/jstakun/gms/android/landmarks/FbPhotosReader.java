@@ -51,6 +51,6 @@ public class FbPhotosReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getSecuredServicesUrl() + "fbPhotos";
+		return ConfigurationManager.getInstance().getSecuredServerUrl() + "fbPhotos";
 	}
 }

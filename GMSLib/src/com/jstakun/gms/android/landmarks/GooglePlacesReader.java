@@ -26,6 +26,6 @@ public class GooglePlacesReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "googlePlacesProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "googlePlacesProvider";
 	}
 }

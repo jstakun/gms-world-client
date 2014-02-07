@@ -36,7 +36,7 @@ public class LayerJSONParser {
         try {
             int radius = DistanceUtils.radiusInKilometer();
 
-            String url = ConfigurationManager.getInstance().getServicesUrl() + "listLayers";
+            String url = ConfigurationManager.getInstance().getServerUrl() + "listLayers";
 
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("format","json"));

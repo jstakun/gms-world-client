@@ -17,6 +17,10 @@ import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
 public final class GMSUtils {
+	
+	public static final String LOCATION_CHECKIN = "locationCheckIn";
+	public static final String QRCODE_CHECKIN = "qrCodeCheckIn";
+	
 	public static String loginAction(String login, String password) {
         HttpUtils utils = new HttpUtils();
         String errorMessage = null, encPwd = null, email = null, user = null;
@@ -24,7 +28,7 @@ public final class GMSUtils {
         try {
             ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_USERNAME, login);
             ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_PASSWORD, password);
-            String url = ConfigurationManager.SSL_SERVER_SERVICES_URL + "authenticate";
+            String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "authenticate";
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("mobile", "true"));
             byte[] resp = utils.loadHttpFile(url, true, "text/json");
@@ -80,7 +84,7 @@ public final class GMSUtils {
 	}
 	
 	public static String sendComment(String placeId, String commentText) {
-        String url = ConfigurationManager.SERVER_SERVICES_URL + "addComment";
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "addComment";
         String message = "";
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("key", placeId));
@@ -113,7 +117,7 @@ public final class GMSUtils {
     }
 	
 	public static String checkin(String service, String checkinLandmarkCode, String name) {
- 	   String url = ConfigurationManager.SERVER_SERVICES_URL + service;
+ 	   String url = ConfigurationManager.getInstance().getServicesUrl() + service; 
  	   List<NameValuePair> params = new ArrayList<NameValuePair>();
  	   params.add(new BasicNameValuePair("key", checkinLandmarkCode));
  	   String username = ConfigurationManager.getUserManager().getLoggedInUsername();

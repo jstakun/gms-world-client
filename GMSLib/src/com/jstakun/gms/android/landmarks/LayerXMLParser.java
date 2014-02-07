@@ -42,7 +42,7 @@ public class LayerXMLParser {
         String errorMessage = null;
 
         try {
-            String url = ConfigurationManager.getInstance().getServicesUrl() + "listLayers";
+            String url = ConfigurationManager.getInstance().getServerUrl() + "listLayers";
             byte[] file = utils.loadHttpFile(url, true, "xml");
             
             if (file != null)

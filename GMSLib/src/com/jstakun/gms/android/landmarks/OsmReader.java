@@ -46,6 +46,6 @@ public class OsmReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "osmProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "osmProvider";
 	}
 }

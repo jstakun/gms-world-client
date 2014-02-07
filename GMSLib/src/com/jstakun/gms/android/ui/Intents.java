@@ -47,6 +47,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
@@ -65,7 +66,6 @@ import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.AdsUtils;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.HttpUtils;
@@ -883,7 +883,7 @@ public final class Intents {
         	List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("appId", ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID)));
 			params.add(new BasicNameValuePair("type", "v")); 
-            String url = ConfigurationManager.getInstance().getServicesUrl() + "notifications";
+            String url = ConfigurationManager.getInstance().getServerUrl() + "notifications";
 
             utils.sendPostRequest(url, params, true);
             if (utils.getResponseCode() == HttpStatus.SC_OK) {

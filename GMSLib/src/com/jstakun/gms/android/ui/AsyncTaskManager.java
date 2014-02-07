@@ -529,7 +529,7 @@ public class AsyncTaskManager {
             qrformat = fileData[3];
             if (checkinLandmarkCode.matches("[a-zA-z0-9]*")) {
                 if (qrformat.equals("QR_CODE")) {
-                    return GMSUtils.checkin("qrCodeCheckIn", checkinLandmarkCode, null);
+                    return GMSUtils.checkin(GMSUtils.QRCODE_CHECKIN, checkinLandmarkCode, null);
                 } else {
                     return Locale.getMessage(R.string.Social_Checkin_wrong_key_1, qrformat);
                 }
@@ -567,7 +567,7 @@ public class AsyncTaskManager {
                String checkinLandmarkCode = checkinData[2];
                String name = checkinData[3];
                silent = Boolean.parseBoolean(checkinData[4]);
-               return GMSUtils.checkin("locationCheckIn", checkinLandmarkCode, name);
+               return GMSUtils.checkin(GMSUtils.LOCATION_CHECKIN, checkinLandmarkCode, name);
            }
     }
 
@@ -938,7 +938,7 @@ public class AsyncTaskManager {
         protected Void doInBackground(Double... coords) {
             HttpUtils utils = new HttpUtils();
             try {
-                String url = ConfigurationManager.getInstance().getServicesUrl() + "imageUpload";
+                String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
                 utils.uploadFile(url, true, coords[0], coords[1], file, filename);
             } catch (Exception e) {
                 LoggerUtils.error("Intents.takeScreenshot() exception: ", e);

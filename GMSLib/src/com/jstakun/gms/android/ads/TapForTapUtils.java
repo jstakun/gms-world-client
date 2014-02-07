@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.gms.android.utils;
+package com.jstakun.gms.android.ads;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -11,6 +11,7 @@ import java.util.Date;
 import android.app.Activity;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.LoggerUtils;
 import com.tapfortap.Banner;
 import com.tapfortap.TapForTap;
 import com.tapfortap.TapForTap.Gender;

@@ -21,12 +21,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.AdsUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;

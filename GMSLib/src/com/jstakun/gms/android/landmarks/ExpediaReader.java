@@ -15,6 +15,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public class ExpediaReader extends AbstractSerialReader {
     @Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "expediaProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "expediaProvider";
 	}
 }

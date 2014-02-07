@@ -24,6 +24,6 @@ public class FoursquareReader extends AbstractSerialReader {
 
 	@Override
 	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServicesUrl() + "foursquareProvider";
+		return ConfigurationManager.getInstance().getServerUrl() + "foursquareProvider";
 	}
 }

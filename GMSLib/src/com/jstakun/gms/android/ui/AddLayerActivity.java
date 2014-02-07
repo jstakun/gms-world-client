@@ -15,12 +15,12 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.AdsUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.UserTracker;

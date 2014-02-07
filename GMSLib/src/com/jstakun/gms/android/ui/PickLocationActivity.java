@@ -28,9 +28,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.AdsUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
@@ -300,7 +300,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
               	params.add(new BasicNameValuePair("email", email));
             }
 
-            String url = ConfigurationManager.getInstance().getServicesUrl() + "geocode";
+            String url = ConfigurationManager.getInstance().getServerUrl() + "geocode";
 
             utils.sendPostRequest(url, params, true);
             

@@ -75,7 +75,7 @@ public final class TwitterUtils extends AbstractSocialUtils {
 		String errorMessage = null;
 
 		try {
-			String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "twSendUpdate";			
+			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "twSendUpdate";			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 		    params.add(new BasicNameValuePair("token", accessToken.getToken()));
 		    params.add(new BasicNameValuePair("secret", accessToken.getSecret()));
