@@ -50,6 +50,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -58,9 +59,11 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -69,6 +72,7 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.bouncycastle.util.encoders.Base64;
@@ -91,6 +95,7 @@ public class HttpUtils {
     private static final int REQUEST_RETRY_COUNT = 2;
     private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
     private static DefaultHttpClient httpClient = null;
+    private static HttpContext httpContext = null;
     private static java.util.Locale locale;
     private static boolean closeConnManager = false;
 	private String errorMessage = null;
@@ -132,6 +137,9 @@ public class HttpUtils {
             
             httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schemeRegistry), params);
             httpClient.setHttpRequestRetryHandler(new SocketTimeOutRetryHandler(params, REQUEST_RETRY_COUNT, true));
+            
+            httpContext = new BasicHttpContext(); 
+            httpContext.setAttribute(ClientContext.COOKIE_STORE, new BasicCookieStore());
         }
 
         return httpClient;
@@ -167,7 +175,7 @@ public class HttpUtils {
            
             postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
-            HttpResponse httpResponse = getHttpClient().execute(postRequest);
+            HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
 
             responseCode = httpResponse.getStatusLine().getStatusCode();
 
@@ -238,7 +246,7 @@ public class HttpUtils {
 
             postRequest.setEntity(entity);        
 
-            HttpResponse httpResponse = getHttpClient().execute(postRequest);
+            HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
 
             responseCode = httpResponse.getStatusLine().getStatusCode();
 
@@ -308,7 +316,7 @@ public class HttpUtils {
             }
             
             if (!getRequest.isAborted() && !closeConnManager) {
-            	HttpResponse httpResponse = getHttpClient().execute(getRequest);
+            	HttpResponse httpResponse = getHttpClient().execute(getRequest, httpContext);
 
             	responseCode = httpResponse.getStatusLine().getStatusCode();
 
@@ -372,6 +380,12 @@ public class HttpUtils {
         
         List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
         
+        /*System.out.println("Calling: " + uri.toString());
+        for (int i = 0; i < params.size(); i++) {
+            NameValuePair nvp = params.get(i);
+            System.out.println(nvp.getName() + " " + nvp.getValue());
+        }*/
+        
         try {
          if (ServicesUtils.isNetworkActive()) { 	
             LoggerUtils.debug("Loading file: " + uri.toString());
@@ -394,8 +408,9 @@ public class HttpUtils {
            
             postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
             
+            
             if (!postRequest.isAborted() && !closeConnManager) {
-                HttpResponse httpResponse = getHttpClient().execute(postRequest);
+                HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
 
             	responseCode = httpResponse.getStatusLine().getStatusCode();
 
@@ -481,6 +496,13 @@ public class HttpUtils {
             errorMessage = handleHttpException(e);
         }
 
+        //comment
+        //System.out.println("Cookies list: ------------------------------------------------------------------------");
+        //BasicCookieStore bcs = (BasicCookieStore)httpContext.getAttribute(ClientContext.COOKIE_STORE);
+        //for (Cookie c : bcs.getCookies()) {
+        //	System.out.println(c.getName() + ": " + c.getValue());
+        //}
+        
         return reply;
     }
 
@@ -688,7 +710,7 @@ public class HttpUtils {
     	}
     }
     
-    private static void setUserCredentials(URI uri) throws UnsupportedEncodingException { 
+    /*private static void setUserCredentials(URI uri) throws UnsupportedEncodingException { 
     	String username = null, password = null;
     	boolean decodePassword = true, decodeUsername = true;
     	
@@ -737,7 +759,7 @@ public class HttpUtils {
     	Credentials creds = new UsernamePasswordCredentials(new String(usr, "US-ASCII"), new String(pwd, "US-ASCII"));
     	
     	httpClient.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort(), AuthScope.ANY_REALM), creds);
-    }
+    }*/
 
     /*private static class SSLSocketFactoryHelper {
 

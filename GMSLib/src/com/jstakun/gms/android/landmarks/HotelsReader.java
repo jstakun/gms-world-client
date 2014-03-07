@@ -28,5 +28,6 @@ public class HotelsReader extends AbstractSerialReader {
 	@Override
 	protected String getUrl() {
 		return ConfigurationManager.getInstance().getSecuredServerUrl() + "hotelsProvider";
+		//return "http://landmarks-gmsworld.rhcloud.com/actions/layersProvider";
 	}
 }

@@ -14,6 +14,7 @@
     <string name="addLayer">Add layer</string>
     <string name="refreshLayers">Refresh layers</string>
     <string name="enableLayers">Enable all layers</string>
+    <string name="disableLayers">Disable all layers</string>
     <string name="showLayers">Show layers</string>
     <string name="saveRoute">Save route</string>
     <string name="routes">Routes</string>
@@ -357,6 +358,7 @@
      <!-- Layers -->
      <string name="Layer.enabled">Layer enabled</string>
      <string name="Layer.all.enabled">All layers enabled</string>
+     <string name="Layer.all.disabled">All layers disabled</string>
      <string name="Layer.disabled">Layer disabled</string>
      <string name="Layer.operation.unsupported">This operation is unsupported for this layer</string>
      <string name="Layer.Loading">Loading layers&#8230;</string>
@@ -371,6 +373,7 @@
      <string name="Layer.add.message.short">Searching for %1$s&#8230;</string>
      <string name="Layer.add.message.long"><![CDATA[Do you want to save your query <b>%1$s</b> as layer?]]></string>
      <string name="Layer.enableLayers.prompt">Enable all layers?</string>
+     <string name="Layer.disableLayers.prompt">Disable all layers?</string>
     
      <!-- DealCategoryListActivity -->
      <string name="Category.title">Select category</string>

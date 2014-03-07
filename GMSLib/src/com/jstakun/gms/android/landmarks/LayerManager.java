@@ -113,6 +113,25 @@ public class LayerManager {
             }
         }
     }
+    
+    public boolean isAllLayersEnabled() {
+        for (String key : getLayers()) {
+            Layer layer = layers.get(key);
+            if (layer != null && !layer.isEnabled()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public void disableAllLayers() {
+        for (String key : getLayers()) {
+            Layer layer = layers.get(key);
+            if (layer != null) {
+                layer.setEnabled(false);
+            }
+        }
+    }
 
     public boolean isEmpty() {
         return layers.isEmpty();

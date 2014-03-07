@@ -36,7 +36,7 @@ sendMyPosAtStartup;1
 landmarksPerLayer;300
 landmarksConcurrentCount;5
 setLastKnownLocAtStartup;1
-showAds;1
+adsProvider;3
 memoryCacheSize;48
 routeType;0
 loadDisabledLayers;1

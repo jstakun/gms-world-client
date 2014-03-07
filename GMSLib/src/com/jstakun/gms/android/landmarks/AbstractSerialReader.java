@@ -46,7 +46,8 @@ public abstract class AbstractSerialReader implements LayerReader {
 
     public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
     	init(latitude, longitude, zoom, width, height);
-    	return parser.parse(getUrl(), params, landmarks, task, true, layer);
+    	params.add(new BasicNameValuePair("layer", layer));
+	    return parser.parse(getUrl(), params, landmarks, task, true, layer);
     }
 
     public final void close() {

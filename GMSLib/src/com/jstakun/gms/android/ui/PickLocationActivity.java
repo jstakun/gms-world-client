@@ -109,7 +109,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         }
 
         locationCountrySpinner.setSelection(selection);
-        country = (String)adapter.getItem(selection); 
+        country = (String) adapter.getItem(selection); 
         AdsUtils.loadAd(this);
 
         pickButton.setOnClickListener(PickLocationActivity.this);
@@ -340,6 +340,14 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             country = parent.getItemAtPosition(pos).toString();
             //System.out.println("You have selected: " + parent.getItemAtPosition(pos).toString());
+            
+            //TODO select english name
+            //Configuration conf = new Configuration();
+            //conf.setToDefaults();   // That will set conf.locale to null (current locale)
+            //conf.locale = new Locale("");  
+            //Resources resources = new Resources(getAssets(), null, conf);
+            //String[] countries = resources.getStringArray(R.array.countries);
+            //country = countries[pos];           
         }
 
         public void onNothingSelected(AdapterView<?> parent) {

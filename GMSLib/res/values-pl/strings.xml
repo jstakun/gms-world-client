@@ -13,6 +13,7 @@
     <string name="addLayer">Dodaj warstw\u0119</string>
     <string name="refreshLayers">Od\u015bwie\u017c warstwy</string>
     <string name="enableLayers">W\u0142\u0105cz wszystkie warstwy</string>
+    <string name="disableLayers">Wy\u0142\u0105cz wszystkie warstwy</string>
     <string name="showLayers">Poka\u017c warstwy</string>
     <string name="saveRoute">Zapisz tras\u0119</string>
     <string name="routes">Trasy</string>
@@ -352,6 +353,7 @@
     <!-- Layers -->
     <string name="Layer.enabled">Warstwa w\u0142\u0105czona</string>
     <string name="Layer.all.enabled">Wszystkie warstwy w\u0142\u0105czone</string>
+    <string name="Layer.all.disabled">Wszystkie warstwy wy\u0142\u0105czone</string>
     <string name="Layer.disabled">Warstwa wy\u0142\u0105czona</string>
     <string name="Layer.operation.unsupported">Nie mo\u017cna wykona\u0107 akcji w tej warstwie</string>
     <string name="Layer.Loading">\u0141adowanie warstw&#8230;</string>
@@ -366,6 +368,7 @@
     <string name="Layer.add.message.long"><![CDATA[Czy chcesz zapisa\u0107 zapytanie <b>%1$s</b> jako warstw\u0119?]]></string>
     <string name="Layer.delete.prompt">Skasowa\u0107 warstw\u0119 %1$s?</string>
     <string name="Layer.enableLayers.prompt">W\u0142\u0105czy\u0107 wszystkie warstwy?</string>
+    <string name="Layer.disableLayers.prompt">Wy\u0142\u0105czy\u0107 wszystkie warstwy?</string>
     
     <!-- DealCategoryListActivity -->
     <string name="Category.title">Wybierz kategori\u0119</string>

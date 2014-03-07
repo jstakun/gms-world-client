@@ -37,7 +37,7 @@ sendMyPosAtStartup;1
 landmarksPerLayer;30
 landmarksConcurrentCount;6
 setLastKnownLocAtStartup;1
-showAds;1
+adsProvider;3
 memoryCacheSize;48
 routeType;0
 Google Places_status;0

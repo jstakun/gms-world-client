@@ -43,8 +43,8 @@ public class GMSClientApp extends Application {
         UserTracker.getInstance().initialize(getApplicationContext());
         //comment in production
         //UserTracker.getInstance().setDebug(true, this);
-        //UserTracker.getInstance().setDryRun(true, this);
         //
+        UserTracker.getInstance().setDryRun(false, this);
     }
 
     @Override

@@ -65,6 +65,16 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 	
 	protected abstract Token loadAccessToken();
 	
+    protected void onCheckin(String key) {
+    	LoggerUtils.debug("Updating check-in with key " + key);
+        FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+        if (fdb != null) {
+        	fdb.updateOnCheckin(key);
+        } else {
+        	LoggerUtils.debug("AbstractSocialUtils.onCheckin() fdb == null");
+        }
+    }
+    
     protected class SendPostTask extends GMSAsyncTask<Void, Void, Void> {
 
     	private int type;
@@ -82,14 +92,4 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 			return null;
 		}
 	}
-    
-    protected void onCheckin(String key) {
-    	LoggerUtils.debug("Updating check-in with key " + key);
-        FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-        if (fdb != null) {
-        	fdb.updateOnCheckin(key);
-        } else {
-        	LoggerUtils.debug("AbstractSocialUtils.onCheckin() fdb == null");
-        }
-    }
 }

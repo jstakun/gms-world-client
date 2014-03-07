@@ -41,10 +41,10 @@ public class DealMapApp extends Application {
         ACRA.getConfig().setHttpHeaders(headers);
         ConfigurationManager.getAppUtils().initApp(getApplicationContext());
         UserTracker.getInstance().initialize(getApplicationContext());
-        //TODO comment in production
+        //comment in production
         //UserTracker.getInstance().setDebug(true, this);
-        //UserTracker.getInstance().setDryRun(true, this);
         //
+        UserTracker.getInstance().setDryRun(false, this);
     }
     
     @Override

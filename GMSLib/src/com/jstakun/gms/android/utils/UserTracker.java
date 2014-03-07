@@ -39,7 +39,7 @@ public class UserTracker {
 
     public void initialize(final Context context) {
     	try {
-    		if (tracker == null) {
+    		if (tracker == null && OsUtil.isDonutOrHigher()) {
         		tracker = GoogleAnalytics.getInstance(context).getTracker(getId(context));
         		GAServiceManager.getInstance().setLocalDispatchPeriod(30);
         	}

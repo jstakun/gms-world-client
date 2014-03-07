@@ -69,23 +69,18 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 	public String sendPost(ExtendedLandmark landmark, int type) {
 		String errorMessage = null;
 
-		long expires_in = ConfigurationManager.getInstance().getLong(
-				ConfigurationManager.LN_EXPIRES_IN);
+		long expires_in = ConfigurationManager.getInstance().getLong(ConfigurationManager.LN_EXPIRES_IN);
 		if (expires_in > 0 && expires_in < System.currentTimeMillis()) {
 			logout();
-			errorMessage = Locale.getMessage(R.string.Social_token_expired,
-					"LinkedIn");
+			errorMessage = Locale.getMessage(R.string.Social_token_expired, "LinkedIn");
 		} else {
 			HttpUtils utils = new HttpUtils();
 
 			try {
-				String url = ConfigurationManager.getInstance()
-						.getSecuredServerUrl() + "lnSendUpdate";
+				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "lnSendUpdate";
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("token", accessToken
-						.getToken()));
-				params.add(new BasicNameValuePair("secret", accessToken
-						.getSecret()));
+				params.add(new BasicNameValuePair("token", accessToken.getToken()));
+				params.add(new BasicNameValuePair("secret", accessToken.getSecret()));
 				if (landmark != null) {
 					String key = landmark.getServerKey();
 					if (key != null) {
@@ -95,8 +90,7 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 				utils.sendPostRequest(url, params, true);
 			} catch (Exception ex) {
 				LoggerUtils.error("LinekInUtils.sendMessage() exception", ex);
-				errorMessage = Locale.getMessage(R.string.Http_error,
-						ex.getMessage());
+				errorMessage = Locale.getMessage(R.string.Http_error, ex.getMessage());
 			} finally {
 				try {
 					if (utils != null) {
@@ -117,10 +111,8 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 						ConfigurationManager.LN_USERNAME,
 						ConfigurationManager.LN_EXPIRES_IN,
 						ConfigurationManager.LN_NAME });
-		ConfigurationManager.getInstance().setOff(
-				ConfigurationManager.LN_AUTH_STATUS);
-		ConfigurationManager.getInstance().setOff(
-				ConfigurationManager.LN_SEND_STATUS);
+		ConfigurationManager.getInstance().setOff(ConfigurationManager.LN_AUTH_STATUS);
+		ConfigurationManager.getInstance().setOff(ConfigurationManager.LN_SEND_STATUS);
 
 		super.logout();
 	}

@@ -366,24 +366,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         }
     }
 
-    /*private void showSelectedLandmark(int id) {
-        if (id >= 0) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-            if (selectedLandmark != null) {
-                landmarkManager.setSelectedLandmark(selectedLandmark);
-                landmarkManager.clearLandmarkOnFocusQueue();
-                int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
-                if (coordsE6 != null) {
-                	animateTo(coordsE6);
-                }
-            } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-            }
-        } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
-        }
-    }*/
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == Intents.INTENT_MULTILANDMARK) {

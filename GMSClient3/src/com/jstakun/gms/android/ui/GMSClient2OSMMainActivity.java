@@ -922,7 +922,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
                 initOnLocationChanged(location);
-            } else if (resultCode == RESULT_CANCELED && intent.hasExtra("message")) {
+            } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 intents.showInfoToast(message);
             } else if (resultCode != RESULT_CANCELED) {

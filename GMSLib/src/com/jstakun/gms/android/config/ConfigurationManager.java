@@ -87,7 +87,7 @@ public final class ConfigurationManager {
     public static final String SEARCH_RADIUS = "radius";
     public static final String LANDMARKS_CONCURRENT_COUNT = "landmarksConcurrentCount";
     public static final String SET_LAST_KNOWN_LOC_AT_STARTUP = "setLastKnownLocAtStartup";
-    public static final String SHOW_ADS = "showAds";
+    public static final String ADS_PROVIDER = "adsProvider";
     public static final String MEMORY_TILES_CACHE_SIZE = "memoryCacheSize";
     public static final String ROUTES_TOKEN = "routesToken";
     public static final String ROUTE_TYPE = "routeType";

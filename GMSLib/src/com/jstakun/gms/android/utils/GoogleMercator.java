@@ -18,7 +18,7 @@ public class GoogleMercator {
     //the current center latitute and longitude coordinates
     //the deltaX and deltaY, in pixels, of new map center
     //the map zoom level
-    public static double[] adjust(final double lat, final double lng, final int deltaX, final int deltaY, final int z) {
+    protected static double[] adjust(final double lat, final double lng, final int deltaX, final int deltaY, final int z) {
         return new double[]{XToL(LToX(lng) + (deltaX << (21 - z))), YToL(LToY(lat) + (deltaY << (21 - z)))};
     }
 

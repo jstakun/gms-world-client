@@ -92,10 +92,8 @@ public final class FacebookUtils extends AbstractSocialUtils {
 						ConfigurationManager.FB_BIRTHDAY,
 						ConfigurationManager.FB_EXPIRES_IN,
 						ConfigurationManager.FB_NAME });
-		ConfigurationManager.getInstance().setOff(
-				ConfigurationManager.FB_AUTH_STATUS);
-		ConfigurationManager.getInstance().setOff(
-				ConfigurationManager.FB_SEND_STATUS);
+		ConfigurationManager.getInstance().setOff(ConfigurationManager.FB_AUTH_STATUS);
+		ConfigurationManager.getInstance().setOff(ConfigurationManager.FB_SEND_STATUS);
 
 		super.logout();
 	}

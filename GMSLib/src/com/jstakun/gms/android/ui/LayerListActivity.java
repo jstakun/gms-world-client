@@ -42,7 +42,7 @@ public class LayerListActivity extends ListActivity {
     protected static final int ACTION_REFRESH = 1;
     protected static final int ACTION_CLEAR = 2;
     protected static final int ACTION_DELETE = 3;
-    private AlertDialog deleteLayerDialog, enableAllLayersDialog;
+    private AlertDialog deleteLayerDialog, enableAllLayersDialog, disableAllLayersDialog;
     private List<String> names = null;
     private Intents intents;
     private LandmarkManager landmarkManager;
@@ -76,6 +76,7 @@ public class LayerListActivity extends ListActivity {
 
         createDeleteLayerAlertDialog();
         createEnableAllLayersAlertDialog();
+        createDisableAllLayersAlertDialog();
 
         registerForContextMenu(getListView());
 
@@ -94,11 +95,6 @@ public class LayerListActivity extends ListActivity {
         super.onResume();
 
         names = new ArrayList<String>();
-
-        //if (landmarkManager == null) {
-        //    landmarkManager = new LandmarkManager();
-        //    ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-        //}
 
         if (landmarkManager != null) {
             List<String> layers = landmarkManager.getLayerManager().getLayers();
@@ -140,6 +136,18 @@ public class LayerListActivity extends ListActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	super.onPrepareOptionsMenu(menu);
+    	MenuItem enableLayers = menu.findItem(R.id.enableLayers);
+    	if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
+    		enableLayers.setTitle(R.string.disableLayers);
+    	} else {
+    		enableLayers.setTitle(R.string.enableLayers);
+    	}
+    	return true;
+    }
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
@@ -161,7 +169,11 @@ public class LayerListActivity extends ListActivity {
             finish();
             return true;
         } else if (itemId == R.id.enableLayers) {
-            enableAllLayersDialog.show();
+        	if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
+        		disableAllLayersDialog.show();
+        	} else {
+        		enableAllLayersDialog.show();
+        	}
             return true;
         } else if (itemId == android.R.id.home) {
             setResult(RESULT_CANCELED);
@@ -237,7 +249,8 @@ public class LayerListActivity extends ListActivity {
     private void createEnableAllLayersAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true).
-                setIcon(android.R.drawable.ic_dialog_alert).setTitle(Locale.getMessage(R.string.Layer_enableLayers_prompt)).
+                setIcon(android.R.drawable.ic_dialog_alert).
+                setTitle(Locale.getMessage(R.string.Layer_enableLayers_prompt)).
                 setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
@@ -253,6 +266,28 @@ public class LayerListActivity extends ListActivity {
             }
         });
         enableAllLayersDialog = builder.create();
+    }
+    
+    private void createDisableAllLayersAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true).
+                setIcon(android.R.drawable.ic_dialog_alert).
+                setTitle(Locale.getMessage(R.string.Layer_disableLayers_prompt)).
+                setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+                if (landmarkManager != null) {
+                	landmarkManager.getLayerManager().disableAllLayers();
+                	((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
+                	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
+                }
+            }
+        }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        disableAllLayersDialog = builder.create();
     }
 
     protected void layerAction(int type, int position) {
