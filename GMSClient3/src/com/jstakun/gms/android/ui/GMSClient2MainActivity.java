@@ -1187,6 +1187,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	if (groupPosition == 1 || groupPosition == 4 || groupPosition == 5) {
         		drawerLayout.closeDrawer(drawerList);
         		onMenuItemSelected((int)id);
+        	} else if (groupPosition == 2 || groupPosition == 3) {
+        		TextView textView = (TextView)v;
+    	        if (parent.isGroupExpanded(groupPosition)) {
+        			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);
+        		} else {
+        		    textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet_down, 0, 0, 0);
+        		}
         	}
         	return false;
 		}   	

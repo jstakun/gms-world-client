@@ -33,13 +33,17 @@ public class DistanceUtils {
     private static boolean initialized = false;
 
     private static void initFormatters() {
-        NumberFormat large = NumberFormat.getInstance(ConfigurationManager.getInstance().getCurrentLocale());
-        large.setMaximumFractionDigits(2);
-        formatterLong = MeasureFormat.getInstance(large, UnitFormat.getInstance(ConfigurationManager.getInstance().getCurrentLocale()));
-        NumberFormat small = NumberFormat.getInstance(ConfigurationManager.getInstance().getCurrentLocale());
-        small.setMaximumFractionDigits(0);
-        formatterShort = MeasureFormat.getInstance(small, UnitFormat.getInstance(ConfigurationManager.getInstance().getCurrentLocale()));
-        initialized = true;
+    	try {
+    		NumberFormat large = NumberFormat.getInstance(ConfigurationManager.getInstance().getCurrentLocale());
+    		large.setMaximumFractionDigits(2);
+    		formatterLong = MeasureFormat.getInstance(large, UnitFormat.getInstance(ConfigurationManager.getInstance().getCurrentLocale()));
+    		NumberFormat small = NumberFormat.getInstance(ConfigurationManager.getInstance().getCurrentLocale());
+    		small.setMaximumFractionDigits(0);
+    		formatterShort = MeasureFormat.getInstance(small, UnitFormat.getInstance(ConfigurationManager.getInstance().getCurrentLocale()));
+    		initialized = true;
+    	} catch (Exception e) {
+    		LoggerUtils.error("DistanceUtils.initFormatters() exception:", e);
+    	}
     }
 
     public static float distanceInKilometer(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude) {

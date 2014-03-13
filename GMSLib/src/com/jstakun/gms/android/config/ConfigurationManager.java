@@ -189,6 +189,7 @@ public final class ConfigurationManager {
     public static final String GL_GENDER = "glGender";
     public static final String GL_BIRTHDAY = "glBirthday";
     public static final String USER_EMAIL = "userEmail";
+    private static final int GUEST_LIMIT = 10;
     //
 	//Restart service every x seconds
 	  public static final long DEFAULT_REPEAT_TIME = 300;
@@ -906,7 +907,7 @@ public final class ConfigurationManager {
     	}
     	
     	public boolean isUserAllowedAction() {
-    		return (isUserLoggedIn() || getInt(ConfigurationManager.USE_COUNT, 0) < 15);
+    		return (isUserLoggedIn() || getInt(ConfigurationManager.USE_COUNT, 0) < GUEST_LIMIT);
     	}
     }
 }

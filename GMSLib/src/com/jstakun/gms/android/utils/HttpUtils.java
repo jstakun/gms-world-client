@@ -77,6 +77,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.bouncycastle.util.encoders.Base64;
 
+import android.content.pm.PackageManager.NameNotFoundException;
+
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -122,7 +124,13 @@ public class HttpUtils {
 
             if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.BUILD_INFO, String.class)) {
                 String buildInfo = (String) ConfigurationManager.getInstance().getObject(ConfigurationManager.BUILD_INFO, String.class);
-                HttpProtocolParams.setUserAgent(params, buildInfo);
+                //TODO set user agent and set custom header with build info 
+                //HttpProtocolParams.setUserAgent(params, buildInfo);
+                try {
+                	HttpProtocolParams.setUserAgent(params, System.getProperty("http.agent", ConfigurationManager.getAppUtils().getAboutMessage()));
+                } catch (NameNotFoundException ex) {
+                    LoggerUtils.error("HttpUtils.getHttpClient() exception", ex);	
+                }
             }
             
             HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);

@@ -52,7 +52,7 @@ public class IconCache {
     //private static final String DOWNLOAD48 = "download48";
     public static final String CURSOR = "cursor";
     public static final String MAGNIFIER = "magnifier";
-    public static final String BULLET = "bullet";
+    //public static final String BULLET = "bullet";
     private static final String GRID = "grid";
     public static final String IMAGE_LOADING_TILE = "image-loading-tile";
     public static final String IMAGE_LOADING_MAP = "image-loading-map";
@@ -86,9 +86,9 @@ public class IconCache {
             if (!images.containsKey(ICON_MISSING16)) {
                 images.put(ICON_MISSING16, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing16));
             }
-            if (!images.containsKey(BULLET)) {
-                images.put(BULLET, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.bullet));
-            }
+            //if (!images.containsKey(BULLET)) {
+            //    images.put(BULLET, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.bullet));
+            //}
             if (!images.containsKey(LOADING)) {
                 images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
             }
