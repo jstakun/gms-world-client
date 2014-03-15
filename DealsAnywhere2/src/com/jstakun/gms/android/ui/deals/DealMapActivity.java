@@ -52,6 +52,7 @@ import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.MessageStack;
+import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
@@ -117,10 +118,11 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        setContentView(R.layout.mapcanvasview);
         ConfigurationManager.getInstance().setContext(getApplicationContext());
-
+        OsUtil.setDisplayType(getResources().getConfiguration()); 
         loadingHandler = new LoadingHandler(this);
+        
+        setContentView(R.layout.mapcanvasview);
         
         initComponents();
     }
@@ -317,7 +319,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase(), Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
-
+            
             GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);
             googleMapsView.getOverlays().add(landmarkOverlay);
             //must be on top of other overlays
@@ -338,10 +340,10 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 ConfigurationManager.getInstance().putObject("messageStack", messageStack);
             }
             messageStack.setHandler(loadingHandler);
-
+            
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
             if (layerLoader == null || landmarkManager.getLayerManager().isEmpty()) {
-                LoggerUtils.debug("Creating LayerLoader...");
+            	LoggerUtils.debug("Creating LayerLoader...");
                 layerLoader = new LayerLoader(landmarkManager, messageStack);
                 LoggerUtils.debug("Loading Layers...");
                 intents.loadLayersAction(true, null, false, false, layerLoader,
@@ -350,7 +352,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                         googleMapsView.getZoomLevel());
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
             } else {
-                //load existing layers
+            	//load existing layers
                 if (layerLoader.isLoading()) {
                     loadingHandler.sendEmptyMessage(MessageStack.STATUS_VISIBLE);
                 } else {
@@ -841,10 +843,12 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                     	activity.animateTo(coordsE6);
                     }
             	} else if (msg.what == SHOW_MAP_VIEW) {
+            		//System.out.println("SHOW_MAP_VIEW");
                 	View loading = activity.findViewById(R.id.loadingWidgetP);
                 	View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);
                 	loading.setVisibility(View.GONE);
                 	mapCanvas.setVisibility(View.VISIBLE);
+                	//System.out.println("SHOW_MAP_VIEW done");
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
             	} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION) {
@@ -853,7 +857,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 		activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
                 	}
             	}
-        	}
+        	} 
         }
     }
 }

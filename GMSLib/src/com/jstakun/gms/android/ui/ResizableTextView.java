@@ -5,9 +5,7 @@
 package com.jstakun.gms.android.ui;
 
 import android.content.Context;
-import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.widget.TextView;
 
 /**
@@ -45,15 +43,7 @@ public class ResizableTextView extends TextView {
 
     private void adjustTextSize() {
 
-        /*float textSize = topTextBar.getPaint().measureText("Deals Anywhere");
-         float dip = getResources().getDisplayMetrics().density;
-
-         if (((240f + textSize) * dip) >= getWindowManager().getDefaultDisplay().getWidth()) {
-         topTextBar.setText("Deals Any...");
-         }*/
-
-        //System.out.println("Calling adjustTextSize " + getWidth() + " --------------- ");
-        if (getWidth() > 0) {
+        /*if (getWidth() > 0) {
             float trySize = getPaint().getTextSize();
             TextPaint textPaintClone = new TextPaint();
             textPaintClone.set(getPaint());
@@ -74,6 +64,13 @@ public class ResizableTextView extends TextView {
             } else {
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, trySize);
             }
-        }
+        }*/
+    	
+    	if (getWidth() > 0) {
+    		int availableWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+    	    if (getPaint().measureText(getText().toString()) > availableWidth) {
+    	    	setText("");
+    	    }
+    	}
     }
 }
