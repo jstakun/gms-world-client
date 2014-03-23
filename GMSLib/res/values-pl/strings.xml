@@ -219,6 +219,7 @@
      <string name="Share.no.matching.apps">Nie mog\u0119 zlokalizowa\u0107 aplikacji do udost\u0119pniania!</string>
      <string name="Call.not.supported.error">Nie mog\u0119 wykona\u0107 po\u0142\u0105cznia telefonicznego z Twojego urz\u0105dzenia!</string>
      <string name="Unexpected.error">Oops! Co\u015b si\u0119 nie uda\u0142o. Spr\u00f3buj ponownie!</string>
+     <string name="Forbidden.connecion.error">Przekroczono limit po\u0142\u0105cze\u0144</string>
      
      <!-- Misc -->
      <string name="Your.Location">Twoja lokalizacja</string>

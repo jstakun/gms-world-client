@@ -991,7 +991,7 @@ public final class Intents {
         		if (notify) {
         			message = Locale.getMessage(R.string.Migation_1086_message);
         		}	
-        	} else if ((versionCode >= 1101 && buildVersion < 1101 && buildVersion > 500) || (versionCode >= 101 && buildVersion < 101)) { //2.0.8
+        	} else if ((versionCode >= 1101 && buildVersion < 1101 && buildVersion > 500)) { //2.0.8
         		boolean notify = false;
         		//logout user due to user management changes
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS) && ConfigurationManager.getInstance().containsKey("username") && ConfigurationManager.getInstance().containsKey("password")) {

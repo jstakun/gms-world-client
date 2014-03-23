@@ -222,12 +222,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             LoggerUtils.debug("Initializing AsyncTaskManager...");
             asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
-            //verify access token
-            asyncTaskManager.executeGetTokenTask();
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();           
         }
-
+        
         intents = new Intents(this, landmarkManager, asyncTaskManager);
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
@@ -542,6 +540,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         GoogleMapsTypeSelector.selectMapType(googleMapsView);
 
         asyncTaskManager.setActivity(this);
+        
+        //verify access token
+        asyncTaskManager.executeGetTokenTask();
 
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {

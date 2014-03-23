@@ -673,7 +673,7 @@ public class HttpUtils {
         } else if (status == HttpStatus.SC_CONFLICT) {
             return Locale.getMessage(R.string.Venue_exists_error);
         } else if (status == HttpStatus.SC_FORBIDDEN) {
-        	return "Connection limit exceeded"; //TODO translate 
+        	return Locale.getMessage(R.string.Forbidden_connecion_error);
         } else {
             return Locale.getMessage(R.string.Http_error, Integer.toString(status));
         }

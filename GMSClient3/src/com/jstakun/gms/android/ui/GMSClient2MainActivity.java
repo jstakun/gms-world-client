@@ -273,8 +273,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             LoggerUtils.debug("Creating AsyncTaskManager...");
             asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
-            //verify access token
-            asyncTaskManager.executeGetTokenTask();
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }
@@ -321,6 +319,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         }
 
         asyncTaskManager.setActivity(this);
+       
+        //verify access token
+        asyncTaskManager.executeGetTokenTask();
 
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {

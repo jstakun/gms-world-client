@@ -245,8 +245,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             LoggerUtils.debug("Creating AsyncTaskManager...");
             asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
-            //verify access token
-            asyncTaskManager.executeGetTokenTask();
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }
@@ -293,7 +291,10 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         }
 
         asyncTaskManager.setActivity(this);
-
+        
+        //verify access token
+        asyncTaskManager.executeGetTokenTask();
+        
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
         	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
