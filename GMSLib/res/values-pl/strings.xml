@@ -47,6 +47,8 @@
     <string name="rateUs">Oce\u0144 nas</string>
     <string name="imageLoading">\u015aci\u0105ganie obraz\u00f3w</string>
     <string name="shareScreenshot">Zrzut ekranu</string>
+    <string name="reset">Przywr\u00f3\u0107 ustawienia pocz\u0105tkowe</string>
+    
     <!-- preferences -->
     <string name="mapProvider">Dostawca map</string>
     <string name="logLevel">Poziom logowania</string>
@@ -162,7 +164,8 @@
      <string name="done">Gotowe</string>
 
      <!-- JSONParser -->
-     <string name="category">Kategoria: %1$s</string>
+     <string name="creation_date">Data utworzenia: %1$s</string>
+     <!-- string name="category">Kategoria: %1$s</string>
      <string name="merchant">Sprzedawca: %1$s</string>
      <string name="artist">Artysta: %1$s</string>
      <string name="venue">Miejsce: %1$s</string>
@@ -173,7 +176,6 @@
      <string name="start_date">Termin rozpocz\u0119cia: %1$s</string>
      <string name="end_date">Termin zako\u0144czenia: %1$s</string>
      <string name="expiration_date">Termin wyga\u015bni\u0119cia: %1$s</string>
-     <string name="creation_date">Data utworzenia: %1$s</string>
      <string name="upload_date">Data przes\u0142ania: %1$s</string>
      <string name="taken_date">Data wykonania: %1$s</string>
      <string name="price">Cena: %1$s</string>
@@ -187,7 +189,7 @@
      <string name="homepage">Strona internetowa</string>
      <string name="menu">Menu</string>
      <string name="photo">Zdj\u0119cie</string>
-     <string name="trending"><![CDATA[<font color=\"red\">W tej chwili jest tutaj zameldowanych %1$s os\u00f3b!</font>]]></string>
+     <string name="trending"><![CDATA[<font color=\"red\">W tej chwili jest tutaj zameldowanych %1$s os\u00f3b!</font>]]></string-->
 
      <!-- Errors -->
      <string name="Internet.connection.error">B\u0142\u0105d po\u0142\u0105czenia z internetem!</string>
@@ -232,6 +234,9 @@
      <string name="rate.us.message">U\u017cywa\u0142e(a)\u015b ten program %1$d razy. Czy chcesz go teraz oceni\u0107?</string>
      <string name="New.version.short.message">Nowa wersja</string>
      <string name="New.version.long.message">Nowa wersja aplikacji jest dost\u0119pna. Czy chcesz teraz zaktualizowa\u0107?</string>
+     <string name="Reset.short.message">Przywr\u00f3\u0107 ustawienia pocz\u0105tkowe</string>
+     <string name="Reset.long.message">Czy chcesz przywr\u00f3ci\u0107 ustawienia pocz\u0105tkowe?</string>
+     <string name="Reset.confirmation">Ustawienia pocz\u0105tkowe przywr\u00f3cone!</string>
      <string name="search_hint">Szukaj miejsca w okolicy</string>
      <string name="Migation.1086.message">Wylogowano ze wszystkich sieci spo\u0142eczno\u015bciowych. To by\u0142a jednorazowa operacja spowodowana aktualizacj\u0105 aplikacji. Prosz\u0119 si\u0119 zalogowa\u0107 ponownie!</string>
      

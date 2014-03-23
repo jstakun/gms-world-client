@@ -38,6 +38,8 @@ public final class FacebookUtils extends AbstractSocialUtils {
 		try {
 			ConfigurationManager.getInstance().putString(ConfigurationManager.FB_USERNAME, json.getString(ConfigurationManager.FB_USERNAME) + "@fb");
 
+			ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, json.getString(ConfigurationManager.GMS_TOKEN));
+			
 			if (json.has(ConfigurationManager.FB_NAME)) {
 					ConfigurationManager.getInstance().putString(ConfigurationManager.FB_NAME, json.getString(ConfigurationManager.FB_NAME));
 			}

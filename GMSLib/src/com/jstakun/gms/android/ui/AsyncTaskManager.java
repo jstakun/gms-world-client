@@ -146,9 +146,9 @@ public class AsyncTaskManager {
         ExtendedLandmark myPos = null;
 
         if (location != null) {
-        	if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
-        		ConfigurationManager.getInstance().putObject(Commons.MY_POS_CODE, Commons.MY_POS_CODE);
-        	}
+        	//if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
+        	//	ConfigurationManager.getInstance().putObject(Commons.MY_POS_CODE, Commons.MY_POS_CODE);
+        	//}
         	myPos = landmarkManager.createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), Commons.MY_POSITION_LAYER, null, null);
         	String username = ConfigurationManager.getUserManager().getLoggedInUsername();
             if (username == null) {
@@ -871,10 +871,28 @@ public class AsyncTaskManager {
         }
     }
 
+    public void executeGetTokenTask() {
+        new GetTokenTask().execute();
+    }
+
+    private class GetTokenTask extends GMSAsyncTask<Void, Void, Boolean> {
+
+    	public GetTokenTask() {
+    		super(10);
+    	}
+    	
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			ConfigurationManager.getUserManager().verifyToken();
+			return null;
+		}
+    	
+    }
+    
     public void executeNewVersionCheckTask() {
         new NewVersionCheckTask().execute();
     }
-
+    
     private class NewVersionCheckTask extends GMSAsyncTask<Void, Void, Boolean> {
 
         public NewVersionCheckTask() {

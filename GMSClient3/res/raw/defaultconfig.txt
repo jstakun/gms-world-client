@@ -31,6 +31,7 @@ fsSendStatus;0
 gwAuthStatus;0
 gwSendStatus;0
 gmsAuthStatus;0
+gmsScope;lm
 showGrid;0
 sendMyPos;1
 sendMyPosAtStartup;1

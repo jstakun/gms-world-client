@@ -41,11 +41,12 @@ public class AlertDialogBuilder {
     public static final int ADD_LAYER_DIALOG = 12;
     public static final int RATE_US_DIALOG = 13;
     public static final int NEW_VERSION_DIALOG = 14;
+    public static final int RESET_DIALOG = 15;
     public static final String OPEN_DIALOG = "openDialog";
     private AlertDialog exitDialog, infoDialog, trackMyPosDialog, saveRouteDialog,
             packetDataDialog, networkErrorDialog, loginDialog, checkinDialog,
             shareIntentsDialog, autoCheckinDialog, locationErrorDialog, addLayerDialog,
-            rateUsDialog, newVersionDialog;
+            rateUsDialog, newVersionDialog, resetDialog;
     private Activity activity;
 
     public AlertDialogBuilder(Activity activity) {
@@ -239,6 +240,19 @@ public class AlertDialogBuilder {
                 setOnCancelListener(dialogCancelListener);
         newVersionDialog = builder.create();
     }
+    
+    //TODO translate
+    private void createResetAlertDialog(DialogInterface.OnClickListener resetListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setMessage(Locale.getMessage(R.string.Reset_long_message)).
+                setTitle(Locale.getMessage(R.string.Reset_short_message)).
+                setCancelable(true).
+                setIcon(android.R.drawable.ic_dialog_alert).
+                setPositiveButton(Locale.getMessage(R.string.okButton), resetListener).
+                setNegativeButton(Locale.getMessage(R.string.cancelButton), dialogClickListener).
+                setOnCancelListener(dialogCancelListener);
+        resetDialog = builder.create();
+    }
 
     private AlertDialog getLoginDialog(ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener loginListener) {
         createLoginDialog(arrayAdapter, loginListener);
@@ -332,6 +346,13 @@ public class AlertDialogBuilder {
         }
         return newVersionDialog;
     }
+    
+    private AlertDialog getResetAlertDialog(DialogInterface.OnClickListener resetListener) {
+        if (resetDialog == null) {
+            createResetAlertDialog(resetListener);
+        }
+        return resetDialog;
+    }
 
     protected AlertDialog getAlertDialog(Integer type, ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener... listeners) {
         AlertDialog alertDialog = null;
@@ -379,6 +400,9 @@ public class AlertDialogBuilder {
                 break;
             case NEW_VERSION_DIALOG:
                 alertDialog = getNewVersionAlertDialog(listeners[0]);
+                break;
+            case RESET_DIALOG:
+            	alertDialog = getResetAlertDialog(listeners[0]);
                 break;
             default:
                 break;

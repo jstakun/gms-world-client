@@ -37,7 +37,7 @@ public class FbPlacesReader extends AbstractSerialReader {
 		if (hasToken) {
 			return ConfigurationManager.getInstance().getSecuredServerUrl() + "facebookProvider";
 		} else {
-			return ConfigurationManager.SERVER_URL + "facebookProvider";
+			return ConfigurationManager.getInstance().getServerUrl() + "facebookProvider";
 		}
 	}
 }

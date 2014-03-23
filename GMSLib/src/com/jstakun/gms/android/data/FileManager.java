@@ -464,7 +464,7 @@ public class FileManager implements PersistenceManager {
         return result;
     }
 
-    public int readResourceBundleFile(Map<String, String> hashTable, int resname, Context context) {
+    public int readResourceBundleFile(Map<String, String> config, int resname, Context context) {
         //LoggerUtils.debug("Loading resource bundle from file " + filename);
         InputStream is = null;
         InputStreamReader isr = null;
@@ -473,7 +473,7 @@ public class FileManager implements PersistenceManager {
         try {
             is = context.getResources().openRawResource(resname);
             isr = new InputStreamReader(is, "UTF8");
-
+            
             String line;
             while ((line = readLine(isr)) != null) {
                 if (!line.startsWith("#")) {
@@ -498,7 +498,7 @@ public class FileManager implements PersistenceManager {
                     String key = line.substring(0, separatorPos);
                     String value = line.substring(separatorPos + 1);
                     //LoggerUtils.debug("Loading setting " + key + ": " + value);
-                    hashTable.put(key, value);
+                    config.put(key, value);
                 }
             }
             result = 0;

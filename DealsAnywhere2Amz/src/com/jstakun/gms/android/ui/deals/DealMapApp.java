@@ -36,10 +36,7 @@ public class DealMapApp extends Application {
         super.onCreate();
         LoggerUtils.debug("DealsAnywhereApp.onCreate...");
         ACRA.init(this);
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Authorization", HttpUtils.getBasicAuthHeader(Commons.DA_APP_USER, true, Commons.APP_USER_PWD, true));
-        ACRA.getConfig().setHttpHeaders(headers);
-        ConfigurationManager.getAppUtils().initApp(getApplicationContext());
+        ConfigurationManager.getAppUtils().initApp(this);
         UserTracker.getInstance().initialize(getApplicationContext());
     }
     

@@ -5,6 +5,7 @@
 package com.jstakun.gms.android.data;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.LoggerUtils;
 
 /**
  *
@@ -32,8 +33,12 @@ public class PersistenceManagerFactory {
 
     public static FileManager getFileManager() {
         if (fm == null) {
-            String packageName = ConfigurationManager.getInstance().getString(ConfigurationManager.PACKAGE_NAME);
-            fm = new FileManager(packageName);
+        	try {
+        		String packageName = ConfigurationManager.getAppUtils().getPackageInfo().packageName;
+        		fm = new FileManager(packageName);
+        	} catch (Exception e) {
+        		LoggerUtils.error("PersistenceManagerfactory.getFileManager() exception:", e);
+        	}
         }
         return fm;
     }

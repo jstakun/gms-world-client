@@ -76,6 +76,8 @@
           android:title="@string/clearMap" /> 
             <item android:id="@+id/dataPacket"
           android:title="@string/dataPacket" /> 
+            <item android:id="@+id/reset" 
+          android:title="@string/reset"/>
             <item android:id="@+id/releaseNotes"
           android:title="@string/releaseNotes" /> 
             <item android:id="@+id/rateUs"

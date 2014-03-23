@@ -21,7 +21,7 @@
 			android:title="@string/titleDealPreferences"
 			android:dialogTitle="@string/titleDealPreferences"
                         android:dialogMessage="@string/messageDealPreferences"
-                        android:positiveButtonText="@string/reset"
+                        android:positiveButtonText="@string/resetButton"
                         android:negativeButtonText="@string/cancelButton"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/Settings.general"

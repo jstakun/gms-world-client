@@ -246,7 +246,7 @@ public final class Intents {
     }
 
 
-    public void startLoginActivity(int type) {
+    protected void startLoginActivity(int type) {
         List<String> items = ConfigurationManager.getUserManager().getLoginItems(true);
         String[] selected = items.get(type).split(";");
         if (selected[0].startsWith(ConfigurationManager.GMS_WORLD)) {
@@ -256,7 +256,7 @@ public final class Intents {
         }
     }
 
-    public boolean isIntentAvailable(String action) {
+    private boolean isIntentAvailable(String action) {
         final PackageManager packageManager = activity.getPackageManager();
         final Intent intent = new Intent(action);
         List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
@@ -422,7 +422,7 @@ public final class Intents {
     	}
     }
     
-    public void stopAutoCheckinService() {
+    private void stopAutoCheckinService() {
     	AlarmManager service = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
 		Intent i = new Intent(activity, AutoCheckinStartServiceReceiver.class);
 		PendingIntent pending = PendingIntent.getBroadcast(activity, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -457,12 +457,6 @@ public final class Intents {
             startCommentActivity(Commons.FACEBOOK, venueid, selectedLandmark.getName());
         } else {
             String venueid = selectedLandmark.getUrl();
-            /*if (venueid != null) {
-                String[] s = venueid.split("=");
-                if (s.length > 0) {
-                    venueid = s[s.length - 1];
-                }
-            }*/
             startCommentActivity(Commons.GMS_WORLD, venueid, null);
         }
     }
@@ -868,14 +862,14 @@ public final class Intents {
         return clearLandmarks;
     }
 
-    public void setRepeatingAlarm(Class<?> clazz) {
+    /*public void setRepeatingAlarm(Class<?> clazz) {
         AlarmManager am = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(activity, clazz);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), (60 * 1000), pendingIntent);
-    }
+    }*/
 
-    public boolean isNewerVersionAvailable() {
+    protected boolean isNewerVersionAvailable() {
         HttpUtils utils = new HttpUtils();
         boolean response = false;
 
@@ -965,6 +959,43 @@ public final class Intents {
         		//logout user due to user management changes
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS) && ConfigurationManager.getInstance().containsKey("username") && ConfigurationManager.getInstance().containsKey("password")) {
         			ConfigurationManager.getInstance().removeAll(new String[]{"username", "password"});
+        			ConfigurationManager.getInstance().setOff(ConfigurationManager.GMS_AUTH_STATUS);
+        			notify = true;
+        		}
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
+                    OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).logout();
+                    notify = true;
+                } 
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TWEET_AUTH_STATUS)) {
+        			OAuthServiceFactory.getSocialUtils(Commons.TWITTER).logout();
+        			notify = true;
+                } 
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.LN_AUTH_STATUS)) {
+        			OAuthServiceFactory.getSocialUtils(Commons.LINKEDIN).logout();
+        			notify = true;
+                } 
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
+        			OAuthServiceFactory.getSocialUtils(Commons.GOOGLE).logout();
+        			notify = true;
+                } 
+        		
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
+        			OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).logout();
+        			notify = true;
+                } 
+        	    
+        		if (notify) {
+        			message = Locale.getMessage(R.string.Migation_1086_message);
+        		}	
+        	} else if ((versionCode >= 1101 && buildVersion < 1101 && buildVersion > 500) || (versionCode >= 101 && buildVersion < 101)) { //2.0.8
+        		boolean notify = false;
+        		//logout user due to user management changes
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS) && ConfigurationManager.getInstance().containsKey("username") && ConfigurationManager.getInstance().containsKey("password")) {
+        			ConfigurationManager.getInstance().remove("gmsPassword");
         			ConfigurationManager.getInstance().setOff(ConfigurationManager.GMS_AUTH_STATUS);
         			notify = true;
         		}

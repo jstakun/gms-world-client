@@ -10,7 +10,7 @@
 	android:id="@+id/loadingImage"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:src="@drawable/discover"
+	android:src="@drawable/currency_dollar"
 	android:contentDescription="@string/loadingText"
 	android:layout_centerVertical="true"
 	android:layout_centerHorizontal="true"/>

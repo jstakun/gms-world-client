@@ -23,27 +23,27 @@ public final class GMSUtils {
 	
 	public static String loginAction(String login, String password) {
         HttpUtils utils = new HttpUtils();
-        String errorMessage = null, encPwd = null, email = null, user = null;
+        String errorMessage = null, //encPwd = null, 
+        		email = null, user = null, token = null;
 
         try {
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_USERNAME, login);
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_PASSWORD, password);
+            //ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_USERNAME, login);
+            //ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_PASSWORD, password);
             String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "authenticate";
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("mobile", "true"));
             byte[] resp = utils.loadHttpFile(url, true, "text/json");
             if (resp != null && resp.length > 0) {
                 String jsonResp = new String(resp, "UTF-8");   
                 if (jsonResp.startsWith("{")) {          
                 	JSONObject json = new JSONObject(jsonResp);
-                	encPwd = json.getString("password");               	
+                	//encPwd = json.getString("password");               	
                     email = json.optString(ConfigurationManager.USER_EMAIL);
-                    user =  json.optString(ConfigurationManager.GMS_NAME);
+                    user = json.optString(ConfigurationManager.GMS_NAME);
+                    token = json.optString(ConfigurationManager.GMS_TOKEN);
                 }
                 //System.out.println(jsonResp);
             }    
         } catch (Exception ex) {
-            LoggerUtils.error("LoginActivity.loginAction exception", ex);
+            LoggerUtils.error("GMSUtils.loginAction() exception", ex);
             errorMessage = ex.getMessage();
         } finally {
             try {
@@ -55,9 +55,9 @@ public final class GMSUtils {
             }
         }
 
-        if (errorMessage == null && encPwd != null) {
+        if (errorMessage == null && token != null) {
         	ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_USERNAME, login);
-            ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_PASSWORD, encPwd);
+            ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, token);
             if (StringUtils.isNotEmpty(email)) {
 				ConfigurationManager.getUserManager().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
 			}
@@ -73,12 +73,47 @@ public final class GMSUtils {
         return errorMessage;
     }
 	
+	public static String generateToken(String scope) {
+		HttpUtils utils = new HttpUtils();
+        String token = null, errorMessage = null;
+        
+		try {
+            String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "token?scope=" + scope;
+            byte[] resp = utils.loadHttpFile(url, false, "text/json");
+            if (resp != null && resp.length > 0) {
+                String jsonResp = new String(resp, "UTF-8");   
+                if (jsonResp.startsWith("{")) {          
+                	JSONObject json = new JSONObject(jsonResp);
+                	token = json.optString(ConfigurationManager.GMS_TOKEN);
+                }
+                //System.out.println(jsonResp);
+            }    
+        } catch (Exception ex) {
+            LoggerUtils.error("LoginActivity.loginAction exception", ex);
+            errorMessage = ex.getMessage();
+        } finally {
+            try {
+                if (utils != null) {
+                    errorMessage = utils.getResponseCodeErrorMessage();
+                    utils.close();
+                }
+            } catch (Exception e) {
+            }
+        }
+		
+		if (errorMessage == null && token != null) {
+			ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, token);
+			ConfigurationManager.getDatabaseManager().saveConfiguration(false);
+		}
+		
+		return errorMessage;
+	}
+	
 	public static void logout() {
 		ConfigurationManager.getInstance().setOff(ConfigurationManager.GMS_AUTH_STATUS);
         ConfigurationManager.getInstance().removeAll(new String[]{
         		ConfigurationManager.GMS_NAME,		
-        		ConfigurationManager.GMS_USERNAME, 
-        		ConfigurationManager.GMS_PASSWORD});
+        		ConfigurationManager.GMS_USERNAME});
         ConfigurationManager.getDatabaseManager().saveConfiguration(false);
         
 	}

@@ -114,6 +114,8 @@ public final class GoogleUtils extends AbstractSocialUtils {
 						System.currentTimeMillis() + (expires_in * 1000));
 			}
 			
+			ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, json.getString(ConfigurationManager.GMS_TOKEN));
+			
 			String refreshToken = json.optString("refresh_token");
 			if (refreshToken != null) {
  				ConfigurationManager.getInstance().putString(GL_REFRESH_TOKEN, refreshToken);

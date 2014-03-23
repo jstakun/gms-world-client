@@ -139,4 +139,13 @@ public class ConfigDbDataSource {
             LoggerUtils.error("ConfigDbDataSource.deleteConfigParam exception:", e);
         }
     }
+    
+    public void delete() {
+    	try {
+            int count = getDatabase().delete(ConfigDbSQLiteOpenHelper.TABLE_NAME, "1", null);
+            LoggerUtils.debug("Deleted " + count + " rows from config database");
+        } catch (Exception e) {
+            LoggerUtils.error("ConfigDbDataSource.delete exception:", e);
+        }
+    }
 }

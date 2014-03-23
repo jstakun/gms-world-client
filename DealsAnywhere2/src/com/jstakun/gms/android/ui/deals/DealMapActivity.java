@@ -192,16 +192,15 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             LoggerUtils.debug("Creating LandmarkManager...");
             landmarkManager = new LandmarkManager();
             initLandmarkManager = true;
-        } //else {
-        //    GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, landmarkDetailsHandler);
-        //    googleMapsView.getOverlays().add(landmarkOverlay);
-        //}
+        } 
 
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Initializing AsyncTaskManager...");
             asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
+            //verify access token
+            asyncTaskManager.executeGetTokenTask();
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }
@@ -295,6 +294,9 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             case R.id.showDoD:
                 showRecommendedDeal(true);
                 break;
+            case R.id.reset:
+            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
+            	break;
             case R.id.discoverPlaces:
                 intents.startActionViewIntent(ConfigurationManager.LM_MARKET_URL);
                 break;

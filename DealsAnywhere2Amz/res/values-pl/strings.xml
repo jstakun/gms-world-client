@@ -13,7 +13,7 @@
     <string name="titleDealCategories">Kategorie okazji</string>
     <string name="preferencesDealCategories">Ustawienia kategorii okazji</string>
 
-    <string name="reset">Wyczy\u015b\u0107</string>
+    <string name="resetButton">Wyczy\u015b\u0107</string>
     <string name="titleDealPreferences">Wyczy\u015b\u0107 rekomendacje</string>
     <string name="summaryDealPreferences">Kliknij \u017ceby wyczy\u015bci\u0107 rekomendacje okazji</string>
     <string name="messageDealPreferences">Rekomendacje okazji s\u0105 u\u017cywane do

@@ -4,18 +4,13 @@
  */
 package com.jstakun.gms.android.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
 
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.UserTracker;
 
@@ -36,10 +31,7 @@ public class GMSClientApp extends Application {
         super.onCreate();
         LoggerUtils.debug("GMSClientApp.onCreate...");
         ACRA.init(this);  
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Authorization", HttpUtils.getBasicAuthHeader(Commons.GMS_APP_USER, true, Commons.APP_USER_PWD, true));
-        ACRA.getConfig().setHttpHeaders(headers);
-        ConfigurationManager.getAppUtils().initApp(getApplicationContext());  
+        ConfigurationManager.getAppUtils().initApp(this);  
         UserTracker.getInstance().initialize(getApplicationContext());
         //comment in production
         //UserTracker.getInstance().setDebug(true, this);

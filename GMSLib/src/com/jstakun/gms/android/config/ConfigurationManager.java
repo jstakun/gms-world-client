@@ -10,9 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.acra.ACRA;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.util.encoders.Base64;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -32,6 +34,7 @@ import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.lib.R;
@@ -99,13 +102,11 @@ public final class ConfigurationManager {
     public static final String SHOW_DEAL_OF_THE_DAY = "showDealOfTheDay";
     public static final String RECOMMENDED_DEALS_SHOWN = "recommendedDealsShown";
     public static final String BUILD_VERSION = "buildVersion";
-    public static final String BUILD_INFO = "buildInfo";
     public static final String BITMAP_TYPE = "bitmapType";
     public static final String APP_CLOSING = "appClosing";
     public static final String LAST_STARTING_DATE = "lastStartingDate";
     public static final String LOCATION = "location";
     public static final String CONTEXT = "context";
-    public static final String PACKAGE_NAME = "packageName";
     public static final String LAYER_PAINT_LIMIT = "layerPaintLimit";
     public static final String TOTAL_PAINT_LIMIT = "totalPaintLimit";
     public static final String DEAL_LIMIT = "dealLimit";
@@ -132,16 +133,17 @@ public final class ConfigurationManager {
     public static final int OSM_MAPS = 1;
     public static final int OSM_TILES = 2;
     private static final String DISABLED = "-1";
+    
     public static final String SERVER_HOST = "gms-world.appspot.com";
     public static final String SERVER_URL = "http://www.gms-world.net/";
     public static final String SSL_SERVER_URL = "https://" + SERVER_HOST + "/";
     public static final String SHOW_LANDMARK_URL = SERVER_URL + "showLandmark/";
-    //private static final String SHOW_LOCATION_URL = SERVER_URL + "showLocation.do";
     public static final String BITLY_URL = "http://bit.ly/";
     public static final String REGISTER_URL = SERVER_URL + "m/register.jsp";
-    private static final String SERVER_SERVICES_URL = SERVER_URL + "services/";
-    public static final String CRASH_REPORT_URL = SERVER_SERVICES_URL + "crashReport";
-    private static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + "services/";
+    public static final String SERVICES_SUFFIX = "s/";
+    private static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + SERVICES_SUFFIX;
+    public static final String CRASH_REPORT_URL = SSL_SERVER_SERVICES_URL + "crashReport";
+    
     public static final String GMS_WORLD = "GMS World";
     public static final String LM_MARKET_URL = "http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     public static final int PERSIST_SERVER = 0;
@@ -159,8 +161,10 @@ public final class ConfigurationManager {
     
     //User Manager
     public static final String GMS_USERNAME = "gmsUsername";
-    public static final String GMS_PASSWORD = "gmsPassword";
+    //public static final String GMS_PASSWORD = "gmsPassword";
     public static final String GMS_NAME = "gmsName";
+    public static final String GMS_TOKEN = "gmsToken";
+    public static final String GMS_SCOPE = "gmsScope";
     public static final String FB_AUTH_STATUS = "fbAuthStatus";   
     public static final String FB_SEND_STATUS = "fbSendStatus";
     public static final String FB_USERNAME = "fbUsername";
@@ -192,7 +196,7 @@ public final class ConfigurationManager {
     private static final int GUEST_LIMIT = 10;
     //
 	//Restart service every x seconds
-	  public static final long DEFAULT_REPEAT_TIME = 300;
+	public static final long DEFAULT_REPEAT_TIME = 300;
     
     private ConfigurationManager() {
     }
@@ -326,24 +330,24 @@ public final class ConfigurationManager {
     }
 
     public String getServicesUrl() {
-    	return SERVER_SERVICES_URL; //"http://10.0.2.2:8080/services/"; //
+    	return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/s/"; //
     }
     
     public String getSecuredServicesUrl() {
-    	return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/services/"; //
+    	return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/s/"; //
     }
     
     public String getServerUrl() {
-        if (getUserManager().isUserLoggedIn()) {
-            return SERVER_SERVICES_URL; //"http://10.0.2.2:8080/services/"; //
+        if (getUserManager().isTokenPresent()) {
+            return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/s/"; //
         } else {
             return SERVER_URL; //"http://10.0.2.2:8080/"; //
         }
     }
 
     public String getSecuredServerUrl() {
-        if (getUserManager().isUserLoggedIn()) {
-            return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/services/"; //
+        if (getUserManager().isTokenPresent()) {
+            return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/s/"; //
         } else {
             return SSL_SERVER_URL; //"http://10.0.2.2:8080/"; // 
         }
@@ -506,10 +510,9 @@ public final class ConfigurationManager {
     	
     	private AppUtils() {}
     
-    	public void initApp(Context applicationContext) {
+    	public void initApp(Application applicationContext) {
     		setContext(applicationContext);
     		LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
-    		String buildInfo = collectSystemInformation();
     		setDefaultConfiguration();
 
     		if (PersistenceManagerFactory.getFileManager().fileExists(null, FileManager.CONFIGURATION_FILE)) {
@@ -518,10 +521,6 @@ public final class ConfigurationManager {
     			PersistenceManagerFactory.getFileManager().deleteFile(null, FileManager.CONFIGURATION_FILE);
     		} else {
     			getDatabaseManager().readConfiguration();
-    		}
-
-    		if (StringUtils.isNotEmpty(buildInfo)) {
-    			putObject(ConfigurationManager.BUILD_INFO, buildInfo);
     		}
 
     		String[] limitArray = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.landmarksPerLayer);
@@ -583,10 +582,10 @@ public final class ConfigurationManager {
         	default_locations.put("SAU", LandmarkFactory.getLandmark("Saudi Arabia, Riyadh", "", new QualifiedCoordinates(24.64732, 46.714581, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SAU Saudi Arabia, Riyadh 24.64732, 46.714581
         	default_locations.put("PRT", LandmarkFactory.getLandmark("Portugal, Lisbon", "", new QualifiedCoordinates(38.7252993, 9.1500364, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PRT Portugal, Lisbon 38.7252993, 9.1500364
         	default_locations.put("PAK", LandmarkFactory.getLandmark("Pakistan, Islamabad", "", new QualifiedCoordinates(33.718151, 73.060547, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PAK Pakistan, Islamabad 33.718151, 73.060547
-        	default_locations.put("SWE", LandmarkFactory.getLandmark("Sweden, Stockholm", "", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SWE Sweden, Stockholm 59.32893, 18.06491
-    	}
+        	default_locations.put("SWE", LandmarkFactory.getLandmark("Sweden, Stockholm", "", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SWE Sweden, Stockholm 59.32893, 18.06491  	       	
+      	}
 
-    	private String collectSystemInformation() {
+    	public String collectSystemInformation() {
 
     		String ReturnVal = "";
     		try {
@@ -596,8 +595,7 @@ public final class ConfigurationManager {
     			// Package name
     			String PackageName = pi.packageName;
     			// Device model
-    			putString(ConfigurationManager.PACKAGE_NAME, PackageName);
-
+    			
     			int VersionCode = pi.versionCode;
 
     			String PhoneModel = android.os.Build.MODEL;
@@ -638,7 +636,7 @@ public final class ConfigurationManager {
             	//ReturnVal += "User : " + User;
 
         	} catch (NameNotFoundException ex) {
-            	LoggerUtils.error("ConfigurationManager.collectSystemInformation exception", ex);
+            	LoggerUtils.error("ConfigurationManager.collectSystemInformation() exception", ex);
         	}
 
         	return ReturnVal;
@@ -691,6 +689,13 @@ public final class ConfigurationManager {
     		ApplicationInfo ai = pm.getApplicationInfo(getContext().getPackageName(), 0);
     		return ai;
     	}
+    	
+    	public void reset() {
+    		getDatabaseManager().deleteConfiguration();
+    		remove(ConfigurationManager.GMS_TOKEN);
+    		setDefaultConfiguration();
+    		getDatabaseManager().readConfiguration();
+    	}
     }
     
     public static DatabaseManager getDatabaseManager() {
@@ -722,6 +727,11 @@ public final class ConfigurationManager {
         	ConfigDbDataSource cdb = getConfigDatabase();
         	putAll(cdb.fetchAllConfig());
         	changedConfig.clear();
+    	}
+    	
+    	private void deleteConfiguration() {
+    		ConfigDbDataSource cdb = getConfigDatabase();
+    		cdb.delete();
     	}
 
     	private ConfigDbDataSource getConfigDatabase() {
@@ -793,6 +803,10 @@ public final class ConfigurationManager {
 	            || isOn(GL_AUTH_STATUS)
 	            || isOn(FS_AUTH_STATUS)
 	            || isOn(GMS_AUTH_STATUS));
+    	}
+    	
+    	public boolean isTokenPresent() {
+    		return (getString(GMS_TOKEN) != null);
     	}
     	
     	public boolean isUserLoggedInFully() {
@@ -908,6 +922,22 @@ public final class ConfigurationManager {
     	
     	public boolean isUserAllowedAction() {
     		return (isUserLoggedIn() || getInt(ConfigurationManager.USE_COUNT, 0) < GUEST_LIMIT);
+    	}
+    	
+    	public void verifyToken() {
+    		if (!containsKey(GMS_TOKEN)) {
+    			String errorMessage = GMSUtils.generateToken(getString(GMS_SCOPE));
+    			if (errorMessage != null) {
+    				LoggerUtils.error("UserManager.verifyToken exception: " + errorMessage);
+    			} 
+    		} 
+    		if (containsKey(GMS_TOKEN)) { 
+        		Map<String, String> headers = new HashMap<String, String>();
+        		headers.put(Commons.TOKEN_HEADER, getString(ConfigurationManager.GMS_TOKEN));
+        		headers.put(Commons.SCOPE_HEADER, getString(ConfigurationManager.GMS_SCOPE));
+        		ACRA.getConfig().setHttpHeaders(headers);
+    		}
+    		LoggerUtils.debug("GMS Token is present!");
     	}
     }
 }

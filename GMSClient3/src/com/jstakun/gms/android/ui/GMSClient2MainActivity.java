@@ -273,6 +273,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             LoggerUtils.debug("Creating AsyncTaskManager...");
             asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
+            //verify access token
+            asyncTaskManager.executeGetTokenTask();
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }
@@ -855,6 +857,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 					asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
 		            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), intents.takeScreenshot(), true);
 					break;
+				case R.id.reset:
+	            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
+	            	break;	
 				default:
 					return true;
 		 	}

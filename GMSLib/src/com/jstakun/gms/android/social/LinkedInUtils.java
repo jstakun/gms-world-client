@@ -44,9 +44,13 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.LN_SEND_STATUS);
 		boolean result = false;
 		
-		String id = json.optString(ConfigurationManager.LN_USERNAME);
-		if (id != null) {
+		try {
+			String id = json.getString(ConfigurationManager.LN_USERNAME);
+		
 			ConfigurationManager.getInstance().putString(ConfigurationManager.LN_USERNAME, id + "@ln");
+			
+			ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, json.optString(ConfigurationManager.GMS_TOKEN));
+			
 			String name = json.optString(ConfigurationManager.LN_NAME);
 
 			long expires_in = json.optLong(ConfigurationManager.LN_EXPIRES_IN,-1);
@@ -59,10 +63,13 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 				ConfigurationManager.getInstance().putString(ConfigurationManager.LN_NAME, name);
 				result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 			} 
-		} 
-		if (!result) {
-			logout();
-        }
+		} catch (Exception ex) {
+			LoggerUtils.error("LinkedInUtils.initOnTokenPresent() exception", ex);	
+		} finally {
+			if (!result) {
+				logout();
+			}
+		}
         return result;
 	}
 

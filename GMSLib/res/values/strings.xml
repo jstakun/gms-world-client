@@ -47,6 +47,7 @@
     <string name="rateUs">Rate us</string>
     <string name="imageLoading">Image download</string>
     <string name="shareScreenshot">Share screenshot</string>
+    <string name="reset">Reset to default settings</string>
     
     <!-- preferences -->
     <string name="mapProvider">Map provider</string>
@@ -165,7 +166,8 @@
      <string name="done">Done</string>
 
      <!-- JSONParser -->
-     <string name="category">Category: %1$s</string>
+     <string name="creation_date">Creation date: %1$s</string>
+     <!--string name="category">Category: %1$s</string>
      <string name="merchant">Merchant: %1$s</string>
      <string name="artist">Artist: %1$s</string>
      <string name="venue">Venue: %1$s</string>
@@ -176,7 +178,6 @@
      <string name="start_date">Start date: %1$s</string>
      <string name="end_date">End date: %1$s</string>
      <string name="expiration_date">Expiration date: %1$s</string>
-     <string name="creation_date">Creation date: %1$s</string>
      <string name="upload_date">Upload date: %1$s</string>
      <string name="taken_date">Date taken: %1$s</string>
      <string name="rating">Rating: %1$s</string>
@@ -192,7 +193,7 @@
      <string name="menu">Menu</string>
      <string name="photo">Photo</string>
      <string name="twitter">Twitter: %1$s</string>
-     <string name="trending"><![CDATA[<font color=\"red\">There are %1$s people checked-in here now!</font>]]></string>
+     <string name="trending"><![CDATA[<font color=\"red\">There are %1$s people checked-in here now!</font>]]></string-->
     
      <!-- Errors -->
      <string name="Internet.connection.error">Internet connection error!</string>
@@ -234,6 +235,9 @@
      <string name="Searching.calendar.message">Searching for landmarks on %1$s</string>
      <string name="Oauth.progress.message"><![CDATA[Authenticating to <b>%1$s</b>...]]></string>
      <string name="rate.us.message">You\'ve been using our app for %1$d times. Do you want to rate our app?</string>
+     <string name="Reset.short.message">Reset to default settings</string>
+     <string name="Reset.long.message">Do you want to reset application to default settings?</string>
+     <string name="Reset.confirmation">Default settings reset successfully!</string>
      <string name="New.version.short.message">New version</string>
      <string name="New.version.long.message">New version is available. Do you want to update now?</string>
      <string name="search_hint">Find a place nearby</string>

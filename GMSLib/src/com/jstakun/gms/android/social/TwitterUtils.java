@@ -52,9 +52,10 @@ public final class TwitterUtils extends AbstractSocialUtils {
         ConfigurationManager.getInstance().setOn(ConfigurationManager.TWEET_AUTH_STATUS);
         ConfigurationManager.getInstance().setOn(ConfigurationManager.TWEET_SEND_STATUS);
         boolean result = false;
-        
-        String id = json.optString(ConfigurationManager.TWEET_USERNAME);
-		if (id != null) {
+            
+        try {
+        	String id = json.getString(ConfigurationManager.TWEET_USERNAME);
+        	ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, json.optString(ConfigurationManager.GMS_TOKEN));
 			ConfigurationManager.getInstance().putString(ConfigurationManager.TWEET_USERNAME, id + "@tw");
 			String name = json.optString(ConfigurationManager.TWEET_NAME);
 			if (name != null) {
@@ -63,9 +64,12 @@ public final class TwitterUtils extends AbstractSocialUtils {
 				ConfigurationManager.getInstance().putString(ConfigurationManager.TWEET_NAME, id);	
 			}
 			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-		} 
-		if (!result) {
-			logout();
+		} catch (Exception ex) {
+			LoggerUtils.error("TwitterUtils.initOnTokenPresent() exception", ex);		
+		} finally {
+			if (!result) {
+				logout();
+			}
 		}
 		return result;
     }

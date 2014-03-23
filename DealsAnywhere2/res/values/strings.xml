@@ -14,7 +14,7 @@
     <string name="titleDealCategories">Deal categories</string>
     <string name="preferencesDealCategories">Deal preferences</string>
 
-    <string name="reset">Reset</string>
+    <string name="resetButton">Reset</string>
     <string name="titleDealPreferences">Reset deal recommendations</string>
     <string name="summaryDealPreferences">Click to reset deal recommendations</string>
     <string name="messageDealPreferences">Deal recommendations are used to

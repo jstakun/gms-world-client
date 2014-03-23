@@ -216,7 +216,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             LoggerUtils.debug("Creating AsyncTaskManager...");
             asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
-
+            //verify access token
+            asyncTaskManager.executeGetTokenTask(); 
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }
@@ -760,6 +761,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             	asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), intents.takeScreenshot(), true);
             	break;    
+            case R.id.reset:
+            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
+            	break;	
             default:
                 return super.onOptionsItemSelected(item);
           }
@@ -917,38 +921,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader);
         }
     }
-
-    /*private void landmarkDetailsAction() {
-        ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
-        if (selectedLandmark != null) {
-            if (!selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                landmarkManager.setSeletedLandmarkUI();
-            }
-
-            if (selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                intents.startMultiLandmarkIntent(getMyPosition(), AbstractLandmarkList.ORDER_BY_DIST_ASC);
-            } else {
-            	UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowSelectedLandmarkView", selectedLandmark.getLayer(), 0);
-                GeoPoint g = new GeoPoint(selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6());
-                mapController.animateTo(g);
-                intents.showLandmarkDetailsView(selectedLandmark, lvView, getMyPosition(), true);
-                
-                if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-                    intents.loadLayersAction(true, null, false, true, layerLoader,
-                    		selectedLandmark.getQualifiedCoordinates().getLatitude(), 
-                    		selectedLandmark.getQualifiedCoordinates().getLongitude(),
-                    		mapView.getZoomLevel());
-                }
-            }
-        } else {
-            LoggerUtils.debug(Locale.getMessage(R.string.Landmark_opening_error));
-        }
-    }*/
-
-    //private void openButtonPressedAction(ExtendedLandmark landmark) {
-    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    //}
-
+   
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean clearMap) {
         mapController.setCenter(newCenter);
         if (loadLayers) {

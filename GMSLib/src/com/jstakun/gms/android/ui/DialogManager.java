@@ -124,6 +124,15 @@ public class DialogManager {
             intents.startActionViewIntent(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL));
         }
     };
+    private DialogInterface.OnClickListener resetListener = new DialogInterface.OnClickListener() {
+
+        public void onClick(DialogInterface dialog, int id) {
+            ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
+            dialog.cancel();
+            ConfigurationManager.getAppUtils().reset();
+            intents.showInfoToast(Locale.getMessage(R.string.Reset_confirmation));
+        }
+    };
    
     public DialogManager(Activity activity, Intents intents, AsyncTaskManager asyncTaskManager,
             LandmarkManager landmarkManager, CheckinManager checkinManager, DialogInterface.OnClickListener trackMyPosListener) {
@@ -179,6 +188,10 @@ public class DialogManager {
                     break;
                 case AlertDialogBuilder.AUTO_CHECKIN_DIALOG:
                     alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, checkinAutoListener, checkinManualListener);
+                    break;
+                case AlertDialogBuilder.RESET_DIALOG:
+                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, resetListener);
+                    break;    
                 default:
                     break;
             }

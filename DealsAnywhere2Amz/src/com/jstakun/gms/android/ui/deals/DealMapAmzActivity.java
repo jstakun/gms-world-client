@@ -247,6 +247,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             LoggerUtils.debug("Initializing AsyncTaskManager...");
             asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
+            //verify access token
+            asyncTaskManager.executeGetTokenTask();
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }

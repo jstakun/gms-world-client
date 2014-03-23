@@ -222,8 +222,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             LoggerUtils.debug("Initializing AsyncTaskManager...");
             asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
+            //verify access token
+            asyncTaskManager.executeGetTokenTask();
             //check if newer version available
-            asyncTaskManager.executeNewVersionCheckTask();
+            asyncTaskManager.executeNewVersionCheckTask();           
         }
 
         intents = new Intents(this, landmarkManager, asyncTaskManager);
@@ -339,6 +341,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             case R.id.rateUs:
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
+            case R.id.reset:
+            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
+            	break;    
             default:
                 return true;
         }
