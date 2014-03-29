@@ -197,18 +197,17 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	private void processJSon(String jsonString) {
 		//System.out.println("json: " + jsonString);
 		if (StringUtils.startsWith(jsonString, "{")) {
-			String token = null, secret = null;
+			String token = null;
 			JSONObject json = null;
 			try {
 				json = new JSONObject(jsonString);
 				token = json.getString("token");
-				secret = json.optString("secret");
 			} catch (JSONException ex) {
-				LoggerUtils.error("GMSJavaScriptInterface.processJson exception:", ex);
+				LoggerUtils.error("GMSJavaScriptInterface.processJson exception", ex);
 			}
 			if (token != null && json != null) {
-				Token accessToken = new Token(token, secret);
-				socialUtils.storeAccessToken(accessToken);
+				String secret = json.optString("secret");
+				socialUtils.storeAccessToken(new Token(token, secret));
 				if (socialUtils.initOnTokenPresent(json)) {
 					finishWithToast(Locale.getMessage(R.string.Authn_success));
 				} else {

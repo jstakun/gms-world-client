@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.social;
 
 import java.util.ArrayList;
@@ -25,6 +21,7 @@ public final class TwitterUtils extends AbstractSocialUtils {
     private static final String TWEET_AUTH_SECRET_KEY = "auth_secret_key";
 
     public void storeAccessToken(Token accessToken) {
+    	super.storeAccessToken(accessToken);
     	ConfigurationManager.getUserManager().putStringAndEncrypt(TWEET_AUTH_KEY, accessToken.getToken());
         ConfigurationManager.getUserManager().putStringAndEncrypt(TWEET_AUTH_SECRET_KEY, accessToken.getSecret());
     }

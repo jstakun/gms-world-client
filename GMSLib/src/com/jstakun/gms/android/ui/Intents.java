@@ -64,6 +64,7 @@ import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
+import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.DateTimeUtils;
@@ -991,12 +992,11 @@ public final class Intents {
         		if (notify) {
         			message = Locale.getMessage(R.string.Migation_1086_message);
         		}	
-        	} else if ((versionCode >= 1101 && buildVersion < 1101 && buildVersion > 500)) { //2.0.8
+        	} else if ((versionCode >= 1102 && buildVersion < 1102 && buildVersion > 500)) { //2.0.8
         		boolean notify = false;
         		//logout user due to user management changes
-        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS) && ConfigurationManager.getInstance().containsKey("username") && ConfigurationManager.getInstance().containsKey("password")) {
-        			ConfigurationManager.getInstance().remove("gmsPassword");
-        			ConfigurationManager.getInstance().setOff(ConfigurationManager.GMS_AUTH_STATUS);
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
+        			GMSUtils.logout();
         			notify = true;
         		}
         		

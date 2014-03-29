@@ -73,12 +73,8 @@ public final class FacebookUtils extends AbstractSocialUtils {
 	}
 
 	public void storeAccessToken(Token accessToken) {
-		try {
-			ConfigurationManager.getUserManager().putStringAndEncrypt(FB_AUTH_KEY, accessToken.getToken());
-			this.accessToken = accessToken;
-		} catch (Exception e) {
-			LoggerUtils.error("FacebookUtils.storeAccessToken error: ", e);
-		}
+		super.storeAccessToken(accessToken);
+		ConfigurationManager.getUserManager().putStringAndEncrypt(FB_AUTH_KEY, accessToken.getToken());
 	}
 	
 	protected Token loadAccessToken() {

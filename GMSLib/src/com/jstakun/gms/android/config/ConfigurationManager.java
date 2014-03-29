@@ -806,7 +806,7 @@ public final class ConfigurationManager {
     	}
     	
     	public boolean isTokenPresent() {
-    		return (getString(GMS_TOKEN) != null);
+    		return (StringUtils.isNotEmpty(getString(GMS_TOKEN)) && StringUtils.isNotEmpty(getString(GMS_SCOPE)));
     	}
     	
     	public boolean isUserLoggedInFully() {
@@ -925,13 +925,13 @@ public final class ConfigurationManager {
     	}
     	
     	public void verifyToken() {
-    		if (!containsKey(GMS_TOKEN)) {
+    		if (!StringUtils.isNotEmpty(getString(GMS_TOKEN))) {
     			String errorMessage = GMSUtils.generateToken(getString(GMS_SCOPE));
     			if (errorMessage != null) {
     				LoggerUtils.error("UserManager.verifyToken exception: " + errorMessage);
     			} 
     		} 
-    		if (containsKey(GMS_TOKEN)) { 
+    		if (StringUtils.isNotEmpty(getString(GMS_TOKEN))) { 
         		Map<String, String> headers = new HashMap<String, String>();
         		headers.put(Commons.TOKEN_HEADER, getString(ConfigurationManager.GMS_TOKEN));
         		headers.put(Commons.SCOPE_HEADER, getString(ConfigurationManager.GMS_SCOPE));

@@ -29,6 +29,7 @@ public final class LinkedInUtils extends AbstractSocialUtils {
     private static final String LN_AUTH_SECRET_KEY = "lnauth_secret_key";
     
 	public void storeAccessToken(Token accessToken) {
+		super.storeAccessToken(accessToken);
 		ConfigurationManager.getUserManager().putStringAndEncrypt(LN_AUTH_KEY, accessToken.getToken());
 		ConfigurationManager.getUserManager().putStringAndEncrypt(LN_AUTH_SECRET_KEY, accessToken.getSecret());
 	}

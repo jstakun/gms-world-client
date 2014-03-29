@@ -33,9 +33,9 @@ public final class GoogleUtils extends AbstractSocialUtils {
     private static final String GL_AUTH_SECRET_KEY = "glauth_secret_key";
     
 	public void storeAccessToken(Token accessToken) {
+		super.storeAccessToken(accessToken);
 		ConfigurationManager.getUserManager().putStringAndEncrypt(GL_AUTH_KEY, accessToken.getToken());
 		ConfigurationManager.getUserManager().putStringAndEncrypt(GL_AUTH_SECRET_KEY, accessToken.getSecret());
-		this.accessToken = accessToken;
 	}
 
 	protected Token loadAccessToken() {

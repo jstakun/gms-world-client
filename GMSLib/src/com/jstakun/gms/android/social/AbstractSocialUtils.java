@@ -22,7 +22,10 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 	public abstract boolean initOnTokenPresent(JSONObject json);
 
 	@Override
-	public abstract void storeAccessToken(Token accessToken);
+	public void storeAccessToken(Token accessToken)
+	{
+		this.accessToken = accessToken;
+	}
 	
 	@Override
     public Token getAccessToken() {

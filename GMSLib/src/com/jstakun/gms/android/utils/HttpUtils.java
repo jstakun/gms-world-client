@@ -548,7 +548,7 @@ public class HttpUtils {
         return new String[]{ds, dr, sd};
     }
 
-    private static void setAuthHeader(HttpRequest request, boolean throwIfEmpty) throws IOException {
+    private static void setAuthHeader(HttpRequest request, boolean throwIfEmpty) {
     	/*String username = null, password = null;
     	boolean decodePassword = true, decodeUsername = true;
     	

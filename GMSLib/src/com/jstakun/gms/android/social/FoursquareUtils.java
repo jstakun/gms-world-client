@@ -35,13 +35,9 @@ public final class FoursquareUtils extends AbstractSocialUtils {
     }
 
     public void storeAccessToken(Token accessToken)  {
-    	try {
-    		ConfigurationManager.getUserManager().putStringAndEncrypt(FS_AUTH_KEY, accessToken.getToken());
-    		this.accessToken = accessToken;
-    	} catch (Exception e) {
-			LoggerUtils.error("FoursquareUtils.storeAccessToken exception: ", e);
-		}
-    }
+    	super.storeAccessToken(accessToken);
+    	ConfigurationManager.getUserManager().putStringAndEncrypt(FS_AUTH_KEY, accessToken.getToken());
+   }
 
     protected Token loadAccessToken() {
         String token = ConfigurationManager.getUserManager().getStringDecrypted(FS_AUTH_KEY);
