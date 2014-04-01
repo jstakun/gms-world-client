@@ -113,7 +113,6 @@ public class LandmarkManager {
         String normalizedDetails = null;
         if (details != null) {
             normalizedDetails = details.replace('\n', ' ').replace('\r', ' ');
-            normalizedDetails += "<br/>" + Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale()));
         }
         String normalizedName = name.replace('\n', ' ').replace('\r', ' ');
         QualifiedCoordinates qc = new QualifiedCoordinates(latitude, longitude, altitude, Float.NaN, Float.NaN);
@@ -144,6 +143,12 @@ public class LandmarkManager {
             List<ExtendedLandmark> layer = getLandmarkStoreLayer(layerName);
             layer.add(landmark);
             errorMessage = persistLandmark(landmark);
+            String normalizedDetails = landmark.getDescription();
+            if (normalizedDetails == null) {
+            	normalizedDetails = "";
+            }
+            normalizedDetails += "<br/>" + Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale()));
+            landmark.setDescription(normalizedDetails);
         }
 
         return errorMessage;

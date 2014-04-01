@@ -1193,6 +1193,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	if (groupPosition == 1 || groupPosition == 4 || groupPosition == 5) {
         		drawerLayout.closeDrawer(drawerList);
         		onMenuItemSelected((int)id);
+        		return true;
         	} else if (groupPosition == 2 || groupPosition == 3) {
         		TextView textView = (TextView)v;
     	        if (parent.isGroupExpanded(groupPosition)) {
@@ -1200,8 +1201,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         		} else {
         		    textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet_down, 0, 0, 0);
         		}
+    	        return false;
+        	} else {
+        		return true;
         	}
-        	return false;
 		}   	
     }
     
@@ -1209,11 +1212,12 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+			TextView textView = (TextView) parent.getChildAt(groupPosition);
+			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
 			drawerLayout.closeDrawer(drawerList);
 			onMenuItemSelected((int)id);
-			return false;
+			return true;
 		}
-    	
     }
     
     private static class LoadingHandler extends Handler {

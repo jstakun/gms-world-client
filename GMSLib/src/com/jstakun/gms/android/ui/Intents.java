@@ -29,6 +29,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -1058,7 +1059,18 @@ public final class Intents {
         v.setDrawingCacheEnabled(true);
         try {
             Bitmap screenShot = v.getDrawingCache();
-            if (screenShot != null) {
+            //TODO check if screenshot is black
+            boolean isBlack = true;
+            for(int i=0; i < screenShot.getWidth(); i++) {
+                for(int j=0; j < screenShot.getHeight(); j++)  {                    
+                	if(screenShot.getPixel(i, j) != Color.BLACK) {
+                	   	isBlack = false;
+                	   	break;
+                	}
+                }   
+            }
+            //
+            if (screenShot != null && !isBlack) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 screenShot.compress(Bitmap.CompressFormat.JPEG, 50, out);
                 screenShot.recycle();
