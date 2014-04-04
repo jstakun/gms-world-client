@@ -225,11 +225,11 @@ public class HttpUtils {
             postRequest.addHeader(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
 
             if (auth) {
-                    setAuthHeader(postRequest, url.contains(ConfigurationManager.SERVICES_SUFFIX));
-                    String username = ConfigurationManager.getUserManager().getLoggedInUsername();
-                    if (StringUtils.isNotEmpty(username)) {
-                        postRequest.addHeader("username", username);
-                    }                      
+                setAuthHeader(postRequest, url.contains(ConfigurationManager.SERVICES_SUFFIX));
+                String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+                if (StringUtils.isNotEmpty(username)) {
+                   postRequest.addHeader("username", username);
+                }                      
             }
     
             ByteArrayBody bab = new ByteArrayBody(file, filename);

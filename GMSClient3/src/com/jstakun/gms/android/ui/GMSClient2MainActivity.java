@@ -1190,11 +1190,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		@Override
 		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", "AddName", "", 0);
-        	if (groupPosition == 1 || groupPosition == 4 || groupPosition == 5) {
+        	if (groupPosition == 0 || groupPosition == 3 || groupPosition == 4) {
         		drawerLayout.closeDrawer(drawerList);
         		onMenuItemSelected((int)id);
         		return true;
-        	} else if (groupPosition == 2 || groupPosition == 3) {
+        	} else if (groupPosition == 1 || groupPosition == 2) {
         		TextView textView = (TextView)v;
     	        if (parent.isGroupExpanded(groupPosition)) {
         			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);

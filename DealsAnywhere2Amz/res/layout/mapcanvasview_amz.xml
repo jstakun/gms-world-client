@@ -49,6 +49,7 @@ android:layout_centerHorizontal="true"/>
        		<include layout="@layout/statusbar"/>
     	</FrameLayout>
     	<ListView android:id="@+id/left_drawer"
+        	android:paddingTop="?android:attr/actionBarSize"
         	android:layout_width="320dp"
         	android:layout_height="match_parent"
         	android:layout_gravity="start"

@@ -102,6 +102,9 @@ public final class Intents {
     private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
     private List<ResolveInfo> activities;
+    private static Toast longToast, shortToast;
+    private static final Object shortMutex = new Object();
+    private static final Object longMutex = new Object();   
     
     private static final ImageGetter imgGetter = new Html.ImageGetter() {
         @Override
@@ -834,11 +837,23 @@ public final class Intents {
     }
 
     public void showInfoToast(String msg) {
-        Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+    	synchronized (longMutex) {
+    		if (longToast != null) {
+    			longToast.cancel();
+    		}
+    		longToast = Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_LONG);
+    		longToast.show();
+    	}
     }
     
     public void showShortToast(String msg) {
-        Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    	synchronized (shortMutex) {
+    		if (shortToast != null) {
+    			shortToast.cancel();
+    		}
+    		shortToast = Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_SHORT);
+    		shortToast.show();
+    	}
     }
 
     public boolean isClearLandmarksRequired(ProjectionInterface projection, int mapCenterLatE6,
