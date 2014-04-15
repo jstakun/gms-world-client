@@ -445,7 +445,7 @@ containing a value of this type.
  Files 
          */
         public static int Files_title=0x7f0a00ff;
-        public static int Forbidden_connecion_error=0x7f0a00a4;
+        public static int Forbidden_connection_error=0x7f0a00a4;
         public static int GPS_location_missing_error=0x7f0a008e;
         public static int Http_error=0x7f0a008d;
         public static int Info_about=0x7f0a012f;

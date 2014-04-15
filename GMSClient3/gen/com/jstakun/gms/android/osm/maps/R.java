@@ -421,7 +421,7 @@ public final class R {
 		public static final int Files_delete_prompt = 0x7f0a0101;
 		public static final int Files_deleted = 0x7f0a0102;
 		public static final int Files_title = 0x7f0a00ff;
-		public static final int Forbidden_connecion_error = 0x7f0a00a4;
+		public static final int Forbidden_connection_error = 0x7f0a00a4;
 		public static final int GPS_location_missing_error = 0x7f0a008e;
 		public static final int Http_error = 0x7f0a008d;
 		public static final int Info_about = 0x7f0a012f;

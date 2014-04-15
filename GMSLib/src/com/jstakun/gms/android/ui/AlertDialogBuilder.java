@@ -241,7 +241,6 @@ public class AlertDialogBuilder {
         newVersionDialog = builder.create();
     }
     
-    //TODO translate
     private void createResetAlertDialog(DialogInterface.OnClickListener resetListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(Locale.getMessage(R.string.Reset_long_message)).

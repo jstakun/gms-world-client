@@ -511,7 +511,7 @@ containing a value of this type.
  Files 
          */
         public static final int Files_title=0x7f0a00ff;
-        public static final int Forbidden_connecion_error=0x7f0a00a4;
+        public static final int Forbidden_connection_error=0x7f0a00a4;
         public static final int GPS_location_missing_error=0x7f0a008e;
         public static final int Http_error=0x7f0a008d;
         public static final int Info_about=0x7f0a012f;

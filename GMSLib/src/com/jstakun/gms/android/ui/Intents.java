@@ -1074,7 +1074,7 @@ public final class Intents {
         v.setDrawingCacheEnabled(true);
         try {
             Bitmap screenShot = v.getDrawingCache();
-            //TODO check if screenshot is black
+            //check if screenshot is black
             boolean isBlack = true;
             for(int i=0; i < screenShot.getWidth(); i++) {
                 for(int j=0; j < screenShot.getHeight(); j++)  {                    

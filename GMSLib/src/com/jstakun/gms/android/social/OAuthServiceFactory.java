@@ -4,6 +4,8 @@
  */
 package com.jstakun.gms.android.social;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 
@@ -21,19 +23,14 @@ public class OAuthServiceFactory {
     private static FacebookUtils facebookUtils = null;
     private static FoursquareUtils foursquareUtils = null;
 
-    public static String getOAuthString(String service) {
-    	if (service.equals(Commons.LINKEDIN)) {
-    		return ConfigurationManager.SERVER_URL + "lnlogin";
-    	} else if (service.equals(Commons.TWITTER)) {
-    		return ConfigurationManager.SERVER_URL + "twlogin";
-    	} else if (service.equals(Commons.GOOGLE)) { 
-    		return ConfigurationManager.SERVER_URL + "gllogin";
-    	} else if (service.equals(Commons.FOURSQUARE)) {
-    		return ConfigurationManager.SERVER_URL + "fslogin";
-    	} else if (service.equals(Commons.FACEBOOK)) {
-    		return ConfigurationManager.SERVER_URL + "fblogin";
+    public static String getOAuthString(String service) {   	
+    	if (StringUtils.isNotEmpty(service)) {
+    		//TODO call getServerUrl for API version 8+ 
+    		return ConfigurationManager.SERVER_URL + service + "login";
+    		//return ConfigurationManager.getInstance().getServerUrl() + service + "login";
+    	} else {
+    		return null;
     	}
-    	return null;
     }
     
     public static String getOAuthCallback(String service) {

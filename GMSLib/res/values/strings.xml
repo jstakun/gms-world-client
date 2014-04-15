@@ -222,7 +222,7 @@
      <string name="Share.no.matching.apps">Can\'t find matching application!</string>
      <string name="Call.not.supported.error">Can\'t make a call from your device!</string>
      <string name="Unexpected.error">Oops! Something went wrong. Please try again!</string>
-     <string name="Forbidden.connecion.error">Connection limit exceeded</string>
+     <string name="Forbidden.connection.error">Connection limit exceeded!</string>
      
      <!-- Misc -->
      <string name="Your.Location">Your location</string>

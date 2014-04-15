@@ -71,7 +71,6 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		webView.setVisibility(View.GONE);
 
 		webView.getSettings().setJavaScriptEnabled(true);
-		//webView.addJavascriptInterface(new GMSJavaScriptInterface(), "GMSWORLD");
 		webView.getSettings().setSupportZoom(true);
 		webView.getSettings().setBuiltInZoomControls(true);
 		
@@ -97,7 +96,13 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		if (extras != null && extras.containsKey("service")) {
 			serviceName = extras.getString("service");
 			socialUtils = OAuthServiceFactory.getSocialUtils(serviceName);
-			webView.loadUrl(OAuthServiceFactory.getOAuthString(serviceName));
+			//TODO set headers for API version 8+
+			/*Map<String, String> headers = new HashMap<String, String>();
+			if (ConfigurationManager.getUserManager().isTokenPresent()) {
+	    		headers.put(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
+	    		headers.put(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
+	    	}*/
+			webView.loadUrl(OAuthServiceFactory.getOAuthString(serviceName));//, headers);
 		} else {
 			finishWithToast(Locale.getMessage(R.string.OAuth_service_missing));
 		}
@@ -279,8 +284,13 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 				if (url.startsWith(OAuthServiceFactory.getOAuthCallback(serviceName))) {
 					//process page title
 					processJSon(view.getTitle());
-					//view.loadUrl("javascript:window.GMSWORLD.processJSon(document.title);");
-				}
+	    		} else if (StringUtils.startsWith(view.getTitle(), "401")) {
+	    			finishWithToast(Locale.getMessage(R.string.Authz_error));		
+	    		} else if (StringUtils.startsWith(view.getTitle(), "403")) {
+	    			finishWithToast(Locale.getMessage(R.string.Forbidden_connection_error));
+	    		} else if (StringUtils.startsWith(view.getTitle(), "500")) {
+	    			finishWithToast(Locale.getMessage(R.string.Unexpected_error));
+	    		}
 
 				rl.setVisibility(View.GONE);
 				webView.setVisibility(View.VISIBLE);
@@ -290,15 +300,8 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		}
 
 		@Override
-		public void onReceivedError(WebView view, int errorCode,
-				String description, String failingUrl) {
+		public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 			LoggerUtils.error("Received error " + errorCode + ": " + description);
 		}
 	}
-
-	//private class GMSJavaScriptInterface {
-	//	@JavascriptInterface
-	//  public void processJSon(String json) {
-    //  }
-	//}
 }

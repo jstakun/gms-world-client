@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 
 import com.google.common.base.Predicate;
@@ -58,7 +59,7 @@ public class SerialParser {
             LoggerUtils.error("SerialParser.parse() exception: ", ex);
         } finally {
         	int responseCode = utils.getResponseCode();
-        	if (responseCode == 401 && socialService != null) {
+        	if (responseCode == HttpStatus.SC_UNAUTHORIZED && socialService != null) {
         		ISocialUtils service = OAuthServiceFactory.getSocialUtils(socialService);
         		if (service != null) {
         			service.logout();
