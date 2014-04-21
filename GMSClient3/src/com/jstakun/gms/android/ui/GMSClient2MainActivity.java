@@ -407,7 +407,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     @Override
     public void onDestroy() {
         LoggerUtils.debug("onDestroy");
-        //if (!appAbort) {
         if (ConfigurationManager.getInstance().isClosing()) {
             hardClose();
         } else {
@@ -415,9 +414,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
         AdsUtils.destroyAdView(this);
-        //}
-        super.onDestroy();
         System.gc();
+        intents.showShortToast(Locale.getMessage(R.string.closingText));
+        super.onDestroy();
     }
 
     @Override

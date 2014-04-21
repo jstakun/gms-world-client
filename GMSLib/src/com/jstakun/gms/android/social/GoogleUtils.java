@@ -60,7 +60,6 @@ public final class GoogleUtils extends AbstractSocialUtils {
 	}
 	
 	public String sendPost(ExtendedLandmark landmark, int type) {
-		//send to glSendPost with parameters: key, token, refresh_token
 		String errorMessage = null;
 		String refreshToken = ConfigurationManager.getInstance().getString(GL_REFRESH_TOKEN);
 		long expires_in = ConfigurationManager.getInstance().getLong(ConfigurationManager.GL_EXPIRES_IN);
@@ -85,7 +84,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 					}
 				}
 		    	utils.sendPostRequest(url, params, true);
-		    
+		    	errorMessage = utils.getResponseCodeErrorMessage();
 			} catch (Exception ex) {
 				LoggerUtils.error("GoogleUtils.sendMessage() exception", ex);
 				errorMessage = Locale.getMessage(R.string.Http_error, ex.getMessage());

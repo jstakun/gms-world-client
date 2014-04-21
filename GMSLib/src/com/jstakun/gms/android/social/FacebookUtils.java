@@ -98,9 +98,6 @@ public final class FacebookUtils extends AbstractSocialUtils {
 
 
 	public String sendPost(ExtendedLandmark landmark, int type) {
-		//fbSendMessage token, key
-		//check if token has expired first
-		
 		String errorMessage = null;
 		long expires_in = ConfigurationManager.getInstance().getLong(ConfigurationManager.FB_EXPIRES_IN);
 		if (expires_in > 0 && expires_in < System.currentTimeMillis()) {
@@ -120,7 +117,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 					}
 				}
 		    	utils.sendPostRequest(url, params, true);
-		    
+		    	errorMessage = utils.getResponseCodeErrorMessage();
 			} catch (Exception ex) {
 				LoggerUtils.error("FacebookUtils.sendMessage() exception", ex);
 				errorMessage = Locale.getMessage(R.string.Http_error, ex.getMessage());
@@ -132,10 +129,9 @@ public final class FacebookUtils extends AbstractSocialUtils {
 				} catch (Exception e) {
 				}
 			}
-		}
+		}		
 		
-		
-       return errorMessage;
+        return errorMessage;
 	}
 
 	@Override

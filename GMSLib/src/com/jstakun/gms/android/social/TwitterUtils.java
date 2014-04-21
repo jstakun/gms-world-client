@@ -87,7 +87,7 @@ public final class TwitterUtils extends AbstractSocialUtils {
 				}
 			}
 		    utils.sendPostRequest(url, params, true);
-		    
+		    errorMessage = utils.getResponseCodeErrorMessage();
 		} catch (Exception ex) {
 			LoggerUtils.error("TwitterUtils.sendMessage() exception", ex);
 			errorMessage = Locale.getMessage(R.string.Http_error,
