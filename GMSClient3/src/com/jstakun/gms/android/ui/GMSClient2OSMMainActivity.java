@@ -386,6 +386,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     @Override
     public void onDestroy() {
         LoggerUtils.debug("onDestroy");
+        intents.showShortToast(Locale.getMessage(R.string.closingText));
         if (ConfigurationManager.getInstance().isClosing()) {
             hardClose();
         } else {
@@ -393,7 +394,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
         AdsUtils.destroyAdView(this);
-        intents.showShortToast(Locale.getMessage(R.string.closingText));
+        intents.showShortToast(Locale.getMessage(R.string.Close_app_bye));
         System.gc();
         super.onDestroy();
     }
@@ -457,11 +458,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
         }
 
+        PersistenceManagerFactory.getFileManager().clearImageCache();
         ConfigurationManager.getDatabaseManager().closeAllDatabases();
-
         ConfigurationManager.getInstance().clearObjectCache();
-
-        PersistenceManagerFactory.getFileManager().clearImageCache(System.currentTimeMillis() - DateTimeUtils.ONE_MONTH);
         
         HttpUtils.closeConnManager();
     }

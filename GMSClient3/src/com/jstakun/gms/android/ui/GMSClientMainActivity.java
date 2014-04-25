@@ -438,11 +438,10 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             }
         }
 
+        PersistenceManagerFactory.getFileManager().clearImageCache();
         ConfigurationManager.getDatabaseManager().closeAllDatabases();
-
         ConfigurationManager.getInstance().clearObjectCache();
 
-        PersistenceManagerFactory.getFileManager().clearImageCache(System.currentTimeMillis() - DateTimeUtils.ONE_MONTH);
         HttpUtils.closeConnManager();
     }
 

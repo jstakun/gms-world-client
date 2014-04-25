@@ -240,6 +240,7 @@
      <string name="Reset.confirmation">Ustawienia pocz\u0105tkowe przywr\u00f3cone!</string>
      <string name="search_hint">Szukaj miejsca w okolicy</string>
      <string name="Migation.1086.message">Wylogowano ze wszystkich sieci spo\u0142eczno\u015bciowych. To by\u0142a jednorazowa operacja spowodowana aktualizacj\u0105 aplikacji. Prosz\u0119 si\u0119 zalogowa\u0107 ponownie!</string>
+     <string name="Close.app.bye">Do zobaczenia wkr\u00f3tce!</string>
      
      <!-- Auto Check-In alert -->
      <string name="yesButton">Tak</string>

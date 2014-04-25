@@ -6,6 +6,7 @@ package com.jstakun.gms.android.landmarks;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -89,7 +90,7 @@ public class LayerJSONParser {
 
             List<LayerReader> layerReader = new ArrayList<LayerReader>();
             layerReader.add(new GMSWorldReader());
-            Layer l = LayerFactory.getLayer(lname, false, manageable, enabled, checkinable, searchable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, desc, formatted);
+            Layer l = LayerFactory.getLayer(lname, false, manageable, enabled, checkinable, searchable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, desc, formatted, FileManager.ClearPolicy.ONE_DAY);
 
             if (!(layer == null || l.getName().equals(Commons.LM_SERVER_LAYER))) {
                 LoggerUtils.debug("Adding layer: " + l.getName());

@@ -117,17 +117,15 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
                     + "<br/>" + desc;
         }
         if (landmark.getThunbnail() != null) {
-            Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.getThunbnail(), parentListActivity.getResources().getDisplayMetrics(), new LandmarkThumbnailLoadingHandler(rowView, parentListActivity, landmark));
-            if (image != null && image.getWidth() < rowView.getWidth() * 0.5) {
-                holder.thunbnailImage.setImageBitmap(image);
+            Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.getThunbnail(), landmark.getLayer(), parentListActivity.getResources().getDisplayMetrics(), new LandmarkThumbnailLoadingHandler(rowView, parentListActivity, landmark));
+            int width = parentListActivity.getWindowManager().getDefaultDisplay().getWidth();            
+            if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
+                System.out.println(image.getWidth() + " " + rowView.getWidth() + " " + parentListActivity.getWindowManager().getDefaultDisplay().getWidth());
+            	holder.thunbnailImage.setImageBitmap(image);
             } else {
                 holder.thunbnailImage.setImageResource(R.drawable.download48);
             }
-            holder.thunbnailImage.setVisibility(View.VISIBLE);
-            
-            //WindowManager wm = (WindowManager) parentListActivity.getSystemService(Context.WINDOW_SERVICE);
-            //Display display = wm.getDefaultDisplay();
-            //FlowTextHelper.tryFlowText(desc, holder.thunbnailImage, holder.landmarkDescText, display, 3, imgGetter);
+            holder.thunbnailImage.setVisibility(View.VISIBLE);      
             holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
         } else {
         	holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
@@ -158,9 +156,10 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
         public void handleMessage(Message message) {
     		//System.out.println("Running handleMessage for " + landmark.get().getName() + "...");
     		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing() && view.get() != null) {
-    			Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.get().getThunbnail(), parentActivity.get().getResources().getDisplayMetrics(), null);
+    			Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.get().getThunbnail(), landmark.get().getLayer(), parentActivity.get().getResources().getDisplayMetrics(), null);
                 View v = view.get();
-    			if (image != null && image.getWidth() < v.getWidth() * 0.75) {
+                int width = parentActivity.get().getWindowManager().getDefaultDisplay().getWidth();            
+                if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
                 	ViewHolder holder = (ViewHolder) v.getTag();
                 	buildView(landmark.get(), holder, v, parentActivity.get());
                 } else {

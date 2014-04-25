@@ -668,15 +668,14 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         //SuggestionProviderUtil.clearHistory();
 
-        HttpUtils.closeConnManager();
         IconCache.getInstance().clearAll();
         landmarkManager.clearLandmarkStore();
 
+        PersistenceManagerFactory.getFileManager().clearImageCache();
         ConfigurationManager.getDatabaseManager().closeAllDatabases();
-
         ConfigurationManager.getInstance().clearObjectCache();
-
-        PersistenceManagerFactory.getFileManager().clearImageCache(System.currentTimeMillis() - DateTimeUtils.ONE_MONTH);
+        
+        HttpUtils.closeConnManager();
     }
 
     private double[] getMyPosition() {

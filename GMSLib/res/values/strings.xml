@@ -243,7 +243,8 @@
      <string name="New.version.long.message">New version is available. Do you want to update now?</string>
      <string name="search_hint">Find a place nearby</string>
      <string name="Migation.1086.message">You have been logged out from all social networks. This is one time operation due to changes in our application. Please login once again and enjoy the application!</string>
-
+     <string name="Close.app.bye">See you soon!</string>
+     
      <!-- Auto Check-In alert -->
      <string name="yesButton">Yes</string>
      <string name="noButton">No</string>

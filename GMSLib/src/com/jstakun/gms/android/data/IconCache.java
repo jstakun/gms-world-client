@@ -230,13 +230,13 @@ public class IconCache {
         return getBitmapDrawable(img);
     }
 
-    public Bitmap getThumbnailResource(String urlString, DisplayMetrics displayMetrics, Handler handler) {
+    public Bitmap getThumbnailResource(String urlString, String layer, DisplayMetrics displayMetrics, Handler handler) {
         String hash = null;
 
         if (StringUtils.isNotEmpty(urlString)) {
         	try {
         		URL url = new URL(urlString);
-        		hash = BCTools.getMessageDigest(url.toString());
+        		hash = BCTools.getMessageDigest(url.toString()) + "_" + layer;
         	} catch (Exception ex) {
         		LoggerUtils.error("IconCache.getThumbnailResource() exception for url " + urlString + "!", ex);
         	}
@@ -245,21 +245,25 @@ public class IconCache {
         Bitmap img = null;
 
         if (hash != null) {
+        	//System.out.println("Searching for " + hash + "...");
             if (isImageLoaded(hash)) {
+            	//System.out.println(hash + " already in cache...");
                 img = images.get(hash);
             } else if (!loadingTasks.containsKey(hash)) {
                 //check if image exists in file cache
-
                 try {
+                	//System.out.println("Trying to find " + hash + " cache...");
                     img = PersistenceManagerFactory.getFileManager().readImageFileFromCache(hash, displayMetrics);
                 } catch (Exception ex) {
                     LoggerUtils.error("IconCache.getThumbnailResource() exception reading image file from cache", ex);
                 }
 
                 if (img != null) {
+                	//System.out.println("Found " + hash + " in cache");
                     images.put(hash, img);
                 }
                 if (img == null) {
+                	//System.out.println("Loading " + hash + " from remote server...");
                 	if (ConfigurationManager.getInstance().isNetworkModeAccepted()) {                        
                 		try {
                 			LoadExternalImageTask loadingTask = new LoadExternalImageTask(displayMetrics, true, handler);
@@ -273,7 +277,8 @@ public class IconCache {
                 	}
                 }
             } else if (loadingTasks.containsKey(hash)) {
-                LoadExternalImageTask loadingTask = (LoadExternalImageTask) loadingTasks.get(hash);
+            	//System.out.println(hash + " search in progress...");
+            	LoadExternalImageTask loadingTask = (LoadExternalImageTask) loadingTasks.get(hash);
                 loadingTask.setHandler(handler);
             }
         }
@@ -284,45 +289,6 @@ public class IconCache {
         images.clear();
     }
 
-    /*public void setCompass(int i, BitmapDrawable bmp) {
-     if (i >= 0 && i < 16) {
-     compass[i] = bmp;
-     }
-     }
-
-     public BitmapDrawable getCompass(int pos) {
-     if (pos >= 0 && pos < 16) {
-     BitmapDrawable compassDrawable = compass[pos];
-     if (compassDrawable == null) {
-     Bitmap compassIcon = getImageResource(COMPASS);
-
-     if (pos != 2) {
-     int width = compassIcon.getWidth();
-     int height = compassIcon.getHeight();
-     Bitmap rotated = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-     Canvas tmpCanvas = new Canvas(rotated);
-
-     float rotation = (pos * 22.5f) - 45.0f;
-
-     Matrix matrix = new Matrix();
-     matrix.setRotate(rotation, width / 2, height / 2);
-
-     Bitmap tmp = Bitmap.createBitmap(compassIcon, 0, 0, width, height, matrix, true);
-     tmpCanvas.drawBitmap(tmp, width / 2 - tmp.getWidth() / 2, height / 2 - tmp.getHeight() / 2, null);
-
-     compassDrawable = new BitmapDrawable(rotated);
-     } else {
-     compassDrawable = new BitmapDrawable(compassIcon);
-     }
-
-     setCompass(pos, compassDrawable);
-     }
-     return compassDrawable;
-     } else {
-     return null;
-     }
-     }*/
-    
     protected void setResource(String name, Bitmap resource) {
         images.put(name, resource);
     }

@@ -725,8 +725,9 @@ public final class Intents {
 
         if (selectedLandmark.getThumbnail() != null) {
 
-            Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), activity.getResources().getDisplayMetrics(), new ThumbnailLoadedHandler(activity));
-            if (image != null && image.getWidth() < lvView.getWidth() * 0.5) {
+            Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), selectedLandmark.getLayer(), activity.getResources().getDisplayMetrics(), new ThumbnailLoadedHandler(activity));
+            int width = activity.getWindowManager().getDefaultDisplay().getWidth();            
+            if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
                 thumbnail.setImageBitmap(image);
                 thumbnail.setTag(null);
             } else {
@@ -1242,8 +1243,9 @@ public final class Intents {
              		ExtendedLandmark selectedLandmark = (ExtendedLandmark) thumbnail.getTag();
 
                 	if (selectedLandmark != null && StringUtils.equals(url, selectedLandmark.getThumbnail())) {
-                    	Bitmap image = IconCache.getInstance().getThumbnailResource(url, parentActivity.get().getResources().getDisplayMetrics(), null);
-                    	if (image != null && image.getWidth() < lvView.getWidth() * 0.75) {
+                    	Bitmap image = IconCache.getInstance().getThumbnailResource(url, selectedLandmark.getLayer(), parentActivity.get().getResources().getDisplayMetrics(), null);
+                    	int width = parentActivity.get().getWindowManager().getDefaultDisplay().getWidth();            
+                        if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
                         	thumbnail.setImageBitmap(image);
                         	String descr = "";
                         	double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);

@@ -11,12 +11,15 @@ import android.os.Environment;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
+import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.maps.Tile;
 import com.jstakun.gms.android.maps.TileFactory;
 import com.jstakun.gms.android.maps.TilesCache;
@@ -38,10 +41,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -63,6 +68,8 @@ public class FileManager implements PersistenceManager {
     private static final String TIMESTAMP = "timestamp";
     private String packageName;
     private File cacheDir;
+    
+    public enum ClearPolicy {ONE_DAY, ONE_WEEK, ONE_MONTH, ONE_QUARTER, ONE_YEAR}; 
 
     public FileManager(String packageName) {
         this.packageName = packageName;
@@ -86,6 +93,7 @@ public class FileManager implements PersistenceManager {
             if (!fc.exists()) {
                 LoggerUtils.debug("No saved file at " + fc.getAbsolutePath());
             } else {
+            	fc.setLastModified(System.currentTimeMillis());
                 Bitmap b = BitmapFactory.decodeStream(new FileInputStream(fc));
                 if (b != null && !b.isRecycled()) {
                     if (displayMetrics != null) {
@@ -117,6 +125,7 @@ public class FileManager implements PersistenceManager {
             if (!fc.exists()) {
                 LoggerUtils.debug("File " + fc.getAbsolutePath() + " doesn't exists...");
             } else {
+            	fc.setLastModified(System.currentTimeMillis());
                 Bitmap b = BitmapFactory.decodeStream(new FileInputStream(fc));
                 if (b != null && !b.isRecycled()) {
                     if (displayMetrics != null) {
@@ -679,7 +688,7 @@ public class FileManager implements PersistenceManager {
         return ICONS_FOLDER;
     }
 
-    public static String getImagesFolder() {
+    private static String getImagesFolder() {
         return IMAGES_FOLDER;
     }
 
@@ -765,15 +774,13 @@ public class FileManager implements PersistenceManager {
             result++;
         }
         List<String> files = readFolder(getImagesFolder(), FilenameFilterFactory.getFilenameFilter(FORMAT));
-        //AsyncTaskExecutor.executeTask(new DeletingTilesTask(), null, files);
         new DeletingTilesTask().execute(files);
 
         return result;
     }
 
-    public void clearImageCache(Long interval) {
-        //AsyncTaskExecutor.executeTask(new ClearCacheTask(), null, interval);
-        new ClearCacheTask().execute(interval);
+    public void clearImageCache() {
+        new ClearCacheTask().execute();
     }
 
     public boolean fileExists(String path, String filename) {
@@ -1066,26 +1073,85 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    private class ClearCacheTask extends GMSAsyncTask<Long, Void, Void> {
+    private class ClearCacheTask extends GMSAsyncTask<Void, Void, Void> {
 
+    	private LayerManager lm = null;
+    	
         public ClearCacheTask() {
-            super(10);
+        	super(10);
+        	lm = ConfigurationManager.getInstance().getLandmarkManager().getLayerManager();
         }
 
         @Override
-        protected Void doInBackground(Long... interval) {
-            File[] fileList = cacheDir.listFiles();
-            java.util.Locale currentLocale = ConfigurationManager.getInstance().getCurrentLocale();
-            for (int i = 0; i < fileList.length; i++) {
-                File f = fileList[i];
-                if (f.lastModified() < interval[0]) {
-                    LoggerUtils.debug("Deleting file " + f.getAbsolutePath() + 
-                    		" created on " + DateTimeUtils.getShortDateTimeString(f.lastModified(), currentLocale));
-                    f.delete();
-                }
-            }
-
+        protected Void doInBackground(Void... params) {
+        	deleteFiles(cacheDir, new FileDeletePredicate(lm));
             return null;
         }
+        
+        private void deleteFiles(File dir, FileDeletePredicate fp) {
+        	File[] fileList = dir.listFiles();
+            java.util.Locale currentLocale = ConfigurationManager.getInstance().getCurrentLocale();          
+            for (File f : Iterables.filter(Arrays.asList(fileList), fp)) {
+            	if (f.isDirectory()) {
+            		deleteFiles(f, fp);
+            	} 
+            	LoggerUtils.debug("Deleting file " + f.getAbsolutePath() + 
+                		" created on " + DateTimeUtils.getShortDateTimeString(f.lastModified(), currentLocale));
+            	f.delete();
+            }
+        }
+    }
+    
+    private class FileDeletePredicate implements Predicate<File> {
+
+    	private LayerManager lm = null;
+    	
+    	public FileDeletePredicate(LayerManager lm) {
+    		this.lm = lm;
+    	}
+    	
+    	@Override
+		public boolean apply(File file) {
+			String name = file.getName();
+			String[] tokens = StringUtils.split(name, "_");
+			ClearPolicy policy = null;
+			
+			if (tokens.length > 1) {
+				String layerName = tokens[tokens.length-1];
+				LoggerUtils.debug("Checking clear policy for " + file.getAbsolutePath());
+				policy = lm.getClearPolicy(layerName);
+			}
+			
+			if (policy == null) {
+				policy = ClearPolicy.ONE_MONTH;
+			}
+			
+			long interval = -1;
+			
+			switch (policy) { 
+				case ONE_DAY:
+					interval = System.currentTimeMillis() - DateTimeUtils.ONE_DAY;
+					break;
+				case ONE_WEEK:
+					interval = System.currentTimeMillis() - DateTimeUtils.ONE_WEEK;
+					break;
+				case ONE_QUARTER: 
+					interval = System.currentTimeMillis() - DateTimeUtils.ONE_QUATER;
+					break;
+				case ONE_YEAR:
+					interval = System.currentTimeMillis() - DateTimeUtils.ONE_YEAR;
+					break;
+				default: 
+					//ONE_MONTH
+					interval = System.currentTimeMillis() - DateTimeUtils.ONE_MONTH;
+					break;
+			 }
+			
+             if (file.lastModified() < interval) {
+				return true;
+			 }
+			 
+             return false;
+		}    	
     }
 }

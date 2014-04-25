@@ -5,6 +5,7 @@
 package com.jstakun.gms.android.landmarks;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,11 +32,9 @@ public class Layer {
     private String formatted;
     private String[] keywords = null;
     private int count;
+    private FileManager.ClearPolicy clearPolicy;
 
-    protected Layer(String name, boolean extensible, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, List<LayerReader> layerReader, String smallIconPath, int smallIconResource, String largeIconPath, int largeIconResource, int type, String desc, String formatted) {
-        //if (smallIconPath == null && smallIconResource == -1) {
-        //    throw new Exception("Layer " + name + " has no small icon!");
-        //}
+    protected Layer(String name, boolean extensible, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, List<LayerReader> layerReader, String smallIconPath, int smallIconResource, String largeIconPath, int largeIconResource, int type, String desc, String formatted, FileManager.ClearPolicy clearPolicy) {
         this.name = name;
         this.extensible = extensible;
         this.manageable = manageable;
@@ -67,6 +66,8 @@ public class Layer {
                 ConfigurationManager.getInstance().setOff(key);
             }
         }
+        
+        this.setClearPolicy(clearPolicy);
     }
 
     public boolean isEnabled() {
@@ -168,4 +169,12 @@ public class Layer {
     public synchronized void incrementCount() {
         count++;
     }
+
+	public FileManager.ClearPolicy getClearPolicy() {
+		return clearPolicy;
+	}
+
+	public void setClearPolicy(FileManager.ClearPolicy clearPolicy) {
+		this.clearPolicy = clearPolicy;
+	}
 }

@@ -595,6 +595,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
+        
+        //
+        
         Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
         boolean networkActive = ServicesUtils.isNetworkActive(this);
         if (networkStatus == null && !networkActive) {
@@ -631,9 +634,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         LoggerUtils.debug("onDestroy");
-        //if (!appAbort) {
+        intents.showShortToast(Locale.getMessage(R.string.closingText));
         if (ConfigurationManager.getInstance().isClosing()) {
             hardClose();
         } else {
@@ -641,8 +643,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, googleMapsView.getMapCenter());
         }
         AdsUtils.destroyAdView(this);
-        //}
         System.gc();
+        intents.showShortToast(Locale.getMessage(R.string.Close_app_bye));
+        super.onDestroy();
     }
 
     @Override
@@ -711,15 +714,14 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         //SuggestionProviderUtil.clearHistory();
 
-        HttpUtils.closeConnManager();
         IconCache.getInstance().clearAll();
         landmarkManager.clearLandmarkStore();
 
+        PersistenceManagerFactory.getFileManager().clearImageCache();
         ConfigurationManager.getDatabaseManager().closeAllDatabases();
-
         ConfigurationManager.getInstance().clearObjectCache();
 
-        PersistenceManagerFactory.getFileManager().clearImageCache(System.currentTimeMillis() - DateTimeUtils.ONE_MONTH);
+        HttpUtils.closeConnManager();
     }
 
     private GeoPoint getMyLocation() {

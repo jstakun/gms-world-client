@@ -17,7 +17,10 @@ public abstract class DateTimeUtils {
     public static final long ONE_HOUR = 60 * ONE_MINUTE;
     public static final long FIVE_MINUTES = 5 * ONE_MINUTE;
     public static final long ONE_DAY = 24 * ONE_HOUR;
+    public static final long ONE_WEEK = 7 * ONE_DAY;
     public static final long ONE_MONTH = 31 * ONE_DAY;
+    public static final long ONE_QUATER = 3 * ONE_MONTH;
+    public static final long ONE_YEAR = 12 * ONE_MONTH;
     
     private static final Map<String, DateFormat> dateFormats = new HashMap<String, DateFormat>();
     private static final DateFormat yearMonthFormat = new SimpleDateFormat("MMMM yyyy", ConfigurationManager.getInstance().getCurrentLocale());
