@@ -39,6 +39,7 @@ import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.DateTimeUtils;
+import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MessageStack;
@@ -695,6 +696,7 @@ public final class ConfigurationManager {
     		remove(ConfigurationManager.GMS_TOKEN);
     		setDefaultConfiguration();
     		getDatabaseManager().readConfiguration();
+    		HttpUtils.clearCounter();
     	}
     }
     

@@ -4,9 +4,11 @@
  */
 package com.jstakun.gms.android.utils;
 
-import android.util.Log;
+import java.io.IOException;
 
 import org.acra.ACRA;
+
+import android.util.Log;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 
@@ -20,6 +22,10 @@ public class LoggerUtils {
 
     public static void setTag(String tag) {
         TAG = tag;
+    }
+    
+    public static String getTag() {
+    	return TAG;
     }
 
     public static void debug(String msg) {
@@ -64,5 +70,16 @@ public class LoggerUtils {
     private static boolean isDebug()
     {
         return (ConfigurationManager.getInstance().getInt(ConfigurationManager.LOG_LEVEL, 3) == 0);
+    }
+    
+    public static void saveLogcat(String filePath) {
+    	if (isDebug()) {
+        	try {
+            	LoggerUtils.debug("Saving logcat to file " + filePath);
+            	Runtime.getRuntime().exec(new String[]{"logcat", "-d", "-f", filePath, "-v", "time"}); //, LoggerUtils.getTag() + ":V", "*:S"});
+			} catch (IOException e) {
+				error("LoggerUtils.saveLogcat() exception:", e);
+			}
+    	}	
     }
 }

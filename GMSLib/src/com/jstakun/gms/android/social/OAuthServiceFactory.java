@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.OsUtil;
 
 /**
  *
@@ -25,9 +26,11 @@ public class OAuthServiceFactory {
 
     public static String getOAuthString(String service) {   	
     	if (StringUtils.isNotEmpty(service)) {
-    		//TODO call getServerUrl for API version 8+ 
-    		return ConfigurationManager.SERVER_URL + service + "login";
-    		//return ConfigurationManager.getInstance().getServerUrl() + service + "login";
+    		if (ConfigurationManager.getUserManager().isTokenPresent() && OsUtil.isFroyoOrHigher())
+    			return ConfigurationManager.getInstance().getServerUrl() + service + "login";
+    		else {
+    			return ConfigurationManager.SERVER_URL + service + "login";
+    		}
     	} else {
     		return null;
     	}

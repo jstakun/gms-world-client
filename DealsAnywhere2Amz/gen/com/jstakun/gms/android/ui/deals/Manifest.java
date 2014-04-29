@@ -9,12 +9,6 @@ package com.jstakun.gms.android.ui.deals;
 
 public final class Manifest {
     public static final class permission {
-        /**  supports-screens android:smallScreens="true"
-                  android:normalScreens="true"
-                  android:largeScreens="true"
-                  android:xlargeScreens="true"
-                  android:anyDensity="true" /
-         */
         public static final String ACTIVITY="com.jstakun.gms.android.permission.ACTIVITY";
     }
 }

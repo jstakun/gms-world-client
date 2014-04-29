@@ -512,7 +512,6 @@ public class IconCache {
     }
     
     private static class BitmapDrawableHelperInternal { 
-
         private static BitmapDrawable getBitmapDrawable(Bitmap bitmap, Resources res) {
             return new BitmapDrawable(res, bitmap);
         }

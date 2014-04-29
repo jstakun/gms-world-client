@@ -45,6 +45,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -1069,6 +1070,7 @@ public class FileManager implements PersistenceManager {
                     deleteFile(getImagesFolder(), file);
                 }
             }
+            
             return null;
         }
     }
@@ -1085,18 +1087,19 @@ public class FileManager implements PersistenceManager {
         @Override
         protected Void doInBackground(Void... params) {
         	deleteFiles(cacheDir, new FileDeletePredicate(lm));
-            return null;
+        	LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/logcat" + System.currentTimeMillis() + ".txt");       	
+        	return null;
         }
         
         private void deleteFiles(File dir, FileDeletePredicate fp) {
         	File[] fileList = dir.listFiles();
-            java.util.Locale currentLocale = ConfigurationManager.getInstance().getCurrentLocale();          
+        	LoggerUtils.debug("Found " + fileList.length +  " items in " + dir.getAbsolutePath());
             for (File f : Iterables.filter(Arrays.asList(fileList), fp)) {
             	if (f.isDirectory()) {
             		deleteFiles(f, fp);
             	} 
             	LoggerUtils.debug("Deleting file " + f.getAbsolutePath() + 
-                		" created on " + DateTimeUtils.getShortDateTimeString(f.lastModified(), currentLocale));
+                		" created on " + DateTimeUtils.getShortDateTimeString(f.lastModified(), Locale.US));
             	f.delete();
             }
         }
@@ -1118,8 +1121,10 @@ public class FileManager implements PersistenceManager {
 			
 			if (tokens.length > 1) {
 				String layerName = tokens[tokens.length-1];
-				LoggerUtils.debug("Checking clear policy for " + file.getAbsolutePath());
+				LoggerUtils.debug("Checking clear policy for " + file.getName());
 				policy = lm.getClearPolicy(layerName);
+			} else {
+				LoggerUtils.debug("Applying default clear policy for " + file.getName());
 			}
 			
 			if (policy == null) {
@@ -1148,10 +1153,10 @@ public class FileManager implements PersistenceManager {
 			 }
 			
              if (file.lastModified() < interval) {
-				return true;
+            	 return true;
+			 } else {
+				 return false;
 			 }
-			 
-             return false;
 		}    	
     }
 }

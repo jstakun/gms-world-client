@@ -4,6 +4,9 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +28,8 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
@@ -59,7 +64,6 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 
 		ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
-		//UserTracker.getInstance().startSession(this);
 		UserTracker.getInstance().trackActivity(getClass().getName());
 
 		intents = new Intents(this, null, null);
@@ -96,13 +100,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		if (extras != null && extras.containsKey("service")) {
 			serviceName = extras.getString("service");
 			socialUtils = OAuthServiceFactory.getSocialUtils(serviceName);
-			//TODO set headers for API version 8+
-			/*Map<String, String> headers = new HashMap<String, String>();
-			if (ConfigurationManager.getUserManager().isTokenPresent()) {
-	    		headers.put(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
-	    		headers.put(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
-	    	}*/
-			webView.loadUrl(OAuthServiceFactory.getOAuthString(serviceName));//, headers);
+			loadUrl(webView, OAuthServiceFactory.getOAuthString(serviceName));
 		} else {
 			finishWithToast(Locale.getMessage(R.string.OAuth_service_missing));
 		}
@@ -167,7 +165,6 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		//UserTracker.getInstance().stopSession(this);
 	}
 	
 	@Override
@@ -226,6 +223,26 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		}
 	}
 
+	private static void loadUrl(WebView webView, String url) {
+		try {
+			UrlLoaderHelperInternal.loadUrl(url, webView);
+		} catch (Throwable e) {
+			webView.loadUrl(url);
+		}
+	}
+	
+	private static class UrlLoaderHelperInternal {
+		private static void loadUrl(String url, WebView webView) {
+			//API version 8+
+			Map<String, String> headers = new HashMap<String, String>();
+			if (ConfigurationManager.getUserManager().isTokenPresent()) {
+	    		headers.put(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
+	    		headers.put(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
+			}
+			webView.loadUrl(url, headers);
+		}
+	}
+	
 	private class MyWebViewClient extends WebViewClient {
 
 		private boolean loadingFinished;
@@ -304,4 +321,6 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 			LoggerUtils.error("Received error " + errorCode + ": " + description);
 		}
 	}
+	
+	
 }

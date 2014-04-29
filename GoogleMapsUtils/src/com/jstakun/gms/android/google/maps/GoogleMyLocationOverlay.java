@@ -53,26 +53,6 @@ public class GoogleMyLocationOverlay extends MyLocationOverlay {
     }
 
     private void updatePositionUi(Location currentLocation) {
-        /*double lat = MercatorUtils.normalizeE6(currentLocation.getLatitude());
-        double lon = MercatorUtils.normalizeE6(currentLocation.getLongitude());
-        float altitude = (float) currentLocation.getAltitude();
-        float accuracy = currentLocation.getAccuracy();
-        float bearing = currentLocation.getBearing();
-        float speed = currentLocation.getSpeed();
-
-        if (positionHandler != null) {
-            Message msg = positionHandler.obtainMessage();
-            Bundle b = new Bundle();
-            b.putDouble("lat", lat);
-            b.putDouble("lng", lon);
-            b.putFloat("alt", altitude);
-            b.putFloat("acc", accuracy);
-            b.putFloat("bea", bearing);
-            b.putFloat("spe", speed);
-            msg.setData(b);
-            positionHandler.handleMessage(msg);
-        }*/
-        
         if (positionHandler != null) {
             Message msg = positionHandler.obtainMessage(UPDATE_LOCATION, currentLocation);
             positionHandler.handleMessage(msg);
