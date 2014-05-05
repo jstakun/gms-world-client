@@ -735,8 +735,7 @@ public final class Intents {
                 thumbnail.setTag(selectedLandmark);
             }
             if (StringUtils.isNotEmpty(descr)) {
-                //FlowTextHelper.tryFlowText(descr, thumbnail, desc, activity.getWindowManager().getDefaultDisplay(), 3, imgGetter);
-            	desc.setText(Html.fromHtml(descr, imgGetter, null));
+                desc.setText(Html.fromHtml(descr, imgGetter, null));
             }
             if (thumbnail != null) {
                 thumbnail.setVisibility(View.VISIBLE);

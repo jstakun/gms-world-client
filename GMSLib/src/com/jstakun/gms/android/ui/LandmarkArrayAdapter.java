@@ -72,7 +72,6 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             rowView = inflater.inflate(R.layout.landmarkrow, null, true);
             holder = new ViewHolder();
             holder.landmarkNameText = (TextView) rowView.findViewById(R.id.landmarkNameText);
-            holder.layerIconImage = (ImageView) rowView.findViewById(R.id.landmarkIcon);
             holder.landmarkDescText = (TextView) rowView.findViewById(R.id.landmarkDescText);
             holder.landmarkDescText.setMovementMethod(null);
             holder.thunbnailImage = (ImageView) rowView.findViewById(R.id.landmarkThumbnail);
@@ -91,17 +90,17 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
 		if (StringUtils.isNotEmpty(landmark.getLayer())) {
             if (landmark.getCategoryid() != -1) {
                 int image = LayerManager.getDealCategoryIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, parentListActivity.getResources().getDisplayMetrics(), landmark.getCategoryid());
-                holder.layerIconImage.setImageResource(image);
+                holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, 0, 0, 0);
             } else {
                 BitmapDrawable image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, parentListActivity.getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentListActivity, landmark.getLayer()));
-                holder.layerIconImage.setImageDrawable(image);
+                holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
             }
         } else {
             String filename = landmark.getName();
             final String layerName = filename.substring(0, filename.lastIndexOf('.'));
             final String iconPath = layerName + ".png";
             BitmapDrawable image = IconCache.getInstance().getLayerImageResource(layerName, "_small", iconPath, -1, null, LayerManager.LAYER_FILESYSTEM, parentListActivity.getResources().getDisplayMetrics(), null);
-            holder.layerIconImage.setImageDrawable(image);
+            holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
         }
 
         holder.landmarkNameText.setText(landmark.getName());
@@ -120,21 +119,22 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.getThunbnail(), landmark.getLayer(), parentListActivity.getResources().getDisplayMetrics(), new LandmarkThumbnailLoadingHandler(rowView, parentListActivity, landmark));
             int width = parentListActivity.getWindowManager().getDefaultDisplay().getWidth();            
             if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
-                System.out.println(image.getWidth() + " " + rowView.getWidth() + " " + parentListActivity.getWindowManager().getDefaultDisplay().getWidth());
+                //System.out.println(image.getWidth() + " " + rowView.getWidth() + " " + parentListActivity.getWindowManager().getDefaultDisplay().getWidth());
             	holder.thunbnailImage.setImageBitmap(image);
+            	//holder.landmarkDescText.setCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
             } else {
                 holder.thunbnailImage.setImageResource(R.drawable.download48);
             }
             holder.thunbnailImage.setVisibility(View.VISIBLE);      
             holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
         } else {
+        	holder.thunbnailImage.setVisibility(View.GONE);
         	holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
-            holder.thunbnailImage.setVisibility(View.GONE);
+            //holder.landmarkDescText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
 	}
 
     private static class ViewHolder {
-        protected ImageView layerIconImage;
         protected TextView landmarkNameText;
         protected TextView landmarkDescText;
         protected ImageView thunbnailImage;
@@ -163,7 +163,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
                 	ViewHolder holder = (ViewHolder) v.getTag();
                 	buildView(landmark.get(), holder, v, parentActivity.get());
                 } else {
-                	LoggerUtils.debug(landmark.get().getThunbnail() + " size is too big: " + image.getWidth() + "x" + image.getHeight() + "!");
+                	LoggerUtils.debug(landmark.get().getThunbnail() + " size is too big or image is empty!");
                 }
     		}
         }
@@ -186,7 +186,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
     			BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, parentActivity.get().getResources().getDisplayMetrics(), null);
     			if (image != null) {
-    				viewHolder.get().layerIconImage.setImageDrawable(image);
+    				viewHolder.get().landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
     			}
     		}
         }

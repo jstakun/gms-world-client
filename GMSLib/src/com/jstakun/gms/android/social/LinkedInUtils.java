@@ -88,7 +88,6 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "lnSendUpdate";
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("token", accessToken.getToken()));
-				params.add(new BasicNameValuePair("secret", accessToken.getSecret()));
 				if (landmark != null) {
 					String key = landmark.getServerKey();
 					if (key != null) {
@@ -98,7 +97,7 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 				utils.sendPostRequest(url, params, true);
 				errorMessage = utils.getResponseCodeErrorMessage();
 			} catch (Exception ex) {
-				LoggerUtils.error("LinekInUtils.sendMessage() exception", ex);
+				LoggerUtils.error("LinkedInUtils.sendMessage() exception", ex);
 				errorMessage = Locale.getMessage(R.string.Http_error, ex.getMessage());
 			} finally {
 				try {

@@ -16,7 +16,7 @@
              android:id="@+id/landmarkLayout"
              android:layout_toLeftOf="@+id/right_arrow"
              android:layout_alignParentLeft="true">
-        <LinearLayout
+        <!--LinearLayout
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:gravity="left"
@@ -30,17 +30,27 @@
                 android:layout_marginRight="5dip"
                 android:layout_gravity="center_vertical"/>
             <TextView
+                android:id="@+id/landmarkNameText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 style="@android:style/TextAppearance.Large"
-		        android:id="@+id/landmarkNameText"
-                android:layout_gravity="center_vertical"
+		        android:layout_gravity="center_vertical"
                 android:textColor="#000000"/>
-        </LinearLayout>
+        </LinearLayout-->
+        <TextView
+                android:id="@+id/landmarkNameText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@android:style/TextAppearance.Large"
+		        android:layout_gravity="center_vertical"
+                android:textColor="#000000"
+                android:gravity="left"
+                android:drawablePadding="5dip"
+				android:drawableLeft="@drawable/image_missing16"/>
         <LinearLayout
              android:layout_width="fill_parent"
              android:layout_height="wrap_content"
-             android:layout_below="@+id/landmarkDescLayout"
+             android:layout_below="@+id/landmarkNameText"
              android:orientation="vertical">
             <ImageView
               android:id="@+id/landmarkThumbnail"
@@ -58,5 +68,17 @@
 		      android:id="@+id/landmarkDescText"
               android:textColor="#000000"/>
         </LinearLayout>
+        <!-- Top drawable is centered but should be on left top side -->
+        <!-- TextView 
+              android:id="@+id/landmarkDescText"
+              android:layout_below="@+id/landmarkNameText"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"          
+              android:gravity="left"
+              android:ellipsize="none"
+              style="@android:style/TextAppearance.Small"
+		      android:textColor="#000000"
+		      android:drawablePadding="3dip"
+			  android:drawableTop="@drawable/download48"/ -->
     </RelativeLayout>
 </RelativeLayout>

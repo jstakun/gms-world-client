@@ -55,10 +55,9 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
             LayoutInflater inflater = parentActivity.getLayoutInflater();
             rowView = inflater.inflate(R.layout.layerrow, null, true);
             holder = new ViewHolder();
-            holder.headerText = (TextView) rowView.findViewById(R.id.layerStatusHeader);
+            holder.headerText = (TextView) rowView.findViewById(R.id.layerNameHeader);
             holder.layerCheckbox = (CheckBox) rowView.findViewById(R.id.layerStatusCheckbox);
             holder.detailText = (TextView) rowView.findViewById(R.id.layerDetailsHeader);
-
             rowView.setTag(holder);
         } else {
             holder = (ViewHolder) rowView.getTag();

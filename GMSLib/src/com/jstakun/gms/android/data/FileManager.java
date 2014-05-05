@@ -101,7 +101,9 @@ public class FileManager implements PersistenceManager {
                         int newWidth = (int) (b.getWidth() * displayMetrics.density);
                         int newHeight = (int) (b.getHeight() * displayMetrics.density);
                         image = Bitmap.createScaledBitmap(b, newWidth, newHeight, true);
-                        b.recycle();
+                        if (image != b) {
+                        	b.recycle();
+                        }
                     } else {
                         image = b;
                     }
@@ -133,7 +135,9 @@ public class FileManager implements PersistenceManager {
                         int newWidth = (int) (b.getWidth() * displayMetrics.density);
                         int newHeight = (int) (b.getHeight() * displayMetrics.density);
                         image = Bitmap.createScaledBitmap(b, newWidth, newHeight, true);
-                        b.recycle();
+                        if (image != b) {
+                        	b.recycle();
+                        }
                     } else {
                         image = b;
                     }
@@ -1081,6 +1085,7 @@ public class FileManager implements PersistenceManager {
     	
         public ClearCacheTask() {
         	super(10);
+        	//TODO handle npe
         	lm = ConfigurationManager.getInstance().getLandmarkManager().getLayerManager();
         }
 

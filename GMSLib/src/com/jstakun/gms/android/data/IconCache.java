@@ -160,7 +160,12 @@ public class IconCache {
     }
 
     private boolean isImageLoaded(String resourceName) {
-        return (images.containsKey(resourceName));
+        /*if (images.containsKey(resourceName)) {
+        	return (!images.get(resourceName).isRecycled());
+        } else {
+        	return false;
+        }*/
+    	return (images.containsKey(resourceName));
     }
 
     public BitmapDrawable getLayerImageResource(String layerName, String suffix, String uri, int resourceId, String resourceIdStr, int type, DisplayMetrics displayMetrics, Handler handler) {
@@ -223,7 +228,7 @@ public class IconCache {
 
             if (serverLoading) {
                 img = images.get(DOWNLOAD);
-            } else if (img == null) {
+            } else if (img == null || img.isRecycled()) {
                 img = images.get(ICON_MISSING16);
             }
         }

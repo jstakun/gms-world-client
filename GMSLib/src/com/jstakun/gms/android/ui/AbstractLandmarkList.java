@@ -4,6 +4,10 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -30,9 +34,6 @@ import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
@@ -202,6 +203,7 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
         }
     }
 
+    
     protected void cancelProgressDialog() {
         finish();
     }
