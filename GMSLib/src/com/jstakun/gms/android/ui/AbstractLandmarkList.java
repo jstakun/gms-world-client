@@ -212,9 +212,10 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
         try {
             ORDER order = ORDER.ASC;
             ArrayAdapter<LandmarkParcelable> arrayAdapter = (ArrayAdapter<LandmarkParcelable>) getListAdapter();
-			
+			Comparator<LandmarkParcelable> comparator = null;
+            
             if (order_type == ORDER_BY_NAME) {
-                arrayAdapter.sort(nameComparator);
+            	comparator = nameComparator;
                 order = order_name;
                 if (order_name == ORDER.ASC) {
                     order_name = ORDER.DESC;
@@ -223,7 +224,7 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
                 }
                 setSelectedButton(sortButton);
             } else if (order_type == ORDER_BY_DIST) {
-                arrayAdapter.sort(distanceComparator);
+            	comparator = distanceComparator;
                 order = order_dist;
                 if (order_dist == ORDER.ASC) {
                     order_dist = ORDER.DESC;
@@ -232,7 +233,7 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
                 }
                 setSelectedButton(distanceButton);
             } else if (order_type == ORDER_BY_DATE) {
-                arrayAdapter.sort(dateComparator);
+            	comparator = dateComparator;
                 order = order_date;
                 if (order_date == ORDER.ASC) {
                     order_date = ORDER.DESC;
@@ -242,21 +243,21 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
                 setSelectedButton(dateButton);
             } else if (order_type == ORDER_BY_DIST_ASC) {
                 order_dist = ORDER.ASC;
-                arrayAdapter.sort(distanceComparator);
+                comparator = distanceComparator;
                 order = ORDER.ASC;
                 order_dist = ORDER.DESC;
                 setSelectedButton(distanceButton);
             } else if (order_type == ORDER_BY_DATE_DESC) {
                 order_date = ORDER.DESC;
-                arrayAdapter.sort(dateComparator);
+                comparator = dateComparator;
                 order = ORDER.DESC;
                 order_date = ORDER.ASC;
                 setSelectedButton(dateButton);
             } else if (order_type == ORDER_BY_CAT_STATS) {
-                arrayAdapter.sort(new CategoryComparator());
+            	comparator = new CategoryComparator();
                 order = ORDER.DESC;
             } else if (order_type == ORDER_BY_RATING) {
-                arrayAdapter.sort(ratingComparator);
+            	comparator = ratingComparator;
                 order = order_rating;
                 if (order_rating == ORDER.ASC) {
                     order_rating = ORDER.DESC;
@@ -266,12 +267,14 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
                 setSelectedButton(ratingButton);
             } else if (order_type == ORDER_BY_REV_DESC) {
                 order = ORDER.DESC;
-                arrayAdapter.sort(new RevelanceComparator());
+                comparator = new RevelanceComparator();
             }
-
             setStatusBar(order);
+            if (comparator != null) {
+            	arrayAdapter.sort(comparator);
+            }
         } catch (Exception e) {
-            LoggerUtils.error("AbstractLandmarkList.sort exception", e);
+            LoggerUtils.error("AbstractLandmarkList.sort() exception", e);
         }
     }
 

@@ -105,8 +105,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 		alertBuilder = new AlertDialogBuilder(this);
 
-		landmarkManager = ConfigurationManager.getInstance()
-				.getLandmarkManager();
+		landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
 
 		intents = new Intents(this, landmarkManager, null);
 
@@ -117,6 +116,9 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 			searchTask = (SearchTask) retained;
 			searchTask.setActivity(this);
 			query = searchTask.getQuery();
+			list.setVisibility(View.GONE);
+			loading.setVisibility(View.VISIBLE);
+			setTitle(R.string.Please_Wait);
 		} else {
 			final Intent queryIntent = getIntent();
 			final String queryAction = queryIntent.getAction();
@@ -133,8 +135,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 				type = TYPE.LANDMARKS;
 
-				Bundle appData = queryIntent
-						.getBundleExtra(SearchManager.APP_DATA);
+				Bundle appData = queryIntent.getBundleExtra(SearchManager.APP_DATA);
 				if (appData != null) {
 					if (appData.containsKey("type")) {
 						type = TYPE.valueOf(appData.getString("type"));

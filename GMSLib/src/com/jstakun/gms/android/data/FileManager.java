@@ -17,6 +17,7 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
+import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
 import com.jstakun.gms.android.landmarks.LayerManager;
@@ -1085,14 +1086,18 @@ public class FileManager implements PersistenceManager {
     	
         public ClearCacheTask() {
         	super(10);
-        	//TODO handle npe
-        	lm = ConfigurationManager.getInstance().getLandmarkManager().getLayerManager();
+        	LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
+        	if (landmarkManager != null) {
+        		lm = landmarkManager.getLayerManager();
+        	}
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-        	deleteFiles(cacheDir, new FileDeletePredicate(lm));
-        	LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/logcat" + System.currentTimeMillis() + ".txt");       	
+        	if (lm != null) {
+        		deleteFiles(cacheDir, new FileDeletePredicate(lm));
+        		LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/logcat" + System.currentTimeMillis() + ".txt");       	
+        	}
         	return null;
         }
         

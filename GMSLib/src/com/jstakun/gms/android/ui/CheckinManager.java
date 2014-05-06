@@ -7,6 +7,7 @@ package com.jstakun.gms.android.ui;
 import java.util.List;
 
 import android.content.Context;
+
 import com.google.common.base.Predicate;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -15,6 +16,7 @@ import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -90,14 +92,18 @@ public class CheckinManager {
             	long distInMeter = (long) DistanceUtils.distanceInMeter(lat, lon, favourite.getLatitude(), favourite.getLongitude());
             	//System.out.println("Checking landmark " + favourite.getName() + " in distance " + distInMeter + " meter.");
             	CheckinCandidatePredicate candidatePredicate = new CheckinCandidatePredicate(distInMeter, favourites);
+            	CheckinDeletePredicate deletePredicate = new CheckinDeletePredicate();
+            			
             	if (candidatePredicate.apply(favourite)) {
                 	if (checkinAction(favourite.getLayer(), favourite.getName(), favourite.getKey(), silent)) {
                     	checkinCount++;
                     	LoggerUtils.debug("CheckinManager.autoCheckin() initialized check-in at " + favourite.getName());
                 	} 
+            	} else if (deletePredicate.apply(favourite)) {
+            		LoggerUtils.debug("CheckinManager.autoCheckin() deleting check-in " + favourite.getName());
+            	    fdb.deleteLandmark(favourite.getId());
             	} else if (distInMeter > favourite.getMaxDistance()) {
                 	fdb.updateMaxDist(distInMeter, favourite.getId());
-                	//favourite.setMaxDistance(distInMeter);
             	}
         	}
         }
@@ -128,7 +134,6 @@ public class CheckinManager {
     private class CheckinCandidatePredicate implements Predicate<FavouritesDAO> {
 
         private long distInMeter;
-        private static final long ONE_HOUR = 60 * 60 * 1000;
         private List<FavouritesDAO> favourites;
 
         public CheckinCandidatePredicate(long distInMeter, List<FavouritesDAO> favourites) {
@@ -163,7 +168,7 @@ public class CheckinManager {
         //last check-in xx hours ago or max distance xx meters or checked-in to other landmark in the meantime
         private boolean rule3(FavouritesDAO favourite) {
         	return (distInMeter < ConfigurationManager.getInstance().getInt(ConfigurationManager.MAX_CURRENT_DISTANCE) &&
-        		   ((System.currentTimeMillis() - favourite.getLastCheckinDate()) > (ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL) * ONE_HOUR)
+        		   ((System.currentTimeMillis() - favourite.getLastCheckinDate()) > (ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL) * DateTimeUtils.ONE_HOUR)
                    || favourite.getMaxDistance() >= ConfigurationManager.getInstance().getInt(ConfigurationManager.MIN_CHECKIN_DISTANCE)
                    || checkinToLayer(favourite, favourites)));
         }
@@ -188,5 +193,14 @@ public class CheckinManager {
         	//return rule2(favourite);
         	//return rule1(favourite);
         }
+    }
+    
+    private class CheckinDeletePredicate implements Predicate<FavouritesDAO> {
+
+		@Override
+		public boolean apply(FavouritesDAO favourite) {
+			return System.currentTimeMillis() - favourite.getLastCheckinDate() > DateTimeUtils.ONE_YEAR;
+		}
+    	
     }
 }

@@ -1,5 +1,16 @@
 package com.jstakun.gms.android.ui;
 
+import java.lang.ref.WeakReference;
+import java.util.Iterator;
+import java.util.List;
+
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.api.IMyLocationOverlay;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Overlay;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +29,10 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.IconCache;
@@ -35,10 +50,6 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
@@ -49,16 +60,6 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
-
-import java.lang.ref.WeakReference;
-import java.util.Iterator;
-import java.util.List;
-import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.api.IMapController;
-import org.osmdroid.api.IMyLocationOverlay;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Overlay;
 
 public class GMSClientOSMMainActivity extends Activity implements OnClickListener {
 
@@ -756,6 +757,11 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             case R.id.rateUs:
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
+            case R.id.listLandmarks:
+	    		if (!lvView.isShown()) {
+	    			intents.showNearbyLandmarks(getMyPosition(), new OsmLandmarkProjection(mapView), AbstractLandmarkList.ORDER_BY_DIST_ASC);
+	    		}
+	    		break;    
             case R.id.shareScreenshot:
             	asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), intents.takeScreenshot(), true);

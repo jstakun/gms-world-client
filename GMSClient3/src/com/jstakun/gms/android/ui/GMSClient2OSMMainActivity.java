@@ -1,5 +1,15 @@
 package com.jstakun.gms.android.ui;
 
+import java.lang.ref.WeakReference;
+import java.util.Iterator;
+import java.util.List;
+
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.api.IMyLocationOverlay;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +34,10 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.IconCache;
@@ -41,10 +55,6 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
@@ -56,15 +66,6 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
-
-import java.lang.ref.WeakReference;
-import java.util.Iterator;
-import java.util.List;
-import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.api.IMapController;
-import org.osmdroid.api.IMyLocationOverlay;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 
 public class GMSClient2OSMMainActivity extends Activity implements OnClickListener {
 
