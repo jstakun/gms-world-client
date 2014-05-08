@@ -1,5 +1,8 @@
 package com.jstakun.gms.android.ui.deals;
 
+import java.lang.ref.WeakReference;
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -15,10 +18,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
@@ -32,7 +39,6 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.ui.AbstractLandmarkList;
 import com.jstakun.gms.android.ui.AlertDialogBuilder;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.DialogManager;
@@ -42,10 +48,6 @@ import com.jstakun.gms.android.ui.Intents;
 import com.jstakun.gms.android.ui.LandmarkListActivity;
 import com.jstakun.gms.android.ui.StatusBarLinearLayout;
 import com.jstakun.gms.android.ui.ViewResizeListener;
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
@@ -56,9 +58,6 @@ import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
 
 public class DealMapActivity extends MapActivity implements OnClickListener {
 
@@ -377,7 +376,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), cm);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -439,7 +438,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), cm);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -472,11 +471,11 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         } else if (v == newestButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestDeals", "", 0);
             final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.HOTWIRE_LAYER, Commons.LOCAL_LAYER};
-            intents.startNewestLandmarkIntent(getMyPosition(), excluded, AbstractLandmarkList.ORDER_BY_CAT_STATS, 2);
+            intents.startNewestLandmarkIntent(getMyPosition(), excluded, 2);
         } else if (v == listButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleDeals", "", 0);
             if (!lvView.isShown()) {
-                intents.showNearbyLandmarks(getMyPosition(), new GoogleLandmarkProjection(googleMapsView), AbstractLandmarkList.ORDER_BY_CAT_STATS);
+                intents.showNearbyLandmarks(getMyPosition(), new GoogleLandmarkProjection(googleMapsView));
             }
         } else if (v == categoriesButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowDealCategoriesList", "", 0);
@@ -520,7 +519,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), cm);
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
@@ -633,7 +632,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             //System.out.println("key back pressed in activity");
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
+        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), cm);
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }return true;
@@ -840,7 +839,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                             MathUtils.coordIntToDouble(activity.googleMapsView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot(), false);
                 	}
             	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.googleMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, activity.cm);
+            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.googleMapsView.getZoomLevel(), activity.cm);
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }

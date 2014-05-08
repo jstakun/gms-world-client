@@ -4,6 +4,8 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,13 +19,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.UserTracker;
-import java.util.List;
 
 /**
  *
@@ -84,7 +86,7 @@ public class FilesActivity extends AbstractLandmarkList {
 
             setListAdapter(new LandmarkArrayAdapter(this, files));
 
-            sort();
+            sort(ORDER_TYPE.ORDER_BY_DATE, ORDER.DESC, false);
 
             createDeleteFileAlertDialog();
         } else {

@@ -291,8 +291,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 		setListAdapter(new LandmarkArrayAdapter(this, landmarkList));
 
-		order_type = ORDER_BY_REV_DESC;
-		sort();
+		sort(ORDER_TYPE.ORDER_BY_REV, ORDER.DESC, false);
 
 		list.setVisibility(View.VISIBLE);
 		loading.setVisibility(View.GONE);

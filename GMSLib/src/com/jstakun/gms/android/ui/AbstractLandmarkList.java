@@ -41,15 +41,9 @@ import com.jstakun.gms.android.utils.OsUtil;
  */
 public abstract class AbstractLandmarkList extends ListActivity implements View.OnClickListener {
 
-    private enum ORDER {ASC, DESC};
-    public static final int ORDER_BY_NAME = 0;
-    private static final int ORDER_BY_DIST = 1;
-    private static final int ORDER_BY_DATE = 2;
-    public static final int ORDER_BY_DIST_ASC = 3;
-    public static final int ORDER_BY_DATE_DESC = 4;
-    public static final int ORDER_BY_CAT_STATS = 5;
-    private static final int ORDER_BY_RATING = 6;
-    public static final int ORDER_BY_REV_DESC = 7;
+    protected enum ORDER {ASC, DESC};
+    protected enum ORDER_TYPE {ORDER_BY_NAME, ORDER_BY_DIST, ORDER_BY_DATE,
+    	ORDER_BY_CAT_STATS, ORDER_BY_RATING, ORDER_BY_REV};
     protected static final int ID_DIALOG_PROGRESS = 0;
     private View sortButton, distanceButton, dateButton, selectedView;
     protected View list, loading, searchButton, ratingButton;
@@ -59,13 +53,10 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
     private ORDER order_dist = ORDER.ASC;
     private ORDER order_date = ORDER.ASC;
     private ORDER order_rating = ORDER.DESC;
-    protected int order_type;
     private CategoriesManager cm;
     private Comparator<LandmarkParcelable> distanceComparator = new DistanceComparator();
-    private Comparator<LandmarkParcelable> nameComparator = new NameComparator();
     private Comparator<LandmarkParcelable> dateComparator = new CreationDateComparator();
-    private Comparator<LandmarkParcelable> ratingComparator = new RatingComparator();
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,8 +89,6 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
 
-        order_type = getIntent().getIntExtra("sort", ORDER_BY_DIST_ASC);
-        
         if (OsUtil.isHoneycomb2OrHigher()) {
             findViewById(R.id.topPanel).setVisibility(View.GONE);
             findViewById(R.id.topPanelSeparator).setVisibility(View.GONE);
@@ -131,20 +120,14 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
     public void onClick(View v) {
         if (v == searchButton) {
             onSearchRequested();
-        } else {
-            if (v == sortButton) {
-                order_type = ORDER_BY_NAME;
-            } else if (v == distanceButton) {
-                order_type = ORDER_BY_DIST;
-            } else if (v == dateButton) {
-                order_type = ORDER_BY_DATE;
-            } else if (v == ratingButton) {
-                order_type = ORDER_BY_RATING;
-            }
-            if (getListAdapter() != null) {
-                sort();
-            } else {
-            }
+        } if (v == sortButton) {
+            sort(ORDER_TYPE.ORDER_BY_NAME, order_name, true);
+        } else if (v == distanceButton) {
+            sort(ORDER_TYPE.ORDER_BY_DIST, order_dist, true);
+        } else if (v == dateButton) {
+            sort(ORDER_TYPE.ORDER_BY_DATE, order_date, true);
+        } else if (v == ratingButton) {
+            sort(ORDER_TYPE.ORDER_BY_RATING, order_rating, true);
         }
     }
 
@@ -172,28 +155,16 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
             finish();
             return true;
         } else if (itemId == R.id.sortRating) {
-            order_type = ORDER_BY_RATING;
-            if (getListAdapter() != null) {
-                sort();
-            }
+            sort(ORDER_TYPE.ORDER_BY_RATING, order_rating, true);
             return true;
         } else if (itemId == R.id.sortDate) {
-            order_type = ORDER_BY_DATE;
-            if (getListAdapter() != null) {
-                sort();
-            }
+        	sort(ORDER_TYPE.ORDER_BY_DATE, order_date, true);
             return true;
         } else if (itemId == R.id.sortDistance) {
-            order_type = ORDER_BY_DIST;
-            if (getListAdapter() != null) {
-                sort();
-            }
+        	sort(ORDER_TYPE.ORDER_BY_DIST, order_dist, true);
             return true;
         } else if (itemId == R.id.sortAlphabetically) {
-            order_type = ORDER_BY_NAME;
-            if (getListAdapter() != null) {
-                sort();
-            }
+        	sort(ORDER_TYPE.ORDER_BY_NAME, order_name, true);
             return true;
         } else if (itemId == R.id.search) {
             onSearchRequested();
@@ -208,94 +179,99 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
         finish();
     }
 
-    protected void sort() {
+    protected void sort(ORDER_TYPE order_type, ORDER order, boolean changeOrder) {
+    	
+    	LoggerUtils.debug("Sorting landmarks by " + order_type.name() + ", " + order.name() + " and changing order: " + changeOrder);	
+    	
+    	Comparator<LandmarkParcelable> comparator = null;
+        if (order_type == ORDER_TYPE.ORDER_BY_NAME) {
+            comparator = new NameComparator();
+            setSelectedButton(sortButton);
+        } else if (order_type == ORDER_TYPE.ORDER_BY_DIST) {
+            comparator = distanceComparator;
+            setSelectedButton(distanceButton);
+        } else if (order_type == ORDER_TYPE.ORDER_BY_DATE) {
+            comparator = dateComparator;
+            setSelectedButton(dateButton);
+        } else if (order_type == ORDER_TYPE.ORDER_BY_CAT_STATS) {
+            comparator = new CategoryComparator();
+        } else if (order_type == ORDER_TYPE.ORDER_BY_RATING) {
+            comparator = new RatingComparator();
+            setSelectedButton(ratingButton);
+        } else if (order_type == ORDER_TYPE.ORDER_BY_REV) {
+            comparator = new RevelanceComparator();
+        }
+        setStatusBar(order_type, order);
+        
+        if (!changeOrder) {
+        	if (order_type == ORDER_TYPE.ORDER_BY_NAME) {
+        		order_name = order;
+        	} else if (order_type == ORDER_TYPE.ORDER_BY_DIST) {
+        		order_dist = order;                
+        	} else if (order_type == ORDER_TYPE.ORDER_BY_DATE) {
+        		order_date = order;
+        	} else if (order_type == ORDER_TYPE.ORDER_BY_RATING) {
+        		order_rating = order;
+        	} 
+        	changeOrder = true;
+        }
+        
         try {
-            ORDER order = ORDER.ASC;
             ArrayAdapter<LandmarkParcelable> arrayAdapter = (ArrayAdapter<LandmarkParcelable>) getListAdapter();
-			Comparator<LandmarkParcelable> comparator = null;
-            
-            if (order_type == ORDER_BY_NAME) {
-            	comparator = nameComparator;
-                order = order_name;
-                if (order_name == ORDER.ASC) {
-                    order_name = ORDER.DESC;
-                } else if (order_name == ORDER.DESC) {
-                    order_name = ORDER.ASC;
-                }
-                setSelectedButton(sortButton);
-            } else if (order_type == ORDER_BY_DIST) {
-            	comparator = distanceComparator;
-                order = order_dist;
-                if (order_dist == ORDER.ASC) {
-                    order_dist = ORDER.DESC;
-                } else if (order_dist == ORDER.DESC) {
-                    order_dist = ORDER.ASC;
-                }
-                setSelectedButton(distanceButton);
-            } else if (order_type == ORDER_BY_DATE) {
-            	comparator = dateComparator;
-                order = order_date;
-                if (order_date == ORDER.ASC) {
-                    order_date = ORDER.DESC;
-                } else if (order_date == ORDER.DESC) {
-                    order_date = ORDER.ASC;
-                }
-                setSelectedButton(dateButton);
-            } else if (order_type == ORDER_BY_DIST_ASC) {
-                order_dist = ORDER.ASC;
-                comparator = distanceComparator;
-                order = ORDER.ASC;
-                order_dist = ORDER.DESC;
-                setSelectedButton(distanceButton);
-            } else if (order_type == ORDER_BY_DATE_DESC) {
-                order_date = ORDER.DESC;
-                comparator = dateComparator;
-                order = ORDER.DESC;
-                order_date = ORDER.ASC;
-                setSelectedButton(dateButton);
-            } else if (order_type == ORDER_BY_CAT_STATS) {
-            	comparator = new CategoryComparator();
-                order = ORDER.DESC;
-            } else if (order_type == ORDER_BY_RATING) {
-            	comparator = ratingComparator;
-                order = order_rating;
-                if (order_rating == ORDER.ASC) {
-                    order_rating = ORDER.DESC;
-                } else if (order_rating == ORDER.DESC) {
-                    order_rating = ORDER.ASC;
-                }
-                setSelectedButton(ratingButton);
-            } else if (order_type == ORDER_BY_REV_DESC) {
-                order = ORDER.DESC;
-                comparator = new RevelanceComparator();
-            }
-            setStatusBar(order);
-            if (comparator != null) {
+            if (comparator != null && arrayAdapter != null) {
             	arrayAdapter.sort(comparator);
-            }
+            }	
         } catch (Exception e) {
             LoggerUtils.error("AbstractLandmarkList.sort() exception", e);
         }
+            
+        if (changeOrder) {
+        	reverseOrder(order_type);
+        }
+    }
+    
+    private void reverseOrder(ORDER_TYPE order_type) {
+    	if (order_type == ORDER_TYPE.ORDER_BY_NAME) {
+    		if (order_name == ORDER.ASC) {
+            	order_name = ORDER.DESC;
+            } else if (order_name == ORDER.DESC) {
+            	order_name = ORDER.ASC;
+            }
+    	} else if (order_type == ORDER_TYPE.ORDER_BY_DIST) {
+    		if (order_dist == ORDER.ASC) {
+            	order_dist = ORDER.DESC;
+            } else if (order_dist == ORDER.DESC) {
+            	order_dist = ORDER.ASC;
+            }
+    	} else if (order_type == ORDER_TYPE.ORDER_BY_DATE) {
+    		if (order_date == ORDER.ASC) {
+            	order_date = ORDER.DESC;
+            } else if (order_date == ORDER.DESC) {
+            	order_date = ORDER.ASC;
+            }
+    	} else if (order_type == ORDER_TYPE.ORDER_BY_RATING) {
+    		if (order_rating == ORDER.ASC) {
+            	order_rating = ORDER.DESC;
+            } else if (order_rating == ORDER.DESC) {
+            	order_rating = ORDER.ASC;
+            }
+    	} 
     }
 
-    private void setStatusBar(ORDER order) {
+    private void setStatusBar(ORDER_TYPE order_type, ORDER order) {
         String orderText = "";
 
-        if (order_type == ORDER_BY_NAME) {
+        if (order_type == ORDER_TYPE.ORDER_BY_NAME) {
             orderText = Locale.getMessage(R.string.list_sorted_name);
-        } else if (order_type == ORDER_BY_DIST) {
+        } else if (order_type == ORDER_TYPE.ORDER_BY_DIST) {
             orderText = Locale.getMessage(R.string.list_sorted_distance);
-        } else if (order_type == ORDER_BY_DATE) {
+        } else if (order_type == ORDER_TYPE.ORDER_BY_DATE) {
             orderText = Locale.getMessage(R.string.list_sorted_date);
-        } else if (order_type == ORDER_BY_DIST_ASC) {
-            orderText = Locale.getMessage(R.string.list_sorted_distance);
-        } else if (order_type == ORDER_BY_DATE_DESC) {
-            orderText = Locale.getMessage(R.string.list_sorted_date);
-        } else if (order_type == ORDER_BY_CAT_STATS) {
+        } else if (order_type == ORDER_TYPE.ORDER_BY_CAT_STATS) {
             orderText = Locale.getMessage(R.string.list_sorted_category);
-        } else if (order_type == ORDER_BY_RATING) {
+        } else if (order_type == ORDER_TYPE.ORDER_BY_RATING) {
             orderText = Locale.getMessage(R.string.list_sorted_rating);
-        } else if (order_type == ORDER_BY_REV_DESC) {
+        } else if (order_type == ORDER_TYPE.ORDER_BY_REV) {
             orderText = Locale.getMessage(R.string.list_sorted_relevance);
         }
 

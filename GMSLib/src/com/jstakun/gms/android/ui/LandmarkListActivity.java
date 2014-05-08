@@ -114,12 +114,6 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         return true;
     }
 
-    //@Override
-    //protected void onStop() {
-    //    super.onStop();
-    //    UserTracker.getInstance().stopSession(this);
-    //}
-
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -225,9 +219,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
             finish();
         } else {
-        	//if (source == SOURCE.DAY_LANDMARKS) {
-            intents.showInfoToast(Locale.getQuantityMessage(R.plurals.foundLandmarks, getLandmarksTask.getLandmarks().size()));
-            //}
+        	intents.showInfoToast(Locale.getQuantityMessage(R.plurals.foundLandmarks, getLandmarksTask.getLandmarks().size()));
             
         	if (requestCode == Intents.INTENT_MYLANDMARKS) {
                 setTitle(R.string.listLocations);
@@ -236,11 +228,17 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             }
             
             setListAdapter(new LandmarkArrayAdapter(this, getLandmarksTask.getLandmarks()));
-            //getListView().setBackgroundResource(0);
-            sort();
+        
+            //TODO for DA default should be ORDER_TYPE.ORDER_BY_CAT_STATS, ORDER.DESC
+            if (source == SOURCE.DOD) {
+            	sort(ORDER_TYPE.ORDER_BY_CAT_STATS, ORDER.DESC, false);	
+            } else if (source == SOURCE.FRIENDS_CHECKINS || source == SOURCE.NEWEST) {
+            	sort(ORDER_TYPE.ORDER_BY_DATE, ORDER.DESC, false);	
+            } else {
+            	sort(ORDER_TYPE.ORDER_BY_DIST, ORDER.ASC, false);
+            }
             progress.setVisibility(View.GONE);
         }
-        //System.out.println("onPostExecute() finish");
     }
 
     private class GetLandmarksTask extends GMSAsyncTask<Void, Void, Void> {

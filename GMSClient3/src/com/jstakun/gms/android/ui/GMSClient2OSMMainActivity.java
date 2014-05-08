@@ -305,7 +305,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), null);
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
@@ -483,7 +483,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     			} //System.out.println("key back pressed in activity");
     			return true;
     		} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), null);
     			if (coordsE6 != null) {
     				animateTo(coordsE6);
     			}
@@ -826,7 +826,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		break;
 		    	case R.id.newestLandmarks:
 		    		final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
-		    		intents.startNewestLandmarkIntent(getMyPosition(), excluded, AbstractLandmarkList.ORDER_BY_DATE_DESC, 2);
+		    		intents.startNewestLandmarkIntent(getMyPosition(), excluded, 2);
 		    		break;
 		    	case R.id.events:
 		    		intents.startCalendarActivity(getMyPosition());
@@ -836,7 +836,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		break;
 		    	case R.id.listLandmarks:
 		    		if (!lvView.isShown()) {
-		    			intents.showNearbyLandmarks(getMyPosition(), new OsmLandmarkProjection(mapView), AbstractLandmarkList.ORDER_BY_DIST_ASC);
+		    			intents.showNearbyLandmarks(getMyPosition(), new OsmLandmarkProjection(mapView));
 		    		}
 		    		break;
 		    	case R.id.shareScreenshot:
@@ -939,7 +939,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), null);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -981,7 +981,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), null);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -1208,7 +1208,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
             	} else if (msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_DIST_ASC, null);
+            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null);
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }

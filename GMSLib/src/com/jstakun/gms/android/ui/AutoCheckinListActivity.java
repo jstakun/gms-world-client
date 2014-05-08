@@ -46,12 +46,11 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
         if (favourites != null) {
 
-            //UserTracker.getInstance().startSession(this);
             UserTracker.getInstance().trackActivity(getClass().getName());
 
             setListAdapter(new LandmarkArrayAdapter(this, favourites));
 
-            sort();
+            sort(ORDER_TYPE.ORDER_BY_DIST, ORDER.ASC, false);
 
             registerForContextMenu(getListView());
 

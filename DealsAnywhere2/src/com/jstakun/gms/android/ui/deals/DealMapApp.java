@@ -5,20 +5,15 @@
 
 package com.jstakun.gms.android.ui.deals;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import android.app.Application;
-
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.utils.HttpUtils;
-import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.UserTracker;
-
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+
+import android.app.Application;
+
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *

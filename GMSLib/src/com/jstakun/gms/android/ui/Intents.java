@@ -158,7 +158,6 @@ public final class Intents {
             Bundle extras = new Bundle();
             extras.putParcelableArrayList("files", routes);
             extras.putInt("type", FilesActivity.ROUTES);
-            extras.putInt("sort", AbstractLandmarkList.ORDER_BY_DATE_DESC);
             Intent intent = new Intent(activity, FilesActivity.class);
             intent.putExtras(extras);
             activity.startActivityForResult(intent, INTENT_FILES);
@@ -174,7 +173,6 @@ public final class Intents {
             Bundle extras = new Bundle();
             extras.putParcelableArrayList("files", files);
             extras.putInt("type", FilesActivity.FILES);
-            extras.putInt("sort", AbstractLandmarkList.ORDER_BY_NAME);
             Intent intent = new Intent(activity, FilesActivity.class);
             intent.putExtras(extras);
             activity.startActivityForResult(intent, INTENT_FILES);
@@ -280,12 +278,12 @@ public final class Intents {
     }
 
     public void startLocationCheckinActivity(double[] currentLocation) {
-        startLandmarkListActivity(INTENT_CHECKIN, null, LandmarkListActivity.SOURCE.CHECKIN, currentLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
+        startLandmarkListActivity(INTENT_CHECKIN, null, LandmarkListActivity.SOURCE.CHECKIN, currentLocation);
     }
 
-    public void showNearbyLandmarks(double[] currentLocation, ProjectionInterface projection, int sortOrder) {
+    public void showNearbyLandmarks(double[] currentLocation, ProjectionInterface projection) {
         landmarkManager.findVisibleLandmarks(projection, true);
-        startMultiLandmarkIntent(currentLocation, sortOrder);
+        startMultiLandmarkIntent(currentLocation);
     }
 
     public void showLandmarksInDay(double[] currentLocation, int year, int month, int day) {
@@ -293,7 +291,7 @@ public final class Intents {
         src.putExtra("year", year);
         src.putExtra("month", month);
         src.putExtra("day", day);
-        startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.DAY_LANDMARKS, currentLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
+        startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.DAY_LANDMARKS, currentLocation);
     }
 
     public void startAutoCheckinListActivity(double[] currentLocation) {
@@ -380,33 +378,33 @@ public final class Intents {
         activity.startActivity(intent);
     }
 
-    public void startNewestLandmarkIntent(double[] currentLocation, String[] excluded, int sortOrder, int maxDays) {
+    public void startNewestLandmarkIntent(double[] currentLocation, String[] excluded, int maxDays) {
         Intent src = new Intent();
         src.putExtra("excluded", excluded);
         src.putExtra("maxDays", maxDays);
-        startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.NEWEST, currentLocation, sortOrder);
+        startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.NEWEST, currentLocation);
     }
 
     public void startFriendsCheckinsIntent(double[] currentLocation) {
-        startLandmarkListActivity(INTENT_MULTILANDMARK, null, LandmarkListActivity.SOURCE.FRIENDS_CHECKINS, currentLocation, AbstractLandmarkList.ORDER_BY_DATE_DESC);
+        startLandmarkListActivity(INTENT_MULTILANDMARK, null, LandmarkListActivity.SOURCE.FRIENDS_CHECKINS, currentLocation);
     }
 
     public void startDealsOfTheDayIntent(double[] currentLocation, String[] excluded) {
         Intent src = new Intent();
         src.putExtra("excluded", excluded);
-        startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.DOD, currentLocation, AbstractLandmarkList.ORDER_BY_CAT_STATS);
+        startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.DOD, currentLocation);
     }
 
     public void startRecentLandmarksIntent(double[] currentLocation) {
-        startLandmarkListActivity(INTENT_MULTILANDMARK, null, LandmarkListActivity.SOURCE.RECENT, currentLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
+        startLandmarkListActivity(INTENT_MULTILANDMARK, null, LandmarkListActivity.SOURCE.RECENT, currentLocation);
     }
 
-    public void startMultiLandmarkIntent(double[] currentLocation, int sortOrder) {
-        startLandmarkListActivity(INTENT_MULTILANDMARK, null, LandmarkListActivity.SOURCE.MULTI_LANDMARK, currentLocation, sortOrder);
+    public void startMultiLandmarkIntent(double[] currentLocation) {
+        startLandmarkListActivity(INTENT_MULTILANDMARK, null, LandmarkListActivity.SOURCE.MULTI_LANDMARK, currentLocation);
     }
 
     public void startMyLandmarksIntent(double[] currentLocation) {
-        startLandmarkListActivity(INTENT_MYLANDMARKS, null, LandmarkListActivity.SOURCE.MY_LANDMARKS, currentLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
+        startLandmarkListActivity(INTENT_MYLANDMARKS, null, LandmarkListActivity.SOURCE.MY_LANDMARKS, currentLocation);
     }
 
     public void startWifiSettingsActivity() {
@@ -609,14 +607,14 @@ public final class Intents {
         }
     }
     
-    public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, int sortOrder, CategoriesManager cm) {
+    public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, CategoriesManager cm) {
     	int[] coordsE6 = null;
     	if (id >= 0) {
             ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
             if (selectedLandmark != null) {
                 landmarkManager.setSelectedLandmark(selectedLandmark);
                 landmarkManager.clearLandmarkOnFocusQueue();
-                coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, layerLoader, zoomLevel, sortOrder, cm);
+                coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, layerLoader, zoomLevel, cm);
             } else {
                 showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
             }
@@ -626,7 +624,7 @@ public final class Intents {
     	return coordsE6;
     }
     
-    public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, int sortOrder, CategoriesManager cm) {
+    public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, CategoriesManager cm) {
         int[] anitmateTo = null;
     	ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
         if (selectedLandmark != null) {
@@ -635,7 +633,7 @@ public final class Intents {
             }
 
             if (selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                startMultiLandmarkIntent(currentLocation, sortOrder);
+                startMultiLandmarkIntent(currentLocation);
             } else {
                 UserTracker.getInstance().trackEvent("Clicks", activity.getLocalClassName() + ".ShowSelectedLandmarkView", selectedLandmark.getLayer(), 0);
                 ActionBarHelper.hide(activity);
@@ -1055,9 +1053,8 @@ public final class Intents {
         }	
     }
 
-    private void startLandmarkListActivity(int requestCode, Intent src, LandmarkListActivity.SOURCE source, double[] myLocation, int sortOrder) { //int sortOrder, String layer, double[] myLocation, int cat, int subCat) {
+    private void startLandmarkListActivity(int requestCode, Intent src, LandmarkListActivity.SOURCE source, double[] myLocation) { 
         Intent intent = new Intent(activity, LandmarkListActivity.class);
-        intent.putExtra("sort", sortOrder);
         intent.putExtra("lat", myLocation[0]);
         intent.putExtra("lng", myLocation[1]);
         intent.putExtra("requestCode", requestCode);
@@ -1106,7 +1103,7 @@ public final class Intents {
                 if (StringUtils.equals(action, "show")) {
                     Intent src = new Intent();
                     src.putExtras(intent);
-                    startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.CATEGORY, myLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
+                    startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.CATEGORY, myLocation);
                 } else if (StringUtils.equals(action, "noshow")) { //DealCategoryListActivity
                     Intent result = new Intent();
                     result.putExtras(intent);
@@ -1215,7 +1212,7 @@ public final class Intents {
                 } else if (StringUtils.equals(action, "show")) {
                     Intent src = new Intent();
                     src.putExtras(intent);
-                    startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.LAYER, myLocation, AbstractLandmarkList.ORDER_BY_DIST_ASC);
+                    startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.LAYER, myLocation);
                 }
             }
         }
