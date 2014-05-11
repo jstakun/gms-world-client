@@ -1073,13 +1073,15 @@ public final class Intents {
             Bitmap screenShot = v.getDrawingCache();
             //check if screenshot is black
             boolean isBlack = true;
-            for(int i=0; i < screenShot.getWidth(); i++) {
-                for(int j=0; j < screenShot.getHeight(); j++)  {                    
-                	if(screenShot.getPixel(i, j) != Color.BLACK) {
-                	   	isBlack = false;
-                	   	break;
-                	}
-                }   
+            if (screenShot != null) {
+            	for(int i=0; i < screenShot.getWidth(); i++) {
+            		for(int j=0; j < screenShot.getHeight(); j++)  {                    
+            			if(screenShot.getPixel(i, j) != Color.BLACK) {
+            				isBlack = false;
+            				break;
+            			}
+            		}   
+            	}
             }
             //
             if (screenShot != null && !isBlack) {

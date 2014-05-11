@@ -187,7 +187,7 @@ public class RoutesManager {
             }
 
         } catch (Exception ex) {
-            LoggerUtils.error("RoutesManager.readRouteFromServer exception", ex);
+            LoggerUtils.error("RoutesManager.readRouteFromServer() exception", ex);
             message = ex.getMessage();
         } finally {
             try {
@@ -215,12 +215,12 @@ public class RoutesManager {
         return message;
     }
 
-    private String[] parse(JSONObject json, List<ExtendedLandmark> routePoints) throws JSONException {
+    private String[] parse(JSONObject root, List<ExtendedLandmark> routePoints) throws JSONException {
         String[] response = new String[4];
-        int status = json.getInt("status");
+        int status = root.getInt("status");
 
         if (status == 0) {
-            JSONArray points = json.getJSONArray("route_geometry");
+            JSONArray points = root.getJSONArray("route_geometry");
 
             for (int i = 0; i < points.length(); i++) {
                 JSONArray point = points.getJSONArray(i);
@@ -235,7 +235,7 @@ public class RoutesManager {
                 routePoints.add(lm);
             }
 
-            JSONObject summary = json.getJSONObject("route_summary");
+            JSONObject summary = root.getJSONObject("route_summary");
             double total_dist_km = summary.getInt("total_distance") / 1000.0;
             int total_time = summary.getInt("total_time");
 
@@ -249,7 +249,7 @@ public class RoutesManager {
 
             response[0] = Locale.getMessage(R.string.Routes_Server_route_loaded, response[1], response[2]);
         } else {
-            response[0] = Locale.getMessage(R.string.Routes_loading_error_1, json.getString("status_message"));
+            response[0] = Locale.getMessage(R.string.Routes_loading_error_1, root.getString("status_message"));
         }
 
         return response;

@@ -223,6 +223,7 @@
      <string name="Call.not.supported.error">Can\'t make a call from your device!</string>
      <string name="Unexpected.error">Oops! Something went wrong. Please try again!</string>
      <string name="Forbidden.connection.error">Connection limit exceeded!</string>
+     <string name="Service.unavailable.error">Service temporary unavailable</string>
      
      <!-- Misc -->
      <string name="Your.Location">Your location</string>

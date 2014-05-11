@@ -29,6 +29,8 @@ import com.jstakun.gms.android.utils.UserTracker;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  *
  * @author jstakun
@@ -229,12 +231,14 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             
             setListAdapter(new LandmarkArrayAdapter(this, getLandmarksTask.getLandmarks()));
         
-            //TODO for DA default should be ORDER_TYPE.ORDER_BY_CAT_STATS, ORDER.DESC
             if (source == SOURCE.DOD) {
             	sort(ORDER_TYPE.ORDER_BY_CAT_STATS, ORDER.DESC, false);	
             } else if (source == SOURCE.FRIENDS_CHECKINS || source == SOURCE.NEWEST) {
             	sort(ORDER_TYPE.ORDER_BY_DATE, ORDER.DESC, false);	
+            } else if (StringUtils.equalsIgnoreCase(ConfigurationManager.getInstance().getString(ConfigurationManager.DEFAULT_SORT), "CD")) {
+            	sort(ORDER_TYPE.ORDER_BY_CAT_STATS, ORDER.DESC, false);	
             } else {
+            	//default sort by disance asc
             	sort(ORDER_TYPE.ORDER_BY_DIST, ORDER.ASC, false);
             }
             progress.setVisibility(View.GONE);

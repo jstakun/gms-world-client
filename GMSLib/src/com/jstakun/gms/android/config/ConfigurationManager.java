@@ -126,6 +126,7 @@ public final class ConfigurationManager {
     public static final String NETWORK_MODE = "networkMode";
     private static final String DEFAULT_LATITUDE = "defaultLatitude";
     private static final String DEFAULT_LONGITUDE = "defaultLongitude";
+    public static final String DEFAULT_SORT = "defaultSort";
     
     //static values
     private static final String ON = "1";

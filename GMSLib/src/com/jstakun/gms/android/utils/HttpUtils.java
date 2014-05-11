@@ -674,7 +674,9 @@ public class HttpUtils {
             return Locale.getMessage(R.string.Venue_exists_error);
         } else if (status == HttpStatus.SC_FORBIDDEN) {
         	return Locale.getMessage(R.string.Forbidden_connection_error);
-        } else {
+        } else if (status == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+        	return Locale.getMessage(R.string.Service_unavailable_error); 
+        }  else {
             return Locale.getMessage(R.string.Http_error, Integer.toString(status));
         }
     }

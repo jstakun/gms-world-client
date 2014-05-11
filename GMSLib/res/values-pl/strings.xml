@@ -220,7 +220,7 @@
      <string name="Call.not.supported.error">Nie mog\u0119 wykona\u0107 po\u0142\u0105cznia telefonicznego z Twojego urz\u0105dzenia!</string>
      <string name="Unexpected.error">Oops! Co\u015b si\u0119 nie uda\u0142o. Spr\u00f3buj ponownie!</string>
      <string name="Forbidden.connection.error">Przekroczono limit po\u0142\u0105cze\u0144!</string>
-     
+     <string name="Service.unavailable.error">Us\u0142uga chwilowo niedost\u0119pna</string>
      <!-- Misc -->
      <string name="Your.Location">Twoja lokalizacja</string>
      <string name="Authn.success">Logowanie udane!</string>
