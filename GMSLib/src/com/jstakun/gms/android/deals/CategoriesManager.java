@@ -11,6 +11,8 @@ import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -284,6 +286,16 @@ public class CategoriesManager {
         }
 
         return 0;
+    }
+    
+    public void printCategoryStats() {
+    	System.out.println("Deals categories stats: ");
+    	for (Category c : getCategories()) {
+    		System.out.println(c.getCategory() + ": " + getCategoryStats(c.getCategoryID()));
+    		for (Category sub : getSubCategories(c.getCategoryID())) {
+    			System.out.println(c.getCategory() + " -> " + sub.getSubcategory() + ": " + getSubCategoryStats(c.getCategoryID(), sub.getSubcategoryID()));
+    		}
+    	}
     }
 
     public int getCategoryStats(int category) {

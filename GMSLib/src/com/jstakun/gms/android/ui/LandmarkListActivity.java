@@ -238,7 +238,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             } else if (StringUtils.equalsIgnoreCase(ConfigurationManager.getInstance().getString(ConfigurationManager.DEFAULT_SORT), "CD")) {
             	sort(ORDER_TYPE.ORDER_BY_CAT_STATS, ORDER.DESC, false);	
             } else {
-            	//default sort by disance asc
+            	//default sort by distance asc
             	sort(ORDER_TYPE.ORDER_BY_DIST, ORDER.ASC, false);
             }
             progress.setVisibility(View.GONE);

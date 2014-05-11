@@ -362,6 +362,9 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
 
         public CategoryComparator() {
             super();
+            //comment in production
+            //cm.printCategoryStats();
+            //
             statsCache = new HashMap<String, Integer>();
         }
 
