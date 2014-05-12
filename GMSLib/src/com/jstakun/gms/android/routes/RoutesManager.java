@@ -15,6 +15,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -142,10 +145,52 @@ public class RoutesManager {
     public String loadRouteFromServer(String lat_start, String lng_start, String lat_end, String lng_end, String type, String routeName, boolean saveToFile) {
         List<ExtendedLandmark> routePoints = new ArrayList<ExtendedLandmark>();
         String message = null;
-
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "routeProvider?";
-
-        url += "lat_start=" + lat_start;
+        HttpUtils utils = new HttpUtils();
+        String[] desc = null;
+        String url = ConfigurationManager.getInstance().getServicesUrl() + "routeProvider";
+        
+        try {
+        	List<NameValuePair> params = new ArrayList<NameValuePair>();
+        	params.add(new BasicNameValuePair("lat_start", lat_start));
+        	params.add(new BasicNameValuePair("lng_start", lng_start));
+        	params.add(new BasicNameValuePair("lat_end", lat_end));
+        	params.add(new BasicNameValuePair("lng_end", lng_end));
+        	params.add(new BasicNameValuePair("type", type));
+        
+        	String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+        	if (username == null) {
+        		username = "anonymous";
+        	}
+        	params.add(new BasicNameValuePair("username", username));
+        
+        	utils.sendPostRequest(url, params, true);
+        
+        	String jsonResp = utils.getPostResponse();
+        	int responseCode = utils.getResponseCode();
+        	message = utils.getResponseCodeErrorMessage();
+        
+        	if (responseCode == HttpStatus.SC_OK && StringUtils.startsWith(jsonResp, "{")) {
+        		JSONObject json = new JSONObject(jsonResp);
+        		desc = parse(json, routePoints);
+        		message = desc[0];
+        	} else if (message != null) {
+        		message = Locale.getMessage(R.string.Routes_loading_error_1, message);
+        	} else {
+        		message = Locale.getMessage(R.string.Routes_loading_error_0);
+        	}    
+        } catch (Exception ex) {
+            LoggerUtils.error("RoutesManager.readRouteFromServer() exception", ex);
+            message = utils.getResponseCodeErrorMessage();
+        } finally {
+        	try {
+                if (utils != null) {
+                    utils.close();
+                }
+            } catch (IOException ioe) {
+            }
+        }
+        
+        /*url += "lat_start=" + lat_start;
         url += "&lng_start=" + lng_start;
 
         url += "&lat_end=" + lat_end;
@@ -161,14 +206,9 @@ public class RoutesManager {
         
         url += "&username=" + username;
          
-
         if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.ROUTES_TOKEN)) {
             url += "&token=" + ConfigurationManager.getInstance().getString(ConfigurationManager.ROUTES_TOKEN);
         }
-
-        HttpUtils utils = new HttpUtils();
-
-        String[] desc = null;
 
         try {
             byte[] response = utils.loadHttpFile(url, true, "json");
@@ -196,22 +236,23 @@ public class RoutesManager {
                 }
             } catch (IOException ioe) {
             }
-            if (!routePoints.isEmpty()) {
-                String descr = desc[0];
-                if (saveToFile) {
-                    String[] details = RouteRecorder.saveRoute(routePoints, routeName + ".kml", desc[3], desc[2], desc[1]);
-                    if (details != null && details.length > 1) {
-                        descr = details[1];
-                    }
-                }
-                addRoute(routeName, routePoints, descr);
-            } else {
-                if (StringUtils.isEmpty(message)) {
-                    message = Locale.getMessage(R.string.Routes_loading_error_0);
+        }*/   
+            
+        if (!routePoints.isEmpty()) {
+            String descr = desc[0];
+            if (saveToFile) {
+            	String[] details = RouteRecorder.saveRoute(routePoints, routeName + ".kml", desc[3], desc[2], desc[1]);
+                if (details != null && details.length > 1) {
+                    descr = details[1];
                 }
             }
+            addRoute(routeName, routePoints, descr);
+        } else {
+            if (StringUtils.isEmpty(message)) {
+                message = Locale.getMessage(R.string.Routes_loading_error_0);
+            }
         }
-
+        
         return message;
     }
 

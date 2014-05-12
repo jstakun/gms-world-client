@@ -14,6 +14,7 @@ import com.openlapi.QualifiedCoordinates;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -24,7 +25,7 @@ public class LandmarkPaintManager {
     //recently opened landmarks
     private List<ExtendedLandmark> recentlyOpenedLandmarks = new ArrayList<ExtendedLandmark>();
     //landmarks on focus
-    private List<ExtendedLandmark> landmarkOnFocus = new ArrayList<ExtendedLandmark>();
+    private List<ExtendedLandmark> landmarkOnFocus = new CopyOnWriteArrayList<ExtendedLandmark>();
     //landmark selected by user on the screen
     private ExtendedLandmark selectedLandmark;
     //dist between selected landmark & screen center
