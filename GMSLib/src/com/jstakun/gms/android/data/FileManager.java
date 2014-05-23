@@ -972,7 +972,7 @@ public class FileManager implements PersistenceManager {
                         altitude = 0.0f;
                     }
                     out.write(coords[0] + "," + coords[1] + "," + altitude);
-                    if (i < size) {
+                    if (i < size-1) {
                         out.write(" ");
                     }
                 }

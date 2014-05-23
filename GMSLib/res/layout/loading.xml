@@ -1,41 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/loadingWidgetP"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
->
-<RelativeLayout
-    android:id="@+id/loadingWidgetC"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapCanvasWidgetL"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_centerInParent="true"
-    android:background="#ffffffff" >
-
-<ImageView
-android:id="@+id/loadingImage"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:src="@drawable/discover"
-android:layout_centerVertical="true"
-android:layout_centerHorizontal="true"
->
-</ImageView>
-<TextView
-android:id="@+id/loadingText"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:typeface="sans"
-android:textStyle="bold"
-android:textSize="14sp"
-android:background="#ffffffff"
-android:layout_below="@+id/loadingImage"
-android:text="@string/loadingText"
-android:textColor="#ff000000"
-android:layout_centerVertical="true"
-android:layout_centerHorizontal="true"
->
-</TextView>
-</RelativeLayout>
+    android:background="#ffffffff"
+    android:layout_centerInParent="true">
+        <ProgressBar
+    android:id="@+id/mapCanvasLoadingImage"
+    style="@android:style/Widget.ProgressBar.Large"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"/>
+        <!-- ImageView
+    android:id="@+id/mapCanvasLoadingImage"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/discover"
+    android:contentDescription="@string/loadingText"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"/-->
+        <TextView
+    android:id="@+id/mapCanvasLoadingText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@style/LoadingText"
+    android:layout_below="@+id/mapCanvasLoadingImage"
+    android:text="@string/loadingText"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"/>
 </RelativeLayout>
 

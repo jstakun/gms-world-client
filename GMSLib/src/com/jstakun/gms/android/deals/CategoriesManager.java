@@ -11,8 +11,6 @@ import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
 import org.apache.commons.lang.StringUtils;
 
 /**

@@ -265,7 +265,7 @@ containing a value of this type.
         public static final int discoverPlaces=0x7f0e0088;
         public static final int done_button=0x7f0e003d;
         public static final int drawer_child_text=0x7f0e0038;
-        public static final int drawer_layout=0x7f0e005f;
+        public static final int drawer_layout=0x7f0e0062;
         public static final int drawer_parent_text=0x7f0e0039;
         public static final int enableLayers=0x7f0e007f;
         public static final int events=0x7f0e0091;
@@ -284,25 +284,25 @@ containing a value of this type.
         public static final int layerDetailsHeader=0x7f0e0056;
         public static final int layerNameHeader=0x7f0e0054;
         public static final int layerStatusCheckbox=0x7f0e0055;
-        public static final int left_drawer=0x7f0e0062;
+        public static final int left_drawer=0x7f0e0065;
         public static final int listLoadingProgress=0x7f0e004a;
         public static final int listMode=0x7f0e0080;
         public static final int loadingAnim=0x7f0e0076;
         public static final int loadingImage=0x7f0e004e;
         public static final int loadingLandmarkList=0x7f0e004d;
-        public static final int loadingText=0x7f0e0059;
-        public static final int loadingWebView=0x7f0e0064;
-        public static final int loadingWidgetC=0x7f0e0058;
-        public static final int loadingWidgetP=0x7f0e0057;
+        public static final int loadingText=0x7f0e005c;
+        public static final int loadingWebView=0x7f0e0067;
+        public static final int loadingWidgetC=0x7f0e005b;
+        public static final int loadingWidgetP=0x7f0e005a;
         public static final int locationAddressLabel=0x7f0e006b;
         public static final int locationAddressText=0x7f0e006c;
         public static final int locationCancelButton=0x7f0e006d;
         public static final int locationCountryLabel=0x7f0e0069;
         public static final int locationCountrySpinner=0x7f0e006a;
         public static final int locationPickButton=0x7f0e006e;
-        public static final int loginButton=0x7f0e005e;
-        public static final int loginLabel=0x7f0e005a;
-        public static final int loginText=0x7f0e005b;
+        public static final int loginButton=0x7f0e0061;
+        public static final int loginLabel=0x7f0e005d;
+        public static final int loginText=0x7f0e005e;
         public static final int lvActionButton=0x7f0e002f;
         public static final int lvActionSeparator=0x7f0e0030;
         public static final int lvCallButton=0x7f0e002d;
@@ -321,11 +321,11 @@ containing a value of this type.
         public static final int lvdesc=0x7f0e002a;
         public static final int lvheader=0x7f0e0027;
         public static final int lvname=0x7f0e0028;
-        public static final int mapCanvas=0x7f0e0061;
-        public static final int mapCanvasLoadingImage=0x7f0e0066;
-        public static final int mapCanvasLoadingText=0x7f0e0067;
-        public static final int mapCanvasWidgetL=0x7f0e0065;
-        public static final int mapCanvasWidgetM=0x7f0e0060;
+        public static final int mapCanvas=0x7f0e0064;
+        public static final int mapCanvasLoadingImage=0x7f0e0058;
+        public static final int mapCanvasLoadingText=0x7f0e0059;
+        public static final int mapCanvasWidgetL=0x7f0e0057;
+        public static final int mapCanvasWidgetM=0x7f0e0063;
         public static final int mapMode=0x7f0e0079;
         public static final int mapViewButton=0x7f0e0012;
         public static final int mapViewSeparator=0x7f0e0013;
@@ -336,8 +336,8 @@ containing a value of this type.
         public static final int nameText=0x7f0e0001;
         public static final int nearbyDeals=0x7f0e0090;
         public static final int newestDeals=0x7f0e008f;
-        public static final int passwordLabel=0x7f0e005c;
-        public static final int passwordText=0x7f0e005d;
+        public static final int passwordLabel=0x7f0e005f;
+        public static final int passwordText=0x7f0e0060;
         public static final int pickLocationForm=0x7f0e0068;
         public static final int pickMyPos=0x7f0e0081;
         public static final int rateUs=0x7f0e008a;
@@ -381,7 +381,7 @@ containing a value of this type.
         public static final int topTextView=0x7f0e0048;
         public static final int topTextViewSeparator=0x7f0e0049;
         public static final int validityLabel=0x7f0e000b;
-        public static final int webview=0x7f0e0063;
+        public static final int webview=0x7f0e0066;
         public static final int webviewHolder=0x7f0e003a;
     }
     public static final class layout {
@@ -405,14 +405,15 @@ containing a value of this type.
         public static final int landmarkrow=0x7f030011;
         public static final int layerrow=0x7f030012;
         public static final int loading=0x7f030013;
-        public static final int login=0x7f030014;
-        public static final int mapcanvasview_amz=0x7f030015;
-        public static final int mylist=0x7f030016;
-        public static final int mywebview=0x7f030017;
-        public static final int newwebview=0x7f030018;
-        public static final int picklocation=0x7f030019;
-        public static final int socialrow=0x7f03001a;
-        public static final int statusbar=0x7f03001b;
+        public static final int loading_old=0x7f030014;
+        public static final int login=0x7f030015;
+        public static final int mapcanvasview_amz=0x7f030016;
+        public static final int mylist=0x7f030017;
+        public static final int mywebview=0x7f030018;
+        public static final int newwebview=0x7f030019;
+        public static final int picklocation=0x7f03001a;
+        public static final int socialrow=0x7f03001b;
+        public static final int statusbar=0x7f03001c;
     }
     public static final class menu {
         public static final int deal_menu=0x7f0d0000;

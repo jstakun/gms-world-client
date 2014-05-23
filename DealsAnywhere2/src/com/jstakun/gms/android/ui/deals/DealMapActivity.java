@@ -690,10 +690,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         intents.startPhoneCallActivity(landmark);
     }
 
-    //private void openButtonPressedAction(ExtendedLandmark landmark) {
-    //    intents.startLandmarkDetailsActivity(landmarkManager.getLandmarkURL(landmark), landmark.getName());
-    //}
-
     private void sendMessageAction() {
         intents.shareLandmarkAction(dialogManager);
     }

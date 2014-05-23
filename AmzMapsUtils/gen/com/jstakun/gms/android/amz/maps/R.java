@@ -281,19 +281,19 @@ containing a value of this type.
         public static int loadingAnim=0x7f0e0072;
         public static int loadingImage=0x7f0e004e;
         public static int loadingLandmarkList=0x7f0e004d;
-        public static int loadingText=0x7f0e0059;
-        public static int loadingWebView=0x7f0e0060;
-        public static int loadingWidgetC=0x7f0e0058;
-        public static int loadingWidgetP=0x7f0e0057;
+        public static int loadingText=0x7f0e005c;
+        public static int loadingWebView=0x7f0e0063;
+        public static int loadingWidgetC=0x7f0e005b;
+        public static int loadingWidgetP=0x7f0e005a;
         public static int locationAddressLabel=0x7f0e0067;
         public static int locationAddressText=0x7f0e0068;
         public static int locationCancelButton=0x7f0e0069;
         public static int locationCountryLabel=0x7f0e0065;
         public static int locationCountrySpinner=0x7f0e0066;
         public static int locationPickButton=0x7f0e006a;
-        public static int loginButton=0x7f0e005e;
-        public static int loginLabel=0x7f0e005a;
-        public static int loginText=0x7f0e005b;
+        public static int loginButton=0x7f0e0061;
+        public static int loginLabel=0x7f0e005d;
+        public static int loginText=0x7f0e005e;
         public static int lvActionButton=0x7f0e002f;
         public static int lvActionSeparator=0x7f0e0030;
         public static int lvCallButton=0x7f0e002d;
@@ -312,9 +312,9 @@ containing a value of this type.
         public static int lvdesc=0x7f0e002a;
         public static int lvheader=0x7f0e0027;
         public static int lvname=0x7f0e0028;
-        public static int mapCanvasLoadingImage=0x7f0e0062;
-        public static int mapCanvasLoadingText=0x7f0e0063;
-        public static int mapCanvasWidgetL=0x7f0e0061;
+        public static int mapCanvasLoadingImage=0x7f0e0058;
+        public static int mapCanvasLoadingText=0x7f0e0059;
+        public static int mapCanvasWidgetL=0x7f0e0057;
         public static int mapMode=0x7f0e0075;
         public static int mapViewButton=0x7f0e0012;
         public static int mapViewSeparator=0x7f0e0013;
@@ -322,8 +322,8 @@ containing a value of this type.
         public static int min_value=0x7f0e0023;
         public static int nameLabel=0x7f0e0000;
         public static int nameText=0x7f0e0001;
-        public static int passwordLabel=0x7f0e005c;
-        public static int passwordText=0x7f0e005d;
+        public static int passwordLabel=0x7f0e005f;
+        public static int passwordText=0x7f0e0060;
         public static int pickLocationForm=0x7f0e0064;
         public static int refreshLayers=0x7f0e007a;
         public static int right_arrow=0x7f0e004f;
@@ -358,7 +358,7 @@ containing a value of this type.
         public static int topTextView=0x7f0e0048;
         public static int topTextViewSeparator=0x7f0e0049;
         public static int validityLabel=0x7f0e000b;
-        public static int webview=0x7f0e005f;
+        public static int webview=0x7f0e0062;
         public static int webviewHolder=0x7f0e003a;
     }
     public static final class layout {
@@ -382,13 +382,14 @@ containing a value of this type.
         public static int landmarkrow=0x7f030011;
         public static int layerrow=0x7f030012;
         public static int loading=0x7f030013;
-        public static int login=0x7f030014;
-        public static int mylist=0x7f030015;
-        public static int mywebview=0x7f030016;
-        public static int newwebview=0x7f030017;
-        public static int picklocation=0x7f030018;
-        public static int socialrow=0x7f030019;
-        public static int statusbar=0x7f03001a;
+        public static int loading_old=0x7f030014;
+        public static int login=0x7f030015;
+        public static int mylist=0x7f030016;
+        public static int mywebview=0x7f030017;
+        public static int newwebview=0x7f030018;
+        public static int picklocation=0x7f030019;
+        public static int socialrow=0x7f03001a;
+        public static int statusbar=0x7f03001b;
     }
     public static final class menu {
         public static int deal_menu=0x7f0d0000;

@@ -256,19 +256,19 @@ public final class R {
 		public static final int loadingAnim = 0x7f0e0076;
 		public static final int loadingImage = 0x7f0e004e;
 		public static final int loadingLandmarkList = 0x7f0e004d;
-		public static final int loadingText = 0x7f0e0059;
-		public static final int loadingWebView = 0x7f0e0064;
-		public static final int loadingWidgetC = 0x7f0e0058;
-		public static final int loadingWidgetP = 0x7f0e0057;
+		public static final int loadingText = 0x7f0e005c;
+		public static final int loadingWebView = 0x7f0e0067;
+		public static final int loadingWidgetC = 0x7f0e005b;
+		public static final int loadingWidgetP = 0x7f0e005a;
 		public static final int locationAddressLabel = 0x7f0e006b;
 		public static final int locationAddressText = 0x7f0e006c;
 		public static final int locationCancelButton = 0x7f0e006d;
 		public static final int locationCountryLabel = 0x7f0e0069;
 		public static final int locationCountrySpinner = 0x7f0e006a;
 		public static final int locationPickButton = 0x7f0e006e;
-		public static final int loginButton = 0x7f0e005e;
-		public static final int loginLabel = 0x7f0e005a;
-		public static final int loginText = 0x7f0e005b;
+		public static final int loginButton = 0x7f0e0061;
+		public static final int loginLabel = 0x7f0e005d;
+		public static final int loginText = 0x7f0e005e;
 		public static final int lvActionButton = 0x7f0e002f;
 		public static final int lvActionSeparator = 0x7f0e0030;
 		public static final int lvCallButton = 0x7f0e002d;
@@ -287,9 +287,9 @@ public final class R {
 		public static final int lvdesc = 0x7f0e002a;
 		public static final int lvheader = 0x7f0e0027;
 		public static final int lvname = 0x7f0e0028;
-		public static final int mapCanvasLoadingImage = 0x7f0e0066;
-		public static final int mapCanvasLoadingText = 0x7f0e0067;
-		public static final int mapCanvasWidgetL = 0x7f0e0065;
+		public static final int mapCanvasLoadingImage = 0x7f0e0058;
+		public static final int mapCanvasLoadingText = 0x7f0e0059;
+		public static final int mapCanvasWidgetL = 0x7f0e0057;
 		public static final int mapMode = 0x7f0e0079;
 		public static final int mapViewButton = 0x7f0e0012;
 		public static final int mapViewSeparator = 0x7f0e0013;
@@ -297,8 +297,8 @@ public final class R {
 		public static final int min_value = 0x7f0e0023;
 		public static final int nameLabel = 0x7f0e0000;
 		public static final int nameText = 0x7f0e0001;
-		public static final int passwordLabel = 0x7f0e005c;
-		public static final int passwordText = 0x7f0e005d;
+		public static final int passwordLabel = 0x7f0e005f;
+		public static final int passwordText = 0x7f0e0060;
 		public static final int pickLocationForm = 0x7f0e0068;
 		public static final int refreshLayers = 0x7f0e007e;
 		public static final int right_arrow = 0x7f0e004f;
@@ -333,7 +333,7 @@ public final class R {
 		public static final int topTextView = 0x7f0e0048;
 		public static final int topTextViewSeparator = 0x7f0e0049;
 		public static final int validityLabel = 0x7f0e000b;
-		public static final int webview = 0x7f0e0063;
+		public static final int webview = 0x7f0e0066;
 		public static final int webviewHolder = 0x7f0e003a;
 	}
 	public static final class layout {
@@ -357,13 +357,14 @@ public final class R {
 		public static final int landmarkrow = 0x7f030011;
 		public static final int layerrow = 0x7f030012;
 		public static final int loading = 0x7f030013;
-		public static final int login = 0x7f030014;
-		public static final int mylist = 0x7f030016;
-		public static final int mywebview = 0x7f030017;
-		public static final int newwebview = 0x7f030018;
-		public static final int picklocation = 0x7f030019;
-		public static final int socialrow = 0x7f03001a;
-		public static final int statusbar = 0x7f03001b;
+		public static final int loading_old = 0x7f030014;
+		public static final int login = 0x7f030015;
+		public static final int mylist = 0x7f030017;
+		public static final int mywebview = 0x7f030018;
+		public static final int newwebview = 0x7f030019;
+		public static final int picklocation = 0x7f03001a;
+		public static final int socialrow = 0x7f03001b;
+		public static final int statusbar = 0x7f03001c;
 	}
 	public static final class menu {
 		public static final int deal_menu = 0x7f0d0000;
