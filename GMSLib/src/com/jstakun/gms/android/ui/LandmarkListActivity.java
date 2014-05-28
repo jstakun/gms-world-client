@@ -40,7 +40,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     private AlertDialog deleteLandmarkDialog;
     private int currentPos = -1, requestCode = -1;
     public static final String LANDMARK = "landmark";
-    private Intents intents;
+    private IntentsHelper intents;
     private LandmarkManager landmarkManager;
     private double lat, lng;
     private GetLandmarksTask getLandmarksTask;
@@ -63,7 +63,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
 
         progress = findViewById(R.id.listLoadingProgress);
 
-        intents = new Intents(this, landmarkManager, null);
+        intents = new IntentsHelper(this, landmarkManager, null);
 
         Intent intent = getIntent();
         requestCode = intent.getIntExtra("requestCode", -1);
@@ -223,7 +223,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         } else {
         	intents.showInfoToast(Locale.getQuantityMessage(R.plurals.foundLandmarks, getLandmarksTask.getLandmarks().size()));
             
-        	if (requestCode == Intents.INTENT_MYLANDMARKS) {
+        	if (requestCode == IntentsHelper.INTENT_MYLANDMARKS) {
                 setTitle(R.string.listLocations);
             } else {
                 setTitle(R.string.listSelection);

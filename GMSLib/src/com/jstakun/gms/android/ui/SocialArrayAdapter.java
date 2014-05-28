@@ -29,7 +29,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final TextView footer;
-    private Intents intents;
+    private IntentsHelper intents;
     private static final String[] services = {"", Commons.FACEBOOK, Commons.FOURSQUARE,
         Commons.GOOGLE, Commons.TWITTER, Commons.LINKEDIN};
     private static final String[] send_status = {"0", ConfigurationManager.FB_SEND_STATUS, ConfigurationManager.FS_SEND_STATUS,
@@ -51,7 +51,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     OAuthServiceFactory.getServiceName(Commons.LINKEDIN)});
         this.context = context;
         this.footer = footer;
-        intents = new Intents(context, null, null);
+        intents = new IntentsHelper(context, null, null);
     }
     
     @Override
@@ -159,11 +159,11 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
         private int position;
         private ViewHolder holder;
-        private Intents intents;
+        private IntentsHelper intents;
         private Activity context;
         private SocialArrayAdapter socialAdapter;
         
-        public PositionClickListener(int pos, ViewHolder holder, Intents intents, Activity context, SocialArrayAdapter socialAdapter) {
+        public PositionClickListener(int pos, ViewHolder holder, IntentsHelper intents, Activity context, SocialArrayAdapter socialAdapter) {
             this.position = pos;
             this.holder = holder;
             this.intents = intents;

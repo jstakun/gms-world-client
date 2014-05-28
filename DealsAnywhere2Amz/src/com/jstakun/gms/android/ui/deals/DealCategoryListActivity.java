@@ -22,7 +22,7 @@ import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.deals.Category;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.ui.AddLayerActivity;
-import com.jstakun.gms.android.ui.Intents;
+import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.Locale;
@@ -46,7 +46,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     private int parent = -1, radius = 3, currentPos = -1, lat, lng;
     private LandmarkManager landmarkManager = null;
     private CategoriesManager cm = null;
-    private Intents intents;
+    private IntentsHelper intents;
     private View searchButton, mapViewButton;
     private AlertDialog deleteLayerDialog;
     private List<String> names = null;
@@ -77,7 +77,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
 
-        intents = new Intents(this, landmarkManager, null);
+        intents = new IntentsHelper(this, landmarkManager, null);
 
         AdsUtils.loadAd(this);
 

@@ -44,7 +44,7 @@ public class LayerListActivity extends ListActivity {
     protected static final int ACTION_DELETE = 3;
     private AlertDialog deleteLayerDialog, enableAllLayersDialog, disableAllLayersDialog;
     private List<String> names = null;
-    private Intents intents;
+    private IntentsHelper intents;
     private LandmarkManager landmarkManager;
     private RoutesManager routesManager;
     private int currentPos = -1;
@@ -57,7 +57,7 @@ public class LayerListActivity extends ListActivity {
 
         setTitle(R.string.layers);
 
-        setContentView(R.layout.mylist);
+        setContentView(R.layout.gms_list);
 
         AdsUtils.loadAd(this);
 
@@ -67,7 +67,7 @@ public class LayerListActivity extends ListActivity {
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         routesManager = ConfigurationManager.getInstance().getRoutesManager();
 
-        intents = new Intents(this, landmarkManager, null);
+        intents = new IntentsHelper(this, landmarkManager, null);
 
         //footer = new TextView(this);
         //getListView().addFooterView(footer);

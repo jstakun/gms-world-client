@@ -172,30 +172,32 @@ public class HttpUtils {
             responseCode = httpResponse.getStatusLine().getStatusCode();
 
             HttpEntity entity = httpResponse.getEntity();
-            /*is = entity.getContent();
+        	
+            if (!postRequest.isAborted()) {
+            	/*is = entity.getContent();
 
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[512];
-            int count;
-            while ((count = is.read(buffer)) >= 0) {
-                bos.write(buffer, 0, count);
-            }*/
+            	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            	byte[] buffer = new byte[512];
+            	int count;
+            	while ((count = is.read(buffer)) >= 0) {
+                	bos.write(buffer, 0, count);
+            	}*/
 
-            byte[] byteBuffer = EntityUtils.toByteArray(entity); //bos.toByteArray();
+            	byte[] byteBuffer = EntityUtils.toByteArray(entity); //bos.toByteArray();
 
-            postResponse = new String(byteBuffer, "UTF-8");
+            	postResponse = new String(byteBuffer, "UTF-8");
 
-            //LoggerUtils.debug(postResponse);
+            	//LoggerUtils.debug(postResponse);
 
-            if (params != null && byteBuffer != null) {
-                increaseCounter(1024, byteBuffer.length);
+            	if (params != null && byteBuffer != null) {
+            		increaseCounter(1024, byteBuffer.length);
+            	}
+            	if (responseCode == HttpStatus.SC_OK) {
+            		readHeaders(httpResponse, "key", "name", "hash");
+            	} else {
+            		errorMessage = handleHttpStatus(responseCode);
+            	}
             }
-            if (responseCode == HttpStatus.SC_OK) {
-                readHeaders(httpResponse, "key", "name", "hash");
-            } else {
-                errorMessage = handleHttpStatus(responseCode);
-            }
-            
             entity.consumeContent();
         } catch (Exception e) {
             LoggerUtils.debug("HttpUtils.loadHttpFile exception: " + e.getMessage(), e);
@@ -440,7 +442,7 @@ public class HttpUtils {
                     
         					LoggerUtils.debug("File " + uri.toString() + " size: " + bufferSize + " bytes");
             		
-        					if (bufferSize > 0) {
+        					if (bufferSize > 0 && !postRequest.isAborted()) {
         						increaseCounter(0, bufferSize);
         						ObjectInputStream ois = null;
         						ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
@@ -461,6 +463,10 @@ public class HttpUtils {
         										reply.add(landmark);
         									} catch (IOException e) {
         										LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
+        									}
+        									if (postRequest.isAborted()) {
+        										LoggerUtils.debug("Breaking landmark list reading after " + i + " landmarks...");
+        										break;
         									}
         								}
         							}
@@ -498,8 +504,10 @@ public class HttpUtils {
 
     public synchronized void close() throws IOException {
         if (getRequest != null) {
-            getRequest.abort();
+        	LoggerUtils.debug("Closing connection to " + getRequest.getURI());
+        	getRequest.abort();
         } else if (postRequest != null) {
+        	LoggerUtils.debug("Closing connection to " + postRequest.getURI());
             postRequest.abort();
         }
     }
@@ -810,7 +818,7 @@ public class HttpUtils {
     	 @Override
          public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
              if (exception instanceof SocketTimeoutException) {
-                 if (executionCount <= getRetryCount()) {
+                 if (executionCount <= getRetryCount() && !closeConnManager) {
                 	 if (httpParams != null) {
                          final int newSocketTimeOut = HttpConnectionParams.getSoTimeout(httpParams) * 2;
                          HttpConnectionParams.setSoTimeout(httpParams, newSocketTimeOut);

@@ -26,8 +26,6 @@ import com.google.android.maps.MapView;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.IconCache;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleInfoOverlay;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
@@ -44,11 +42,10 @@ import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.DialogManager;
 import com.jstakun.gms.android.ui.HelpActivity;
 import com.jstakun.gms.android.ui.IntentArrayAdapter;
-import com.jstakun.gms.android.ui.Intents;
+import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.ui.LandmarkListActivity;
 import com.jstakun.gms.android.ui.StatusBarLinearLayout;
 import com.jstakun.gms.android.ui.ViewResizeListener;
-import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -71,7 +68,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private AsyncTaskManager asyncTaskManager;
     private RoutesManager routesManager;
     private CategoriesManager cm;
-    private Intents intents;
+    private IntentsHelper intents;
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
@@ -202,7 +199,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             asyncTaskManager.executeNewVersionCheckTask();
         }
         
-        intents = new Intents(this, landmarkManager, asyncTaskManager);
+        intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || !cm.isInitialized()) {
@@ -369,7 +366,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == Intents.INTENT_MULTILANDMARK) {
+        if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
@@ -382,7 +379,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                     }
                 }
             }
-        } else if (requestCode == Intents.INTENT_PICKLOCATION) {
+        } else if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
                 String lats = intent.getStringExtra("lat");
                 String lngs = intent.getStringExtra("lng");
@@ -413,7 +410,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             } else if (resultCode != RESULT_CANCELED) { //if (!appInitialized) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             }
-        } else if (requestCode == Intents.INTENT_MYLANDMARKS) {
+        } else if (requestCode == IntentsHelper.INTENT_MYLANDMARKS) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
@@ -431,7 +428,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
-        } else if (requestCode == Intents.INTENT_CALENDAR) {
+        } else if (requestCode == IntentsHelper.INTENT_CALENDAR) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
@@ -604,15 +601,14 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         LoggerUtils.debug("onDestroy");
-        //if (!appAbort) {
         if (ConfigurationManager.getInstance().isClosing()) {
-            hardClose();
+        	appInitialized = false;
+            intents.hardClose(layerLoader, null, loadingHandler, gpsRunnable, googleMapsView.getZoomLevel(), googleMapsView.getMapCenter().getLatitudeE6(), googleMapsView.getMapCenter().getLongitudeE6());
         } else {
-            softClose();
+        	intents.softClose(googleMapsView.getZoomLevel(), googleMapsView.getMapCenter().getLatitudeE6(), googleMapsView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, googleMapsView.getMapCenter());
         }
         AdsUtils.destroyAdView(this);
-        //}
         System.gc();
     }
 
@@ -647,14 +643,14 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         }
     }
 
-    private void softClose() {
+    /*private void softClose() {
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, googleMapsView.getZoomLevel());
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLatitudeE6()));
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLongitudeE6()));
         ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-    }
+    }*/
 
-    private void hardClose() {
+    /*private void hardClose() {
         if (layerLoader != null && layerLoader.isLoading()) {
             layerLoader.stopLoading();
         }
@@ -663,7 +659,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         
         loadingHandler.removeCallbacks(gpsRunnable);
 
-        softClose();
+        intents.softClose(googleMapsView.getZoomLevel(), googleMapsView.getMapCenter().getLatitudeE6(), googleMapsView.getMapCenter().getLongitudeE6());
 
         //SuggestionProviderUtil.clearHistory();
 
@@ -675,7 +671,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         ConfigurationManager.getInstance().clearObjectCache();
         
         HttpUtils.closeConnManager();
-    }
+    }*/
 
     private double[] getMyPosition() {
         return landmarkManager.getMyPosition(googleMapsView.getMapCenter().getLatitudeE6(),
@@ -840,10 +836,9 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                     	activity.animateTo(coordsE6);
                     }
             	} else if (msg.what == SHOW_MAP_VIEW) {
-            		//System.out.println("SHOW_MAP_VIEW");
-                	View loading = activity.findViewById(R.id.loadingWidgetP);
+            		View loading = activity.findViewById(R.id.mapCanvasWidgetL);
+            		loading.setVisibility(View.GONE);
                 	View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);
-                	loading.setVisibility(View.GONE);
                 	mapCanvas.setVisibility(View.VISIBLE);
                 	//System.out.println("SHOW_MAP_VIEW done");
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {

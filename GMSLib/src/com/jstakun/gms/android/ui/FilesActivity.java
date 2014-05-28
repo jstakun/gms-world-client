@@ -37,7 +37,7 @@ public class FilesActivity extends AbstractLandmarkList {
     private int type = -1;
     private AlertDialog deleteFileDialog;
     private int currentPos = -1;
-    private Intents intents;
+    private IntentsHelper intents;
     public static final int FILES = 0;
     public static final int ROUTES = 1;
 
@@ -59,7 +59,7 @@ public class FilesActivity extends AbstractLandmarkList {
             files = extras.getParcelableArrayList("files");
             type = extras.getInt("type");
 
-            intents = new Intents(this, null, null);
+            intents = new IntentsHelper(this, null, null);
 
             String directory = PersistenceManagerFactory.getFileManager().getExternalDirectory(null, null).getAbsolutePath();
             if (directory != null) {

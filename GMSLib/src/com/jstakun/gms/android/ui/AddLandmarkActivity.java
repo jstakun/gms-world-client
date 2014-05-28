@@ -56,7 +56,7 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
     private String[] keys, values;
     private String fsCategory, selectedLayer;
     private DialogInterface.OnCancelListener fsCatCancel;
-    private Intents intents;
+    private IntentsHelper intents;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -80,7 +80,7 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
         categories = (Spinner) findViewById(R.id.categorySpinner);
         addVenueCheckbox = (CheckBox) findViewById(R.id.fsAddVenueCheckbox);
 
-        intents = new Intents(this, null, null);
+        intents = new IntentsHelper(this, null, null);
 
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
             addVenueCheckbox.setVisibility(View.GONE);

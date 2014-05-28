@@ -49,7 +49,7 @@ public class AsyncTaskManager {
     private Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress;
     private GMSNotificationManager notificationManager;
     private LandmarkManager landmarkManager;
-    private Intents intents;
+    private IntentsHelper intents;
     private Activity activity;
 
     public AsyncTaskManager(Activity context, LandmarkManager lm) {
@@ -58,7 +58,7 @@ public class AsyncTaskManager {
         if (context != null) {
             notificationManager = new GMSNotificationManager(context);
             setActivity(context);
-            intents = new Intents(context, landmarkManager, null);
+            intents = new IntentsHelper(context, landmarkManager, null);
         }
     }
 

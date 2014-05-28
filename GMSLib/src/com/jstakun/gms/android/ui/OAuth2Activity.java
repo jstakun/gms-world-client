@@ -50,7 +50,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	private static final int ID_DIALOG_PROGRESS = 0;
 	private static boolean isDialogVisible = false;
 	private String serviceName = null;
-	private Intents intents;
+	private IntentsHelper intents;
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -60,13 +60,13 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		setContentView(R.layout.mywebview);
+		setContentView(R.layout.gms_oauth_webview);
 
 		ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
 		UserTracker.getInstance().trackActivity(getClass().getName());
 
-		intents = new Intents(this, null, null);
+		intents = new IntentsHelper(this, null, null);
 
 		webView = (WebView) findViewById(R.id.webview);
 		rl = findViewById(R.id.loadingWebView);

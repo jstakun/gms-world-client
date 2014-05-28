@@ -29,7 +29,7 @@ public class SendBlogeoPostActivity extends Activity implements OnClickListener 
     private EditText nameText, descText;
     private TimePicker timePicker;
     private long validityTime = 0;
-    private Intents intents;
+    private IntentsHelper intents;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -42,7 +42,7 @@ public class SendBlogeoPostActivity extends Activity implements OnClickListener 
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        intents = new Intents(this, null, null);
+        intents = new IntentsHelper(this, null, null);
 
         initComponents();
     }

@@ -33,7 +33,7 @@ public class WebViewActivity extends Activity {
     private View rl, backButton;
     private LinearLayout webviewHolder;
     private String url = null, title = null;
-    private Intents intents = null;
+    private IntentsHelper intents = null;
     private static final String WEBVIEW_STATE_PRESENT = "webview_state_present";
     private final Button.OnClickListener backListener = new Button.OnClickListener() {
         public void onClick(View view) {
@@ -62,11 +62,11 @@ public class WebViewActivity extends Activity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         requestWindowFeature(Window.FEATURE_PROGRESS);
 
-        setContentView(R.layout.newwebview);
+        setContentView(R.layout.gms_webview);
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
-        intents = new Intents(this, null, null);
+        intents = new IntentsHelper(this, null, null);
 
         setProgressBarIndeterminateVisibility(true);
         setProgressBarVisibility(true);

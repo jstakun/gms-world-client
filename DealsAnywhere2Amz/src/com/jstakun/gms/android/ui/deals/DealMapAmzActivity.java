@@ -40,8 +40,6 @@ import com.jstakun.gms.android.amz.maps.AmzMyLocationOverlay;
 import com.jstakun.gms.android.amz.maps.AmzRoutesOverlay;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.IconCache;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -53,11 +51,10 @@ import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.DialogManager;
 import com.jstakun.gms.android.ui.HelpActivity;
 import com.jstakun.gms.android.ui.IntentArrayAdapter;
-import com.jstakun.gms.android.ui.Intents;
+import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.ui.LandmarkListActivity;
 import com.jstakun.gms.android.ui.StatusBarLinearLayout;
 import com.jstakun.gms.android.ui.ViewResizeListener;
-import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -80,7 +77,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private AsyncTaskManager asyncTaskManager;
     private RoutesManager routesManager;
     private CategoriesManager cm;
-    protected Intents intents;
+    protected IntentsHelper intents;
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
@@ -133,7 +130,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         final String action = intent.getAction();
         // If the intent is a request to create a shortcut, we'll do that and exit
         if (Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
-            intents = new Intents(this, null, null);
+            intents = new IntentsHelper(this, null, null);
             intents.setupShortcut();
             appAbort = true;
             finish();
@@ -250,7 +247,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             asyncTaskManager.executeNewVersionCheckTask();
         }
 
-        intents = new Intents(this, landmarkManager, asyncTaskManager);
+        intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
         if (cm == null || !cm.isInitialized()) {
@@ -380,7 +377,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private synchronized void initOnLocationChanged(GeoPoint location) {
         if (!appInitialized) {
             mapController.setCenter(location);
-            softClose(); //save mapcenter coords
+            intents.softClose(amzMapsView.getZoomLevel(), amzMapsView.getMapCenter().getLatitudeE6(), amzMapsView.getMapCenter().getLongitudeE6());; //save mapcenter coords
 
             if (initLandmarkManager) {
                 UserTracker.getInstance().sendMyLocation();
@@ -456,7 +453,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == Intents.INTENT_MULTILANDMARK) {
+        if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
@@ -469,7 +466,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                     }
                 }
             }
-        } else if (requestCode == Intents.INTENT_PICKLOCATION) {
+        } else if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
                 String lats = intent.getStringExtra("lat");
                 String lngs = intent.getStringExtra("lng");
@@ -497,7 +494,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             } else if (resultCode != RESULT_CANCELED) { 
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             }
-        } else if (requestCode == Intents.INTENT_MYLANDMARKS) {
+        } else if (requestCode == IntentsHelper.INTENT_MYLANDMARKS) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
@@ -515,7 +512,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
-        } else if (requestCode == Intents.INTENT_CALENDAR) {
+        } else if (requestCode == IntentsHelper.INTENT_CALENDAR) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
@@ -681,9 +678,10 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         LoggerUtils.debug("onDestroy");
         if (!appAbort) {
             if (ConfigurationManager.getInstance().isClosing()) {
-                hardClose();
+            	appInitialized = false;
+                intents.hardClose(layerLoader, null, loadingHandler, gpsRunnable, amzMapsView.getZoomLevel(), amzMapsView.getMapCenter().getLatitudeE6(), amzMapsView.getMapCenter().getLongitudeE6());
             } else {
-                softClose();
+            	intents.softClose(amzMapsView.getZoomLevel(), amzMapsView.getMapCenter().getLatitudeE6(), amzMapsView.getMapCenter().getLongitudeE6());
                 ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, amzMapsView.getMapCenter());
             }
             AdsUtils.destroyAdView(this);
@@ -737,14 +735,14 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         }
     }
 
-    private void softClose() {
+    /*private void softClose() {
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, amzMapsView.getZoomLevel());
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(amzMapsView.getMapCenter().getLatitudeE6()));
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(amzMapsView.getMapCenter().getLongitudeE6()));
         ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-    }
+    }*/
 
-    private void hardClose() {
+    /*private void hardClose() {
         if (layerLoader != null && layerLoader.isLoading()) {
             layerLoader.stopLoading();
         }
@@ -755,7 +753,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
         skyhook.disableMyLocation();
 
-        softClose();
+        intents.softClose(amzMapsView.getZoomLevel(), amzMapsView.getMapCenter().getLatitudeE6(), amzMapsView.getMapCenter().getLongitudeE6());
 
         //SuggestionProviderUtil.clearHistory();
 
@@ -767,7 +765,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         ConfigurationManager.getInstance().clearObjectCache();
         
         HttpUtils.closeConnManager();
-    }
+    }*/
 
     protected double[] getMyPosition() {
         return landmarkManager.getMyPosition(amzMapsView.getMapCenter().getLatitudeE6(),
@@ -953,9 +951,9 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                     	activity.animateTo(coordsE6);
                     }
                 } else if (msg.what == SHOW_MAP_VIEW) {
-                    View loading = activity.findViewById(R.id.loadingWidgetP);
-                    View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);
+                    View loading = activity.findViewById(R.id.mapCanvasWidgetL);
                     loading.setVisibility(View.GONE);
+                    View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);
                     mapCanvas.setVisibility(View.VISIBLE);
                     if (activity.lvView == null || !activity.lvView.isShown()) {
                     	activity.getActionBar().show();

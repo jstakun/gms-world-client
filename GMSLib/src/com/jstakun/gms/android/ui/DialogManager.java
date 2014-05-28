@@ -26,7 +26,7 @@ public class DialogManager {
 
     private Activity activity;
     private AlertDialogBuilder dialogBuilder;
-    private Intents intents;
+    private IntentsHelper intents;
     private AsyncTaskManager asyncTaskManager;
     private LandmarkManager landmarkManager;
     private CheckinManager checkinManager;
@@ -134,7 +134,7 @@ public class DialogManager {
         }
     };
    
-    public DialogManager(Activity activity, Intents intents, AsyncTaskManager asyncTaskManager,
+    public DialogManager(Activity activity, IntentsHelper intents, AsyncTaskManager asyncTaskManager,
             LandmarkManager landmarkManager, CheckinManager checkinManager, DialogInterface.OnClickListener trackMyPosListener) {
         this.activity = activity;
         this.intents = intents;

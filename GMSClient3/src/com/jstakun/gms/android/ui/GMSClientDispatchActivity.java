@@ -26,7 +26,7 @@ public class GMSClientDispatchActivity extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
 
-        Intents intents = new Intents(this, null, null);
+        IntentsHelper intents = new IntentsHelper(this, null, null);
         boolean abort = false;
 
         try {

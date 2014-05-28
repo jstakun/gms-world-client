@@ -71,7 +71,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 	private boolean local;
 	private AlertDialogBuilder alertBuilder;
 	private ProgressDialog progressDialog;
-	private Intents intents;
+	private IntentsHelper intents;
 	private LandmarkManager landmarkManager = null;
 	private DialogInterface.OnClickListener addLayerListener = new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int item) {
@@ -107,7 +107,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 		landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
 
-		intents = new Intents(this, landmarkManager, null);
+		intents = new IntentsHelper(this, landmarkManager, null);
 
 		local = false;
 

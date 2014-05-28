@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -51,7 +52,7 @@ public class LayerJSONParser {
             String jsonResp = utils.getPostResponse();
             int responseCode = utils.getResponseCode();
             
-            if (responseCode == HttpStatus.SC_OK) {
+            if (responseCode == HttpStatus.SC_OK && StringUtils.startsWith(jsonResp, "{")) {
                 JSONObject jsonRoot = new JSONObject(jsonResp);
                 if (jsonRoot.has("ResultSet")) {
                     parseJSonArray(jsonRoot, layers, excluded);

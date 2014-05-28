@@ -25,7 +25,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
     private View loginButton, cancelButton;
     private EditText loginText, passwordText;
-    private Intents intents;
+    private IntentsHelper intents;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -38,7 +38,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        intents = new Intents(this, null, null);
+        intents = new IntentsHelper(this, null, null);
 
         initComponents();
     }

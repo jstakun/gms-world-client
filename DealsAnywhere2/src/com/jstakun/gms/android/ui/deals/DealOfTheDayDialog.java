@@ -16,7 +16,7 @@ import android.widget.LinearLayout.LayoutParams;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.ui.ActionBarHelper;
 import com.jstakun.gms.android.ui.AlertDialogBuilder;
-import com.jstakun.gms.android.ui.Intents;
+import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.UserTracker;
@@ -36,10 +36,10 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
     private CheckBox showAtStratup;
     private Activity activity;
     private ExtendedLandmark recommended;
-    private Intents intents;
+    private IntentsHelper intents;
     private Handler parentHandler;
 
-    public DealOfTheDayDialog(Activity activity, ExtendedLandmark recommended, double[] myPos, Handler parentHandler, Intents intents) {
+    public DealOfTheDayDialog(Activity activity, ExtendedLandmark recommended, double[] myPos, Handler parentHandler, IntentsHelper intents) {
         super(activity);
         this.activity = activity;
         this.recommended = recommended;

@@ -34,7 +34,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
     private List<LandmarkParcelable> favourites;
     private int currentPos = -1;
     private AlertDialog deleteFileDialog;
-    private Intents intents = null;
+    private IntentsHelper intents = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
         favourites = getIntent().getParcelableArrayListExtra("favourites");
 
-        intents = new Intents(this, null, null);
+        intents = new IntentsHelper(this, null, null);
 
         if (favourites != null) {
 

@@ -36,7 +36,7 @@ public class AddLayerActivity extends Activity implements OnClickListener {
 
     private View addButton, cancelButton;
     private EditText nameText, keywordsText;
-    private Intents intents = null;
+    private IntentsHelper intents = null;
     private String name;
     private static final int ID_DIALOG_PROGRESS = 0;
     private LandmarkManager landmarkManager;
@@ -103,7 +103,7 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         keywordsText = (EditText) findViewById(R.id.keywordsText);
         nameText = (EditText) findViewById(R.id.nameText);
 
-        intents = new Intents(this, null, null);
+        intents = new IntentsHelper(this, null, null);
 
         AdsUtils.loadAd(this);
 

@@ -29,7 +29,7 @@ public class SocialListActivity extends ListActivity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         
-        setContentView(R.layout.mylist);
+        setContentView(R.layout.gms_list);
         AdsUtils.loadAd(this);
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);

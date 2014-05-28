@@ -47,7 +47,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     private LandmarkManager landmarkManager = null;
     private CategoriesManager cm = null;
     private View searchButton, mapViewButton, addLayerButton;
-    private Intents intents;
+    private IntentsHelper intents;
     private AlertDialog deleteLayerDialog;
     private List<String> names = null;
     //private String categoryName;
@@ -68,7 +68,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
 
-        intents = new Intents(this, landmarkManager, null);
+        intents = new IntentsHelper(this, landmarkManager, null);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

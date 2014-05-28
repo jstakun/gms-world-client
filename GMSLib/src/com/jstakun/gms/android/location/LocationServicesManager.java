@@ -61,13 +61,13 @@ public class LocationServicesManager {
     }
 
     public static void disableMyLocation() {
-        if (isGpsHardwarePresent) {
+        if (isGpsHardwarePresent &&  myLocation != null) {
             //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             myLocation.disableCompass();
             //} else {
             myLocation.disableMyLocation();
             //}
-        } else {
+        } else if (skyhook != null) {
             skyhook.disableMyLocation();
         }
     }

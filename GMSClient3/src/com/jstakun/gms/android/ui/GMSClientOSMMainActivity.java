@@ -35,8 +35,6 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
-import com.jstakun.gms.android.data.IconCache;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -50,7 +48,6 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -76,7 +73,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private RouteRecorder routeRecorder;
     private CheckinManager checkinManager;
     private CategoriesManager cm;
-    private Intents intents;
+    private IntentsHelper intents;
     private DialogManager dialogManager;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton,
@@ -221,7 +218,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             asyncTaskManager.executeNewVersionCheckTask();
         }
 
-        intents = new Intents(this, landmarkManager, asyncTaskManager);
+        intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
 
         checkinManager = new CheckinManager(asyncTaskManager, this);
 
@@ -348,9 +345,10 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         LoggerUtils.debug("onDestroy");
         //if (!appAbort) {
         if (ConfigurationManager.getInstance().isClosing()) {
-            hardClose();
+        	appInitialized = false;
+            intents.hardClose(layerLoader, routeRecorder, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else {
-            softClose();
+        	intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
         AdsUtils.destroyAdView(this);
@@ -359,14 +357,14 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         System.gc();
     }
 
-    private void softClose() {
+    /*private void softClose() {
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, mapView.getZoomLevel());
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()));
         ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()));
         ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-    }
+    }*/
 
-    private void hardClose() {
+    /*private void hardClose() {
         if (layerLoader != null && layerLoader.isLoading()) {
             layerLoader.stopLoading();
         }
@@ -378,7 +376,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         LocationServicesManager.disableMyLocation();
 
         ConfigurationManager.getInstance().setOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
-        softClose();
+        intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
 
         //SuggestionProviderUtil.clearHistory();
 
@@ -398,7 +396,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         ConfigurationManager.getInstance().clearObjectCache();
         
         HttpUtils.closeConnManager();
-    }
+    }*/
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -438,7 +436,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private synchronized void initOnLocationChanged(GeoPoint location) {
         if (!appInitialized) {
             mapController.setCenter(location);
-            softClose(); //save mapcenter coords
+            intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6()); //save mapcenter coords
 
             if (initLandmarkManager) {
                 UserTracker.getInstance().sendMyLocation();
@@ -843,7 +841,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         //super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == Intents.INTENT_PICKLOCATION) {
+        if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
                 String lats = intent.getStringExtra("lat");
                 String lngs = intent.getStringExtra("lng");
@@ -868,7 +866,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             } else if (resultCode != RESULT_CANCELED) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             }
-        } else if (requestCode == Intents.INTENT_MULTILANDMARK) {
+        } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
@@ -880,7 +878,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                     }
                 }
             }
-        } else if (requestCode == Intents.INTENT_MYLANDMARKS) {
+        } else if (requestCode == IntentsHelper.INTENT_MYLANDMARKS) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
@@ -897,7 +895,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
-        } else if (requestCode == Intents.INTENT_AUTO_CHECKIN) {
+        } else if (requestCode == IntentsHelper.INTENT_AUTO_CHECKIN) {
             if (resultCode == RESULT_OK) {
                 long favouriteId = intent.getLongExtra("favourite", 0);
                 FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
@@ -909,7 +907,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
                 }
             }
-        } else if (requestCode == Intents.INTENT_CALENDAR) {
+        } else if (requestCode == IntentsHelper.INTENT_CALENDAR) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);

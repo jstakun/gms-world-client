@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.ui.Intents;
+import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
@@ -28,7 +28,7 @@ public class DealMapDispatchActivity extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
 
-        Intents intents = new Intents(this, null, null);
+        IntentsHelper intents = new IntentsHelper(this, null, null);
         boolean abort = false;
 
 

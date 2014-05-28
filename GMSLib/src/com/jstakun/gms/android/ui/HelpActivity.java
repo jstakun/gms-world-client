@@ -37,7 +37,7 @@ public final class HelpActivity extends Activity {
     private WebView webView;
     private LinearLayout webviewHolder;
     private View backButton;
-    private Intents intents = null;
+    private IntentsHelper intents = null;
     private final Button.OnClickListener backListener = new Button.OnClickListener() {
 
         public void onClick(View view) {
@@ -66,7 +66,7 @@ public final class HelpActivity extends Activity {
         
         webviewHolder = (LinearLayout) findViewById(R.id.webviewHolder);
 
-        intents = new Intents(this, null, null);
+        intents = new IntentsHelper(this, null, null);
         // Froyo has a bug with calling onCreate() twice in a row, which causes the What's New page
         // that's auto-loaded on first run to appear blank. As a workaround we only call restoreState()
         // if a valid URL was loaded at the time the previous activity was torn down.

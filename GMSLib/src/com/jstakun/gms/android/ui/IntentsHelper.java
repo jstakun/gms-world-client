@@ -64,6 +64,8 @@ import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.location.LocationServicesManager;
+import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
 import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
@@ -82,7 +84,7 @@ import com.jstakun.gms.android.utils.UserTracker;
  *
  * @author jstakun
  */
-public final class Intents {
+public final class IntentsHelper {
 
     public static final int INTENT_ADD_LANDMARK = 0;
     public static final int INTENT_BLOGEO_POST = 1;
@@ -122,7 +124,7 @@ public final class Intents {
         }
     };
 
-    public Intents(Activity activity, LandmarkManager landmarkManager, AsyncTaskManager asyncTaskManager) {
+    public IntentsHelper(Activity activity, LandmarkManager landmarkManager, AsyncTaskManager asyncTaskManager) {
         this.activity = activity;
         this.landmarkManager = landmarkManager;
         this.asyncTaskManager = asyncTaskManager;
@@ -1162,7 +1164,7 @@ public final class Intents {
                     asyncTaskManager.executeSendBlogeoPostTask(name, desc, Long.toString(validityDate), activity.getString(R.string.blogeo));
                 }
             }
-        } else if (requestCode == Intents.INTENT_FILES) {
+        } else if (requestCode == IntentsHelper.INTENT_FILES) {
             if (resultCode == Activity.RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 int type = intent.getIntExtra("type", -1);
@@ -1175,13 +1177,13 @@ public final class Intents {
                     }
                 }
             }
-        } else if (requestCode == Intents.INTENT_QRCODECHECKIN) {
+        } else if (requestCode == IntentsHelper.INTENT_QRCODECHECKIN) {
             if (resultCode == Activity.RESULT_OK) {
                 String checkinLandmarkCode = intent.getStringExtra("SCAN_RESULT");
                 String qrformat = intent.getStringExtra("SCAN_RESULT_FORMAT");
                 asyncTaskManager.executeQrCodeCheckInTask(checkinLandmarkCode, qrformat, activity.getString(R.string.qrcheckin));
             }
-        } else if (requestCode == Intents.INTENT_CHECKIN) {
+        } else if (requestCode == IntentsHelper.INTENT_CHECKIN) {
             if (resultCode == Activity.RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String name = intent.getStringExtra("name");
@@ -1201,7 +1203,7 @@ public final class Intents {
                     }
                 } 
             }
-        } else if (requestCode == Intents.INTENT_LAYERS) {
+        } else if (requestCode == IntentsHelper.INTENT_LAYERS) {
             if (resultCode == Activity.RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 if (StringUtils.equals(action, "load")) {
@@ -1218,6 +1220,53 @@ public final class Intents {
                 }
             }
         }
+    }
+    
+    public void softClose(int zoomLevel, int latitudeE6, int longitudeE6) {
+        ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, zoomLevel);
+        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(latitudeE6));
+        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(longitudeE6));
+        ConfigurationManager.getDatabaseManager().saveConfiguration(false);
+    }
+    
+    public void hardClose(LayerLoader layerLoader, RouteRecorder routeRecorder, Handler loadingHandler, Runnable gpsRunnable, int zoomLevel, int latitudeE6, int longitudeE6) {
+    	LoggerUtils.debug("hardClose");
+    	if (layerLoader != null && layerLoader.isLoading()) {
+            layerLoader.stopLoading();
+        }
+    	
+    	showShortToast(Locale.getMessage(R.string.closingText));
+    	
+        UserTracker.getInstance().trackEvent("Exit", activity.getLocalClassName() + ".hardClose", "", 0);
+        
+        loadingHandler.removeCallbacks(gpsRunnable);
+
+        LocationServicesManager.disableMyLocation();
+
+        ConfigurationManager.getInstance().setOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
+        softClose(zoomLevel, latitudeE6, longitudeE6);
+
+        //SuggestionProviderUtil.clearHistory();
+
+        IconCache.getInstance().clearAll();
+        landmarkManager.clearLandmarkStore();
+        asyncTaskManager.cancelAll();
+
+        if (routeRecorder != null && ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+            String[] details = routeRecorder.saveRoute();
+            if (details != null) {
+                LoggerUtils.debug("Saving route: " + details[0]);
+            }
+        }
+
+        PersistenceManagerFactory.getFileManager().clearImageCache();
+        ConfigurationManager.getDatabaseManager().closeAllDatabases();
+        ConfigurationManager.getInstance().clearObjectCache();
+        
+        HttpUtils.closeConnManager();
+        
+        showShortToast(Locale.getMessage(R.string.Close_app_bye));
+        LoggerUtils.debug("Bye...");
     }
     
     private static class ThumbnailLoadedHandler extends Handler {

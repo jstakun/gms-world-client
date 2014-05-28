@@ -26,7 +26,7 @@ public class CommentActivity extends Activity implements OnClickListener {
     private View commentButton, cancelButton;
     private EditText commentText;
     private String service, placeId, name;
-    private Intents intents;
+    private IntentsHelper intents;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -42,7 +42,7 @@ public class CommentActivity extends Activity implements OnClickListener {
             //UserTracker.getInstance().startSession(this);
             UserTracker.getInstance().trackActivity(getClass().getName());
 
-            intents = new Intents(this, null, null);
+            intents = new IntentsHelper(this, null, null);
 
             service = extras.getString("service");
             placeId = extras.getString("placeId");
