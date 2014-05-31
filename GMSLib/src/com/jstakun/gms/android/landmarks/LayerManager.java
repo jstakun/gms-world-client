@@ -16,6 +16,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.deals.CategoriesManager;
+import com.jstakun.gms.android.deals.Category;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -274,10 +275,15 @@ public class LayerManager {
         int icon = 0;
         try {
             CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-            if (type == LAYER_ICON_LARGE) {
-            	icon = cm.getCategory(categoryId).getLargeIcon();
-            } else {
-                icon = cm.getCategory(categoryId).getIcon();
+            if (cm != null) {
+            	Category c = cm.getCategory(categoryId);
+            	if (c != null) {
+            		if (type == LAYER_ICON_LARGE) {
+            			icon = c.getLargeIcon();
+            		} else {
+            			icon = c.getIcon();
+            		}
+            	}	
             }
         } catch (Exception e) {
             LoggerUtils.error("LayerManager.getDealCategoryIcon() exception:", e);

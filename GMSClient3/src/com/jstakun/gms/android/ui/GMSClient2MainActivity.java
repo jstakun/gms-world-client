@@ -97,14 +97,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private ExpandableListView drawerList;
     private ProgressBar loadingProgressBar;
     private int mapProvider;
-    private boolean appInitialized = false,
-            initLandmarkManager = false, isRouteDisplayed = false;
+    private boolean appInitialized = false, isRouteDisplayed = false;
     private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             IGeoPoint location = LocationServicesManager.getMyLocation();
             if (location != null && !appInitialized) {
-                initOnLocationChanged(location);
+            	initOnLocationChanged(location, 0);
             } else {
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
                     //start only if helpactivity not on top
@@ -115,7 +114,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
                     double lng = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
                     GeoPoint loc = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
-                    initOnLocationChanged(new org.osmdroid.google.wrapper.GeoPoint(loc));
+                    initOnLocationChanged(new org.osmdroid.google.wrapper.GeoPoint(loc), 1);
                 }
             }
         }
@@ -184,8 +183,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     	loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
     	loadingProgressBar.setProgress(25);
-    	//TODO Progress Bar 1 - async
-        statusBar = (TextView) findViewById(R.id.statusBar);
+    	
+    	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
 
@@ -262,13 +261,16 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
+        //TODO add to others
+        appInitialized = false;
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         if (landmarkManager == null) {
             LoggerUtils.debug("Creating LandmarkManager...");
-            initLandmarkManager = true;
             landmarkManager = new LandmarkManager();
-        }
-
+            ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
+        } 
+        //
+        
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Creating AsyncTaskManager...");
@@ -292,19 +294,20 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, trackMyPosListener);
 
-        if (mapCenter != null) {
-            initOnLocationChanged(mapCenter);
+        //TODO add to others
+        if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
+        	initOnLocationChanged(mapCenter, 2);
         } else {
             Runnable r = new Runnable() {
                 public void run() {
                     if (!appInitialized) {
-                        initOnLocationChanged(LocationServicesManager.getMyLocation());
+                        initOnLocationChanged(LocationServicesManager.getMyLocation(), 3);
                     }
                 }
             };
             LocationServicesManager.runOnFirstFix(r);
         }
-        //TODO Progress Bar 2
+        
         loadingProgressBar.setProgress(50);
     }
 
@@ -414,8 +417,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
             intents.hardClose(layerLoader, routeRecorder, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
-        } else {
-            intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
+        } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
+            //TODO add to others
+        	intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
         AdsUtils.destroyAdView(this);
@@ -536,17 +540,23 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	}
     }
 
-    private synchronized void initOnLocationChanged(IGeoPoint location) {
+    private synchronized void initOnLocationChanged(IGeoPoint location, int source) {
+    	//remove
+    	//try {
+    	//	intents.showInfoToast("Setting map center to " + location.getLatitudeE6() + "," + location.getLongitudeE6() + ", source: " + source + ", lm initialized: " + landmarkManager.isInitialized());
+    	//} catch (Exception e) {
+    	//}
+    	//
         if (!appInitialized) {
-        	//TODO Progress Bar 3
         	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
 
-            if (initLandmarkManager) {
+            //TODO add to others
+            if (!landmarkManager.isInitialized()) {
                 UserTracker.getInstance().sendMyLocation();
-                ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
             }
+            //
 
             addLandmarkOverlay();
             //must be on top of other overlays
@@ -620,16 +630,15 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 //postInvalidate();
             }
 
+            loadingProgressBar.setProgress(100);
+            
             layerLoader.setRepaintHandler(loadingHandler);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 loadingImage.setVisibility(View.GONE);
             }
-
-            //TODO Progress Bar 4
-            loadingProgressBar.setProgress(100);
             
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
-
+            
             appInitialized = true;
         }
     }
@@ -694,6 +703,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             MenuItem login = menu.findItem(R.id.login);
             login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
 
+            MenuItem register = menu.findItem(R.id.register);
+            register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
+            
             return super.onPrepareOptionsMenu(menu);
         }
     }
@@ -953,7 +965,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 String name = intent.getStringExtra("name");
                 GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
                 if (!appInitialized) {
-                    initOnLocationChanged(new org.osmdroid.google.wrapper.GeoPoint(location));
+                    initOnLocationChanged(new org.osmdroid.google.wrapper.GeoPoint(location), 5);
                 } else {
                     pickPositionAction(location, true, true);
                 }
@@ -962,7 +974,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
-                initOnLocationChanged(new org.osmdroid.google.wrapper.GeoPoint(location));
+                initOnLocationChanged(new org.osmdroid.google.wrapper.GeoPoint(location), 4);
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 intents.showInfoToast(message);

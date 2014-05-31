@@ -163,7 +163,6 @@ public final class ConfigurationManager {
     
     //User Manager
     public static final String GMS_USERNAME = "gmsUsername";
-    //public static final String GMS_PASSWORD = "gmsPassword";
     public static final String GMS_NAME = "gmsName";
     public static final String GMS_TOKEN = "gmsToken";
     public static final String GMS_SCOPE = "gmsScope";
@@ -205,7 +204,7 @@ public final class ConfigurationManager {
 
     public static ConfigurationManager getInstance() {
         if (instance == null) {
-            instance = new ConfigurationManager();
+        	instance = new ConfigurationManager();
         }
         return instance;
     }
@@ -819,6 +818,10 @@ public final class ConfigurationManager {
 	            && isOn(GL_AUTH_STATUS)
 	            && isOn(FS_AUTH_STATUS)
 	            && isOn(GMS_AUTH_STATUS));
+    	}
+    	
+    	public boolean isUserLoggedInGMSWorld() {
+    		return isOn(GMS_AUTH_STATUS);
     	}
     
     	public String getLoggedInUsername() {

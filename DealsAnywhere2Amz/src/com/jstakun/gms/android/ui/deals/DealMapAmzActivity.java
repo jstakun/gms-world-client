@@ -25,6 +25,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.amazon.geo.maps.GeoPoint;
@@ -87,6 +88,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
+    private ProgressBar loadingProgressBar;
     private boolean appAbort = false;
     private boolean isStopped = false;
     private boolean initLandmarkManager = false;
@@ -159,7 +161,10 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
     private void initComponents() {
 
-        statusBar = (TextView) findViewById(R.id.statusBar);
+    	loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
+    	loadingProgressBar.setProgress(25);
+    	
+    	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
 
@@ -262,14 +267,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         if (mapCenter != null) {
             initOnLocationChanged(mapCenter);
         } else {
-            /*myLocation.runOnFirstFix(new Runnable() {
-
-             public void run() {
-             if (!appInitialized) {
-             initOnLocationChanged(myLocation.getMyLocation());
-             }
-             }
-             });*/
             skyhook.runOnFirstFix(new Runnable() {
                 public void run() {
                     if (!appInitialized) {
@@ -278,6 +275,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 }
             });
         }
+        
+        loadingProgressBar.setProgress(50);
     }
 
     @Override
@@ -376,6 +375,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
         if (!appInitialized) {
+        	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
             intents.softClose(amzMapsView.getZoomLevel(), amzMapsView.getMapCenter().getLatitudeE6(), amzMapsView.getMapCenter().getLongitudeE6());; //save mapcenter coords
 
@@ -426,9 +426,13 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 loadingHandler.sendEmptyMessage(MessageStack.STATUS_MESSAGE);
                 amzMapsView.postInvalidate();
             }
+            
+            loadingProgressBar.setProgress(100);
+            
             layerLoader.setRepaintHandler(loadingHandler);
-
+            
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
+            
             appInitialized = true;
         }
     }

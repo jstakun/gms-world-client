@@ -48,17 +48,19 @@ public class ServicesUtils {
     }
     
     public static boolean isWifiActive(Context context) {
-        try {
-            final ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();       
-            boolean isWifiAvailable = networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-            //if (!isWifiAvailable) {
-            //   LoggerUtils.debug("Wifi not available. Skipping image download or upload!"); 
-            //}
-            return isWifiAvailable;
-        } catch (Exception e) {
-            LoggerUtils.error("ServiceUtils.isNetworkActive exception:", e);
-            return false;
-        }
+    	boolean isWifiAvailable = false;
+    	if (context != null) {
+    		try {
+    			final ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    			final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();       
+    			isWifiAvailable = networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
+    			//if (!isWifiAvailable) {
+    			//   LoggerUtils.debug("Wifi not available. Skipping image download or upload!"); 
+    			//}
+    		} catch (Exception e) {
+    			LoggerUtils.error("ServiceUtils.isNetworkActive() exception:", e);
+    		}
+    	}
+    	return isWifiAvailable;
     }
 }

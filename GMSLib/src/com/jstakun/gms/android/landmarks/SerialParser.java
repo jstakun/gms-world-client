@@ -20,12 +20,13 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 public class SerialParser {
 
 	private HttpUtils utils;
+	
 	protected SerialParser() {
 		utils = new HttpUtils();
 	}
 	
 	protected void close() {
-        try {
+		try {
             if (utils != null) {
                 utils.close();
             }

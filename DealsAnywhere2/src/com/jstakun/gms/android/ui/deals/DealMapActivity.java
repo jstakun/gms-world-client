@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
@@ -76,6 +77,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             lvView, lvHotDealsButton,
             newestButton, listButton, categoriesButton,
             lvSendMailButton, lvRouteButton, thumbnailButton, loadingImage;
+    private ProgressBar loadingProgressBar;
     private boolean isStopped = false;
     private boolean initLandmarkManager = false;
     private boolean appInitialized = false;
@@ -130,7 +132,10 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
     private void initComponents() {
 
-        statusBar = (TextView) findViewById(R.id.statusBar);
+    	loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
+    	loadingProgressBar.setProgress(25);
+    	
+    	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
 
@@ -222,6 +227,8 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 }
             });
         }
+        
+        loadingProgressBar.setProgress(50);
     }
 
     @Override
@@ -308,6 +315,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
         if (!appInitialized) {
+        	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
             if (initLandmarkManager) {
                 UserTracker.getInstance().sendMyLocation();
@@ -357,9 +365,13 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 loadingHandler.sendEmptyMessage(MessageStack.STATUS_MESSAGE);
                 googleMapsView.postInvalidate();
             }
+            
+            loadingProgressBar.setProgress(100);
+            
             layerLoader.setRepaintHandler(loadingHandler);
-
+             
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
+            
             appInitialized = true;
         }
     }

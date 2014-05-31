@@ -9,6 +9,7 @@ import org.apache.http.message.BasicNameValuePair;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
+import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.StringUtil;
 
@@ -51,7 +52,10 @@ public abstract class AbstractSerialReader implements LayerReader {
     }
 
     public final void close() {
-        parser.close();
+    	//LoggerUtils.debug("Closing layer reader for " + getUrl());
+    	//long start = System.currentTimeMillis();
+    	parser.close();
+        //LoggerUtils.debug("Closed layer reader for " + getUrl() + " in " + (System.currentTimeMillis()-start) + " millis" );
     }
 
     public final String[] getUrlPrefix() {

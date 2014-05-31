@@ -281,7 +281,7 @@ public class HttpUtils {
         }
     }
 
-    public synchronized byte[] loadHttpFile(String url, boolean auth, String format) {
+    public byte[] loadHttpFile(String url, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();     
         byte[] byteBuffer = null;
         
@@ -369,7 +369,7 @@ public class HttpUtils {
         return byteBuffer;
     }
     
-    public synchronized List<ExtendedLandmark> loadLandmarkList(URI uri, List<NameValuePair> params, boolean auth, String format) {
+    public List<ExtendedLandmark> loadLandmarkList(URI uri, List<NameValuePair> params, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();
         
         List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
@@ -404,7 +404,7 @@ public class HttpUtils {
             
         		if (!postRequest.isAborted() && !closeConnManager) {
         			HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
-
+        			
         			responseCode = httpResponse.getStatusLine().getStatusCode();
 
         			if (responseCode == HttpStatus.SC_OK) {
@@ -454,7 +454,7 @@ public class HttpUtils {
                    
         						if (ois.available() > 0) {
         							int size = ois.readInt();
-        							LoggerUtils.debug("Reading " + size + " landmarks...");
+        							LoggerUtils.debug("Reading " + size + " landmarks from " + uri.toString());
         							if (size > 0) {
         								for(int i = 0;i < size;i++) {
         									try {
@@ -462,13 +462,13 @@ public class HttpUtils {
         										landmark.readExternal(ois);
         										reply.add(landmark);
         									} catch (IOException e) {
-        										LoggerUtils.error("HttpUtils.loadLandmarkList() exception: ", e);
+        										LoggerUtils.error("HttpUtils.loadLandmarkList() " + e.getClass().getName() + ": " +  e.getMessage());
         									}
         									if (postRequest.isAborted()) {
-        										LoggerUtils.debug("Breaking landmark list reading after " + i + " landmarks...");
         										break;
         									}
         								}
+        								//LoggerUtils.debug("Loaded " + reply.size() + " landmarks from " + uri.toString());
         							}
         						}
                             
@@ -488,8 +488,12 @@ public class HttpUtils {
         		LoggerUtils.error("HttpUtils.loadLandmarkList() network exception: " + errorMessage);
         	}
         } catch (Exception e) {
-            LoggerUtils.error("HttpUtils.loadLandmarkList() exception: " + e.getMessage(), e);
-            errorMessage = handleHttpException(e);
+        	if (StringUtils.equals(e.getMessage(), "Connection already shutdown")) {
+        		LoggerUtils.debug("HttpUtils.loadLandmarkList() exception: " + e.getMessage(), e);
+        	} else {
+        		LoggerUtils.error("HttpUtils.loadLandmarkList() exception: " + e.getMessage(), e);
+        	}
+        	errorMessage = handleHttpException(e);
         }
 
         //comment
@@ -502,12 +506,12 @@ public class HttpUtils {
         return reply;
     }
 
-    public synchronized void close() throws IOException {
-        if (getRequest != null) {
-        	LoggerUtils.debug("Closing connection to " + getRequest.getURI());
+    public void close() throws IOException {
+    	if (getRequest != null) {
+        	//LoggerUtils.debug("Closing connection to " + getRequest.getURI());
         	getRequest.abort();
         } else if (postRequest != null) {
-        	LoggerUtils.debug("Closing connection to " + postRequest.getURI());
+        	//LoggerUtils.debug("Closing connection to " + postRequest.getURI());
             postRequest.abort();
         }
     }
@@ -798,7 +802,7 @@ public class HttpUtils {
 	                    cm.shutdown();
 	                }
 	            } catch (Exception e) {
-	                LoggerUtils.error("HttpUtils.closeConnManager", e);
+	                LoggerUtils.error("HttpUtils.closeConnManager()", e);
 	            }
 	        }
 	        httpClient = null;
@@ -832,6 +836,7 @@ public class HttpUtils {
                 	 return false;
                  }
              } else {
+            	 LoggerUtils.debug("Invoking super class retry request after " + exception.getClass().getName());
             	 return super.retryRequest(exception, executionCount, context);
              }
     	 }   

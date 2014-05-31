@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
@@ -85,6 +86,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             lvOpenButton, lvView, lvSendMailButton,
             newestButton, listButton, layersButton,
             lvActionButton, lvRouteButton, thumbnailButton, loadingImage;
+    private ProgressBar loadingProgressBar;
     private int mapProvider;
     private boolean appInitialized = false;
     private boolean initLandmarkManager = false;
@@ -174,7 +176,10 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     private void initComponents() {
 
-        statusBar = (TextView) findViewById(R.id.statusBar);
+    	loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
+    	loadingProgressBar.setProgress(25);
+    	
+    	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
 
@@ -271,6 +276,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             };
             LocationServicesManager.runOnFirstFix(r);
         }
+        
+        loadingProgressBar.setProgress(50);
     }
 
     @Override
@@ -480,7 +487,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     private void initOnLocationChanged(IGeoPoint location) {
         if (!appInitialized) {
-            mapController.setCenter(location);
+        	loadingProgressBar.setProgress(75);
+        	mapController.setCenter(location);
 
             if (initLandmarkManager) {
                 UserTracker.getInstance().sendMyLocation();
@@ -560,13 +568,15 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 //postInvalidate();
             }
 
+            loadingProgressBar.setProgress(100);
+            
             layerLoader.setRepaintHandler(loadingHandler);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 loadingImage.setVisibility(View.GONE);
             }
 
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
-
+            
             appInitialized = true;
         }
     }
@@ -616,7 +626,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             MenuItem routeRecording = menu.findItem(R.id.trackPos);
             MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
             MenuItem saveRoute = menu.findItem(R.id.saveRoute);
-            MenuItem login = menu.findItem(R.id.login);
             menu.findItem(R.id.events).setVisible(false);
 
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
@@ -634,8 +643,12 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 }
             }
 
+            MenuItem login = menu.findItem(R.id.login);
             login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
 
+            MenuItem register = menu.findItem(R.id.register);
+            register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
+            
             return super.onPrepareOptionsMenu(menu);
         }
     }

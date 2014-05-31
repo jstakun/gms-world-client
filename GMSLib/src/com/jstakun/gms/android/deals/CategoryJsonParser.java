@@ -51,7 +51,7 @@ public class CategoryJsonParser {
 
                         int icon = 0;
                         String iconStr = cat.optString("icon");
-                        if (iconStr != null) {
+                        if (iconStr != null && c != null) {
                             //icon = cat.getString("icon");
                             try {
                                 icon = c.getResources().getIdentifier(iconStr, "drawable", c.getPackageName());
@@ -62,7 +62,7 @@ public class CategoryJsonParser {
 
                         int iconLarge = 0;
                         String iconLargeStr = cat.optString("iconLarge");
-                        if (iconLargeStr != null) {
+                        if (iconLargeStr != null && c != null) {
                             try {
                                 iconLarge = c.getResources().getIdentifier(iconLargeStr, "drawable", c.getPackageName());
                             } catch (Exception ex) {

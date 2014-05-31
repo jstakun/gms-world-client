@@ -73,6 +73,7 @@ public class LandmarkManager {
     private static final int COLOR_DODGER_BLUE = Color.argb(128, 30, 144, 255); //Dodger Blue
     private static final int COLOR_YELLOW = Color.argb(128, 255, 215, 0); //yellow
     private ObjectPool pointsPool;
+    private boolean initialized = false;
 
     public LandmarkManager() {
         layerManager = new LayerManager();
@@ -91,8 +92,13 @@ public class LandmarkManager {
     }
 
     public void initialize(List<ExtendedLandmark> dbfile, String... layers) {
-        landmarkStore.put(Commons.LOCAL_LAYER, dbfile);
+        initialized = true;
+    	landmarkStore.put(Commons.LOCAL_LAYER, dbfile);
         layerManager.initialize(layers);
+    }
+    
+    public boolean isInitialized() {
+    	return initialized;
     }
 
     public String addLandmark(double latitude, double longitude, float altitude, String name, String details, String layer, boolean deduplicate) {

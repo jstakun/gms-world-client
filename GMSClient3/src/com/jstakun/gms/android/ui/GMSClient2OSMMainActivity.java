@@ -33,6 +33,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jstakun.gms.android.ads.AdsUtils;
@@ -88,6 +89,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private ExpandableListView drawerList;
+    private ProgressBar loadingProgressBar;
     private int mapProvider;
     private boolean appInitialized = false, initLandmarkManager = false;
     private  Handler loadingHandler;
@@ -169,7 +171,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     private void initComponents() {
 
-        statusBar = (TextView) findViewById(R.id.statusBar);
+    	loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
+    	loadingProgressBar.setProgress(25);
+    	
+    	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
 
@@ -283,6 +288,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
             LocationServicesManager.runOnFirstFix(r);
         }
+        
+        loadingProgressBar.setProgress(50);
     }
 
     @Override
@@ -504,7 +511,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
         if (!appInitialized) {
-            mapController.setCenter(location);
+        	loadingProgressBar.setProgress(75);
+        	mapController.setCenter(location);
             intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6()); //save mapcenter coords
 
             if (initLandmarkManager) {
@@ -587,13 +595,15 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 postInvalidate();
             }
 
+            loadingProgressBar.setProgress(100);
+
             layerLoader.setRepaintHandler(loadingHandler);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 loadingImage.setVisibility(View.GONE);
             }
-
+            
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
-
+            
             appInitialized = true;
         }
     }
@@ -657,6 +667,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
             MenuItem login = menu.findItem(R.id.login);
             login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
+            
+            MenuItem register = menu.findItem(R.id.register);
+            register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
 
             return super.onPrepareOptionsMenu(menu);
         }
