@@ -261,7 +261,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
-        //TODO add to others
         appInitialized = false;
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         if (landmarkManager == null) {
@@ -269,7 +268,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             landmarkManager = new LandmarkManager();
             ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
         } 
-        //
         
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
@@ -294,7 +292,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, trackMyPosListener);
 
-        //TODO add to others
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
         	initOnLocationChanged(mapCenter, 2);
         } else {
@@ -418,8 +415,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	appInitialized = false;
             intents.hardClose(layerLoader, routeRecorder, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
-            //TODO add to others
-        	intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
+            intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
         AdsUtils.destroyAdView(this);
@@ -551,13 +547,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
 
-            //TODO add to others
             if (!landmarkManager.isInitialized()) {
                 UserTracker.getInstance().sendMyLocation();
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
             }
-            //
-
+            
             addLandmarkOverlay();
             //must be on top of other overlays
             addOverlay(infoOverlay);

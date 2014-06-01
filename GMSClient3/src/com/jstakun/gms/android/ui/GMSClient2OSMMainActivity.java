@@ -91,7 +91,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private ExpandableListView drawerList;
     private ProgressBar loadingProgressBar;
     private int mapProvider;
-    private boolean appInitialized = false, initLandmarkManager = false;
+    private boolean appInitialized = false;
     private  Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
@@ -245,12 +245,13 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
+        appInitialized = false;
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         if (landmarkManager == null) {
             LoggerUtils.debug("Creating LandmarkManager...");
-            initLandmarkManager = true;
             landmarkManager = new LandmarkManager();
-        }
+            ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
+        } 
 
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
@@ -275,7 +276,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, trackMyPosListener);
 
-        if (mapCenter != null) {
+        if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
         } else {
             Runnable r = new Runnable() {
@@ -393,7 +394,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
             intents.hardClose(layerLoader, routeRecorder, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
-        } else {
+        } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
         	intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
@@ -515,9 +516,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	mapController.setCenter(location);
             intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6()); //save mapcenter coords
 
-            if (initLandmarkManager) {
+            if (!landmarkManager.isInitialized()) {
                 UserTracker.getInstance().sendMyLocation();
-                ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
             }
 

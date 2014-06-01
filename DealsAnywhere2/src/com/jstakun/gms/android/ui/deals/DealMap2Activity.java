@@ -68,7 +68,7 @@ import com.jstakun.gms.android.utils.UserTracker;
 public class DealMap2Activity extends MapActivity implements OnClickListener {
 
     private static final int SHOW_MAP_VIEW = 0;
-    private MapView googleMapsView;
+    private MapView mapView;
     private MapController mapController;
     private GoogleMyLocationOverlay myLocation;
     private LayerLoader layerLoader;
@@ -89,7 +89,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private ActionBarDrawerToggle drawerToggle;
     private ProgressBar loadingProgressBar;
     private boolean isStopped = false;
-    private boolean initLandmarkManager = false;
     private boolean appInitialized = false;
     private boolean isRouteDisplayed = false;
     private GoogleInfoOverlay infoOverlay;
@@ -168,8 +167,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
 
-        googleMapsView = (MapView) findViewById(R.id.mapCanvas);
-        googleMapsView.setBuiltInZoomControls(true);
+        mapView = (MapView) findViewById(R.id.mapCanvas);
+        mapView.setBuiltInZoomControls(true);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         
@@ -206,16 +205,17 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         };
         bottomPanel.setViewResizeListener(viewResizeListener);
 
-        myLocation = new GoogleMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
+        myLocation = new GoogleMyLocationOverlay(this, mapView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
 
-        mapController = googleMapsView.getController();
+        mapController = mapView.getController();
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
+        appInitialized = false;
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         if (landmarkManager == null) {
             LoggerUtils.debug("Creating LandmarkManager...");
             landmarkManager = new LandmarkManager();
-            initLandmarkManager = true;
+            ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
         }
 
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
@@ -241,7 +241,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
 
-        if (mapCenter != null) {
+        if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
         } else {
             loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
@@ -287,15 +287,15 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 break;
             case R.id.nearbyDeals:
                 if (!lvView.isShown()) {
-                    intents.showNearbyLandmarks(getMyPosition(), new GoogleLandmarkProjection(googleMapsView));
+                    intents.showNearbyLandmarks(getMyPosition(), new GoogleLandmarkProjection(mapView));
                 }
                 break;
             case R.id.settings:
                 intents.startSettingsActivity(SettingsActivity.class);
                 break;
             case R.id.listMode:
-                intents.startCategoryListActivity(googleMapsView.getLatitudeSpan(), googleMapsView.getLongitudeSpan(),
-                        googleMapsView.getMapCenter().getLatitudeE6(), googleMapsView.getMapCenter().getLongitudeE6(), -1, -1, DealCategoryListActivity.class);
+                intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
+                        mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1, DealCategoryListActivity.class);
                 break;
             case R.id.pickMyPos:
                 intents.startPickLocationActivity();
@@ -308,9 +308,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 break;
             case R.id.refreshLayers:
                 intents.loadLayersAction(true, null, false, false, layerLoader,
-                        MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLongitudeE6()),
-                        googleMapsView.getZoomLevel());
+                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                        mapView.getZoomLevel());
                 break;
             case R.id.showMyLandmarks:
                 intents.startMyLandmarksIntent(getMyPosition());
@@ -356,18 +356,17 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
             
-            if (initLandmarkManager) {
+            if (!landmarkManager.isInitialized()) {
                 UserTracker.getInstance().sendMyLocation();
-                ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase(), Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
 
             GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);//, new String[]{LayerManager.ROUTES_LAYER});
-            googleMapsView.getOverlays().add(landmarkOverlay);
+            mapView.getOverlays().add(landmarkOverlay);
             //must be on top of other overlays
-            googleMapsView.getOverlays().add(infoOverlay);
-            googleMapsView.getOverlays().add(myLocation);
+            mapView.getOverlays().add(infoOverlay);
+            mapView.getOverlays().add(myLocation);
             
             routesManager = ConfigurationManager.getInstance().getRoutesManager();
             if (routesManager == null) {
@@ -390,9 +389,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 layerLoader = new LayerLoader(landmarkManager, messageStack);
                 LoggerUtils.debug("Loading Layers...");
                 intents.loadLayersAction(true, null, false, false, layerLoader,
-                        MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLongitudeE6()),
-                        googleMapsView.getZoomLevel());
+                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                        mapView.getZoomLevel());
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
             } else {
                 //load existing layers
@@ -402,7 +401,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                     loadingHandler.sendEmptyMessage(MessageStack.STATUS_GONE);
                 }
                 loadingHandler.sendEmptyMessage(MessageStack.STATUS_MESSAGE);
-                googleMapsView.postInvalidate();
+                mapView.postInvalidate();
             }
             
             loadingProgressBar.setProgress(100);
@@ -424,7 +423,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), cm);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), cm);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -486,7 +485,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), cm);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), cm);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -528,8 +527,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     @Override
     public boolean onSearchRequested() {
         if (appInitialized) {
-            intents.startSearchActivity(googleMapsView.getLatitudeSpan(), googleMapsView.getLongitudeSpan(),
-                    googleMapsView.getMapCenter().getLatitudeE6(), googleMapsView.getMapCenter().getLongitudeE6(), -1, true);
+            intents.startSearchActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
+                    mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, true);
             return true;
         } else {
             return false;
@@ -546,7 +545,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         isStopped = false;
 
-        GoogleMapsTypeSelector.selectMapType(googleMapsView);
+        GoogleMapsTypeSelector.selectMapType(mapView);
 
         asyncTaskManager.setActivity(this);
         
@@ -555,7 +554,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), cm);
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), cm);
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
@@ -646,10 +645,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         LoggerUtils.debug("onDestroy");
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
-            intents.hardClose(layerLoader, null, loadingHandler, gpsRunnable, googleMapsView.getZoomLevel(), googleMapsView.getMapCenter().getLatitudeE6(), googleMapsView.getMapCenter().getLongitudeE6());
-        } else {
-        	intents.softClose(googleMapsView.getZoomLevel(), googleMapsView.getMapCenter().getLatitudeE6(), googleMapsView.getMapCenter().getLongitudeE6());
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, googleMapsView.getMapCenter());
+            intents.hardClose(layerLoader, null, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
+        } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
+        	intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
+            ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
         AdsUtils.destroyAdView(this);
         System.gc();
@@ -687,7 +686,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             //System.out.println("key back pressed in activity");
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, googleMapsView.getZoomLevel(), cm);
+        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), cm);
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }return true;
@@ -748,8 +747,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     }
 
     private double[] getMyPosition() {
-        return landmarkManager.getMyPosition(googleMapsView.getMapCenter().getLatitudeE6(),
-                googleMapsView.getMapCenter().getLongitudeE6());
+        return landmarkManager.getMyPosition(mapView.getMapCenter().getLatitudeE6(),
+                mapView.getMapCenter().getLongitudeE6());
     }
 
     private void loadRoutePressedAction(ExtendedLandmark landmark) {
@@ -768,18 +767,18 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         mapController.setCenter(newCenter);
         if (loadLayers) {
             intents.loadLayersAction(true, null, clearMap, false, layerLoader,
-                    MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLatitudeE6()),
-                    MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLongitudeE6()),
-                    googleMapsView.getZoomLevel());
+                    MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+                    MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                    mapView.getZoomLevel());
         }
     }
 
     private void showRouteAction(String routeKey) {
         if (routesManager.containsRoute(routeKey)) {
             GoogleRoutesOverlay routeOverlay = new GoogleRoutesOverlay(this, routesManager, routeKey);
-            googleMapsView.getOverlays().add(routeOverlay);
+            mapView.getOverlays().add(routeOverlay);
             isRouteDisplayed = true;
-            googleMapsView.postInvalidate();
+            mapView.postInvalidate();
         }
     }
 
@@ -789,13 +788,13 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             boolean isVisible = false;
             boolean clearLandmarks = false;
 
-            GoogleLandmarkProjection projection = new GoogleLandmarkProjection(googleMapsView);
+            GoogleLandmarkProjection projection = new GoogleLandmarkProjection(mapView);
             if (projection.isVisible(g.getLatitudeE6(), g.getLongitudeE6())) {
                 isVisible = true;
             }
 
             if (!isVisible) {
-                GeoPoint mapCenter = googleMapsView.getMapCenter();
+                GeoPoint mapCenter = mapView.getMapCenter();
 
                 clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
                         g.getLatitudeE6(), g.getLongitudeE6());
@@ -806,9 +805,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             if (loadLayers && !isVisible) {
                 mapController.setCenter(g);
                 intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader,
-                        MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLongitudeE6()),
-                        googleMapsView.getZoomLevel());
+                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                        mapView.getZoomLevel());
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -904,15 +903,15 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         		} else if (msg.what == DealOfTheDayDialog.SEND_MAIL) {
         			activity.sendMessageAction();
         		} else if (msg.what == LayerLoader.LAYER_LOADED) {
-        			activity.googleMapsView.postInvalidate();
+        			activity.mapView.postInvalidate();
         		} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
         			activity.showRecommendedDeal(false);
         			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
-        				activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.googleMapsView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(activity.googleMapsView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot(), false);
+        				activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
+                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot(), false);
         			}
         		} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-        			int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.googleMapsView.getZoomLevel(), activity.cm);
+        			int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), activity.cm);
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }
