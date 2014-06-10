@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.MapView.Projection;
+import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.Overlay;
 
 /**
@@ -45,7 +45,7 @@ public class OsmRoutesOverlay extends Overlay {
     private int routeSize = 0;
     private boolean isCurrentlyRecording = false;
 
-    public OsmRoutesOverlay(Projection projection, Context context, RoutesManager routesManager, String routeName) {
+    public OsmRoutesOverlay(MapView mapView, Context context, RoutesManager routesManager, String routeName) {
         super(context);
         this.routesManager = routesManager;
         this.routeName = routeName;
@@ -54,7 +54,7 @@ public class OsmRoutesOverlay extends Overlay {
             List<ExtendedLandmark> routePoints = routesManager.getRoute(routeName);
             routeSize = routePoints.size();
             for (ExtendedLandmark l : routePoints) {
-                Point p = projection.toMapPixelsProjected(l.getLatitudeE6(), l.getLongitudeE6(), null);
+                Point p = mapView.getProjection().toProjectedPixels(l.getLatitudeE6(), l.getLongitudeE6(), null);
                 projectedPoints.add(p);
             }
         }
@@ -73,12 +73,12 @@ public class OsmRoutesOverlay extends Overlay {
             path.rewind();
 
             if (!isCurrentlyRecording && routeSize > 1) {
-                projection.toMapPixelsTranslated(projectedPoints.get(0), point1);
+                projection.toPixelsFromProjected(projectedPoints.get(0), point1);
                 canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
                 path.moveTo(point1.x, point1.y);
 
                 for (int i = 1; i < routeSize; i++) {
-                    projection.toMapPixelsTranslated(projectedPoints.get(i), point2);
+                    projection.toPixelsFromProjected(projectedPoints.get(i), point2);
                     if (MathUtils.abs(point2.x - point1.x) + MathUtils.abs(point2.y - point1.y) <= 1) {
                         continue;
                     }
@@ -99,8 +99,8 @@ public class OsmRoutesOverlay extends Overlay {
                     viewportRect.set(projection.getScreenRect());
                     ExtendedLandmark lastPoint = routePoints.get(routeSize - 1);
 
-                    projection.toMapPixelsProjected(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(), gp1);
-                    projection.toMapPixelsTranslated(gp1, point1);
+                    projection.toProjectedPixels(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(), gp1);
+                    projection.toPixelsFromProjected(gp1, point1);
 
                     canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
 
@@ -111,8 +111,8 @@ public class OsmRoutesOverlay extends Overlay {
                     while (i >= 0 && visible) {
                         ExtendedLandmark secondPoint = routePoints.get(i);
 
-                        projection.toMapPixelsProjected(secondPoint.getLatitudeE6(), secondPoint.getLongitudeE6(), gp2);
-                        projection.toMapPixelsTranslated(gp2, point2);
+                        projection.toProjectedPixels(secondPoint.getLatitudeE6(), secondPoint.getLongitudeE6(), gp2);
+                        projection.toPixelsFromProjected(gp2, point2);
 
                         if (MathUtils.abs(point2.x - point1.x) + MathUtils.abs(point2.y - point1.y) <= 1) {
                             continue;

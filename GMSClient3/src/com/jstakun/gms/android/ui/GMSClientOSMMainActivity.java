@@ -269,13 +269,13 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-            int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), null);
+            int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null);
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
         } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
             ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
-            intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
+            intents.showLandmarkDetailsView(landmark, lvView, getMyLocation(), true);
         }
 
         Integer type = (Integer) ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
@@ -420,7 +420,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     			} //System.out.println("key back pressed in activity");
     			return true;
     		} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), null);
+    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null);
     			if (coordsE6 != null) {
     				animateTo(coordsE6);
     			}
@@ -441,7 +441,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     }
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
-        if (!appInitialized) {
+        if (!appInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
         	mapController.setCenter(location);
             intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6()); //save mapcenter coords
@@ -648,21 +648,21 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 break;
             case R.id.autocheckin:
                 if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-                    intents.startAutoCheckinListActivity(getMyPosition());
+                    intents.startAutoCheckinListActivity(getMyLocation());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
                 }
                 break;
             case R.id.qrcheckin:
                 if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-                    intents.startQrCodeCheckinActivity(getMyPosition());
+                    intents.startQrCodeCheckinActivity(getMyLocation());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
                 }
                 break;
             case R.id.searchcheckin:
                 if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-                    intents.startLocationCheckinActivity(getMyPosition());
+                    intents.startLocationCheckinActivity(getMyLocation());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
                 }
@@ -686,14 +686,14 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 showMyPositionAction(true);
                 break;
             case R.id.showMyLandmarks:
-                intents.startMyLandmarksIntent(getMyPosition());
+                intents.startMyLandmarksIntent(getMyLocation());
                 break;
             case R.id.recentLandmarks:
-                intents.startRecentLandmarksIntent(getMyPosition());
+                intents.startRecentLandmarksIntent(getMyLocation());
                 break;
             case R.id.blogeo:
                 if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-                    if (!landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER).isEmpty()) {
+                    if (landmarkManager.hasMyLocation()) {
                         intents.startBlogeoActivity();
                     } else {
                         intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -705,7 +705,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             case R.id.friendsCheckins:
                 if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)
                         || ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
-                    intents.startFriendsCheckinsIntent(getMyPosition());
+                    intents.startFriendsCheckinsIntent(getMyLocation());
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Checkin_required_error));
                 }
@@ -759,7 +759,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 break;
             case R.id.newestLandmarks:
                 final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
-                intents.startNewestLandmarkIntent(getMyPosition(), excluded, 2);
+                intents.startNewestLandmarkIntent(getMyLocation(), excluded, 2);
                 break;
             //case R.id.events:
                 //intents.startCalendarActivity(getMyPosition());
@@ -769,7 +769,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 break;
             case R.id.listLandmarks:
 	    		if (!lvView.isShown()) {
-	    			intents.showNearbyLandmarks(getMyPosition(), new OsmLandmarkProjection(mapView));
+	    			intents.showNearbyLandmarks(getMyLocation(), new OsmLandmarkProjection(mapView));
 	    		}
 	    		break;    
             case R.id.shareScreenshot:
@@ -833,11 +833,11 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     	  }	else if (v == newestButton) {
 			  UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestLandmarks", "", 0);
 			  final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.HOTWIRE_LAYER};
-			  intents.startNewestLandmarkIntent(getMyPosition(), excluded, 7);
+			  intents.startNewestLandmarkIntent(getMyLocation(), excluded, 7);
 		  } else if (v == listButton) {
 			  UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleLandmarks", "", 0);
 			  if (!lvView.isShown()) {
-				  intents.showNearbyLandmarks(getMyPosition(), new OsmLandmarkProjection(mapView));
+				  intents.showNearbyLandmarks(getMyLocation(), new OsmLandmarkProjection(mapView));
 			  }
 		  } else if (v == layersButton) {
 			  UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowLayersList", "", 0);
@@ -884,7 +884,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), null);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -926,14 +926,14 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), null);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
                 }
             }
         } else {
-            intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader);
+            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader);
         }
     }
    
@@ -1018,7 +1018,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     }
 
     private void addRoutesOverlay(String routeName) {
-        OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay(mapView.getProjection(), this, routesManager, routeName);
+        OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay(mapView, this, routesManager, routeName);
         addOverlay(routesOverlay);
     }
 
@@ -1026,8 +1026,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         mapView.postInvalidate();
     }
 
-    private double[] getMyPosition() {
-        return landmarkManager.getMyPosition(mapView.getMapCenter().getLatitudeE6(),
+    private double[] getMyLocation() {
+        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitudeE6(),
                 mapView.getMapCenter().getLongitudeE6());
     }
 
@@ -1121,7 +1121,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         		} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
         			activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
         		} else if (msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-        			int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null);
+        			int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null);
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }

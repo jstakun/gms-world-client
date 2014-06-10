@@ -374,7 +374,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 	}
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
-        if (!appInitialized) {
+        if (!appInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
             intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());; //save mapcenter coords
@@ -738,40 +738,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         }
     }
 
-    /*private void softClose() {
-        ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, amzMapsView.getZoomLevel());
-        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(amzMapsView.getMapCenter().getLatitudeE6()));
-        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(amzMapsView.getMapCenter().getLongitudeE6()));
-        ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-    }*/
-
-    /*private void hardClose() {
-        if (layerLoader != null && layerLoader.isLoading()) {
-            layerLoader.stopLoading();
-        }
-
-        UserTracker.getInstance().trackEvent("Exit", getLocalClassName() + ".hardClose", "", 0);
-        
-        loadingHandler.removeCallbacks(gpsRunnable);
-
-        skyhook.disableMyLocation();
-
-        intents.softClose(amzMapsView.getZoomLevel(), amzMapsView.getMapCenter().getLatitudeE6(), amzMapsView.getMapCenter().getLongitudeE6());
-
-        //SuggestionProviderUtil.clearHistory();
-
-        IconCache.getInstance().clearAll();
-        landmarkManager.clearLandmarkStore();
-
-        PersistenceManagerFactory.getFileManager().clearImageCache();
-        ConfigurationManager.getDatabaseManager().closeAllDatabases();
-        ConfigurationManager.getInstance().clearObjectCache();
-        
-        HttpUtils.closeConnManager();
-    }*/
-
     protected double[] getMyPosition() {
-        return landmarkManager.getMyPosition(mapView.getMapCenter().getLatitudeE6(),
+        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitudeE6(),
                 mapView.getMapCenter().getLongitudeE6());
     }
 

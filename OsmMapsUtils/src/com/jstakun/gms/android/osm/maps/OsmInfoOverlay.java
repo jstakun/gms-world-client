@@ -17,7 +17,6 @@ import java.util.Map;
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.MapView.Projection;
 import org.osmdroid.views.overlay.Overlay;
 
 /**
@@ -48,8 +47,7 @@ public class OsmInfoOverlay extends Overlay {
     @Override
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
         if (shadow == false) {
-            final Projection projection = mapView.getProjection();
-            viewportRect.set(projection.getScreenRect());
+            viewportRect.set(mapView.getProjection().getScreenRect());
 
             float dip = mapView.getResources().getDisplayMetrics().density;
             paint.setStyle(Paint.Style.FILL);

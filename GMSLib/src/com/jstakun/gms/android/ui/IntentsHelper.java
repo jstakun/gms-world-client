@@ -1074,14 +1074,21 @@ public final class IntentsHelper {
         try {
             Bitmap screenShot = v.getDrawingCache();
             //check if screenshot is black
-            boolean isBlack = true;
+            boolean isBlack = false;
+            int blackPixelsCount = 0;
+    		int w = screenShot.getWidth();
+    	    int h = screenShot.getHeight();
+    	    int totalPixels = w * h;
             if (screenShot != null) {
-            	for(int i=0; i < screenShot.getWidth(); i++) {
-            		for(int j=0; j < screenShot.getHeight(); j++)  {                    
-            			if(screenShot.getPixel(i, j) != Color.BLACK) {
-            				isBlack = false;
-            				break;
-            			}
+            	for(int i=0; i < w; i++) {
+            		for(int j=0; j < h; j++)  {                    
+            			if (screenShot.getPixel(i, j) == Color.BLACK) {
+            				blackPixelsCount++;
+            				if ((blackPixelsCount / totalPixels) > 0.75) {
+        	    				isBlack = true;
+        	    				break;
+        	    			}
+            			}	
             		}   
             	}
             }

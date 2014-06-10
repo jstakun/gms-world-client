@@ -90,7 +90,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private DialogManager dialogManager;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton,
-            lvOpenButton, lvView, lvSendMailButton,
+            lvOpenButton, lvView, lvSendMailButton, myLocationButton,
             thumbnailButton, lvActionButton, lvRouteButton, loadingImage;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
@@ -196,7 +196,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         lvRouteButton = findViewById(R.id.lvCarRouteButton);
         lvSendMailButton = findViewById(R.id.lvSendMailButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
-
+        myLocationButton = findViewById(R.id.myLocationButton);
+        
         lvActionButton.setOnClickListener(this);
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
@@ -205,6 +206,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         lvRouteButton.setOnClickListener(this);
         lvSendMailButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
+        myLocationButton.setOnClickListener(this);
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         //getActionBar().setHomeButtonEnabled(true);
@@ -323,6 +325,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         asyncTaskManager.setActivity(this);
        
+        //TODO check if myloc is available
+        if (landmarkManager.hasMyLocation()){
+        	myLocationButton.setVisibility(View.VISIBLE);
+        }
+        
         //verify access token
         asyncTaskManager.executeGetTokenTask();
 
@@ -543,7 +550,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	//} catch (Exception e) {
     	//}
     	//
-        if (!appInitialized) {
+        if (!appInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
 
@@ -801,7 +808,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		    		break;
 				case R.id.blogeo:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-		        		if (!landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER).isEmpty()) {
+		        		if (landmarkManager.hasMyLocation()) {
 		        			intents.startBlogeoActivity();
 		        		} else {
 		            		intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -899,50 +906,54 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     public void onClick(View v) {
-    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton) {	
-        	ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-        	if (selectedLandmark != null) {
-        		if (v == lvCloseButton) {
-        			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", selectedLandmark.getLayer(), 0);
-        			lvView.setVisibility(View.GONE);
-        			getActionBar().show();
-        			landmarkManager.clearLandmarkOnFocusQueue();
-        			landmarkManager.setSelectedLandmark(null);
-        			landmarkManager.setSeletedLandmarkUI();
-        		} else if (v == lvCommentButton) {
-        			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CommentSelectedLandmark", selectedLandmark.getLayer(), 0);
-        			intents.commentButtonPressedAction();
-        		} else if (v == lvActionButton) {
-        			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
-        			boolean authStatus = intents.checkAuthStatus(selectedLandmark);
-        			if (authStatus) {
-        				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
-        					//dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Html.fromHtml(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName()))));
-        					checkinManager.checkinAction(true, false, selectedLandmark);
-        				} else {
-        					checkinManager.checkinAction(false, false, selectedLandmark);
-        				}
-        			}
-        		} else if (v == lvOpenButton || v == thumbnailButton) {
-        			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
-        			intents.openButtonPressedAction(selectedLandmark);
-        		} else if (v == lvCallButton) {
-        			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
-        			intents.startPhoneCallActivity(selectedLandmark);
-        		} else if (v == lvRouteButton) {
-        			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
-        			if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-        				asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
-        			} else {
-        				intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
-        			}
-        		} else if (v == lvSendMailButton) {
-        			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
-        			intents.shareLandmarkAction(dialogManager);
-        		}
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton || v == myLocationButton) {
+    		if (v == myLocationButton) {
+        		showMyPositionAction(true);
         	} else {
-        		intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-        	}
+        		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+        		if (selectedLandmark != null) {
+        			if (v == lvCloseButton) {
+        				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", selectedLandmark.getLayer(), 0);
+        				lvView.setVisibility(View.GONE);
+        				getActionBar().show();
+        				landmarkManager.clearLandmarkOnFocusQueue();
+        				landmarkManager.setSelectedLandmark(null);
+        				landmarkManager.setSeletedLandmarkUI();
+        			} else if (v == lvCommentButton) {
+        				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CommentSelectedLandmark", selectedLandmark.getLayer(), 0);
+        				intents.commentButtonPressedAction();
+        			} else if (v == lvActionButton) {
+        				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
+        				boolean authStatus = intents.checkAuthStatus(selectedLandmark);
+        				if (authStatus) {
+        					if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
+        						//dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Html.fromHtml(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName()))));
+        						checkinManager.checkinAction(true, false, selectedLandmark);
+        					} else {
+        						checkinManager.checkinAction(false, false, selectedLandmark);
+        					}
+        				}
+        			} else if (v == lvOpenButton || v == thumbnailButton) {
+        				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
+        				intents.openButtonPressedAction(selectedLandmark);
+        			} else if (v == lvCallButton) {
+        				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
+        				intents.startPhoneCallActivity(selectedLandmark);
+        			} else if (v == lvRouteButton) {
+        				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
+        				if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
+        					asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
+        				} else {
+        					intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+        				}
+        			} else if (v == lvSendMailButton) {
+        				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
+        				intents.shareLandmarkAction(dialogManager);
+        			} 
+        		} else {
+        			intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+        		}
+        	}	
     	} else {
     		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
     	}
@@ -1077,10 +1088,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         }
     }
 
-    private void updateGpsLocation(double lat, double lng, float altitude, float accuracy, float speed) {
+    private void updateLocation(double lat, double lng, float altitude, float accuracy, float speed) {
         if (landmarkManager != null) {
             landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
         }
+        
+        //TODO show my location button
+        myLocationButton.setVisibility(View.VISIBLE);
 
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             showMyPositionAction(false);
@@ -1122,7 +1136,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     private void addRoutesOverlay(String routeName) {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay(((org.osmdroid.views.MapView) mapView).getProjection(), this, routesManager, routeName);
+            OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routesManager, routeName);
             addOverlay(routesOverlay);
             //OsmPathOverlay pathOverlay = new OsmPathOverlay(Color.RED, this, routesManager, routeName);
             //addOverlay(pathOverlay);
@@ -1141,7 +1155,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     private double[] getMyPosition() {
-        return landmarkManager.getMyPosition(mapView.getMapCenter().getLatitudeE6(),
+        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitudeE6(),
                 mapView.getMapCenter().getLongitudeE6());
     }
 
@@ -1287,7 +1301,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             		activity.showRouteAction((String) msg.obj);
             	} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION || msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
                 	Location location = (Location) msg.obj;
-                	activity.updateGpsLocation(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), location.getAccuracy(), location.getSpeed());
+                	activity.updateLocation(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), location.getAccuracy(), location.getSpeed());
             	}
         	}
         }

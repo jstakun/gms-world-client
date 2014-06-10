@@ -57,6 +57,8 @@ public class LayerJSONParser {
                 if (jsonRoot.has("ResultSet")) {
                     parseJSonArray(jsonRoot, layers, excluded);
                 }
+            } else {
+            	LoggerUtils.error("Received server response " + responseCode + ": " + jsonResp);
             }
         } catch (Exception ex) {
             LoggerUtils.error("JSonParser error: ", ex);

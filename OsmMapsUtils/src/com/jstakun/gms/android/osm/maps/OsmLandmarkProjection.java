@@ -9,7 +9,7 @@ import android.graphics.Rect;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.MapView.Projection;
+import org.osmdroid.views.Projection;
 
 /**
  *
@@ -17,21 +17,21 @@ import org.osmdroid.views.MapView.Projection;
  */
 public class OsmLandmarkProjection implements ProjectionInterface {
 
-    private final Projection proj;
     private final Rect viewportRect = new Rect();
     private final Point p = new Point();
     private final Point tmp = new Point();
+    private Projection proj = null;
             
     public OsmLandmarkProjection(MapView mapView) {
-        proj = mapView.getProjection();
+    	proj = mapView.getProjection();
         viewportRect.set(proj.getScreenRect());
     }
 
     public void toPixels(int latE6, int lonE6, Point point) {
         //GeoPoint g = new GeoPoint(latE6, lonE6);
         //proj.toPixels(g, point);
-        proj.toMapPixelsProjected(latE6, lonE6, tmp);
-        proj.toMapPixelsTranslated(tmp, point);
+        proj.toProjectedPixels(latE6, lonE6, tmp);
+        proj.toPixelsFromProjected(tmp, point);
     }
 
     public boolean isVisible(int latE6, int lonE6) {

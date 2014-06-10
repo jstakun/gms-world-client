@@ -16,7 +16,6 @@ import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 import java.util.List;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.MapView.Projection;
 import org.osmdroid.views.overlay.Overlay;
 
 /**
@@ -94,8 +93,7 @@ public class OsmLandmarkOverlay extends Overlay {
     public boolean onSingleTapUp(final MotionEvent e, final MapView mapView) {
         //System.out.println("onSingleTapUp");
         ProjectionInterface proj = new OsmLandmarkProjection(mapView);
-        final Projection projection = mapView.getProjection();
-        viewportRect.set(projection.getScreenRect());
+        viewportRect.set(mapView.getProjection().getScreenRect());
         if (lm.findLandmarksInRadius(viewportRect.left + (int) e.getX(), viewportRect.top + (int) e.getY(), proj, true, mapView.getResources().getDisplayMetrics())) {
             landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
         }

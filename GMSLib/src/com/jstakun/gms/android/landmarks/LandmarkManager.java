@@ -992,10 +992,14 @@ public class LandmarkManager {
         return landmarkPaintManager.getSelectedLandmarkDrawable();
     }
 
-    public double[] getMyPosition(int lat, int lon) {
+    public boolean hasMyLocation() {
+    	return !getLandmarkStoreLayer(Commons.MY_POSITION_LAYER).isEmpty();
+    }
+    
+    public double[] getMyLocation(int lat, int lon) {
         double latt, lonn;
 
-        List<ExtendedLandmark> myPosV = getUnmodifableLayer(Commons.MY_POSITION_LAYER);
+        List<ExtendedLandmark> myPosV = getLandmarkStoreLayer(Commons.MY_POSITION_LAYER);
         if (!myPosV.isEmpty()) {
             ExtendedLandmark myPos = myPosV.get(0);
             latt = myPos.getQualifiedCoordinates().getLatitude();

@@ -278,10 +278,10 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                         mapView.getZoomLevel());
                 break;
             case R.id.showMyLandmarks:
-                intents.startMyLandmarksIntent(getMyPosition());
+                intents.startMyLandmarksIntent(getMyLocation());
                 break;
             case R.id.recentLandmarks:
-                intents.startRecentLandmarksIntent(getMyPosition());
+                intents.startRecentLandmarksIntent(getMyLocation());
                 break;
             case R.id.exit:
                 dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
@@ -314,7 +314,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     }
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
-        if (!appInitialized) {
+        if (!appInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
             
@@ -385,7 +385,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), cm);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -447,14 +447,14 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), cm);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm);
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
                 }
             }
         } else {
-            intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), null, null, -1, null);
+            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), null, null, -1, null);
         }
     }
 
@@ -480,11 +480,11 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         } else if (v == newestButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestDeals", "", 0);
             final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.HOTWIRE_LAYER, Commons.LOCAL_LAYER};
-            intents.startNewestLandmarkIntent(getMyPosition(), excluded, 2);
+            intents.startNewestLandmarkIntent(getMyLocation(), excluded, 2);
         } else if (v == listButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleDeals", "", 0);
             if (!lvView.isShown()) {
-                intents.showNearbyLandmarks(getMyPosition(), new GoogleLandmarkProjection(mapView));
+                intents.showNearbyLandmarks(getMyLocation(), new GoogleLandmarkProjection(mapView));
             }
         } else if (v == categoriesButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowDealCategoriesList", "", 0);
@@ -496,7 +496,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             sendMessageAction();
         } else if (v == lvHotDealsButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowHotDeals", "", 0);
-            intents.startDealsOfTheDayIntent(getMyPosition(), null);
+            intents.startDealsOfTheDayIntent(getMyLocation(), null);
         }
     }
 
@@ -528,13 +528,13 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), cm);
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm);
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
         } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
             ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
-            intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
+            intents.showLandmarkDetailsView(landmark, lvView, getMyLocation(), true);
         }
 
         if (ConfigurationManager.getInstance().containsObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class)) {
@@ -640,7 +640,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             //System.out.println("key back pressed in activity");
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), cm);
+        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm);
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }return true;
@@ -655,38 +655,8 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         }
     }
 
-    /*private void softClose() {
-        ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, googleMapsView.getZoomLevel());
-        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLatitudeE6()));
-        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLongitudeE6()));
-        ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-    }*/
-
-    /*private void hardClose() {
-        if (layerLoader != null && layerLoader.isLoading()) {
-            layerLoader.stopLoading();
-        }
-        
-        UserTracker.getInstance().trackEvent("Exit", getLocalClassName() + ".hardClose", "", 0);
-        
-        loadingHandler.removeCallbacks(gpsRunnable);
-
-        intents.softClose(googleMapsView.getZoomLevel(), googleMapsView.getMapCenter().getLatitudeE6(), googleMapsView.getMapCenter().getLongitudeE6());
-
-        //SuggestionProviderUtil.clearHistory();
-
-        IconCache.getInstance().clearAll();
-        landmarkManager.clearLandmarkStore();
-
-        PersistenceManagerFactory.getFileManager().clearImageCache();
-        ConfigurationManager.getDatabaseManager().closeAllDatabases();
-        ConfigurationManager.getInstance().clearObjectCache();
-        
-        HttpUtils.closeConnManager();
-    }*/
-
-    private double[] getMyPosition() {
-        return landmarkManager.getMyPosition(mapView.getMapCenter().getLatitudeE6(),
+    private double[] getMyLocation() {
+        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitudeE6(),
                 mapView.getMapCenter().getLongitudeE6());
     }
 
@@ -770,7 +740,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         if (recommended != null) {
             landmarkManager.setSelectedLandmark(recommended);
-            dealOfTheDayDialog = new DealOfTheDayDialog(this, recommended, getMyPosition(), loadingHandler, intents);
+            dealOfTheDayDialog = new DealOfTheDayDialog(this, recommended, getMyLocation(), loadingHandler, intents);
             ConfigurationManager.getInstance().putObject(AlertDialogBuilder.OPEN_DIALOG, AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG);
             if (!isStopped) {
                 dealOfTheDayDialog.show();
@@ -843,7 +813,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                             MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot(), false);
                 	}
             	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), activity.cm);
+            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), activity.cm);
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }

@@ -50,9 +50,6 @@ public class GoogleInfoOverlay extends Overlay {
             if (text == null) {
                 float distance = 40075.16f;
                 if (mapView.getZoomLevel() > 2) {
-                    //distance = DistanceUtils.distanceInKilometer(mapView.getWidth(), mapView.getHeight(), MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                    //        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), mapView.getZoomLevel());
-
                     distance = DistanceUtils.distanceInKilometer(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
                             mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
 

@@ -352,7 +352,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 	}
 
     private synchronized void initOnLocationChanged(GeoPoint location) {
-        if (!appInitialized) {
+        if (!appInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
             
@@ -701,40 +701,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         }
     }
 
-    /*private void softClose() {
-        ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, googleMapsView.getZoomLevel());
-        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLatitudeE6()));
-        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(googleMapsView.getMapCenter().getLongitudeE6()));
-        ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-    }*/
-
-    /*private void hardClose() {
-    	intents.showShortToast(Locale.getMessage(R.string.closingText));
-        
-    	if (layerLoader != null && layerLoader.isLoading()) {
-            layerLoader.stopLoading();
-        }
-        
-        UserTracker.getInstance().trackEvent("Exit", getLocalClassName() + ".hardClose", "", 0);
-
-        loadingHandler.removeCallbacks(gpsRunnable);
-
-        intents.softClose(googleMapsView.getZoomLevel(), googleMapsView.getMapCenter().getLatitudeE6(), googleMapsView.getMapCenter().getLongitudeE6());
-
-        //SuggestionProviderUtil.clearHistory();
-
-        IconCache.getInstance().clearAll();
-        landmarkManager.clearLandmarkStore();
-
-        PersistenceManagerFactory.getFileManager().clearImageCache();
-        ConfigurationManager.getDatabaseManager().closeAllDatabases();
-        ConfigurationManager.getInstance().clearObjectCache();
-
-        HttpUtils.closeConnManager();
-        
-        intents.showShortToast(Locale.getMessage(R.string.Close_app_bye));
-    }*/
-
     private GeoPoint getMyLocation() {
         Location location = ConfigurationManager.getInstance().getLocation();
         if (location != null) {
@@ -747,7 +713,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     }
 
     private double[] getMyPosition() {
-        return landmarkManager.getMyPosition(mapView.getMapCenter().getLatitudeE6(),
+        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitudeE6(),
                 mapView.getMapCenter().getLongitudeE6());
     }
 
