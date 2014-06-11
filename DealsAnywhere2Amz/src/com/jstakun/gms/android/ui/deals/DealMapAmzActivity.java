@@ -83,7 +83,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvOpenButton,
-            lvView, lvSendMailButton, lvRouteButton,
+            lvView, lvSendMailButton, lvRouteButton, myLocationButton,
             thumbnailButton, loadingImage;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -173,6 +173,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         lvCallButton = findViewById(R.id.lvCallButton);
         lvRouteButton = findViewById(R.id.lvCarRouteButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
+        myLocationButton = findViewById(R.id.myLocationButton);
 
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
@@ -180,6 +181,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
+        myLocationButton.setOnClickListener(this);
 
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setBuiltInZoomControls(true);
@@ -322,9 +324,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             case R.id.pickMyPos:
                 intents.startPickLocationActivity();
                 break;
-            case R.id.showMyPos:
-                showMyPositionAction(true);
-                break;
             case R.id.search:
                 onSearchRequested();
                 break;
@@ -343,9 +342,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             case R.id.exit:
                 dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
                 break;
-            //case android.R.id.home:
-                //dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
-                //break;
             case R.id.about:
                 dialogManager.showAlertDialog(AlertDialogBuilder.INFO_DIALOG, null, null);
                 break;
@@ -534,30 +530,34 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     }
 
     public void onClick(View v) {
-    	ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-		if (selectedLandmark != null) {
-			if (v == lvCloseButton) {
-				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
-				lvView.setVisibility(View.GONE);
-				getActionBar().show();
-				landmarkManager.clearLandmarkOnFocusQueue();
-				landmarkManager.setSelectedLandmark(null);
-				landmarkManager.setSeletedLandmarkUI();
-			} else if (v == lvOpenButton || v == thumbnailButton) {
-				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
-				intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
-			} else if (v == lvCallButton) {
-				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
-				callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
-			} else if (v == lvRouteButton) {
-				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
-				loadRoutePressedAction(landmarkManager.getSeletedLandmarkUI());
-			} else if (v == lvSendMailButton) {
-				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
-				sendMessageAction();
-			}
-		} else {
-    		intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+    	if (v == myLocationButton) {
+    		showMyPositionAction(true);
+    	} else {
+    		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+    		if (selectedLandmark != null) {
+    			if (v == lvCloseButton) {
+    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
+    				lvView.setVisibility(View.GONE);
+    				getActionBar().show();
+    				landmarkManager.clearLandmarkOnFocusQueue();
+    				landmarkManager.setSelectedLandmark(null);
+    				landmarkManager.setSeletedLandmarkUI();
+				} else if (v == lvOpenButton || v == thumbnailButton) {
+					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
+					intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+				} else if (v == lvCallButton) {
+					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
+					callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+				} else if (v == lvRouteButton) {
+					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
+					loadRoutePressedAction(landmarkManager.getSeletedLandmarkUI());
+				} else if (v == lvSendMailButton) {
+					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
+					sendMessageAction();
+				}
+    		} else {
+    			intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+    		}
     	}
     }
 
@@ -582,6 +582,10 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         skyhook.enableMyLocation();
 
         asyncTaskManager.setActivity(this);
+        
+        if (landmarkManager.hasMyLocation()){
+        	myLocationButton.setVisibility(View.VISIBLE);
+        }
         
         //verify access token
         asyncTaskManager.executeGetTokenTask();
@@ -935,6 +939,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                     Location location = (Location) msg.obj;
                     if (activity.landmarkManager != null) {
                     	activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
+                    	activity.myLocationButton.setVisibility(View.VISIBLE);
                     }
                 }
             }

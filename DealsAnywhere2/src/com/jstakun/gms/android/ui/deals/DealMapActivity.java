@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -74,7 +73,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvOpenButton,
-            lvView, lvHotDealsButton,
+            lvView, lvHotDealsButton, myLocationButton,
             newestButton, listButton, categoriesButton,
             lvSendMailButton, lvRouteButton, thumbnailButton, loadingImage;
     private ProgressBar loadingProgressBar;
@@ -151,7 +150,8 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
-
+        
+        myLocationButton = findViewById(R.id.myLocationButton);
         newestButton = findViewById(R.id.newestButton);
         listButton = findViewById(R.id.listButton);
         categoriesButton = findViewById(R.id.layersButton);
@@ -161,6 +161,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         listButton.setOnClickListener(this);
         categoriesButton.setOnClickListener(this);
         lvHotDealsButton.setOnClickListener(this);
+        myLocationButton.setOnClickListener(this);
 
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setBuiltInZoomControls(true);
@@ -264,9 +265,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 break;
             case R.id.pickMyPos:
                 intents.startPickLocationActivity();
-                break;
-            case R.id.showMyPos:
-                showMyPositionAction(true);
                 break;
             case R.id.search:
                 onSearchRequested();
@@ -459,7 +457,9 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     }
 
     public void onClick(View v) {
-        if (v == lvCloseButton) {
+    	if (v == myLocationButton) {
+    		showMyPositionAction(true);
+    	} else if (v == lvCloseButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
             lvView.setVisibility(View.GONE);
             landmarkManager.clearLandmarkOnFocusQueue();
@@ -522,6 +522,10 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         GoogleMapsTypeSelector.selectMapType(mapView);
 
         asyncTaskManager.setActivity(this);
+        
+        if (landmarkManager.hasMyLocation()){
+        	myLocationButton.setVisibility(View.VISIBLE);
+        }
         
         //verify access token
         asyncTaskManager.executeGetTokenTask();
@@ -829,6 +833,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 	Location location = (Location) msg.obj;
                 	if (activity.landmarkManager != null) {
                 		activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
+                		activity.myLocationButton.setVisibility(View.VISIBLE);
                 	}
             	}
         	} 

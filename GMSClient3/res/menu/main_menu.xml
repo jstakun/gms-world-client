@@ -14,8 +14,8 @@
           android:title="@string/addLandmark" android:icon="@android:drawable/ic_menu_add" /> 
     <item android:id="@+id/pickMyPos" android:showAsAction="ifRoom|withText"
           android:title="@string/pickMyPos" android:icon="@android:drawable/ic_menu_mapmode"/> 
-    <item android:id="@+id/showMyPos" android:showAsAction="ifRoom|withText"
-          android:title="@string/showMyPos" android:icon="@android:drawable/ic_menu_mylocation"/>
+    <!-- item android:id="@+id/showMyPos" android:showAsAction="ifRoom|withText"
+          android:title="@string/showMyPos" android:icon="@android:drawable/ic_menu_mylocation"/-->
     <item android:id="@+id/settings" android:showAsAction="ifRoom|withText"
           android:title="@string/settings" android:icon="@android:drawable/ic_menu_preferences"/>
     <item android:id="@+id/checkin"

@@ -82,7 +82,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvOpenButton,
-            lvView, lvSendMailButton, lvRouteButton,
+            lvView, lvSendMailButton, lvRouteButton, myLocationButton,
             thumbnailButton, loadingImage;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -159,13 +159,15 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         lvCallButton = findViewById(R.id.lvCallButton);
         lvRouteButton = findViewById(R.id.lvCarRouteButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
-
+        myLocationButton = findViewById(R.id.myLocationButton);
+        
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
         lvSendMailButton.setOnClickListener(this);
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
+        myLocationButton.setOnClickListener(this);
 
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setBuiltInZoomControls(true);
@@ -299,9 +301,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 break;
             case R.id.pickMyPos:
                 intents.startPickLocationActivity();
-                break;
-            case R.id.showMyPos:
-                showMyPositionAction(true);
                 break;
             case R.id.search:
                 onSearchRequested();
@@ -497,7 +496,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     }
 
     public void onClick(View v) {
-    	ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+    	if (v == myLocationButton) {
+    		showMyPositionAction(true);
+    	} else {
+    		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
     		if (selectedLandmark != null) {
     			if (v == lvCloseButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
@@ -519,9 +521,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
     				sendMessageAction();
     			}
-    	} else {
-    		intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-    	}
+    		} else {
+    			intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+    		}
+    	}	
     }
 
     @Override
@@ -548,6 +551,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         GoogleMapsTypeSelector.selectMapType(mapView);
 
         asyncTaskManager.setActivity(this);
+        
+        if (landmarkManager.hasMyLocation()){
+        	myLocationButton.setVisibility(View.VISIBLE);
+        }
         
         //verify access token
         asyncTaskManager.executeGetTokenTask();
@@ -895,6 +902,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			Location location = (Location) msg.obj;
         			if (activity.landmarkManager != null) {
         				activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
+        				activity.myLocationButton.setVisibility(View.VISIBLE);
         			}
         		}
         	}

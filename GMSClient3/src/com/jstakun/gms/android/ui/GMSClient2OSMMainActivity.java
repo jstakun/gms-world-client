@@ -768,9 +768,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    	case R.id.clearMap:
 		    		clearMapAction();
 		    		break;
-		    	case R.id.showMyPos:
-		    		showMyPositionAction(true);
-		    		break;
 		    	case R.id.showMyLandmarks:
 		    		intents.startMyLandmarksIntent(getMyLocation());
 		    		break;
@@ -1176,7 +1173,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		@Override
 		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", "AddName", "", 0);
-        	if (groupPosition == 0 || groupPosition == 3 || groupPosition == 4) {
+        	if (groupPosition == 0 || groupPosition == 3 || groupPosition == 4 || groupPosition == 5) {
         		drawerLayout.closeDrawer(drawerList);
         		onMenuItemSelected((int)id);
         		return true;

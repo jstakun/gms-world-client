@@ -6,8 +6,8 @@
           android:title="@string/listMode" android:icon="@android:drawable/ic_menu_agenda"/>
     <item android:id="@+id/pickMyPos"
           android:title="@string/pickMyPos" android:icon="@android:drawable/ic_menu_mapmode"/>
-    <item android:id="@+id/showMyPos"
-          android:title="@string/showMyPos" android:icon="@android:drawable/ic_menu_mylocation"/>
+    <!-- item android:id="@+id/showMyPos"
+          android:title="@string/showMyPos" android:icon="@android:drawable/ic_menu_mylocation"/-->
     <item android:id="@+id/search"
           android:title="@string/search" android:icon="@drawable/ic_menu_search"/>
     <item android:id="@+id/refreshLayers"

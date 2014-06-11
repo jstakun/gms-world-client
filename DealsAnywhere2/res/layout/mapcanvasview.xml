@@ -1,51 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- RelativeLayout
-	android:id="@+id/loadingWidgetP"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:background="#ffffffff"
-	android:layout_centerInParent="true">
-            <ImageView
-	android:id="@+id/loadingImage"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:src="@drawable/currency_dollar"
-	android:contentDescription="@string/loadingText"
-	android:layout_centerVertical="true"
-	android:layout_centerHorizontal="true"/>
-            <TextView
-	android:id="@+id/loadingText"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	style="@style/LoadingText"
-	android:layout_below="@+id/loadingImage"
-	android:text="@string/loadingText"
-	android:layout_centerVertical="true"
-	android:layout_centerHorizontal="true"/>
-    </RelativeLayout-->
     <include layout="@layout/loading"/>
-    
     <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:id="@+id/mapCanvasWidgetM"
     android:background="@color/trans_light_gray"
     android:visibility="gone">
-
         <FrameLayout
          android:layout_width="fill_parent"
          android:layout_height="fill_parent">
-
             <com.google.android.maps.MapView
     android:id="@+id/mapCanvas"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:clickable="true"
     android:apiKey="@string/googleMapsKey"/>
-  
+            <ImageButton
+			android:id="@+id/myLocationButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:contentDescription="@string/showMyPos"
+			android:src="@android:drawable/ic_menu_mylocation" 
+			android:layout_gravity="bottom|right"
+        	android:layout_marginBottom="44dip"
+        	android:layout_marginRight="3dip"
+        	android:background="@drawable/mypos_shape"
+        	android:visibility="gone"/>
             <include layout="@layout/statusbar"/>
-            
             <LinearLayout
     android:id="@+id/topPanel"
     android:layout_width="fill_parent"
