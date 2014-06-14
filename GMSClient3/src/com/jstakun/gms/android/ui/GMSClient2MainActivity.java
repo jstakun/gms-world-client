@@ -16,6 +16,7 @@ import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -542,7 +543,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	}
     }
 
-    private synchronized void initOnLocationChanged(IGeoPoint location, int source) {
+    private synchronized void initOnLocationChanged(final IGeoPoint location, int source) {
     	//remove
     	//try {
     	//	intents.showInfoToast("Setting map center to " + location.getLatitudeE6() + "," + location.getLongitudeE6() + ", source: " + source + ", lm initialized: " + landmarkManager.isInitialized());
@@ -551,9 +552,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	//
         if (!appInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
-            mapController.setCenter(location);
-
-            if (!landmarkManager.isInitialized()) {
+        	    	
+        	mapController.setCenter(location);
+        	
+        	if (!landmarkManager.isInitialized()) {
                 UserTracker.getInstance().sendMyLocation();
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
             }

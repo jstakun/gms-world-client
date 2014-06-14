@@ -18,6 +18,7 @@ import android.content.pm.ResolveInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.SpannableString;
 import android.view.KeyEvent;
@@ -446,12 +447,12 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     	}		
     }
 
-    private synchronized void initOnLocationChanged(GeoPoint location) {
+    private synchronized void initOnLocationChanged(final GeoPoint location) {
         if (!appInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
+        	
         	mapController.setCenter(location);
-            intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6()); //save mapcenter coords
-
+        	
             if (!landmarkManager.isInitialized()) {
                 UserTracker.getInstance().sendMyLocation();
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
