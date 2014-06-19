@@ -9,7 +9,6 @@ import org.apache.http.message.BasicNameValuePair;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
-import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.StringUtil;
 

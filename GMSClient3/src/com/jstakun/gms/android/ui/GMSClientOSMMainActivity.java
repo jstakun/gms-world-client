@@ -18,7 +18,6 @@ import android.content.pm.ResolveInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.text.SpannableString;
 import android.view.KeyEvent;

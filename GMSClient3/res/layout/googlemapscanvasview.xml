@@ -27,8 +27,8 @@
 			android:contentDescription="@string/showMyPos"
 			android:src="@android:drawable/ic_menu_mylocation" 
 			android:layout_gravity="bottom|right"
-        	android:layout_marginBottom="44dip"
-        	android:layout_marginRight="3dip"
+        	android:layout_marginBottom="48dip"
+        	android:layout_marginRight="4dip"
         	android:background="@drawable/mypos_shape"
         	android:visibility="gone"/> 
             
