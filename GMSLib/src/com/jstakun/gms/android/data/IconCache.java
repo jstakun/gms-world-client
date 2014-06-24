@@ -219,6 +219,7 @@ public class IconCache {
                     serverLoading = true;
                 }
             } else if (type == LayerManager.LAYER_FILESYSTEM) {
+            	//LoggerUtils.debug("Loading " + FileManager.getIconsFolderPath() + "/" + uri);
                 img = PersistenceManagerFactory.getFileManager().readImageFile(FileManager.getIconsFolderPath(), uri, displayMetrics);
             }
 

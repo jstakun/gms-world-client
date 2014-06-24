@@ -105,6 +105,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.GL_SEND_STATUS);
 		boolean result = false;
 		try {
+			
 			long expires_in = json.optLong(ConfigurationManager.GL_EXPIRES_IN, -1);
 			
 			if (expires_in > 0) {
@@ -116,15 +117,13 @@ public final class GoogleUtils extends AbstractSocialUtils {
 			ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, json.getString(ConfigurationManager.GMS_TOKEN));
 			
 			String refreshToken = json.optString("refresh_token");
-			if (refreshToken != null) {
+			if (StringUtils.isNotEmpty(refreshToken)) {
  				ConfigurationManager.getInstance().putString(GL_REFRESH_TOKEN, refreshToken);
+ 				LoggerUtils.debug("Setting gl refresh token");
 			}
 						
 			String userid = json.getString(ConfigurationManager.GL_USERNAME);
-			ConfigurationManager.getInstance().putString(
-					ConfigurationManager.GL_USERNAME,
-					userid + "@gg");
-			
+			ConfigurationManager.getInstance().putString(ConfigurationManager.GL_USERNAME,userid + "@gg");
 			String username = json.optString(ConfigurationManager.GL_NAME);
 			if (username != null) {
 				ConfigurationManager.getInstance().putString(ConfigurationManager.GL_NAME, username);

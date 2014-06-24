@@ -1103,15 +1103,17 @@ public class FileManager implements PersistenceManager {
         
         private void deleteFiles(File dir, FileDeletePredicate fp) {
         	File[] fileList = dir.listFiles();
-        	LoggerUtils.debug("Found " + fileList.length +  " items in " + dir.getAbsolutePath());
-            for (File f : Iterables.filter(Arrays.asList(fileList), fp)) {
-            	if (f.isDirectory()) {
-            		deleteFiles(f, fp);
-            	} 
-            	LoggerUtils.debug("Deleting file " + f.getAbsolutePath() + 
+        	if (fileList != null) {
+        		LoggerUtils.debug("Found " + fileList.length +  " items in " + dir.getAbsolutePath());
+        		for (File f : Iterables.filter(Arrays.asList(fileList), fp)) {
+        			if (f.isDirectory()) {
+        				deleteFiles(f, fp);
+        			} 
+        			LoggerUtils.debug("Deleting file " + f.getAbsolutePath() + 
                 		" created on " + DateTimeUtils.getShortDateTimeString(f.lastModified(), Locale.US));
-            	f.delete();
-            }
+        			f.delete();
+        		}
+        	}
         }
     }
     

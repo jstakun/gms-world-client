@@ -61,7 +61,7 @@ public class LocationServicesManager {
     }
 
     public static void disableMyLocation() {
-        if (isGpsHardwarePresent && myLocation != null) {
+        if (myLocation != null) {
             //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             myLocation.disableCompass();
             //} else {

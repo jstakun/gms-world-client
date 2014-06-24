@@ -86,20 +86,22 @@ import com.jstakun.gms.android.utils.UserTracker;
  */
 public final class IntentsHelper {
 
-    public static final int INTENT_ADD_LANDMARK = 0;
-    public static final int INTENT_BLOGEO_POST = 1;
+    private static final int INTENT_ADD_LANDMARK = 0;
+    private static final int INTENT_BLOGEO_POST = 1;
     private static final int INTENT_PREFS = 2;
-    public static final int INTENT_FILES = 3;
-    public static final int INTENT_QRCODECHECKIN = 4;
-    public static final int INTENT_CHECKIN = 5;
+    private static final int INTENT_FILES = 3;
+    private static final int INTENT_QRCODECHECKIN = 4;
+    private static final int INTENT_CHECKIN = 5;
     public static final int INTENT_PICKLOCATION = 6;
     public static final int INTENT_MULTILANDMARK = 7;
     public static final int INTENT_MYLANDMARKS = 8;
-    public static final int INTENT_LAYERS = 9;
+    private static final int INTENT_LAYERS = 9;
     private static final int INTENT_CATEGORIES = 10;
-    public static final int INTENT_AUTO_CHECKIN = 11;
+    protected static final int INTENT_AUTO_CHECKIN = 11;
     public static final int INTENT_CALENDAR = 12;
+    
     private static final String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
+    
     private Activity activity;
     private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
@@ -217,7 +219,7 @@ public final class IntentsHelper {
         extras.putString("service", service);
         Intent intent = new Intent(activity, OAuth2Activity.class);
         intent.putExtras(extras);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, INTENT_LAYERS);
     }
 
     public void startLoginActivity() {

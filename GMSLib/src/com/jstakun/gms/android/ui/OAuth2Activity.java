@@ -17,6 +17,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Html;
@@ -66,7 +67,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 
 		UserTracker.getInstance().trackActivity(getClass().getName());
 
-		intents = new IntentsHelper(this, null, null);
+		intents = new IntentsHelper(this, ConfigurationManager.getInstance().getLandmarkManager(), null);
 
 		webView = (WebView) findViewById(R.id.webview);
 		rl = findViewById(R.id.loadingWebView);
@@ -102,7 +103,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 			socialUtils = OAuthServiceFactory.getSocialUtils(serviceName);
 			loadUrl(webView, OAuthServiceFactory.getOAuthString(serviceName));
 		} else {
-			finishWithToast(Locale.getMessage(R.string.OAuth_service_missing));
+			finishWithToast(Locale.getMessage(R.string.OAuth_service_missing), null);
 		}
 	}
 
@@ -134,12 +135,9 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 			if (dialog instanceof ProgressDialog) {
 				ProgressDialog progressDialog = (ProgressDialog) dialog;
 				if (serviceName != null) {
-					String serviceStr = OAuthServiceFactory
-							.getServiceName(serviceName);
+					String serviceStr = OAuthServiceFactory.getServiceName(serviceName);
 					if (serviceStr != null) {
-						progressDialog.setMessage(Html.fromHtml(Locale
-								.getMessage(R.string.Oauth_progress_message,
-										serviceStr)));
+						progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Oauth_progress_message,serviceStr)));
 					}
 				}
 			}
@@ -178,11 +176,11 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-			break;
-		default:
-			return super.onOptionsItemSelected(item);
+			case android.R.id.home:
+				finish();
+				break;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
@@ -191,7 +189,13 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		finish();
 	}
 
-	private void finishWithToast(String message) {
+	private void finishWithToast(String message, String layer) {
+		if (layer != null) {
+			Intent result = new Intent();
+			result.putExtra("action", "load");
+        	result.putExtra("layer", layer);
+        	setResult(RESULT_OK, result);
+		}
 		finish();
 		intents.showInfoToast(message);
 	}
@@ -211,15 +215,21 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 				String secret = json.optString("secret");
 				socialUtils.storeAccessToken(new Token(token, secret));
 				if (socialUtils.initOnTokenPresent(json)) {
-					finishWithToast(Locale.getMessage(R.string.Authn_success));
+					if (serviceName.equals(Commons.FACEBOOK)) {
+						finishWithToast(Locale.getMessage(R.string.Authn_success), Commons.FACEBOOK_LAYER);
+			        } else if (serviceName.equals(Commons.FOURSQUARE)) {
+			        	finishWithToast(Locale.getMessage(R.string.Authn_success), Commons.FOURSQUARE_LAYER);
+			        } else {
+			        	finishWithToast(Locale.getMessage(R.string.Authn_success), null);
+			        }
 				} else {
-					finishWithToast(Locale.getMessage(R.string.Authz_error));
+					finishWithToast(Locale.getMessage(R.string.Authz_error), null);
 				}
 			} else {
-				finishWithToast(Locale.getMessage(R.string.Authz_error));
+				finishWithToast(Locale.getMessage(R.string.Authz_error), null);
 			}
 		} else {
-			finishWithToast(Locale.getMessage(R.string.Authz_error));
+			finishWithToast(Locale.getMessage(R.string.Authz_error), null);
 		}
 	}
 
@@ -279,7 +289,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 			LoggerUtils.debug("onPageStarted url: " + url);
 			
 			if (url.startsWith(OAuthServiceFactory.CALLBACK_ERROR_URL)) {
-				finishWithToast(Locale.getMessage(R.string.Authz_error));
+				finishWithToast(Locale.getMessage(R.string.Authz_error), null);
 			}
 		}
 
@@ -302,11 +312,11 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 					//process page title
 					processJSon(view.getTitle());
 	    		} else if (StringUtils.startsWith(view.getTitle(), "401")) {
-	    			finishWithToast(Locale.getMessage(R.string.Authz_error));		
+	    			finishWithToast(Locale.getMessage(R.string.Authz_error), null);		
 	    		} else if (StringUtils.startsWith(view.getTitle(), "403")) {
-	    			finishWithToast(Locale.getMessage(R.string.Forbidden_connection_error));
+	    			finishWithToast(Locale.getMessage(R.string.Forbidden_connection_error), null);
 	    		} else if (StringUtils.startsWith(view.getTitle(), "500")) {
-	    			finishWithToast(Locale.getMessage(R.string.Unexpected_error));
+	    			finishWithToast(Locale.getMessage(R.string.Unexpected_error), null);
 	    		}
 
 				rl.setVisibility(View.GONE);
