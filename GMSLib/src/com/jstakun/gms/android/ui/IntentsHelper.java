@@ -251,6 +251,24 @@ public final class IntentsHelper {
 
         return true;
     }
+    
+    public boolean checkAuthStatus(String selectedLayer) {
+        if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER))
+                && ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
+            return true;
+        } else if (selectedLayer.equals(Commons.FACEBOOK_LAYER)
+                && ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
+            return true;
+        } else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER)
+                && ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
+            return true;
+        } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)
+                && ConfigurationManager.getUserManager().isUserLoggedIn()) {
+            return true;
+        } else {
+        	return false;
+        }	
+    }
 
 
     protected void startLoginActivity(int type) {
@@ -811,7 +829,7 @@ public final class IntentsHelper {
             lvCommentButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
             visibleButtons -= 2;
-        } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLandmark.getLayer())) { //GMS World checkinabe layers
+        } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLandmark.getLayer())) { //GMS World checkinable layers
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
             if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
                 lvActionButton.setImageResource(R.drawable.login);

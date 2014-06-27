@@ -102,7 +102,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
     private void close(int position) {
         Intent result = new Intent();
-        result.putExtra("favourite", favourites.get(position).getId());
+        result.putExtra("favourite", favourites.get(position).getKey());
         setResult(RESULT_OK, result);
         finish();
     }
@@ -126,7 +126,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
     private void remove(int position) {
         //delete from db
-        long id = favourites.get(position).getId();
+        int id = favourites.get(position).hashCode();
         FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
         int response = fdb.deleteLandmark(id);
 

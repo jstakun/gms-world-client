@@ -923,12 +923,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
         				boolean authStatus = intents.checkAuthStatus(selectedLandmark);
         				if (authStatus) {
-        					if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
-        						//dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Html.fromHtml(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName()))));
-        						checkinManager.checkinAction(true, false, selectedLandmark);
-        					} else {
-        						checkinManager.checkinAction(false, false, selectedLandmark);
-        					}
+        					boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
+        					checkinManager.checkinAction(addToFavourites, false, selectedLandmark);
         				}
         			} else if (v == lvOpenButton || v == thumbnailButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);

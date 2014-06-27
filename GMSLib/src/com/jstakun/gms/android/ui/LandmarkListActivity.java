@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -136,11 +137,15 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         if (v.getId() == android.R.id.list) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             currentPos = info.position;
-            menu.setHeaderTitle(getLandmarksTask.getLandmarks().get(info.position).getName());
+            LandmarkParcelable landmark = getLandmarksTask.getLandmarks().get(info.position);
+            menu.setHeaderTitle(landmark.getName());
             menu.setHeaderIcon(R.drawable.ic_dialog_menu_generic);
-            String[] menuItems = getResources().getStringArray(R.array.filesContextMenu);
-            for (int i = 0; i < menuItems.length; i++) {
-                menu.add(Menu.NONE, i, i, menuItems[i]);
+            String[] menuItems = getResources().getStringArray(R.array.landmarkContextMenu);
+            boolean authStatus = intents.checkAuthStatus(landmark.getLayer());
+            for (int i = 0; i < menuItems.length; i++) { //open, checkin, delete	
+                if (i != 1 || authStatus) {
+                	menu.add(Menu.NONE, i, Menu.NONE, menuItems[i]);
+                }
             }
         }
     }
@@ -148,11 +153,22 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         int menuItemIndex = item.getItemId();
-
+            
         if (menuItemIndex == 0) {
             close(currentPos, "load");
         } else if (menuItemIndex == 1) {
-            deleteLandmarkDialog.setTitle(Locale.getMessage(R.string.Landmark_delete_prompt, getLandmarksTask.getLandmarks().get(currentPos).getName()));
+        	int hashCode = getLandmarksTask.getLandmarks().get(currentPos).hashCode();
+        	ExtendedLandmark selectedLandmark = landmarkManager.findLandmarkById(hashCode);
+        	if (selectedLandmark != null) {
+        		AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
+        		CheckinManager checkinManager = new CheckinManager(asyncTaskManager, this);
+        		boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
+        		checkinManager.checkinAction(addToFavourites, false, selectedLandmark);
+        	} else {
+        		intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
+        	}
+        } else if (menuItemIndex == 2) {
+        	deleteLandmarkDialog.setTitle(Locale.getMessage(R.string.Landmark_delete_prompt, getLandmarksTask.getLandmarks().get(currentPos).getName()));
             deleteLandmarkDialog.show();
         }
 

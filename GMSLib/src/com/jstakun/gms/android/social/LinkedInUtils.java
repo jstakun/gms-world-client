@@ -54,8 +54,9 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 			
 			String name = json.optString(ConfigurationManager.LN_NAME);
 
+			ConfigurationManager.getInstance().putLong(ConfigurationManager.LN_LOGIN_DATE, System.currentTimeMillis());
+			
 			long expires_in = json.optLong(ConfigurationManager.LN_EXPIRES_IN,-1);
-
 			if (expires_in > 0) {
 				ConfigurationManager.getInstance().putLong(ConfigurationManager.LN_EXPIRES_IN,
 						System.currentTimeMillis() + (expires_in * 1000));
@@ -118,7 +119,8 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 						LN_AUTH_SECRET_KEY,
 						ConfigurationManager.LN_USERNAME,
 						ConfigurationManager.LN_EXPIRES_IN,
-						ConfigurationManager.LN_NAME });
+						ConfigurationManager.LN_NAME,
+						ConfigurationManager.LN_LOGIN_DATE});
 		ConfigurationManager.getInstance().setOff(ConfigurationManager.LN_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOff(ConfigurationManager.LN_SEND_STATUS);
 

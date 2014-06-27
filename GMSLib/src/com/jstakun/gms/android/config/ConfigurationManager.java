@@ -166,6 +166,8 @@ public final class ConfigurationManager {
     public static final String GMS_NAME = "gmsName";
     public static final String GMS_TOKEN = "gmsToken";
     public static final String GMS_SCOPE = "gmsScope";
+    public static final String GMS_LOGIN_DATE = "gmsLoginDate";
+    
     public static final String FB_AUTH_STATUS = "fbAuthStatus";   
     public static final String FB_SEND_STATUS = "fbSendStatus";
     public static final String FB_USERNAME = "fbUsername";
@@ -173,19 +175,27 @@ public final class ConfigurationManager {
     public static final String FB_BIRTHDAY = "fbBirthday";
     public static final String FB_NAME = "fbName";
     public static final String FB_EXPIRES_IN = "fbExpiresIn";
+    public static final String FB_LOGIN_DATE = "fbLoginDate";
+    
     public static final String TWEET_AUTH_STATUS = "tweetAuthStatus";
     public static final String TWEET_SEND_STATUS = "tweetSendStatus";
     public static final String TWEET_USERNAME = "twUsername";
     public static final String TWEET_NAME = "twName";
+    public static final String TWEET_LOGIN_DATE = "twLoginDate";
+    
     public static final String LN_AUTH_STATUS = "lnAuthStatus";
     public static final String LN_SEND_STATUS = "lnSendStatus";
     public static final String LN_USERNAME = "lnUsername";
     public static final String LN_NAME = "lnName";
     public static final String LN_EXPIRES_IN = "lnExpiresIn";
+    public static final String LN_LOGIN_DATE = "lnLoginDate";
+    
     public static final String FS_AUTH_STATUS = "fsAuthStatus";
     public static final String FS_USERNAME = "fsUsername";
     public static final String FS_NAME = "fsName";
     public static final String FS_SEND_STATUS = "fsSendStatus";
+    public static final String FS_LOGIN_DATE = "fsLoginDate";
+    
     public static final String GL_AUTH_STATUS = "glAuthStatus";
     public static final String GL_EXPIRES_IN = "glExpiresIn";
     public static final String GL_SEND_STATUS = "glSendStatus";
@@ -193,6 +203,8 @@ public final class ConfigurationManager {
     public static final String GL_NAME = "glName";
     public static final String GL_GENDER = "glGender";
     public static final String GL_BIRTHDAY = "glBirthday";
+    public static final String GL_LOGIN_DATE = "glLoginDate";
+    
     public static final String USER_EMAIL = "userEmail";
     private static final int GUEST_LIMIT = 10;
     //

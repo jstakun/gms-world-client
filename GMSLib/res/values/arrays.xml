@@ -667,6 +667,11 @@
         <item>ATA</item>
         <item>ATA</item>
     </string-array>
+    <string-array name="landmarkContextMenu">
+        <item>Open</item>
+        <item>Checkin</item>
+        <item>Delete</item>
+    </string-array>
     <string-array name="filesContextMenu">
         <item>Open</item>
         <item>Delete</item>

@@ -122,7 +122,7 @@ public class Layer {
         return type;
     }
 
-    public boolean inCheckinable() {
+    public boolean isCheckinable() {
         return checkinable;
     }
 

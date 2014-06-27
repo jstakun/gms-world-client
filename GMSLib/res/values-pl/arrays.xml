@@ -355,6 +355,11 @@
         <item>Queen Maud Land</item>
         <item>British Antarctic Territory</item>
     </string-array>
+    <string-array name="landmarkContextMenu">
+        <item>Otw\u00f3rz</item>
+        <item>Zamelduj</item>
+        <item>Usu\u0144</item>
+    </string-array>
     <string-array name="filesContextMenu">
         <item>Otw\u00f3rz</item>
         <item>Usu\u0144</item>

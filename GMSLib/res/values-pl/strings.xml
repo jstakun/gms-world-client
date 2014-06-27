@@ -165,31 +165,6 @@
 
      <!-- JSONParser -->
      <string name="creation_date">Data utworzenia: %1$s</string>
-     <!-- string name="category">Kategoria: %1$s</string>
-     <string name="merchant">Sprzedawca: %1$s</string>
-     <string name="artist">Artysta: %1$s</string>
-     <string name="venue">Miejsce: %1$s</string>
-     <string name="description">Opis: %1$s</string>
-     <string name="address">Adres: %1$s</string>
-     <string name="phone">Nr telefonu: %1$s</string>
-     <string name="checkinUser">%1$s by\u0142(a) tutaj %2$s</string>
-     <string name="start_date">Termin rozpocz\u0119cia: %1$s</string>
-     <string name="end_date">Termin zako\u0144czenia: %1$s</string>
-     <string name="expiration_date">Termin wyga\u015bni\u0119cia: %1$s</string>
-     <string name="upload_date">Data przes\u0142ania: %1$s</string>
-     <string name="taken_date">Data wykonania: %1$s</string>
-     <string name="price">Cena: %1$s</string>
-     <string name="discount">, obni\u017cka: %1$s, oszcz\u0119dzasz: %2$s</string>
-     <string name="dealOfTheDay">To jest okazja dnia!</string>
-     <string name="dealType">Rodzaj okazji: %1$s</string>
-     <string name="photo.url.noname"><![CDATA[<font color=\"red\">%1$s %2$s zrobi\u0142(a) tutaj </font> <a href=\"%3$s\">zdj\u0119cie</a>.]]></string>
-     <string name="photo.url"><![CDATA[<font color=\"red\">%1$s %2$s zrobi\u0142(a) tutaj zdj\u0119cie </font><a href=\"%3$s\">%4$s</a>.]]></string>
-     <string name="label.empty">Bez nazwy</string>
-     <string name="source">\u0179r\u00f3d\u0142o: %1$s</string>
-     <string name="homepage">Strona internetowa</string>
-     <string name="menu">Menu</string>
-     <string name="photo">Zdj\u0119cie</string>
-     <string name="trending"><![CDATA[<font color=\"red\">W tej chwili jest tutaj zameldowanych %1$s os\u00f3b!</font>]]></string-->
 
      <!-- Errors -->
      <string name="Internet.connection.error">B\u0142\u0105d po\u0142\u0105czenia z internetem!</string>
@@ -352,6 +327,7 @@
     <string name="Social.Logout.successful">Wylogowanie udane</string>
     <string name="Social.loginButton">Zaloguj do %1$s</string>
     <string name="Social.logoutButton">Wyloguj z %1$s</string>
+    <string name="Social.login.statusyeswithdate">Jeste\u015b zalogowany(a) jako %1$s od %2$s.\nKliknij aby zobaczy\u0107 profil.</string>
     <string name="Social.login.statusyes">Jeste\u015b zalogowany(a) jako %1$s.\nKliknij aby zobaczy\u0107 profil.</string>
     <string name="Social.login.statusno">Nie jeste\u015b zalogowany(a) do %1$s.\nKliknij aby si\u0119 zalogowa\u0107.</string>
     <string name="Social.Checkin.error">B\u0142\u0105d rejestracji</string>

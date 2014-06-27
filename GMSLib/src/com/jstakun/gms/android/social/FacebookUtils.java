@@ -60,6 +60,8 @@ public final class FacebookUtils extends AbstractSocialUtils {
 				ConfigurationManager.getInstance().putLong(ConfigurationManager.FB_EXPIRES_IN, System.currentTimeMillis() + (expires_in * 1000));
 			}
 				
+			ConfigurationManager.getInstance().putLong(ConfigurationManager.FB_LOGIN_DATE, System.currentTimeMillis());
+			
 			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 				
 		} catch (Exception ex) {
@@ -89,7 +91,8 @@ public final class FacebookUtils extends AbstractSocialUtils {
 						ConfigurationManager.FB_GENDER,
 						ConfigurationManager.FB_BIRTHDAY,
 						ConfigurationManager.FB_EXPIRES_IN,
-						ConfigurationManager.FB_NAME });
+						ConfigurationManager.FB_NAME,
+						ConfigurationManager.FB_LOGIN_DATE});
 		ConfigurationManager.getInstance().setOff(ConfigurationManager.FB_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOff(ConfigurationManager.FB_SEND_STATUS);
 

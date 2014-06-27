@@ -49,6 +49,7 @@ public final class FoursquareUtils extends AbstractSocialUtils {
                     FS_AUTH_KEY,
                     ConfigurationManager.FS_USERNAME,
                     ConfigurationManager.FS_NAME,
+                    ConfigurationManager.FS_LOGIN_DATE
                 });
         ConfigurationManager.getInstance().setOff(ConfigurationManager.FS_AUTH_STATUS);
         ConfigurationManager.getInstance().setOff(ConfigurationManager.FS_SEND_STATUS);
@@ -74,6 +75,8 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 			if (StringUtils.isNotEmpty(email)) {
 				ConfigurationManager.getUserManager().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
 			}
+			
+			ConfigurationManager.getInstance().putLong(ConfigurationManager.FS_LOGIN_DATE, System.currentTimeMillis());
 			
 			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);		
         } catch (Exception ex) {

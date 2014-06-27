@@ -4,6 +4,9 @@
  */
 package com.jstakun.gms.android.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,11 +14,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.MercatorUtils;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -55,37 +54,30 @@ public class FavouritesDbDataSource {
         dbHelper.close();
         dbHelper = null;
     }
-
-    public FavouritesDAO addLandmark(ExtendedLandmark landmark, String key) {
+    
+    public void addLandmark(FavouritesDAO landmark, String key) {
         ContentValues values = new ContentValues();
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_ID, landmark.hashCode());
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_NAME, landmark.getName());
-        double latitude = MercatorUtils.normalizeE6(landmark.getQualifiedCoordinates().getLatitude());
-        values.put(FavouritesDbSQLiteOpenHelper.COLUMN_LATITUDE, latitude);
-        double longitude = MercatorUtils.normalizeE6(landmark.getQualifiedCoordinates().getLongitude());
-        values.put(FavouritesDbSQLiteOpenHelper.COLUMN_LONGITUDE, longitude);
+        values.put(FavouritesDbSQLiteOpenHelper.COLUMN_LATITUDE, landmark.getLatitude());
+        values.put(FavouritesDbSQLiteOpenHelper.COLUMN_LONGITUDE, landmark.getLongitude());
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_LAYER, landmark.getLayer());
-        values.put(FavouritesDbSQLiteOpenHelper.COLUMN_MAX_DISTANCE, 0);
-        values.put(FavouritesDbSQLiteOpenHelper.COLUMN_CHECKIN_DATE, System.currentTimeMillis());
+        values.put(FavouritesDbSQLiteOpenHelper.COLUMN_MAX_DISTANCE, landmark.getMaxDistance());
+        values.put(FavouritesDbSQLiteOpenHelper.COLUMN_CHECKIN_DATE, landmark.getLastCheckinDate());
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_KEY, key);
         long insertId = getDatabase().insert(FavouritesDbSQLiteOpenHelper.TABLE_NAME, null, values);
         LoggerUtils.debug("Landmark added to favourites database with id: " + insertId);
-        return new FavouritesDAO(landmark.hashCode(), landmark.getName(), latitude, longitude, landmark.getLayer(), 0, System.currentTimeMillis(), key);
     }
 
-    public boolean hasLandmark(ExtendedLandmark landmark) {
-        if (landmark != null) {
-            if (countStatement == null) {
+    public boolean hasLandmark(int hashCode) {
+        if (countStatement == null) {
                 String countSql = "SELECT COUNT(*) FROM " + FavouritesDbSQLiteOpenHelper.TABLE_NAME
                         + " where " + FavouritesDbSQLiteOpenHelper.COLUMN_ID + "=?";
                 countStatement = getDatabase().compileStatement(countSql);
-            }
-            countStatement.bindLong(1, landmark.hashCode());
-            long count = countStatement.simpleQueryForLong();
-            return (count > 0);
-        } else {
-            return false;
         }
+        countStatement.bindLong(1, hashCode);
+        long count = countStatement.simpleQueryForLong();
+        return (count > 0);
     }
 
     public int updateMaxDist(long newMaxDist, long hashcode) {

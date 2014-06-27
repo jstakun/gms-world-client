@@ -30,7 +30,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private final TextView footer;
     private IntentsHelper intents;
-    private static final String[] services = {"", Commons.FACEBOOK, Commons.FOURSQUARE,
+    private static final String[] services = {Commons.GMS_WORLD, Commons.FACEBOOK, Commons.FOURSQUARE,
         Commons.GOOGLE, Commons.TWITTER, Commons.LINKEDIN};
     private static final String[] send_status = {"0", ConfigurationManager.FB_SEND_STATUS, ConfigurationManager.FS_SEND_STATUS,
         ConfigurationManager.GL_SEND_STATUS, ConfigurationManager.TWEET_SEND_STATUS, ConfigurationManager.LN_SEND_STATUS};
@@ -78,12 +78,8 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
             public void onClick(View v) {
                 if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
                 	String username;
-                	if (position == 0) {
-                		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);
-                	} else {
-                		username =  OAuthServiceFactory.getUsername(services[position]);
-                	}
-                    intents.startActionViewIntent(ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username);
+                	username =  OAuthServiceFactory.getUsername(services[position]);
+                	intents.startActionViewIntent(ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username);
                 }  else if (ConfigurationManager.getInstance().isOff(auth_status[position])) {
                     if (position == 0) {
                         intents.startLoginActivity();
@@ -122,13 +118,13 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
         holder.headerText.setText(adapter);
         if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
-        	String username;
-        	if (position == 0) {
-        		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_NAME);
+        	String username = OAuthServiceFactory.getDisplayname(services[position]);
+        	String loginDate = OAuthServiceFactory.getLoginDate(services[position]);
+        	if (loginDate != null) {
+        		holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusyeswithdate, username, loginDate));
         	} else {
-        		username =  OAuthServiceFactory.getDisplayname(services[position]);
+        		holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusyes, username));
         	}
-            holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusyes, username));
         } else {
             holder.statusText.setText(Locale.getMessage(R.string.Social_login_statusno, adapter));
         }

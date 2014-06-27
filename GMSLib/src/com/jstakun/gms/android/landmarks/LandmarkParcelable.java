@@ -13,7 +13,7 @@ import android.os.Parcelable;
  */
 public class LandmarkParcelable implements Parcelable {
 
-    private long id;
+    private int hashCode;
     private String name;
     private String key;
     private String layer;
@@ -32,7 +32,7 @@ public class LandmarkParcelable implements Parcelable {
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(getId());
+        dest.writeInt(hashCode());
         dest.writeString(getName());
         dest.writeString(getKey());
         dest.writeString(getLayer());
@@ -48,7 +48,7 @@ public class LandmarkParcelable implements Parcelable {
     }
 
     public LandmarkParcelable(Parcel source) {
-        id = source.readLong();
+        hashCode = source.readInt();
         name = source.readString();
         key = source.readString();
         layer = source.readString();
@@ -63,8 +63,8 @@ public class LandmarkParcelable implements Parcelable {
         revelance = source.readInt();
     }
 
-    protected LandmarkParcelable(long id, String name, String key, String layer, String desc, float distance, long creationDate, int categoryid, int subcategoryid, int rating, int numOfRev, String thunbnail, int revelance) {
-        this.id = id;
+    protected LandmarkParcelable(int hashCode, String name, String key, String layer, String desc, float distance, long creationDate, int categoryid, int subcategoryid, int rating, int numOfRev, String thunbnail, int revelance) {
+        this.hashCode = hashCode;
         this.name = name;
         this.key = key;
         this.layer = layer;
@@ -89,13 +89,6 @@ public class LandmarkParcelable implements Parcelable {
             return new LandmarkParcelable[size];
         }
     };
-
-    /**
-     * @return the id
-     */
-    public long getId() {
-        return id;
-    }
 
     /**
      * @return the name
@@ -179,5 +172,10 @@ public class LandmarkParcelable implements Parcelable {
      */
     public int getRevelance() {
         return revelance;
+    }
+    
+    @Override
+    public int hashCode() {
+    	return hashCode;
     }
 }

@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.OsUtil;
 
 /**
@@ -110,6 +111,8 @@ public class OAuthServiceFactory {
             return ConfigurationManager.getInstance().getString(ConfigurationManager.FB_USERNAME);
         } else if (service.equals(Commons.FOURSQUARE)) {
             return ConfigurationManager.getInstance().getString(ConfigurationManager.FS_USERNAME);
+        } else if (service.equals(Commons.GMS_WORLD)) {
+            return ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME); 
         } else {
             return null;
         }
@@ -128,12 +131,38 @@ public class OAuthServiceFactory {
             displayName = ConfigurationManager.getInstance().getString(ConfigurationManager.FB_NAME);
         } else if (service.equals(Commons.FOURSQUARE)) {
             displayName = ConfigurationManager.getInstance().getString(ConfigurationManager.FS_NAME);
-        } 
+        } else if (service.equals(Commons.GMS_WORLD)) {
+        	displayName = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_NAME);
+        }
         
-        if (displayName == null) {
+        if (StringUtils.isEmpty(displayName)) {
             displayName = getUsername(service);
         }
         
         return displayName;
+    }
+    
+    public static String getLoginDate(String service) {
+    	long loginDate = -1;
+    	if (service.equals(Commons.GOOGLE)) {
+    		loginDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.GL_LOGIN_DATE);
+        } else if (service.equals(Commons.LINKEDIN)) {
+        	loginDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.LN_LOGIN_DATE);
+        } else if (service.equals(Commons.TWITTER)) {
+        	loginDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.TWEET_LOGIN_DATE);
+        } else if (service.equals(Commons.FACEBOOK)) {
+        	loginDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.FB_LOGIN_DATE);
+        } else if (service.equals(Commons.FOURSQUARE)) {
+        	loginDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.FS_LOGIN_DATE);
+        } else if (service.equals(Commons.GMS_WORLD)) {
+        	loginDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.GMS_LOGIN_DATE);
+        }
+    	
+    	if (loginDate > 0) {
+    		java.util.Locale currentLocale = ConfigurationManager.getInstance().getCurrentLocale();
+    		return DateTimeUtils.getShortDateTimeString(loginDate, currentLocale); 
+    	} else {
+    		return null;
+    	}
     }
 }

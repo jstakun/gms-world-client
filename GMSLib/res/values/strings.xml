@@ -357,6 +357,7 @@
      <string name="Social.Logout.successful">Logout successful</string>
      <string name="Social.loginButton">Login to %1$s</string>
      <string name="Social.logoutButton">Logout from %1$s</string>
+     <string name="Social.login.statusyeswithdate">You\'ve logged in as %1$s on %2$s.\nTap to view profile.</string>
      <string name="Social.login.statusyes">You are logged in as %1$s.\nTap to view profile.</string>
      <string name="Social.login.statusno">You are not logged in %1$s.\nTap to login.</string>
      <string name="Social.Checkin.error">Check-in error</string>

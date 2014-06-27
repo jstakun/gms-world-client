@@ -14,12 +14,14 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.MercatorUtils;
 import com.jstakun.gms.android.utils.UserTracker;
 import com.openlapi.AddressInfo;
 
@@ -45,8 +47,10 @@ public class CheckinManager {
     	String key = getLandmarkKey(selectedLandmark);
         if (addToFavourites) {
             FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-            if (fdb != null && !fdb.hasLandmark(selectedLandmark)) {
-            	fdb.addLandmark(selectedLandmark, key);
+            if (fdb != null && !fdb.hasLandmark(selectedLandmark.hashCode())) {
+            	FavouritesDAO favouritesDAO = new FavouritesDAO(selectedLandmark.hashCode(), selectedLandmark.getName(), MercatorUtils.normalizeE6(selectedLandmark.getQualifiedCoordinates().getLatitude()), 
+            			MercatorUtils.normalizeE6(selectedLandmark.getQualifiedCoordinates().getLongitude()), selectedLandmark.getLayer(), 0, System.currentTimeMillis(), key);
+            	fdb.addLandmark(favouritesDAO, key);
             }
         }
         return checkinAction(selectedLandmark.getLayer(), selectedLandmark.getName(), key, silent);
@@ -111,7 +115,7 @@ public class CheckinManager {
         return checkinCount;
     }
 
-    private String getLandmarkKey(ExtendedLandmark selectedLandmark) {
+    private static String getLandmarkKey(ExtendedLandmark selectedLandmark) {
     	String venueid = selectedLandmark.getUrl();
     	String selectedLayer = selectedLandmark.getLayer();
     	if (selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {

@@ -67,6 +67,7 @@ public final class GMSUtils {
                 ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_NAME, login);
             }
             ConfigurationManager.getInstance().setOn(ConfigurationManager.GMS_AUTH_STATUS);
+            ConfigurationManager.getInstance().putLong(ConfigurationManager.GMS_LOGIN_DATE, System.currentTimeMillis());
             ConfigurationManager.getDatabaseManager().saveConfiguration(false);
         }
         
@@ -113,7 +114,8 @@ public final class GMSUtils {
 		ConfigurationManager.getInstance().setOff(ConfigurationManager.GMS_AUTH_STATUS);
         ConfigurationManager.getInstance().removeAll(new String[]{
         		ConfigurationManager.GMS_NAME,		
-        		ConfigurationManager.GMS_USERNAME});
+        		ConfigurationManager.GMS_USERNAME,
+        		ConfigurationManager.GMS_LOGIN_DATE});
         ConfigurationManager.getDatabaseManager().saveConfiguration(false);
         
 	}

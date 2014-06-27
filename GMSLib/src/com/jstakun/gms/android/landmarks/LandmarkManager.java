@@ -631,6 +631,17 @@ public class LandmarkManager {
         return errorMessage;
     }
 
+    public ExtendedLandmark findLandmarkById(int hashCode) {
+    	for (String key : layerManager.getLayers()) {
+    		for (ExtendedLandmark landmark : getLandmarkStoreLayer(key)) {
+    			if (landmark.hashCode()==hashCode) {
+    				return landmark;
+    			}
+    		}
+    	}
+    	return null;
+    }
+    
     public void findVisibleLandmarks(ProjectionInterface projection, boolean includeDisabled) {
         landmarkPaintManager.setSelectedLandmark(null, -1);
         List<ExtendedLandmark> newFocusQueue = new ArrayList<ExtendedLandmark>();
@@ -1541,7 +1552,7 @@ public class LandmarkManager {
 
         public LandmarkParcelable apply(ExtendedLandmark landmark) {
             pos++;
-            return LandmarkParcelableFactory.getLandmarkParcelable(landmark, pos, Integer.toString(pos), lat, lng, locale);
+            return LandmarkParcelableFactory.getLandmarkParcelable(landmark, Integer.toString(pos), lat, lng, locale);
         }
     }
 

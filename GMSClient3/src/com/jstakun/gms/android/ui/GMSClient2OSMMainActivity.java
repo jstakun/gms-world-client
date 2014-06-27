@@ -306,7 +306,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         asyncTaskManager.setActivity(this);
         
-        //TODO check if myloc is available
+        //check if myloc is available
         if (landmarkManager.hasMyLocation()){
         	myLocationButton.setVisibility(View.VISIBLE);
         }
@@ -892,13 +892,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
         				boolean authStatus = intents.checkAuthStatus(selectedLandmark);
         				if (authStatus) {
-        					if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)
-        							&& !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
-        						//dialogManager.showAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, new SpannableString(Html.fromHtml(Locale.getMessage(R.string.autoCheckinMessage, selectedLandmark.getName()))));
-        						checkinManager.checkinAction(true, false, selectedLandmark);
-        					} else {
-        						checkinManager.checkinAction(false, false, selectedLandmark);
-        					}
+        					boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
+        					checkinManager.checkinAction(addToFavourites, false, selectedLandmark);
         				}
         			} else if (v == lvOpenButton || v == thumbnailButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
@@ -1061,7 +1056,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
         }
 
-        //TODO show my location button
+        //show my location button
         myLocationButton.setVisibility(View.VISIBLE);
 		
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {

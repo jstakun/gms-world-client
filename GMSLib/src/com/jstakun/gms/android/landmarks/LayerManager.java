@@ -94,7 +94,7 @@ public class LayerManager {
         //System.out.println("Calling IsLayerEnabled with param " + name);
         Layer layer = layers.get(layerName);
         if (layer != null) {
-            return layer.inCheckinable();
+            return layer.isCheckinable();
         } else {
             return false;
         }

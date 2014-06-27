@@ -52,7 +52,8 @@ public final class GoogleUtils extends AbstractSocialUtils {
 						ConfigurationManager.GL_EXPIRES_IN,
 						ConfigurationManager.GL_USERNAME,
 						ConfigurationManager.GL_GENDER,
-						ConfigurationManager.GL_BIRTHDAY });
+						ConfigurationManager.GL_BIRTHDAY,
+						ConfigurationManager.GL_LOGIN_DATE});
 		ConfigurationManager.getInstance().setOff(ConfigurationManager.GL_AUTH_STATUS);
 		ConfigurationManager.getInstance().setOff(ConfigurationManager.GL_SEND_STATUS);
 
@@ -154,6 +155,8 @@ public final class GoogleUtils extends AbstractSocialUtils {
 			if (StringUtils.isNotEmpty(email)) {
 				ConfigurationManager.getUserManager().putStringAndEncrypt(ConfigurationManager.USER_EMAIL, email);
 			}
+			
+			ConfigurationManager.getInstance().putLong(ConfigurationManager.GL_LOGIN_DATE, System.currentTimeMillis());
 			
 			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
         } catch (Exception ex) {

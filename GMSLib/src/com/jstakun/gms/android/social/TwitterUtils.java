@@ -37,7 +37,8 @@ public final class TwitterUtils extends AbstractSocialUtils {
                     TWEET_AUTH_KEY,
                     TWEET_AUTH_SECRET_KEY,
                     ConfigurationManager.TWEET_USERNAME,
-                    ConfigurationManager.TWEET_NAME
+                    ConfigurationManager.TWEET_NAME,
+                    ConfigurationManager.TWEET_LOGIN_DATE,
                 });
         ConfigurationManager.getInstance().setOff(ConfigurationManager.TWEET_AUTH_STATUS);
         ConfigurationManager.getInstance().setOff(ConfigurationManager.TWEET_SEND_STATUS);
@@ -60,6 +61,7 @@ public final class TwitterUtils extends AbstractSocialUtils {
 			} else {
 				ConfigurationManager.getInstance().putString(ConfigurationManager.TWEET_NAME, id);	
 			}
+			ConfigurationManager.getInstance().putLong(ConfigurationManager.TWEET_LOGIN_DATE, System.currentTimeMillis());
 			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 		} catch (Exception ex) {
 			LoggerUtils.error("TwitterUtils.initOnTokenPresent() exception", ex);		

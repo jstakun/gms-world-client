@@ -46,30 +46,26 @@ public class IconCache {
     public static final String ICON_MISSING32 = "icon-missing32";
     public static final String ICON_MISSING16 = "icon-missing16";
     private static final String LOADING = "loading";
-    //public static final String LOADING_ICON = "loading-icon";
     private static final String COMPASS = "compass";
     private static final String DOWNLOAD = "download";
-    //private static final String DOWNLOAD48 = "download48";
     public static final String CURSOR = "cursor";
     public static final String MAGNIFIER = "magnifier";
-    //public static final String BULLET = "bullet";
     private static final String GRID = "grid";
     public static final String IMAGE_LOADING_TILE = "image-loading-tile";
     public static final String IMAGE_LOADING_MAP = "image-loading-map";
     public static final String IMAGE_MISSING = "image-missing";
-    //private BitmapDrawable[] compass = new BitmapDrawable[16];
     private Map<String, Bitmap> images = new HashMap<String, Bitmap>();
     private Map<String, GMSAsyncTask<?,?,?>> loadingTasks = new HashMap<String, GMSAsyncTask<?,?,?>>();
     private static IconCache instance;
     private static Paint paint;
+    
     //private static BitmapFactory.Options bitmapOptions = new BitmapFactory.Options(); 
 
     //static {
     //    bitmapOptions.inScaled = false;
     //}
-    /**
-     * Private Constructor! Creates a new instance of IconCache
-     */
+    
+
     private IconCache() {
         try {
             Context ctx = ConfigurationManager.getInstance().getContext();
@@ -86,9 +82,6 @@ public class IconCache {
             if (!images.containsKey(ICON_MISSING16)) {
                 images.put(ICON_MISSING16, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing16));
             }
-            //if (!images.containsKey(BULLET)) {
-            //    images.put(BULLET, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.bullet));
-            //}
             if (!images.containsKey(LOADING)) {
                 images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
             }
@@ -98,9 +91,6 @@ public class IconCache {
             if (!images.containsKey(DOWNLOAD)) {
                 images.put(DOWNLOAD, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.download));
             }
-            //if (!images.containsKey(LOADING_ICON)) {
-            //    images.put(LOADING_ICON, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading_icon));
-            //}
             if (!images.containsKey(GRID)) {
                 images.put(GRID, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.grid));
             }
@@ -291,10 +281,6 @@ public class IconCache {
         return img;
     }
 
-    public void clearImageCache() {
-        images.clear();
-    }
-
     protected void setResource(String name, Bitmap resource) {
         images.put(name, resource);
     }
@@ -418,12 +404,23 @@ public class IconCache {
     }
 
     public void clearAll() {
+    	for (Map.Entry<String, Bitmap> entry : images.entrySet()) {
+    		LoggerUtils.debug("Recycling " + entry.getKey());
+    		entry.getValue().recycle();
+    	}
+    	images.clear();
+    	for (Map.Entry<String, GMSAsyncTask<?,?,?>> entry : loadingTasks.entrySet()) {
+    		entry.getValue().cancel(true);
+    	}
+    	loadingTasks.clear();
+    	//
+    	instance = null;
     }
 
     private class LoadExternalImageTask extends GMSAsyncTask<String, Void, Void> {
 
         private DisplayMetrics displayMetrics;
-        private boolean isImage = false;
+        private boolean isImage = false, isCancelled = false;
         private Handler handler;
 
         public LoadExternalImageTask(DisplayMetrics displayMetrics, boolean isImage, Handler handler) {
@@ -488,21 +485,27 @@ public class IconCache {
                     }
                 } catch (IOException ex) {
                 }
-                if (img != null) {
-                    images.put(resourceName, img);
-                    images.remove(layer + "_selected_true");
-                    images.remove(layer + "_selected_false");
-                    if (handler != null) {
-                        //System.out.println("Sending message to handler " + url + " -----------------------------------");
-                        Message msg = handler.obtainMessage();
-                        msg.getData().putString("url", url);
-                        handler.sendMessage(msg);
-                    }
-
+                if (!isCancelled) {
+                	if (img != null) {
+                    	images.put(resourceName, img);
+                    	images.remove(layer + "_selected_true");
+                    	images.remove(layer + "_selected_false");
+                    	if (handler != null) {
+                        	//System.out.println("Sending message to handler " + url + " -----------------------------------");
+                        	Message msg = handler.obtainMessage();
+                        	msg.getData().putString("url", url);
+                        	handler.sendMessage(msg);
+                    	}
+                	}
+                	loadingTasks.remove(resourceName);
                 }
-                loadingTasks.remove(resourceName);
             }
             return null;
+        }
+        
+        @Override
+        protected void onCancelled() {
+            isCancelled = true;
         }
     }
     
