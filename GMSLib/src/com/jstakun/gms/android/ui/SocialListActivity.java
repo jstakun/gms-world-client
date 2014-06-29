@@ -86,15 +86,19 @@ public class SocialListActivity extends ListActivity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    	//TODO implement
-    	if (resultCode == Activity.RESULT_OK) {
-            String action = intent.getStringExtra("action");
-            if (StringUtils.equals(action, "load")) {
-                String layer = intent.getStringExtra("layer");
-                //loadLayersAction(true, layer, false, false, layerLoader, mapCenter[0], mapCenter[1], zoomLevel);
-                System.out.println("Should reload layer " + layer);
-            }
-    	}   
-    	//intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader);
+    	if (requestCode == IntentsHelper.INTENT_LAYERS) {
+    		if (resultCode == Activity.RESULT_OK) {
+    			String action = intent.getStringExtra("action");
+    			if (StringUtils.equals(action, "load")) {
+    				String layer = intent.getStringExtra("layer");
+    				if (layer != null) {
+    					Intent result = new Intent();
+    					result.putExtra("action", "load");
+    					result.putExtra("layer", layer);
+    					setResult(RESULT_OK, result);
+    				}
+    			}
+    		}   
+    	}
     }
 }

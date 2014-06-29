@@ -95,7 +95,7 @@ public final class IntentsHelper {
     public static final int INTENT_PICKLOCATION = 6;
     public static final int INTENT_MULTILANDMARK = 7;
     public static final int INTENT_MYLANDMARKS = 8;
-    private static final int INTENT_LAYERS = 9;
+    protected static final int INTENT_LAYERS = 9;
     private static final int INTENT_CATEGORIES = 10;
     protected static final int INTENT_AUTO_CHECKIN = 11;
     public static final int INTENT_CALENDAR = 12;
@@ -186,7 +186,7 @@ public final class IntentsHelper {
     }
 
     public void startSocialListActivity() {
-        activity.startActivity(new Intent(activity, SocialListActivity.class));
+        activity.startActivityForResult(new Intent(activity, SocialListActivity.class), INTENT_LAYERS);
     }
 
     public void startLayersListActivity() {
