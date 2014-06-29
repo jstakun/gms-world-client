@@ -86,6 +86,7 @@ public class SocialListActivity extends ListActivity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    	System.out.println("SocialListActivity.onActivityResult() " + requestCode + " " + resultCode);
     	if (requestCode == IntentsHelper.INTENT_LAYERS) {
     		if (resultCode == Activity.RESULT_OK) {
     			String action = intent.getStringExtra("action");
@@ -96,6 +97,7 @@ public class SocialListActivity extends ListActivity {
     					result.putExtra("action", "load");
     					result.putExtra("layer", layer);
     					setResult(RESULT_OK, result);
+    					finish();
     				}
     			}
     		}   
