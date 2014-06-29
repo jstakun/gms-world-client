@@ -8,7 +8,11 @@ package com.jstakun.gms.android.ui;
  *
  * @author jstakun
  */
+import org.apache.commons.lang.StringUtils;
+
+import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -59,7 +63,6 @@ public class SocialListActivity extends ListActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override
@@ -79,5 +82,19 @@ public class SocialListActivity extends ListActivity {
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    	//TODO implement
+    	if (resultCode == Activity.RESULT_OK) {
+            String action = intent.getStringExtra("action");
+            if (StringUtils.equals(action, "load")) {
+                String layer = intent.getStringExtra("layer");
+                //loadLayersAction(true, layer, false, false, layerLoader, mapCenter[0], mapCenter[1], zoomLevel);
+                System.out.println("Should reload layer " + layer);
+            }
+    	}   
+    	//intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader);
     }
 }

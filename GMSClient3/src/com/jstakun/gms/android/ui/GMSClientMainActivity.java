@@ -958,7 +958,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             }
         } else if (requestCode == IntentsHelper.INTENT_AUTO_CHECKIN) {
             if (resultCode == RESULT_OK) {
-                long favouriteId = intent.getLongExtra("favourite", 0);
+                int favouriteId = intent.getIntExtra("favourite", 0);
                 FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
                 FavouritesDAO fav = fdb.getLandmark(favouriteId);
                 if (fav != null) {

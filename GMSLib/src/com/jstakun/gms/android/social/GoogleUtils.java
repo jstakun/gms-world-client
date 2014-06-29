@@ -65,7 +65,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 		String refreshToken = ConfigurationManager.getInstance().getString(GL_REFRESH_TOKEN);
 		long expires_in = ConfigurationManager.getInstance().getLong(ConfigurationManager.GL_EXPIRES_IN);
 		
-		if (expires_in > 0 && expires_in < System.currentTimeMillis() && refreshToken == null) {
+		if (expires_in < System.currentTimeMillis() && refreshToken == null) {
 			logout();
 			errorMessage = Locale.getMessage(R.string.Social_token_expired, "Google"); 
 		} else {

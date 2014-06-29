@@ -101,17 +101,21 @@ public class FavouritesDbDataSource {
                 + "=?", new String[]{Long.toString(hashcode)});
     }
 
-    public FavouritesDAO getLandmark(long hashcode) {
+    public FavouritesDAO getLandmark(int hashcode) {
         Cursor cursor = null;
         FavouritesDAO favourite = null;
 
         try {
             cursor = getDatabase().query(FavouritesDbSQLiteOpenHelper.TABLE_NAME,
-                    allColumns, FavouritesDbSQLiteOpenHelper.COLUMN_ID + "=?", new String[]{Long.toString(hashcode)}, null, null, null);
-            cursor.moveToFirst();
-            favourite = cursorToLandmark(cursor);
+                    allColumns, FavouritesDbSQLiteOpenHelper.COLUMN_ID + "=?", new String[]{Integer.toString(hashcode)}, null, null, null);
+            if (cursor.getCount() > 0) {
+            	cursor.moveToFirst();
+            	favourite = cursorToLandmark(cursor);
+            } else {
+            	LoggerUtils.error("FavouritesDbDataSource.getLandmark() exception: cursor is empty!");	
+            }
         } catch (Exception e) {
-            LoggerUtils.error("FavouritesDbDataSource.fetchAllLandmarks() exception:", e);
+            LoggerUtils.error("FavouritesDbDataSource.getLandmark() exception:", e);
         } finally {
             if (cursor != null) {
                 cursor.close();

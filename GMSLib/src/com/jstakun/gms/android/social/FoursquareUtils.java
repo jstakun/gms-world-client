@@ -194,7 +194,9 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 		    params.add(new BasicNameValuePair("ll", Double.toString(lat) + "," + Double.toString(lng)));
 	        params.add(new BasicNameValuePair("desc", desc));
 	        params.add(new BasicNameValuePair("name", name));
-	        params.add(new BasicNameValuePair("catId", category));
+	        if (StringUtils.isNotEmpty(category)) {
+	        	params.add(new BasicNameValuePair("catId", category));
+	        }
 		    params.add(new BasicNameValuePair("service", "fs"));
 		    utils.sendPostRequest(url, params, true);
 		    

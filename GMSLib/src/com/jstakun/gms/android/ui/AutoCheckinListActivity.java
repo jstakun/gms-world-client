@@ -102,7 +102,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
     private void close(int position) {
         Intent result = new Intent();
-        result.putExtra("favourite", favourites.get(position).getKey());
+        result.putExtra("favourite", favourites.get(position).hashCode());
         setResult(RESULT_OK, result);
         finish();
     }
