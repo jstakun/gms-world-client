@@ -782,7 +782,7 @@ public class LandmarkManager {
 
     public void findFriendsCheckinLandmarks(List<LandmarkParcelable> checkins, double lat, double lng) {
         FriendsCheckinsPredicate friendsCheckinsPredicate = new FriendsCheckinsPredicate();
-        final String[] friendsLayers = new String[]{Commons.FOURSQUARE_LAYER, Commons.FACEBOOK_LAYER};
+        final String[] friendsLayers = new String[]{Commons.FOURSQUARE_LAYER, Commons.FACEBOOK_LAYER, Commons.TWITTER_LAYER};
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 
         for (int i = 0; i < friendsLayers.length; i++) {
