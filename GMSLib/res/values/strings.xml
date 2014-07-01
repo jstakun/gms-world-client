@@ -203,7 +203,7 @@
      <string name="GPS.location.missing.error">I\'m still waiting for your location&#8230;</string>
      <string name="Pick.location.failed.error">Failed to find location %1$s due to: %2$s</string>
      <string name="Login.required.error">This function is available only for logged in users! Please go to Menu->Login and login to any social network.</string>
-     <string name="Checkin.required.error">This function requires Facebook or Foursquare login!</string>
+     <string name="Checkin.required.error">This function requires Facebook, Foursquare or Twitter login!</string>
      <string name="Checkin.layer.error">Wrong layer for check-in: %1$s</string>
      <string name="Location.send.error">Location upload failed due to %1$s</string>
      <string name="Empty.credentials.error">Login and password can\'t be empty!</string>

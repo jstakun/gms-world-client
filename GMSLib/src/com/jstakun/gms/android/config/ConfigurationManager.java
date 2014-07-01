@@ -819,6 +819,12 @@ public final class ConfigurationManager {
 	            || isOn(GMS_AUTH_STATUS));
     	}
     	
+    	public boolean isFriendSocialLoggedIn() {
+    		return (isOn(TWEET_AUTH_STATUS)
+    	            || isOn(FB_AUTH_STATUS)
+    	            || isOn(FS_AUTH_STATUS));
+    	}
+    	
     	public boolean isTokenPresent() {
     		return (StringUtils.isNotEmpty(getString(GMS_TOKEN)) && StringUtils.isNotEmpty(getString(GMS_SCOPE)));
     	}

@@ -174,7 +174,7 @@
      <string name="GPS.location.missing.error">Czekam na rozpoznanie lokalizacji&#8230;</string>
      <string name="Pick.location.failed.error">Nie mog\u0119 znale\u017a\u0107 lokalizacji %1$s z powodu: %2$s</string>
      <string name="Login.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w! Prosz\u0119 przej\u015b\u0107 do Menu->Zaloguj i zalogowa\u0107 si\u0119 do dowolnej sieci spo\u0142eczeno\u015bciowej.</string>
-     <string name="Checkin.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w Facebook lub Foursquare!</string>
+     <string name="Checkin.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w Facebook, Twitter lub Foursquare!</string>
      <string name="Checkin.layer.error">Nie mog\u0119 zameldowa\u0107 do warstwy: %1$s</string>
      <string name="Location.send.error">Nie uda\u0142o si\u0119 wys\u0142a\u0107 lokalizacji z powodu: %1$s</string>
      <string name="Empty.credentials.error">Login i has\u0142o nie mog\u0105 by\u0107 puste!</string>

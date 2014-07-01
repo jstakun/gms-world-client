@@ -815,8 +815,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		    		}
 		    		break;
 				case R.id.friendsCheckins:
-					if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)
-		            || ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
+					if (ConfigurationManager.getUserManager().isFriendSocialLoggedIn()) {
 						intents.startFriendsCheckinsIntent(getMyPosition());
 					} else {
 						intents.showInfoToast(Locale.getMessage(R.string.Checkin_required_error));
