@@ -904,7 +904,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     public void onClick(View v) {
     	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton || v == myLocationButton) {
     		if (v == myLocationButton) {
-        		showMyPositionAction(true);
+    			showMyPositionAction(true);
         	} else {
         		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
         		if (selectedLandmark != null) {
@@ -1057,7 +1057,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 isVisible = true;
             }
             if (!isVisible) {
-                IGeoPoint mapCenter = mapView.getMapCenter();
+            	lvView.setVisibility(View.GONE);
+        		IGeoPoint mapCenter = mapView.getMapCenter();
                 clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
                         myLoc.getLatitudeE6(), myLoc.getLongitudeE6());
             }
@@ -1069,7 +1070,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
 
             if (loadLayers && !isVisible) {
-                mapController.setCenter(myLoc);
+            	mapController.setCenter(myLoc);
                 intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader,
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),

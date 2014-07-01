@@ -707,8 +707,8 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             }
 
             if (!isVisible) {
-                GeoPoint mapCenter = mapView.getMapCenter();
-
+            	lvView.setVisibility(View.GONE);
+            	GeoPoint mapCenter = mapView.getMapCenter();
                 clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
                         g.getLatitudeE6(), g.getLongitudeE6());
             }

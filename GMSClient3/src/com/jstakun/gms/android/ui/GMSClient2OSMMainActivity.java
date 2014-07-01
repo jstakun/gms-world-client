@@ -873,7 +873,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     public void onClick(View v) {
     	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton || v == myLocationButton) {
     		if (v == myLocationButton) {
-        		showMyPositionAction(true);
+    			showMyPositionAction(true);
         	} else {
         		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
         		if (selectedLandmark != null) {
@@ -1027,7 +1027,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 isVisible = true;
             }
             if (!isVisible) {
-                IGeoPoint mapCenter = mapView.getMapCenter();
+            	lvView.setVisibility(View.GONE);
+        		IGeoPoint mapCenter = mapView.getMapCenter();
                 clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
                         myLoc.getLatitudeE6(), myLoc.getLongitudeE6());
             }

@@ -1006,7 +1006,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 isVisible = true;
             }
             if (!isVisible) {
-                IGeoPoint mapCenter = mapView.getMapCenter();
+            	lvView.setVisibility(View.GONE);
+        		IGeoPoint mapCenter = mapView.getMapCenter();
                 clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
                         myLoc.getLatitudeE6(), myLoc.getLongitudeE6());
             }
