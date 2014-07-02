@@ -500,11 +500,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     		if (selectedLandmark != null) {
     			if (v == lvCloseButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
-    				lvView.setVisibility(View.GONE);
-    				getActionBar().show();
-    				landmarkManager.clearLandmarkOnFocusQueue();
-    				landmarkManager.setSelectedLandmark(null);
-    				landmarkManager.setSeletedLandmarkUI();
+    				hideLandmarkView();
     			} else if (v == lvOpenButton || v == thumbnailButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
     				intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
@@ -679,11 +675,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     	//System.out.println("Key pressed in activity: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (lvView.isShown()) {
-                landmarkManager.clearLandmarkOnFocusQueue();
-                landmarkManager.setSelectedLandmark(null);
-                landmarkManager.setSeletedLandmarkUI();
-                lvView.setVisibility(View.GONE);
-                getActionBar().show();
+            	hideLandmarkView();
             } else {
                 dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
             }
@@ -703,6 +695,15 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         } else {
             return super.onKeyDown(keyCode, event);
         }
+    }
+    
+    private void hideLandmarkView() {
+    	lvView.setVisibility(View.GONE);
+        getActionBar().show();
+        landmarkManager.clearLandmarkOnFocusQueue();
+        landmarkManager.setSelectedLandmark(null);
+        landmarkManager.setSeletedLandmarkUI();
+
     }
 
     private GeoPoint getMyLocation() {
@@ -764,7 +765,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             }
 
             if (!isVisible) {
-            	lvView.setVisibility(View.GONE);
+            	hideLandmarkView();
                 GeoPoint mapCenter = mapView.getMapCenter();
                 clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
                         g.getLatitudeE6(), g.getLongitudeE6());

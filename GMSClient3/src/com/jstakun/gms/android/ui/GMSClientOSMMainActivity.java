@@ -370,46 +370,12 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         System.gc();
     }
 
-    /*private void softClose() {
-        ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, mapView.getZoomLevel());
-        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()));
-        ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()));
-        ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-    }*/
-
-    /*private void hardClose() {
-        if (layerLoader != null && layerLoader.isLoading()) {
-            layerLoader.stopLoading();
-        }
-
-        UserTracker.getInstance().trackEvent("Exit", getLocalClassName() + ".hardClose", "", 0);
-        
-        loadingHandler.removeCallbacks(gpsRunnable);
-
-        LocationServicesManager.disableMyLocation();
-
-        ConfigurationManager.getInstance().setOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
-        intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
-
-        //SuggestionProviderUtil.clearHistory();
-
-        IconCache.getInstance().clearAll();
-        landmarkManager.clearLandmarkStore();
-        asyncTaskManager.cancelAll();
-
-        if (routeRecorder != null && ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            String[] details = routeRecorder.saveRoute();
-            if (details != null) {
-                LoggerUtils.debug("Saving route: " + details[0]);
-            }
-        }
-
-        PersistenceManagerFactory.getFileManager().clearImageCache();
-        ConfigurationManager.getDatabaseManager().closeAllDatabases();
-        ConfigurationManager.getInstance().clearObjectCache();
-        
-        HttpUtils.closeConnManager();
-    }*/
+    private void hideLandmarkView() {
+    	landmarkManager.clearLandmarkOnFocusQueue();
+		landmarkManager.setSelectedLandmark(null);
+		landmarkManager.setSeletedLandmarkUI();
+		lvView.setVisibility(View.GONE);
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -417,10 +383,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     	if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {	     
     		if (keyCode == KeyEvent.KEYCODE_BACK) {
     			if (lvView.isShown()) {
-    				landmarkManager.clearLandmarkOnFocusQueue();
-    				landmarkManager.setSelectedLandmark(null);
-    				landmarkManager.setSeletedLandmarkUI();
-    				lvView.setVisibility(View.GONE);
+    				hideLandmarkView();
     			} else {
     				dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
     			} //System.out.println("key back pressed in activity");
@@ -799,10 +762,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
       	  		if (selectedLandmark != null) { 
       	  			if (v == lvCloseButton) {
       	  				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", "", 0);
-      	  				lvView.setVisibility(View.GONE);
-      	  				landmarkManager.clearLandmarkOnFocusQueue();
-      	  				landmarkManager.setSelectedLandmark(null);
-      	  				landmarkManager.setSeletedLandmarkUI();
+      	  			    hideLandmarkView();
       	  			} else if (v == lvCommentButton) {
       	  				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CommentSelectedLandmark", selectedLandmark.getLayer(), 0);
       	  				intents.commentButtonPressedAction();
@@ -958,7 +918,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 isVisible = true;
             }
             if (!isVisible) {
-            	lvView.setVisibility(View.GONE);
+            	hideLandmarkView();
         		IGeoPoint mapCenter = mapView.getMapCenter();
                 clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
                         myLoc.getLatitudeE6(), myLoc.getLongitudeE6());
