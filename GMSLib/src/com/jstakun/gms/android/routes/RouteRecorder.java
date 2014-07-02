@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.routes;
 
 import com.jstakun.gms.android.config.Commons;
@@ -109,10 +105,10 @@ public class RouteRecorder {
         return details;
     }
 
-    public void addCoordinate(double lat, double lng, float altitude, float accuracy, float speed) {
+    public void addCoordinate(double lat, double lng, float altitude, float accuracy, float speed, float bearing) {
         //System.out.println("Adding coordinate...");
         if (!paused) {
-            QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, altitude, accuracy, Float.NaN);
+            QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, accuracy, accuracy, Float.NaN); 
             String l = DateTimeUtils.getCurrentDateStamp();
             ExtendedLandmark lm = LandmarkFactory.getLandmark(l, "", qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
 

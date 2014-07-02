@@ -982,7 +982,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         }
     }
 
-    private void updateLocation(double lat, double lng, float altitude, float accuracy, float speed) {
+    private void updateLocation(double lat, double lng, float altitude, float accuracy, float speed, float bearing) {
         if (landmarkManager != null) {
             landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
         }
@@ -993,7 +993,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             showMyPositionAction(false);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
                 if (routeRecorder != null) {
-                    routeRecorder.addCoordinate(lat, lng, altitude, accuracy, speed);
+                    routeRecorder.addCoordinate(lat, lng, altitude, accuracy, speed, bearing);
                 }
             }
         }
@@ -1138,7 +1138,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         			activity.showRouteAction((String)msg.obj);
         		} else if (msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
         			Location location = (Location) msg.obj;
-        			activity.updateLocation(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed());
+        			activity.updateLocation(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
         		}
         	}
         }

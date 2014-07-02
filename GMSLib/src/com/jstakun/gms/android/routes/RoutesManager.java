@@ -190,54 +190,6 @@ public class RoutesManager {
             }
         }
         
-        /*url += "lat_start=" + lat_start;
-        url += "&lng_start=" + lng_start;
-
-        url += "&lat_end=" + lat_end;
-        url += "&lng_end=" + lng_end;
-
-        url += "&type=" + type;
-        url += "&tId=" + System.currentTimeMillis();
-
-        String username = ConfigurationManager.getUserManager().getLoggedInUsername();
-        if (username == null) {
-            username = "anonymous";
-        }
-        
-        url += "&username=" + username;
-         
-        if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.ROUTES_TOKEN)) {
-            url += "&token=" + ConfigurationManager.getInstance().getString(ConfigurationManager.ROUTES_TOKEN);
-        }
-
-        try {
-            byte[] response = utils.loadHttpFile(url, true, "json");
-
-            message = utils.getResponseCodeErrorMessage();
-
-            if (response != null && response.length > 0) {
-                JSONObject json = new JSONObject(new String(response));
-                desc = parse(json, routePoints);
-                message = desc[0];
-                //System.out.println(json);
-            } else if (message != null) {
-                message = Locale.getMessage(R.string.Routes_loading_error_1, message);
-            } else {
-                message = Locale.getMessage(R.string.Routes_loading_error_0);
-            }
-
-        } catch (Exception ex) {
-            LoggerUtils.error("RoutesManager.readRouteFromServer() exception", ex);
-            message = ex.getMessage();
-        } finally {
-            try {
-                if (utils != null) {
-                    utils.close();
-                }
-            } catch (IOException ioe) {
-            }
-        }*/   
-            
         if (!routePoints.isEmpty()) {
             String descr = desc[0];
             if (saveToFile) {

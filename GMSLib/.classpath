@@ -18,8 +18,8 @@
 	<classpathentry exported="true" kind="lib" path="libs/wpsapi-4.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-android-1.5.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/TapForTap-3.0.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/amazon-ads-5.1.153.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/osmdroid-android-4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/osmdroid-third-party-4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/amazon-ads-5.4.46.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

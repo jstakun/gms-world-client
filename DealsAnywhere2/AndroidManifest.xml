@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.jstakun.gms.android.ui.deals"
-      android:versionCode="109"
-      android:versionName="0.7">
+      android:versionCode="110"
+      android:versionName="0.8">
     <uses-sdk android:minSdkVersion="3"
     android:targetSdkVersion="18"/>
     <supports-screens android:smallScreens="true"
