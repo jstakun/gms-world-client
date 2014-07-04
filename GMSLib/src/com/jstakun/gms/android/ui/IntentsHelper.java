@@ -1155,9 +1155,10 @@ public final class IntentsHelper {
             if (resultCode == Activity.RESULT_OK) {
                 String[] names = intent.getStringArrayExtra("names");
                 String[] codes = intent.getStringArrayExtra("codes");
-                if (intent.getStringExtra("deals") != null) {
+                String isDeal = intent.getStringExtra("deals");
+                if (StringUtils.isNotEmpty(isDeal)) {
                     CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-                    if (cm != null) {
+                    if (cm != null && names != null && codes != null) {
                         cm.saveCategoriesAction(names, codes);
                     }
                 } else {

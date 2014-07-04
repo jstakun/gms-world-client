@@ -188,11 +188,13 @@ public class CategoriesManager {
     }
 
     public boolean hasSubcategory(int categoryId) {
-        for (Category cat : subcategories) {
-            if (cat.getCategoryID() == categoryId) {
-                return true;
-            }
-        }
+    	if (subcategories != null) {
+    		for (Category cat : subcategories) {
+    			if (cat.getCategoryID() == categoryId) {
+    				return true;
+    			}
+    		}
+    	}
         return false;
     }
 

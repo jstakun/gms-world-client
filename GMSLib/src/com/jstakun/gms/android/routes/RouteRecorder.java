@@ -28,6 +28,7 @@ public class RouteRecorder {
     private long startTime;
     private int notificationId;
     private boolean paused = false;
+    private float currentBearing = 0f;
 
     public RouteRecorder(RoutesManager rm) {
         //System.out.println("RouteRecorder.constructor");
@@ -41,7 +42,7 @@ public class RouteRecorder {
         }
         label = DateTimeUtils.getCurrentDateStamp();
         startTime = System.currentTimeMillis();
-        //distanceInKilometer = 0.0;
+        currentBearing = 0f;
         routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);
         ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);
 
@@ -120,11 +121,12 @@ public class RouteRecorder {
                 float dist = DistanceUtils.distanceInKilometer(current.getQualifiedCoordinates().getLatitude(), current.getQualifiedCoordinates().getLongitude(),
                         lm.getQualifiedCoordinates().getLatitude(), lm.getQualifiedCoordinates().getLongitude());
 
-                if ((dist >= 0.008 && speed > 5) || (dist >= 0.005 && speed <= 5)) { // meters
-                    //if (dist >= 0.005) {
+                if (((dist >= 0.008 && speed > 5) || (dist >= 0.005 && speed <= 5)) && (bearing == 0f || (Math.abs(bearing - currentBearing) > 10f))) { // meters
+                    
+                	currentBearing = bearing;
                     routePoints.add(lm);
 
-                    LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + " and distance: " + (dist * 1000f) + " meter.");
+                    LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + " meters and bearing: " + bearing + ".");
                 }
             }
 

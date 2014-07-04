@@ -407,9 +407,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(names), "", Commons.LOCAL_LAYER, true);
 
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
-                //String name = intent.getStringExtra("name");
-                //String message = intent.getStringExtra("message");
-                //intents.showInfoToast(Locale.getMessage(R.string.Pick_location_failed_error, name, message));
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
