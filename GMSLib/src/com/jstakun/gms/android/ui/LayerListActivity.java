@@ -319,6 +319,7 @@ public class LayerListActivity extends ListActivity {
             //CLEAR
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
                 routesManager.clearRoutesStore();
+                ((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
             } else if (landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
@@ -332,6 +333,11 @@ public class LayerListActivity extends ListActivity {
             landmarkManager.deleteLayer(layerKey);
             ((ArrayAdapter<String>) getListAdapter()).remove(names.remove(position));
 
+            if (layerKey.equals(Commons.ROUTES_LAYER)) {
+                routesManager.clearRoutesStore();
+                ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
+            }    
+            
             intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, layerName));
         }
     }

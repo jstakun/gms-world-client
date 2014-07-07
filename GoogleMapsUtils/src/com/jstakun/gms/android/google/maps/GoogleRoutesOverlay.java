@@ -62,6 +62,8 @@ public class GoogleRoutesOverlay extends Overlay {
             Projection projection = mapView.getProjection();
             Bitmap b = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, mapView.getResources().getDisplayMetrics(), null).getBitmap();
             path.rewind();
+            
+            //System.out.println("Drawing route " + routeName + " " + isCurrentlyRecording);
 
             if (!isCurrentlyRecording && routeSize > 1) {
                 ExtendedLandmark firstPoint = routePoints.get(0);
@@ -78,12 +80,13 @@ public class GoogleRoutesOverlay extends Overlay {
                     path.lineTo(point2.x, point2.y);
                     point1.x = point2.x;
                     point1.y = point2.y;
+                    //System.out.print(point1.x +  "," + point1.y + " ");
                 }
 
                 canvas.drawPath(path, paint);
                 canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
             } else if (isCurrentlyRecording) {
-                //draw currently recorded route from the end to first hidden point
+                //draw currently recorded route from the end to first invisible point only
                 routePoints = routesManager.getRoute(routeName);
                 routeSize = routePoints.size();
 

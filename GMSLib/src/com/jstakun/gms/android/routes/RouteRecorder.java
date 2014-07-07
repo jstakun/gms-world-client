@@ -11,6 +11,7 @@ import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.MathUtils;
 import com.openlapi.QualifiedCoordinates;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,10 @@ public class RouteRecorder {
     public static final String CURRENTLY_RECORDED = "Current";
     private long startTime;
     private int notificationId;
-    private boolean paused = false;
+    private boolean paused = false, saveNextPoint = false;
     private float currentBearing = 0f;
+    //TODO MAX_BEARING_RANGE should be based on zoom level
+    private static final float MAX_BEARING_RANGE = 8f;
 
     public RouteRecorder(RoutesManager rm) {
         //System.out.println("RouteRecorder.constructor");
@@ -115,18 +118,29 @@ public class RouteRecorder {
 
             if (routePoints.isEmpty()) {
                 routePoints.add(lm);
+                saveNextPoint = true;
             } else {
                 ExtendedLandmark current = routePoints.get(routePoints.size()-1);
 
                 float dist = DistanceUtils.distanceInKilometer(current.getQualifiedCoordinates().getLatitude(), current.getQualifiedCoordinates().getLongitude(),
                         lm.getQualifiedCoordinates().getLatitude(), lm.getQualifiedCoordinates().getLongitude());
 
-                if (((dist >= 0.008 && speed > 5) || (dist >= 0.005 && speed <= 5)) && (bearing == 0f || (Math.abs(bearing - currentBearing) > 10f))) { // meters
+                if (((dist >= 0.008 && speed > 5) || (dist >= 0.005 && speed <= 5))) { // meters
                     
-                	currentBearing = bearing;
-                    routePoints.add(lm);
-
-                    LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + " meters and bearing: " + bearing + ".");
+                	if (bearing == 0f || (MathUtils.abs(bearing - currentBearing) > MAX_BEARING_RANGE)) {
+                		currentBearing = bearing;
+                		routePoints.add(lm);
+                		LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + " meters and bearing: " + bearing + ".");
+                		saveNextPoint = true;
+                	} else if (saveNextPoint) {
+                		currentBearing = bearing;
+                		routePoints.add(lm);
+                		LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + " meters and bearing: " + bearing + ".");
+                		saveNextPoint = false;
+                	} else {
+                		//replace last point
+                		routePoints.add(routePoints.size()-1, lm);
+                	}
                 }
             }
 

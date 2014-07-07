@@ -70,30 +70,32 @@ public class IconCache {
         try {
             Context ctx = ConfigurationManager.getInstance().getContext();
 
-            if (!images.containsKey(CURSOR)) {
-                images.put(CURSOR, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.pointer16));
-            }
-            if (!images.containsKey(MAGNIFIER)) {
-                images.put(MAGNIFIER, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.magnifier));
-            }
-            if (!images.containsKey(ICON_MISSING32)) {
-                images.put(ICON_MISSING32, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing32));
-            }
-            if (!images.containsKey(ICON_MISSING16)) {
-                images.put(ICON_MISSING16, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing16));
-            }
-            if (!images.containsKey(LOADING)) {
-                images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
-            }
-            if (!images.containsKey(COMPASS)) {
-                images.put(COMPASS, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.compass_new));
-            }
-            if (!images.containsKey(DOWNLOAD)) {
-                images.put(DOWNLOAD, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.download));
-            }
-            if (!images.containsKey(GRID)) {
-                images.put(GRID, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.grid));
-            }
+        	if (ctx != null) {
+        		if (!images.containsKey(CURSOR)) {
+        			images.put(CURSOR, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.pointer16));
+        		}
+        		if (!images.containsKey(MAGNIFIER)) {
+        			images.put(MAGNIFIER, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.magnifier));
+        		}
+        		if (!images.containsKey(ICON_MISSING32)) {
+        			images.put(ICON_MISSING32, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing32));
+        		}
+        		if (!images.containsKey(ICON_MISSING16)) {
+        			images.put(ICON_MISSING16, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing16));
+        		}
+        		if (!images.containsKey(LOADING)) {
+        			images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
+        		}
+        		if (!images.containsKey(COMPASS)) {
+        			images.put(COMPASS, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.compass_new));
+        		}
+        		if (!images.containsKey(DOWNLOAD)) {
+        			images.put(DOWNLOAD, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.download));
+        		}
+        		if (!images.containsKey(GRID)) {
+        			images.put(GRID, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.grid));
+        		}
+        	}
 
             paint = new Paint();
             paint.setAntiAlias(true);

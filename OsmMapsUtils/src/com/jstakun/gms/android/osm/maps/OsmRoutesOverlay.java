@@ -79,9 +79,10 @@ public class OsmRoutesOverlay extends Overlay {
 
                 for (int i = 1; i < routeSize; i++) {
                     projection.toMapPixelsTranslated(projectedPoints.get(i), point2);
-                    if (MathUtils.abs(point2.x - point1.x) + MathUtils.abs(point2.y - point1.y) <= 1) {
-                        continue;
-                    }
+                    
+                    //if (MathUtils.abs(point2.x - point1.x) + MathUtils.abs(point2.y - point1.y) <= 1) {
+                    //    continue;
+                    //}
 
                     path.lineTo(point2.x, point2.y);
                     point1.x = point2.x;
@@ -91,7 +92,7 @@ public class OsmRoutesOverlay extends Overlay {
                 canvas.drawPath(path, paint);
                 canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
             } else if (isCurrentlyRecording) {
-                //draw currently recorded route from the end to first hidden point
+                //draw currently recorded route from the end to first invisible point only
                 List<ExtendedLandmark> routePoints = routesManager.getRoute(routeName);
                 routeSize = routePoints.size();
 

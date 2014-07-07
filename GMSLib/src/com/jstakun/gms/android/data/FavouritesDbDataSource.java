@@ -40,6 +40,9 @@ public class FavouritesDbDataSource {
 
     private SQLiteDatabase getDatabase() throws SQLException {
         if (database == null) {
+        	if (dbHelper == null) {
+        		throw new SQLException("Favourites SQLiteDatabase is null!");
+        	}
             database = dbHelper.getWritableDatabase();
         }
         return database;

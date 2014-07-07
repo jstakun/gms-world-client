@@ -84,7 +84,7 @@ public class AmzRoutesOverlay extends Overlay {
                 canvas.drawPath(path, paint);
                 canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
             } else if (isCurrentlyRecording) {
-                //draw currently recorded route from the end to first hidden point
+                //draw currently recorded route from the end to first invisible point
                 routePoints = routesManager.getRoute(routeName);
                 routeSize = routePoints.size();
 

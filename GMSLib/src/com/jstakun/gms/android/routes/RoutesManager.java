@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -129,13 +128,14 @@ public class RoutesManager {
     }
 
     public void clearRoutesStore() {
-        Set<Entry<String, List<ExtendedLandmark>>> entries = routes.entrySet();
-        Iterator<Entry<String, List<ExtendedLandmark>>> iter = entries.iterator();
+        //Set<Entry<String, List<ExtendedLandmark>>> entries = routes.entrySet();
+        //Iterator<Entry<String, List<ExtendedLandmark>>> iter = entries.iterator();
 
-        while (iter.hasNext()) {
-            iter.next();
-            iter.remove();
-        }
+        //while (iter.hasNext()) {
+        //    iter.next();
+        //    iter.remove();
+        //}
+        routes.clear();
     }
 
     public boolean containsRoute(String key) {

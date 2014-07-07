@@ -34,6 +34,9 @@ public class ConfigDbDataSource {
 
     private SQLiteDatabase getDatabase() throws SQLException {
         if (database == null) {
+        	if (dbHelper == null) {
+        		throw new SQLException("Config SQLiteDatabase is null!");
+        	}
             database = dbHelper.getWritableDatabase();
         }
         return database;
@@ -69,16 +72,16 @@ public class ConfigDbDataSource {
         Cursor cursor = null;
 
         try {
-            cursor = getDatabase().query(ConfigDbSQLiteOpenHelper.TABLE_NAME,
+        	cursor = getDatabase().query(ConfigDbSQLiteOpenHelper.TABLE_NAME,
                     allColumns, null, null, null, null, null);
 
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                String key = cursor.getString(0);
-                String value = cursor.getString(1);
-                config.put(key, value);
-                cursor.moveToNext();
-            }
+    		cursor.moveToFirst();
+    		while (!cursor.isAfterLast()) {
+    			String key = cursor.getString(0);
+    			String value = cursor.getString(1);
+    			config.put(key, value);
+    			cursor.moveToNext();
+    		}   		
         } catch (Exception e) {
             LoggerUtils.error("ConfigDbDataSource.fetchAllConfig() exception:", e);
         } finally {
@@ -133,19 +136,19 @@ public class ConfigDbDataSource {
     public void deleteConfigParam(String key) {
         try {
             LoggerUtils.debug("Deleted config param with key: " + key);
-            getDatabase().delete(ConfigDbSQLiteOpenHelper.TABLE_NAME, ConfigDbSQLiteOpenHelper.COLUMN_KEY
-                    + "=?", new String[]{key});
+            getDatabase().delete(ConfigDbSQLiteOpenHelper.TABLE_NAME, 
+            		ConfigDbSQLiteOpenHelper.COLUMN_KEY + "=?", new String[]{key});
         } catch (Exception e) {
-            LoggerUtils.error("ConfigDbDataSource.deleteConfigParam exception:", e);
+            LoggerUtils.error("ConfigDbDataSource.deleteConfigParam() exception:", e);
         }
     }
     
     public void delete() {
     	try {
-            int count = getDatabase().delete(ConfigDbSQLiteOpenHelper.TABLE_NAME, "1", null);
-            LoggerUtils.debug("Deleted " + count + " rows from config database");
+    		int count = getDatabase().delete(ConfigDbSQLiteOpenHelper.TABLE_NAME, "1", null);
+    		LoggerUtils.debug("Deleted " + count + " rows from config database");
         } catch (Exception e) {
-            LoggerUtils.error("ConfigDbDataSource.delete exception:", e);
+            LoggerUtils.error("ConfigDbDataSource.delete() exception:", e);
         }
     }
 }
