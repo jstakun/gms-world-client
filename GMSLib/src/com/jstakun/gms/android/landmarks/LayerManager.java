@@ -142,6 +142,10 @@ public class LayerManager {
     public Layer getLayer(String key) {
         return layers.get(key);
     }
+    
+    public boolean containsLayer(String key) {
+    	return layers.containsKey(key);
+    }
 
     public List<String> getLayers() {
         if (initialized) {

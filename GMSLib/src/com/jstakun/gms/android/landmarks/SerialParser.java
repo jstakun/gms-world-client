@@ -49,6 +49,7 @@ public class SerialParser {
         				landmarkManager.addLandmarkListToDynamicLayer(received);
         			}
         		} else {
+        			//TODO some landmarks are not filtered properly
         			Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
         			landmarks.addAll(filtered);
         			if (landmarkManager != null) {

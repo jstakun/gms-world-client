@@ -3,7 +3,6 @@ package com.jstakun.gms.android.ui;
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
@@ -370,7 +369,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
         }
         
-        //TODO add
         syncRoutesOverlays();
         
         intents.startAutoCheckinBroadcast(); 
@@ -527,7 +525,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 routesManager = new RoutesManager();
                 ConfigurationManager.getInstance().putObject("routesManager", routesManager);
             } else {
-            	//TODO add
             	syncRoutesOverlays();
             }
 
@@ -638,9 +635,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             return false;
         } else {
             
-        	//TODO if routes layer doesn't exists don't show routes menu
-        	if (landmarkManager.getLayerManager().getLayer(Commons.ROUTES_LAYER) != null) {
-        	
+        	//if routes layer doesn't exists don't show routes menu
+        	MenuItem routes = menu.findItem(R.id.routes);
+        	if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
+        		routes.setVisible(true);	
         		MenuItem routeRecording = menu.findItem(R.id.trackPos);
         		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
         		MenuItem saveRoute = menu.findItem(R.id.saveRoute);
@@ -660,8 +658,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         			}
         		}
         	} else {
-        		MenuItem routes = menu.findItem(R.id.routes);
-            	routes.setVisible(false);	
+        		routes.setVisible(false);	
         	}
             //
 
@@ -1077,51 +1074,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
     
     //TODO add
-    private void syncRoutesOverlays() {
-    	
-    	int routesCount = 0;
-    	if (routesManager != null) {
-    	   routesCount = routesManager.getCount();
-    	}
-    	
-    	int routesOverlaysCount = 0;
-    	if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            for (ListIterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-            	if (iter.next() instanceof OsmRoutesOverlay) {
-            		routesOverlaysCount++;
-            	}
-            }         
-        } else {
-            for (ListIterator<com.google.android.maps.Overlay> iter = googleMapsView.getOverlays().listIterator(); iter.hasNext();) {
-            	if (iter.next() instanceof GoogleRoutesOverlay) {
-            		routesOverlaysCount++;
-            	}
-            }
-        }
-    	
-    	boolean isRoutesEnabled = landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER);
-    		
-    	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
-    		if (mapProvider == ConfigurationManager.OSM_MAPS) {
-    			for (ListIterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-    				if (iter.next() instanceof OsmRoutesOverlay) {
-    					iter.remove();
-    				}
-    			}         
-    		} else {
-    			for (ListIterator<com.google.android.maps.Overlay> iter = googleMapsView.getOverlays().listIterator(); iter.hasNext();) {
-    				if (iter.next() instanceof GoogleRoutesOverlay) {
-    					iter.remove();
-    				}
-    			}
-    		}
-    	} else if (routesCount > 0 && isRoutesEnabled && routesOverlaysCount == 0) {
-    		for (Iterator<String> i = routesManager.getRoutes().iterator(); i.hasNext();) {
-                addRoutesOverlay(i.next());
-            }
-    		isRouteDisplayed = true;
-    	}
-    }
+    
 
     private void addLandmarkOverlay() {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
@@ -1142,6 +1095,52 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             addOverlay(routesOverlay);
         }
     }
+    
+    private void syncRoutesOverlays() {
+    	
+    	int routesCount = 0;
+    	if (routesManager != null) {
+    	   routesCount = routesManager.getCount();
+    	}
+    	
+    	int routesOverlaysCount = 0;
+    	if (mapProvider == ConfigurationManager.OSM_MAPS) {
+            for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
+            	if (iter.next() instanceof OsmRoutesOverlay) {
+            		routesOverlaysCount++;
+            	}
+            }         
+        } else {
+            for (Iterator<com.google.android.maps.Overlay> iter = googleMapsView.getOverlays().listIterator(); iter.hasNext();) {
+            	if (iter.next() instanceof GoogleRoutesOverlay) {
+            		routesOverlaysCount++;
+            	}
+            }
+        }
+    	
+    	boolean isRoutesEnabled = landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER);
+    		
+    	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
+    		if (mapProvider == ConfigurationManager.OSM_MAPS) {
+    			for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
+    				if (iter.next() instanceof OsmRoutesOverlay) {
+    					iter.remove();
+    				}
+    			}         
+    		} else {
+    			for (Iterator<com.google.android.maps.Overlay> iter = googleMapsView.getOverlays().listIterator(); iter.hasNext();) {
+    				if (iter.next() instanceof GoogleRoutesOverlay) {
+    					iter.remove();
+    				}
+    			}
+    		}
+    	} else if (routesCount > 0 && isRoutesEnabled && routesOverlaysCount == 0) {
+    		for (Iterator<String> i = routesManager.getRoutes().iterator(); i.hasNext();) {
+                addRoutesOverlay(i.next());
+            }
+    		isRouteDisplayed = true;
+    	}
+    }
 
     private void postInvalidate() {
         if (mapView instanceof org.osmdroid.views.MapView) {
@@ -1158,7 +1157,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     private void showRouteAction(String routeKey) {
         LoggerUtils.debug("Adding route to view: " + routeKey);
-        //TODO add
         if (routesManager.containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
             addRoutesOverlay(routeKey);
             isRouteDisplayed = true;
@@ -1211,10 +1209,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private void clearMapAction() {
         landmarkManager.clearLandmarkStore();
         routesManager.clearRoutesStore();
-         //TODO add
-		syncRoutesOverlays();
-		//
-        postInvalidate();
+        syncRoutesOverlays();
+		postInvalidate();
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
     }
     

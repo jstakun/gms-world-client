@@ -310,6 +310,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             }
         }
         
+        syncRoutesOverlays();
+        
         intents.startAutoCheckinBroadcast();
     }
 
@@ -433,10 +435,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 LoggerUtils.debug("Creating RoutesManager...");
                 routesManager = new RoutesManager();
                 ConfigurationManager.getInstance().putObject("routesManager", routesManager);
-            } else if (routesManager.getCount() > 0) {
-                for (Iterator<String> i = routesManager.getRoutes().iterator(); i.hasNext();) {
-                    addRoutesOverlay(i.next());
-                }
+            } else {
+            	syncRoutesOverlays();
             }
 
             messageStack = ConfigurationManager.getInstance().getMessageStack();
@@ -550,25 +550,31 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         if (ConfigurationManager.getInstance().isClosing()) {
             return false;
         } else {
-            MenuItem routeRecording = menu.findItem(R.id.trackPos);
-            MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
-            MenuItem saveRoute = menu.findItem(R.id.saveRoute);
-            menu.findItem(R.id.events).setVisible(false);
+        	MenuItem routes = menu.findItem(R.id.routes);
+        	if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
+        		routes.setVisible(true);
+        		MenuItem routeRecording = menu.findItem(R.id.trackPos);
+        		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
+        		MenuItem saveRoute = menu.findItem(R.id.saveRoute);
+        		menu.findItem(R.id.events).setVisible(false);
 
-            if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
-                saveRoute.setVisible(false);
-                pauseRecording.setVisible(false);
-            } else {
-                saveRoute.setVisible(true);
-                pauseRecording.setVisible(true);
-                routeRecording.setTitle(R.string.Routes_TrackMyPosStop);
-                if (routeRecorder != null && routeRecorder.isPaused()) {
-                    pauseRecording.setTitle(R.string.Routes_ResumeRecording);
-                } else {
-                    pauseRecording.setTitle(R.string.Routes_PauseRecording);
-                }
-            }
+        		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        			routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
+        			saveRoute.setVisible(false);
+        			pauseRecording.setVisible(false);
+        		} else {
+        			saveRoute.setVisible(true);
+        			pauseRecording.setVisible(true);
+        			routeRecording.setTitle(R.string.Routes_TrackMyPosStop);
+        			if (routeRecorder != null && routeRecorder.isPaused()) {
+        				pauseRecording.setTitle(R.string.Routes_ResumeRecording);
+        			} else {
+        				pauseRecording.setTitle(R.string.Routes_PauseRecording);
+        			}
+        		}
+        	} else {
+        		routes.setVisible(false);	
+        	}
 
             MenuItem login = menu.findItem(R.id.login);
             login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
@@ -985,6 +991,36 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay(mapView, this, routesManager, routeName);
         addOverlay(routesOverlay);
     }
+    
+private void syncRoutesOverlays() {
+    	
+    	int routesCount = 0;
+    	if (routesManager != null) {
+    	   routesCount = routesManager.getCount();
+    	}
+    	
+    	int routesOverlaysCount = 0;
+    	for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
+            	if (iter.next() instanceof OsmRoutesOverlay) {
+            		routesOverlaysCount++;
+            	}
+        }         
+        
+    	
+    	boolean isRoutesEnabled = landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER);
+    		
+    	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
+    		for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
+    				if (iter.next() instanceof OsmRoutesOverlay) {
+    					iter.remove();
+    				}
+    		}         
+    	} else if (routesCount > 0 && isRoutesEnabled && routesOverlaysCount == 0) {
+    		for (Iterator<String> i = routesManager.getRoutes().iterator(); i.hasNext();) {
+                addRoutesOverlay(i.next());
+            }
+    	}
+    }
 
     private void postInvalidate() {
         mapView.postInvalidate();
@@ -997,7 +1033,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
     private void showRouteAction(String routeKey) {
         LoggerUtils.debug("Adding route to view: " + routeKey);
-        if (routesManager.containsRoute(routeKey)) {
+        if (routesManager.containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
             addRoutesOverlay(routeKey);
             if (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
                 double[] locationCoords = routesManager.calculateRouteCenter(routeKey);
@@ -1048,6 +1084,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private void clearMapAction() {
         landmarkManager.clearLandmarkStore();
         routesManager.clearRoutesStore();
+        syncRoutesOverlays();
         postInvalidate();
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
     }

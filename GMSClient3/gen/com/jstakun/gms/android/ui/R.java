@@ -376,8 +376,7 @@ containing a value of this type.
         public static final int releaseNotes=0x7f0e00a5;
         public static final int reset=0x7f0e00a4;
         public static final int right_arrow=0x7f0e005d;
-        public static final int router=0x7f0e0099;
-        public static final int routes=0x7f0e00a9;
+        public static final int routes=0x7f0e0099;
         public static final int saveRoute=0x7f0e009c;
         public static final int search=0x7f0e007e;
         public static final int searchButton=0x7f0e0056;

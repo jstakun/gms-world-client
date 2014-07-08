@@ -4,11 +4,29 @@
  */
 package com.jstakun.gms.android.landmarks;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
+
 import com.devahead.util.objectpool.ObjectPool;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -40,21 +58,6 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.SMSSender;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.openlapi.QualifiedCoordinates;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
@@ -232,7 +235,7 @@ public class LandmarkManager {
         List<Drawable> recentlyOpenedDrawables = new ArrayList<Drawable>();
         List<LayerPoint> layerPoints = new ArrayList<LayerPoint>();
         if (!recentlyOpenedLandmarksAll.isEmpty()) {
-            layerPoints.addAll(Lists.transform(recentlyOpenedLandmarksAll, transformFunction));
+        	layerPoints.addAll(Lists.transform(recentlyOpenedLandmarksAll, transformFunction));
         }
         int layersSize = layerPoints.size();
 
@@ -824,14 +827,13 @@ public class LandmarkManager {
     }
 
     public void addRecentlyOpenedLandmark(ExtendedLandmark landmark) {
-        if (!landmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
-            landmarkPaintManager.addRecentlyOpenedLandmark(landmark);
-        }
+        landmarkPaintManager.addRecentlyOpenedLandmark(landmark);
     }
 
     public void getRecentlyOpenedLandmarks(List<LandmarkParcelable> recentlySelected, double lat, double lng) {
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         landmarks.addAll(landmarkPaintManager.getRecentlyOpenedLandmarks());
+        landmarks.addAll(landmarkPaintManager.getRecentlyOpenedLandmarksExcluded());
         if (!landmarks.isEmpty()) {
             Function<ExtendedLandmark, LandmarkParcelable> transformFunction = new ExtendedLandmarkToLandmarkParcelableFunction(lat, lng, ConfigurationManager.getInstance().getCurrentLocale());
             recentlySelected.addAll(Lists.transform(landmarks, transformFunction));

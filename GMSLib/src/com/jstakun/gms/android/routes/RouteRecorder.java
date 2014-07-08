@@ -1,5 +1,8 @@
 package com.jstakun.gms.android.routes;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
@@ -13,8 +16,6 @@ import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.openlapi.QualifiedCoordinates;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -23,7 +24,7 @@ import java.util.List;
 public class RouteRecorder {
 
     private RoutesManager routesManager;
-    private List<ExtendedLandmark> routePoints = new ArrayList<ExtendedLandmark>();
+    private List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
     private String label = null;
     public static final String CURRENTLY_RECORDED = "Current";
     private long startTime;

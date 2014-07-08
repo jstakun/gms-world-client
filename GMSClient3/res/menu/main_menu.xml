@@ -50,7 +50,7 @@
     </item>
     <item android:id="@+id/socialNetworks"
           android:title="@string/socialNetworks" />
-    <item android:id="@+id/router"
+    <item android:id="@+id/routes"
           android:title="@string/routes">
         <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/routes">
             <item android:id="@+id/trackPos"

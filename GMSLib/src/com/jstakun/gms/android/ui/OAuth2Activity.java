@@ -219,6 +219,8 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 						finishWithToast(Locale.getMessage(R.string.Authn_success), Commons.FACEBOOK_LAYER);
 			        } else if (serviceName.equals(Commons.FOURSQUARE)) {
 			        	finishWithToast(Locale.getMessage(R.string.Authn_success), Commons.FOURSQUARE_LAYER);
+			        } else if (serviceName.equals(Commons.TWITTER)) {
+			        	finishWithToast(Locale.getMessage(R.string.Authn_success), Commons.TWITTER_LAYER);
 			        } else {
 			        	finishWithToast(Locale.getMessage(R.string.Authn_success), null);
 			        }

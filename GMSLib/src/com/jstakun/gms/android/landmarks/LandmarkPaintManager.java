@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  *
  * @author jstakun
@@ -24,6 +26,7 @@ public class LandmarkPaintManager {
 
     //recently opened landmarks
     private List<ExtendedLandmark> recentlyOpenedLandmarks = new ArrayList<ExtendedLandmark>();
+    private List<ExtendedLandmark> recentlyOpenedLandmarksExcluded = new ArrayList<ExtendedLandmark>();
     //landmarks on focus
     private List<ExtendedLandmark> landmarkOnFocus = new CopyOnWriteArrayList<ExtendedLandmark>();
     //landmark selected by user on the screen
@@ -121,20 +124,30 @@ public class LandmarkPaintManager {
         return selectedLandmarkDrawable;
     }
 
+    //recently opened landmarks lists
+    
     /**
      * @return the recentlyOpenedLandmarks
      */
     protected List<ExtendedLandmark> getRecentlyOpenedLandmarks() {
-        return Collections.unmodifiableList(recentlyOpenedLandmarks);
+    	return recentlyOpenedLandmarks;
+    }
+    
+    protected List<ExtendedLandmark> getRecentlyOpenedLandmarksExcluded() {
+    	return recentlyOpenedLandmarksExcluded;
     }
 
     protected void addRecentlyOpenedLandmark(ExtendedLandmark landmark) {
-        if (!recentlyOpenedLandmarks.contains(landmark)) {
-            recentlyOpenedLandmarks.add(landmark);
+        String layer = landmark.getLayer();
+        if ((StringUtils.equals(layer, Commons.ROUTES_LAYER) || StringUtils.equals(layer, Commons.MY_POSITION_LAYER)) && !recentlyOpenedLandmarksExcluded.contains(landmark)) {
+        	recentlyOpenedLandmarksExcluded.add(landmark);
+        } else if (!StringUtils.equals(layer, Commons.ROUTES_LAYER) && !StringUtils.equals(layer, Commons.MY_POSITION_LAYER) && !recentlyOpenedLandmarks.contains(landmark)) {
+        	recentlyOpenedLandmarks.add(landmark);
         }
     }
     
     protected void clearRecentlyOpenedLandmarks() {
         recentlyOpenedLandmarks.clear();
+        recentlyOpenedLandmarksExcluded.clear();
     }
 }
