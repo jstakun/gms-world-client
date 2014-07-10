@@ -4,6 +4,14 @@
  */
 package com.jstakun.gms.android.osm.maps;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.MapView.Projection;
+import org.osmdroid.views.overlay.Overlay;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,13 +25,6 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.utils.MathUtils;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.MapView.Projection;
-import org.osmdroid.views.overlay.Overlay;
 
 /**
  *
@@ -106,25 +107,23 @@ public class OsmRoutesOverlay extends Overlay {
                     canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
 
                     int i = routeSize - 2;
-                    boolean visible = true;
                     path.moveTo(point1.x, point1.y);
 
-                    while (i >= 0 && visible) {
+                    while (i >= 0) {
                         ExtendedLandmark secondPoint = routePoints.get(i);
 
                         projection.toMapPixelsProjected(secondPoint.getLatitudeE6(), secondPoint.getLongitudeE6(), gp2);
                         projection.toMapPixelsTranslated(gp2, point2);
 
-                        if (MathUtils.abs(point2.x - point1.x) + MathUtils.abs(point2.y - point1.y) <= 1) {
-                            continue;
-                        }
+                        //if (MathUtils.abs(point2.x - point1.x) + MathUtils.abs(point2.y - point1.y) <= 1) {
+                        //    continue;
+                        //}
 
-                        if (viewportRect.contains(point1.x, point1.y)) {
-                            path.lineTo(point2.x, point2.y);
-                        } else {
-                            visible = false;
+                        path.lineTo(point2.x, point2.y);
+                        if (!viewportRect.contains(point1.x, point1.y)) {
+                            break;
                         }
-
+                        
                         point1.x = point2.x;
                         point1.y = point2.y;
                         i--;
@@ -133,9 +132,9 @@ public class OsmRoutesOverlay extends Overlay {
                     canvas.drawPath(path, paint);
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
-                    if (i == -1) {
-                        canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
-                    }
+                    //if (i == -1) {
+                    //    canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
+                    //}
                 }
             }
         }

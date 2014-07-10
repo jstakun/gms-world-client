@@ -32,7 +32,7 @@ public class RouteRecorder {
     private boolean paused = false, saveNextPoint = false;
     private float currentBearing = 0f;
     //TODO MAX_BEARING_RANGE should be based on zoom level
-    private static final float MAX_BEARING_RANGE = 8f;
+    private static final float MAX_BEARING_RANGE = 9f;
 
     public RouteRecorder(RoutesManager rm) {
         //System.out.println("RouteRecorder.constructor");
@@ -128,7 +128,7 @@ public class RouteRecorder {
 
                 if (((dist >= 0.008 && speed > 5) || (dist >= 0.005 && speed <= 5))) { // meters
                     
-                	if (bearing == 0f || (MathUtils.abs(bearing - currentBearing) > MAX_BEARING_RANGE)) {
+                	if (MathUtils.abs(bearing - currentBearing) > MAX_BEARING_RANGE) { //|| bearing == 0f
                 		currentBearing = bearing;
                 		routePoints.add(lm);
                 		LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + " meters and bearing: " + bearing + ".");
@@ -140,7 +140,8 @@ public class RouteRecorder {
                 		saveNextPoint = false;
                 	} else {
                 		//replace last point
-                		routePoints.add(routePoints.size()-1, lm);
+                		routePoints.add(lm);
+                		routePoints.remove(routePoints.size()-2);
                 	}
                 }
             }

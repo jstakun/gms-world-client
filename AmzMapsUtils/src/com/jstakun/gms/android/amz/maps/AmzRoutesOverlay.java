@@ -96,33 +96,29 @@ public class AmzRoutesOverlay extends Overlay {
                     path.moveTo(point1.x, point1.y);
 
                     int i = routeSize - 2;
-                    boolean visible = true;
                     mapView.getDrawingRect(viewportRect);
 
-                    while (i >= 0 && visible) {
+                    while (i >= 0) {
                         ExtendedLandmark secondPoint = routePoints.get(i);
                         GeoPoint gp2 = new GeoPoint(secondPoint.getLatitudeE6(), secondPoint.getLongitudeE6());
                         projection.toPixels(gp2, point2);
-                        if (viewportRect.contains(point1.x, point1.y)) {
-                            //System.out.println("Drawing line: " + xy1[0] + "," + xy1[1] + " " + xy2[0] + "," + xy2[1] + " " + i);
-                            path.lineTo(point2.x, point2.y);
-
-                        } else {
-                            visible = false;
-                        }
+                        
+                        path.lineTo(point2.x, point2.y);
+                        if (!viewportRect.contains(point1.x, point1.y)) {
+                            break;
+                        } 
 
                         point1.x = point2.x;
                         point1.y = point2.y;
-                        //lastPoint = secondPoint;
                         i--;
                     }
 
                     canvas.drawPath(path, paint);
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
-                    if (i == -1) {
-                        canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
-                    }
+                    //if (i == -1) {
+                    //    canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
+                    //}
                 }
             }
 

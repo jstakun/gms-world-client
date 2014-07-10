@@ -1108,7 +1108,7 @@ private void syncRoutesOverlays() {
         	if (activity != null && !activity.isFinishing()) {
         		if (msg.what == MessageStack.STATUS_MESSAGE) {
         			activity.statusBar.setText(activity.messageStack.getMessage());
-        		} else if (msg.what == MessageStack.STATUS_VISIBLE) {
+        		} else if (msg.what == MessageStack.STATUS_VISIBLE && !ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
         			activity.loadingImage.setVisibility(View.VISIBLE);
         		} else if (msg.what == MessageStack.STATUS_GONE) {
         			activity.loadingImage.setVisibility(View.GONE);
