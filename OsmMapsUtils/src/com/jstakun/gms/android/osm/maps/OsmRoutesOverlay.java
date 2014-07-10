@@ -104,7 +104,7 @@ public class OsmRoutesOverlay extends Overlay {
                     projection.toMapPixelsProjected(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(), gp1);
                     projection.toMapPixelsTranslated(gp1, point1);
 
-                    canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
+                    //canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
 
                     int i = routeSize - 2;
                     path.moveTo(point1.x, point1.y);
@@ -132,9 +132,9 @@ public class OsmRoutesOverlay extends Overlay {
                     canvas.drawPath(path, paint);
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
-                    //if (i == -1) {
-                    //    canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
-                    //}
+                    if (i == -1) {
+                        canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
+                    }
                 }
             }
         }

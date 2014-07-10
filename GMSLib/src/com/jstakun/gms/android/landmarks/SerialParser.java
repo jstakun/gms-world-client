@@ -49,7 +49,7 @@ public class SerialParser {
         				landmarkManager.addLandmarkListToDynamicLayer(received);
         			}
         		} else {
-        			//TODO some landmarks are not filtered properly
+        			//TODO some landmarks in layers having multiple readers which are executed in parallel are not filtered properly 
         			Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
         			landmarks.addAll(filtered);
         			if (landmarkManager != null) {
@@ -88,11 +88,4 @@ public class SerialParser {
             return (landmark != null && !source.contains(landmark));
         }
     }
-    
-    /*private class NotNullPredicate implements Predicate<ExtendedLandmark> {
-
-    	public boolean apply(ExtendedLandmark landmark) {
-            return (landmark != null);
-        }
-    }*/
 }   

@@ -94,7 +94,7 @@ public class GoogleRoutesOverlay extends Overlay {
                     ExtendedLandmark lastPoint = routePoints.get(routeSize - 1);
                     GeoPoint gp1 = new GeoPoint(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6());
                     projection.toPixels(gp1, point1);
-                    canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
+                    //canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
                     path.moveTo(point1.x, point1.y);
 
                     int i = routeSize - 2;
@@ -118,9 +118,9 @@ public class GoogleRoutesOverlay extends Overlay {
                     canvas.drawPath(path, paint);
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
-                    //if (i == -1) {
-                    //    canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
-                    //}
+                    if (i == -1) {
+                        canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
+                    }
                 }
             }
 
