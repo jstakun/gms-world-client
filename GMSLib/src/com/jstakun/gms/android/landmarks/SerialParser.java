@@ -44,16 +44,19 @@ public class SerialParser {
         	if (!task.isCancelled()) {
         		List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, "deflate");
         		if (landmarks.isEmpty()) {
+        			//System.out.println(url + " addAll --------------------------------------");
         			landmarks.addAll(received);
         			if (landmarkManager != null) {
         				landmarkManager.addLandmarkListToDynamicLayer(received);
         			}
         		} else {
-        			//TODO some landmarks in layers having multiple readers which are executed in parallel are not filtered properly 
-        			Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
-        			landmarks.addAll(filtered);
-        			if (landmarkManager != null) {
-        				landmarkManager.addLandmarkListToDynamicLayer(filtered);
+        			synchronized (landmarks) {
+        				//System.out.println(url + " " + landmarks.size() + " ---------------------------------------");
+	        			Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
+	        			landmarks.addAll(filtered);
+	        			if (landmarkManager != null) {
+	        				landmarkManager.addLandmarkListToDynamicLayer(filtered);
+	        			}
         			}
         		}
         	}
@@ -85,7 +88,7 @@ public class SerialParser {
     	}
     	
         public boolean apply(ExtendedLandmark landmark) {
-            return (landmark != null && !source.contains(landmark));
+        	return (landmark != null && !source.contains(landmark));
         }
     }
 }   

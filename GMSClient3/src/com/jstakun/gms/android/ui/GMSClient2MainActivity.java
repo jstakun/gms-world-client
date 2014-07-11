@@ -159,15 +159,19 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         LoggerUtils.debug("Map provider is " + mapProvider);
 
+        //System.out.println("1. --------------------------------");
+        
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            setContentView(R.layout.osmdroidcanvasview_2);
+        	//System.out.println("2.1 --------------------------------");
+        	setContentView(R.layout.osmdroidcanvasview_2);
             mapView = (IMapView) findViewById(R.id.mapCanvas);
             ((org.osmdroid.views.MapView) mapView).setMultiTouchControls(true);
             myLocation = new OsmMyLocationNewOverlay(this, (org.osmdroid.views.MapView) mapView, loadingHandler);
             infoOverlay = new OsmInfoOverlay(this);
         } else {
             //default view is Google
-            setContentView(R.layout.googlemapscanvasview_2);
+        	//System.out.println("2.2 --------------------------------");
+        	setContentView(R.layout.googlemapscanvasview_2);
             googleMapsView = (MapView) findViewById(R.id.mapCanvas);
             mapView = new org.osmdroid.google.wrapper.MapView(googleMapsView);
             myLocation = new GoogleIMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
@@ -180,6 +184,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     private void initComponents(Bundle savedInstanceState) {
 
+    	//System.out.println("3 --------------------------------");
+    	
     	loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
     	loadingProgressBar.setProgress(25);
     	
@@ -503,7 +509,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	//} catch (Exception e) {
     	//}
     	//
-        if (!appInitialized && location != null) {
+    	//System.out.println("4 --------------------------------");
+    	if (!appInitialized && location != null) {
+    		//System.out.println("4.1 --------------------------------");
         	loadingProgressBar.setProgress(75);
         	    	
         	mapController.setCenter(location);
@@ -593,7 +601,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
             
             appInitialized = true;
-        }
+        } 
     }
 
     @Override

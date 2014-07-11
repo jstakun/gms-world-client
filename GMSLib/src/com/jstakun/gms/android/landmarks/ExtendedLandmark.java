@@ -176,10 +176,16 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
         } else if (landmark instanceof ExtendedLandmark) {
             ExtendedLandmark l = (ExtendedLandmark)landmark;
             
-            return Objects.equal(l.getName(), getName()) && 
+            boolean isEqual = Objects.equal(l.getName(), getName()) && 
                Objects.equal(l.getLatitudeE6(), getLatitudeE6()) &&
                Objects.equal(l.getLongitudeE6(), getLongitudeE6()) &&
                Objects.equal(l.getLayer(), layer);
+            
+            //if (isEqual) {
+            //	System.out.println(getName() + " " + layer + " " + getLatitudeE6() + " " + getLongitudeE6() + " -------------------------------");
+            //}
+            
+            return isEqual;
         } else {
             return false;
         }
