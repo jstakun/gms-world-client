@@ -160,6 +160,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setMultiTouchControls(true);
         mapView.setBuiltInZoomControls(true);
+        //set this to solve path painting issue
+        mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         myLocation = new OsmMyLocationNewOverlay(this, mapView, loadingHandler);
         LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);

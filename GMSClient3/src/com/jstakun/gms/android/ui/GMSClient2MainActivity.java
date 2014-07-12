@@ -166,6 +166,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	setContentView(R.layout.osmdroidcanvasview_2);
             mapView = (IMapView) findViewById(R.id.mapCanvas);
             ((org.osmdroid.views.MapView) mapView).setMultiTouchControls(true);
+            //set this to solve path painting issue
+            ((org.osmdroid.views.MapView) mapView).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             myLocation = new OsmMyLocationNewOverlay(this, (org.osmdroid.views.MapView) mapView, loadingHandler);
             infoOverlay = new OsmInfoOverlay(this);
         } else {
@@ -173,6 +175,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	//System.out.println("2.2 --------------------------------");
         	setContentView(R.layout.googlemapscanvasview_2);
             googleMapsView = (MapView) findViewById(R.id.mapCanvas);
+            //set this to solve path painting issue
+            googleMapsView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             mapView = new org.osmdroid.google.wrapper.MapView(googleMapsView);
             myLocation = new GoogleIMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
             infoOverlay = new GoogleInfoOverlay();

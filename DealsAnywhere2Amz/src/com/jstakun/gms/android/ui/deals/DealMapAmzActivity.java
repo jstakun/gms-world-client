@@ -185,6 +185,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setBuiltInZoomControls(true);
+        //set this to solve path painting issue
+        mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         
