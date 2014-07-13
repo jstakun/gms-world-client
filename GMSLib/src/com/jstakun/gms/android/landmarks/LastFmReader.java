@@ -5,9 +5,6 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-
-
 /**
  *
  * @author jstakun
@@ -15,7 +12,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public class LastFmReader extends AbstractSerialReader {
 
     @Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "lastfmProvider";
+	protected String getUri() {
+		return "lastfmProvider";
 	}
 }

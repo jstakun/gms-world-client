@@ -7,8 +7,6 @@ package com.jstakun.gms.android.landmarks;
 
 import org.apache.http.message.BasicNameValuePair;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-
 /**
  *
  * @author jstakun
@@ -24,7 +22,7 @@ public class YelpReader extends AbstractSerialReader{
 	}
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "yelpProvider";
+	protected String getUri() {
+		return "yelpProvider";
 	}
 }

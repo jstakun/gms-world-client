@@ -8,8 +8,6 @@ import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-
 /**
  *
  * @author jstakun
@@ -26,8 +24,8 @@ public class HotelsReader extends AbstractSerialReader {
 	}
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getSecuredServerUrl() + "hotelsProvider";
+	protected String getUri() {
+		return "hotelsProvider";
 		//return "http://landmarks-gmsworld.rhcloud.com/actions/layersProvider";
 	}
 }

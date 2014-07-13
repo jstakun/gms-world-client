@@ -9,8 +9,6 @@ import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-
 /**
  *
  * @author jstakun
@@ -25,7 +23,7 @@ public class GooglePlacesReader extends AbstractSerialReader {
 	}
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "googlePlacesProvider";
+	protected String getUri() {
+		return "googlePlacesProvider";
 	}
 }

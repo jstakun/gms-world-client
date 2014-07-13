@@ -121,7 +121,7 @@ public final class GMSUtils {
 	}
 	
 	public static String sendComment(String placeId, String commentText) {
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "addComment";
+        String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "addComment";
         String message = "";
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("key", placeId));
@@ -154,7 +154,7 @@ public final class GMSUtils {
     }
 	
 	public static String checkin(String service, String checkinLandmarkCode, String name) {
- 	   String url = ConfigurationManager.getInstance().getServicesUrl() + service; 
+ 	   String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + service; 
  	   List<NameValuePair> params = new ArrayList<NameValuePair>();
  	   params.add(new BasicNameValuePair("key", checkinLandmarkCode));
  	   String username = ConfigurationManager.getUserManager().getLoggedInUsername();

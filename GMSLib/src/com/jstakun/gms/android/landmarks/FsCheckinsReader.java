@@ -43,7 +43,7 @@ public class FsCheckinsReader extends AbstractSerialReader {
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
 			init(latitude, longitude, zoom, width, height);
 			if (hasToken) {
-				errorMessage = parser.parse(getUrl(), params, landmarks, task, true, Commons.FOURSQUARE);
+				errorMessage = parser.parse(getUrls(), 0, params, landmarks, task, true, Commons.FOURSQUARE);
 			}
 		}
 		
@@ -51,7 +51,12 @@ public class FsCheckinsReader extends AbstractSerialReader {
 	}
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getSecuredServerUrl() + "fsCheckins";
+	protected String[] getUrls() {
+		return new String[] { ConfigurationManager.getInstance().getSecuredServerUrl() + getUri() };
+	}
+	
+	@Override
+	protected String getUri() {
+		return "fsCheckins";
 	}
 }

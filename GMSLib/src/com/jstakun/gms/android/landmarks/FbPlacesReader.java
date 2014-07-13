@@ -17,8 +17,6 @@ import com.jstakun.gms.android.social.OAuthServiceFactory;
  */
 public class FbPlacesReader extends AbstractSerialReader {
 
-	private boolean hasToken = false;
-
 	@Override
 	protected void init(double latitude, double longitude, int zoom, int width, int height) {
 		super.init(latitude, longitude, zoom, width, height);
@@ -27,17 +25,12 @@ public class FbPlacesReader extends AbstractSerialReader {
             String token = fbUtils.getAccessToken().getToken();
             if (token != null) {
             	params.add(new BasicNameValuePair("token", token));
-            	hasToken = true; 
             }
 		}
 	}
 	
     @Override
-	protected String getUrl() {
-		if (hasToken) {
-			return ConfigurationManager.getInstance().getSecuredServerUrl() + "facebookProvider";
-		} else {
-			return ConfigurationManager.getInstance().getServerUrl() + "facebookProvider";
-		}
+	protected String getUri() {
+    	return "facebookProvider";
 	}
 }

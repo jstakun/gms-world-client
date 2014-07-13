@@ -7,7 +7,6 @@ package com.jstakun.gms.android.landmarks;
 
 import org.apache.http.message.BasicNameValuePair;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.BoundingBox;
 import com.jstakun.gms.android.utils.MercatorUtils;
 import com.jstakun.gms.android.utils.StringUtil;
@@ -27,7 +26,7 @@ public class PicasaReader extends AbstractSerialReader {
 	}
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "picasaProvider";
+	protected String getUri() {
+		return "picasaProvider";
 	}
 }

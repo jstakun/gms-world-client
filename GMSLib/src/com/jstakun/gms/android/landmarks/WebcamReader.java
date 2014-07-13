@@ -5,8 +5,6 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-
 /**
  *
  * @author jstakun
@@ -14,7 +12,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public class WebcamReader extends AbstractSerialReader  {
 
     @Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "webcamProvider";
+	protected String getUri() {
+		return "webcamProvider";
 	}
 }

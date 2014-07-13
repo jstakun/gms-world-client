@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.BoundingBox;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.MercatorUtils;
@@ -41,11 +40,11 @@ public class OsmReader extends AbstractSerialReader {
             amenity = "parking";
         }
         params.add(new BasicNameValuePair("amenity", amenity));
-	    return parser.parse(getUrl(), params, landmarks, task, true, layer);	
+	    return parser.parse(getUrls(), 0, params, landmarks, task, true, layer);	
     }
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "osmProvider";
+	protected String getUri() {
+		return "osmProvider";
 	}
 }

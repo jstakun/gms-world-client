@@ -571,7 +571,7 @@ public class LandmarkManager {
 
         double[] coords = MercatorUtils.normalizeE6(new double[]{landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()});
         double alt = MercatorUtils.normalizeE6(landmark.getQualifiedCoordinates().getAltitude());
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "persistLandmark";
+        String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "persistLandmark";
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("name", landmark.getName()));
         params.add(new BasicNameValuePair("description", landmark.getDescription()));

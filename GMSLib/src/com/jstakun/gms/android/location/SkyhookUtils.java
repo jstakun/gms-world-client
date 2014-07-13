@@ -223,7 +223,7 @@ public class SkyhookUtils {
             
             while (!isRegistered && !isCancelled()) {
                 try {
-                    LoggerUtils.debug("User not registered ...");
+                    LoggerUtils.debug("Skyhook user not registered ...");
                     Thread.sleep(1000L);
                 } catch (InterruptedException ex) {
                     //LoggerUtils.error("SkyhookUtils.GetLocationTask exception", ex);

@@ -147,7 +147,7 @@ public class RoutesManager {
         String message = null;
         HttpUtils utils = new HttpUtils();
         String[] desc = null;
-        String url = ConfigurationManager.getInstance().getServicesUrl() + "routeProvider";
+        String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "routeProvider";
         
         try {
         	List<NameValuePair> params = new ArrayList<NameValuePair>();

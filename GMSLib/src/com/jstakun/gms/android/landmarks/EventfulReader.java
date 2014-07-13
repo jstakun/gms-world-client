@@ -5,7 +5,6 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
 
 /**
  *
@@ -15,7 +14,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public class EventfulReader extends AbstractSerialReader {
 
     @Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "eventfulProvider";
+	protected String getUri() {
+		return "eventfulProvider";
 	}
 }

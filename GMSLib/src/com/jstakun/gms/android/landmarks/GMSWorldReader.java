@@ -7,8 +7,6 @@ package com.jstakun.gms.android.landmarks;
 
 import org.apache.http.message.BasicNameValuePair;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-
 /**
  *
  * @author jstakun
@@ -23,8 +21,8 @@ public class GMSWorldReader extends AbstractSerialReader {
 	}
 	
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "downloadLandmark";
+	protected String getUri() {
+		return "downloadLandmark";
 		//return "http://landmarks-gmsworld.rhcloud.com/actions/layersProvider";
 	}
 }

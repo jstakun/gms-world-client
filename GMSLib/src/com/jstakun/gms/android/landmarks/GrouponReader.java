@@ -31,7 +31,7 @@ public class GrouponReader extends AbstractSerialReader {
     }
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "grouponProvider";
+	protected String getUri() {
+		return "grouponProvider";
 	}
 }

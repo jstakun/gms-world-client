@@ -17,7 +17,7 @@ import java.util.List;
 public class Layer {
 
     private String name;
-    private boolean extensible; //czy mozna dodac wlasne landmarki
+    //private boolean extensible; //czy mozna dodac wlasne landmarki
     private boolean manageable; //czy moza samemu wlaczyc widok warstwy
     private boolean checkinable; //is checkin allowed
     private boolean searchable;
@@ -36,7 +36,7 @@ public class Layer {
 
     protected Layer(String name, boolean extensible, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, List<LayerReader> layerReader, String smallIconPath, int smallIconResource, String largeIconPath, int largeIconResource, int type, String desc, String formatted, FileManager.ClearPolicy clearPolicy) {
         this.name = name;
-        this.extensible = extensible;
+        //this.extensible = extensible;
         this.manageable = manageable;
         this.checkinable = checkinable;
         this.searchable = searchable;

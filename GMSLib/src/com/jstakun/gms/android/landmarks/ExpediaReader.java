@@ -5,7 +5,6 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
 
 
 /**
@@ -14,7 +13,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
  */
 public class ExpediaReader extends AbstractSerialReader {
     @Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "expediaProvider";
+	protected String getUri() {
+		return "expediaProvider";
 	}
 }

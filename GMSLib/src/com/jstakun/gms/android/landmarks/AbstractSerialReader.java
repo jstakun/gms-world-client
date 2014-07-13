@@ -42,12 +42,21 @@ public abstract class AbstractSerialReader implements LayerReader {
         params.add(new BasicNameValuePair("version", SERIAL_VERSION));
     }
     
-    protected abstract String getUrl(); 
+    protected abstract String getUri();
+    
+    protected String[] getUrls() { 
+    	List<String> urls = new ArrayList<String>(2);
+    	if (ConfigurationManager.getUserManager().isTokenPresent()) {
+    		urls.add(ConfigurationManager.getInstance().getSecuredServicesUrl() + getUri());
+    	} 
+    	urls.add(ConfigurationManager.getInstance().getAnonymousServerUrl() + getUri());
+    	return urls.toArray(new String[urls.size()]);
+    }
 
     public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
     	init(latitude, longitude, zoom, width, height);
     	params.add(new BasicNameValuePair("layer", layer));
-	    return parser.parse(getUrl(), params, landmarks, task, true, layer);
+	    return parser.parse(getUrls(), 0, params, landmarks, task, true, layer);
     }
 
     public final void close() {

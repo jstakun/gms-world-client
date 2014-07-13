@@ -1,14 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
 
 import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
-
-import com.jstakun.gms.android.config.ConfigurationManager;
 
 /**
  *
@@ -23,7 +17,7 @@ public class FoursquareReader extends AbstractSerialReader {
 	}
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "foursquareProvider";
+	protected String getUri() {
+		return "foursquareProvider";
 	}
 }

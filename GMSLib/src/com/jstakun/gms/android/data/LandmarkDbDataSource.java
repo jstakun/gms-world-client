@@ -142,7 +142,7 @@ public class LandmarkDbDataSource {
     }
 
     private ExtendedLandmark cursorToLandmark(Cursor cursor) {
-        long id = cursor.getLong(0);
+        //long id = cursor.getLong(0);
         String name = cursor.getString(1);
         double latitude = cursor.getDouble(2);
         double longitude = cursor.getDouble(3);

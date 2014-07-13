@@ -29,7 +29,7 @@ public class CouponsReader extends AbstractSerialReader {
 	}
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "couponsProvider";
+	protected String getUri() {
+		return "couponsProvider";
 	}
 }

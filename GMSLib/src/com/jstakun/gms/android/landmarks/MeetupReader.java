@@ -5,7 +5,6 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
 
 
 /**
@@ -14,7 +13,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
  */
 public class MeetupReader extends AbstractSerialReader {
     @Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "meetupProvider";
+	protected String getUri() {
+		return "meetupProvider";
 	}
 }

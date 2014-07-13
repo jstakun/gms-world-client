@@ -5,16 +5,13 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-
-
 /**
  *
  * @author jstakun
  */
 public class FlickrReader extends AbstractSerialReader {
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "flickrProvider";
+	protected String getUri() {
+		return "flickrProvider";
 	}
 }

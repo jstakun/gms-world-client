@@ -5,16 +5,13 @@
 
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-
-
 /**
  *
  * @author jstakun
  */
 public class GeonamesReader extends AbstractSerialReader {
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getServerUrl() + "geonamesProvider";
+	protected String getUri() {
+		return "geonamesProvider";
 	}
 }

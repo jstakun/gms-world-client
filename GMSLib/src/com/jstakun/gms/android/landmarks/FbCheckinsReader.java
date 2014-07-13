@@ -41,7 +41,7 @@ public class FbCheckinsReader extends AbstractSerialReader {
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
 			init(latitude, longitude, zoom, width, height);
 			if (hasToken) {
-				errorMessage = parser.parse(getUrl(), params, landmarks, task, true, Commons.FACEBOOK);
+				errorMessage = parser.parse(getUrls(), 0, params, landmarks, task, true, Commons.FACEBOOK);
 			}
 		}
 		
@@ -49,7 +49,12 @@ public class FbCheckinsReader extends AbstractSerialReader {
 	}
 
 	@Override
-	protected String getUrl() {
-		return ConfigurationManager.getInstance().getSecuredServerUrl() + "fbCheckins";
+	protected String[] getUrls() {
+		return new String[]{ ConfigurationManager.getInstance().getSecuredServerUrl() + getUri() };
+	}
+	
+	@Override
+	protected String getUri() {
+		return "fbCheckins";
 	}
 }

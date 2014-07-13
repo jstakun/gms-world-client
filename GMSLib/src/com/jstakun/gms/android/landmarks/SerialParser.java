@@ -35,28 +35,30 @@ public class SerialParser {
         }
     }
 	
-    protected String parse(String url, List<NameValuePair> params, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) { 	
+    protected String parse(String[] urls, int urlIndex, List<NameValuePair> params, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) { 	
         String errorMessage = null;
         LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         
         try {
-        	URI uri = new URI(url);
+        	URI uri = new URI(urls[urlIndex]);
         	if (!task.isCancelled()) {
         		List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, "deflate");
-        		if (landmarks.isEmpty()) {
-        			//System.out.println(url + " addAll --------------------------------------");
-        			landmarks.addAll(received);
-        			if (landmarkManager != null) {
-        				landmarkManager.addLandmarkListToDynamicLayer(received);
-        			}
-        		} else {
-        			synchronized (landmarks) {
-        				//System.out.println(url + " " + landmarks.size() + " ---------------------------------------");
-	        			Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
-	        			landmarks.addAll(filtered);
-	        			if (landmarkManager != null) {
-	        				landmarkManager.addLandmarkListToDynamicLayer(filtered);
-	        			}
+        		if (!received.isEmpty()) {
+        			if (landmarks.isEmpty()) {
+        				//System.out.println(url + " addAll --------------------------------------");
+        				landmarks.addAll(received);
+        				if (landmarkManager != null) {
+        					landmarkManager.addLandmarkListToDynamicLayer(received);
+        				}
+        			} else {
+        				synchronized (landmarks) {
+        					//System.out.println(url + " " + landmarks.size() + " ---------------------------------------");
+        					Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
+        					landmarks.addAll(filtered);
+        					if (landmarkManager != null) {
+        						landmarkManager.addLandmarkListToDynamicLayer(filtered);
+        					}
+        				}
         			}
         		}
         	}
@@ -69,8 +71,10 @@ public class SerialParser {
         		if (service != null) {
         			service.logout();
         		}
+        	} else if (responseCode == HttpStatus.SC_SERVICE_UNAVAILABLE && urlIndex+1 < urls.length) {
+        		return parse(urls, urlIndex+1, params, landmarks, task, close, socialService);
         	}
-            errorMessage = utils.getResponseCodeErrorMessage();
+        	errorMessage = utils.getResponseCodeErrorMessage();
             if (close) {
                 close();
             }
