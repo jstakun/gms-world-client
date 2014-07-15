@@ -33,9 +33,9 @@
         <item>OSM Public Transport</item>
         <!--item>Base</item>
         <item>Topo</item>
-        <item>Hills</item-->
+        <item>Hills</item>
         <item>CloudMade Standard Tiles</item>
-        <item>CloudMade Small Tiles</item>
+        <item>CloudMade Small Tiles</item-->
         <item>MapQuest OSM</item>
         <item>MapQuest Aerial</item>
     </string-array>

@@ -4,11 +4,12 @@
  */
 package com.jstakun.gms.android.osm.maps;
 
-import android.content.Context;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.tileprovider.util.CloudmadeUtil;
 import org.osmdroid.views.MapView;
+
+import android.content.Context;
+
+import com.jstakun.gms.android.config.ConfigurationManager;
 
 /**
  *
@@ -41,18 +42,18 @@ public class OsmMapsTypeSelector {
             //case 6:
             //    osmMapsView.setTileSource(TileSourceFactory.HILLS);
             //    break;
+            //case 7:
+            //    CloudmadeUtil.retrieveCloudmadeKey(context);
+            //    osmMapsView.setTileSource(TileSourceFactory.CLOUDMADESTANDARDTILES);
+            //    break;
+            //case 8:
+            //    CloudmadeUtil.retrieveCloudmadeKey(context);
+            //    osmMapsView.setTileSource(TileSourceFactory.CLOUDMADESMALLTILES);
+            //    break;
             case 3:
-                CloudmadeUtil.retrieveCloudmadeKey(context);
-                osmMapsView.setTileSource(TileSourceFactory.CLOUDMADESTANDARDTILES);
-                break;
-            case 4:
-                CloudmadeUtil.retrieveCloudmadeKey(context);
-                osmMapsView.setTileSource(TileSourceFactory.CLOUDMADESMALLTILES);
-                break;
-            case 5:
                 osmMapsView.setTileSource(TileSourceFactory.MAPQUESTOSM);
                 break;
-            case 6:
+            case 4:
                 osmMapsView.setTileSource(TileSourceFactory.MAPQUESTAERIAL);
                 break;
             default:

@@ -76,6 +76,7 @@ import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
+import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
@@ -347,15 +348,19 @@ public final class IntentsHelper {
 
     public void startPhoneCallActivity(ExtendedLandmark landmark) {
         try {
-            if (landmark != null) {
-                String number = "tel:" + landmark.getPhone();
-                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
-                activity.startActivity(callIntent);
-            } else {
-                showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-            }
+        	if (OsUtil.hasTelephony(activity)) {
+        		if (landmark != null) {
+                	String number = "tel:" + landmark.getPhone();
+                	Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
+                	activity.startActivity(callIntent);
+            	} else {
+                	showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+            	}
+        	} else {
+        		showInfoToast(Locale.getMessage(R.string.Call_not_supported_error));
+        	}
         } catch (Exception e) {
-            LoggerUtils.error("Intents.startPhoneCallActivity exception", e);
+            LoggerUtils.error("Intents.startPhoneCallActivity() exception", e);
             showInfoToast(Locale.getMessage(R.string.Call_not_supported_error));
         }
     }

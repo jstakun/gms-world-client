@@ -137,6 +137,14 @@ public class OsUtil {
         }
     }
     
+    public static boolean hasTelephony(Context ctx) {
+    	try {
+    		return HasTelephoneHelperInternal.hasTelephony(ctx);
+    	} catch (VerifyError e) {
+            return true;
+    	}
+    }
+    
     public static String getDeviceId(Context context) {
         String id = getUniqueID(context);
         if (id == null)
@@ -180,6 +188,12 @@ public class OsUtil {
 
         private static int getSdkIntInternal() {
             return Build.VERSION.SDK_INT;
+        }
+    }
+    
+    private static class HasTelephoneHelperInternal {
+    	private static boolean hasTelephony(Context ctx) {
+        	return ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY);    
         }
     }
 
