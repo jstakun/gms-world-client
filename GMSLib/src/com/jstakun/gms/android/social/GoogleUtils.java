@@ -64,18 +64,16 @@ public final class GoogleUtils extends AbstractSocialUtils {
 		String errorMessage = null;
 		String refreshToken = ConfigurationManager.getInstance().getString(GL_REFRESH_TOKEN);
 		long expires_in = ConfigurationManager.getInstance().getLong(ConfigurationManager.GL_EXPIRES_IN);
+		String token = accessToken.getToken();
 		
-		if (expires_in < System.currentTimeMillis() && refreshToken == null) {
-			logout();
-			errorMessage = Locale.getMessage(R.string.Social_token_expired, "Google"); 
-		} else {
+		if ((expires_in > System.currentTimeMillis() && StringUtils.isNotEmpty(token)) || StringUtils.isNotEmpty(refreshToken)) {
 			HttpUtils utils = new HttpUtils();
 		
 			try {
 				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "glSendPost";			
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				if (expires_in > System.currentTimeMillis()) {
-					params.add(new BasicNameValuePair("token", accessToken.getToken()));
+					params.add(new BasicNameValuePair("token", token));
 				}
 				params.add(new BasicNameValuePair("refresh_token", refreshToken));
 				if (landmark != null) {
@@ -97,6 +95,9 @@ public final class GoogleUtils extends AbstractSocialUtils {
 				} catch (Exception e) {
 				}
 			}
+		} else {
+			logout();
+			errorMessage = Locale.getMessage(R.string.Social_token_expired, "Google"); 
 		}
 		return errorMessage;
 	}

@@ -22,7 +22,7 @@ public class LandmarkParcelable implements Parcelable {
     private long creationDate;
     private int categoryid;
     private int subcategoryid;
-    private int rating;
+    private double rating;
     private int numberOfReviews;
     private String thunbnail;
     private int revelance;
@@ -41,7 +41,7 @@ public class LandmarkParcelable implements Parcelable {
         dest.writeLong(getCreationDate());
         dest.writeInt(getCategoryid());
         dest.writeInt(getSubcategoryid());
-        dest.writeInt(getRating());
+        dest.writeDouble(getRating());
         dest.writeInt(getNumberOfReviews());
         dest.writeString(getThunbnail());
         dest.writeInt(getRevelance());
@@ -57,13 +57,13 @@ public class LandmarkParcelable implements Parcelable {
         creationDate = source.readLong();
         categoryid = source.readInt();
         subcategoryid = source.readInt();
-        rating = source.readInt();
+        rating = source.readDouble();
         numberOfReviews = source.readInt();
         thunbnail = source.readString();
         revelance = source.readInt();
     }
 
-    protected LandmarkParcelable(int hashCode, String name, String key, String layer, String desc, float distance, long creationDate, int categoryid, int subcategoryid, int rating, int numOfRev, String thunbnail, int revelance) {
+    protected LandmarkParcelable(int hashCode, String name, String key, String layer, String desc, float distance, long creationDate, int categoryid, int subcategoryid, double rating, int numOfRev, String thunbnail, int revelance) {
         this.hashCode = hashCode;
         this.name = name;
         this.key = key;
@@ -149,7 +149,7 @@ public class LandmarkParcelable implements Parcelable {
     /**
      * @return the rating
      */
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 

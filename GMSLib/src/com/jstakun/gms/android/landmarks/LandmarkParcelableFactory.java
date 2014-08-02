@@ -60,7 +60,7 @@ public class LandmarkParcelableFactory {
             name = StringUtil.formatCommaSeparatedString(name);
         }
 
-        return new LandmarkParcelable(l.hashCode(), name, key, layerName, desc, distance, l.getCreationDate(), l.getCategoryId(), l.getSubCategoryId(), (int)l.getRating(), l.getNumberOfReviews(), l.getThumbnail(), l.getRevelance());
+        return new LandmarkParcelable(l.hashCode(), name, key, layerName, desc, distance, l.getCreationDate(), l.getCategoryId(), l.getSubCategoryId(), l.getRating(), l.getNumberOfReviews(), l.getThumbnail(), l.getRevelance());
     }
 
     public static LandmarkParcelable getLandmarkParcelable(FavouritesDAO f, double lat, double lng) {
@@ -81,13 +81,13 @@ public class LandmarkParcelableFactory {
 
         String desc = Locale.getMessage(R.string.lastCheckinDate, fromLastCheckin) +  ", " +
         		Locale.getMessage(R.string.Landmark_distance_max, "<font color=\"" + distanceStatus + "\">" + maxDistance + "</font>");
-        return new LandmarkParcelable((int)f.getId(), f.getName(), Long.toString(f.getId()), f.getLayer(), desc, distance, f.getLastCheckinDate(), -1, -1, -1, 0, null, 0);
+        return new LandmarkParcelable((int)f.getId(), f.getName(), Long.toString(f.getId()), f.getLayer(), desc, distance, f.getLastCheckinDate(), -1, -1, -1d, 0, null, 0);
     }
 
     public static LandmarkParcelable getLandmarkParcelable(File f, int id, String name, java.util.Locale locale) {
         String length = Formatter.formatFileSize(ConfigurationManager.getInstance().getContext(), f.length());
         String date = DateTimeUtils.getShortDateTimeString(f.lastModified(), locale);
         String desc = length + " | " + date;
-        return new LandmarkParcelable(id, f.getName(), "", name, desc, 0.0f, f.lastModified(), -1, -1, -1, 0, null, 0);
+        return new LandmarkParcelable(id, f.getName(), "", name, desc, 0.0f, f.lastModified(), -1, -1, -1d, 0, null, 0);
     }
 }

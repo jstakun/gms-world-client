@@ -711,16 +711,19 @@ public final class IntentsHelper {
         lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.VISIBLE);
         lvOpenButton.setVisibility(View.VISIBLE);
         lvView.findViewById(R.id.lvOpenSeparator).setVisibility(View.VISIBLE);
+        
         lvRouteButton.setVisibility(View.VISIBLE);
         lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.VISIBLE);
+     
         int routeType = ConfigurationManager.getInstance().getInt(ConfigurationManager.ROUTE_TYPE);
         if (routeType == 2) {
             lvRouteButton.setImageResource(R.drawable.walk48);
         } else {
             lvRouteButton.setImageResource(R.drawable.route48);
         }
+        
         String phone = selectedLandmark.getPhone();
-        if (phone != null) {
+        if (phone != null && OsUtil.hasTelephony(activity)) { 
             lvCallButton.setVisibility(View.VISIBLE);
             lvView.findViewById(R.id.lvCallSeparator).setVisibility(View.VISIBLE);
         } else {
