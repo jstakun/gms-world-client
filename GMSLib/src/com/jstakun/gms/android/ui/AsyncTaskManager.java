@@ -4,6 +4,7 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Location;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -940,6 +946,53 @@ public class AsyncTaskManager {
     	}
     }
 
+    private byte[] takeScreenshot() {
+        byte[] scr = null;
+        View v = activity.findViewById(android.R.id.content);
+        v.setDrawingCacheEnabled(true);
+        try {
+        	SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+            int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
+            
+        	Bitmap screenShot = v.getDrawingCache();
+            //check if screenshot is black
+            boolean isBlack = false;
+            int blackPixelsCount = 0;
+    		int w = screenShot.getWidth();
+    	    int h = screenShot.getHeight();
+    	    int totalPixels = w * h;
+            if (screenShot != null) {
+            	for(int i=0; i < w; i++) {
+            		for(int j=0; j < h; j++)  {                    
+            			if (screenShot.getPixel(i, j) == Color.BLACK) {
+            				blackPixelsCount++;
+            				if ((blackPixelsCount / totalPixels) > 0.75) {
+        	    				isBlack = true;
+        	    				break;
+        	    			}
+            			}	
+            		}   
+            	}
+            }
+            //
+            if (screenShot != null && !isBlack) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                screenShot.compress(Bitmap.CompressFormat.JPEG, 50, out);
+                screenShot.recycle();
+                scr = out.toByteArray();
+                //play camera click sound
+                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
+                LoggerUtils.debug("Shutter sound played with id " + id);
+                //
+            }
+        } catch (Throwable ex) {
+            LoggerUtils.error("AsyncTaskManager.takeScreenshot() exception", ex);
+        } finally {
+            v.setDrawingCacheEnabled(false);
+        }
+        return scr;
+    }
+
     private class UploadImageTask extends GMSAsyncTask<Double, Void, Void> {
 
         private String filename;
@@ -953,7 +1006,7 @@ public class AsyncTaskManager {
         protected Void doInBackground(Double... coords) {
             HttpUtils utils = new HttpUtils();
             try {
-            	byte[] file = intents.takeScreenshot();
+            	byte[] file = takeScreenshot();
         		if (file != null) {
         			String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
         			utils.uploadFile(url, true, coords[0], coords[1], file, filename);

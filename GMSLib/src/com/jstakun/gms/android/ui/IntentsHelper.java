@@ -1125,52 +1125,6 @@ public final class IntentsHelper {
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public byte[] takeScreenshot() {
-        byte[] scr = null;
-        View v = activity.findViewById(android.R.id.content);
-        v.setDrawingCacheEnabled(true);
-        try {
-            Bitmap screenShot = v.getDrawingCache();
-            //check if screenshot is black
-            boolean isBlack = false;
-            int blackPixelsCount = 0;
-    		int w = screenShot.getWidth();
-    	    int h = screenShot.getHeight();
-    	    int totalPixels = w * h;
-            if (screenShot != null) {
-            	for(int i=0; i < w; i++) {
-            		for(int j=0; j < h; j++)  {                    
-            			if (screenShot.getPixel(i, j) == Color.BLACK) {
-            				blackPixelsCount++;
-            				if ((blackPixelsCount / totalPixels) > 0.75) {
-        	    				isBlack = true;
-        	    				break;
-        	    			}
-            			}	
-            		}   
-            	}
-            }
-            //
-            if (screenShot != null && !isBlack) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                screenShot.compress(Bitmap.CompressFormat.JPEG, 50, out);
-                screenShot.recycle();
-                scr = out.toByteArray();
-                //play camera click sound
-                SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
-                int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
-                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
-                LoggerUtils.debug("Shutter sound played with id " + id);
-                //
-            }
-        } catch (Throwable ex) {
-            LoggerUtils.error("IntentsHelper.takeScreenshot() exception", ex);
-        } finally {
-            v.setDrawingCacheEnabled(false);
-        }
-        return scr;
-    }
-
     public void processActivityResult(int requestCode, int resultCode, Intent intent, double[] myLocation, double[] mapCenter, Handler showRouteHandler, int zoomLevel, LayerLoader layerLoader) {
         if (requestCode == INTENT_CATEGORIES) {
             if (resultCode == Activity.RESULT_OK) {
