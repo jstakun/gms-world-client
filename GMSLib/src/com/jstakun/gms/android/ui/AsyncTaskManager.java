@@ -924,23 +924,17 @@ public class AsyncTaskManager {
     		intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
     	}
     	if (ConfigurationManager.getInstance().isNetworkModeAccepted()) {
-    		byte[] file = intents.takeScreenshot();
-    		if (file != null) {
-    			//loading time & sdk version & number of landmarks
-    			long loadingTime = 0; 
-    			Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
-    			if (l != null) {
-    				loadingTime = l.longValue();
-    			}
-    			int version = OsUtil.getSdkVersion();
-    			int numOfLandmarks = landmarkManager.getAllLayersSize();
-    			int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
-    			String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version
-                    + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
-    			new UploadImageTask(file, filename).execute(lat, lng);
-    		} else {
-    			LoggerUtils.debug("Screenshot is empty!");
+    		//loading time & sdk version & number of landmarks
+    		long loadingTime = 0; 
+    		Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
+    		if (l != null) {
+    			loadingTime = l.longValue();
     		}
+    		int version = OsUtil.getSdkVersion();
+    		int numOfLandmarks = landmarkManager.getAllLayersSize();
+    		int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
+    		String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
+    		new UploadImageTask(filename).execute(lat, lng);   		
     	} else {
     		LoggerUtils.debug("Skipping image upload due to lack of wi-fi...");
     	}
@@ -948,12 +942,10 @@ public class AsyncTaskManager {
 
     private class UploadImageTask extends GMSAsyncTask<Double, Void, Void> {
 
-        private byte[] file;
         private String filename;
 
-        public UploadImageTask(byte[] file, String filename) {
+        public UploadImageTask(String filename) {
             super(10);
-            this.file = file;
             this.filename = filename;
         }
 
@@ -961,10 +953,15 @@ public class AsyncTaskManager {
         protected Void doInBackground(Double... coords) {
             HttpUtils utils = new HttpUtils();
             try {
-                String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
-                utils.uploadFile(url, true, coords[0], coords[1], file, filename);
+            	byte[] file = intents.takeScreenshot();
+        		if (file != null) {
+        			String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
+        			utils.uploadFile(url, true, coords[0], coords[1], file, filename);
+        		} else {
+        			LoggerUtils.debug("Screenshot is empty!");
+        		}
             } catch (Exception e) {
-                LoggerUtils.error("Intents.takeScreenshot() exception: ", e);
+                LoggerUtils.error("UploadImageTask.doInBackground() exception: ", e);
             } finally {
                 try {
                     if (utils != null) {
