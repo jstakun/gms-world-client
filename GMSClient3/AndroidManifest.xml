@@ -62,6 +62,7 @@
         <activity android:name="WebViewActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="keyboard|keyboardHidden|orientation"></activity>
         <activity android:name="SendBlogeoPostActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name="FilesActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="ConfigurationViewerActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="OAuth2Activity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|keyboardHidden"></activity>
         <activity android:name="LandmarkListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
             <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>

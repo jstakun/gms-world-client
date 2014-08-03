@@ -674,6 +674,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	}
             //
 
+        	MenuItem config = menu.findItem(R.id.config);
+        	config.setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	
             MenuItem login = menu.findItem(R.id.login);
             login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
 
@@ -813,11 +816,14 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		        		intents.showInfoToast(Locale.getMessage(R.string.Routes_PauseRecordingOff));
 		    		}
 		    		break;
-				case R.id.loadPoiFile:
+				case R.id.loadPoiFile: 
 					if (intents.startFilesLoadingActivity()) {
 		        		intents.showInfoToast(Locale.getMessage(R.string.Files_NoFiles));
 		    		}
 		    		break;
+				case R.id.config:
+					intents.startConfigurationViewerActivity();
+					break;
 				case R.id.socialNetworks:
 		    		intents.startSocialListActivity();
 		    		break;
@@ -855,7 +861,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		    		break;
 				case R.id.shareScreenshot:
 					asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-		            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), intents.takeScreenshot(), true);
+		            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), true);
 					break;
 				case R.id.reset:
 	            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
@@ -1286,7 +1292,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
                 	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
                 		activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot(), false);
+                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
                 	}
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));

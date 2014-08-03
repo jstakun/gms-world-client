@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LandmarkParcelableFactory {
 
-    public static LandmarkParcelable getLandmarkParcelable(ExtendedLandmark l, String key, double lat, double lng, java.util.Locale locale) {
+    protected static LandmarkParcelable getLandmarkParcelable(ExtendedLandmark l, String key, double lat, double lng, java.util.Locale locale) {
         String desc;
         
         if (l == null) {
@@ -89,5 +89,9 @@ public class LandmarkParcelableFactory {
         String date = DateTimeUtils.getShortDateTimeString(f.lastModified(), locale);
         String desc = length + " | " + date;
         return new LandmarkParcelable(id, f.getName(), "", name, desc, 0.0f, f.lastModified(), -1, -1, -1d, 0, null, 0);
+    }
+    
+    public static LandmarkParcelable getLandmarkParcelable(int id, String name, String value) {
+    	return new LandmarkParcelable(id, name, "", Commons.LOCAL_LAYER, "Value: " + value, 0.0f, 0, -1, -1, -1d, 0, null, 0);
     }
 }

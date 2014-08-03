@@ -9,10 +9,13 @@ import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
@@ -32,6 +35,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,6 +53,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -100,6 +107,7 @@ public final class IntentsHelper {
     private static final int INTENT_CATEGORIES = 10;
     protected static final int INTENT_AUTO_CHECKIN = 11;
     public static final int INTENT_CALENDAR = 12;
+    private static final int INTENT_CONFIGURATION_VIEWER = 13;
     
     private static final String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
     
@@ -184,6 +192,26 @@ public final class IntentsHelper {
         }
 
         return files.isEmpty();
+    }
+    
+    public boolean startConfigurationViewerActivity() {
+    	ArrayList<LandmarkParcelable> configuration = new ArrayList<LandmarkParcelable>();
+    	
+    	Map<String, String> config = ConfigurationManager.getInstance().getConfiguration();
+    	
+    	Function<Map.Entry<String, String>, LandmarkParcelable> transformFunction = new ConfigurationEntryToLandmarkParcelableFunction();
+
+    	configuration.addAll(Lists.transform(new ArrayList<Map.Entry<String, String>>(config.entrySet()), transformFunction));
+    	
+    	if (!configuration.isEmpty()) {
+    		Bundle extras = new Bundle();
+            extras.putParcelableArrayList("configuration", configuration);
+            Intent intent = new Intent(activity, ConfigurationViewerActivity.class);
+            intent.putExtras(extras);
+            activity.startActivityForResult(intent, INTENT_CONFIGURATION_VIEWER);
+    	}
+    	
+    	return configuration.isEmpty();
     }
 
     public void startSocialListActivity() {
@@ -324,10 +352,12 @@ public final class IntentsHelper {
             ArrayList<LandmarkParcelable> dataList = new ArrayList<LandmarkParcelable>();
 
             if (!favourites.isEmpty()) {
-                for (Iterator<FavouritesDAO> iter = favourites.iterator(); iter.hasNext();) {
+                Function<FavouritesDAO, LandmarkParcelable> transformFunction = new FavouritesDAOToLandmarkParcelableFunction(currentLocation[0], currentLocation[1]);
+            	dataList.addAll(Lists.transform(favourites, transformFunction));
+                /*for (Iterator<FavouritesDAO> iter = favourites.iterator(); iter.hasNext();) {
                     FavouritesDAO f = iter.next();
                     dataList.add(LandmarkParcelableFactory.getLandmarkParcelable(f, currentLocation[0], currentLocation[1]));
-                }
+                }*/
                 Intent intent = new Intent(activity, AutoCheckinListActivity.class);
                 intent.putParcelableArrayListExtra("favourites", dataList);
                 activity.startActivityForResult(intent, INTENT_AUTO_CHECKIN);
@@ -1126,9 +1156,15 @@ public final class IntentsHelper {
                 screenShot.compress(Bitmap.CompressFormat.JPEG, 50, out);
                 screenShot.recycle();
                 scr = out.toByteArray();
+                //play camera click sound
+                SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+                int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
+                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
+                LoggerUtils.debug("Shutter sound played with id " + id);
+                //
             }
         } catch (Throwable ex) {
-            LoggerUtils.error("Intents.takeScreenshot() exception", ex);
+            LoggerUtils.error("IntentsHelper.takeScreenshot() exception", ex);
         } finally {
             v.setDrawingCacheEnabled(false);
         }
@@ -1349,4 +1385,33 @@ public final class IntentsHelper {
         	}   
         }
     }
+    
+    private class ConfigurationEntryToLandmarkParcelableFunction implements Function<Map.Entry<String, String>, LandmarkParcelable> {
+
+    	private int pos = -1;
+        
+		@Override
+		public LandmarkParcelable apply(@Nullable Entry<String, String> config) {
+			pos++;
+			return LandmarkParcelableFactory.getLandmarkParcelable(pos, config.getKey(), config.getValue());
+		}
+    	
+    }
+    
+    private class FavouritesDAOToLandmarkParcelableFunction implements Function<FavouritesDAO, LandmarkParcelable> {
+
+    	private double lat, lng;
+    	
+    	public FavouritesDAOToLandmarkParcelableFunction(double lat, double lng) {
+    		this.lat = lat;
+    		this.lng = lng;
+    	}
+    	
+		@Override
+		public LandmarkParcelable apply(@Nullable FavouritesDAO f) {
+			return LandmarkParcelableFactory.getLandmarkParcelable(f, lat, lng);
+		}
+    	
+    }
+
 }

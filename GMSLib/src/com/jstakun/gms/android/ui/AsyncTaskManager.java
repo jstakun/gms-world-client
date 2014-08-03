@@ -918,25 +918,30 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeUploadImageTask(double lat, double lng, byte[] file, boolean notify) {
+    public void executeUploadImageTask(double lat, double lng, boolean notify) {
     	if (notify) {
     		String message = Locale.getMessage(R.string.shareScreenshot);
     		intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
     	}
-    	if (file != null && ConfigurationManager.getInstance().isNetworkModeAccepted()) {
-            //loading time & sdk version & number of landmarks
-            long loadingTime = 0; 
-            Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
-            if (l != null) {
-                 loadingTime = l.longValue();
-            }
-            int version = OsUtil.getSdkVersion();
-            int numOfLandmarks = landmarkManager.getAllLayersSize();
-            int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
-            String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version
+    	if (ConfigurationManager.getInstance().isNetworkModeAccepted()) {
+    		byte[] file = intents.takeScreenshot();
+    		if (file != null) {
+    			//loading time & sdk version & number of landmarks
+    			long loadingTime = 0; 
+    			Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
+    			if (l != null) {
+    				loadingTime = l.longValue();
+    			}
+    			int version = OsUtil.getSdkVersion();
+    			int numOfLandmarks = landmarkManager.getAllLayersSize();
+    			int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
+    			String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version
                     + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
-            new UploadImageTask(file, filename).execute(lat, lng);
-        } else {
+    			new UploadImageTask(file, filename).execute(lat, lng);
+    		} else {
+    			LoggerUtils.debug("Screenshot is empty!");
+    		}
+    	} else {
     		LoggerUtils.debug("Skipping image upload due to lack of wi-fi...");
     	}
     }

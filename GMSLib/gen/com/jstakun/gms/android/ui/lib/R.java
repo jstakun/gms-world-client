@@ -403,50 +403,51 @@ containing a value of this type.
         public static int numberOfReviews=0x7f0b0000;
     }
     public static final class raw {
-        public static int category=0x7f060000;
-        public static int defaultconfig=0x7f060001;
-        public static int fscategories=0x7f060002;
-        public static int route_a=0x7f060003;
-        public static int route_b=0x7f060004;
-        public static int route_c=0x7f060005;
-        public static int subcategory=0x7f060006;
+        public static int camera_click=0x7f060000;
+        public static int category=0x7f060001;
+        public static int defaultconfig=0x7f060002;
+        public static int fscategories=0x7f060003;
+        public static int route_a=0x7f060004;
+        public static int route_b=0x7f060005;
+        public static int route_c=0x7f060006;
+        public static int subcategory=0x7f060007;
     }
     public static final class string {
-        public static int Action_canceled=0x7f0a006f;
-        public static int Authn_error=0x7f0a008b;
-        public static int Authn_success=0x7f0a00a7;
-        public static int Authz_error=0x7f0a008c;
-        public static int Call_not_supported_error=0x7f0a00a2;
-        public static int Category_Loading_1=0x7f0a012f;
+        public static int Action_canceled=0x7f0a0070;
+        public static int Authn_error=0x7f0a008c;
+        public static int Authn_success=0x7f0a00a8;
+        public static int Authz_error=0x7f0a008d;
+        public static int Call_not_supported_error=0x7f0a00a3;
+        public static int Category_Loading_1=0x7f0a0130;
         /**  DealCategoryListActivity 
  DealCategoryListActivity 
          */
-        public static int Category_title=0x7f0a012e;
-        public static int Checkin_layer_error=0x7f0a0092;
-        public static int Checkin_required_error=0x7f0a0091;
-        public static int Clear_Counter=0x7f0a00c3;
-        public static int Close_app_bye=0x7f0a00b8;
-        public static int Close_app_prompt=0x7f0a00ac;
-        public static int Comment_empty_error=0x7f0a0095;
-        public static int Counter_cleared=0x7f0a00c4;
+        public static int Category_title=0x7f0a012f;
+        public static int Checkin_layer_error=0x7f0a0093;
+        public static int Checkin_required_error=0x7f0a0092;
+        public static int Clear_Counter=0x7f0a00c4;
+        public static int Close_app_bye=0x7f0a00b9;
+        public static int Close_app_prompt=0x7f0a00ad;
+        public static int Comment_empty_error=0x7f0a0096;
+        public static int Counter_cleared=0x7f0a00c5;
         /**  English only 
          */
-        public static int Crash_error=0x7f0a0130;
-        public static int Empty_credentials_error=0x7f0a0094;
-        public static int Files_Background_task_loading=0x7f0a0102;
-        public static int Files_Failed=0x7f0a0107;
-        public static int Files_Loaded=0x7f0a0106;
-        public static int Files_NoFiles=0x7f0a0105;
-        public static int Files_delete_prompt=0x7f0a0103;
-        public static int Files_deleted=0x7f0a0104;
+        public static int Crash_error=0x7f0a0131;
+        public static int Empty_credentials_error=0x7f0a0095;
+        public static int Files_Background_task_loading=0x7f0a0103;
+        public static int Files_Failed=0x7f0a0108;
+        public static int Files_Loaded=0x7f0a0107;
+        public static int Files_NoFiles=0x7f0a0106;
+        public static int Files_delete_prompt=0x7f0a0104;
+        public static int Files_deleted=0x7f0a0105;
         /**  Files 
  Files 
          */
-        public static int Files_title=0x7f0a0101;
-        public static int Forbidden_connection_error=0x7f0a00a4;
-        public static int GPS_location_missing_error=0x7f0a008e;
-        public static int Http_error=0x7f0a008d;
-        public static int Info_about=0x7f0a0132;
+        public static int Files_title=0x7f0a0102;
+        public static int Forbidden_connection_error=0x7f0a00a5;
+        public static int GPS_location_missing_error=0x7f0a008f;
+        public static int Http_error=0x7f0a008e;
+        public static int Info_about=0x7f0a0133;
         /** string name="category">Category: %1$s</string>
      <string name="merchant">Merchant: %1$s</string>
      <string name="artist">Artist: %1$s</string>
@@ -477,367 +478,368 @@ containing a value of this type.
  Errors 
  Errors 
          */
-        public static int Internet_connection_error=0x7f0a008a;
-        public static int Landmark_Loading=0x7f0a00e1;
-        public static int Landmark_MultiLandmark=0x7f0a00d3;
-        public static int Landmark_NoLandmarks=0x7f0a00d7;
-        public static int Landmark_add_error=0x7f0a00da;
-        public static int Landmark_deals_in_category=0x7f0a00d5;
-        public static int Landmark_delete_not_allowed_error=0x7f0a00d8;
+        public static int Internet_connection_error=0x7f0a008b;
+        public static int Landmark_Loading=0x7f0a00e2;
+        public static int Landmark_MultiLandmark=0x7f0a00d4;
+        public static int Landmark_NoLandmarks=0x7f0a00d8;
+        public static int Landmark_add_error=0x7f0a00db;
+        public static int Landmark_deals_in_category=0x7f0a00d6;
+        public static int Landmark_delete_not_allowed_error=0x7f0a00d9;
         /**  Landmark 
  Landmark 
          */
-        public static int Landmark_delete_prompt=0x7f0a00ce;
-        public static int Landmark_deleted=0x7f0a00cf;
-        public static int Landmark_deleted_error=0x7f0a00d0;
-        public static int Landmark_distance=0x7f0a00d1;
-        public static int Landmark_distance_max=0x7f0a00d2;
-        public static int Landmark_exists_error=0x7f0a00d9;
-        public static int Landmark_in_layer_count=0x7f0a00d6;
-        public static int Landmark_name_empty_error=0x7f0a00dc;
-        public static int Landmark_opening_error=0x7f0a00dd;
-        public static int Landmark_search_empty_result=0x7f0a00d4;
-        public static int Landmark_see=0x7f0a00df;
-        public static int Landmark_share=0x7f0a00de;
-        public static int Landmark_url_empty_error=0x7f0a00db;
-        public static int Landmarks_day_empty=0x7f0a00e0;
-        public static int Last_update=0x7f0a00aa;
-        public static int Layer_8Coupons_desc=0x7f0a0145;
-        public static int Layer_Eventful_desc=0x7f0a0141;
-        public static int Layer_Expedia_desc=0x7f0a0147;
+        public static int Landmark_delete_prompt=0x7f0a00cf;
+        public static int Landmark_deleted=0x7f0a00d0;
+        public static int Landmark_deleted_error=0x7f0a00d1;
+        public static int Landmark_distance=0x7f0a00d2;
+        public static int Landmark_distance_max=0x7f0a00d3;
+        public static int Landmark_exists_error=0x7f0a00da;
+        public static int Landmark_in_layer_count=0x7f0a00d7;
+        public static int Landmark_name_empty_error=0x7f0a00dd;
+        public static int Landmark_opening_error=0x7f0a00de;
+        public static int Landmark_search_empty_result=0x7f0a00d5;
+        public static int Landmark_see=0x7f0a00e0;
+        public static int Landmark_share=0x7f0a00df;
+        public static int Landmark_url_empty_error=0x7f0a00dc;
+        public static int Landmarks_day_empty=0x7f0a00e1;
+        public static int Last_update=0x7f0a00ab;
+        public static int Layer_8Coupons_desc=0x7f0a0146;
+        public static int Layer_Eventful_desc=0x7f0a0142;
+        public static int Layer_Expedia_desc=0x7f0a0148;
         /**  English only LayerManager layer descs 
          */
-        public static int Layer_Facebook_desc=0x7f0a0135;
-        public static int Layer_Flickr_desc=0x7f0a014b;
-        public static int Layer_Foursquare_Merchant_desc=0x7f0a0143;
-        public static int Layer_Foursquare_desc=0x7f0a0136;
-        public static int Layer_Freebase_desc=0x7f0a0149;
-        public static int Layer_Google_Places_desc=0x7f0a0139;
-        public static int Layer_Groupon_desc=0x7f0a0144;
-        public static int Layer_Hotels_Combined_desc=0x7f0a0138;
-        public static int Layer_Hotwire_desc=0x7f0a0146;
-        public static int Layer_Instagram_desc=0x7f0a014d;
-        public static int Layer_LastFM_desc=0x7f0a013e;
-        public static int Layer_Loading=0x7f0a0121;
-        public static int Layer_Loading_1=0x7f0a0122;
-        public static int Layer_Loading_counter=0x7f0a0123;
-        public static int Layer_Loading_processing=0x7f0a0124;
-        public static int Layer_MasterCard_ATMs_desc=0x7f0a013c;
-        public static int Layer_Meetup_desc=0x7f0a013f;
-        public static int Layer_My_Location_desc=0x7f0a0152;
-        public static int Layer_OSM_ATMs_desc=0x7f0a013d;
-        public static int Layer_OSM_Parkings_desc=0x7f0a0142;
-        public static int Layer_Panoramio_desc=0x7f0a014a;
-        public static int Layer_Phone_Landmarks_desc=0x7f0a0150;
-        public static int Layer_Picasa_desc=0x7f0a014c;
-        public static int Layer_Public_desc=0x7f0a0153;
-        public static int Layer_Qype_desc=0x7f0a013a;
-        public static int Layer_Routes_desc=0x7f0a0151;
-        public static int Layer_Travel_Webcams_desc=0x7f0a014f;
-        public static int Layer_Twitter_desc=0x7f0a013b;
-        public static int Layer_Upcoming_desc=0x7f0a0140;
-        public static int Layer_Wikipedia_desc=0x7f0a0148;
-        public static int Layer_Yelp_desc=0x7f0a0137;
-        public static int Layer_YouTube_desc=0x7f0a014e;
-        public static int Layer_action=0x7f0a0125;
-        public static int Layer_add_message_long=0x7f0a012b;
-        public static int Layer_add_message_short=0x7f0a012a;
-        public static int Layer_all_disabled=0x7f0a011e;
-        public static int Layer_all_enabled=0x7f0a011d;
-        public static int Layer_cleared=0x7f0a0126;
-        public static int Layer_creating_dynamic=0x7f0a0061;
-        public static int Layer_delete_prompt=0x7f0a0129;
-        public static int Layer_deleted=0x7f0a0128;
-        public static int Layer_disableLayers_prompt=0x7f0a012d;
-        public static int Layer_disabled=0x7f0a011f;
-        public static int Layer_enableLayers_prompt=0x7f0a012c;
+        public static int Layer_Facebook_desc=0x7f0a0136;
+        public static int Layer_Flickr_desc=0x7f0a014c;
+        public static int Layer_Foursquare_Merchant_desc=0x7f0a0144;
+        public static int Layer_Foursquare_desc=0x7f0a0137;
+        public static int Layer_Freebase_desc=0x7f0a014a;
+        public static int Layer_Google_Places_desc=0x7f0a013a;
+        public static int Layer_Groupon_desc=0x7f0a0145;
+        public static int Layer_Hotels_Combined_desc=0x7f0a0139;
+        public static int Layer_Hotwire_desc=0x7f0a0147;
+        public static int Layer_Instagram_desc=0x7f0a014e;
+        public static int Layer_LastFM_desc=0x7f0a013f;
+        public static int Layer_Loading=0x7f0a0122;
+        public static int Layer_Loading_1=0x7f0a0123;
+        public static int Layer_Loading_counter=0x7f0a0124;
+        public static int Layer_Loading_processing=0x7f0a0125;
+        public static int Layer_MasterCard_ATMs_desc=0x7f0a013d;
+        public static int Layer_Meetup_desc=0x7f0a0140;
+        public static int Layer_My_Location_desc=0x7f0a0153;
+        public static int Layer_OSM_ATMs_desc=0x7f0a013e;
+        public static int Layer_OSM_Parkings_desc=0x7f0a0143;
+        public static int Layer_Panoramio_desc=0x7f0a014b;
+        public static int Layer_Phone_Landmarks_desc=0x7f0a0151;
+        public static int Layer_Picasa_desc=0x7f0a014d;
+        public static int Layer_Public_desc=0x7f0a0154;
+        public static int Layer_Qype_desc=0x7f0a013b;
+        public static int Layer_Routes_desc=0x7f0a0152;
+        public static int Layer_Travel_Webcams_desc=0x7f0a0150;
+        public static int Layer_Twitter_desc=0x7f0a013c;
+        public static int Layer_Upcoming_desc=0x7f0a0141;
+        public static int Layer_Wikipedia_desc=0x7f0a0149;
+        public static int Layer_Yelp_desc=0x7f0a0138;
+        public static int Layer_YouTube_desc=0x7f0a014f;
+        public static int Layer_action=0x7f0a0126;
+        public static int Layer_add_message_long=0x7f0a012c;
+        public static int Layer_add_message_short=0x7f0a012b;
+        public static int Layer_all_disabled=0x7f0a011f;
+        public static int Layer_all_enabled=0x7f0a011e;
+        public static int Layer_cleared=0x7f0a0127;
+        public static int Layer_creating_dynamic=0x7f0a0062;
+        public static int Layer_delete_prompt=0x7f0a012a;
+        public static int Layer_deleted=0x7f0a0129;
+        public static int Layer_disableLayers_prompt=0x7f0a012e;
+        public static int Layer_disabled=0x7f0a0120;
+        public static int Layer_enableLayers_prompt=0x7f0a012d;
         /**  Layers 
  Layers 
          */
-        public static int Layer_enabled=0x7f0a011c;
-        public static int Layer_exists=0x7f0a0127;
-        public static int Layer_exists_error=0x7f0a0060;
-        public static int Layer_name_empty_error=0x7f0a005f;
-        public static int Layer_operation_unsupported=0x7f0a0120;
-        public static int Location_checkin_error=0x7f0a0098;
-        public static int Location_connection_error_message=0x7f0a009c;
-        public static int Location_connection_error_title=0x7f0a009b;
-        public static int Location_send_error=0x7f0a0093;
-        public static int Location_sent=0x7f0a00ab;
-        public static int Login_required_error=0x7f0a0090;
-        public static int Maps_CacheCleared=0x7f0a00e4;
+        public static int Layer_enabled=0x7f0a011d;
+        public static int Layer_exists=0x7f0a0128;
+        public static int Layer_exists_error=0x7f0a0061;
+        public static int Layer_name_empty_error=0x7f0a0060;
+        public static int Layer_operation_unsupported=0x7f0a0121;
+        public static int Location_checkin_error=0x7f0a0099;
+        public static int Location_connection_error_message=0x7f0a009d;
+        public static int Location_connection_error_title=0x7f0a009c;
+        public static int Location_send_error=0x7f0a0094;
+        public static int Location_sent=0x7f0a00ac;
+        public static int Login_required_error=0x7f0a0091;
+        public static int Maps_CacheCleared=0x7f0a00e5;
         /**  MapLoader, OsmTilesLoader 
  MapLoader, OsmTilesLoader 
          */
-        public static int Maps_LoadingMap=0x7f0a00e2;
-        public static int Maps_MapLoaded=0x7f0a00e3;
-        public static int Maps_cleared=0x7f0a00e5;
-        public static int Migation_1086_message=0x7f0a00b7;
-        public static int Network_connection_error_message=0x7f0a009a;
-        public static int Network_connection_error_title=0x7f0a0099;
-        public static int New_version_long_message=0x7f0a00b5;
-        public static int New_version_short_message=0x7f0a00b4;
-        public static int OAuth_authz_url_missing=0x7f0a009e;
-        public static int OAuth_service_missing=0x7f0a009f;
-        public static int Oauth_progress_message=0x7f0a00af;
+        public static int Maps_LoadingMap=0x7f0a00e3;
+        public static int Maps_MapLoaded=0x7f0a00e4;
+        public static int Maps_cleared=0x7f0a00e6;
+        public static int Migation_1086_message=0x7f0a00b8;
+        public static int Network_connection_error_message=0x7f0a009b;
+        public static int Network_connection_error_title=0x7f0a009a;
+        public static int New_version_long_message=0x7f0a00b6;
+        public static int New_version_short_message=0x7f0a00b5;
+        public static int OAuth_authz_url_missing=0x7f0a009f;
+        public static int OAuth_service_missing=0x7f0a00a0;
+        public static int Oauth_progress_message=0x7f0a00b0;
         /**  Packet data 
  Packet data 
          */
-        public static int Packet_data=0x7f0a00c2;
-        public static int Pick_location_default=0x7f0a006e;
-        public static int Pick_location_failed_error=0x7f0a008f;
-        public static int Please_Wait=0x7f0a00a8;
-        public static int Processing_results=0x7f0a00a9;
-        public static int QRCode_scanner_missing_error=0x7f0a009d;
-        public static int Reset_confirmation=0x7f0a00b3;
-        public static int Reset_long_message=0x7f0a00b2;
-        public static int Reset_short_message=0x7f0a00b1;
-        public static int Routes_Background_task_loading=0x7f0a00f4;
-        public static int Routes_Failed=0x7f0a00f9;
-        public static int Routes_Label=0x7f0a00e7;
-        public static int Routes_Loaded=0x7f0a00f8;
-        public static int Routes_NoRoute=0x7f0a00f3;
-        public static int Routes_NoRoutes=0x7f0a00fa;
-        public static int Routes_PauseRecording=0x7f0a00ef;
-        public static int Routes_PauseRecordingOff=0x7f0a00f2;
-        public static int Routes_PauseRecordingOn=0x7f0a00f1;
-        public static int Routes_Recording_Question=0x7f0a00f6;
-        public static int Routes_Recording_Saved=0x7f0a00f5;
-        public static int Routes_Recording_description=0x7f0a00f7;
-        public static int Routes_ResumeRecording=0x7f0a00f0;
-        public static int Routes_Server_route_loaded=0x7f0a00fc;
-        public static int Routes_TrackMyPosDisable=0x7f0a00ee;
-        public static int Routes_TrackMyPosEnable=0x7f0a00ed;
-        public static int Routes_TrackMyPosOff=0x7f0a00eb;
-        public static int Routes_TrackMyPosOn=0x7f0a00ea;
-        public static int Routes_TrackMyPosStart=0x7f0a00e8;
-        public static int Routes_TrackMyPosStop=0x7f0a00e9;
-        public static int Routes_TrackMyPosStopped=0x7f0a00ec;
-        public static int Routes_end_point=0x7f0a0100;
-        public static int Routes_in_layer_count=0x7f0a00fb;
-        public static int Routes_loading_error_0=0x7f0a00fd;
-        public static int Routes_loading_error_1=0x7f0a00fe;
-        public static int Routes_starting_point=0x7f0a00ff;
+        public static int Packet_data=0x7f0a00c3;
+        public static int Pick_location_default=0x7f0a006f;
+        public static int Pick_location_failed_error=0x7f0a0090;
+        public static int Please_Wait=0x7f0a00a9;
+        public static int Processing_results=0x7f0a00aa;
+        public static int QRCode_scanner_missing_error=0x7f0a009e;
+        public static int Reset_confirmation=0x7f0a00b4;
+        public static int Reset_long_message=0x7f0a00b3;
+        public static int Reset_short_message=0x7f0a00b2;
+        public static int Routes_Background_task_loading=0x7f0a00f5;
+        public static int Routes_Failed=0x7f0a00fa;
+        public static int Routes_Label=0x7f0a00e8;
+        public static int Routes_Loaded=0x7f0a00f9;
+        public static int Routes_NoRoute=0x7f0a00f4;
+        public static int Routes_NoRoutes=0x7f0a00fb;
+        public static int Routes_PauseRecording=0x7f0a00f0;
+        public static int Routes_PauseRecordingOff=0x7f0a00f3;
+        public static int Routes_PauseRecordingOn=0x7f0a00f2;
+        public static int Routes_Recording_Question=0x7f0a00f7;
+        public static int Routes_Recording_Saved=0x7f0a00f6;
+        public static int Routes_Recording_description=0x7f0a00f8;
+        public static int Routes_ResumeRecording=0x7f0a00f1;
+        public static int Routes_Server_route_loaded=0x7f0a00fd;
+        public static int Routes_TrackMyPosDisable=0x7f0a00ef;
+        public static int Routes_TrackMyPosEnable=0x7f0a00ee;
+        public static int Routes_TrackMyPosOff=0x7f0a00ec;
+        public static int Routes_TrackMyPosOn=0x7f0a00eb;
+        public static int Routes_TrackMyPosStart=0x7f0a00e9;
+        public static int Routes_TrackMyPosStop=0x7f0a00ea;
+        public static int Routes_TrackMyPosStopped=0x7f0a00ed;
+        public static int Routes_end_point=0x7f0a0101;
+        public static int Routes_in_layer_count=0x7f0a00fc;
+        public static int Routes_loading_error_0=0x7f0a00fe;
+        public static int Routes_loading_error_1=0x7f0a00ff;
+        public static int Routes_starting_point=0x7f0a0100;
         /**  Routes 
  Routes 
          */
-        public static int Routes_title=0x7f0a00e6;
-        public static int SDcard_missing_error=0x7f0a0097;
-        public static int SDcard_readmode_error=0x7f0a0096;
-        public static int Searching_calendar_message=0x7f0a00ae;
-        public static int Searching_dialog_message=0x7f0a00ad;
-        public static int Service_unavailable_error=0x7f0a00a5;
-        public static int Settings_MapProvider_Changed=0x7f0a00c0;
+        public static int Routes_title=0x7f0a00e7;
+        public static int SDcard_missing_error=0x7f0a0098;
+        public static int SDcard_readmode_error=0x7f0a0097;
+        public static int Searching_calendar_message=0x7f0a00af;
+        public static int Searching_dialog_message=0x7f0a00ae;
+        public static int Service_unavailable_error=0x7f0a00a6;
+        public static int Settings_MapProvider_Changed=0x7f0a00c1;
         /**  Settings 
  Settings 
          */
-        public static int Settings_Summary=0x7f0a00be;
-        public static int Settings_Summary_1=0x7f0a00bf;
-        public static int Settings_general=0x7f0a00c1;
-        public static int Share_no_matching_apps=0x7f0a00a1;
-        public static int Share_no_share_apps=0x7f0a00a0;
-        public static int Social_Checkin_error=0x7f0a011a;
-        public static int Social_Checkin_wrong_key_0=0x7f0a0111;
-        public static int Social_Checkin_wrong_key_1=0x7f0a0112;
-        public static int Social_Logout_successful=0x7f0a0114;
-        public static int Social_allow_sending=0x7f0a0113;
-        public static int Social_checkin_failure=0x7f0a010b;
-        public static int Social_checkin_prompt=0x7f0a010c;
-        public static int Social_checkin_success=0x7f0a010a;
-        public static int Social_comment_failed=0x7f0a0109;
+        public static int Settings_Summary=0x7f0a00bf;
+        public static int Settings_Summary_1=0x7f0a00c0;
+        public static int Settings_general=0x7f0a00c2;
+        public static int Share_no_matching_apps=0x7f0a00a2;
+        public static int Share_no_share_apps=0x7f0a00a1;
+        public static int Social_Checkin_error=0x7f0a011b;
+        public static int Social_Checkin_wrong_key_0=0x7f0a0112;
+        public static int Social_Checkin_wrong_key_1=0x7f0a0113;
+        public static int Social_Logout_successful=0x7f0a0115;
+        public static int Social_allow_sending=0x7f0a0114;
+        public static int Social_checkin_failure=0x7f0a010c;
+        public static int Social_checkin_prompt=0x7f0a010d;
+        public static int Social_checkin_success=0x7f0a010b;
+        public static int Social_comment_failed=0x7f0a010a;
         /**  Social 
  Social 
          */
-        public static int Social_comment_sent=0x7f0a0108;
-        public static int Social_login_statusno=0x7f0a0119;
-        public static int Social_login_statusyes=0x7f0a0118;
-        public static int Social_login_statusyeswithdate=0x7f0a0117;
-        public static int Social_login_string=0x7f0a010f;
-        public static int Social_loginButton=0x7f0a0115;
-        public static int Social_logoutButton=0x7f0a0116;
-        public static int Social_notLogged=0x7f0a0110;
-        public static int Social_send_post_failure=0x7f0a010e;
-        public static int Social_send_post_success=0x7f0a010d;
-        public static int Social_token_expired=0x7f0a011b;
-        public static int Status_bar_default=0x7f0a0131;
-        public static int Task_Background_login=0x7f0a00cc;
-        public static int Task_Background_send_comment=0x7f0a00cb;
-        public static int Task_Background_sendMyLoc=0x7f0a00cd;
-        public static int Task_Click_to_cancel=0x7f0a00c9;
-        public static int Task_Click_to_open=0x7f0a00ca;
-        public static int Task_finished=0x7f0a00c7;
-        public static int Task_in_progress=0x7f0a00c8;
+        public static int Social_comment_sent=0x7f0a0109;
+        public static int Social_login_statusno=0x7f0a011a;
+        public static int Social_login_statusyes=0x7f0a0119;
+        public static int Social_login_statusyeswithdate=0x7f0a0118;
+        public static int Social_login_string=0x7f0a0110;
+        public static int Social_loginButton=0x7f0a0116;
+        public static int Social_logoutButton=0x7f0a0117;
+        public static int Social_notLogged=0x7f0a0111;
+        public static int Social_send_post_failure=0x7f0a010f;
+        public static int Social_send_post_success=0x7f0a010e;
+        public static int Social_token_expired=0x7f0a011c;
+        public static int Status_bar_default=0x7f0a0132;
+        public static int Task_Background_login=0x7f0a00cd;
+        public static int Task_Background_send_comment=0x7f0a00cc;
+        public static int Task_Background_sendMyLoc=0x7f0a00ce;
+        public static int Task_Click_to_cancel=0x7f0a00ca;
+        public static int Task_Click_to_open=0x7f0a00cb;
+        public static int Task_finished=0x7f0a00c8;
+        public static int Task_in_progress=0x7f0a00c9;
         /**  Tasks 
  Tasks 
          */
-        public static int Task_started=0x7f0a00c5;
-        public static int Task_stopped=0x7f0a00c6;
-        public static int Unexpected_error=0x7f0a00a3;
-        public static int Venue_exists_error=0x7f0a005d;
+        public static int Task_started=0x7f0a00c6;
+        public static int Task_stopped=0x7f0a00c7;
+        public static int Unexpected_error=0x7f0a00a4;
+        public static int Venue_exists_error=0x7f0a005e;
         /**  Misc 
  Misc 
          */
-        public static int Your_Location=0x7f0a00a6;
-        public static int Zoom_info=0x7f0a0134;
+        public static int Your_Location=0x7f0a00a7;
+        public static int Zoom_info=0x7f0a0135;
         public static int about=0x7f0a0029;
         public static int adUnitId=0x7f0a0004;
         /**  addLandmark, addLayer 
  addLandmark, addLayer 
          */
-        public static int addButton=0x7f0a0051;
+        public static int addButton=0x7f0a0052;
         public static int addLandmark=0x7f0a000f;
         public static int addLayer=0x7f0a0010;
-        public static int addVenue=0x7f0a0059;
-        public static int addressLabel=0x7f0a006d;
+        public static int addVenue=0x7f0a005a;
+        public static int addressLabel=0x7f0a006e;
         public static int amzAppKey=0x7f0a0005;
         /**  main_menu 
  main_menu 
          */
         public static int app_name=0x7f0a0006;
-        public static int autoCheckinListEmpty=0x7f0a00bc;
-        public static int autoCheckinMessage=0x7f0a00bb;
-        public static int autoCheckinSummaryOff=0x7f0a0048;
-        public static int autoCheckinSummaryOn=0x7f0a0047;
-        public static int autoCheckinTitle=0x7f0a0046;
+        public static int autoCheckinListEmpty=0x7f0a00bd;
+        public static int autoCheckinMessage=0x7f0a00bc;
+        public static int autoCheckinSummaryOff=0x7f0a0049;
+        public static int autoCheckinSummaryOn=0x7f0a0048;
+        public static int autoCheckinTitle=0x7f0a0047;
         public static int autocheckin=0x7f0a0024;
         /**  help 
  help 
          */
-        public static int back=0x7f0a0087;
+        public static int back=0x7f0a0088;
         public static int blogeo=0x7f0a000a;
-        public static int call=0x7f0a0075;
-        public static int cancelButton=0x7f0a0056;
-        public static int categoryLabel=0x7f0a0053;
-        public static int checkboxDodDialog=0x7f0a0133;
+        public static int call=0x7f0a0076;
+        public static int cancelButton=0x7f0a0057;
+        public static int categoryLabel=0x7f0a0054;
+        public static int checkboxDodDialog=0x7f0a0134;
         public static int checkin=0x7f0a0021;
-        public static int clearCache=0x7f0a0043;
+        public static int clearCache=0x7f0a0044;
         public static int clearMap=0x7f0a0019;
-        public static int close=0x7f0a0073;
+        public static int close=0x7f0a0074;
         /**  closing 
  closing 
          */
-        public static int closingText=0x7f0a0064;
+        public static int closingText=0x7f0a0065;
         public static int cloudmadeKey=0x7f0a0001;
-        public static int comment=0x7f0a0074;
+        public static int comment=0x7f0a0075;
         /**  comment 
          */
-        public static int commentLabel=0x7f0a0071;
+        public static int commentLabel=0x7f0a0072;
         /**  comment 
          */
-        public static int commentTitle=0x7f0a0070;
-        public static int confirmDealPreferences=0x7f0a0050;
-        public static int countryLabel=0x7f0a006c;
+        public static int commentTitle=0x7f0a0071;
+        public static int config=0x7f0a0035;
+        public static int confirmDealPreferences=0x7f0a0051;
+        public static int countryLabel=0x7f0a006d;
         /**  picklocation 
  picklocation 
          */
-        public static int country_prompt=0x7f0a006a;
+        public static int country_prompt=0x7f0a006b;
         /**  JSONParser 
  JSONParser 
          */
-        public static int creation_date=0x7f0a0089;
+        public static int creation_date=0x7f0a008a;
         public static int dataPacket=0x7f0a0020;
-        public static int dealLimit=0x7f0a0042;
+        public static int dealLimit=0x7f0a0043;
         public static int deals=0x7f0a002d;
-        public static int dealsString=0x7f0a007b;
-        public static int descLabel=0x7f0a0052;
+        public static int dealsString=0x7f0a007c;
+        public static int descLabel=0x7f0a0053;
         public static int disableLayers=0x7f0a0013;
         public static int discoverPlaces=0x7f0a0027;
-        public static int done=0x7f0a0088;
-        public static int enable=0x7f0a004e;
+        public static int done=0x7f0a0089;
+        public static int enable=0x7f0a004f;
         public static int enableLayers=0x7f0a0012;
         public static int events=0x7f0a001b;
         public static int exit=0x7f0a002a;
-        public static int foundDealsLow=0x7f0a0079;
-        public static int foundLandmarksLow=0x7f0a0078;
+        public static int foundDealsLow=0x7f0a007a;
+        public static int foundLandmarksLow=0x7f0a0079;
         public static int friendsCheckins=0x7f0a000e;
         public static int gaId=0x7f0a0003;
-        public static int googleMaps=0x7f0a003d;
+        public static int googleMaps=0x7f0a003e;
         public static int googleMapsKey=0x7f0a0000;
         public static int imageLoading=0x7f0a0032;
-        public static int keywordsHint=0x7f0a0055;
-        public static int keywordsLabel=0x7f0a0054;
-        public static int landmarkPersist=0x7f0a0038;
+        public static int keywordsHint=0x7f0a0056;
+        public static int keywordsLabel=0x7f0a0055;
+        public static int landmarkPersist=0x7f0a0039;
         public static int landmarks=0x7f0a001e;
         public static int landmarksNearby=0x7f0a001f;
-        public static int landmarksPerLayer=0x7f0a0040;
-        public static int lastCheckinDate=0x7f0a00bd;
-        public static int layerCreated=0x7f0a005e;
-        public static int layers=0x7f0a0039;
-        public static int list_sortby_date=0x7f0a0084;
-        public static int list_sortby_distance=0x7f0a0085;
-        public static int list_sortby_name=0x7f0a0083;
-        public static int list_sortby_rating=0x7f0a0086;
-        public static int list_sorted_category=0x7f0a0080;
-        public static int list_sorted_date=0x7f0a007e;
-        public static int list_sorted_distance=0x7f0a007f;
-        public static int list_sorted_name=0x7f0a007d;
-        public static int list_sorted_rating=0x7f0a0081;
-        public static int list_sorted_relevance=0x7f0a0082;
-        public static int listLocations=0x7f0a0077;
+        public static int landmarksPerLayer=0x7f0a0041;
+        public static int lastCheckinDate=0x7f0a00be;
+        public static int layerCreated=0x7f0a005f;
+        public static int layers=0x7f0a003a;
+        public static int list_sortby_date=0x7f0a0085;
+        public static int list_sortby_distance=0x7f0a0086;
+        public static int list_sortby_name=0x7f0a0084;
+        public static int list_sortby_rating=0x7f0a0087;
+        public static int list_sorted_category=0x7f0a0081;
+        public static int list_sorted_date=0x7f0a007f;
+        public static int list_sorted_distance=0x7f0a0080;
+        public static int list_sorted_name=0x7f0a007e;
+        public static int list_sorted_rating=0x7f0a0082;
+        public static int list_sorted_relevance=0x7f0a0083;
+        public static int listLocations=0x7f0a0078;
         public static int listMode=0x7f0a002f;
         /**  LandmarkList 
  LandmarkList 
          */
-        public static int listSelection=0x7f0a0076;
+        public static int listSelection=0x7f0a0077;
         public static int loadPoiFile=0x7f0a0018;
         public static int loadRoute=0x7f0a0017;
         /**  loading 
  loading 
          */
-        public static int loadingText=0x7f0a0065;
-        public static int locale=0x7f0a0036;
-        public static int logLevel=0x7f0a0037;
+        public static int loadingText=0x7f0a0066;
+        public static int locale=0x7f0a0037;
+        public static int logLevel=0x7f0a0038;
         public static int login=0x7f0a000c;
-        public static int loginButton=0x7f0a0067;
-        public static int loginFull=0x7f0a0069;
-        public static int loginLabel=0x7f0a0068;
-        public static int mapLoad=0x7f0a003c;
+        public static int loginButton=0x7f0a0068;
+        public static int loginFull=0x7f0a006a;
+        public static int loginLabel=0x7f0a0069;
+        public static int mapLoad=0x7f0a003d;
         public static int mapMode=0x7f0a002e;
         /**  preferences 
  preferences 
          */
-        public static int mapProvider=0x7f0a0035;
+        public static int mapProvider=0x7f0a0036;
         public static int more=0x7f0a002b;
-        public static int nameLabel=0x7f0a0057;
+        public static int nameLabel=0x7f0a0058;
         public static int newestLandmarks=0x7f0a0030;
-        public static int noButton=0x7f0a00ba;
-        public static int okButton=0x7f0a0058;
+        public static int noButton=0x7f0a00bb;
+        public static int okButton=0x7f0a0059;
         /**  Transparent 
  Transparent 
          */
-        public static int open=0x7f0a0072;
-        public static int osmMaps=0x7f0a003e;
+        public static int open=0x7f0a0073;
+        public static int osmMaps=0x7f0a003f;
         /**  login 
  login 
          */
-        public static int passwordLabel=0x7f0a0066;
-        public static int persistMgr=0x7f0a003a;
-        public static int pickButton=0x7f0a006b;
-        public static int pickCategory=0x7f0a005a;
+        public static int passwordLabel=0x7f0a0067;
+        public static int persistMgr=0x7f0a003b;
+        public static int pickButton=0x7f0a006c;
+        public static int pickCategory=0x7f0a005b;
         public static int pickMyPos=0x7f0a0026;
         public static int qrcheckin=0x7f0a0022;
-        public static int radius=0x7f0a0041;
-        public static int rate_us_message=0x7f0a00b0;
+        public static int radius=0x7f0a0042;
+        public static int rate_us_message=0x7f0a00b1;
         public static int rateUs=0x7f0a0031;
         public static int recentLandmarks=0x7f0a001d;
         public static int refreshLayers=0x7f0a0011;
         public static int register=0x7f0a002c;
         public static int releaseNotes=0x7f0a0028;
         public static int reset=0x7f0a0034;
-        public static int routeType=0x7f0a0044;
+        public static int routeType=0x7f0a0045;
         public static int routes=0x7f0a0016;
         public static int saveRoute=0x7f0a0015;
         public static int search=0x7f0a0025;
         /**  Deals list 
  Deals list 
          */
-        public static int searchDeals=0x7f0a007a;
-        public static int searchType=0x7f0a0045;
-        public static int search_hint=0x7f0a00b6;
+        public static int searchDeals=0x7f0a007b;
+        public static int searchType=0x7f0a0046;
+        public static int search_hint=0x7f0a00b7;
         public static int searchcheckin=0x7f0a0023;
-        public static int select=0x7f0a004c;
-        public static int select_value=0x7f0a004d;
-        public static int sendButton=0x7f0a0063;
+        public static int select=0x7f0a004d;
+        public static int select_value=0x7f0a004e;
+        public static int sendButton=0x7f0a0064;
         public static int settings=0x7f0a0007;
         public static int shareScreenshot=0x7f0a0033;
         public static int showLayers=0x7f0a0014;
@@ -847,25 +849,25 @@ containing a value of this type.
         /**  Sort list 
  Sort list 
          */
-        public static int sort=0x7f0a007c;
-        public static int summary=0x7f0a004f;
+        public static int sort=0x7f0a007d;
+        public static int summary=0x7f0a0050;
         public static int tapForTapKey=0x7f0a0002;
-        public static int tileCache=0x7f0a003b;
+        public static int tileCache=0x7f0a003c;
         public static int trackPos=0x7f0a000b;
-        public static int trackUserSummaryOff=0x7f0a004b;
-        public static int trackUserSummaryOn=0x7f0a004a;
-        public static int trackUserTitle=0x7f0a0049;
-        public static int unitOfLength=0x7f0a003f;
+        public static int trackUserSummaryOff=0x7f0a004c;
+        public static int trackUserSummaryOn=0x7f0a004b;
+        public static int trackUserTitle=0x7f0a004a;
+        public static int unitOfLength=0x7f0a0040;
         /**  blogeoview 
  blogeoview 
          */
-        public static int validityLabel=0x7f0a0062;
-        public static int venueCreated_failed=0x7f0a005c;
-        public static int venueCreated_success=0x7f0a005b;
+        public static int validityLabel=0x7f0a0063;
+        public static int venueCreated_failed=0x7f0a005d;
+        public static int venueCreated_success=0x7f0a005c;
         /**  Auto Check-In alert 
  Auto Check-In alert 
          */
-        public static int yesButton=0x7f0a00b9;
+        public static int yesButton=0x7f0a00ba;
         public static int zoomin=0x7f0a0008;
         public static int zoomout=0x7f0a0009;
     }

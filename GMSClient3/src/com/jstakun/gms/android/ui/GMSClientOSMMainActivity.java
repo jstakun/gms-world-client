@@ -745,7 +745,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 	    		break;    
             case R.id.shareScreenshot:
             	asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), intents.takeScreenshot(), true);
+                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), true);
             	break;    
             case R.id.reset:
             	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
@@ -1117,7 +1117,7 @@ private void syncRoutesOverlays() {
         		} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
         			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
         				activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), activity.intents.takeScreenshot(), false);
+                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
         			}
         		} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
         			activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));

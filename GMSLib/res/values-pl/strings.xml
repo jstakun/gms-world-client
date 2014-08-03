@@ -48,6 +48,7 @@
     <string name="imageLoading">\u015aci\u0105ganie obraz\u00f3w</string>
     <string name="shareScreenshot">Zrzut ekranu</string>
     <string name="reset">Przywr\u00f3\u0107 ustawienia pocz\u0105tkowe</string>
+    <string name="config">Konfiguracja</string>
     
     <!-- preferences -->
     <string name="mapProvider">Dostawca map</string>

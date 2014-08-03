@@ -11,8 +11,10 @@ import android.os.Environment;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -48,6 +50,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -840,12 +844,14 @@ public class FileManager implements PersistenceManager {
             if (fc.isDirectory()) {
                 //filefilter for kml files
                 File[] fileList = fc.listFiles(filter);
-                java.util.Locale locale = ConfigurationManager.getInstance().getCurrentLocale();
+                Function<File, LandmarkParcelable> transformFunction = new FileToLandmarkParcelableFunction(layer);
+                files.addAll(Lists.transform(Arrays.asList(fileList), transformFunction));
+                /*java.util.Locale locale = ConfigurationManager.getInstance().getCurrentLocale();
 
                 for (int i = 0; i < fileList.length; i++) {
                     File f = fileList[i];
                     files.add(LandmarkParcelableFactory.getLandmarkParcelable(f, i, layer, locale));
-                }
+                }*/
             }
         } catch (Exception ex) {
             LoggerUtils.error("FileManager.readFolder exception", ex);
@@ -1170,5 +1176,24 @@ public class FileManager implements PersistenceManager {
 				 return false;
 			 }
 		}    	
+    }
+    
+    private class FileToLandmarkParcelableFunction implements Function<File, LandmarkParcelable> {
+
+    	private int pos = -1;
+    	private String layer = null;
+    	private java.util.Locale locale;
+    	
+    	public FileToLandmarkParcelableFunction(String layer) {
+    		this.layer = layer;
+    		this.locale = ConfigurationManager.getInstance().getCurrentLocale();
+    	}
+    	
+		@Override
+		public LandmarkParcelable apply(@Nullable File f) {
+			pos++;
+			return LandmarkParcelableFactory.getLandmarkParcelable(f, pos, layer, locale);
+		}
+    	
     }
 }

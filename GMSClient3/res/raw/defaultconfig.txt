@@ -67,6 +67,7 @@ radius;10
 searchType;0
 autoCheckinRepeatTime;180
 networkMode;0
+devMode;1
 appUrl;http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui
 #appUrl;http://m.apps.opera.com/landmark_manager.html
 #appUrl;http://www.amazon.com/gp/mas/dl/android?p=com.jstakun.gms.android.ui

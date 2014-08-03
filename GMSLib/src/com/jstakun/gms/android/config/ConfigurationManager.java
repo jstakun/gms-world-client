@@ -127,6 +127,7 @@ public final class ConfigurationManager {
     private static final String DEFAULT_LATITUDE = "defaultLatitude";
     private static final String DEFAULT_LONGITUDE = "defaultLongitude";
     public static final String DEFAULT_SORT = "defaultSort";
+    public static final String DEV_MODE = "devMode";
     
     //static values
     private static final String ON = "1";

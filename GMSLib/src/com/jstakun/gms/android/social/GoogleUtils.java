@@ -51,6 +51,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 						GL_REFRESH_TOKEN,
 						ConfigurationManager.GL_EXPIRES_IN,
 						ConfigurationManager.GL_USERNAME,
+						ConfigurationManager.GL_NAME,
 						ConfigurationManager.GL_GENDER,
 						ConfigurationManager.GL_BIRTHDAY,
 						ConfigurationManager.GL_LOGIN_DATE});
