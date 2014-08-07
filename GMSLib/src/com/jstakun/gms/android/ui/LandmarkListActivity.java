@@ -207,6 +207,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     }
 
     private void remove(int position) {
+    	//TODO fix
         String ids = getLandmarksTask.getLandmarks().get(position).getKey();
         int id = Integer.parseInt(ids);
         String message = Locale.getMessage(R.string.Landmark_opening_error);

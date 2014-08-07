@@ -846,12 +846,6 @@ public class FileManager implements PersistenceManager {
                 File[] fileList = fc.listFiles(filter);
                 Function<File, LandmarkParcelable> transformFunction = new FileToLandmarkParcelableFunction(layer);
                 files.addAll(Lists.transform(Arrays.asList(fileList), transformFunction));
-                /*java.util.Locale locale = ConfigurationManager.getInstance().getCurrentLocale();
-
-                for (int i = 0; i < fileList.length; i++) {
-                    File f = fileList[i];
-                    files.add(LandmarkParcelableFactory.getLandmarkParcelable(f, i, layer, locale));
-                }*/
             }
         } catch (Exception ex) {
             LoggerUtils.error("FileManager.readFolder exception", ex);

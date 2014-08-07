@@ -4,7 +4,6 @@
  */
 package com.jstakun.gms.android.ui;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -14,8 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
@@ -32,11 +29,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -354,10 +348,6 @@ public final class IntentsHelper {
             if (!favourites.isEmpty()) {
                 Function<FavouritesDAO, LandmarkParcelable> transformFunction = new FavouritesDAOToLandmarkParcelableFunction(currentLocation[0], currentLocation[1]);
             	dataList.addAll(Lists.transform(favourites, transformFunction));
-                /*for (Iterator<FavouritesDAO> iter = favourites.iterator(); iter.hasNext();) {
-                    FavouritesDAO f = iter.next();
-                    dataList.add(LandmarkParcelableFactory.getLandmarkParcelable(f, currentLocation[0], currentLocation[1]));
-                }*/
                 Intent intent = new Intent(activity, AutoCheckinListActivity.class);
                 intent.putParcelableArrayListExtra("favourites", dataList);
                 activity.startActivityForResult(intent, INTENT_AUTO_CHECKIN);
@@ -1345,7 +1335,7 @@ public final class IntentsHelper {
     	private int pos = -1;
         
 		@Override
-		public LandmarkParcelable apply(@Nullable Entry<String, String> config) {
+		public LandmarkParcelable apply(Entry<String, String> config) {
 			pos++;
 			return LandmarkParcelableFactory.getLandmarkParcelable(pos, config.getKey(), config.getValue());
 		}
@@ -1362,7 +1352,7 @@ public final class IntentsHelper {
     	}
     	
 		@Override
-		public LandmarkParcelable apply(@Nullable FavouritesDAO f) {
+		public LandmarkParcelable apply(FavouritesDAO f) {
 			return LandmarkParcelableFactory.getLandmarkParcelable(f, lat, lng);
 		}
     	

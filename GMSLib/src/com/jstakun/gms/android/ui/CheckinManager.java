@@ -20,7 +20,6 @@ import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.MercatorUtils;
 import com.jstakun.gms.android.utils.UserTracker;
 import com.openlapi.AddressInfo;
 
@@ -46,9 +45,9 @@ public class CheckinManager {
     	String key = getLandmarkKey(selectedLandmark);
         if (addToFavourites) {
             FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-            if (fdb != null && !fdb.hasLandmark(selectedLandmark.hashCode())) {
-            	FavouritesDAO favouritesDAO = new FavouritesDAO(selectedLandmark.hashCode(), selectedLandmark.getName(), MercatorUtils.normalizeE6(selectedLandmark.getQualifiedCoordinates().getLatitude()), 
-            			MercatorUtils.normalizeE6(selectedLandmark.getQualifiedCoordinates().getLongitude()), selectedLandmark.getLayer(), 0, System.currentTimeMillis(), key);
+            if (fdb != null && !fdb.hasLandmark(key)) {
+            	FavouritesDAO favouritesDAO = new FavouritesDAO(selectedLandmark.hashCode(), selectedLandmark.getName(), selectedLandmark.getQualifiedCoordinates().getLatitude(), 
+            			selectedLandmark.getQualifiedCoordinates().getLongitude(), selectedLandmark.getLayer(), 0, System.currentTimeMillis(), key);
             	fdb.addLandmark(favouritesDAO, key);
             }
         }

@@ -58,7 +58,7 @@ public class FavouritesDbDataSource {
         dbHelper = null;
     }
     
-    public void addLandmark(FavouritesDAO landmark, String key) {
+    public boolean addLandmark(FavouritesDAO landmark, String key) {
         ContentValues values = new ContentValues();
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_ID, landmark.hashCode());
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_NAME, landmark.getName());
@@ -70,15 +70,17 @@ public class FavouritesDbDataSource {
         values.put(FavouritesDbSQLiteOpenHelper.COLUMN_KEY, key);
         long insertId = getDatabase().insert(FavouritesDbSQLiteOpenHelper.TABLE_NAME, null, values);
         LoggerUtils.debug("Landmark added to favourites database with id: " + insertId);
+        System.out.println("Persisted " + landmark.hashCode() + " with result " + insertId);
+        return (insertId == landmark.hashCode());
     }
 
-    public boolean hasLandmark(int hashCode) {
-        if (countStatement == null) {
+    public boolean hasLandmark(String key) {
+    	if (countStatement == null) {
                 String countSql = "SELECT COUNT(*) FROM " + FavouritesDbSQLiteOpenHelper.TABLE_NAME
-                        + " where " + FavouritesDbSQLiteOpenHelper.COLUMN_ID + "=?";
+                        + " where " + FavouritesDbSQLiteOpenHelper.COLUMN_KEY + "=?";
                 countStatement = getDatabase().compileStatement(countSql);
         }
-        countStatement.bindLong(1, hashCode);
+        countStatement.bindString(1, key);
         long count = countStatement.simpleQueryForLong();
         return (count > 0);
     }
@@ -104,13 +106,13 @@ public class FavouritesDbDataSource {
                 + "=?", new String[]{Long.toString(hashcode)});
     }
 
-    public FavouritesDAO getLandmark(int hashcode) {
+    public FavouritesDAO getLandmark(long hashcode) {
         Cursor cursor = null;
         FavouritesDAO favourite = null;
 
         try {
             cursor = getDatabase().query(FavouritesDbSQLiteOpenHelper.TABLE_NAME,
-                    allColumns, FavouritesDbSQLiteOpenHelper.COLUMN_ID + "=?", new String[]{Integer.toString(hashcode)}, null, null, null);
+                    allColumns, FavouritesDbSQLiteOpenHelper.COLUMN_ID + "=?", new String[]{Long.toString(hashcode)}, null, null, null);
             if (cursor.getCount() > 0) {
             	cursor.moveToFirst();
             	favourite = cursorToLandmark(cursor);

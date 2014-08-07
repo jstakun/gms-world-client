@@ -907,6 +907,7 @@ public class LandmarkManager {
         if (landmarkStore.containsKey(layer)) {
             List<ExtendedLandmark> layerVector = getLandmarkStoreLayer(layer);
             layerVector.remove(landmark);
+            response = 1;
         }
 
         if (layer.equals(Commons.LOCAL_LAYER)) {
