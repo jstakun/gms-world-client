@@ -349,26 +349,26 @@ public final class ConfigurationManager {
     	return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/s/"; //
     }
     
-    public String getServerUrl() {
-        if (getUserManager().isTokenPresent()) {
-            return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/s/"; //
-        } else {
-            return SERVER_URL; //"http://10.0.2.2:8080/"; //
-        }
-    }
-    
     public String getAnonymousServerUrl() {
     	return SERVER_URL; //"http://10.0.2.2:8080/"; //
     }
 
     public String getSecuredServerUrl() {
         if (getUserManager().isTokenPresent()) {
-            return SSL_SERVER_SERVICES_URL; //"http://10.0.2.2:8080/s/"; //
+            return getSecuredServicesUrl();
         } else {
             return SSL_SERVER_URL; //"http://10.0.2.2:8080/"; // 
         }
     }
     
+    public String getServerUrl() {
+        if (getUserManager().isTokenPresent()) {
+            return getSecuredServicesUrl();
+        } else {
+            return getAnonymousServerUrl();
+        }
+    }
+   
     //
 
     public void clearObjectCache() {
