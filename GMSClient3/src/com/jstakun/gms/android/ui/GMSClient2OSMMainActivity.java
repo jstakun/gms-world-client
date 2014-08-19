@@ -83,8 +83,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private IntentsHelper intents;
     private DialogManager dialogManager;
     private TextView statusBar;
-    private View lvCloseButton, lvCallButton, lvCommentButton,
-            lvOpenButton, lvView, lvSendMailButton, myLocationButton,
+    private View lvCloseButton, lvCallButton, lvCommentButton, mapButtons,
+            lvOpenButton, lvView, lvSendMailButton, myLocationButton, nearbyLandmarksButton,
             lvActionButton, lvRouteButton, thumbnailButton, loadingImage;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
@@ -179,6 +179,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
+        mapButtons = findViewById(R.id.mapButtons);
 
         lvActionButton = findViewById(R.id.lvActionButton);
         lvCloseButton = findViewById(R.id.lvCloseButton);
@@ -189,6 +190,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         lvSendMailButton = findViewById(R.id.lvSendMailButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
         myLocationButton = findViewById(R.id.myLocationButton);
+        nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
 
         lvActionButton.setOnClickListener(this);
         lvCloseButton.setOnClickListener(this);
@@ -199,6 +201,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         lvSendMailButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
         myLocationButton.setOnClickListener(this);
+        nearbyLandmarksButton.setOnClickListener(this);
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         //getActionBar().setHomeButtonEnabled(true);
@@ -310,7 +313,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         //check if myloc is available
         if (landmarkManager.hasMyLocation()){
-        	myLocationButton.setVisibility(View.VISIBLE);
+        	mapButtons.setVisibility(View.VISIBLE);
         }
         
         //verify access token
@@ -838,9 +841,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 	}
 
     public void onClick(View v) {
-    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton || v == myLocationButton) {
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton || v == myLocationButton || v == nearbyLandmarksButton) {
     		if (v == myLocationButton) {
     			showMyPositionAction(true);
+    		} else if (v == nearbyLandmarksButton) {
+    			intents.showNearbyLandmarks(getMyLocation(), new OsmLandmarkProjection(mapView));
         	} else {
         		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
         		if (selectedLandmark != null) {
@@ -1020,7 +1025,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
 
         //show my location button
-        myLocationButton.setVisibility(View.VISIBLE);
+        mapButtons.setVisibility(View.VISIBLE);
 		
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             showMyPositionAction(false);

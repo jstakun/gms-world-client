@@ -317,7 +317,7 @@ public class LayerManager {
         } catch (Exception e) {
             LoggerUtils.error("LayerManager.getLayerIcon() exception", e);
         }
-        if (layerDrawable == null || layerDrawable.getBitmap().isRecycled()) {
+        if (layerDrawable == null || layerDrawable.getBitmap() == null || layerDrawable.getBitmap().isRecycled()) {
         	if (type == LAYER_ICON_SMALL) {
         		layerDrawable = imageCache.getImageDrawable(IconCache.ICON_MISSING16);
         	} else {

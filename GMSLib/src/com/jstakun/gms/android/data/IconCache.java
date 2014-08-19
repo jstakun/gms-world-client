@@ -46,7 +46,7 @@ public class IconCache {
     public static final String ICON_MISSING32 = "icon-missing32";
     public static final String ICON_MISSING16 = "icon-missing16";
     private static final String LOADING = "loading";
-    private static final String COMPASS = "compass";
+    //private static final String COMPASS = "compass";
     private static final String DOWNLOAD = "download";
     public static final String CURSOR = "cursor";
     public static final String MAGNIFIER = "magnifier";
@@ -86,9 +86,9 @@ public class IconCache {
         		if (!images.containsKey(LOADING)) {
         			images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
         		}
-        		if (!images.containsKey(COMPASS)) {
-        			images.put(COMPASS, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.compass_new));
-        		}
+        		//if (!images.containsKey(COMPASS)) {
+        		//	images.put(COMPASS, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.compass_new));
+        		//}
         		if (!images.containsKey(DOWNLOAD)) {
         			images.put(DOWNLOAD, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.download));
         		}

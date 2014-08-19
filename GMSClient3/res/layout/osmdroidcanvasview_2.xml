@@ -17,17 +17,7 @@
     		android:id="@+id/mapCanvas"
     		android:layout_width="fill_parent"
     		android:layout_height="fill_parent"/>
-       		<ImageButton
-			android:id="@+id/myLocationButton"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:contentDescription="@string/showMyPos"
-			android:src="@android:drawable/ic_menu_mylocation" 
-			android:layout_gravity="bottom|right"
-        	android:layout_marginBottom="48dip"
-        	android:layout_marginRight="4dip"
-        	android:background="@drawable/mypos_shape"
-        	android:visibility="gone"/>
+        	<include layout="@layout/mapbuttons"/>
        		<include layout="@layout/statusbar"/>       		
     	</FrameLayout>
     	<ExpandableListView android:id="@+id/left_drawer"

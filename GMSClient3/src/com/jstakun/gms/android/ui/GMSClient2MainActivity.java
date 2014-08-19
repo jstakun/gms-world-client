@@ -88,8 +88,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private IntentsHelper intents;
     private DialogManager dialogManager;
     private TextView statusBar;
-    private View lvCloseButton, lvCallButton, lvCommentButton,
-            lvOpenButton, lvView, lvSendMailButton, myLocationButton,
+    private View lvCloseButton, lvCallButton, lvCommentButton, mapButtons,
+            lvOpenButton, lvView, lvSendMailButton, myLocationButton, nearbyLandmarksButton,
             thumbnailButton, lvActionButton, lvRouteButton, loadingImage;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
@@ -196,6 +196,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
+        mapButtons = findViewById(R.id.mapButtons);
 
         lvActionButton = findViewById(R.id.lvActionButton);
         lvCloseButton = findViewById(R.id.lvCloseButton);
@@ -206,6 +207,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         lvSendMailButton = findViewById(R.id.lvSendMailButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
         myLocationButton = findViewById(R.id.myLocationButton);
+        nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
         
         lvActionButton.setOnClickListener(this);
         lvCloseButton.setOnClickListener(this);
@@ -216,6 +218,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         lvSendMailButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
         myLocationButton.setOnClickListener(this);
+        nearbyLandmarksButton.setOnClickListener(this);
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         //getActionBar().setHomeButtonEnabled(true);
@@ -335,7 +338,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         asyncTaskManager.setActivity(this);
        
         if (landmarkManager.hasMyLocation()){
-        	myLocationButton.setVisibility(View.VISIBLE);
+        	mapButtons.setVisibility(View.VISIBLE);
         }
         
         //verify access token
@@ -881,9 +884,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     public void onClick(View v) {
-    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton || v == myLocationButton) {
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton || v == myLocationButton || v == nearbyLandmarksButton) {
     		if (v == myLocationButton) {
     			showMyPositionAction(true);
+        	} else if (v == nearbyLandmarksButton) {
+        		intents.showNearbyLandmarks(getMyPosition(), ProjectionFactory.getProjection(mapView, googleMapsView));
         	} else {
         		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
         		if (selectedLandmark != null) {
@@ -1061,7 +1066,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
         }
         
-        myLocationButton.setVisibility(View.VISIBLE);
+        mapButtons.setVisibility(View.VISIBLE);
 
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             showMyPositionAction(false);
