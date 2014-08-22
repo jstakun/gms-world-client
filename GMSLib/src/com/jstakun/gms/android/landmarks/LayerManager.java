@@ -517,7 +517,7 @@ public class LayerManager {
         Context c = ConfigurationManager.getInstance().getContext();
         if (c != null) {
             for (int i = 0; i < tokens.length; i++) {
-                int res = c.getResources().getIdentifier(tokens[i].toLowerCase(), "drawable", c.getPackageName());
+                int res = c.getResources().getIdentifier(tokens[i].toLowerCase(java.util.Locale.US), "drawable", c.getPackageName());
                 if (res > 0) {
                     return res;
                 }
