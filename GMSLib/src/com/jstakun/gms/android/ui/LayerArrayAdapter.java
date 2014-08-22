@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jstakun.gms.android.config.Commons;
@@ -58,6 +59,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
             holder.headerText = (TextView) rowView.findViewById(R.id.layerNameHeader);
             holder.layerCheckbox = (CheckBox) rowView.findViewById(R.id.layerStatusCheckbox);
             holder.detailText = (TextView) rowView.findViewById(R.id.layerDetailsHeader);
+            holder.layerThumbnail = (ImageView) rowView.findViewById(R.id.layerThumbnail);
             rowView.setTag(holder);
         } else {
             holder = (ViewHolder) rowView.getTag();
@@ -118,6 +120,14 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
             message += Locale.getMessage(R.string.Landmark_in_layer_count, landmarkManager.getLayerSize(layerKey));
         }
         holder.detailText.setText(message);
+        
+        int layerThumbnail = layer.getImage();
+        if (layerThumbnail > 0) {
+        	holder.layerThumbnail.setVisibility(View.VISIBLE);
+        	holder.layerThumbnail.setImageResource(layerThumbnail);
+        } else {
+        	holder.layerThumbnail.setVisibility(View.GONE);
+        }
 
         rowView.setOnCreateContextMenuListener(parentActivity);
 
@@ -128,6 +138,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         protected CheckBox layerCheckbox;
         protected TextView headerText;
         protected TextView detailText;
+        protected ImageView layerThumbnail;
     }
 
     private class PositionClickListener implements View.OnClickListener {

@@ -697,7 +697,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 intents.startAddLayerActivity();
                 break;
             case R.id.showLayers:
-                intents.startLayersListActivity();
+                intents.startLayersListActivity(false);
                 break;
             case R.id.clearMap:
                 clearMapAction();
@@ -814,7 +814,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     		if (v == myLocationButton) {
     			showMyPositionAction(true);
       	  	} else if (v == nearbyLandmarksButton) {
-        		intents.showNearbyLandmarks(getMyLocation(), ProjectionFactory.getProjection(mapView, googleMapsView));	    		
+      	  		intents.startLayersListActivity(true);		
         	} else {
       	  		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();	  
       	  		if (selectedLandmark != null) {
@@ -859,7 +859,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
       	  			}
       	  		} else if (v == layersButton) {
       	  			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowLayersList", "", 0);
-      	  			intents.startLayersListActivity();
+      	  			intents.startLayersListActivity(false);
       	  		} else {
       	  			intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
       	  		}

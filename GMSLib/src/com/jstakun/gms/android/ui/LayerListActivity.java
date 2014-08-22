@@ -42,14 +42,17 @@ public class LayerListActivity extends ListActivity {
     protected static final int ACTION_REFRESH = 1;
     protected static final int ACTION_CLEAR = 2;
     protected static final int ACTION_DELETE = 3;
+    protected static final int ALL_LAYERS_MODE = 0;
+    protected static final int DYNAMIC_LAYERS_MODE = 1;
     private AlertDialog deleteLayerDialog, enableAllLayersDialog, disableAllLayersDialog;
     private List<String> names = null;
     private IntentsHelper intents;
     private LandmarkManager landmarkManager;
     private RoutesManager routesManager;
-    private int currentPos = -1;
+    private int currentPos = -1, mode = 0;
     private String layerName;
     private static final String NAME = "layerName";
+    
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,12 @@ public class LayerListActivity extends ListActivity {
 
         intents = new IntentsHelper(this, landmarkManager, null);
 
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("mode")) {
+        	mode = intent.getIntExtra("mode", ALL_LAYERS_MODE);
+        } else {
+        	mode = ALL_LAYERS_MODE;
+        }
         //footer = new TextView(this);
         //getListView().addFooterView(footer);
 
@@ -97,7 +106,14 @@ public class LayerListActivity extends ListActivity {
         names = new ArrayList<String>();
 
         if (landmarkManager != null) {
-            List<String> layers = landmarkManager.getLayerManager().getLayers();
+            List<String> layers = null; 
+            
+            if (mode == DYNAMIC_LAYERS_MODE) {
+            	layers = landmarkManager.getLayerManager().getDynamicLayers();
+            } else {
+            	layers = landmarkManager.getLayerManager().getLayers();
+            }
+            
             Collections.sort(layers, new LayerSizeComparator());
             for (String key : layers) {
                 if (!key.equals(Commons.MY_POSITION_LAYER)) {

@@ -113,7 +113,7 @@ public class LayerXMLParser {
                    boolean searchable = true;
                    List<LayerReader> layerReader = new ArrayList<LayerReader>();
                    layerReader.add(new GMSWorldReader());
-                   return LayerFactory.getLayer(lname, false, manageable, enabled, checkinable, searchable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, null, lname, FileManager.ClearPolicy.ONE_DAY);
+                   return LayerFactory.getLayer(lname, false, manageable, enabled, checkinable, searchable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, null, lname, FileManager.ClearPolicy.ONE_DAY , 0);
                 }
             }
             if (event == XmlPullParser.TEXT) {

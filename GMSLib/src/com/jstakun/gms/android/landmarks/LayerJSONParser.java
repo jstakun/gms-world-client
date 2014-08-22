@@ -93,7 +93,7 @@ public class LayerJSONParser {
 
             List<LayerReader> layerReader = new ArrayList<LayerReader>();
             layerReader.add(new GMSWorldReader());
-            Layer l = LayerFactory.getLayer(lname, false, manageable, enabled, checkinable, searchable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, desc, formatted, FileManager.ClearPolicy.ONE_DAY);
+            Layer l = LayerFactory.getLayer(lname, false, manageable, enabled, checkinable, searchable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, desc, formatted, FileManager.ClearPolicy.ONE_DAY, 0);
 
             if (!(layer == null || l.getName().equals(Commons.LM_SERVER_LAYER))) {
                 LoggerUtils.debug("Adding layer: " + l.getName());

@@ -6,23 +6,29 @@
     android:background="@drawable/defaultbg"
     android:paddingLeft="3dip">
     <TextView android:layout_width="wrap_content"
-                  style="@android:style/TextAppearance.Large"
-		  		  android:layout_height="wrap_content"
-                  android:id="@+id/layerNameHeader"
-                  android:layout_gravity="center_vertical"
-				  android:textColor="#000000"
-				  android:gravity="left"
-				  android:drawablePadding="5dip"
-				  android:drawableLeft="@drawable/image_missing16"/>
+           style="@android:style/TextAppearance.Large"
+		   android:layout_height="wrap_content"
+           android:id="@+id/layerNameHeader"
+           android:layout_gravity="center_vertical"
+		   android:textColor="#000000"
+		   android:gravity="left"
+		   android:drawablePadding="5dip"
+		   android:drawableLeft="@drawable/image_missing16"/>
+    <ImageView
+           android:id="@+id/layerThumbnail"
+           android:src="@drawable/download48"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:gravity="left"/>
     <CheckBox 
-            android:id="@+id/layerStatusCheckbox" 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:textColor="#000000"/>
+           android:id="@+id/layerStatusCheckbox" 
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content" 
+           android:textColor="#000000"/>
     <TextView 
-            android:id="@+id/layerDetailsHeader"
-			android:layout_width="wrap_content" 
-            style="@android:style/TextAppearance.Small"
-			android:layout_height="wrap_content" 
-			android:textColor="#000000"/>
+           android:id="@+id/layerDetailsHeader"
+		   android:layout_width="wrap_content" 
+           style="@android:style/TextAppearance.Small"
+		   android:layout_height="wrap_content" 
+		   android:textColor="#000000"/>
 </LinearLayout>

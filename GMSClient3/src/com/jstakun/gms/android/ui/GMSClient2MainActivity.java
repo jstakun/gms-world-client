@@ -771,7 +771,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 					intents.startAddLayerActivity();
 					break;
 				case R.id.showLayers:
-					intents.startLayersListActivity();
+					intents.startLayersListActivity(false);
 					break;
 				case R.id.clearMap:
 					clearMapAction();
@@ -888,7 +888,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     		if (v == myLocationButton) {
     			showMyPositionAction(true);
         	} else if (v == nearbyLandmarksButton) {
-        		intents.showNearbyLandmarks(getMyPosition(), ProjectionFactory.getProjection(mapView, googleMapsView));
+        		intents.startLayersListActivity(true);
         	} else {
         		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
         		if (selectedLandmark != null) {

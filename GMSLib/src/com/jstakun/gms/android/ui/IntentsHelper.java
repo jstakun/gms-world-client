@@ -212,8 +212,14 @@ public final class IntentsHelper {
         activity.startActivityForResult(new Intent(activity, SocialListActivity.class), INTENT_LAYERS);
     }
 
-    public void startLayersListActivity() {
-        activity.startActivityForResult(new Intent(activity, LayerListActivity.class), INTENT_LAYERS);
+    public void startLayersListActivity(boolean dynamicLayersMode) {
+    	Intent intent = new Intent(activity, LayerListActivity.class);
+    	if (dynamicLayersMode) {
+    		intent.putExtra("mode", LayerListActivity.DYNAMIC_LAYERS_MODE);
+    	} else {
+    		intent.putExtra("mode", LayerListActivity.ALL_LAYERS_MODE);
+    	}
+    	activity.startActivityForResult(intent, INTENT_LAYERS);
     }
 
     public void startCategoryListActivity(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude, int parent, int radius, Class<?> dealCategoryListClass) {

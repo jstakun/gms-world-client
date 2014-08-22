@@ -33,8 +33,9 @@ public class Layer {
     private String[] keywords = null;
     private int count;
     private FileManager.ClearPolicy clearPolicy;
+    private int image;
 
-    protected Layer(String name, boolean extensible, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, List<LayerReader> layerReader, String smallIconPath, int smallIconResource, String largeIconPath, int largeIconResource, int type, String desc, String formatted, FileManager.ClearPolicy clearPolicy) {
+    protected Layer(String name, boolean extensible, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, List<LayerReader> layerReader, String smallIconPath, int smallIconResource, String largeIconPath, int largeIconResource, int type, String desc, String formatted, FileManager.ClearPolicy clearPolicy, int image) {
         this.name = name;
         //this.extensible = extensible;
         this.manageable = manageable;
@@ -48,8 +49,10 @@ public class Layer {
         this.type = type;
         this.desc = desc;
         this.formatted = formatted;
-
+        this.image = image;
+        
         this.count = 0;
+        
 
         this.key = name + "_status";
 
@@ -176,5 +179,9 @@ public class Layer {
 
 	public void setClearPolicy(FileManager.ClearPolicy clearPolicy) {
 		this.clearPolicy = clearPolicy;
+	}
+	
+	public int getImage() {
+		return image;
 	}
 }
