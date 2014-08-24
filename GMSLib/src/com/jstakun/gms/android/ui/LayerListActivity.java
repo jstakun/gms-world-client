@@ -155,10 +155,18 @@ public class LayerListActivity extends ListActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
     	super.onPrepareOptionsMenu(menu);
     	MenuItem enableLayers = menu.findItem(R.id.enableLayers);
-    	if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
-    		enableLayers.setTitle(R.string.disableLayers);
+    	MenuItem refreshLayers = menu.findItem(R.id.refreshLayers);
+    	if (mode == ALL_LAYERS_MODE) {
+    		enableLayers.setVisible(true);
+    		refreshLayers.setVisible(true);
+    		if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
+    			enableLayers.setTitle(R.string.disableLayers);
+    		} else {
+    			enableLayers.setTitle(R.string.enableLayers);
+    		}
     	} else {
-    		enableLayers.setTitle(R.string.enableLayers);
+    		enableLayers.setVisible(false);
+    		refreshLayers.setVisible(false);
     	}
     	return true;
     }
@@ -170,7 +178,7 @@ public class LayerListActivity extends ListActivity {
         inflater.inflate(R.menu.layers_menu, menu);
         return true;
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);

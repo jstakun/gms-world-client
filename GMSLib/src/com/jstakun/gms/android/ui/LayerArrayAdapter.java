@@ -105,7 +105,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         if (layer.getType() == LayerManager.LAYER_DYNAMIC) {
             String[] keywords = layer.getKeywords();
             if (keywords != null) {
-                desc = "Keywords: " + StringUtils.join(keywords, ", ");
+                desc = Locale.getMessage(R.string.keywordDesc, StringUtils.join(keywords, ", "));
             }
         } else {
             desc = layer.getDesc();

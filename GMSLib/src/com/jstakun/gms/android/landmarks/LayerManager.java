@@ -153,7 +153,7 @@ public class LayerManager {
                 return new ArrayList<String>(layers.keySet());
             }
         } else {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<String>();
         }
     }
 
@@ -530,7 +530,7 @@ public class LayerManager {
     private static int getDynamicLayerImage(String layer) {
     	Context c = ConfigurationManager.getInstance().getContext();
         if (c != null) {
-        	String formattedName = StringUtils.replaceChars(layer.toLowerCase(), ' ', '_');
+        	String formattedName = StringUtils.replaceChars(layer.toLowerCase(java.util.Locale.US), ' ', '_');
             return c.getResources().getIdentifier(formattedName + "_img", "drawable", c.getPackageName());
         }
         return 0;
