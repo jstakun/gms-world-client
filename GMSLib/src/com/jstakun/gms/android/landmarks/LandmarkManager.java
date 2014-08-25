@@ -25,6 +25,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.util.DisplayMetrics;
 
 import com.devahead.util.objectpool.ObjectPool;
@@ -34,6 +35,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.ObjectArrays;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
@@ -1265,11 +1267,12 @@ public class LandmarkManager {
 
     private class FuzzySearchPredicate implements Predicate<ExtendedLandmark> {
 
-        private String[] query_tokens;
+        private static final int MIN_TOKEN_LENGTH = 2;
+    	private String[] query_tokens;
         private CategoriesManager cm;
         private boolean searchCategories;
         private String searchTerm;
-
+        
         public FuzzySearchPredicate(String[] query_tokens, boolean searchCategories, String searchTerm) {
             this.query_tokens = query_tokens;
             this.searchCategories = searchCategories;
@@ -1279,71 +1282,84 @@ public class LandmarkManager {
 
         //check if landmarks contains any token
         public boolean apply(ExtendedLandmark landmark) {
-            if (searchTerm != null && StringUtils.equalsIgnoreCase(searchTerm, landmark.getSearchTerm())) {
+        	if (searchTerm != null && StringUtils.equalsIgnoreCase(searchTerm, landmark.getSearchTerm())) {
                 landmark.setRevelance(99);
                 return true;
             } else {
-                String name = landmark.getName();
-                String[] name_tokens = StringUtils.split(name, " ");
-                int query_tokens_length = query_tokens.length;
-                int name_tokens_length = name_tokens.length;
-                for (int i = 0; i < name_tokens_length; i++) {
-                    for (int j = 0; j < query_tokens_length; j++) {
-                        if (StringUtils.equalsIgnoreCase(name_tokens[i], query_tokens[j])) {
-                            //System.out.println("Found similar tokens: " + name_tokens[i] + "-" + query_tokens[j] + ", with score 100 " + name  + " " + landmark.getLayer());
-                            landmark.setRevelance(100);
-                            return true;
-                        } else {
-                            if (searchCategories) {
-                                int catId = landmark.getCategoryId();
-                                int subCatId = landmark.getSubCategoryId();
-                                Category cat = cm.getCategory(catId);
-                                if (catId != -1 && cat != null && StringUtils.containsIgnoreCase(cat.getCategory(), query_tokens[j])) {
-                                    landmark.setRevelance(60);
-                                }
-                                Category subCat = cm.getSubCategory(catId, subCatId);
-                                if (catId != -1 && subCatId != -1 && subCat != null && StringUtils.containsIgnoreCase(subCat.getSubcategory(), query_tokens[j])) {
-                                    landmark.setRevelance(80);
-                                }
-                            }
+            	String name = Html.fromHtml(landmark.getName()).toString();
+            	String[] name_tokens = getTokens(name);
+                for (String name_token : name_tokens) {
+                	if (name_token.length() > MIN_TOKEN_LENGTH) {
+                		for (String query_token : query_tokens) {	
+                			if (StringUtils.equalsIgnoreCase(name_token, query_token)) {
+                				landmark.setRevelance(100);
+                				return true;
+                        	} else {
+                            	if (searchCategories) {
+                                	int catId = landmark.getCategoryId();
+                                	int subCatId = landmark.getSubCategoryId();
+                                	Category cat = cm.getCategory(catId);
+                                	if (catId != -1 && cat != null && StringUtils.containsIgnoreCase(cat.getCategory(), query_token)) {
+                                    	landmark.setRevelance(60);
+                                	}
+                                	Category subCat = cm.getSubCategory(catId, subCatId);
+                                	if (catId != -1 && subCatId != -1 && subCat != null && StringUtils.containsIgnoreCase(subCat.getSubcategory(), query_token)) {
+                                    	landmark.setRevelance(80);
+                                	}
+                            	}
 
-                            int dist = StringUtils.getLevenshteinDistance(name_tokens[i], query_tokens[j]);
-                            int percent = (int) ((1.0 - (double) dist / (double) Math.max(name_tokens[i].length(), query_tokens[j].length())) * 100.0);
-                            if (percent > 60) {
-                                //System.out.println("Found similar name tokens: " + name_tokens[i] + "-" + query_tokens[j] + ", with score " + percent + " " + name  + " " + landmark.getLayer());
-                                landmark.setRevelance(percent);
-                                return true;
-                            }
-                        }
+                            	int dist = StringUtils.getLevenshteinDistance(name_token, query_token);
+                            	int percent = (int) ((1.0 - (double) dist / (double) Math.max(name_token.length(), query_token.length())) * 100.0);
+                            	if (percent > 60) {
+                                	landmark.setRevelance(percent);
+                                	return true;
+                            	}
+                        	}
+                    	}
                     }
                 }
 
-                String desc = landmark.getDescription();
+                String desc = Html.fromHtml(landmark.getDescription()).toString();
                 if (desc != null) {
-                    String[] desc_tokens = StringUtils.split(desc, " ");
-                    int desc_tokens_length = desc_tokens.length;
-                    for (int i = 0; i < desc_tokens_length; i++) {
-                        for (int j = 0; j < query_tokens_length; j++) {
-                            if (StringUtils.equalsIgnoreCase(desc_tokens[i], query_tokens[j])) {
-                                //System.out.println("Found similar desc tokens: " + desc_tokens[i] + "-" + query_tokens[j] + ", with score 100 " + name + " " + landmark.getLayer());
-                                landmark.setRevelance(100);
-                                return true;
-                            } else {
-                                int dist = StringUtils.getLevenshteinDistance(desc_tokens[i], query_tokens[j]);
-                                int percent = (int) ((1.0 - (double) dist / (double) Math.max(desc_tokens[i].length(), query_tokens[j].length())) * 100.0);
-                                if (percent > 60) {
-                                    //System.out.println("Found similar tokens: " + desc_tokens[i] + "-" + query_tokens[j] + ", with score " + percent + " " + name  + " " + landmark.getLayer());
-                                    landmark.setRevelance(percent);
-                                    return true;
-                                }
-                            }
-                        }
+                    String[] desc_tokens = getTokens(desc);
+                    for (String desc_token : desc_tokens) {               	
+                    	if (desc_token.length() > MIN_TOKEN_LENGTH) {
+                    		for (String query_token : query_tokens) {
+                    			if (StringUtils.equalsIgnoreCase(desc_token, query_token)) {
+                    				landmark.setRevelance(100);
+                    				return true;
+                    			} else {
+                    				int dist = StringUtils.getLevenshteinDistance(desc_token, query_token);
+                    				int percent = (int) ((1.0 - (double) dist / (double) Math.max(desc_token.length(), query_token.length())) * 100.0);
+                    				if (percent > 60) {
+                    					landmark.setRevelance(percent);
+                    					return true;
+                    				}
+                    			}
+                    		}
+                    	}
                     }
                 }
             }
 
             landmark.setRevelance(0);
             return false;
+        }
+        
+        private String[] getHtmlTokens(String input) {
+        	String[] lines = StringUtils.splitByWholeSeparator(input, "<br/>");
+        	String[] res = new String[]{};
+        	
+        	for (String l : lines) {
+        		String[] tokens = StringUtils.split(l, " .,:\n");
+        		res = ObjectArrays.concat(res, tokens, String.class);
+        	}
+        	
+        	return res;
+        }
+        
+        private String[] getTokens(String input) {
+        	return StringUtils.split(input, " .,:\n");
         }
     }
 

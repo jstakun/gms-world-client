@@ -297,8 +297,8 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
         }
     }
 
-    private boolean isLocalLayer(LandmarkParcelable l0) {
-        return (l0.getLayer().equals(Commons.LOCAL_LAYER));
+    private boolean isLocalLayer(LandmarkParcelable l) {
+        return (l.getLayer().equals(Commons.LOCAL_LAYER));
     }
 
     private class NameComparator implements Comparator<LandmarkParcelable> {

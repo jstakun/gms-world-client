@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import android.app.AlertDialog;
@@ -207,8 +203,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     }
 
     private void remove(int position) {
-    	//TODO fix
-        String ids = getLandmarksTask.getLandmarks().get(position).getKey();
+    	String ids = getLandmarksTask.getLandmarks().get(position).getKey();
         int id = Integer.parseInt(ids);
         String message = Locale.getMessage(R.string.Landmark_opening_error);
         if (landmarkManager != null) {

@@ -337,7 +337,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         asyncTaskManager.setActivity(this);
        
-        //TODO replicate
         if (landmarkManager.hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.VISIBLE);
         }
@@ -1067,7 +1066,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
         }
         
-        //TODO replicate
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.VISIBLE);
         } else {
