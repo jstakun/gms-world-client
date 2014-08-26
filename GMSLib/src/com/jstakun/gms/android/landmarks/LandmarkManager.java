@@ -35,7 +35,6 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.ObjectArrays;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
@@ -1092,10 +1091,14 @@ public class LandmarkManager {
         	for (String key : dynamicLayers) {
         		Layer layer = layerManager.getLayer(key);
         		Predicate<ExtendedLandmark> searchPredicate = new FuzzySearchPredicate(layer.getKeywords(), false, null);
+        		int count = 0;
         		for (ExtendedLandmark landmark : landmarks) {
         			if (searchPredicate.apply(landmark)) {
-        				layer.incrementCount();
+        				count++;
         			}
+        		}
+        		if (count > 0) {
+        			layer.increaseCount(count);
         		}
         	}
         }

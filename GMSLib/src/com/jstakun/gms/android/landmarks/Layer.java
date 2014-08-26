@@ -172,6 +172,10 @@ public class Layer {
     public synchronized void incrementCount() {
         count++;
     }
+    
+    public synchronized void increaseCount(int inc) {
+        count+=inc;
+    }
 
 	public FileManager.ClearPolicy getClearPolicy() {
 		return clearPolicy;
