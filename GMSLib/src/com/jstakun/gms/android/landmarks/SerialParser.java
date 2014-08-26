@@ -45,19 +45,19 @@ public class SerialParser {
         		List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, "deflate");
         		if (!received.isEmpty()) {
         			if (landmarks.isEmpty()) {
-        				//System.out.println(url + " addAll --------------------------------------");
-        				landmarks.addAll(received);
         				if (landmarkManager != null) {
-        					landmarkManager.addLandmarkListToDynamicLayer(received);
+        					//System.out.println("1. Indexing " + urls[0] + " " + received.size());
+            				landmarkManager.addLandmarkListToDynamicLayer(received);
         				}
+        				landmarks.addAll(received);
         			} else {
         				synchronized (landmarks) {
-        					//System.out.println(url + " " + landmarks.size() + " ---------------------------------------");
         					Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
-        					landmarks.addAll(filtered);
+        					//System.out.println("2. Indexing " + urls[0] + " " + filtered.size());         				
         					if (landmarkManager != null) {
         						landmarkManager.addLandmarkListToDynamicLayer(filtered);
         					}
+        					landmarks.addAll(filtered);
         				}
         			}
         		}
