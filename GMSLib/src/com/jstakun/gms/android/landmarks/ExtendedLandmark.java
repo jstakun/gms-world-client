@@ -8,6 +8,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.common.base.Objects;
 import com.jstakun.gms.android.deals.Deal;
@@ -38,9 +40,10 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
     private int numberOfReviews = 0;
     private String thumbnail = null;
     private Deal deal = null;
-    private int revelance = 0;
+    private int recentRevelance = 0;
     private String searchTerm = null;
     private String serverKey = null;
+    private transient Map<String, Integer> layerRevelance = new HashMap<String, Integer>();
     
     public ExtendedLandmark() {
 		
@@ -256,15 +259,15 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
      * @return the revelance
      */
     public int getRevelance() {
-        return revelance;
+        return recentRevelance;
     }
 
     /**
      * @param revelance the revelance to set
      */
-    public void setRevelance(int revelance) {
-        this.revelance = revelance;
-    }
+    //public void setRevelance(int revelance) {
+    //    this.recentRevelance = revelance;
+    //}
 
     /**
      * @return the searchTerm
@@ -288,6 +291,15 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
 		this.serverKey = serverKey;
 	}
 	
+	public void setLayerRevelance(String layer, Integer revelance) {
+		layerRevelance.put(layer, revelance);
+		this.recentRevelance = revelance;
+	}
+	
+	public Integer gerLayerRevelance(String layer) {
+		return layerRevelance.get(layer);
+	}
+	
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		super.writeExternal(out);
@@ -298,7 +310,7 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
 		out.writeBoolean(hasCheckins);
 		out.writeDouble(rating);
 		out.writeInt(numberOfReviews);
-		out.writeInt(revelance);
+		out.writeInt(recentRevelance);
 		if (thumbnail != null) {
 			out.writeBoolean(true);
 			out.writeUTF(thumbnail);
@@ -324,7 +336,7 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
 		this.hasCheckins = in.readBoolean();
 		this.rating = in.readDouble();
 		this.numberOfReviews = in.readInt();
-		this.revelance = in.readInt();
+		this.recentRevelance = in.readInt();
 		if (in.readBoolean()) {
 			this.thumbnail = in.readUTF();
 		}
