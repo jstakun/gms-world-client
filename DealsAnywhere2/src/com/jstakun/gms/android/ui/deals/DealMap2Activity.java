@@ -81,8 +81,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
-    private View lvCloseButton, lvCallButton, lvOpenButton,
-            lvView, lvSendMailButton, lvRouteButton, myLocationButton,
+    private View lvCloseButton, lvCallButton, lvOpenButton, mapButtons,
+            lvView, lvSendMailButton, lvRouteButton, myLocationButton, nearbyLandmarksButton,
             thumbnailButton, loadingImage;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -152,6 +152,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
+        mapButtons = findViewById(R.id.mapButtons);
 
         lvCloseButton = findViewById(R.id.lvCloseButton);
         lvOpenButton = findViewById(R.id.lvOpenButton);
@@ -160,6 +161,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         lvRouteButton = findViewById(R.id.lvCarRouteButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
         myLocationButton = findViewById(R.id.myLocationButton);
+        nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
         
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
@@ -168,6 +170,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
         myLocationButton.setOnClickListener(this);
+        nearbyLandmarksButton.setOnClickListener(this);
 
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setBuiltInZoomControls(true);
@@ -497,6 +500,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     public void onClick(View v) {
     	if (v == myLocationButton) {
     		showMyPositionAction(true);
+    	} else if (v == nearbyLandmarksButton) {	
+    		intents.showNearbyLandmarks(getMyPosition(), new GoogleLandmarkProjection(mapView));
     	} else {
     		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
     		if (selectedLandmark != null) {
@@ -548,7 +553,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         asyncTaskManager.setActivity(this);
         
         if (landmarkManager.hasMyLocation()){
-        	myLocationButton.setVisibility(View.VISIBLE);
+        	mapButtons.setVisibility(View.VISIBLE);
         }
         
         //verify access token
@@ -902,7 +907,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			Location location = (Location) msg.obj;
         			if (activity.landmarkManager != null) {
         				activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
-        				activity.myLocationButton.setVisibility(View.VISIBLE);
+        				activity.mapButtons.setVisibility(View.VISIBLE);
         			}
         		}
         	}

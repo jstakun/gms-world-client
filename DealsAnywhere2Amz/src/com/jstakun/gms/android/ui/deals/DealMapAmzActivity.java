@@ -82,7 +82,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
-    private View lvCloseButton, lvCallButton, lvOpenButton,
+    private View lvCloseButton, lvCallButton, lvOpenButton, mapButtons, nearbyLandmarksButton,
             lvView, lvSendMailButton, lvRouteButton, myLocationButton,
             thumbnailButton, loadingImage;
     private DrawerLayout drawerLayout;
@@ -166,6 +166,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
+        mapButtons = findViewById(R.id.mapButtons);
 
         lvCloseButton = findViewById(R.id.lvCloseButton);
         lvOpenButton = findViewById(R.id.lvOpenButton);
@@ -174,6 +175,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         lvRouteButton = findViewById(R.id.lvCarRouteButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
         myLocationButton = findViewById(R.id.myLocationButton);
+        nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
 
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
@@ -182,6 +184,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
         myLocationButton.setOnClickListener(this);
+        nearbyLandmarksButton.setOnClickListener(this);
 
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setBuiltInZoomControls(true);
@@ -434,24 +437,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         }
     }
 
-    /*private void showSelectedLandmark(int id) {
-        if (id >= 0) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-            if (selectedLandmark != null) {
-                landmarkManager.setSelectedLandmark(selectedLandmark);
-                landmarkManager.clearLandmarkOnFocusQueue();
-                int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, amzMapsView.getZoomLevel(), AbstractLandmarkList.ORDER_BY_CAT_STATS, cm);
-                if (coordsE6 != null) {
-                	animateTo(coordsE6);
-                }
-            } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-            }
-        } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
-        }
-    }*/
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
@@ -534,6 +519,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     public void onClick(View v) {
     	if (v == myLocationButton) {
     		showMyPositionAction(true);
+    	} else if (v == nearbyLandmarksButton) {
+    		intents.showNearbyLandmarks(getMyPosition(), new AmzLandmarkProjection(mapView));
     	} else {
     		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
     		if (selectedLandmark != null) {
@@ -582,7 +569,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         asyncTaskManager.setActivity(this);
         
         if (landmarkManager.hasMyLocation()){
-        	myLocationButton.setVisibility(View.VISIBLE);
+        	mapButtons.setVisibility(View.VISIBLE);
         }
         
         //verify access token
@@ -942,7 +929,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                     Location location = (Location) msg.obj;
                     if (activity.landmarkManager != null) {
                     	activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
-                    	activity.myLocationButton.setVisibility(View.VISIBLE);
+                    	activity.mapButtons.setVisibility(View.VISIBLE);
                     }
                 }
             }

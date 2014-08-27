@@ -72,8 +72,8 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
-    private View lvCloseButton, lvCallButton, lvOpenButton,
-            lvView, lvHotDealsButton, myLocationButton,
+    private View lvCloseButton, lvCallButton, lvOpenButton, mapButtons,
+            lvView, lvHotDealsButton, myLocationButton, nearbyLandmarksButton,
             newestButton, listButton, categoriesButton,
             lvSendMailButton, lvRouteButton, thumbnailButton, loadingImage;
     private ProgressBar loadingProgressBar;
@@ -136,6 +136,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     	statusBar = (TextView) findViewById(R.id.statusBar);
         loadingImage = findViewById(R.id.loadingAnim);
         lvView = findViewById(R.id.lvView);
+        mapButtons = findViewById(R.id.mapButtons);
 
         lvCloseButton = findViewById(R.id.lvCloseButton);
         lvOpenButton = findViewById(R.id.lvOpenButton);
@@ -143,6 +144,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         lvCallButton = findViewById(R.id.lvCallButton);
         lvRouteButton = findViewById(R.id.lvCarRouteButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
+        nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
 
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
@@ -150,6 +152,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
+        nearbyLandmarksButton.setOnClickListener(this);
         
         myLocationButton = findViewById(R.id.myLocationButton);
         newestButton = findViewById(R.id.newestButton);
@@ -475,11 +478,9 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestDeals", "", 0);
             final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.HOTWIRE_LAYER, Commons.LOCAL_LAYER};
             intents.startNewestLandmarkIntent(getMyLocation(), excluded, 2);
-        } else if (v == listButton) {
+        } else if (v == listButton || v == nearbyLandmarksButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleDeals", "", 0);
-            if (!lvView.isShown()) {
-                intents.showNearbyLandmarks(getMyLocation(), new GoogleLandmarkProjection(mapView));
-            }
+            intents.showNearbyLandmarks(getMyLocation(), new GoogleLandmarkProjection(mapView));
         } else if (v == categoriesButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowDealCategoriesList", "", 0);
             intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
@@ -518,7 +519,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         asyncTaskManager.setActivity(this);
         
         if (landmarkManager.hasMyLocation()){
-        	myLocationButton.setVisibility(View.VISIBLE);
+        	mapButtons.setVisibility(View.VISIBLE);
         }
         
         //verify access token
@@ -831,7 +832,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 	Location location = (Location) msg.obj;
                 	if (activity.landmarkManager != null) {
                 		activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
-                		activity.myLocationButton.setVisibility(View.VISIBLE);
+                		activity.mapButtons.setVisibility(View.VISIBLE);
                 	}
             	}
         	} 
