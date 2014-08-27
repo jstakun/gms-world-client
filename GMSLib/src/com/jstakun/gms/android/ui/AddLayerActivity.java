@@ -4,29 +4,24 @@
  */
 package com.jstakun.gms.android.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
-import com.jstakun.gms.android.landmarks.LandmarkParcelable;
-import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.UserTracker;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -38,9 +33,11 @@ public class AddLayerActivity extends Activity implements OnClickListener {
     private EditText nameText, keywordsText;
     private IntentsHelper intents = null;
     private String name;
-    private static final int ID_DIALOG_PROGRESS = 0;
+    //private static final int ID_DIALOG_PROGRESS = 0;
     private LandmarkManager landmarkManager;
     private static final String NAME = "name";
+    private AsyncTaskManager asyncTaskManager;
+    
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +51,7 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
+        asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
 
         //Object retained = getLastNonConfigurationInstance();
         //if (retained instanceof String) {
@@ -67,7 +65,7 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         initComponents();
     }
 
-    @Override
+    /*@Override
     protected Dialog onCreateDialog(int id) {
         if (id == ID_DIALOG_PROGRESS) {
             //System.out.println("onCreateDialog------- ID_DIALOG_PROGRESS -------------------------");
@@ -85,7 +83,7 @@ public class AddLayerActivity extends Activity implements OnClickListener {
             //System.out.println("onCreateDialog--------------------------------");
             return super.onCreateDialog(id);
         }
-    }
+    }*/
 
     //@Override
     //public Object onRetainNonConfigurationInstance() {
@@ -145,13 +143,13 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         }
     }
 
-    private void onTaskCompleted() {
+    /*private void onTaskCompleted() {
         try {
             dismissDialog(ID_DIALOG_PROGRESS);
         } catch (Exception e) {
         }
         finish();
-    }
+    }*/
 
     private void addLayerAction() {
         name = StringUtils.trimToNull(nameText.getText().toString());
@@ -177,19 +175,23 @@ public class AddLayerActivity extends Activity implements OnClickListener {
             String keywordsJoin = StringUtils.join(keywordsList, ",");
 
             boolean containsLayer = landmarkManager.getLayerManager().addDynamicLayer(keywordsJoin);
-
+          
             if (containsLayer) {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
             } else {
-                //AsyncTaskExecutor.execute(new AddLayerTask(this, name, keywordsList.toArray(new String[keywordsList.size()])), this);
-                new AddLayerTask(this, name, keywordsList.toArray(new String[keywordsList.size()])).execute();
+            	if (asyncTaskManager != null) {
+                	asyncTaskManager.executeIndexDynamicLayer(name, keywordsList.toArray(new String[keywordsList.size()]));
+                }         
+                intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
+                //new AddLayerTask(this, name, keywordsList.toArray(new String[keywordsList.size()])).execute();
+            	finish();
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.Layer_name_empty_error));
         }
     }
 
-    private class AddLayerTask extends GMSAsyncTask<Void, Void, Void> {
+    /*private class AddLayerTask extends GMSAsyncTask<Void, Void, Void> {
 
         private AddLayerActivity activity;
         private String[] keywords;
@@ -223,5 +225,5 @@ public class AddLayerActivity extends Activity implements OnClickListener {
             intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
             activity.onTaskCompleted();
         }
-    }
+    }*/
 }

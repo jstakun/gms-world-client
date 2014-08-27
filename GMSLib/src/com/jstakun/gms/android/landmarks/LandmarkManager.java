@@ -413,9 +413,9 @@ public class LandmarkManager {
         	searchTermTokens = StringUtils.split(searchTerm, " ");
         }
         
-        if (searchType == -1) {
-            searchType = ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE, ConfigurationManager.PHRASE_SEARCH);
-        }
+        //if (searchType == -1) {
+        //    searchType = ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE, ConfigurationManager.PHRASE_SEARCH);
+        //}
         
         if (searchType == ConfigurationManager.WORDS_SEARCH) {
             searchPredicate = new PhraseWordsSearchPredicate(searchTermTokens, false, searchTerm); //phrase words

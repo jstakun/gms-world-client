@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import java.net.URI;
@@ -79,7 +75,18 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					AlertDialogBuilder.OPEN_DIALOG, Integer.class);
 			dialog.cancel();
 			if (query != null && landmarkManager != null) {
-				landmarkManager.getLayerManager().addDynamicLayer(query.substring(0, query.length()-2));
+				String name = query.substring(0, query.length()-2);
+				boolean containsLayer = landmarkManager.getLayerManager().addDynamicLayer(name);
+				if (containsLayer) {
+	                intents.showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
+	            } else {
+	            	AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
+	            	if (asyncTaskManager != null) {
+	                	asyncTaskManager.executeIndexDynamicLayer(name, new String[]{name});
+	                }         
+	            	asyncTaskManager.executeIndexDynamicLayer(name, new String[]{name});
+	            	intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
+	            }	
 			}
 			callSearchTask();
 		}
@@ -273,8 +280,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 	private void onTaskCompleted() {
 		List<LandmarkParcelable> landmarkList = searchTask.getLandmarks();
 		if (landmarkList.isEmpty()) {
-			ConfigurationManager.getInstance().putObject(
-					ConfigurationManager.SEARCH_QUERY_RESULT, -1);
+			ConfigurationManager.getInstance().putObject(ConfigurationManager.SEARCH_QUERY_RESULT, -1);
 			finish();
 		} else {
 			showSearchResults(landmarkList);
@@ -306,8 +312,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 			q = query;
 		}
 		
-		List<String> recentQueries = (List<String>) ConfigurationManager
-				.getInstance().getObject("RECENT_SEARCH_QUERIES", List.class);
+		List<String> recentQueries = (List<String>) ConfigurationManager.getInstance().getObject("RECENT_SEARCH_QUERIES", List.class);
 		if (recentQueries == null) {
 			if (!local) {
 				recentQueries = new ArrayList<String>();
@@ -344,7 +349,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 		private GMSSearchActivity caller;
 		private boolean completed;
 		private String query;
-
+	
 		public SearchTask(GMSSearchActivity caller, String query) {
 			super(1);
 			this.caller = caller;
@@ -399,12 +404,12 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					
 					if (type == TYPE.DEALS) {
 						landmarkManager.searchDeals(landmarkList,
-								q, null,
+								query, null,
 								MathUtils.coordIntToDouble(lat),
 								MathUtils.coordIntToDouble(lng), searchType);
 					} else if (type == TYPE.LANDMARKS) {
 						landmarkManager.searchLandmarks(landmarkList,
-								q, null,
+								query, null,
 								MathUtils.coordIntToDouble(lat),
 								MathUtils.coordIntToDouble(lng), searchType);
 					}
@@ -442,9 +447,10 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			if (values.length >= 2 && progressDialog != null) {
-				progressDialog.setMessage(Locale.getMessage(
-						R.string.Processing_results, values[0], values[1]));
+			if (values.length >= 2) {
+				if (caller.progressDialog != null) {
+					caller.progressDialog.setMessage(Locale.getMessage(R.string.Processing_results, values[0], values[1]));
+				}
 			}
 		}
 
@@ -454,7 +460,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				notifyActivityTaskCompleted();
 			}
 		}
-
+		
 		private String getQuery() {
 			return query;
 		}

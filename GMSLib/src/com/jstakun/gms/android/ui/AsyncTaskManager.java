@@ -31,6 +31,8 @@ import com.jstakun.gms.android.deals.CategoryJsonParser;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.KMLParser;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.landmarks.LandmarkParcelable;
+import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.social.GMSUtils;
@@ -191,6 +193,7 @@ public class AsyncTaskManager {
         	if (notificationId >= 0) {
         		tasksInProgress.put(notificationId, this);
         	}
+        	LoggerUtils.debug("Task " + getClass().getName() + " started...");
         }
 
         @Override
@@ -203,6 +206,7 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String res) {
             clear();
+            LoggerUtils.debug("Task " + getClass().getName() + " finished");
         }
 
         protected void clear() {
@@ -1022,6 +1026,33 @@ public class AsyncTaskManager {
                     }
                 } catch (Exception e) {
                 }
+            }
+            return null;
+        }
+    }
+    
+    public void executeIndexDynamicLayer(String name, String[] keywords) {
+    	new IndexDynamicLayerTask(name, keywords).execute();
+    }
+    
+    private class IndexDynamicLayerTask extends GMSAsyncTask<Void, Void, Void> {
+
+        private String[] keywords;
+        private String name;
+
+        public IndexDynamicLayerTask(String name, String[] keywords) {
+            super(1);
+            this.name = name;
+            this.keywords = keywords;
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            List<LandmarkParcelable> results = new ArrayList<LandmarkParcelable>();
+            landmarkManager.searchLandmarks(results, null, keywords, 0.0, 0.0, ConfigurationManager.FUZZY_SEARCH);
+            Layer l = landmarkManager.getLayerManager().getLayer(name);
+            if (l != null) {
+                l.setCount(results.size());
             }
             return null;
         }
