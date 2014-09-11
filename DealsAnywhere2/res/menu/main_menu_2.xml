@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/search" android:showAsAction="ifRoom|withText"
+          android:title="@string/search" android:icon="@drawable/ic_menu_search"/> <!-- a  -->
+    <!-- item android:id="@+id/showMyPos"
+          android:title="@string/showMyPos" android:icon="@android:drawable/ic_menu_mylocation"/--> <!-- a -->
+    <item android:id="@+id/settings" android:title="@string/settings" 
+          android:icon="@android:drawable/ic_menu_preferences"/> <!-- a -->
+    <item android:id="@+id/refreshLayers"
+          android:title="@string/refreshLayers" android:icon="@drawable/ic_menu_refresh"/> <!-- a -->
+    <item android:id="@+id/discoverPlaces" android:title="@string/discoverPlaces"/> <!-- a -->
+    <item android:id="@+id/reset" android:title="@string/reset"/>          
+    <item android:id="@+id/releaseNotes" android:title="@string/releaseNotes" /> <!-- a -->
+    <item android:id="@+id/rateUs" android:title="@string/rateUs" /> <!-- a -->
+    <item android:id="@+id/about" android:title="@string/about" /> <!-- a -->
+    <item android:id="@+id/exit" android:title="@string/exit" /> <!-- a -->
+</menu>
+

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="numberOfReviews">
+        <item quantity="one">1 review</item>
+        <item quantity="other">%1$s reviews</item>
+    </plurals>
+    <plurals name="foundLandmarks">
+        <item quantity="zero">No matching landmarks found</item>
+        <item quantity="one">Found 1 matching landmark</item>
+        <item quantity="other">Found %1$d matching landmarks</item>
+    </plurals>
+    <plurals name="foundDeals">
+        <item quantity="zero">No matching deals found</item>
+        <item quantity="one">Found 1 matching deal</item>
+        <item quantity="other">Found %1$d matching deals</item>
+    </plurals>
+    <plurals name="LayerLoaded">
+        <item quantity="zero">Layers loaded. No landmarks found!</item>
+        <item quantity="one">Layers loaded. Found 1 landmark!</item>
+        <item quantity="other">Layers loaded. Found %1$d landmarks!</item>
+    </plurals>
+</resources>

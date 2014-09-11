@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="navigation">
+        <item>Layers</item>
+        <item>Landmarks</item> <!-- submenu -->
+        <item>Check-in</item> <!-- submenu -->
+        <item>Friends activities</item>
+        <item>Deals</item>
+        <item>Social Networks</item>
+    </string-array>
+    <string-array name="landmarks_submenu">
+        <item>Nearby landmarks</item>
+        <item>Create new landmark</item>
+        <item>Recently opened landmarks</item>
+        <item>Newest landmarks</item>
+        <item>Saved landmarks</item>
+        <item>Landmarks calendar</item>
+        <item>POI files</item>
+    </string-array>    
+    <string-array name="checkin_submenu">
+        <item>Auto Check-In</item>
+        <item>Check-in at GMS World location</item>
+        <item>Check-in with QR code</item>
+    </string-array>   
+</resources>

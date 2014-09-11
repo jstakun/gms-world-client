@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="hotDeals" />
+    <item type="id" name="newestDeals" />
+    <item type="id" name="nearbyDeals" />
+    <item type="id" name="events" />
+</resources>
