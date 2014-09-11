@@ -127,6 +127,20 @@ public class OsUtil {
             return false;
         }
     }
+    
+    public static boolean isAmazonMapActivityInstalled() {
+        try {
+            // check if Amazon Maps is supported on given device
+            Class<?> c = Class.forName("com.amazon.geo.maps.MapActivity");
+            if (c == null) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public static boolean isGoogleMapsInstalled(Context ctx) {
         try {
