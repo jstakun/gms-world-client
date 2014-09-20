@@ -47,6 +47,7 @@ public abstract class AbstractSerialReader implements LayerReader {
     protected String[] getUrls() { 
     	List<String> urls = new ArrayList<String>(2);
     	if (ConfigurationManager.getUserManager().isTokenPresent()) {
+    		urls.add(ConfigurationManager.getInstance().getSecuredRHCloudUrl() + getUri());
     		urls.add(ConfigurationManager.getInstance().getSecuredServicesUrl() + getUri());
     	} 
     	urls.add(ConfigurationManager.getInstance().getAnonymousServerUrl() + getUri());

@@ -1082,6 +1082,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         } else {
             postInvalidate();
         }
+        
+        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+            checkinManager.autoCheckin(lat, lng, false);
+        }
     }
 
     private void setBuiltInZoomControls(boolean enable) {
