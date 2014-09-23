@@ -415,6 +415,7 @@ public class HttpUtils {
         					if (contentType != null) {
         						String contentTypeValue = contentType.getValue();
         						if (!contentTypeValue.contains(format)) {
+        							responseCode = 500;
         							throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + uri.toString());
         						}
         					} else {

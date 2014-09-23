@@ -71,7 +71,7 @@ public class SerialParser {
         		if (service != null) {
         			service.logout();
         		}
-        	} else if (responseCode == HttpStatus.SC_SERVICE_UNAVAILABLE && urlIndex+1 < urls.length) {
+        	} else if (responseCode >= 500 && urlIndex+1 < urls.length) {
         		return parse(urls, urlIndex+1, params, landmarks, task, close, socialService);
         	}
         	errorMessage = utils.getResponseCodeErrorMessage();

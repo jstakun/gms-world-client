@@ -52,7 +52,9 @@ public class FsCheckinsReader extends AbstractSerialReader {
 
 	@Override
 	protected String[] getUrls() {
-		return new String[] { ConfigurationManager.getInstance().getSecuredServerUrl() + getUri() };
+		return new String[] {
+				ConfigurationManager.getInstance().getSecuredRHCloudUrl() + getUri(),
+				ConfigurationManager.getInstance().getSecuredServerUrl() + getUri() };
 	}
 	
 	@Override
