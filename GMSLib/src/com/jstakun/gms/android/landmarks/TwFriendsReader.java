@@ -45,8 +45,9 @@ public class TwFriendsReader extends AbstractSerialReader {
 	@Override
 	protected String[] getUrls() {
 		return new  String[] { 
-				ConfigurationManager.getInstance().getSecuredRHCloudUrl() + getUri(),
-				ConfigurationManager.getInstance().getSecuredServerUrl() + getUri() };
+				ConfigurationManager.getInstance().getSecuredServerUrl() + getUri(),
+				ConfigurationManager.getInstance().getSecuredRHCloudUrl() + getUri()
+		};
 	}
 	
 	@Override
