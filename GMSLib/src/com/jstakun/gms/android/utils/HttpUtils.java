@@ -170,6 +170,7 @@ public class HttpUtils {
             HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
 
             responseCode = httpResponse.getStatusLine().getStatusCode();
+            errorMessage = null;
 
             HttpEntity entity = httpResponse.getEntity();
         	
@@ -243,6 +244,7 @@ public class HttpUtils {
             HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
 
             responseCode = httpResponse.getStatusLine().getStatusCode();
+            errorMessage = null;
 
             HttpEntity respEntity = httpResponse.getEntity();
             is = respEntity.getContent();
@@ -313,7 +315,8 @@ public class HttpUtils {
             	HttpResponse httpResponse = getHttpClient().execute(getRequest, httpContext);
 
             	responseCode = httpResponse.getStatusLine().getStatusCode();
-
+            	errorMessage = null;
+            	
             	if (responseCode == HttpStatus.SC_OK) {
             		HttpEntity entity = httpResponse.getEntity();
 
@@ -406,6 +409,7 @@ public class HttpUtils {
         			HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
         			
         			responseCode = httpResponse.getStatusLine().getStatusCode();
+        			errorMessage = null;
 
         			if (responseCode == HttpStatus.SC_OK) {
         				HttpEntity entity = httpResponse.getEntity();

@@ -38,9 +38,10 @@ public class AmzRoutesOverlay extends Overlay {
     private final Point point1 = new Point();
     private final Point point2 = new Point();
     private List<ExtendedLandmark> routePoints = new ArrayList<ExtendedLandmark>();
-    private int routeSize = 0;
+    private int routeSize = 0, w, h;
     private boolean isCurrentlyRecording = false;
     private final Rect viewportRect = new Rect();
+    private Bitmap routesLayerBitmap;
 
     public AmzRoutesOverlay(Context context, RoutesManager routesManager, String routeName) {
         this.routesManager = routesManager;
@@ -50,6 +51,11 @@ public class AmzRoutesOverlay extends Overlay {
             routePoints = routesManager.getRoute(routeName);
             routeSize = routePoints.size();
         }
+        
+        routesLayerBitmap = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, context.getResources().getDisplayMetrics(), null).getBitmap();
+        w = routesLayerBitmap.getWidth();
+        h = routesLayerBitmap.getHeight();
+        
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setARGB(128, 225, 0, 0);
@@ -61,14 +67,13 @@ public class AmzRoutesOverlay extends Overlay {
 
         if (shadow == false) {
             Projection projection = mapView.getProjection();
-            Bitmap b = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, mapView.getResources().getDisplayMetrics(), null).getBitmap();
             path.rewind();
 
             if (!isCurrentlyRecording && routeSize > 1) {
                 ExtendedLandmark firstPoint = routePoints.get(0);
                 GeoPoint gp1 = new GeoPoint(firstPoint.getLatitudeE6(), firstPoint.getLongitudeE6());
                 projection.toPixels(gp1, point1);
-                canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
+                canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - h, lmpaint);
                 path.moveTo(point1.x, point1.y);
 
                 for (int i = 1; i < routeSize; i++) {
@@ -82,7 +87,7 @@ public class AmzRoutesOverlay extends Overlay {
                 }
 
                 canvas.drawPath(path, paint);
-                canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
+                canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
             } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point
                 routePoints = routesManager.getRoute(routeName);
@@ -117,7 +122,7 @@ public class AmzRoutesOverlay extends Overlay {
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
                     if (i == -1) {
-                        canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
+                        canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
                     }
                 }
             }

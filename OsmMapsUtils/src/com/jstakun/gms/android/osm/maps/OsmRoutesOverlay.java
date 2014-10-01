@@ -43,9 +43,10 @@ public class OsmRoutesOverlay extends Overlay {
     private final Point gp1 = new Point();
     private final Point gp2 = new Point();
     private List<Point> projectedPoints = new ArrayList<Point>();
-    private int routeSize = 0;
+    private int routeSize = 0, w, h;
     private boolean isCurrentlyRecording = false;
-
+    private Bitmap routesLayerBitmap;
+    
     public OsmRoutesOverlay(MapView mapView, Context context, RoutesManager routesManager, String routeName) {
         super(context);
         this.routesManager = routesManager;
@@ -60,6 +61,10 @@ public class OsmRoutesOverlay extends Overlay {
             }
         }
 
+        routesLayerBitmap = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, mapView.getResources().getDisplayMetrics(), null).getBitmap();
+        w = routesLayerBitmap.getWidth();
+        h = routesLayerBitmap.getHeight();
+        
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setARGB(128, 225, 0, 0);
@@ -70,12 +75,11 @@ public class OsmRoutesOverlay extends Overlay {
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
         if (shadow == false) {
             Projection projection = mapView.getProjection();
-            Bitmap b = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, mapView.getResources().getDisplayMetrics(), null).getBitmap();
             path.rewind();
 
             if (!isCurrentlyRecording && routeSize > 1) {
                 projection.toMapPixelsTranslated(projectedPoints.get(0), point1); //toPixelsFromProjected
-                canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
+                canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - h, lmpaint);
                 path.moveTo(point1.x, point1.y);
 
                 for (int i = 1; i < routeSize; i++) {
@@ -91,7 +95,7 @@ public class OsmRoutesOverlay extends Overlay {
                 }
 
                 canvas.drawPath(path, paint);
-                canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
+                canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
             } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point only
                 List<ExtendedLandmark> routePoints = routesManager.getRoute(routeName);
@@ -133,7 +137,7 @@ public class OsmRoutesOverlay extends Overlay {
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
                     if (i == -1) {
-                        canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - (b.getHeight() / 2), lmpaint);
+                        canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
                     }
                 }
             }

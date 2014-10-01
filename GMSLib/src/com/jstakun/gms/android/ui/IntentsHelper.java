@@ -738,15 +738,22 @@ public final class IntentsHelper {
         lvOpenButton.setVisibility(View.VISIBLE);
         lvView.findViewById(R.id.lvOpenSeparator).setVisibility(View.VISIBLE);
         
-        lvRouteButton.setVisibility(View.VISIBLE);
-        lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.VISIBLE);
+        //show only if location is available
+        if (landmarkManager.hasMyLocation()) {
+        	lvRouteButton.setVisibility(View.VISIBLE);
+        	lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.VISIBLE);
      
-        int routeType = ConfigurationManager.getInstance().getInt(ConfigurationManager.ROUTE_TYPE);
-        if (routeType == 2) {
-            lvRouteButton.setImageResource(R.drawable.walk48);
+        	int routeType = ConfigurationManager.getInstance().getInt(ConfigurationManager.ROUTE_TYPE);
+        	if (routeType == 2) {
+        		lvRouteButton.setImageResource(R.drawable.walk48);
+        	} else {
+        		lvRouteButton.setImageResource(R.drawable.route48);
+        	}
         } else {
-            lvRouteButton.setImageResource(R.drawable.route48);
+        	lvRouteButton.setVisibility(View.GONE);
+        	lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.GONE);
         }
+        //
         
         String phone = selectedLandmark.getPhone();
         if (phone != null && OsUtil.hasTelephony(activity)) { 
