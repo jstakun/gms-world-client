@@ -70,6 +70,7 @@ public class FileManager implements PersistenceManager {
     private static final String ROUTES_FOLDER = "Routes";
     private static final String FILES_FOLDER = "Files";
     private static final String ICONS_FOLDER = "Icons";
+    private static final String LOGS_FOLDER = "Logs";
     private static final String ROOT_FOLDER_PREFIX = "/Android/data/";
     private static final String TIMESTAMP = "timestamp";
     private String packageName;
@@ -742,6 +743,12 @@ public class FileManager implements PersistenceManager {
                 boolean res = fc.mkdirs();
                 LoggerUtils.debug("Created tiles folder: " + res);
             }
+            
+            fc = getExternalDirectory(LOGS_FOLDER, null);
+            if (!fc.exists()) {
+                boolean res = fc.mkdirs();
+                LoggerUtils.debug("Created logs folder: " + res);
+            }
 
         } catch (Exception ex) {
             LoggerUtils.error("FileManager.createDefaultDirs exception", ex);
@@ -1096,7 +1103,7 @@ public class FileManager implements PersistenceManager {
         protected Void doInBackground(Void... params) {
         	if (lm != null) {
         		deleteFiles(cacheDir, new FileDeletePredicate(lm));
-        		LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/logcat" + System.currentTimeMillis() + ".txt");       	
+        		LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/files/" + LOGS_FOLDER + "/logcat" + System.currentTimeMillis() + ".txt");       	
         	}
         	return null;
         }
