@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
@@ -57,7 +58,7 @@ public class LayerListActivity extends ListActivity {
         setTitle(R.string.layers);
 
         setContentView(R.layout.gms_list);
-
+        
         AdsUtils.loadAd(this);
 
         //UserTracker.getInstance().startSession(this);
@@ -122,7 +123,7 @@ public class LayerListActivity extends ListActivity {
             }
         }
 
-        setListAdapter(new LayerArrayAdapter(this, names));
+        setListAdapter(new LayerArrayAdapter(this, names, new PositionClickListener()));
     }
 
     @Override
@@ -137,11 +138,6 @@ public class LayerListActivity extends ListActivity {
         AdsUtils.destroyAdView(this);
     }
 
-    //@Override
-    //public Object onRetainNonConfigurationInstance() {
-    //    return layerName;
-    //}
-    
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
     	savedInstanceState.putString(NAME, layerName);
@@ -394,6 +390,13 @@ public class LayerListActivity extends ListActivity {
             } else {
                 return 0;
             }
+        }
+    }
+    
+    private class PositionClickListener implements View.OnClickListener {
+        public void onClick(View v) {
+        	int position = v.getId();
+        	layerAction(LayerListActivity.ACTION_OPEN, position);
         }
     }
 }

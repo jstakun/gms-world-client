@@ -70,6 +70,7 @@
         <activity android:name="PickLocationActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|keyboardHidden"></activity>
         <activity android:name="SocialListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="LayerListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
+        <activity android:name="GridLayerListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="AutoCheckinListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="HelpActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>

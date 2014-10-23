@@ -36,15 +36,17 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LayerArrayAdapter extends ArrayAdapter<String> {
 
-    private final LayerListActivity parentActivity;
+    private final Activity parentActivity;
     private final LandmarkManager landmarkManager;
     private final RoutesManager routesManager;
+    private final View.OnClickListener positionClickListener;
 
-    public LayerArrayAdapter(LayerListActivity context, List<String> names) {
+    public LayerArrayAdapter(Activity context, List<String> names, View.OnClickListener positionClickListener) {
         super(context, R.layout.layerrow, names);
         this.parentActivity = context;
         this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         this.routesManager = ConfigurationManager.getInstance().getRoutesManager();
+        this.positionClickListener = positionClickListener;
     }
 
     @Override
@@ -69,7 +71,8 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         final String layerKey = layerStr[0];
         final String layerName = layerStr[1];
 
-        rowView.setOnClickListener(new PositionClickListener(position));
+        rowView.setOnClickListener(positionClickListener);
+        rowView.setId(position);
 
         holder.headerText.setText(layerName);
 
@@ -141,19 +144,6 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         protected ImageView layerThumbnail;
     }
 
-    private class PositionClickListener implements View.OnClickListener {
-
-        private int position;
-
-        public PositionClickListener(int pos) {
-            this.position = pos;
-        }
-
-        public void onClick(View v) {
-            parentActivity.layerAction(LayerListActivity.ACTION_OPEN, position);
-        }
-    }
-    
     private static class LayerImageLoadingHandler extends Handler {
     	
     	private WeakReference<ViewHolder> viewHolder;
