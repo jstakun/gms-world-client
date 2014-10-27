@@ -131,7 +131,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
         int response = fdb.deleteLandmark(id);
 
         if (response > 0) {
-            ((ArrayAdapter) getListAdapter()).remove(favourites.remove(position));
+            ((ArrayAdapter<LandmarkParcelable>) getListAdapter()).remove(favourites.remove(position));
             intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted_error));

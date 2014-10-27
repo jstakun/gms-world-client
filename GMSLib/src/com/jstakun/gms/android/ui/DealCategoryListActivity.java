@@ -325,7 +325,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
         } else {
             landmarkManager.deleteLayer(c.getCategory());
-            ((ArrayAdapter) getListAdapter()).remove(names.remove(currentPos));
+            ((ArrayAdapter<String>) getListAdapter()).remove(names.remove(currentPos));
             categories.remove(c);
             intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, c.getCategory()));
         }

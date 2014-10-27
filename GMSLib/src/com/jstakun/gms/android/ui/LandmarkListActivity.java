@@ -212,7 +212,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
                 //System.out.println("Deleting landmark: " + selectedLandmark.getName());
                 int count = landmarkManager.removeLandmark(selectedLandmark);
                 if (count >= 1 || count == -1) {
-                    ((ArrayAdapter) getListAdapter()).remove(getLandmarksTask.getLandmarks().remove(position));
+                    ((ArrayAdapter<LandmarkParcelable>) getListAdapter()).remove(getLandmarksTask.getLandmarks().remove(position));
                     message = Locale.getMessage(R.string.Landmark_deleted);
                 } else {
                     message = Locale.getMessage(R.string.Landmark_deleted_error);
