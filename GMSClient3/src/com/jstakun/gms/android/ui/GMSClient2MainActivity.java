@@ -8,6 +8,7 @@ import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
 import org.osmdroid.api.IMyLocationOverlay;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -1062,25 +1063,24 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     private void updateLocation(double lat, double lng, float altitude, float accuracy, float speed, float bearing) {
-        if (landmarkManager != null) {
+        
+    	if (landmarkManager != null) {
             landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
         }
         
-        if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        	mapButtons.setVisibility(View.VISIBLE);
-        } else {
+    	intents.vibrateOnLocationUpdate();
+    	
+    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.GONE);
-        }
-
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-            showMyPositionAction(false);
+        	showMyPositionAction(false);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
                 if (routeRecorder != null) {
                     routeRecorder.addCoordinate(lat, lng, altitude, accuracy, speed, bearing);
                 }
             }
         } else {
-            postInvalidate();
+        	mapButtons.setVisibility(View.VISIBLE);
+        	postInvalidate();
         }
         
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {

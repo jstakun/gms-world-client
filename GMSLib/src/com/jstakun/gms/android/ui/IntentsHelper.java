@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.text.Html;
 import android.text.Html.ImageGetter;
@@ -213,12 +214,16 @@ public final class IntentsHelper {
     }
 
     public void startLayersListActivity(boolean dynamicLayersMode) {
-    	Intent intent = new Intent(activity, LayerListActivity.class);
+    	Intent intent = null;
+ 
     	if (dynamicLayersMode) {
+    		intent = new Intent(activity, GridLayerListActivity.class);
     		intent.putExtra("mode", LayerListActivity.DYNAMIC_LAYERS_MODE);
     	} else {
+    		intent = new Intent(activity, LayerListActivity.class);
     		intent.putExtra("mode", LayerListActivity.ALL_LAYERS_MODE);
     	}
+    	
     	activity.startActivityForResult(intent, INTENT_LAYERS);
     }
 
@@ -1246,6 +1251,14 @@ public final class IntentsHelper {
                 }
             }
         }
+    }
+    
+    public void vibrateOnLocationUpdate() {
+    	if (!ConfigurationManager.getInstance().containsObject("vibratedOnLocationUpdate", Object.class)) {
+    		ConfigurationManager.getInstance().putObject("vibratedOnLocationUpdate", new Object());
+    		Vibrator v = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+    		v.vibrate(300);
+    	}
     }
     
     public void softClose(int zoomLevel, int latitudeE6, int longitudeE6) {

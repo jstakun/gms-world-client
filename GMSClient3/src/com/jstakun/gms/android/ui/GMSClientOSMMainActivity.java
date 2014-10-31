@@ -958,19 +958,18 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
         }
         
-        if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        	mapButtons.setVisibility(View.VISIBLE);
-        } else {
-        	mapButtons.setVisibility(View.GONE);
-        }
-
+        intents.vibrateOnLocationUpdate();
+    	
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-            showMyPositionAction(false);
+        	mapButtons.setVisibility(View.GONE);
+        	showMyPositionAction(false);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
                 if (routeRecorder != null) {
                     routeRecorder.addCoordinate(lat, lng, altitude, accuracy, speed, bearing);
                 }
             }
+        } else {
+        	mapButtons.setVisibility(View.VISIBLE);
         }
 
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
