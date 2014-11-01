@@ -3,6 +3,7 @@ package com.jstakun.gms.android.utils;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
@@ -199,4 +200,14 @@ public class StringUtil {
         System.arraycopy(b2, 0, b3, b1.length, b2.length);
         return b3;
     }
+    
+    public static List<String> removeDuplicates(String[] first, String[] second) {
+		List<String> result = new ArrayList<String>(Arrays.asList(first));
+		for(int i=0;i<second.length;i++) {
+		    if (!result.contains(second[i])) {
+		        result.add(second[i]);
+		    }
+		}
+		return result;
+	}
 }

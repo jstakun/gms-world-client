@@ -758,7 +758,7 @@ public final class ConfigurationManager {
         	if (StringUtils.isNotEmpty(dynamicLayers)) {
         		String[] first = StringUtils.split(getString(DYNAMIC_LAYERS), LAYER_SEPARATOR);
         		String[] second = StringUtils.split(dynamicLayers, LAYER_SEPARATOR);
-        		List<String> dedup = removeDuplicates(first, second);
+        		List<String> dedup = StringUtil.removeDuplicates(first, second);
         		putString(DYNAMIC_LAYERS, StringUtils.join(dedup, LAYER_SEPARATOR));
         	}
         	putAll(userConfig);
@@ -818,17 +818,6 @@ public final class ConfigurationManager {
             	objectCache.remove("FAVOURITESDB");
         	}
     	}
-    	
-    	private List<String> removeDuplicates(String[] first, String[] second) {
-    		List<String> result = new ArrayList<String>(Arrays.asList(first));
-    		for(int i=0;i<second.length;i++) {
-    		    if (!result.contains(second[i])) {
-    		        result.add(second[i]);
-    		    }
-    		}
-    		return result;
-    	}
-    
     }
 
     public static UserManager getUserManager() {
