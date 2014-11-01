@@ -60,7 +60,7 @@ minCheckinDistance;1000
 checkinTimeInterval;8
 maxCurrentDistance;200
 osmMapsType;0
-dynamicLayers;restaurant-=+=-pub-=+=-night club,club,klub-=+=-theater,movie,kino,teatr-=+=-cafe,coffee,kawa-=+=-sports,sport,gym,basen,pool
+dynamicLayers;restaurant-=+=-pub-=+=-night club,club,klub-=+=-theater,movie,kino,teatr-=+=-cafe,coffee,kawa-=+=-sports,sport,gym,basen,pool-=+=-shopping,shop,sklep,handlowe
 useCount;0
 appRated;0
 radius;10
