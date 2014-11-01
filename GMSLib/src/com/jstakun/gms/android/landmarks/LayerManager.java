@@ -36,7 +36,6 @@ public class LayerManager {
     private static final Map<String, Layer> layers = new LinkedHashMap<String, Layer>();
     private static final Map<String, Layer> allLayers = new LinkedHashMap<String, Layer>();
     private static final List<String> dynamicLayers = new ArrayList<String>();
-    private static final String LAYER_SEPARATOR = "-=+=-";
     
     public static final int LAYER_LOCAL = 1;
     public static final int LAYER_EXTERNAL = 2;
@@ -411,7 +410,7 @@ public class LayerManager {
     private void initializeDynamicLayers() {
         String dl = ConfigurationManager.getInstance().getString(ConfigurationManager.DYNAMIC_LAYERS);
         if (StringUtils.isNotEmpty(dl)) {
-            String[] dynamicLayersStr = StringUtils.split(dl, LAYER_SEPARATOR);
+            String[] dynamicLayersStr = StringUtils.split(dl, ConfigurationManager.LAYER_SEPARATOR);
             Map<String, Layer> dynLayers = new HashMap<String, Layer>();
             for (int i = 0; i < dynamicLayersStr.length; i++) {
                 String[] tokens = StringUtils.split(dynamicLayersStr[i], ",");
@@ -452,7 +451,7 @@ public class LayerManager {
             containsLayer = true;
         } else {
             if (StringUtils.isNotEmpty(dl)) {
-                String[] dynamicLayersStr = StringUtils.split(dl, LAYER_SEPARATOR);
+                String[] dynamicLayersStr = StringUtils.split(dl, ConfigurationManager.LAYER_SEPARATOR);
                 for (int i = 0; i < dynamicLayersStr.length; i++) {
                     String layer = StringUtils.split(dynamicLayersStr[i], ",")[0];
                     if (layer.equalsIgnoreCase(layerName)) {
@@ -465,7 +464,7 @@ public class LayerManager {
 
         if (!containsLayer) {
             if (StringUtils.isNotEmpty(dl)) {
-                dl += LAYER_SEPARATOR;
+                dl += ConfigurationManager.LAYER_SEPARATOR;
             }
             dl += keywords;
             ConfigurationManager.getInstance().putString(ConfigurationManager.DYNAMIC_LAYERS, dl);
@@ -494,12 +493,12 @@ public class LayerManager {
         String dl = ConfigurationManager.getInstance().getString(ConfigurationManager.DYNAMIC_LAYERS);
         if (StringUtils.isNotEmpty(dl)) {
             String newdl = "";
-            String[] dynamicLayersStr = StringUtils.split(dl, LAYER_SEPARATOR);
+            String[] dynamicLayersStr = StringUtils.split(dl, ConfigurationManager.LAYER_SEPARATOR);
             for (int i = 0; i < dynamicLayersStr.length; i++) {
                 String[] tokens = StringUtils.split(dynamicLayersStr[i], ",");
                 if (!tokens[0].equalsIgnoreCase(layerName)) {
                     if (newdl.length() > 0) {
-                        newdl += LAYER_SEPARATOR;
+                        newdl += ConfigurationManager.LAYER_SEPARATOR;
                     }
                     newdl += dynamicLayersStr[i];
                 }

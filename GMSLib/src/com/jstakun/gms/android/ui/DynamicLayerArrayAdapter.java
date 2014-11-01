@@ -106,6 +106,7 @@ public class DynamicLayerArrayAdapter extends ArrayAdapter<String> {
 	        	holder.detailText.setText("" + count);
 	        	holder.layerThumbnail.setImageResource(R.drawable.getin);
 	        } else {
+	        	holder.detailText.setText("");
 	        	holder.layerThumbnail.setImageResource(R.drawable.image_missing128);
 	        }
 

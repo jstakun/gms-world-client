@@ -2,6 +2,7 @@ package com.jstakun.gms.android.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -136,6 +137,7 @@ public final class ConfigurationManager {
     public static final int OSM_MAPS = 1;
     public static final int OSM_TILES = 2;
     private static final String DISABLED = "-1";
+    public static final String LAYER_SEPARATOR = "-=+=-";
     
     public static final String SERVER_HOST = "gms-world.appspot.com";
     public static final String SERVER_URL = "http://www.gms-world.net/";
@@ -750,7 +752,16 @@ public final class ConfigurationManager {
 
     	private void readConfiguration() {
         	ConfigDbDataSource cdb = getConfigDatabase();
-        	putAll(cdb.fetchAllConfig());
+        	Map<String, String> userConfig = cdb.fetchAllConfig();
+        	String dynamicLayers = userConfig.remove(DYNAMIC_LAYERS);
+        	//System.out.println("user layers: " + dynamicLayers + " ---------------------------- ");
+        	if (StringUtils.isNotEmpty(dynamicLayers)) {
+        		String[] first = StringUtils.split(getString(DYNAMIC_LAYERS), LAYER_SEPARATOR);
+        		String[] second = StringUtils.split(dynamicLayers, LAYER_SEPARATOR);
+        		List<String> dedup = removeDuplicates(first, second);
+        		putString(DYNAMIC_LAYERS, StringUtils.join(dedup, LAYER_SEPARATOR));
+        	}
+        	putAll(userConfig);
         	changedConfig.clear();
     	}
     	
@@ -806,6 +817,16 @@ public final class ConfigurationManager {
             	fdb.close();
             	objectCache.remove("FAVOURITESDB");
         	}
+    	}
+    	
+    	private List<String> removeDuplicates(String[] first, String[] second) {
+    		List<String> result = new ArrayList<String>(Arrays.asList(first));
+    		for(int i=0;i<second.length;i++) {
+    		    if (!result.contains(second[i])) {
+    		        result.add(second[i]);
+    		    }
+    		}
+    		return result;
     	}
     
     }
