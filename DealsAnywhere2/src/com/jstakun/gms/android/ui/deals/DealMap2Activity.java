@@ -909,6 +909,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         				activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
         				activity.mapButtons.setVisibility(View.VISIBLE);
         			}
+        			activity.intents.vibrateOnLocationUpdate();
         		}
         	}
         }
