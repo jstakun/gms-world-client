@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.jstakun.gms.android.ui"
-      android:versionCode="1119"
+      android:versionCode="1120"
       android:versionName="2.0.8">
     <uses-sdk android:minSdkVersion="3"
-              android:targetSdkVersion="18"/>
+              android:targetSdkVersion="21"/>
     <supports-screens android:smallScreens="true"
                   android:normalScreens="true"
                   android:largeScreens="true"

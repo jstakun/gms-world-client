@@ -1044,7 +1044,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:maxValue
+          @attr name com.jstakun.gms.android.ui.deals:maxValue
         */
         public static final int com_mnm_seekbarpreference_SeekBarPreference_maxValue = 1;
         /**
@@ -1058,7 +1058,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:minValue
+          @attr name com.jstakun.gms.android.ui.deals:minValue
         */
         public static final int com_mnm_seekbarpreference_SeekBarPreference_minValue = 0;
         /**
@@ -1072,7 +1072,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:unit
+          @attr name com.jstakun.gms.android.ui.deals:unit
         */
         public static final int com_mnm_seekbarpreference_SeekBarPreference_unit = 2;
     };

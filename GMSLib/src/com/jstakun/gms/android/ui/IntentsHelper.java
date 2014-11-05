@@ -220,6 +220,7 @@ public final class IntentsHelper {
     		intent = new Intent(activity, GridLayerListActivity.class);
     		intent.putExtra("mode", LayerListActivity.DYNAMIC_LAYERS_MODE);
     	} else {
+    		//intent = new Intent(activity, GridLayerListActivity.class);
     		intent = new Intent(activity, LayerListActivity.class);
     		intent.putExtra("mode", LayerListActivity.ALL_LAYERS_MODE);
     	}

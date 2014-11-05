@@ -935,9 +935,9 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:maxValue
+          @attr name com.jstakun.gms.android.ui.lib:maxValue
         */
-        public static final int com_mnm_seekbarpreference_SeekBarPreference_maxValue = 1;
+        public static int com_mnm_seekbarpreference_SeekBarPreference_maxValue = 1;
         /**
           <p>This symbol is the offset where the {@link com.jstakun.gms.android.ui.lib.R.attr#minValue}
           attribute's value can be found in the {@link #com_mnm_seekbarpreference_SeekBarPreference} array.
@@ -949,9 +949,9 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:minValue
+          @attr name com.jstakun.gms.android.ui.lib:minValue
         */
-        public static final int com_mnm_seekbarpreference_SeekBarPreference_minValue = 0;
+        public static int com_mnm_seekbarpreference_SeekBarPreference_minValue = 0;
         /**
           <p>This symbol is the offset where the {@link com.jstakun.gms.android.ui.lib.R.attr#unit}
           attribute's value can be found in the {@link #com_mnm_seekbarpreference_SeekBarPreference} array.
@@ -963,8 +963,8 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:unit
+          @attr name com.jstakun.gms.android.ui.lib:unit
         */
-        public static final int com_mnm_seekbarpreference_SeekBarPreference_unit = 2;
+        public static int com_mnm_seekbarpreference_SeekBarPreference_unit = 2;
     };
 }

@@ -47,8 +47,8 @@ public class LayerListActivity extends ListActivity {
     private LandmarkManager landmarkManager;
     private RoutesManager routesManager;
     private int currentPos = -1, mode = 0;
-    private String layerName;
-    private static final String NAME = "layerName";
+    //private String layerName;
+    //private static final String NAME = "layerName";
     
 
     @Override
@@ -91,9 +91,9 @@ public class LayerListActivity extends ListActivity {
         //    layerName = (String) retained;
         //}
         
-        if (savedInstanceState != null) {
-        	layerName = savedInstanceState.getString(NAME);
-        } 
+        //if (savedInstanceState != null) {
+        //	layerName = savedInstanceState.getString(NAME);
+        //} 
     }
 
     @Override
@@ -138,10 +138,10 @@ public class LayerListActivity extends ListActivity {
         AdsUtils.destroyAdView(this);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-    	savedInstanceState.putString(NAME, layerName);
-    }
+    //@Override
+    //public void onSaveInstanceState(Bundle savedInstanceState) {
+    //	savedInstanceState.putString(NAME, layerName);
+    //}
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -207,7 +207,7 @@ public class LayerListActivity extends ListActivity {
             currentPos = info.position;
             String[] layerStr = names.get(currentPos).split(";");
             String layerKey = layerStr[0];
-            layerName = layerStr[1];
+            String layerName = layerStr[1];
             menu.setHeaderTitle(layerName);
             menu.setHeaderIcon(R.drawable.ic_dialog_menu_generic);
             String[] menuItems = getResources().getStringArray(R.array.layersContextMenu);
@@ -309,7 +309,7 @@ public class LayerListActivity extends ListActivity {
     protected void layerAction(int type, int position) {
         String[] layerStr = names.get(position).split(";");
         String layerKey = layerStr[0];
-        layerName = layerStr[1];
+        String layerName = layerStr[1];
 
         if (type == ACTION_OPEN) {
             //OPEN

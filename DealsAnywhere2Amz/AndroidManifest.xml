@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:amazon="http://schemas.amazon.com/apk/res/android"
       package="com.jstakun.gms.android.ui.deals"
-      android:versionCode="119"
+      android:versionCode="120"
       android:versionName="0.8">
     <uses-sdk android:minSdkVersion="11"
-    android:targetSdkVersion="18"/>
+    android:targetSdkVersion="21"/>
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.front" android:required="false" />
