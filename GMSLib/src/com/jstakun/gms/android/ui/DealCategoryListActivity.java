@@ -89,6 +89,10 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         searchButton.setOnClickListener(this);
         mapViewButton.setOnClickListener(this);
         addLayerButton.setOnClickListener(this);
+        
+        if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) != ConfigurationManager.DA) {
+        	addLayerButton.setVisibility(View.GONE);
+        }
 
         if (OsUtil.isHoneycomb2OrHigher()) {
             findViewById(R.id.topPanel).setVisibility(View.GONE);
@@ -214,6 +218,18 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         inflater.inflate(R.menu.deal_menu, menu);
         return true;
     }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	super.onPrepareOptionsMenu(menu);
+    	MenuItem addLayers = menu.findItem(R.id.addLayer);
+		
+    	if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) != ConfigurationManager.DA) {
+    		addLayers.setVisible(false);
+    	}
+    	
+        return true;
+    }	
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

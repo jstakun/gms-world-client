@@ -39,14 +39,12 @@ public class LayerListActivity extends ListActivity {
     protected static final int ACTION_REFRESH = 1;
     protected static final int ACTION_CLEAR = 2;
     protected static final int ACTION_DELETE = 3;
-    protected static final int ALL_LAYERS_MODE = 0;
-    protected static final int DYNAMIC_LAYERS_MODE = 1;
     private AlertDialog deleteLayerDialog, enableAllLayersDialog, disableAllLayersDialog;
     private List<String> names = null;
     private IntentsHelper intents;
     private LandmarkManager landmarkManager;
     private RoutesManager routesManager;
-    private int currentPos = -1, mode = 0;
+    private int currentPos = -1, mode = ConfigurationManager.ALL_LAYERS_MODE;
     //private String layerName;
     //private static final String NAME = "layerName";
     
@@ -71,9 +69,9 @@ public class LayerListActivity extends ListActivity {
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("mode")) {
-        	mode = intent.getIntExtra("mode", ALL_LAYERS_MODE);
+        	mode = intent.getIntExtra("mode", ConfigurationManager.ALL_LAYERS_MODE);
         } else {
-        	mode = ALL_LAYERS_MODE;
+        	mode = ConfigurationManager.ALL_LAYERS_MODE;
         }
         //footer = new TextView(this);
         //getListView().addFooterView(footer);
@@ -105,7 +103,7 @@ public class LayerListActivity extends ListActivity {
         if (landmarkManager != null) {
             List<String> layers = null; 
             
-            if (mode == DYNAMIC_LAYERS_MODE) {
+            if (mode == ConfigurationManager.DYNAMIC_LAYERS_MODE) {
             	layers = landmarkManager.getLayerManager().getDynamicLayers();
             } else {
             	layers = landmarkManager.getLayerManager().getLayers();
@@ -148,7 +146,7 @@ public class LayerListActivity extends ListActivity {
     	super.onPrepareOptionsMenu(menu);
     	MenuItem enableLayers = menu.findItem(R.id.enableLayers);
     	MenuItem refreshLayers = menu.findItem(R.id.refreshLayers);
-    	if (mode == ALL_LAYERS_MODE) {
+    	if (mode == ConfigurationManager.ALL_LAYERS_MODE) {
     		enableLayers.setVisible(true);
     		refreshLayers.setVisible(true);
     		if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {

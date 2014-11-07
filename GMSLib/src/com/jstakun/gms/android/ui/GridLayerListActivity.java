@@ -6,8 +6,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 
@@ -27,14 +32,13 @@ public class GridLayerListActivity extends Activity {
     protected static final int ACTION_REFRESH = 1;
     protected static final int ACTION_CLEAR = 2;
     protected static final int ACTION_DELETE = 3;
-    protected static final int ALL_LAYERS_MODE = 0;
-    protected static final int DYNAMIC_LAYERS_MODE = 1;
     private List<String> names = null;
     private LandmarkManager landmarkManager;
     private RoutesManager routesManager;
     private IntentsHelper intents;
     private GridView gridView;
-    private int mode = 0;
+    private int mode = ConfigurationManager.ALL_LAYERS_MODE;
+    private AlertDialog enableAllLayersDialog, disableAllLayersDialog;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,14 +59,17 @@ public class GridLayerListActivity extends Activity {
         
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("mode")) {
-        	mode = intent.getIntExtra("mode", ALL_LAYERS_MODE);
+        	mode = intent.getIntExtra("mode", ConfigurationManager.ALL_LAYERS_MODE);
         } else {
-        	mode = ALL_LAYERS_MODE;
+        	mode = ConfigurationManager.ALL_LAYERS_MODE;
         }
         
         gridView = (GridView) findViewById(R.id.layers_grid_view);
         
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
+        
+        createEnableAllLayersAlertDialog();
+        createDisableAllLayersAlertDialog();
 	}
 	
 	public void onResume() {
@@ -73,7 +80,7 @@ public class GridLayerListActivity extends Activity {
         if (landmarkManager != null) {
             List<String> layers = null; 
             
-            if (mode == DYNAMIC_LAYERS_MODE) {
+            if (mode == ConfigurationManager.DYNAMIC_LAYERS_MODE) {
             	layers = landmarkManager.getLayerManager().getDynamicLayers();
             } else {
             	layers = landmarkManager.getLayerManager().getLayers();
@@ -92,6 +99,63 @@ public class GridLayerListActivity extends Activity {
         }
 
         gridView.setAdapter(new DynamicLayerArrayAdapter(this, names, new PositionClickListener()));
+    }
+	
+	@Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	super.onPrepareOptionsMenu(menu);
+    	MenuItem enableLayers = menu.findItem(R.id.enableLayers);
+    	MenuItem refreshLayers = menu.findItem(R.id.refreshLayers);
+    	if (mode == ConfigurationManager.ALL_LAYERS_MODE) {
+    		enableLayers.setVisible(true);
+    		refreshLayers.setVisible(true);
+    		if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
+    			enableLayers.setTitle(R.string.disableLayers);
+    		} else {
+    			enableLayers.setTitle(R.string.enableLayers);
+    		}
+    	} else {
+    		enableLayers.setVisible(false);
+    		refreshLayers.setVisible(false);
+    	}
+    	return true;
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.layers_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
+        int itemId = item.getItemId();
+        if (itemId == R.id.addLayer) {
+            startActivity(new Intent(this, AddLayerActivity.class));
+            return true;
+        } else if (itemId == R.id.refreshLayers) {
+            Intent result = new Intent();
+            result.putExtra("action", "refresh");
+            setResult(RESULT_OK, result);
+            finish();
+            return true;
+        } else if (itemId == R.id.enableLayers) {
+        	if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
+        		disableAllLayersDialog.show();
+        	} else {
+        		enableAllLayersDialog.show();
+        	}
+            return true;
+        } else if (itemId == android.R.id.home) {
+            setResult(RESULT_CANCELED);
+            finish();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 	
 	private void layerAction(String action, String layer) {
@@ -129,6 +193,50 @@ public class GridLayerListActivity extends Activity {
             }
         }     
 	}
+	
+	private void createEnableAllLayersAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true).
+                setIcon(android.R.drawable.ic_dialog_alert).
+                setTitle(Locale.getMessage(R.string.Layer_enableLayers_prompt)).
+                setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+                if (landmarkManager != null) {
+                	landmarkManager.getLayerManager().enableAllLayers();
+                	//((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
+                	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_enabled));
+                }
+            }
+        }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        enableAllLayersDialog = builder.create();
+    }
+    
+    private void createDisableAllLayersAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true).
+                setIcon(android.R.drawable.ic_dialog_alert).
+                setTitle(Locale.getMessage(R.string.Layer_disableLayers_prompt)).
+                setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+                if (landmarkManager != null) {
+                	landmarkManager.getLayerManager().disableAllLayers();
+                	//((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
+                	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
+                }
+            }
+        }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        disableAllLayersDialog = builder.create();
+    }
 	
 	private class LayerSizeComparator implements Comparator<String> {
 

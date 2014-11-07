@@ -2,7 +2,6 @@ package com.jstakun.gms.android.config;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -164,6 +163,9 @@ public final class ConfigurationManager {
     public static final int FUZZY_SEARCH = 2;
     private static final int NETWORK_ALL = 0;
     private static final int NETWORK_TEXT = 1;
+    public static final int LM = 0;
+    public static final int DA = 1;
+    
     //private static final int NETWORK_NONE = 2;
     
     //User Manager
@@ -215,6 +217,9 @@ public final class ConfigurationManager {
     //
 	//Restart service every x seconds
 	public static final long DEFAULT_REPEAT_TIME = 300;
+	
+	public static final int DYNAMIC_LAYERS_MODE = 1;
+	public static final int ALL_LAYERS_MODE = 0;
     
     private ConfigurationManager() {
     }

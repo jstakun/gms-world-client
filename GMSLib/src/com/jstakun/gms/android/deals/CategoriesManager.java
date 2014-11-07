@@ -11,6 +11,8 @@ import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -205,11 +207,14 @@ public class CategoriesManager {
                 enabled.add(c);
             }
         }
-        for (String key : layerManager.getDynamicLayers()) {
-            Layer layer = layerManager.getLayer(key);
-            Category category = new Category(-1, layer.getName(), -1, null, layer.getSmallIconResource(), -1);
-            category.setCustom(true);
-            enabled.add(category);
+        //only in da
+        if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) == ConfigurationManager.DA) {
+        	for (String key : layerManager.getDynamicLayers()) {
+        		Layer layer = layerManager.getLayer(key);
+        		Category category = new Category(-1, layer.getName(), -1, null, layer.getSmallIconResource(), -1);
+        		category.setCustom(true);
+        		enabled.add(category);
+        	}
         }
         return enabled;
     }
@@ -253,7 +258,7 @@ public class CategoriesManager {
     private int getSubCategoryStatsFromConf(int category, int subcategory) {
         int value = 0;
         if (category > 0 && subcategory > 0) {
-            final String key = String.format(KEY_FORMAT, category, subcategory);
+            final String key = String.format(Locale.US, KEY_FORMAT, category, subcategory);
             value = ConfigurationManager.getInstance().getInt(key, 0);
         }
         return value;
@@ -261,7 +266,7 @@ public class CategoriesManager {
 
     public void addSubCategoryStats(int category, int subcategory) {
         if (category > 0 && subcategory > 0) {
-            final String key = String.format(KEY_FORMAT, category, subcategory);
+            final String key = String.format(Locale.US, KEY_FORMAT, category, subcategory);
             Category cat = getCategory(category);
             Category subcat = getSubCategory(category, subcategory);
             if (cat != null && subcat != null) {
@@ -311,7 +316,7 @@ public class CategoriesManager {
     public void clearAllStats() {
         if (subcategories != null) {
             for (Category c : subcategories) {
-                final String key = String.format(KEY_FORMAT, c.getCategoryID(), c.getSubcategoryID());
+                final String key = String.format(Locale.US, KEY_FORMAT, c.getCategoryID(), c.getSubcategoryID());
                 if (ConfigurationManager.getInstance().containsKey(key)) {
                     ConfigurationManager.getInstance().putInteger(key, 0);
                 }

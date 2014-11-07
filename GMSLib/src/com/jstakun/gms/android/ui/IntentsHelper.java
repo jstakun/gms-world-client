@@ -218,11 +218,11 @@ public final class IntentsHelper {
  
     	if (dynamicLayersMode) {
     		intent = new Intent(activity, GridLayerListActivity.class);
-    		intent.putExtra("mode", LayerListActivity.DYNAMIC_LAYERS_MODE);
+    		intent.putExtra("mode", ConfigurationManager.DYNAMIC_LAYERS_MODE);
     	} else {
     		//intent = new Intent(activity, GridLayerListActivity.class);
     		intent = new Intent(activity, LayerListActivity.class);
-    		intent.putExtra("mode", LayerListActivity.ALL_LAYERS_MODE);
+    		intent.putExtra("mode", ConfigurationManager.ALL_LAYERS_MODE);
     	}
     	
     	activity.startActivityForResult(intent, INTENT_LAYERS);
@@ -959,7 +959,7 @@ public final class IntentsHelper {
 
         try {
         	List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("appId", ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID)));
+			params.add(new BasicNameValuePair(ConfigurationManager.APP_ID, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID)));
 			params.add(new BasicNameValuePair("type", "v")); 
             String url = ConfigurationManager.getInstance().getServerUrl() + "notifications";
 

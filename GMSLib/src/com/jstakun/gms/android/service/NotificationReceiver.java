@@ -42,7 +42,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 	        	String url = ConfigurationManager.SERVER_URL + "notifications";
 	            List<NameValuePair> postParams = new ArrayList<NameValuePair>();
 	        	postParams.add(new BasicNameValuePair("type", "u"));
-	        	postParams.add(new BasicNameValuePair("appId", ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID)));
+	        	postParams.add(new BasicNameValuePair(ConfigurationManager.APP_ID, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID)));
 	        	postParams.add(new BasicNameValuePair("lst", ConfigurationManager.getInstance().getString(ConfigurationManager.LAST_STARTING_DATE)));
 	        	postParams.add(new BasicNameValuePair("uc", Integer.toString(ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0))));
 	            
