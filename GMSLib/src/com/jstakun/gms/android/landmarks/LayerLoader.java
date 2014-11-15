@@ -112,7 +112,7 @@ public class LayerLoader {
                 Layer layer = landmarkManager.getLayerManager().getLayer(key);
                 List<LayerReader> layerReader = layer.getLayerReader();
                 currentLayerIndex++;
-                if (layer != null && !layerReader.isEmpty()) {
+                if (!layerReader.isEmpty()) {
                     hasLayerLoader = true;
                     break;
                 } else {

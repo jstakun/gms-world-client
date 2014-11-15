@@ -23,7 +23,7 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 public class FavouritesDbDataSource {
 
     private static SQLiteDatabase database;
-    private static FavouritesDbSQLiteOpenHelper dbHelper;
+    private FavouritesDbSQLiteOpenHelper dbHelper;
     private String[] allColumns = {FavouritesDbSQLiteOpenHelper.COLUMN_ID,
         FavouritesDbSQLiteOpenHelper.COLUMN_NAME,
         LandmarkDbSQLiteOpenHelper.COLUMN_LATITUDE,

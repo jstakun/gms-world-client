@@ -60,14 +60,6 @@ public class DistanceUtils {
     }
 
     public static float distanceInKilometer(double lat1, double lon1, double lat2, double lon2) {
-        //System.out.println(lat1 + " " + lon1 + " " + lat2 + " " + lon2);
-        //double theta = lon1 - lon2;
-        //double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
-        //dist = Double.longBitsToDouble(MicroDouble.acos(Double.doubleToLongBits(dist)));
-        //dist = Math.toDegrees(dist);
-
-        //dist *= (69.09 * 1.609344); //kilometer
-
         return distanceInMeter(lat1, lon1, lat2, lon2) * 0.001f;
     }
 
@@ -80,50 +72,6 @@ public class DistanceUtils {
     public static int radiusInKilometer() {
         return ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_RADIUS, 10);
     }
-    
-    /*public static int radiusInKilometer(int width, int height, double cursorLatitude, double cursorLongitude, int zoom) {
-
-        Context c = ConfigurationManager.getInstance().getContext();
-        int searchRadius = 3; //default 3km
-
-        if (c != null) {
-            String[] array = ConfigurationManager.getInstance().getContext().getResources().getStringArray(R.array.radius);
-            int pos = ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_RADIUS);
-            if (pos < 0 || pos >= array.length) {
-                pos = 0;
-            }
-
-            if (pos > 0) {
-                searchRadius = Integer.valueOf(array[pos]).intValue();
-            } else {
-                searchRadius = Math.max((int) distanceInKilometer(width, height, cursorLatitude, cursorLongitude, zoom), 3);
-            }
-        }
-
-        return searchRadius;
-    }
-
-    public static int radiusInKilometer(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude) {
-
-        Context c = ConfigurationManager.getInstance().getContext();
-        int searchRadius = 3; //default 3km
-
-        if (c != null) {
-            String[] array = ConfigurationManager.getInstance().getContext().getResources().getStringArray(R.array.radius);
-            int pos = ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_RADIUS);
-            if (pos < 0 || pos >= array.length) {
-                pos = 0;
-            }
-
-            if (pos > 0) {
-                searchRadius = Integer.valueOf(array[pos]).intValue();
-            } else {
-                searchRadius = Math.max((int) distanceInKilometer(latitudeSpan, longitudeSpan, cursorLatitude, cursorLongitude), 3);
-            }
-        }
-
-        return searchRadius;
-    }*/
 
     /*                0 is locale              */
     /*                2 is statute miles              */
@@ -197,9 +145,13 @@ public class DistanceUtils {
                 }
             }
 
-            return formatter.format(dist);
+            if (formatter != null) {
+            	return formatter.format(dist);
+            } else {
+            	return "";
+            }
         } catch (Exception e) {
-            LoggerUtils.error("DistanceUtils.formatDistance exception", e);
+            LoggerUtils.error("DistanceUtils.formatDistance() exception", e);
             return "";
         }
     }

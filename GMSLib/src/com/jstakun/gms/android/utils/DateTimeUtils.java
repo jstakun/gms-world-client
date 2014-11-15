@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.utils;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,7 +24,7 @@ public abstract class DateTimeUtils {
     public static final long ONE_YEAR = 12 * ONE_MONTH;
     
     private static final Map<String, DateFormat> dateFormats = new HashMap<String, DateFormat>();
-    private static final DateFormat yearMonthFormat = new SimpleDateFormat("MMMM yyyy", ConfigurationManager.getInstance().getCurrentLocale());
+    private static final String yearMonthFormat = "MMMM yyyy";
     
     /** Get current Date stamp
      *  @return The Current Date/Time in the format: yyyymmdd_hhmm 
@@ -308,7 +309,7 @@ public abstract class DateTimeUtils {
     	Calendar cal = Calendar.getInstance();
     	cal.set(Calendar.YEAR, year);
     	cal.set(Calendar.MONTH, month);
-    	return yearMonthFormat.format(cal.getTime());
+    	return formatDate(yearMonthFormat, cal.getTime());
     }
     
     public static String getDateString(long date, int style, Locale locale) {
@@ -318,5 +319,13 @@ public abstract class DateTimeUtils {
     
     public static String getShortDateString(long date, Locale locale) {
     	return getDateString(date, DateFormat.SHORT, locale);
+    }
+    
+    public static String formatDate(String format, Date date) {
+    	return new SimpleDateFormat(format, ConfigurationManager.getInstance().getCurrentLocale()).format(date);
+    }
+    
+    public static Date parseDate(String format, String date) throws ParseException {
+    	return new SimpleDateFormat(format, ConfigurationManager.getInstance().getCurrentLocale()).parse(date);
     }
 }

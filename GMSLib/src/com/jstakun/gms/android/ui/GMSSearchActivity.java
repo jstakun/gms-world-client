@@ -84,7 +84,6 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 	            	if (asyncTaskManager != null) {
 	                	asyncTaskManager.executeIndexDynamicLayer(name, new String[]{name});
 	                }         
-	            	asyncTaskManager.executeIndexDynamicLayer(name, new String[]{name});
 	            	intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
 	            }	
 			}

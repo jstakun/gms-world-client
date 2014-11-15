@@ -94,12 +94,12 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
             } else {
                 List<String> keysList = (List<String>) ConfigurationManager.getInstance().getObject("fsKeys", List.class);
                 if (keysList != null) {
-                    keys = (String[]) keysList.toArray();
+                    keys = (String[]) keysList.toArray(new String[keysList.size()]);
                 }
 
                 List<String> valuesList = (List<String>) ConfigurationManager.getInstance().getObject("fsValues", List.class);
                 if (valuesList != null) {
-                    values = (String[]) valuesList.toArray();
+                    values = (String[]) valuesList.toArray(new String[valuesList.size()]);
                 }
             }
         }

@@ -128,7 +128,7 @@ public class IconCache {
     /**
      * Get singleton instance
      */
-    public static IconCache getInstance() {
+    public synchronized static IconCache getInstance() {
         if (instance == null) {
             instance = new IconCache();
         }
@@ -405,7 +405,7 @@ public class IconCache {
         return getBitmapDrawable(bmp);
     }
 
-    public void clearAll() {
+    public synchronized void clearAll() {
     	for (Map.Entry<String, Bitmap> entry : images.entrySet()) {
     		LoggerUtils.debug("Recycling " + entry.getKey());
     		entry.getValue().recycle();

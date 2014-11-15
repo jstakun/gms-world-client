@@ -757,7 +757,7 @@ public class LandmarkManager {
     }
 
     public void findNewestLandmarks(List<LandmarkParcelable> newest, int minDays, String[] excluded, double lat, double lng) {
-        long lastStartTime = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * minDays); //maximum landmark age
+        long lastStartTime = System.currentTimeMillis() - (1000l * 60 * 60 * 24 * minDays); //maximum landmark age
 
         //if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.LAST_STARTING_DATE)) {
             long lastStartingDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.LAST_STARTING_DATE);

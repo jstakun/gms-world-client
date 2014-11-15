@@ -3,8 +3,6 @@ package com.jstakun.gms.android.ui;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
@@ -13,19 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.Locale;
 
 public class DynamicLayerArrayAdapter extends ArrayAdapter<String> {
 

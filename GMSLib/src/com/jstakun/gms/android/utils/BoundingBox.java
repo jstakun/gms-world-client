@@ -15,10 +15,6 @@ public class BoundingBox {
     public double east;
     public double west;
 
-    public boolean equals(BoundingBox bbox) {
-        return (north == bbox.north && south == bbox.south && east == bbox.east && west == bbox.west);
-    }
-
     @Override
     public String toString() {
         return "north: " + north + ",south: " + south + ",east: " + east + ",west: " + west;

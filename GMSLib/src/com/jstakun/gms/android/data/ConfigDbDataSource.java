@@ -22,7 +22,7 @@ import java.util.Map;
 public class ConfigDbDataSource {
 
     private static SQLiteDatabase database;
-    private static ConfigDbSQLiteOpenHelper dbHelper;
+    private ConfigDbSQLiteOpenHelper dbHelper;
     private String[] allColumns = {ConfigDbSQLiteOpenHelper.COLUMN_KEY,
         ConfigDbSQLiteOpenHelper.COLUMN_VALUE
     };

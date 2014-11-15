@@ -186,13 +186,13 @@ public class OsUtil {
 
         // get internal android device id
         try {
-            androidDeviceId = android.provider.Settings.Secure.getString(context.getContentResolver(),
-                    android.provider.Settings.Secure.ANDROID_ID);
-            if (androidDeviceId == null) {
-                androidDeviceId = "NoAndroidId";
-            }
+            androidDeviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);          
         } catch (Exception e) {
         	LoggerUtils.error("OsUtil.getUniqueId() exception", e);  
+        }
+        
+        if (androidDeviceId == null) {
+            androidDeviceId = "NoAndroidId";
         }
 
         return androidDeviceId.equals("NoAndroidId") ? telephonyDeviceId : androidDeviceId;

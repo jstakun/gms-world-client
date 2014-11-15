@@ -4,6 +4,10 @@
  */
 package com.jstakun.gms.android.ads;
 
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
 import android.app.Activity;
 import android.view.ViewGroup;
 
@@ -11,10 +15,7 @@ import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
+import com.jstakun.gms.android.utils.DateTimeUtils;
 
 /**
  *
@@ -23,10 +24,10 @@ import org.apache.commons.lang.StringUtils;
 public class AdMobUtils {
 
     private static AdRequest adReq = null;
-    private static final SimpleDateFormat fbFormat = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
-    private static final SimpleDateFormat ggFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+    private static final String fbFormat = "yyyyMMdd";
+    private static final String ggFormat = "yyyy-MM-dd";
 
-    protected static void loadAd(Activity activity) {
+    protected synchronized static void loadAd(Activity activity) {
         AdView adView = (AdView) activity.findViewById(R.id.adView);
         if (adReq == null) {
             adReq = new AdRequest();
@@ -54,7 +55,7 @@ public class AdMobUtils {
                 String birthdayStr = ConfigurationManager.getInstance().getString(ConfigurationManager.FB_BIRTHDAY);
                 if (birthdayStr != null) {
                     try {
-                        birthday = fbFormat.parse(birthdayStr);
+                        birthday = DateTimeUtils.parseDate(fbFormat, birthdayStr);
                     } catch (Exception e) {
                     }
                 }
@@ -63,7 +64,7 @@ public class AdMobUtils {
                     birthdayStr = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_BIRTHDAY);
                     if (birthdayStr != null) {
                         try {
-                            birthday = ggFormat.parse(birthdayStr);
+                            birthday = DateTimeUtils.parseDate(ggFormat, birthdayStr);
                         } catch (Exception e) {
                         }
                     }

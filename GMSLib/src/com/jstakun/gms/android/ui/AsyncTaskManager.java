@@ -885,14 +885,14 @@ public class AsyncTaskManager {
         new GetTokenTask().execute();
     }
 
-    private class GetTokenTask extends GMSAsyncTask<Void, Void, Boolean> {
+    private class GetTokenTask extends GMSAsyncTask<Void, Void, Void> {
 
     	public GetTokenTask() {
     		super(10);
     	}
     	
 		@Override
-		protected Boolean doInBackground(Void... params) {
+		protected Void doInBackground(Void... params) {
 			ConfigurationManager.getUserManager().verifyToken();
 			return null;
 		}

@@ -57,10 +57,10 @@ public final class ConfigurationManager {
     private static volatile Map<String, String> configuration = new ConcurrentHashMap<String, String>();
     private static volatile Map<String, String> changedConfig = new ConcurrentHashMap<String, String>();
     private static volatile Map<String, Object> objectCache = new ConcurrentHashMap<String, Object>();
-    private static ConfigurationManager instance = null;
-    private static UserManager userManager = null;
-    private static DatabaseManager databaseManager = null;
-    private static AppUtils appUtils = null;
+    private static volatile ConfigurationManager instance = null;
+    private static volatile UserManager userManager = null;
+    private static volatile DatabaseManager databaseManager = null;
+    private static volatile AppUtils appUtils = null;
     
     //configuration parameters
     public static final String PERSISTENCE_MANAGER = "persistenceManager";

@@ -101,7 +101,7 @@ public class Layer {
         if (layerReader != null) {
             return Collections.unmodifiableList(layerReader);
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.<LayerReader>emptyList();
         }
     }
 
@@ -158,7 +158,7 @@ public class Layer {
     /**
      * @return the count
      */
-    public int getCount() {
+    public synchronized int getCount() {
         return count;
     }
 

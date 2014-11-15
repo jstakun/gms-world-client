@@ -27,7 +27,7 @@ import java.util.List;
 public class LandmarkDbDataSource {
 
     private static SQLiteDatabase database;
-    private static LandmarkDbSQLiteOpenHelper dbHelper;
+    private LandmarkDbSQLiteOpenHelper dbHelper;
     private String[] allColumns = {LandmarkDbSQLiteOpenHelper.COLUMN_ID,
         LandmarkDbSQLiteOpenHelper.COLUMN_NAME,
         LandmarkDbSQLiteOpenHelper.COLUMN_LATITUDE,

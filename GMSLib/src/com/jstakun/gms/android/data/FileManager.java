@@ -974,8 +974,8 @@ public class FileManager implements PersistenceManager {
                 for (int i = 1; i < size; i++) {
                     landmark = landmarkList.get(i);
                     double coords[] = MercatorUtils.normalizeE6(landmark.getQualifiedCoordinates().getLongitude(), landmark.getQualifiedCoordinates().getLatitude());
-                    float altitude = landmark.getQualifiedCoordinates().getAltitude();
-                    if (altitude == Float.NaN) {
+                    Float altitude = landmark.getQualifiedCoordinates().getAltitude();
+                    if (altitude.isNaN()) {
                         altitude = 0.0f;
                     }
                     out.write(coords[0] + "," + coords[1] + "," + altitude);

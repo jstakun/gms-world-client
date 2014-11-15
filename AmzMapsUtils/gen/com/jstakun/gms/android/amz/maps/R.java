@@ -101,7 +101,7 @@ containing a value of this type.
         public static int arrow_black_right=0x7f020001;
         public static int arts=0x7f020002;
         public static int arts_24=0x7f020003;
-        public static int border=0x7f020004;
+        public static int border_black=0x7f020004;
         public static int bullet_blue=0x7f020005;
         public static int buttonbg=0x7f020006;
         public static int cafe=0x7f020007;

@@ -4,13 +4,14 @@
  */
 package com.jstakun.gms.android.ads;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
+
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.tapfortap.Banner;
 import com.tapfortap.TapForTap;
@@ -22,8 +23,8 @@ import com.tapfortap.TapForTap.Gender;
  */
 public class TapForTapUtils {
 
-    private static final SimpleDateFormat fbFormat = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
-    private static final SimpleDateFormat ggFormat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+    private static final String fbFormat = "yyyyMMdd";
+    private static final String ggFormat = "yyyy-MM-dd";
 
     protected static void loadAd(final Activity activity) {
     	TapForTap.enableTapForTap();
@@ -71,7 +72,7 @@ public class TapForTapUtils {
             String birthdayStr = ConfigurationManager.getInstance().getString(ConfigurationManager.FB_BIRTHDAY);
             if (birthdayStr != null) {
                 try {
-                    birthday = fbFormat.parse(birthdayStr);
+                    birthday = DateTimeUtils.parseDate(fbFormat, birthdayStr);
                 } catch (Exception e) {
                 }
             }
@@ -80,7 +81,7 @@ public class TapForTapUtils {
                 birthdayStr = ConfigurationManager.getInstance().getString(ConfigurationManager.GL_BIRTHDAY);
                 if (birthdayStr != null) {
                     try {
-                        birthday = ggFormat.parse(birthdayStr);
+                        birthday = DateTimeUtils.parseDate(ggFormat, birthdayStr);
                     } catch (Exception e) {
                     }
                 }

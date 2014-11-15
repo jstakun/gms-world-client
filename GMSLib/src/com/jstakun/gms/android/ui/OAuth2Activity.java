@@ -49,7 +49,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	private ISocialUtils socialUtils = null;
 	private View rl = null;
 	private static final int ID_DIALOG_PROGRESS = 0;
-	private static boolean isDialogVisible = false;
+	private boolean isDialogVisible = false;
 	private String serviceName = null;
 	private IntentsHelper intents;
 

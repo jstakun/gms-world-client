@@ -30,14 +30,14 @@ public class UserTracker {
     private UserTracker() {
     }
 
-    public static UserTracker getInstance() {
+    public synchronized static UserTracker getInstance() {
         if (userTracker == null) {
             userTracker = new UserTracker();
         }
         return userTracker;
     }
 
-    public void initialize(final Context context) {
+    public synchronized void initialize(final Context context) {
     	try {
     		if (tracker == null && OsUtil.isDonutOrHigher()) {
         		tracker = GoogleAnalytics.getInstance(context).getTracker(getId(context));

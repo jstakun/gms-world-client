@@ -119,10 +119,8 @@ public class LayerLoaderConcurrent {
                 key = layers.get(currentLayerIndex);
                 Layer layer = landmarkManager.getLayerManager().getLayer(key);
                 List<LayerReader> layerReader = layer.getLayerReader();
-                
                 nextReader(key, layerReader);
-                
-                if (layer != null && !layerReader.isEmpty() && layerReader.size() > currentLayerReaderIndex.get(key)) {
+                if (!layerReader.isEmpty() && layerReader.size() > currentLayerReaderIndex.get(key)) {
                     hasLayerLoader = true;
                     break;
                 } //else {

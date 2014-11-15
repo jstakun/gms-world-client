@@ -14,7 +14,7 @@ public class MercatorUtils {
     //the current center latitute and longitude coordinates
     //the deltaX and deltaY, in pixels, of new map center
     //the map zoom level
-    public static double[] adjust(final double lat, final double lng, final int deltaX, final int deltaY, final int z) {
+    private static double[] adjust(final double lat, final double lng, final int deltaX, final int deltaY, final int z) {
         //Due to bug in OSM we'll use Google Mercator
 
         //double om[] = OsmMercator.adjust(lat, lng, deltaX, deltaY, z);
@@ -33,6 +33,8 @@ public class MercatorUtils {
 
     public static BoundingBox getBoundingBox(final int width, final int height, final double cursorLatitude, final double cursorLongitude, final int zoom) {
 
+    	//TODO fix this code not to use adjust
+    	
         double se[] = adjust(cursorLatitude, cursorLongitude, width / 2, height / 2, zoom);
         double nw[] = adjust(cursorLatitude, cursorLongitude, -width / 2, -height / 2, zoom);
         
