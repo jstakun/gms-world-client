@@ -175,14 +175,15 @@ public class OsUtil {
         try {
         	if (context != null) {
         		final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        		telephonyDeviceId = tm.getDeviceId();
-        		if (telephonyDeviceId == null) {
-        			telephonyDeviceId = "NoTelephonyId";
-        		}
+        		telephonyDeviceId = tm.getDeviceId();     		
         	}
         } catch (Exception e) {
         	LoggerUtils.error("OsUtil.getUniqueId() exception", e);
         }
+        
+        if (telephonyDeviceId == null) {
+			telephonyDeviceId = "NoTelephonyId";
+		}
 
         // get internal android device id
         try {
