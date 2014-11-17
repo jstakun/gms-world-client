@@ -7,9 +7,12 @@ package com.jstakun.gms.android.amz.maps;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+
 import com.amazon.geo.maps.GeoPoint;
 import com.amazon.geo.maps.MapView;
 import com.amazon.geo.maps.Projection;
+import com.jstakun.gms.android.utils.BoundingBox;
+import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 
 /**
@@ -21,10 +24,13 @@ public class AmzLandmarkProjection implements ProjectionInterface {
     private Projection proj;
     private final Point p = new Point();
     private final Rect currentMapBoundsRect = new Rect();
+    private int width, height;  
     
     public AmzLandmarkProjection(MapView mapView) {
         proj = mapView.getProjection();
         mapView.getDrawingRect(currentMapBoundsRect);
+        width = mapView.getWidth();
+        height = mapView.getHeight();
     }
 
     public void toPixels(int latE6, int lonE6, Point point) {
@@ -49,5 +55,22 @@ public class AmzLandmarkProjection implements ProjectionInterface {
     public boolean isVisible(Point p) {
         return currentMapBoundsRect.contains(p.x, p.y);
     }
+    
+    public BoundingBox getBoundingBox() {
+   	 	GeoPoint nw = proj.fromPixels(0, 0);
+   	 
+        GeoPoint se = proj.fromPixels(width, height);
+ 
+        BoundingBox bbox = new BoundingBox();
+        
+        bbox.north = MathUtils.coordIntToDouble(nw.getLatitudeE6());
+        bbox.south = MathUtils.coordIntToDouble(se.getLatitudeE6());
+        bbox.east = MathUtils.coordIntToDouble(se.getLongitudeE6());
+        bbox.west = MathUtils.coordIntToDouble(nw.getLongitudeE6()); 		 
+        
+        //System.out.println("north: " + bbox.north + ", south: " + bbox.south + ", west: " + bbox.west + ", east: " + bbox.east);
+        
+        return bbox;
+   }
 
 }

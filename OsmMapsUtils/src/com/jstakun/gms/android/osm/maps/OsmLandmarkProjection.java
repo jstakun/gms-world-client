@@ -1,11 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.osm.maps;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+
+import com.jstakun.gms.android.utils.BoundingBox;
+import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.MapView;
@@ -21,10 +20,13 @@ public class OsmLandmarkProjection implements ProjectionInterface {
     private final Point p = new Point();
     private final Point tmp = new Point();
     private Projection proj = null;
+    private int width, height;  
             
     public OsmLandmarkProjection(MapView mapView) {
     	proj = mapView.getProjection();
         viewportRect.set(proj.getScreenRect());
+        width = mapView.getWidth();
+        height = mapView.getHeight();
     }
 
     public void toPixels(int latE6, int lonE6, Point point) {
@@ -50,4 +52,21 @@ public class OsmLandmarkProjection implements ProjectionInterface {
         return viewportRect.contains(p.x, p.y);
         //return (p.x >= viewportRect.left && p.x <= viewportRect.right && p.y <= viewportRect.bottom && p.y >= viewportRect.top);
     }
+    
+    public BoundingBox getBoundingBox() {
+   	 	IGeoPoint nw = proj.fromPixels(0, 0);
+   	 
+        IGeoPoint se = proj.fromPixels(width, height);
+ 
+        BoundingBox bbox = new BoundingBox();
+        
+        bbox.north = MathUtils.coordIntToDouble(nw.getLatitudeE6());
+        bbox.south = MathUtils.coordIntToDouble(se.getLatitudeE6());
+        bbox.east = MathUtils.coordIntToDouble(se.getLongitudeE6());
+        bbox.west = MathUtils.coordIntToDouble(nw.getLongitudeE6()); 		 
+        
+        //System.out.println("north: " + bbox.north + ", south: " + bbox.south + ", west: " + bbox.west + ", east: " + bbox.east);
+        
+        return bbox;
+   }
 }

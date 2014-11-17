@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.gms.android.landmarks;
 
 import java.util.List;
@@ -10,9 +5,9 @@ import java.util.List;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.BoundingBox;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
-import com.jstakun.gms.android.utils.MercatorUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 
 /**
@@ -24,12 +19,13 @@ public class OsmReader extends AbstractSerialReader {
 	@Override
 	protected void init(double latitude, double longitude, int zoom, int width, int height) {
 		super.init(latitude, longitude, zoom, width, height);
-        BoundingBox bbox = MercatorUtils.getBoundingBox(width, height, latitude, longitude, zoom);
-        params.add(new BasicNameValuePair("longitudeMin", StringUtil.formatCoordE2(bbox.west)));
-		params.add(new BasicNameValuePair("latitudeMin", StringUtil.formatCoordE2(bbox.south)));
-		params.add(new BasicNameValuePair("longitudeMax", StringUtil.formatCoordE2(bbox.east)));  
-		params.add(new BasicNameValuePair("latitudeMax", StringUtil.formatCoordE2(bbox.north)));
-		
+        BoundingBox bbox = (BoundingBox) ConfigurationManager.getInstance().getObject("bbox", BoundingBox.class);
+        if (bbox != null) {
+        	params.add(new BasicNameValuePair("longitudeMin", StringUtil.formatCoordE2(bbox.west)));
+        	params.add(new BasicNameValuePair("latitudeMin", StringUtil.formatCoordE2(bbox.south)));
+        	params.add(new BasicNameValuePair("longitudeMax", StringUtil.formatCoordE2(bbox.east)));  
+        	params.add(new BasicNameValuePair("latitudeMax", StringUtil.formatCoordE2(bbox.north)));
+        }
     }
 	
 	@Override

@@ -14,4 +14,6 @@ public interface ProjectionInterface {
    public boolean isVisible(int latE6, int lngE6);
    
    public boolean isVisible(Point point);
+   
+   public BoundingBox getBoundingBox();
 }

@@ -652,8 +652,9 @@ public final class IntentsHelper {
         activity.startActivityForResult(intent, INTENT_CALENDAR);
     }
 
-    public void loadLayersAction(boolean loadExternal, String selectedLayer, boolean clear, boolean loadServerLayers, LayerLoader layerLoader, double latitude, double longitude, int zoomLevel) {
-        if (layerLoader != null) {
+    public void loadLayersAction(boolean loadExternal, String selectedLayer, boolean clear, boolean loadServerLayers, LayerLoader layerLoader, double latitude, double longitude, int zoomLevel, ProjectionInterface projection) {
+    	//TODO add projectioninterface parameter and set boundingbox to memory cache 
+    	if (layerLoader != null) {
             if (layerLoader.isLoading()) {
                 layerLoader.stopLoading();
             }
@@ -661,19 +662,22 @@ public final class IntentsHelper {
                 landmarkManager.clearLandmarkStore();
                 ConfigurationManager.getInstance().removeObject("dod", ExtendedLandmark.class);
             }
+            if (projection != null) {
+            	ConfigurationManager.getInstance().putObject("bbox", projection.getBoundingBox());
+            }
             Display display = activity.getWindowManager().getDefaultDisplay();
             layerLoader.loadLayers(latitude, longitude, zoomLevel, display.getWidth(), display.getHeight(), loadExternal, selectedLayer, loadServerLayers);
         }
     }
     
-    public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, CategoriesManager cm) {
+    public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, CategoriesManager cm, ProjectionInterface projection) {
     	int[] coordsE6 = null;
     	if (id >= 0) {
             ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
             if (selectedLandmark != null) {
                 landmarkManager.setSelectedLandmark(selectedLandmark);
                 landmarkManager.clearLandmarkOnFocusQueue();
-                coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, layerLoader, zoomLevel, cm);
+                coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, layerLoader, zoomLevel, cm, projection);
             } else {
                 showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
             }
@@ -683,7 +687,7 @@ public final class IntentsHelper {
     	return coordsE6;
     }
     
-    public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, CategoriesManager cm) {
+    public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, CategoriesManager cm, ProjectionInterface projection) {
         int[] anitmateTo = null;
     	ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
         if (selectedLandmark != null) {
@@ -706,7 +710,7 @@ public final class IntentsHelper {
                     loadLayersAction(true, null, false, true, layerLoader,
                     		selectedLandmark.getQualifiedCoordinates().getLatitude(), 
                     		selectedLandmark.getQualifiedCoordinates().getLongitude(),
-                            zoomLevel);
+                            zoomLevel, projection);
                 }
                 anitmateTo = new int[]{selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6()};
             }
@@ -1134,7 +1138,7 @@ public final class IntentsHelper {
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public void processActivityResult(int requestCode, int resultCode, Intent intent, double[] myLocation, double[] mapCenter, Handler showRouteHandler, int zoomLevel, LayerLoader layerLoader) {
+    public void processActivityResult(int requestCode, int resultCode, Intent intent, double[] myLocation, double[] mapCenter, Handler showRouteHandler, int zoomLevel, LayerLoader layerLoader, ProjectionInterface projection) {
         if (requestCode == INTENT_CATEGORIES) {
             if (resultCode == Activity.RESULT_OK) {
                 String action = intent.getStringExtra("action");
@@ -1240,11 +1244,9 @@ public final class IntentsHelper {
                 String action = intent.getStringExtra("action");
                 if (StringUtils.equals(action, "load")) {
                     String layer = intent.getStringExtra("layer");
-                    loadLayersAction(true, layer, false, false, layerLoader,
-                            mapCenter[0], mapCenter[1], zoomLevel);
+                    loadLayersAction(true, layer, false, false, layerLoader, mapCenter[0], mapCenter[1], zoomLevel, projection);
                 } else if (StringUtils.equals(action, "refresh")) {
-                    loadLayersAction(true, null, false, true, layerLoader,
-                            mapCenter[0], mapCenter[1], zoomLevel);
+                    loadLayersAction(true, null, false, true, layerLoader, mapCenter[0], mapCenter[1], zoomLevel, projection);
                 } else if (StringUtils.equals(action, "show")) {
                     Intent src = new Intent();
                     src.putExtras(intent);

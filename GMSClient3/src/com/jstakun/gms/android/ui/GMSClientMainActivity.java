@@ -309,7 +309,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null);
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null, ProjectionFactory.getProjection(mapView, googleMapsView));
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
@@ -439,7 +439,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     			} //System.out.println("key back pressed in activity");
     			return true;
     		} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null);
+    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null, ProjectionFactory.getProjection(mapView, googleMapsView));
     			if (coordsE6 != null) {
     				animateTo(coordsE6);
     			}
@@ -526,7 +526,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                     intents.loadLayersAction(true, null, false, true, layerLoader,
                             MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                             MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                            mapView.getZoomLevel());
+                            mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
                 }
             } else {
                 //load existing layers
@@ -691,7 +691,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 intents.loadLayersAction(true, null, false, true, layerLoader,
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel());
+                        mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
                 break;
             case R.id.addLayer:
                 intents.startAddLayerActivity();
@@ -903,7 +903,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null, ProjectionFactory.getProjection(mapView, googleMapsView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -946,14 +946,14 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null, ProjectionFactory.getProjection(mapView, googleMapsView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
                 }
             }
         } else {
-            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader);
+            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader, ProjectionFactory.getProjection(mapView, googleMapsView));
         }
     }
 
@@ -963,7 +963,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             intents.loadLayersAction(true, null, clearMap, true, layerLoader,
                     MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                     MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                    mapView.getZoomLevel());
+                    mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
         }
     }
 
@@ -994,7 +994,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader,
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel());
+                        mapView.getZoomLevel(), projection);
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -1213,7 +1213,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
             	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null);
+            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null, ProjectionFactory.getProjection(activity.mapView, activity.googleMapsView));
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }

@@ -61,7 +61,7 @@ public class LayerJSONParser {
             	LoggerUtils.error("Received server response " + responseCode + ": " + jsonResp);
             }
         } catch (Exception ex) {
-            LoggerUtils.error("JSonParser error: ", ex);
+            LoggerUtils.error("LayerJSONParser.parse() exception: ", ex);
             errorMessage = utils.getResponseCodeErrorMessage();
         } finally {
             close();

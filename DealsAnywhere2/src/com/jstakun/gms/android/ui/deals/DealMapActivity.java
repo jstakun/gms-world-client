@@ -276,7 +276,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 intents.loadLayersAction(true, null, false, false, layerLoader,
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel());
+                        mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
                 break;
             case R.id.showMyLandmarks:
                 intents.startMyLandmarksIntent(getMyLocation());
@@ -354,7 +354,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 intents.loadLayersAction(true, null, false, false, layerLoader,
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel());
+                        mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
             } else {
             	//load existing layers
@@ -386,7 +386,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm, new GoogleLandmarkProjection(mapView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -445,14 +445,14 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm, new GoogleLandmarkProjection(mapView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
                 }
             }
         } else {
-            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), null, null, -1, null);
+            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), null, null, -1, null, new GoogleLandmarkProjection(mapView));
         }
     }
 
@@ -527,7 +527,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm);
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm, new GoogleLandmarkProjection(mapView));
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
@@ -636,7 +636,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             //System.out.println("key back pressed in activity");
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm);
+        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm, new GoogleLandmarkProjection(mapView));
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }return true;
@@ -681,7 +681,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             intents.loadLayersAction(true, null, clearMap, false, layerLoader,
                     MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                     MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                    mapView.getZoomLevel());
+                    mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
         }
     }
 
@@ -719,7 +719,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader,
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                         MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel());
+                        mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -816,7 +816,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                             MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
                 	}
             	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), activity.cm);
+            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), activity.cm, new GoogleLandmarkProjection(activity.mapView));
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }
