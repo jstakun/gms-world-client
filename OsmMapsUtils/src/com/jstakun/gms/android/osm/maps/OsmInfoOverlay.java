@@ -10,12 +10,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.MathUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
 
@@ -64,8 +68,18 @@ public class OsmInfoOverlay extends Overlay {
             if (text == null) {
                 float distance = 40075.16f;
                 if (mapView.getZoomLevel() > 2) {
-                    distance = DistanceUtils.distanceInKilometer(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                            mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
+                    //distance = DistanceUtils.distanceInKilometer(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
+                    //        mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
+                	
+                	int width = mapView.getWidth();
+                	int height = mapView.getHeight()/2;
+                	IGeoPoint p1 = mapView.getProjection().fromPixels(0, height);
+                    IGeoPoint p2 = mapView.getProjection().fromPixels(width, height);
+                    
+                    distance = DistanceUtils.distanceInKilometer(MathUtils.coordIntToDouble(p1.getLatitudeE6()),
+                    		MathUtils.coordIntToDouble(p1.getLongitudeE6()),
+                    		MathUtils.coordIntToDouble(p2.getLatitudeE6()),
+                    		MathUtils.coordIntToDouble(p2.getLongitudeE6()));
                 }
                 text = DistanceUtils.formatDistance(distance / 4.0f);
                 distanceValues.put(key, text);

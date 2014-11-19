@@ -46,13 +46,13 @@ public class DistanceUtils {
     	}
     }
     
-    public static float distanceInKilometer(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude) {
+    /*public static float distanceInKilometer(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude) {
     	double minLatitude = MathUtils.coordIntToDouble(cursorLatitude - (latitudeSpan / 2));
     	//double maxLatitude = MathUtils.coordIntToDouble(cursorLatitude + (latitudeSpan / 2));
     	double minLongitude = MathUtils.coordIntToDouble(cursorLongitude - (longitudeSpan / 2));
     	double maxLongitude = MathUtils.coordIntToDouble(cursorLongitude + (longitudeSpan / 2));
     	return distanceInKilometer(minLatitude, minLongitude, minLatitude, maxLongitude);
-    }
+    }*/
     
     public static float distanceInKilometer(double lat1, double lon1, double lat2, double lon2) {
         return distanceInMeter(lat1, lon1, lat2, lon2) * 0.001f;
