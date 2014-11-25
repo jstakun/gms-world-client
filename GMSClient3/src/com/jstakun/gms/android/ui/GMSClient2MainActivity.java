@@ -43,16 +43,15 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.deals.CategoriesManager;
-import com.jstakun.gms.android.google.maps.GoogleInfoOverlay;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
 import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
 import com.jstakun.gms.android.google.maps.GoogleMyLocationOverlay;
 import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
+import com.jstakun.gms.android.google.maps.ObservableMapView;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.location.LocationServicesManager;
-import com.jstakun.gms.android.osm.maps.OsmInfoOverlay;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
 import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
 import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
@@ -76,7 +75,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private IMapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
-    private Object infoOverlay;
+    //private Object infoOverlay;
     private MapView googleMapsView;
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
@@ -167,20 +166,23 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	setContentView(R.layout.osmdroidcanvasview_2);
             mapView = (IMapView) findViewById(R.id.mapCanvas);
             ((org.osmdroid.views.MapView) mapView).setMultiTouchControls(true);
+            ((com.jstakun.gms.android.osm.maps.ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
             //set this to solve path painting issue
             ((org.osmdroid.views.MapView) mapView).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             myLocation = new OsmMyLocationNewOverlay(this, (org.osmdroid.views.MapView) mapView, loadingHandler);
-            infoOverlay = new OsmInfoOverlay(this);
+            //TODO remove
+            //infoOverlay = new OsmInfoOverlay(this);
         } else {
             //default view is Google
         	//System.out.println("2.2 --------------------------------");
         	setContentView(R.layout.googlemapscanvasview_2);
-            googleMapsView = (MapView) findViewById(R.id.mapCanvas);
+            googleMapsView = (ObservableMapView) findViewById(R.id.mapCanvas);
+            ((ObservableMapView)googleMapsView).setOnZoomChangeListener(new ZoomListener());
             //set this to solve path painting issue
             googleMapsView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             mapView = new org.osmdroid.google.wrapper.MapView(googleMapsView);
             myLocation = new GoogleIMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
-            infoOverlay = new GoogleInfoOverlay();
+            //infoOverlay = new GoogleInfoOverlay();
         }
 
         LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
@@ -255,7 +257,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         setBuiltInZoomControls(true);
 
-        StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
+        /*StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
         ViewResizeListener viewResizeListener = new ViewResizeListener() {
             @Override
             public void onResize(int id, int xNew, int yNew, int xOld, int yOld) {
@@ -266,8 +268,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 }
             }
         };
-        bottomPanel.setViewResizeListener(viewResizeListener);
-
+        bottomPanel.setViewResizeListener(viewResizeListener);*/
+        //
+        
         IGeoPoint mapCenter = (IGeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, IGeoPoint.class);
 
         if (mapCenter == null) {
@@ -530,8 +533,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
             
             addLandmarkOverlay();
-            //must be on top of other overlays
-            addOverlay(infoOverlay);
+            //addOverlay(infoOverlay);
             addOverlay(myLocation);
 
             routesManager = ConfigurationManager.getInstance().getRoutesManager();
@@ -1330,5 +1332,25 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             	}
         	}
         }
+    }
+    
+    private class ZoomListener implements ZoomChangeListener {
+
+		@Override
+		public void onZoom(int oldZoom, int currentZoom) {
+			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
+			
+			ProjectionInterface projection = ProjectionFactory.getProjection(mapView, googleMapsView);
+		    float distance = projection.getViewDistance();
+		    mapInfo.setDistance(distance);
+		    
+			if (mapProvider == ConfigurationManager.OSM_MAPS) {
+				mapInfo.setZoomLevel(mapView.getZoomLevel());
+	            mapInfo.setMaxZoom(mapView.getMaxZoomLevel());
+	        } else {
+	        	mapInfo.setZoomLevel(googleMapsView.getZoomLevel());
+	            mapInfo.setMaxZoom(googleMapsView.getMaxZoomLevel());
+	        }			
+		}
     }
 }

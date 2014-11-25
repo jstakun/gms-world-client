@@ -12,6 +12,7 @@ import com.amazon.geo.maps.GeoPoint;
 import com.amazon.geo.maps.MapView;
 import com.amazon.geo.maps.Projection;
 import com.jstakun.gms.android.utils.BoundingBox;
+import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 
@@ -72,5 +73,14 @@ public class AmzLandmarkProjection implements ProjectionInterface {
         
         return bbox;
    }
-
+    
+   public float getViewDistance() {
+    	GeoPoint p1 = proj.fromPixels(3 * width / 8, height / 2);
+        GeoPoint p2 = proj.fromPixels(5 * width / 8, height / 2);
+        
+        return DistanceUtils.distanceInKilometer(MathUtils.coordIntToDouble(p1.getLatitudeE6()),
+        		MathUtils.coordIntToDouble(p1.getLongitudeE6()),
+        		MathUtils.coordIntToDouble(p2.getLatitudeE6()),
+        		MathUtils.coordIntToDouble(p2.getLongitudeE6()));
+    }
 }

@@ -46,7 +46,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.location.LocationServicesManager;
-import com.jstakun.gms.android.osm.maps.OsmInfoOverlay;
+import com.jstakun.gms.android.osm.maps.ObservableMapView;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkProjection;
 import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
@@ -71,7 +71,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private MapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
-    private OsmInfoOverlay infoOverlay;
+    //private OsmInfoOverlay infoOverlay;
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
     private MessageStack messageStack;
@@ -162,10 +162,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         mapView.setBuiltInZoomControls(true);
         //set this to solve path painting issue
         mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        ((ObservableMapView)mapView).setOnZoomChangeListener(new ZoomListener());
 
         myLocation = new OsmMyLocationNewOverlay(this, mapView, loadingHandler);
         LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
-        infoOverlay = new OsmInfoOverlay(this);
+        //infoOverlay = new OsmInfoOverlay(this);
 
         initComponents();
         
@@ -235,14 +236,14 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         mapController = mapView.getController();
 
-        StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
+        /*StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
         ViewResizeListener viewResizeListener = new ViewResizeListener() {
             @Override
             public void onResize(int id, int xNew, int yNew, int xOld, int yOld) {
                 infoOverlay.setFontSize(yNew);
             }
         };
-        bottomPanel.setViewResizeListener(viewResizeListener);
+        bottomPanel.setViewResizeListener(viewResizeListener);*/
 
         GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
 
@@ -495,8 +496,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
 
             addLandmarkOverlay();
-            //must be on top of other overlays
-            addOverlay(infoOverlay);
             if (LocationServicesManager.isGpsHardwarePresent()) {
                 addOverlay(myLocation);
             }
@@ -1249,4 +1248,16 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	}
         }
     }
+    
+    private class ZoomListener implements ZoomChangeListener {
+
+		@Override
+		public void onZoom(int oldZoom, int currentZoom) {
+			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
+			mapInfo.setZoomLevel(mapView.getZoomLevel());
+            mapInfo.setMaxZoom(mapView.getMaxZoomLevel());
+            ProjectionInterface projection = new OsmLandmarkProjection(mapView);
+            mapInfo.setDistance(projection.getViewDistance());
+		}
+    }		
 }

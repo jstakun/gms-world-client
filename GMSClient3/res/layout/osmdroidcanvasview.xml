@@ -13,7 +13,7 @@
          android:layout_width="fill_parent"
          android:layout_height="fill_parent">
 
-            <org.osmdroid.views.MapView
+            <com.jstakun.gms.android.osm.maps.ObservableMapView
     android:id="@+id/mapCanvas"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"/>

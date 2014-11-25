@@ -4,6 +4,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 
 import com.jstakun.gms.android.utils.BoundingBox;
+import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 import org.osmdroid.api.IGeoPoint;
@@ -68,5 +69,15 @@ public class OsmLandmarkProjection implements ProjectionInterface {
         //System.out.println("north: " + bbox.north + ", south: " + bbox.south + ", west: " + bbox.west + ", east: " + bbox.east);
         
         return bbox;
+   }
+    
+   public float getViewDistance() {
+    	IGeoPoint p1 = proj.fromPixels(3 * width / 8, height / 2);
+        IGeoPoint p2 = proj.fromPixels(5 * width / 8, height / 2);
+        
+        return DistanceUtils.distanceInKilometer(MathUtils.coordIntToDouble(p1.getLatitudeE6()),
+        		MathUtils.coordIntToDouble(p1.getLongitudeE6()),
+        		MathUtils.coordIntToDouble(p2.getLatitudeE6()),
+        		MathUtils.coordIntToDouble(p2.getLongitudeE6()));
    }
 }

@@ -16,4 +16,6 @@ public interface ProjectionInterface {
    public boolean isVisible(Point point);
    
    public BoundingBox getBoundingBox();
+   
+   public float getViewDistance();
 }

@@ -67,21 +67,24 @@ public class OsmInfoOverlay extends Overlay {
             String text = distanceValues.get(key);
             if (text == null) {
                 float distance = 40075.16f;
-                if (mapView.getZoomLevel() > 2) {
+                if (mapView.getZoomLevel() >= 0) {
                     //distance = DistanceUtils.distanceInKilometer(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
                     //        mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
                 	
-                	int width = mapView.getWidth();
+                	int width = mapView.getWidth() / 8;
                 	int height = mapView.getHeight()/2;
-                	IGeoPoint p1 = mapView.getProjection().fromPixels(0, height);
-                    IGeoPoint p2 = mapView.getProjection().fromPixels(width, height);
+                	IGeoPoint p1 = mapView.getProjection().fromPixels(3 * width, height);
+                    IGeoPoint p2 = mapView.getProjection().fromPixels(5 * width, height);
+                    
+                    //System.out.println("left: " + p1.getLatitudeE6() + ", " + p1.getLongitudeE6() +
+                    //		", right: " + p2.getLatitudeE6() + ", " + p2.getLongitudeE6());
                     
                     distance = DistanceUtils.distanceInKilometer(MathUtils.coordIntToDouble(p1.getLatitudeE6()),
                     		MathUtils.coordIntToDouble(p1.getLongitudeE6()),
                     		MathUtils.coordIntToDouble(p2.getLatitudeE6()),
                     		MathUtils.coordIntToDouble(p2.getLongitudeE6()));
                 }
-                text = DistanceUtils.formatDistance(distance / 4.0f);
+                text = DistanceUtils.formatDistance(distance);
                 distanceValues.put(key, text);
             }
 
