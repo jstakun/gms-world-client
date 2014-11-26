@@ -1252,12 +1252,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private class ZoomListener implements ZoomChangeListener {
 
 		@Override
-		public void onZoom(int oldZoom, int currentZoom) {
+		public void onZoom(int oldZoom, int currentZoom, float distance) {
 			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
 			mapInfo.setZoomLevel(mapView.getZoomLevel());
             mapInfo.setMaxZoom(mapView.getMaxZoomLevel());
-            ProjectionInterface projection = new OsmLandmarkProjection(mapView);
-            mapInfo.setDistance(projection.getViewDistance());
+            mapInfo.setDistance(distance);
+            mapInfo.postInvalidate();
 		}
     }		
 }

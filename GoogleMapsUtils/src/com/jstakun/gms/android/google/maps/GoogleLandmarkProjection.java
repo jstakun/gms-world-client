@@ -74,7 +74,7 @@ public class GoogleLandmarkProjection implements ProjectionInterface {
     }
     
     public float getViewDistance() {
-    	GeoPoint p1 = proj.fromPixels(3 * width / 8, height / 2);
+    	GeoPoint p1 = proj.fromPixels(3 * width / 8 , height / 2);
         GeoPoint p2 = proj.fromPixels(5 * width / 8, height / 2);
         
         return DistanceUtils.distanceInKilometer(MathUtils.coordIntToDouble(p1.getLatitudeE6()),

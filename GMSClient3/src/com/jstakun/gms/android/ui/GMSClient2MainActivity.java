@@ -1337,12 +1337,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private class ZoomListener implements ZoomChangeListener {
 
 		@Override
-		public void onZoom(int oldZoom, int currentZoom) {
+		public void onZoom(int oldZoom, int currentZoom, float distance) {
 			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
 			
-			ProjectionInterface projection = ProjectionFactory.getProjection(mapView, googleMapsView);
-		    float distance = projection.getViewDistance();
-		    mapInfo.setDistance(distance);
+			mapInfo.setDistance(distance);
 		    
 			if (mapProvider == ConfigurationManager.OSM_MAPS) {
 				mapInfo.setZoomLevel(mapView.getZoomLevel());
@@ -1350,7 +1348,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 	        } else {
 	        	mapInfo.setZoomLevel(googleMapsView.getZoomLevel());
 	            mapInfo.setMaxZoom(googleMapsView.getMaxZoomLevel());
-	        }			
+	        }	
+			
+			//System.out.println("------ activity: " + currentZoom + " " + distance);
+			mapInfo.postInvalidate();
 		}
     }
 }
