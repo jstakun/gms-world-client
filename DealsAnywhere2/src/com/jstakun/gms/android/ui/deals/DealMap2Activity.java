@@ -36,12 +36,12 @@ import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
-import com.jstakun.gms.android.google.maps.GoogleInfoOverlay;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkProjection;
 import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
 import com.jstakun.gms.android.google.maps.GoogleMyLocationOverlay;
 import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
+import com.jstakun.gms.android.google.maps.ObservableMapView;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
@@ -53,8 +53,8 @@ import com.jstakun.gms.android.ui.HelpActivity;
 import com.jstakun.gms.android.ui.IntentArrayAdapter;
 import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.ui.LandmarkListActivity;
-import com.jstakun.gms.android.ui.StatusBarLinearLayout;
-import com.jstakun.gms.android.ui.ViewResizeListener;
+import com.jstakun.gms.android.ui.MapInfoView;
+import com.jstakun.gms.android.ui.ZoomChangeListener;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -91,7 +91,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private boolean isStopped = false;
     private boolean appInitialized = false;
     private boolean isRouteDisplayed = false;
-    private GoogleInfoOverlay infoOverlay;
+    //private GoogleInfoOverlay infoOverlay;
     //Handlers
     private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
@@ -201,7 +201,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         };
         drawerLayout.setDrawerListener(drawerToggle);
         
-        infoOverlay = new GoogleInfoOverlay();
+        /*infoOverlay = new GoogleInfoOverlay();
 
         StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
         ViewResizeListener viewResizeListener = new ViewResizeListener() {
@@ -210,8 +210,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 infoOverlay.setFontSize(yNew);
             }
         };
-        bottomPanel.setViewResizeListener(viewResizeListener);
+        bottomPanel.setViewResizeListener(viewResizeListener);*/
 
+        ((ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
+        
         myLocation = new GoogleMyLocationOverlay(this, mapView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
 
         mapController = mapView.getController();
@@ -369,7 +371,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);//, new String[]{LayerManager.ROUTES_LAYER});
             mapView.getOverlays().add(landmarkOverlay);
             //must be on top of other overlays
-            mapView.getOverlays().add(infoOverlay);
+            //mapView.getOverlays().add(infoOverlay);
             mapView.getOverlays().add(myLocation);
             
             routesManager = ConfigurationManager.getInstance().getRoutesManager();
@@ -913,5 +915,17 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         		}
         	}
         }
+    }
+    
+    private class ZoomListener implements ZoomChangeListener {
+
+		@Override
+		public void onZoom(int oldZoom, int currentZoom, float distance) {
+			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
+			mapInfo.setDistance(distance);
+			mapInfo.setZoomLevel(mapView.getZoomLevel());
+			mapInfo.setMaxZoom(mapView.getMaxZoomLevel());
+			mapInfo.postInvalidate();
+		}
     }
 }

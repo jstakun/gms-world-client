@@ -199,6 +199,9 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         } else if (key.equals(ConfigurationManager.SEARCH_RADIUS)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.SEARCH_RADIUS, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.SEARCH_RADIUS, tmp);
+            
+            //TODO reindex dynamic layer
+            
             //setPreference(ConfigurationManager.SEARCH_RADIUS, R.array.radius);
         } else if (key.equals(ConfigurationManager.AUTO_CHECKIN)) {
             boolean value = sharedPreferences.getBoolean(ConfigurationManager.AUTO_CHECKIN, true);

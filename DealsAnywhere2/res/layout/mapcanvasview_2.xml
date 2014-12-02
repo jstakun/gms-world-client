@@ -12,8 +12,8 @@
     	android:id="@+id/mapCanvasWidgetM"
     	android:background="#ddd3d3d3"
     	android:visibility="gone">
-        	<com.google.android.maps.MapView
-    		android:id="@+id/mapCanvas"
+        	<com.jstakun.gms.android.google.maps.ObservableMapView
+			android:id="@+id/mapCanvas"
     		android:layout_width="fill_parent"
     		android:layout_height="fill_parent"
     		android:clickable="true"

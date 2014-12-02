@@ -49,7 +49,8 @@ public class ObservableMapView extends MapView {
         }
     }
     
-    public boolean onTouchEvent(MotionEvent ev) {
+    /*@Override
+    public boolean dispatchTouchEvent(final MotionEvent ev) {
         if(ev.getAction() == MotionEvent.ACTION_MOVE){
         	float dist = new OsmLandmarkProjection(this).getViewDistance();
             if (dist != distance) {
@@ -59,7 +60,7 @@ public class ObservableMapView extends MapView {
             	//System.out.println("------ " + currentZoomLevel + " " + distance);
             }
         }
-        return super.onTouchEvent(ev);
-    }
+        return super.dispatchTouchEvent(ev);
+    }*/
 
 }

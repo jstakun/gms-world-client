@@ -170,7 +170,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             //set this to solve path painting issue
             ((org.osmdroid.views.MapView) mapView).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             myLocation = new OsmMyLocationNewOverlay(this, (org.osmdroid.views.MapView) mapView, loadingHandler);
-            //TODO remove
             //infoOverlay = new OsmInfoOverlay(this);
         } else {
             //default view is Google

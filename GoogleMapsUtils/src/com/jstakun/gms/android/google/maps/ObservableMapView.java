@@ -5,11 +5,8 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.jstakun.gms.android.ui.ZoomChangeListener;
-import com.jstakun.gms.android.utils.DistanceUtils;
-import com.jstakun.gms.android.utils.MathUtils;
 
 public class ObservableMapView extends MapView {
 	
