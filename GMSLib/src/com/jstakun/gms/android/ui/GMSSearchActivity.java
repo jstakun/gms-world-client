@@ -402,14 +402,10 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					} 
 					
 					if (type == TYPE.DEALS) {
-						landmarkManager.searchDeals(landmarkList,
-								query, null,
-								MathUtils.coordIntToDouble(lat),
+						landmarkManager.searchDeals(landmarkList, query, null, MathUtils.coordIntToDouble(lat),
 								MathUtils.coordIntToDouble(lng), searchType);
 					} else if (type == TYPE.LANDMARKS) {
-						landmarkManager.searchLandmarks(landmarkList,
-								query, null,
-								MathUtils.coordIntToDouble(lat),
+						landmarkManager.searchLandmarks(landmarkList, query, null, MathUtils.coordIntToDouble(lat),
 								MathUtils.coordIntToDouble(lng), searchType);
 					}
 				}

@@ -1049,12 +1049,43 @@ public class AsyncTaskManager {
         @Override
         protected Void doInBackground(Void... arg0) {
             List<LandmarkParcelable> results = new ArrayList<LandmarkParcelable>();
-            landmarkManager.searchLandmarks(results, null, keywords, 0.0, 0.0, ConfigurationManager.FUZZY_SEARCH);
+            landmarkManager.searchLandmarks(results, null, keywords, 0.0, 0.0, ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE));
             Layer l = landmarkManager.getLayerManager().getLayer(name);
             if (l != null) {
                 l.setCount(results.size());
             }
             return null;
         }
+    }
+    
+    public void executeReIndexDynamicLayersTask() {
+    	new ReIndexDynamicLayersTask().execute();
+    }
+    
+    private class ReIndexDynamicLayersTask extends GMSAsyncTask<Void, Void, Void> {
+
+    	public ReIndexDynamicLayersTask() {
+    		super(1);
+    	}
+    	
+		@Override
+		protected Void doInBackground(Void... params) {
+			System.out.println("Clearing layers count -----------------------------");
+        	List<String> dynamicLayers = landmarkManager.getLayerManager().getDynamicLayers();
+        	for (String key : dynamicLayers) {
+        		Layer layer = landmarkManager.getLayerManager().getLayer(key);
+        		layer.setCount(0);
+        	}	
+        	
+        	System.out.println("Processing layers -----------------------------");
+        	List<String> layers = landmarkManager.getLayerManager().getLayers();
+        	for (String layer : layers) {
+        		System.out.println("Processing layer " + layer + " -----------------------------");
+        		landmarkManager.addLandmarkListToDynamicLayer(landmarkManager.getLandmarkStoreLayer(layer));
+        	}
+        	System.out.println("Done -----------------------------");           	
+			return null;
+		}
+    	
     }
 }

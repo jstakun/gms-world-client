@@ -154,7 +154,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         OsUtil.setDisplayType(getResources().getConfiguration());
-        getActionBar().hide();
+        //TODO testing
+        //getActionBar().hide();
         loadingHandler = new LoadingHandler(this);
 
         LoggerUtils.debug("Map provider is " + mapProvider);

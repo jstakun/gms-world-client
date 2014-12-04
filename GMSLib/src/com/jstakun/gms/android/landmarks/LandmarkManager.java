@@ -905,9 +905,9 @@ public class LandmarkManager {
     public void setLayerOnFocus(List<LandmarkParcelable> results, String layerName, boolean isDeal, double lat, double lng) {
         Layer layer = layerManager.getLayer(layerName);
         if (layer != null && layer.getType() == LayerManager.LAYER_DYNAMIC && !isDeal) {
-            searchLandmarks(results, null, layer.getKeywords(), lat, lng, ConfigurationManager.FUZZY_SEARCH);
+            searchLandmarks(results, null, layer.getKeywords(), lat, lng, ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE));
         } else if (layer != null && layer.getType() == LayerManager.LAYER_DYNAMIC && isDeal) {
-            searchDeals(results, null, layer.getKeywords(), lat, lng, ConfigurationManager.FUZZY_SEARCH);
+            searchDeals(results, null, layer.getKeywords(), lat, lng, ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE));
         } else if (landmarkStore.containsKey(layerName)) {
             List<ExtendedLandmark> landmarks = getLandmarkStoreLayer(layerName);
             if (!landmarks.isEmpty()) {
@@ -1068,7 +1068,7 @@ public class LandmarkManager {
         }
     }
     
-    protected void addLandmarkListToDynamicLayer(Collection<ExtendedLandmark> landmarks) {
+    public void addLandmarkListToDynamicLayer(Collection<ExtendedLandmark> landmarks) {
         if (!landmarks.isEmpty()) {
         	List<String> dynamicLayers = layerManager.getDynamicLayers();
         	for (String key : dynamicLayers) {

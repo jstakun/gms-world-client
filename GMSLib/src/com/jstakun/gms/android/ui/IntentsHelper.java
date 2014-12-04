@@ -7,6 +7,7 @@ package com.jstakun.gms.android.ui;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
+import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.location.LocationServicesManager;
@@ -653,7 +655,6 @@ public final class IntentsHelper {
     }
 
     public void loadLayersAction(boolean loadExternal, String selectedLayer, boolean clear, boolean loadServerLayers, LayerLoader layerLoader, double latitude, double longitude, int zoomLevel, ProjectionInterface projection) {
-    	//TODO add projectioninterface parameter and set boundingbox to memory cache 
     	if (layerLoader != null) {
             if (layerLoader.isLoading()) {
                 layerLoader.stopLoading();
@@ -1175,7 +1176,13 @@ public final class IntentsHelper {
                 } else {
                     landmarkManager.getLayerManager().saveLayersAction(names, codes);
                 }
+                
+                if (intent.getBooleanExtra("reindex", false)) {
+                	//reindex dynamic layers
+                	asyncTaskManager.executeReIndexDynamicLayersTask();                	
+                }
             }
+            
         } else if (requestCode == INTENT_ADD_LANDMARK) {
             if (resultCode == Activity.RESULT_OK) {
                 String name = intent.getStringExtra("name");

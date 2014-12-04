@@ -8,6 +8,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.Locale;
@@ -24,6 +25,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     private String[] names = null;
     private Preference googleMapsType, osmMapsType, mapProvider;
     private PreferenceCategory settings;
+    private boolean reindex = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,12 +131,28 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+            	Intent result = new Intent();
+                result.putExtra("reindex", reindex);
+                setResult(RESULT_OK, result);
                 finish();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	if (keyCode == KeyEvent.KEYCODE_BACK) {
+    		Intent result = new Intent();
+            result.putExtra("reindex", reindex);
+            setResult(RESULT_OK, result);
+            finish();
+            return true;
+    	} else {
+    		return super.onKeyDown(keyCode, event);
+    	}
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -149,6 +167,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             String rawval = sharedPreferences.getString(ConfigurationManager.LAYERS, "");
             String[] selected = ListPreferenceMultiSelect.parseStoredValue(rawval);
             Intent result = new Intent();
+            result.putExtra("reindex", reindex);
             result.putExtra("names", names);
             result.putExtra("codes", selected);
             setResult(RESULT_OK, result);
@@ -190,8 +209,11 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             setListPreference(ConfigurationManager.ROUTE_TYPE, R.array.routeType);
         } else if (key.equals(ConfigurationManager.SEARCH_TYPE)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.SEARCH_TYPE, 0);
-            ConfigurationManager.getInstance().putInteger(ConfigurationManager.SEARCH_TYPE, tmp);
-            setListPreference(ConfigurationManager.SEARCH_TYPE, R.array.searchType);
+            if (tmp != ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE)) {
+            	ConfigurationManager.getInstance().putInteger(ConfigurationManager.SEARCH_TYPE, tmp);
+                setListPreference(ConfigurationManager.SEARCH_TYPE, R.array.searchType);
+                reindex = true;
+            }
         } else if (key.equals(ConfigurationManager.LANDMARKS_PER_LAYER)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.LANDMARKS_PER_LAYER, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.LANDMARKS_PER_LAYER, tmp);
@@ -199,9 +221,6 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         } else if (key.equals(ConfigurationManager.SEARCH_RADIUS)) {
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.SEARCH_RADIUS, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.SEARCH_RADIUS, tmp);
-            
-            //TODO reindex dynamic layer
-            
             //setPreference(ConfigurationManager.SEARCH_RADIUS, R.array.radius);
         } else if (key.equals(ConfigurationManager.AUTO_CHECKIN)) {
             boolean value = sharedPreferences.getBoolean(ConfigurationManager.AUTO_CHECKIN, true);
