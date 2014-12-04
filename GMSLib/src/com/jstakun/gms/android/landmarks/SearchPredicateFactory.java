@@ -12,7 +12,9 @@ import com.jstakun.gms.android.deals.Category;
 public class SearchPredicateFactory {
 
 	private static final SearchPredicateFactory instance = new SearchPredicateFactory(); 
-	
+	private static final int REVELANCE_LIMIT = 60;
+	private static final int MIN_TOKEN_LENGTH = 2;
+    
 	private SearchPredicateFactory() {
 	}
 	
@@ -36,14 +38,17 @@ public class SearchPredicateFactory {
 	
 	private class ExactPhraseSearchPredicate implements Predicate<ExtendedLandmark> {
 
-    	private static final int REVELANCE_LIMIT = 60;
     	private String searchTerm, layerId;
     	private String[] query_tokens;
         
         public ExactPhraseSearchPredicate(String[] query_tokens, String searchTerm) {
             this.searchTerm = searchTerm;
             this.query_tokens = query_tokens;
-            layerId = searchTerm + "_" + ConfigurationManager.PHRASE_SEARCH;
+            if (searchTerm != null) {
+            	this.layerId = searchTerm + "_" + ConfigurationManager.PHRASE_SEARCH;
+            } else {
+            	this.layerId = query_tokens[0] + "_" + ConfigurationManager.PHRASE_SEARCH;
+            }
         }
 
         public boolean apply(ExtendedLandmark landmark) {
@@ -85,14 +90,13 @@ public class SearchPredicateFactory {
         private CategoriesManager cm;
         private boolean searchCategories;
         private String searchTerm, layerId;
-        private static final int REVELANCE_LIMIT = 60;
-    	 
+         
         public PhraseWordsSearchPredicate(String[] query_tokens, boolean searchCategories, String searchTerm) {
             this.query_tokens = query_tokens;
             this.searchCategories = searchCategories;
             this.searchTerm = searchTerm;
-            cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-            layerId = query_tokens[0] + "_" + ConfigurationManager.WORDS_SEARCH;
+            this.cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
+            this.layerId = query_tokens[0] + "_" + ConfigurationManager.WORDS_SEARCH;
         }
 
         //check if landmarks contains all tokens
@@ -192,9 +196,7 @@ public class SearchPredicateFactory {
 	
 	private class FuzzySearchPredicate implements Predicate<ExtendedLandmark> {
 
-        private static final int MIN_TOKEN_LENGTH = 2;
-        private static final int REVELANCE_LIMIT = 60;
-    	private String[] query_tokens;
+        private String[] query_tokens;
         private CategoriesManager cm;
         private boolean searchCategories;
         private String searchTerm, layerId;
@@ -203,8 +205,8 @@ public class SearchPredicateFactory {
             this.query_tokens = query_tokens;
             this.searchCategories = searchCategories;
             this.searchTerm = searchTerm;
-            cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-            layerId = query_tokens[0] + "_" + ConfigurationManager.FUZZY_SEARCH;
+            this.cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
+            this.layerId = query_tokens[0] + "_" + ConfigurationManager.FUZZY_SEARCH;
         }
 
         //check if landmarks contains any token
