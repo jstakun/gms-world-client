@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
 
 import java.io.IOException;
@@ -25,7 +21,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.text.Html;
 import android.util.DisplayMetrics;
 
 import com.devahead.util.objectpool.ObjectPool;
