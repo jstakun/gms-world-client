@@ -644,6 +644,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             MenuItem login = menu.findItem(R.id.login);
             login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
             
+            MenuItem config = menu.findItem(R.id.config);
+        	config.setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+            
             MenuItem register = menu.findItem(R.id.register);
             register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
 
@@ -785,6 +788,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    			intents.showInfoToast(Locale.getMessage(R.string.Files_NoFiles));
 		    		}
 		    		break;
+		    	case R.id.config:
+					intents.startConfigurationViewerActivity();
+					break;	
 		    	case R.id.socialNetworks:
 		    		intents.startSocialListActivity();
 		    		break;

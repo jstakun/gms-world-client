@@ -1,13 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +60,6 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
-import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.location.LocationServicesManager;

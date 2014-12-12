@@ -583,6 +583,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             MenuItem login = menu.findItem(R.id.login);
             login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
 
+            MenuItem config = menu.findItem(R.id.config);
+        	config.setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+            
             MenuItem register = menu.findItem(R.id.register);
             register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
             
@@ -712,10 +715,10 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             case R.id.socialNetworks:
                 intents.startSocialListActivity();
                 break;
-            //case R.id.layers:
-            //    intents.startLayersListActivity();
-            //    break;
-            case R.id.dataPacket:
+            case R.id.config:
+				intents.startConfigurationViewerActivity();
+				break;
+			case R.id.dataPacket:
                 dialogManager.showAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, null);
                 break;
             case R.id.pickMyPos:

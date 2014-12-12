@@ -93,5 +93,11 @@
             android:summaryOn="@string/trackUserSummaryOn"
             android:summaryOff="@string/trackUserSummaryOff"
             android:key="sendMyPos" />
+        <CheckBoxPreference
+            android:title="Developer mode"
+            android:defaultValue="false"
+            android:summaryOn="Click to disable developer mode"
+            android:summaryOff="Click to enable developer mode"
+            android:key="devMode" />
     </PreferenceCategory>
 </PreferenceScreen>

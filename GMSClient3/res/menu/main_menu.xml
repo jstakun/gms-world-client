@@ -66,26 +66,17 @@
     <item android:id="@+id/more"
           android:title="@string/more">
         <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/more">
-            <item android:id="@+id/shareScreenshot"
-          android:title="@string/shareScreenshot" />
-            <item android:id="@+id/register"
-          android:title="@string/register" /> 
-            <item android:id="@+id/blogeo"
-          android:title="@string/blogeo" /> 
-            <item android:id="@+id/clearMap"
-          android:title="@string/clearMap" /> 
-            <item android:id="@+id/dataPacket"
-          android:title="@string/dataPacket" /> 
-            <item android:id="@+id/reset" 
-          android:title="@string/reset"/>
-            <item android:id="@+id/releaseNotes"
-          android:title="@string/releaseNotes" /> 
-            <item android:id="@+id/rateUs"
-          android:title="@string/rateUs" />
-            <item android:id="@+id/about"
-          android:title="@string/about" /> 
-            <item android:id="@+id/exit"
-          android:title="@string/exit" /> 
+            <item android:id="@+id/shareScreenshot" android:title="@string/shareScreenshot" />
+            <item android:id="@+id/register" android:title="@string/register" /> 
+            <item android:id="@+id/blogeo" android:title="@string/blogeo" /> 
+            <item android:id="@+id/clearMap" android:title="@string/clearMap" /> 
+            <item android:id="@+id/dataPacket" android:title="@string/dataPacket" /> 
+            <item android:id="@+id/reset" android:title="@string/reset"/>
+            <item android:id="@+id/releaseNotes" android:title="@string/releaseNotes" /> 
+            <item android:id="@+id/rateUs" android:title="@string/rateUs" />
+            <item android:id="@+id/config" android:title="@string/config"/>
+            <item android:id="@+id/about" android:title="@string/about" /> 
+            <item android:id="@+id/exit" android:title="@string/exit" /> 
         </menu>
     </item>
 </menu>
