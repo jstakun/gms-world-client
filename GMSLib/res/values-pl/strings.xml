@@ -72,6 +72,9 @@
     <string name="trackUserTitle">\u015aledzenie u\u017cytkownika</string>
     <string name="trackUserSummaryOn">Kliknij aby wy\u0142\u0105czy\u0107 \u015bledzenie u\u017cytkownika</string>
     <string name="trackUserSummaryOff">Kliknij aby w\u0142\u0105czy\u0107 \u015bledzenie u\u017cytkownika</string>
+    <string name="devModeTitle">Tryb programisty</string>
+    <string name="devModeSummaryOn">Kliknij aby wy\u0142\u0105czy\u0107 tryb programisty</string>
+    <string name="devModeSummaryOff">Kliknij aby w\u0142\u0105czy\u0107 tryb programisty</string>
 
     <string name="select">Wybierz opcj\u0119</string>
     <string name="select.value">Wybierz warto\u015b\u0107</string>

@@ -74,7 +74,9 @@
     <string name="trackUserTitle">User tracking</string>
     <string name="trackUserSummaryOn">Click to disable user tracking</string>
     <string name="trackUserSummaryOff">Click to enable user tracking</string>
-
+    <string name="devModeTitle">Developer mode</string>
+    <string name="devModeSummaryOn">Click to disable developer mode</string>
+    <string name="devModeSummaryOff">Click to enable developer mode</string>
 
     <string name="select">Select option</string>
     <string name="select.value">Select value</string>
