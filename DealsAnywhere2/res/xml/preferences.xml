@@ -8,7 +8,7 @@
 			android:key="dealCategories"
 			android:title="@string/titleDealCategories"
 			android:summary="@string/summary"
-                        android:dialogTitle="@string/enableDealCategories" />
+            android:dialogTitle="@string/enableDealCategories" />
         <CheckBoxPreference
                         android:title="@string/titleDod"
                         android:defaultValue="true"
@@ -93,10 +93,10 @@
 			android:entryValues="@array/codes6"
 			android:dialogTitle="@string/select" />
         <CheckBoxPreference
-                        android:title="@string/trackUserTitle"
-                        android:defaultValue="true"
-                        android:summaryOn="@string/trackUserSummaryOn"
-                        android:summaryOff="@string/trackUserSummaryOff"
-                        android:key="sendMyPos" />
+            android:title="@string/trackUserTitle"
+            android:defaultValue="true"
+            android:summaryOn="@string/trackUserSummaryOn"
+            android:summaryOff="@string/trackUserSummaryOff"
+            android:key="sendMyPos" />
     </PreferenceCategory>
 </PreferenceScreen>
