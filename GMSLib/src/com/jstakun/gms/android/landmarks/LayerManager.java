@@ -45,6 +45,7 @@ public class LayerManager {
     public static final int LAYER_ICON_LARGE = 1;
     private boolean initialized = false;
 
+    //TODO add layers large images
     public LayerManager() {
         allLayers.put(Commons.FACEBOOK_LAYER, LayerFactory.getLayer(Commons.FACEBOOK_LAYER, false, true, isLayerEnabledConf(Commons.FACEBOOK_LAYER), true, true, Arrays.asList(new LayerReader[]{new FbCheckinsReader(), new FbPhotosReader(), new FbPlacesReader()}), null, R.drawable.facebook_icon, null, R.drawable.facebook_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Facebook_desc), Commons.FACEBOOK_LAYER, FileManager.ClearPolicy.ONE_MONTH, 0)); 
         allLayers.put(Commons.FOURSQUARE_LAYER, LayerFactory.getLayer(Commons.FOURSQUARE_LAYER, false, true, isLayerEnabledConf(Commons.FOURSQUARE_LAYER), true, true, Arrays.asList(new LayerReader[]{new FsCheckinsReader(), new FsRecommendsReader(), new FoursquareReader()}), null, R.drawable.foursquare, null, R.drawable.foursquare_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Foursquare_desc), Commons.FOURSQUARE_LAYER, FileManager.ClearPolicy.ONE_YEAR, 0)); 

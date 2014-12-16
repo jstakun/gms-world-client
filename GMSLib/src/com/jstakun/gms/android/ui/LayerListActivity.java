@@ -35,10 +35,10 @@ import com.jstakun.gms.android.utils.UserTracker;
  */
 public class LayerListActivity extends ListActivity {
 
-    protected static final int ACTION_OPEN = 0;
-    protected static final int ACTION_REFRESH = 1;
-    protected static final int ACTION_CLEAR = 2;
-    protected static final int ACTION_DELETE = 3;
+    private static final int ACTION_OPEN = 0;
+    private static final int ACTION_REFRESH = 1;
+    private static final int ACTION_CLEAR = 2;
+    private static final int ACTION_DELETE = 3;
     private AlertDialog deleteLayerDialog, enableAllLayersDialog, disableAllLayersDialog;
     private List<String> names = null;
     private IntentsHelper intents;

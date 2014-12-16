@@ -18,21 +18,20 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
-import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.lib.R;
 
-public class DynamicLayerArrayAdapter extends ArrayAdapter<String> {
+public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 
 	    private final Activity parentActivity;
 	    private final LandmarkManager landmarkManager;
-	    private final RoutesManager routesManager;
+	    //private final RoutesManager routesManager;
 	    private final View.OnClickListener positionClickListener;
 
-	    public DynamicLayerArrayAdapter(Activity context, List<String> names, View.OnClickListener positionClickListener) {
+	    public GridLayerArrayAdapter(Activity context, List<String> names, View.OnClickListener positionClickListener) {
 	        super(context, R.layout.layerrow, names);
 	        this.parentActivity = context;
 	        this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-	        this.routesManager = ConfigurationManager.getInstance().getRoutesManager();
+	        //this.routesManager = ConfigurationManager.getInstance().getRoutesManager();
 	        this.positionClickListener = positionClickListener;
 	    }
 
@@ -53,12 +52,12 @@ public class DynamicLayerArrayAdapter extends ArrayAdapter<String> {
 	            holder = (ViewHolder) rowView.getTag();
 	        }
 
+	        rowView.setOnClickListener(positionClickListener);
+	        rowView.setId(position);
+	        
 	        String[] layerStr = getItem(position).split(";");
 	        final String layerKey = layerStr[0];
 	        final String layerName = layerStr[1];
-
-	        rowView.setOnClickListener(positionClickListener);
-	        rowView.setId(position);
 
 	        Layer layer = landmarkManager.getLayerManager().getLayer(layerKey);
 

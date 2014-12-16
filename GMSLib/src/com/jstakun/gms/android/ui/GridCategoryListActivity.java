@@ -1,19 +1,28 @@
 package com.jstakun.gms.android.ui;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -22,49 +31,40 @@ import com.jstakun.gms.android.deals.Category;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.UserTracker;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang.StringUtils;
 
-/**
- *
- * @author jstakun
- */
-public class DealCategoryListActivity extends ListActivity implements View.OnClickListener {
+public class GridCategoryListActivity extends Activity {
 
-    private List<Category> categories = null;
-    private int parent = -1, radius = 3, currentPos = -1, lat, lng;
+	private int parent = -1, radius = 3, currentPos = -1, lat, lng;
     private LandmarkManager landmarkManager = null;
     private CategoriesManager cm = null;
-    private View searchButton, mapViewButton, addLayerButton;
     private IntentsHelper intents;
-    private AlertDialog deleteLayerDialog;
+    private GridView gridView;
     private List<String> names = null;
+    private List<Category> categories = null;
+    private AlertDialog deleteLayerDialog;
     
-    @Override
-    public void onCreate(Bundle icicle) {
-
-        super.onCreate(icicle);
-
+	
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+	
+        setContentView(R.layout.gms_grid_list);
+        
         setTitle(Locale.getMessage(R.string.searchDeals));
-
-        setContentView(R.layout.categorylist);
-
+        
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
-
-        //UserTracker.getInstance().startSession(this);
+        
+        AdsUtils.loadAd(this);
+        
         UserTracker.getInstance().trackActivity(getClass().getName());
-
+        
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-
+        
         intents = new IntentsHelper(this, landmarkManager, null);
-
+        
+        gridView = (GridView) findViewById(R.id.layers_grid_view);
+        
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             parent = extras.getInt("parent");
@@ -74,40 +74,21 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         }
 
         cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-
-        AdsUtils.loadAd(this);
-
-        searchButton = findViewById(R.id.searchDealsButton);
-        mapViewButton = findViewById(R.id.mapViewButton);
-        addLayerButton = findViewById(R.id.addLayerButton);
-
-        searchButton.setOnClickListener(this);
-        mapViewButton.setOnClickListener(this);
-        addLayerButton.setOnClickListener(this);
         
-        if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) != ConfigurationManager.DA) {
-        	addLayerButton.setVisibility(View.GONE);
-        }
-
-        if (OsUtil.isHoneycomb2OrHigher()) {
-            findViewById(R.id.topPanel).setVisibility(View.GONE);
-            findViewById(R.id.topPanelSeparator).setVisibility(View.GONE);
-        }
-
         createDeleteLayerAlertDialog();
 
-        registerForContextMenu(getListView());
-    }
-
-    @Override
-    public void onResume() {
+        registerForContextMenu(gridView);
+	}
+	
+	public void onResume() {
         super.onResume();
+        
         if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class)) {
             Intent result = new Intent();
             setResult(RESULT_OK, result);
             finish();
         }
-
+        
         if (cm != null) {
             if (parent != -1) {
                 categories = cm.getSubCategories(parent);
@@ -137,10 +118,10 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             setTitle(Locale.getMessage(R.string.dealsString, parentCat.getCategory()));
         }
 
-        setListAdapter(new DealCategoryArrayAdapter(this, names));
-    }
-
-    @Override
+        gridView.setAdapter(new GridCategoryArrayAdapter(this, names, new PositionClickListener()));	
+	}   
+	
+	@Override
     public boolean onSearchRequested() {
         intents.startSearchActivity(-1, -1, lat, lng, radius, true);
         return true;
@@ -158,8 +139,8 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
     	super.onPrepareOptionsMenu(menu);
+    	
     	MenuItem addLayers = menu.findItem(R.id.addLayer);
-		
     	if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) != ConfigurationManager.DA) {
     		addLayers.setVisible(false);
     	}
@@ -190,19 +171,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         intents.processActivityResult(requestCode, resultCode, intent, new double[]{lat, lng}, null, null, -1, null, null);
     }
-
-    public void onClick(View v) {
-        if (v == searchButton) {
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".SearchAction", "", 0);
-            onSearchRequested();
-        } else if (v == mapViewButton) {
-            UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowMapAction", "", 0);
-            cancelActivity(true);
-        } else if (v == addLayerButton) {
-            startActivity(new Intent(this, AddLayerActivity.class));
-        }
-    }
-
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -210,22 +179,11 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //System.out.println("Key pressed in activity: " + keyCode);
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            cancelActivity(false);
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-    }
-
-    @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         if (v.getId() == android.R.id.list && parent == -1) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             currentPos = info.position;
-            menu.setHeaderTitle(getCategory(info.position).getCategory());
+            menu.setHeaderTitle(categories.get(info.position).getCategory());
             menu.setHeaderIcon(R.drawable.ic_dialog_menu_generic);
             String[] menuItems = getResources().getStringArray(R.array.filesContextMenu);
             for (int i = 0; i < menuItems.length; i++) {
@@ -241,35 +199,14 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         if (menuItemIndex == 0) {
             onClickAction(currentPos, "show");
         } else if (menuItemIndex == 1) {
-            deleteLayerDialog.setTitle(Locale.getMessage(R.string.Layer_delete_prompt, getCategory(currentPos).getCategory()));
+            deleteLayerDialog.setTitle(Locale.getMessage(R.string.Layer_delete_prompt, categories.get(currentPos).getCategory()));
             deleteLayerDialog.show();
         }
 
         return true;
     }
     
-    protected boolean hasSubcategory(int position) {
-        if (parent == -1) {
-            int categoryId = categories.get(position).getCategoryID();
-            return cm.hasSubcategory(categoryId);
-        }
-        return false;
-    }
-
-    protected Category getCategory(int position) {
-        return categories.get(position);
-    }
-
-    protected Category getParentCategory(int categoryId) {
-        return cm.getCategory(categoryId);
-    }
-
-    protected int countLandmarks(int position) {
-        Category c = categories.get(position);
-        return landmarkManager.countLandmarks(c);
-    }
-
-    protected void onClickAction(int position, String action) {
+    private void onClickAction(int position, String action) {
         if (action.equals("drill")) {
             intents.startCategoryListActivity(-1, -1, lat, lng, categories.get(position).getCategoryID(), radius, DealCategoryListActivity.class);
         } else if (action.equals("cancel")) {
@@ -314,12 +251,12 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     }
 
     private void layerDeleteAction() {
-        Category c = getCategory(currentPos);
+        Category c = categories.get(currentPos);
         if (!c.isCustom()) {
             intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
         } else {
             landmarkManager.deleteLayer(c.getCategory());
-            ((ArrayAdapter<String>) getListAdapter()).remove(names.remove(currentPos));
+            ((ArrayAdapter<String>) gridView.getAdapter()).remove(names.remove(currentPos));
             categories.remove(c);
             intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, c.getCategory()));
         }
@@ -333,8 +270,28 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         setResult(RESULT_CANCELED, result);
         finish();
     }
+    
+    private boolean hasSubcategory(int position) {
+        if (parent == -1) {
+            int categoryId = categories.get(position).getCategoryID();
+            return cm.hasSubcategory(categoryId);
+        }
+        return false;
+    }
+	
+	private class PositionClickListener implements View.OnClickListener {
 
-    private class CategoryCountComparator implements Comparator<Category> {
+        public void onClick(View v) {
+            //show landmarks in category
+            if (hasSubcategory(v.getId())) {
+                onClickAction(v.getId(), "drill");
+            } else {
+                onClickAction(v.getId(), "show");
+            }
+        }
+    }
+	
+	private class CategoryCountComparator implements Comparator<Category> {
 
         private Map<String, Integer> categoryStats = new HashMap<String, Integer>();
 

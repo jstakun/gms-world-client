@@ -75,6 +75,9 @@
         <activity android:name="HelpActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="CommentActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name="GridCategoryListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+            <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
+        </activity>
         <activity android:name="DealCategoryListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
             <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
         </activity>

@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:orientation="horizontal"
         android:background="@drawable/defaultbg">
-    <LinearLayout
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:orientation="vertical"
-android:padding="5dip">
-    <!--LinearLayout
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:orientation="horizontal"
-android:gravity="left"
-android:id="@+id/categoryName">
-        <ImageView android:id="@+id/categoryIcon" android:layout_height="wrap_content"
-		android:src="@drawable/image_missing16" android:layout_width="wrap_content"
-                android:layout_marginRight="5dip"
-		android:layout_gravity="center_vertical"/>
-        <TextView android:layout_width="wrap_content" style="@android:style/TextAppearance.Large"
-		android:layout_height="wrap_content" android:id="@+id/categoryStatusHeader"
-android:layout_alignParentTop="true" android:layout_marginRight="5dip"
-android:textColor="#000000"/>
-  </LinearLayout-->
-        <TextView android:layout_width="wrap_content" 
+   	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:padding="5dip">
+        <TextView 
+            android:layout_width="wrap_content" 
             style="@android:style/TextAppearance.Large"
 		    android:layout_height="wrap_content" 
 		    android:id="@+id/categoryStatusHeader"
@@ -39,25 +27,24 @@ android:textColor="#000000"/>
             android:textColor="#000000"/>
     </LinearLayout>
     <RelativeLayout
-android:layout_width="wrap_content"
-android:layout_height="fill_parent"
->
-    <View android:layout_height="fill_parent"
-    android:layout_width="1dip"
-    android:layout_marginLeft="5dip"
-    android:background="@color/trans_dim_gray"
- android:id="@+id/categorySeparator"
- android:layout_toLeftOf="@+id/categoryListButton"/>
-    <ImageButton
-android:id="@+id/categoryListButton"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:src="@drawable/layers"
-android:layout_alignParentRight="true"
-android:layout_centerVertical="true"
-android:layout_centerHorizontal="true"
-android:padding="17dip"
-android:background="@drawable/defaultbg"
-/>
-</RelativeLayout>
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent">
+    	<View 
+        	android:layout_height="fill_parent"
+    		android:layout_width="1dip"
+    		android:layout_marginLeft="5dip"
+    		android:background="@color/trans_dim_gray"
+ 			android:id="@+id/categorySeparator"
+ 			android:layout_toLeftOf="@+id/categoryListButton"/>
+    	<ImageButton
+			android:id="@+id/categoryListButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/layers"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:layout_centerHorizontal="true"
+			android:padding="17dip"
+			android:background="@drawable/defaultbg"/>
+	</RelativeLayout>
 </LinearLayout>

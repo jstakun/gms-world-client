@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import java.util.List;
@@ -98,8 +94,8 @@ public class DealCategoryArrayAdapter extends ArrayAdapter<String> {
 
         private int position;
         private int type;
-        public static final int LEFT = 0;
-        public static final int RIGHT = 1;
+        private static final int LEFT = 0;
+        private static final int RIGHT = 1;
 
         public PositionClickListener(int pos, int type) {
             this.position = pos;

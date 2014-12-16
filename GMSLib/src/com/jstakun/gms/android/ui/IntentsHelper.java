@@ -216,6 +216,7 @@ public final class IntentsHelper {
     		intent = new Intent(activity, GridLayerListActivity.class);
     		intent.putExtra("mode", ConfigurationManager.DYNAMIC_LAYERS_MODE);
     	} else {
+    		//TODO replace with grid view 
     		//intent = new Intent(activity, GridLayerListActivity.class);
     		intent = new Intent(activity, LayerListActivity.class);
     		intent.putExtra("mode", ConfigurationManager.ALL_LAYERS_MODE);
@@ -225,7 +226,9 @@ public final class IntentsHelper {
     }
 
     public void startCategoryListActivity(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude, int parent, int radius, Class<?> dealCategoryListClass) {
-        Intent intent = new Intent(activity, dealCategoryListClass);
+    	//TODO testing
+    	Intent intent = new Intent(activity, GridCategoryListActivity.class);
+    	//Intent intent = new Intent(activity, dealCategoryListClass);
         Bundle appData = new Bundle();
         appData.putInt("parent", parent);
         appData.putInt("lat", cursorLatitude);

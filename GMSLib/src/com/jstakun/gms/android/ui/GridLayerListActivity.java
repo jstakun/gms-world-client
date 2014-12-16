@@ -10,10 +10,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.jstakun.gms.android.ads.AdsUtils;
@@ -28,17 +32,17 @@ import com.jstakun.gms.android.utils.UserTracker;
 
 public class GridLayerListActivity extends Activity {
 	
-	protected static final int ACTION_OPEN = 0;
-    protected static final int ACTION_REFRESH = 1;
-    protected static final int ACTION_CLEAR = 2;
-    protected static final int ACTION_DELETE = 3;
+	private static final int ACTION_OPEN = 0;
+    private static final int ACTION_REFRESH = 1;
+    private static final int ACTION_CLEAR = 2;
+    private static final int ACTION_DELETE = 3;
     private List<String> names = null;
     private LandmarkManager landmarkManager;
     private RoutesManager routesManager;
     private IntentsHelper intents;
     private GridView gridView;
-    private int mode = ConfigurationManager.ALL_LAYERS_MODE;
-    private AlertDialog enableAllLayersDialog, disableAllLayersDialog;
+    private int mode = ConfigurationManager.ALL_LAYERS_MODE, currentPos = -1;
+    private AlertDialog deleteLayerDialog, enableAllLayersDialog, disableAllLayersDialog;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,9 @@ public class GridLayerListActivity extends Activity {
         
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
         
+        registerForContextMenu(gridView);
+        
+        createDeleteLayerAlertDialog();
         createEnableAllLayersAlertDialog();
         createDisableAllLayersAlertDialog();
 	}
@@ -98,7 +105,7 @@ public class GridLayerListActivity extends Activity {
             }
         }
 
-        gridView.setAdapter(new DynamicLayerArrayAdapter(this, names, new PositionClickListener()));
+        gridView.setAdapter(new GridLayerArrayAdapter(this, names, new PositionClickListener()));
     }
 	
 	@Override
@@ -157,6 +164,52 @@ public class GridLayerListActivity extends Activity {
             return super.onOptionsItemSelected(item);
         }
     }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        if (v.getId() == android.R.id.list) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            currentPos = info.position;
+            String[] layerStr = names.get(currentPos).split(";");
+            String layerKey = layerStr[0];
+            String layerName = layerStr[1];
+            menu.setHeaderTitle(layerName);
+            menu.setHeaderIcon(R.drawable.ic_dialog_menu_generic);
+            String[] menuItems = getResources().getStringArray(R.array.layersContextMenu);
+            for (int i = 0; i < menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
+            }
+
+            //if option n/a for layer hide item
+
+            int layerType = landmarkManager.getLayerType(layerKey);
+
+            if (layerKey.equals(Commons.ROUTES_LAYER)) {
+                menu.getItem(ACTION_OPEN).setVisible(false);
+                menu.getItem(ACTION_REFRESH).setVisible(false);
+            } else if (layerType == LayerManager.LAYER_DYNAMIC) {
+                menu.getItem(ACTION_REFRESH).setVisible(false);
+                menu.getItem(ACTION_CLEAR).setVisible(false);
+            } else if (layerType == LayerManager.LAYER_FILESYSTEM) {
+                menu.getItem(ACTION_REFRESH).setVisible(false);
+            }
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int menuItemIndex = item.getItemId();
+
+        if (menuItemIndex == ACTION_DELETE) {
+            deleteLayerDialog.setTitle(Locale.getMessage(R.string.Layer_delete_prompt, names.get(currentPos).split(";")[1]));
+            deleteLayerDialog.show();
+        } else {
+            layerAction(menuItemIndex, currentPos);
+        }
+
+        return true;
+    }
+
 	
 	private void layerAction(String action, String layer) {
         Intent result = new Intent();
@@ -166,10 +219,11 @@ public class GridLayerListActivity extends Activity {
         finish();
     }
 	
+	@SuppressWarnings("unchecked")
 	protected void layerAction(int type, int position) {
         String[] layerStr = names.get(position).split(";");
         String layerKey = layerStr[0];
-        //layerName = layerStr[1];
+        String layerName = layerStr[1];
 
         if (type == ACTION_OPEN) {
             //OPEN
@@ -191,8 +245,49 @@ public class GridLayerListActivity extends Activity {
             } else {
                 layerAction("load", layerKey);
             }
+        } else if (type == ACTION_CLEAR) {
+            //CLEAR
+            if (layerKey.equals(Commons.ROUTES_LAYER)) {
+                routesManager.clearRoutesStore();
+                ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
+                intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
+            } else if (landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
+                intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
+            } else {
+                landmarkManager.clearLayer(layerKey);
+                ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
+                intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
+            }
+        } else if (type == ACTION_DELETE) {
+            //DELETE
+            landmarkManager.deleteLayer(layerKey);
+            ((ArrayAdapter<String>) gridView.getAdapter()).remove(names.remove(position));
+
+            if (layerKey.equals(Commons.ROUTES_LAYER)) {
+                routesManager.clearRoutesStore();
+                ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
+            }    
+            
+            intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, layerName));
         }     
 	}
+	
+	private void createDeleteLayerAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true).
+                setIcon(android.R.drawable.ic_dialog_alert).
+                setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+                layerAction(ACTION_DELETE, currentPos);
+            }
+        }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        deleteLayerDialog = builder.create();
+    }
 	
 	private void createEnableAllLayersAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -204,7 +299,7 @@ public class GridLayerListActivity extends Activity {
                 dialog.cancel();
                 if (landmarkManager != null) {
                 	landmarkManager.getLayerManager().enableAllLayers();
-                	//((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
+                	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
                 	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_enabled));
                 }
             }
@@ -226,7 +321,7 @@ public class GridLayerListActivity extends Activity {
                 dialog.cancel();
                 if (landmarkManager != null) {
                 	landmarkManager.getLayerManager().disableAllLayers();
-                	//((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
+                	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
                 	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
                 }
             }
