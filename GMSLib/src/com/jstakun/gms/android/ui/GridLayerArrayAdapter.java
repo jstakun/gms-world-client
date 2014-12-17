@@ -67,28 +67,6 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	                        getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));
 	        holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
 	  
-	        /*String message = "";
-	        String desc = null;
-	        
-	        if (layer.getType() == LayerManager.LAYER_DYNAMIC) {
-	            String[] keywords = layer.getKeywords();
-	            if (keywords != null) {
-	                desc = Locale.getMessage(R.string.keywordDesc, StringUtils.join(keywords, ", "));
-	            }
-	        } else {
-	            desc = layer.getDesc();
-	        }
-
-	        if (StringUtils.isNotEmpty(desc)) {
-	            message += desc + ".\n";
-	        }
-	        if (layerKey.equals(Commons.ROUTES_LAYER)) {
-	            message += Locale.getMessage(R.string.Routes_in_layer_count, routesManager.getCount());
-	        } else {
-	            message += Locale.getMessage(R.string.Landmark_in_layer_count, landmarkManager.getLayerSize(layerKey));
-	        }
-	        holder.detailText.setText(message);*/
-	        
 	        int count = landmarkManager.getLayerSize(layerKey);
 	        
 	        int layerThumbnail = layer.getImage();

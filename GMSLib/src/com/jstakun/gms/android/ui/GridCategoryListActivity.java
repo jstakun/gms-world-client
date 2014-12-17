@@ -118,7 +118,7 @@ public class GridCategoryListActivity extends Activity {
             setTitle(Locale.getMessage(R.string.dealsString, parentCat.getCategory()));
         }
 
-        gridView.setAdapter(new GridCategoryArrayAdapter(this, names, new PositionClickListener()));	
+        gridView.setAdapter(new GridCategoryArrayAdapter(this, names, categories, new PositionClickListener()));	
 	}   
 	
 	@Override

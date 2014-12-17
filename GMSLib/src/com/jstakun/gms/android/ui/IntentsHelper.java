@@ -226,7 +226,7 @@ public final class IntentsHelper {
     }
 
     public void startCategoryListActivity(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude, int parent, int radius, Class<?> dealCategoryListClass) {
-    	//TODO testing
+    	//TODO replace with GridCategoryListActivity
     	Intent intent = new Intent(activity, GridCategoryListActivity.class);
     	//Intent intent = new Intent(activity, dealCategoryListClass);
         Bundle appData = new Bundle();

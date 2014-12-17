@@ -532,7 +532,7 @@ public class LayerManager {
         }
         return 0;
     }
-
+    
     //////////////////////////////////////////////////////////////////////////////////////
     private class LayerEnabledPredicate implements Predicate<String> {
 
