@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
@@ -24,14 +25,12 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 
 	    private final Activity parentActivity;
 	    private final LandmarkManager landmarkManager;
-	    //private final RoutesManager routesManager;
 	    private final View.OnClickListener positionClickListener;
 
 	    public GridLayerArrayAdapter(Activity context, List<String> names, View.OnClickListener positionClickListener) {
 	        super(context, R.layout.layerrow, names);
 	        this.parentActivity = context;
 	        this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-	        //this.routesManager = ConfigurationManager.getInstance().getRoutesManager();
 	        this.positionClickListener = positionClickListener;
 	    }
 
@@ -62,6 +61,12 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        Layer layer = landmarkManager.getLayerManager().getLayer(layerKey);
 
 	        holder.headerText.setText(layerName);
+	        
+	        if (landmarkManager.getLayerType(layerKey) != LayerManager.LAYER_DYNAMIC && !layer.isEnabled()) {
+	        	holder.headerText.setTextColor(Color.RED);
+	        } else {
+	        	holder.headerText.setTextColor(Color.BLACK);
+	        }
 
 	        BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
 	                        getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));

@@ -680,6 +680,8 @@
         <item>Open</item>
         <item>Refresh</item>
         <item>Clear</item>
+        <item>Enable</item>
+        <item>Disable</item>
         <item>Delete</item>
     </string-array>
     <string-array name="checkin">

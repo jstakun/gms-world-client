@@ -38,7 +38,9 @@ public class LayerListActivity extends ListActivity {
     private static final int ACTION_OPEN = 0;
     private static final int ACTION_REFRESH = 1;
     private static final int ACTION_CLEAR = 2;
-    private static final int ACTION_DELETE = 3;
+    private static final int ACTION_ENABLE = 3;
+    private static final int ACTION_DISABLE = 4;
+    private static final int ACTION_DELETE = 5;
     private AlertDialog deleteLayerDialog, enableAllLayersDialog, disableAllLayersDialog;
     private List<String> names = null;
     private IntentsHelper intents;
@@ -136,11 +138,6 @@ public class LayerListActivity extends ListActivity {
         AdsUtils.destroyAdView(this);
     }
 
-    //@Override
-    //public void onSaveInstanceState(Bundle savedInstanceState) {
-    //	savedInstanceState.putString(NAME, layerName);
-    //}
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
     	super.onPrepareOptionsMenu(menu);
@@ -213,9 +210,14 @@ public class LayerListActivity extends ListActivity {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
             }
 
-            //if option n/a for layer hide item
-
+            if (landmarkManager.getLayerManager().isLayerEnabled(layerKey)) {
+            	menu.getItem(ACTION_ENABLE).setVisible(false);
+            } else {
+            	menu.getItem(ACTION_DISABLE).setVisible(false);
+            }
+            
             int layerType = landmarkManager.getLayerType(layerKey);
+            
 
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
                 menu.getItem(ACTION_OPEN).setVisible(false);
@@ -223,6 +225,8 @@ public class LayerListActivity extends ListActivity {
             } else if (layerType == LayerManager.LAYER_DYNAMIC) {
                 menu.getItem(ACTION_REFRESH).setVisible(false);
                 menu.getItem(ACTION_CLEAR).setVisible(false);
+                menu.getItem(ACTION_ENABLE).setVisible(false);
+                menu.getItem(ACTION_DISABLE).setVisible(false);
             } else if (layerType == LayerManager.LAYER_FILESYSTEM) {
                 menu.getItem(ACTION_REFRESH).setVisible(false);
             }
@@ -353,6 +357,12 @@ public class LayerListActivity extends ListActivity {
             }    
             
             intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, layerName));
+        } else if (type == ACTION_ENABLE) {
+        	landmarkManager.getLayerManager().setLayerEnabled(layerKey, true);
+        	intents.showInfoToast(Locale.getMessage(R.string.Layer_enabled));
+        } else if (type == ACTION_DISABLE) {
+        	landmarkManager.getLayerManager().setLayerEnabled(layerKey, false);
+        	intents.showInfoToast(Locale.getMessage(R.string.Layer_disabled));
         }
     }
 

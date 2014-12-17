@@ -35,7 +35,9 @@ public class GridLayerListActivity extends Activity {
 	private static final int ACTION_OPEN = 0;
     private static final int ACTION_REFRESH = 1;
     private static final int ACTION_CLEAR = 2;
-    private static final int ACTION_DELETE = 3;
+    private static final int ACTION_ENABLE = 3;
+    private static final int ACTION_DISABLE = 4;
+    private static final int ACTION_DELETE = 5;
     private List<String> names = null;
     private LandmarkManager landmarkManager;
     private RoutesManager routesManager;
@@ -167,7 +169,7 @@ public class GridLayerListActivity extends Activity {
     
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        if (v.getId() == android.R.id.list) {
+        if (v.getId() == gridView.getId()) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             currentPos = info.position;
             String[] layerStr = names.get(currentPos).split(";");
@@ -179,9 +181,13 @@ public class GridLayerListActivity extends Activity {
             for (int i = 0; i < menuItems.length; i++) {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
             }
-
-            //if option n/a for layer hide item
-
+          
+            if (landmarkManager.getLayerManager().isLayerEnabled(layerKey)) {
+            	menu.getItem(ACTION_ENABLE).setVisible(false);
+            } else {
+            	menu.getItem(ACTION_DISABLE).setVisible(false);
+            }
+            
             int layerType = landmarkManager.getLayerType(layerKey);
 
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
@@ -190,6 +196,8 @@ public class GridLayerListActivity extends Activity {
             } else if (layerType == LayerManager.LAYER_DYNAMIC) {
                 menu.getItem(ACTION_REFRESH).setVisible(false);
                 menu.getItem(ACTION_CLEAR).setVisible(false);
+                menu.getItem(ACTION_ENABLE).setVisible(false);
+                menu.getItem(ACTION_DISABLE).setVisible(false);
             } else if (layerType == LayerManager.LAYER_FILESYSTEM) {
                 menu.getItem(ACTION_REFRESH).setVisible(false);
             }
@@ -204,7 +212,7 @@ public class GridLayerListActivity extends Activity {
             deleteLayerDialog.setTitle(Locale.getMessage(R.string.Layer_delete_prompt, names.get(currentPos).split(";")[1]));
             deleteLayerDialog.show();
         } else {
-            layerAction(menuItemIndex, currentPos);
+        	layerAction(menuItemIndex, currentPos);
         }
 
         return true;
@@ -269,7 +277,15 @@ public class GridLayerListActivity extends Activity {
             }    
             
             intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, layerName));
-        }     
+        } else if (type == ACTION_ENABLE) {
+        	landmarkManager.getLayerManager().setLayerEnabled(layerKey, true);
+        	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
+        	intents.showInfoToast(Locale.getMessage(R.string.Layer_enabled));
+        } else if (type == ACTION_DISABLE) {
+        	landmarkManager.getLayerManager().setLayerEnabled(layerKey, false);
+        	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
+        	intents.showInfoToast(Locale.getMessage(R.string.Layer_disabled));      	
+        }
 	}
 	
 	private void createDeleteLayerAlertDialog() {

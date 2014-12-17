@@ -217,8 +217,8 @@ public final class IntentsHelper {
     		intent.putExtra("mode", ConfigurationManager.DYNAMIC_LAYERS_MODE);
     	} else {
     		//TODO replace with grid view 
-    		//intent = new Intent(activity, GridLayerListActivity.class);
-    		intent = new Intent(activity, LayerListActivity.class);
+    		intent = new Intent(activity, GridLayerListActivity.class);
+    		//intent = new Intent(activity, LayerListActivity.class);
     		intent.putExtra("mode", ConfigurationManager.ALL_LAYERS_MODE);
     	}
     	

@@ -13,7 +13,6 @@
 		   android:gravity="center"
 		   android:drawablePadding="3dip"
 		   android:drawableLeft="@drawable/image_missing16"
-		   android:maxLength="12"
 		   android:ellipsize="end"
 		   android:singleLine="true"/>
     <FrameLayout

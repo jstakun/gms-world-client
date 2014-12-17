@@ -35,7 +35,9 @@ import com.jstakun.gms.android.utils.UserTracker;
 
 public class GridCategoryListActivity extends Activity {
 
-	private int parent = -1, radius = 3, currentPos = -1, lat, lng;
+	private static final int ACTION_OPEN = 0;
+    private static final int ACTION_DELETE = 1;
+    private int parent = -1, radius = 3, currentPos = -1, lat, lng;
     private LandmarkManager landmarkManager = null;
     private CategoriesManager cm = null;
     private IntentsHelper intents;
@@ -180,7 +182,7 @@ public class GridCategoryListActivity extends Activity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        if (v.getId() == android.R.id.list && parent == -1) {
+    	if (v.getId() == gridView.getId() && parent == -1) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             currentPos = info.position;
             menu.setHeaderTitle(categories.get(info.position).getCategory());
@@ -189,6 +191,10 @@ public class GridCategoryListActivity extends Activity {
             for (int i = 0; i < menuItems.length; i++) {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
             }
+            Category c = categories.get(currentPos);
+            if (!c.isCustom()) {
+            	menu.getItem(ACTION_DELETE).setVisible(false);
+            }
         }
     }
 
@@ -196,9 +202,9 @@ public class GridCategoryListActivity extends Activity {
     public boolean onContextItemSelected(MenuItem item) {
         int menuItemIndex = item.getItemId();
 
-        if (menuItemIndex == 0) {
+        if (menuItemIndex == ACTION_OPEN) {
             onClickAction(currentPos, "show");
-        } else if (menuItemIndex == 1) {
+        } else if (menuItemIndex == ACTION_DELETE) {
             deleteLayerDialog.setTitle(Locale.getMessage(R.string.Layer_delete_prompt, categories.get(currentPos).getCategory()));
             deleteLayerDialog.show();
         }
