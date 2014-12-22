@@ -93,7 +93,7 @@ public class GridCategoryArrayAdapter extends ArrayAdapter<String> {
     private static int getCategoryImage(String category) {
         Context c = ConfigurationManager.getInstance().getContext();
         if (c != null) {
-            String formattedName = StringUtils.replaceChars(category.toLowerCase(java.util.Locale.US), ' ', '_');
+            String formattedName = StringUtils.replaceChars(category.toLowerCase(java.util.Locale.US), " &", "");
             return c.getResources().getIdentifier(formattedName + "_img", "drawable", c.getPackageName());
         }
         return 0;
