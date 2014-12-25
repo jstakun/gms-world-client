@@ -19,7 +19,7 @@
       	   android:layout_width="wrap_content" 
 		   android:layout_height="wrap_content"
 		   android:layout_gravity="center_horizontal"
-		   android:paddingBottom="3dip">
+		   android:paddingBottom="4dip">
 		<ImageView
            android:id="@+id/layerThumbnail"
            android:src="@drawable/download48"
@@ -27,7 +27,8 @@
            android:layout_height="wrap_content"
            android:gravity="center"/>
    		<TextView 
-   		   android:paddingLeft="5dip" 
+   		   android:paddingLeft="8dip"
+   		   android:paddingTop="4dip"
            android:id="@+id/layerDetailsHeader"
 		   android:layout_width="wrap_content" 
            style="@android:style/TextAppearance.Large"
