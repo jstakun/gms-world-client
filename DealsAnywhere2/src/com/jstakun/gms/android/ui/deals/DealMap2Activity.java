@@ -304,7 +304,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 break;
             case R.id.listMode:
                 intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                        mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1, DealCategoryListActivity.class);
+                        mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
                 break;
             case R.id.pickMyPos:
                 intents.startPickLocationActivity();

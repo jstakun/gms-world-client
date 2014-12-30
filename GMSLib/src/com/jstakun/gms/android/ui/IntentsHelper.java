@@ -217,17 +217,15 @@ public final class IntentsHelper {
     		intent.putExtra("mode", ConfigurationManager.DYNAMIC_LAYERS_MODE);
     	} else {
     		intent = new Intent(activity, GridLayerListActivity.class);
-    		//intent = new Intent(activity, LayerListActivity.class);
     		intent.putExtra("mode", ConfigurationManager.ALL_LAYERS_MODE);
     	}
     	
     	activity.startActivityForResult(intent, INTENT_LAYERS);
     }
 
-    public void startCategoryListActivity(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude, int parent, int radius, Class<?> dealCategoryListClass) {
+    public void startCategoryListActivity(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude, int parent, int radius) {
     	Intent intent = new Intent(activity, GridCategoryListActivity.class);
-    	//Intent intent = new Intent(activity, dealCategoryListClass);
-        Bundle appData = new Bundle();
+    	Bundle appData = new Bundle();
         appData.putInt("parent", parent);
         appData.putInt("lat", cursorLatitude);
         appData.putInt("lng", cursorLongitude);

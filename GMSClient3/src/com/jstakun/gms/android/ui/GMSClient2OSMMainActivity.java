@@ -806,7 +806,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    	case R.id.deals:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
 		    			intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-		                    mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1, DealCategoryListActivity.class);
+		                    mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
 		    		} else {
 		    			intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
 		    		}
