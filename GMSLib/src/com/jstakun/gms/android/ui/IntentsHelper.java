@@ -791,7 +791,6 @@ public final class IntentsHelper {
         }
 
         if (selectedLandmark.getThumbnail() != null) {
-
             Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), selectedLandmark.getLayer(), activity.getResources().getDisplayMetrics(), new ThumbnailLoadedHandler(activity));
             int width = activity.getWindowManager().getDefaultDisplay().getWidth();            
             if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
@@ -899,7 +898,7 @@ public final class IntentsHelper {
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
         }
         lvView.setVisibility(View.VISIBLE);
-
+        
         landmarkManager.addRecentlyOpenedLandmark(selectedLandmark);
     }
 

@@ -12,7 +12,7 @@
     	android:id="@+id/mapCanvasWidgetM"
     	android:background="#ddd3d3d3"
     	android:visibility="gone">
-      		<com.amazon.geo.maps.MapView
+      		<com.jstakun.gms.android.amz.maps.ObservableMapView
         	android:id="@+id/mapCanvas"
         	android:layout_width="fill_parent"
         	android:layout_height="fill_parent"

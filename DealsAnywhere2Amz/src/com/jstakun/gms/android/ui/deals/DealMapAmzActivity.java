@@ -34,11 +34,11 @@ import com.amazon.geo.maps.MapController;
 import com.amazon.geo.maps.MapView;
 import com.amazon.geo.maps.Overlay;
 import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.amz.maps.AmzInfoOverlay;
 import com.jstakun.gms.android.amz.maps.AmzLandmarkOverlay;
 import com.jstakun.gms.android.amz.maps.AmzLandmarkProjection;
 import com.jstakun.gms.android.amz.maps.AmzMyLocationOverlay;
 import com.jstakun.gms.android.amz.maps.AmzRoutesOverlay;
+import com.jstakun.gms.android.amz.maps.ObservableMapView;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
@@ -54,8 +54,8 @@ import com.jstakun.gms.android.ui.HelpActivity;
 import com.jstakun.gms.android.ui.IntentArrayAdapter;
 import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.ui.LandmarkListActivity;
-import com.jstakun.gms.android.ui.StatusBarLinearLayout;
-import com.jstakun.gms.android.ui.ViewResizeListener;
+import com.jstakun.gms.android.ui.MapInfoView;
+import com.jstakun.gms.android.ui.ZoomChangeListener;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -93,7 +93,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private boolean isStopped = false;
     private boolean appInitialized = false;
     private boolean isRouteDisplayed = false;
-    private AmzInfoOverlay infoOverlay;
+    //private AmzInfoOverlay infoOverlay;
     //Handlers
     private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
@@ -215,7 +215,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         };
         drawerLayout.setDrawerListener(drawerToggle);
        
-        infoOverlay = new AmzInfoOverlay();
+        /*infoOverlay = new AmzInfoOverlay();
 
         StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
         ViewResizeListener viewResizeListener = new ViewResizeListener() {
@@ -224,10 +224,12 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 infoOverlay.setFontSize(yNew);
             }
         };
-        bottomPanel.setViewResizeListener(viewResizeListener);
+        bottomPanel.setViewResizeListener(viewResizeListener);*/
 
         //myLocation = new AmzMyLocationOverlay(this, amzMapsView, gpsPositionHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
 
+        ((ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
+        
         GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
 
         if (mapCenter == null) {
@@ -388,8 +390,9 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
             AmzLandmarkOverlay landmarkOverlay = new AmzLandmarkOverlay(landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
             mapView.getOverlays().add(landmarkOverlay);
+            
             //must be on top of other overlays
-            mapView.getOverlays().add(infoOverlay);
+            //mapView.getOverlays().add(infoOverlay);
 
             routesManager = ConfigurationManager.getInstance().getRoutesManager();
             if (routesManager == null) {
@@ -935,5 +938,17 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 }
             }
         }	
-    }    	 
+    }
+    
+    private class ZoomListener implements ZoomChangeListener {
+
+		@Override
+		public void onZoom(int oldZoom, int currentZoom, float distance) {
+			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
+			mapInfo.setDistance(distance);
+			mapInfo.setZoomLevel(mapView.getZoomLevel());
+			mapInfo.setMaxZoom(mapView.getMaxZoomLevel());
+			mapInfo.postInvalidate();
+		}
+    }
 }

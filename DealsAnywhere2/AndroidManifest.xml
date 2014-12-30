@@ -15,7 +15,7 @@
                   android:anyDensity="true" />
    <permission android:name="com.jstakun.gms.android.permission.ACTIVITY" android:protectionLevel="signature"/>
     <application android:name="DealMapApp" android:label="@string/app_name"
-    android:icon="@drawable/currency_dollar" android:theme="@style/GMSTheme.Light">
+    android:icon="@drawable/discover" android:theme="@style/GMSTheme.Light">
         <uses-library android:name="com.google.android.maps" android:required="true"/>
         <activity android:name="DealMapDispatchActivity"
                   android:label="@string/app_name">
