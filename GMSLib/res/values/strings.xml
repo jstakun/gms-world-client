@@ -230,6 +230,7 @@
      
      <!-- Misc -->
      <string name="Your.Location">Your location</string>
+     <string name="Your.Location.Desc">Received from %1$s provider with %2$.2f meters accuracy on %3$s.</string>
      <string name="Authn.success">Logon successful!</string>
      <string name="Please.Wait">Please wait&#8230;</string>
      <string name="Processing.results">Processing results (%1$d/%2$d)&#8230;</string>

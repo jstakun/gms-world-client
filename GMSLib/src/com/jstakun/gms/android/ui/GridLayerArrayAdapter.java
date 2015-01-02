@@ -15,22 +15,26 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.lib.R;
 
 public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 
 	    private final Activity parentActivity;
 	    private final LandmarkManager landmarkManager;
+	    private final RoutesManager routesManager;
 	    private final View.OnClickListener positionClickListener;
 
 	    public GridLayerArrayAdapter(Activity context, List<String> names, View.OnClickListener positionClickListener) {
 	        super(context, R.layout.layerrow, names);
 	        this.parentActivity = context;
 	        this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
+	        this.routesManager = ConfigurationManager.getInstance().getRoutesManager();
 	        this.positionClickListener = positionClickListener;
 	    }
 
@@ -72,7 +76,12 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	                        getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));
 	        holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
 	  
-	        int count = landmarkManager.getLayerSize(layerKey);
+	        int count = 0;
+	        if (layerKey.equals(Commons.ROUTES_LAYER)) {
+	            count = routesManager.getCount();	
+	        } else {
+	        	count = landmarkManager.getLayerSize(layerKey);
+	        }
 	        
 	        int layerThumbnail = layer.getImage();
 	        if (layerThumbnail > 0) {

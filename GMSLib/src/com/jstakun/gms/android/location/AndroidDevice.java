@@ -1,7 +1,3 @@
- /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.location;
 
 import android.content.Context;
@@ -20,9 +16,9 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.MercatorUtils;
 
 /**
  *
@@ -204,29 +200,27 @@ public class AndroidDevice implements LocationListener {
         updatePositionUi(lastKnownLocation);
     }
 
-    private void updatePositionUi(Location currentLocation) {
-        double lat = MercatorUtils.normalizeE6(currentLocation.getLatitude());
-        double lon = MercatorUtils.normalizeE6(currentLocation.getLongitude());
-        float altitude = (float) currentLocation.getAltitude();
-        float accuracy = currentLocation.getAccuracy();
+    private void updatePositionUi(Location l) {
+        //double lat = MercatorUtils.normalizeE6(currentLocation.getLatitude());
+        //double lon = MercatorUtils.normalizeE6(currentLocation.getLongitude());
+        //float altitude = (float) currentLocation.getAltitude();
+        //float accuracy = currentLocation.getAccuracy();
 
         if (positionHandler != null) {
             Message msg = positionHandler.obtainMessage();
             Bundle b = new Bundle();
-            b.putDouble("lat", lat);
-            b.putDouble("lng", lon);
-            b.putFloat("alt", altitude);
-            b.putFloat("acc", accuracy);
+            //b.putDouble("lat", lat);
+            //b.putDouble("lng", lon);
+            //b.putFloat("alt", altitude);
+            //b.putFloat("acc", accuracy);
+            b.putParcelable("l", l);
             msg.setData(b);
             positionHandler.handleMessage(msg);
         } else {
             LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-            //if (landmarkManager == null) {
-            //    landmarkManager = new LandmarkManager();
-            //    ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-            //}
             if (landmarkManager != null) {
-                landmarkManager.addLandmark(lat, lon, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
+        		String date = DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale());
+                landmarkManager.addLandmark(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), Locale.getMessage(R.string.Your_Location), Locale.getMessage(R.string.Your_Location_Desc, l.getProvider(), l.getAccuracy(), date), Commons.MY_POSITION_LAYER, false);
             }
         }
     }

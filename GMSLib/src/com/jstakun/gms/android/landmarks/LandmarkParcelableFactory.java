@@ -36,10 +36,7 @@ public class LandmarkParcelableFactory {
         float distance = DistanceUtils.distanceInKilometer(lat, lng, l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
 
         String layerName = l.getLayer();
-        if (layerName.equals(Commons.MY_POSITION_LAYER)) {
-            String date = DateTimeUtils.getDefaultDateTimeString(l.getDescription(), locale);
-            desc = Locale.getMessage(R.string.Last_update, date);
-        } else if (layerName.equals(Commons.LOCAL_LAYER)) {
+        if (layerName.equals(Commons.LOCAL_LAYER)) {
             desc = l.getDescription();
             if (StringUtils.isNotEmpty(desc)) {
                 desc += "<br/>";
@@ -52,10 +49,11 @@ public class LandmarkParcelableFactory {
         }
         
         if (!StringUtils.isNotEmpty(desc) && l.getCreationDate() > 0){
-        	desc = Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(l.getCreationDate(), locale));
+        	desc += Locale.getMessage(R.string.creation_date, DateTimeUtils.getDefaultDateTimeString(l.getCreationDate(), locale));
         }
         
-        String name = StringUtils.abbreviate(l.getName(), 48);
+        String name = l.getName();
+        //String name = StringUtils.abbreviate(l.getName(), 48);
         if (layerName.equals(Commons.LOCAL_LAYER)) {
             name = StringUtil.formatCommaSeparatedString(name);
         }

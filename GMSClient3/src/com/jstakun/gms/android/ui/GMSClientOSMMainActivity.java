@@ -957,11 +957,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         }
     }
 
-    private void updateLocation(double lat, double lng, float altitude, float accuracy, float speed, float bearing) {
-        if (landmarkManager != null) {
-            landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
-        }
-        
+    private void updateLocation(Location l) {
+    	intents.addMyLocationLandmark(l);
         intents.vibrateOnLocationUpdate();
     	
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
@@ -969,7 +966,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         	showMyPositionAction(false);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
                 if (routeRecorder != null) {
-                    routeRecorder.addCoordinate(lat, lng, altitude, accuracy, speed, bearing);
+                	routeRecorder.addCoordinate(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), l.getAccuracy(), l.getSpeed(), l.getBearing());
                 }
             }
         } else {
@@ -977,7 +974,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         }
 
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-            checkinManager.autoCheckin(lat, lng, false);
+            checkinManager.autoCheckin(l.getLatitude(), l.getLongitude(), false);
         }
     }
 
@@ -1147,7 +1144,7 @@ private void syncRoutesOverlays() {
         			activity.showRouteAction((String)msg.obj);
         		} else if (msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
         			Location location = (Location) msg.obj;
-        			activity.updateLocation(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+        			activity.updateLocation(location);
         		}
         	}
         }

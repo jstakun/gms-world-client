@@ -908,7 +908,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         		} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION) {
         			Location location = (Location) msg.obj;
         			if (activity.landmarkManager != null) {
-        				activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
+        				activity.intents.addMyLocationLandmark(location);
         				activity.mapButtons.setVisibility(View.VISIBLE);
         			}
         			activity.intents.vibrateOnLocationUpdate();

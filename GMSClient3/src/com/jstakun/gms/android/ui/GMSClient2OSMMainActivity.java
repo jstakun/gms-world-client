@@ -1024,10 +1024,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
     }
 
-    private void updateLocation(double lat, double lng, float altitude, float accuracy, float speed, float bearing) {
-        if (landmarkManager != null) {
-            landmarkManager.addLandmark(lat, lng, altitude, Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
-        }
+    private void updateLocation(Location l) {
+    	intents.addMyLocationLandmark(l);
 
         intents.vibrateOnLocationUpdate();
     	
@@ -1036,7 +1034,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	showMyPositionAction(false);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
                 if (routeRecorder != null) {
-                    routeRecorder.addCoordinate(lat, lng, altitude, accuracy, speed, bearing);
+                	routeRecorder.addCoordinate(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), l.getAccuracy(), l.getSpeed(), l.getBearing());
                 }
             }
         } else {
@@ -1044,7 +1042,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
 
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-            checkinManager.autoCheckin(lat, lng, false);
+            checkinManager.autoCheckin(l.getLatitude(), l.getLongitude(), false);
         }
     }
 
@@ -1249,7 +1247,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             		activity.showRouteAction((String) msg.obj);
             	} else if (msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
             		Location location = (Location) msg.obj;
-                	activity.updateLocation(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+                	activity.updateLocation(location);
             	}
         	}
         }

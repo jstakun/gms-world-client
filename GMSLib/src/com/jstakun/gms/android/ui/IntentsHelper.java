@@ -27,6 +27,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -863,8 +864,9 @@ public final class IntentsHelper {
             lvCommentButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
             visibleButtons--;
-            String date = DateTimeUtils.getDefaultDateTimeString(selectedLandmark.getDescription(), ConfigurationManager.getInstance().getCurrentLocale());
-            desc.setText(Locale.getMessage(R.string.Last_update, date));
+            //String date = DateTimeUtils.getDefaultDateTimeString(selectedLandmark.getDescription(), ConfigurationManager.getInstance().getCurrentLocale());
+            //desc.setText(Locale.getMessage(R.string.Last_update, date));
+            desc.setText(selectedLandmark.getDescription());
             lvRouteButton.setVisibility(View.GONE);
         } else if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
@@ -1308,6 +1310,17 @@ public final class IntentsHelper {
         
         showShortToast(Locale.getMessage(R.string.Close_app_bye));
         LoggerUtils.debug("Bye...");
+    }
+    
+    public void addMyLocationLandmark(Location l) {
+    	if (landmarkManager != null && l != null) {
+    		String provider = l.getProvider();
+    		if (StringUtils.isEmpty(provider)) {
+    			provider = "unknown";
+    		}
+    		String date = DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale());
+            landmarkManager.addLandmark(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), Locale.getMessage(R.string.Your_Location), Locale.getMessage(R.string.Your_Location_Desc, provider, l.getAccuracy(), date), Commons.MY_POSITION_LAYER, false);
+        }
     }
     
     private static class ThumbnailLoadedHandler extends Handler {

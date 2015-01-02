@@ -931,8 +931,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 } else if (msg.what == AmzMyLocationOverlay.UPDATE_LOCATION) {
                     Location location = (Location) msg.obj;
                     if (activity.landmarkManager != null) {
-                    	activity.landmarkManager.addLandmark(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), Locale.getMessage(R.string.Your_Location), Long.toString(System.currentTimeMillis()), Commons.MY_POSITION_LAYER, false);
-                    	activity.mapButtons.setVisibility(View.VISIBLE);
+                    	activity.intents.addMyLocationLandmark(location);
+        				activity.mapButtons.setVisibility(View.VISIBLE);
                     }
                     activity.intents.vibrateOnLocationUpdate();
                 }
