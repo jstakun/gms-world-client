@@ -218,6 +218,7 @@ public class AndroidDevice implements LocationListener {
             positionHandler.handleMessage(msg);
         } else {
             LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
+            //the same code as IntentsHelper.addMyLocationLandmark
             if (landmarkManager != null) {
         		String date = DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale());
                 landmarkManager.addLandmark(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), Locale.getMessage(R.string.Your_Location), Locale.getMessage(R.string.Your_Location_Desc, l.getProvider(), l.getAccuracy(), date), Commons.MY_POSITION_LAYER, false);

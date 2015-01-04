@@ -37,6 +37,7 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.text.Html;
 import android.text.Html.ImageGetter;
+import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.Display;
 import android.view.View;
