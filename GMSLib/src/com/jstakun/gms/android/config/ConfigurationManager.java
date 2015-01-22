@@ -490,10 +490,9 @@ public final class ConfigurationManager {
     }
 
     public java.util.Locale getCurrentLocale() {
-        Context context = getContext();
-        if (context != null) {
-            return context.getResources().getConfiguration().locale;
-        } else {
+        try {
+            return getContext().getResources().getConfiguration().locale;
+        } catch (Exception e) { //might cause NPE on some devices
         	return java.util.Locale.getDefault();
         }
     }

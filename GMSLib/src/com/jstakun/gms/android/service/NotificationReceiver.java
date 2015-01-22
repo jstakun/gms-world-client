@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -59,7 +60,15 @@ public class NotificationReceiver extends BroadcastReceiver {
 	            }              
 	            if (utils.getResponseCode() == HttpStatus.SC_OK) {
 	            	//user has been engaged
-	            	ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, System.currentTimeMillis());
+	            	long timestamp = 0l;
+	            	if (StringUtils.startsWith(response, "{")) {
+	            		JSONObject jsonResponse = new JSONObject(response);
+	            		timestamp = jsonResponse.optLong("timestamp");
+	            	}
+	            	if (timestamp == 0l) {
+            			timestamp = System.currentTimeMillis();
+            		}
+	            	ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, timestamp);
 	            	ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 	            } else if (utils.getResponseCode() == HttpStatus.SC_ACCEPTED) {
 	            	//nothing to do
