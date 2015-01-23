@@ -68,11 +68,12 @@ public class NotificationReceiver extends BroadcastReceiver {
 	            	if (timestamp == 0l) {
             			timestamp = System.currentTimeMillis();
             		}
-	            	ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, timestamp);
-	            	ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-	            } else if (utils.getResponseCode() == HttpStatus.SC_ACCEPTED) {
+	            	ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, timestamp);	
+	            } //else if (utils.getResponseCode() == HttpStatus.SC_ACCEPTED) {
 	            	//nothing to do
-	            }
+	            //}
+	            ConfigurationManager.getInstance().putLong(ConfigurationManager.NOTIFICATION_RUNNING_DATE, System.currentTimeMillis());	
+	            ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 	        } catch (Exception ex) {
 	            LoggerUtils.error("NotificationReceiver.onReceive() exception:", ex);
 	        } finally {

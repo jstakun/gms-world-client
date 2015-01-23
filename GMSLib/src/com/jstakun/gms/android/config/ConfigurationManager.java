@@ -106,6 +106,7 @@ public final class ConfigurationManager {
     public static final String BITMAP_TYPE = "bitmapType";
     public static final String APP_CLOSING = "appClosing";
     public static final String LAST_STARTING_DATE = "lastStartingDate";
+    public static final String NOTIFICATION_RUNNING_DATE = "notificationRunningDate";
     public static final String LOCATION = "location";
     public static final String CONTEXT = "context";
     public static final String LAYER_PAINT_LIMIT = "layerPaintLimit";

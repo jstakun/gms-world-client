@@ -48,7 +48,7 @@ public class GMSClientDispatchActivity extends Activity {
             } else {
             	long lastStartupTime = ConfigurationManager.getInstance().getLong(ConfigurationManager.LAST_STARTING_DATE);
                 LoggerUtils.debug("Last startup time is: " + DateTimeUtils.getDefaultDateTimeString(lastStartupTime, ConfigurationManager.getInstance().getCurrentLocale()));
-                ConfigurationManager.getInstance().putString(ConfigurationManager.LAST_STARTING_DATE, Long.toString(System.currentTimeMillis()));
+                ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, System.currentTimeMillis());
                 
             	Intent mapActivity;
                 if (OsUtil.isHoneycombOrHigher()) {
