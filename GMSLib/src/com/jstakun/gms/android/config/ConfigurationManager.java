@@ -20,6 +20,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.graphics.Bitmap.Config;
 import android.location.Location;
 
@@ -541,7 +542,7 @@ public final class ConfigurationManager {
     	
     	private AppUtils() {}
     
-    	public void initApp(Application applicationContext) {
+    	public void initApp(Context applicationContext) {
     		setContext(applicationContext);
     		LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
     		setDefaultConfiguration();
@@ -554,27 +555,41 @@ public final class ConfigurationManager {
     			getDatabaseManager().readConfiguration();
     		}
 
-    		String[] limitArray = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.landmarksPerLayer);
-    		int index = getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 0);
-    		if (index >= 0 && index < limitArray.length) {
-    			putInteger(ConfigurationManager.LANDMARKS_PER_LAYER, Integer.parseInt(limitArray[index]));
+    		Resources applicationResources = null; 
+    		if (applicationContext != null) {
+    			applicationResources = applicationContext.getResources();
     		}
-
-    		int dealIndex = getInt(ConfigurationManager.DEAL_LIMIT, 0);
-    		String[] dealLimitArray = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.dealLimit);
-    		if (dealIndex >= 0 && dealIndex < dealLimitArray.length) {
-    			try {
-    				putInteger(ConfigurationManager.DEAL_LIMIT, Integer.parseInt(dealLimitArray[dealIndex]));
-    			} catch (Exception e) {
+    		
+    		if (applicationResources != null) {
+    			String[] limitArray = applicationResources.getStringArray(com.jstakun.gms.android.ui.lib.R.array.landmarksPerLayer);
+    			int index = getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 0);
+    			if (index >= 0 && index < limitArray.length) {
+    				putInteger(ConfigurationManager.LANDMARKS_PER_LAYER, Integer.parseInt(limitArray[index]));
     			}
+    		} else {
+    			putInteger(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
     		}
 
-    		String[] array = applicationContext.getResources().getStringArray(com.jstakun.gms.android.ui.lib.R.array.radius);
-    		int pos = getInt(ConfigurationManager.SEARCH_RADIUS);
-    		if (pos == 0) {
+    		if (applicationResources != null) {
+    			int dealIndex = getInt(ConfigurationManager.DEAL_LIMIT, 0);
+    			String[] dealLimitArray = applicationResources.getStringArray(com.jstakun.gms.android.ui.lib.R.array.dealLimit);
+    			if (dealIndex >= 0 && dealIndex < dealLimitArray.length) {
+    				putInteger(ConfigurationManager.DEAL_LIMIT, Integer.parseInt(dealLimitArray[dealIndex]));
+    			}
+    		} else {
+    			putInteger(ConfigurationManager.DEAL_LIMIT, 300);
+    		}
+
+    		if (applicationResources != null) {
+        		String[] array = applicationResources.getStringArray(com.jstakun.gms.android.ui.lib.R.array.radius);
+        		int pos = getInt(ConfigurationManager.SEARCH_RADIUS);
+    			if (pos == 0) {
+    				putInteger(ConfigurationManager.SEARCH_RADIUS, 10);
+    			} else if (pos > 0 && pos < array.length) {
+    				putInteger(ConfigurationManager.SEARCH_RADIUS, Integer.valueOf(array[pos]).intValue());
+    			}
+    		} else {
     			putInteger(ConfigurationManager.SEARCH_RADIUS, 10);
-    		} else if (pos > 0 && pos < array.length) {
-    			putInteger(ConfigurationManager.SEARCH_RADIUS, Integer.valueOf(array[pos]).intValue());
     		}
 
     		long installed;
