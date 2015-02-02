@@ -1,11 +1,15 @@
 package com.jstakun.gms.android.ui.deals;
 
+import java.util.List;
+
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 public class NavigationDrawerListAdapter extends ArrayAdapter<String>{
 
-	public NavigationDrawerListAdapter(Context context, int resource, String[] objects) {
+	public NavigationDrawerListAdapter(Context context, int resource, List<String> objects) {
 		super(context, resource, objects);
 	}
 	
@@ -41,8 +45,11 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<String>{
 			return R.id.events;
 		}   
 		
-		return 0;
-		
+		return 0;	
 	}
-
+	
+	@Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+		return super.getView(position, convertView, parent);
+	}
 }

@@ -4,8 +4,8 @@
     <string name="app_name">Deals Anywhere</string>
     <string name="refreshLayers">Od\u015bwie\u017c okazje</string>
     <string name="events">Kalendarz okazji</string>
-    <string name="hotDeals">Gor\u0105ce Okazje</string>
-    <string name="newestDeals">Nowe Okazje</string>
+    <string name="hotDeals">Gor\u0105ce okazje</string>
+    <string name="newestDeals">Nowe okazje</string>
     <string name="landmarksNearby">Okazje wok\u00f3\u0142</string>
     
     <!-- deal preferences -->

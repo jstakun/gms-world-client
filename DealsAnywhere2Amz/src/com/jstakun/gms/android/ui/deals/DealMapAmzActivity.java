@@ -295,6 +295,12 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         inflater.inflate(R.menu.main_menu_2, menu);
         return true;
     }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        //TODO R.id.showDoD
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -817,11 +823,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             mapController.animateTo(g);
 
             if (loadLayers && !isVisible) {
-                mapController.setCenter(g);
-                intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader,
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel(), new AmzLandmarkProjection(mapView));
+                intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader, MathUtils.coordIntToDouble(g.getLatitudeE6()),
+                        MathUtils.coordIntToDouble(g.getLongitudeE6()),mapView.getZoomLevel(), new AmzLandmarkProjection(mapView));
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));

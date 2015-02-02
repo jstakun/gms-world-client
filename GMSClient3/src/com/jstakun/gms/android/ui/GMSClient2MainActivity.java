@@ -75,7 +75,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private IMapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
-    //private Object infoOverlay;
     private MapView googleMapsView;
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
@@ -583,10 +582,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 layerLoader = new LayerLoader(landmarkManager, messageStack);
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                    LoggerUtils.debug("Loading Layers...");
-                    intents.loadLayersAction(true, null, false, true, layerLoader,
-                            MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                    LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());
+                    //TODO map view shows wrong coords in OSMDroid
+                    intents.loadLayersAction(true, null, false, true, layerLoader, location.getLatitude(), location.getLongitude(),
                             mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
                 }
             } else {
@@ -1052,11 +1050,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
 
             if (loadLayers && !isVisible) {
-            	mapController.setCenter(myLoc);
-                intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader,
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel(), projection);
+            	//System.out.println("--------2-" + myLoc.getLatitudeE6() + " " + myLoc.getLongitudeE6());
+                intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));

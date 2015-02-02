@@ -9,7 +9,7 @@ import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.MapView.Projection;
+import org.osmdroid.views.Projection;
 
 /**
  *
@@ -31,8 +31,8 @@ public class OsmLandmarkProjection implements ProjectionInterface {
     }
 
     public void toPixels(int latE6, int lonE6, Point point) {
-        proj.toMapPixelsProjected(latE6, lonE6, tmp);
-        proj.toMapPixelsTranslated(tmp, point);
+        proj.toProjectedPixels(latE6, lonE6, tmp);
+        proj.toPixelsFromProjected(tmp, point);
     }
 
     public boolean isVisible(int latE6, int lonE6) {

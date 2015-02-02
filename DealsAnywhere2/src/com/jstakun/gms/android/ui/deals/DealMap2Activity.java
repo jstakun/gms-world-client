@@ -1,6 +1,8 @@
 package com.jstakun.gms.android.ui.deals;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -183,7 +185,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         drawerList = (ListView) findViewById(R.id.left_drawer);
 
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        drawerList.setAdapter(new NavigationDrawerListAdapter(this, R.layout.drawerrow_parent, getResources().getStringArray(R.array.navigation)));
+        List<String> list = new ArrayList<String>();
+        Collections.addAll(list, getResources().getStringArray(R.array.navigation));
+        drawerList.setAdapter(new NavigationDrawerListAdapter(this, R.layout.drawerrow_parent, list));
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
         
         drawerToggle = new ActionBarDrawerToggle(
@@ -192,11 +196,13 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 R.string.app_name  /* "close drawer" description for accessibility */
                 ) {
             public void onDrawerClosed(View view) {
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            	super.onDrawerClosed(view);
+            	invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            	super.onDrawerOpened(drawerView);
+            	invalidateOptionsMenu();
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
@@ -272,6 +278,19 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu_2, menu);
         return true;
+    }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        //System.out.println("----------- prepare options menu");
+    	//if (drawerLayout.isDrawerOpen(drawerList)) {
+    		//System.out.println("----------- drawer open");
+    		//TODO remove item 7 from drawerList  
+    		//R.id.showDoD
+    		//ArrayAdapter<String> adapter = (ArrayAdapter<String>)drawerList.getAdapter();
+    		//adapter.remove(adapter.getItem(7));
+    	//}
+    	return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -783,11 +802,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             mapController.animateTo(g);
 
             if (loadLayers && !isVisible) {
-                mapController.setCenter(g);
-                intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader,
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
+                intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader, MathUtils.coordIntToDouble(g.getLatitudeE6()),
+                        MathUtils.coordIntToDouble(g.getLongitudeE6()), mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));

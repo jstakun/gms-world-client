@@ -254,6 +254,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.mapMode);
         item.setVisible(false);
+        //TODO R.id.showDoD
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -717,11 +718,9 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             mapController.animateTo(g);
 
             if (loadLayers && !isVisible) {
-                mapController.setCenter(g);
-                intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader,
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
+                //mapController.setCenter(g);
+                intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader,MathUtils.coordIntToDouble(g.getLatitudeE6()),
+                        MathUtils.coordIntToDouble(g.getLongitudeE6()), mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));

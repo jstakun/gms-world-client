@@ -548,11 +548,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 layerLoader = new LayerLoader(landmarkManager, messageStack);
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                    LoggerUtils.debug("Loading Layers...");
-                    intents.loadLayersAction(true, null, false, true, layerLoader,
-                            MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                            mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
+                	LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());
+                    intents.loadLayersAction(true, null, false, true, layerLoader, location.getLatitude(),
+                    		location.getLongitude(), mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
                 }
             } else {
                 //load existing layers
@@ -1013,11 +1011,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
 
             if (loadLayers && !isVisible) {
-                mapController.setCenter(myLoc);
-                intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader,
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
-                        mapView.getZoomLevel(), projection);
+                intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
