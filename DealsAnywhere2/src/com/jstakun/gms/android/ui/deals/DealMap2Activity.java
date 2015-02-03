@@ -1,8 +1,6 @@
 package com.jstakun.gms.android.ui.deals;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -185,9 +183,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         drawerList = (ListView) findViewById(R.id.left_drawer);
 
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        List<String> list = new ArrayList<String>();
-        Collections.addAll(list, getResources().getStringArray(R.array.navigation));
-        drawerList.setAdapter(new NavigationDrawerListAdapter(this, R.layout.drawerrow_parent, list));
+        drawerList.setAdapter(new NavigationDrawerListAdapter(this, R.layout.drawerrow_parent));
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
         
         drawerToggle = new ActionBarDrawerToggle(
@@ -207,17 +203,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         };
         drawerLayout.setDrawerListener(drawerToggle);
         
-        /*infoOverlay = new GoogleInfoOverlay();
-
-        StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
-        ViewResizeListener viewResizeListener = new ViewResizeListener() {
-            @Override
-            public void onResize(int id, int xNew, int yNew, int xOld, int yOld) {
-                infoOverlay.setFontSize(yNew);
-            }
-        };
-        bottomPanel.setViewResizeListener(viewResizeListener);*/
-
         ((ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
         
         myLocation = new GoogleMyLocationOverlay(this, mapView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
@@ -282,14 +267,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        //System.out.println("----------- prepare options menu");
-    	//if (drawerLayout.isDrawerOpen(drawerList)) {
-    		//System.out.println("----------- drawer open");
-    		//TODO remove item 7 from drawerList  
-    		//R.id.showDoD
-    		//ArrayAdapter<String> adapter = (ArrayAdapter<String>)drawerList.getAdapter();
-    		//adapter.remove(adapter.getItem(7));
-    	//}
+        if (drawerLayout.isDrawerOpen(drawerList)) {
+    		NavigationDrawerListAdapter adapter = (NavigationDrawerListAdapter) drawerList.getAdapter();
+    		adapter.rebuild();
+    	}
     	return super.onPrepareOptionsMenu(menu);
     }
 
@@ -414,8 +395,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 layerLoader = new LayerLoader(landmarkManager, messageStack);
                 LoggerUtils.debug("Loading Layers...");
                 intents.loadLayersAction(true, null, false, false, layerLoader,
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                        MathUtils.coordIntToDouble(location.getLatitudeE6()),
+                        MathUtils.coordIntToDouble(location.getLongitudeE6()),
                         mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
             } else {

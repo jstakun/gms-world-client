@@ -421,8 +421,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 layerLoader = new LayerLoader(landmarkManager, messageStack);
                 LoggerUtils.debug("Loading Layers...");
                 intents.loadLayersAction(true, null, false, false, layerLoader,
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                        MathUtils.coordIntToDouble(location.getLatitudeE6()),
+                        MathUtils.coordIntToDouble(location.getLongitudeE6()),
                         mapView.getZoomLevel(), new AmzLandmarkProjection(mapView));
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
             } else {

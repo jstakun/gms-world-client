@@ -583,7 +583,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                     LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());
-                    //TODO map view shows wrong coords in OSMDroid
                     intents.loadLayersAction(true, null, false, true, layerLoader, location.getLatitude(), location.getLongitude(),
                             mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
                 }
@@ -657,6 +656,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         		MenuItem routeRecording = menu.findItem(R.id.trackPos);
         		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
         		MenuItem saveRoute = menu.findItem(R.id.saveRoute);
+        		MenuItem loadRoute = menu.findItem(R.id.loadRoute);
             
         		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         			routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
@@ -672,6 +672,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         				pauseRecording.setTitle(R.string.Routes_PauseRecording);
         			}
         		}
+        		//TODO check if routes catalog is empty
+        		//loadRoute.setVisible(arg0);
         	} else {
         		routes.setVisible(false);	
         	}

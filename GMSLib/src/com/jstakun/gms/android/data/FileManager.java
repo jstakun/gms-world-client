@@ -849,7 +849,7 @@ public class FileManager implements PersistenceManager {
         try {
             fc = getExternalDirectory(path, null);
             if (fc.isDirectory()) {
-                //filefilter for kml files
+                //apply filefilter
                 File[] fileList = fc.listFiles(filter);
                 Function<File, LandmarkParcelable> transformFunction = new FileToLandmarkParcelableFunction(layer);
                 files.addAll(Lists.transform(Arrays.asList(fileList), transformFunction));
