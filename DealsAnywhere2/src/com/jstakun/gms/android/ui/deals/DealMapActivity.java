@@ -81,7 +81,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private boolean isStopped = false;
     private boolean appInitialized = false;
     private boolean isRouteDisplayed = false;
-    //private GoogleInfoOverlay infoOverlay;
     //Handlers
     private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
@@ -171,17 +170,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         mapView.setBuiltInZoomControls(true);
 
         ((ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
-        /*infoOverlay = new GoogleInfoOverlay();
-
-        StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
-        ViewResizeListener viewResizeListener = new ViewResizeListener() {
-            @Override
-            public void onResize(int id, int xNew, int yNew, int xOld, int yOld) {
-                infoOverlay.setFontSize(yNew);
-            }
-        };
-        bottomPanel.setViewResizeListener(viewResizeListener);*/
-
+        
         myLocation = new GoogleMyLocationOverlay(this, mapView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
 
         GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);

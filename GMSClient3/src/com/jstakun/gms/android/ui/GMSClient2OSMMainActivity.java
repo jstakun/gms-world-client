@@ -222,14 +222,14 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 R.string.app_name  /* "close drawer" description for accessibility */
                 ) {
             public void onDrawerClosed(View view) {
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu(); 
             	for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
         			drawerList.collapseGroup(i);	
         		}
             }
 
             public void onDrawerOpened(View drawerView) {
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu();
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
@@ -647,6 +647,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             
             MenuItem register = menu.findItem(R.id.register);
             register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
+            
+            if (drawerLayout.isDrawerOpen(drawerList)) {
+            	NavigationDrawerExpandableListAdapter adapter = (NavigationDrawerExpandableListAdapter) drawerList.getExpandableListAdapter();
+            	adapter.rebuild();
+        	}
 
             return super.onPrepareOptionsMenu(menu);
         }

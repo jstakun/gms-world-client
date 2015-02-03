@@ -239,14 +239,14 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 R.string.app_name  /* "close drawer" description for accessibility */
                 ) {
             public void onDrawerClosed(View view) {
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu(); 
             	for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
         			drawerList.collapseGroup(i);	
         		}
             }
 
             public void onDrawerOpened(View drawerView) {
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu();
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
@@ -255,20 +255,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         setBuiltInZoomControls(true);
 
-        /*StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
-        ViewResizeListener viewResizeListener = new ViewResizeListener() {
-            @Override
-            public void onResize(int id, int xNew, int yNew, int xOld, int yOld) {
-                if (mapProvider == ConfigurationManager.OSM_MAPS) {
-                    ((OsmInfoOverlay) infoOverlay).setFontSize(yNew);
-                } else {
-                    ((GoogleInfoOverlay) infoOverlay).setFontSize(yNew);
-                }
-            }
-        };
-        bottomPanel.setViewResizeListener(viewResizeListener);*/
-        //
-        
         IGeoPoint mapCenter = (IGeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, IGeoPoint.class);
 
         if (mapCenter == null) {
@@ -687,6 +673,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
             MenuItem register = menu.findItem(R.id.register);
             register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
+            
+            if (drawerLayout.isDrawerOpen(drawerList)) {
+            	NavigationDrawerExpandableListAdapter adapter = (NavigationDrawerExpandableListAdapter) drawerList.getExpandableListAdapter();
+                adapter.rebuild();
+        	}
             
             return super.onPrepareOptionsMenu(menu);
         }

@@ -197,7 +197,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         drawerList = (ListView) findViewById(R.id.left_drawer);
 
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        drawerList.setAdapter(new NavigationDrawerListAdapter(this, R.layout.drawerrow_parent, getResources().getStringArray(R.array.navigation)));
+        drawerList.setAdapter(new NavigationDrawerListAdapter(this, R.layout.drawerrow_parent));
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
         
         drawerToggle = new ActionBarDrawerToggle(
@@ -205,29 +205,18 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 R.string.app_name,  /* "open drawer" description for accessibility */
                 R.string.app_name  /* "close drawer" description for accessibility */
                 ) {
-            public void onDrawerClosed(View view) {
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+        	public void onDrawerClosed(View view) {
+            	super.onDrawerClosed(view);
+            	invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            	super.onDrawerOpened(drawerView);
+            	invalidateOptionsMenu();
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
        
-        /*infoOverlay = new AmzInfoOverlay();
-
-        StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
-        ViewResizeListener viewResizeListener = new ViewResizeListener() {
-            @Override
-            public void onResize(int id, int xNew, int yNew, int xOld, int yOld) {
-                infoOverlay.setFontSize(yNew);
-            }
-        };
-        bottomPanel.setViewResizeListener(viewResizeListener);*/
-
-        //myLocation = new AmzMyLocationOverlay(this, amzMapsView, gpsPositionHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
-
         ((ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
         
         GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
@@ -298,8 +287,11 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        //TODO R.id.showDoD
-        return super.onPrepareOptionsMenu(menu);
+    	if (drawerLayout.isDrawerOpen(drawerList)) {
+    		NavigationDrawerListAdapter adapter = (NavigationDrawerListAdapter) drawerList.getAdapter();
+    		adapter.rebuild();
+    	}
+    	return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

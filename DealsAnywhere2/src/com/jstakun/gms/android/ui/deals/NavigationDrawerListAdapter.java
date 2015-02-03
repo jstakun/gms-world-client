@@ -1,5 +1,7 @@
 package com.jstakun.gms.android.ui.deals;
 
+import com.jstakun.gms.android.ui.NavigationDrawerListItem;
+
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;

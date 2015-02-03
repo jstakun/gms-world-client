@@ -1,4 +1,4 @@
-package com.jstakun.gms.android.ui.deals;
+package com.jstakun.gms.android.ui;
 
 public class NavigationDrawerListItem {
 	private String name;

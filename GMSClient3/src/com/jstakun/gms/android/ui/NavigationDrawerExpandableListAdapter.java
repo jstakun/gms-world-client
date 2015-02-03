@@ -1,5 +1,8 @@
 package com.jstakun.gms.android.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +13,64 @@ import android.widget.TextView;
 public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAdapter {
 
 	private Activity parentActivity;
-	private String[] parentGroup, landmarks, checkin;
+	private List<NavigationDrawerListItem> parents = new ArrayList<NavigationDrawerListItem>();
+	private List<NavigationDrawerListItem> landmarks = new ArrayList<NavigationDrawerListItem>();
+	private List<NavigationDrawerListItem> checkins = new ArrayList<NavigationDrawerListItem>(); 
+	private static final int CHECKIN = -1;
+	private static final int LANDMARK = -2;
 	
 	public NavigationDrawerExpandableListAdapter(Activity parent) {
 		this.parentActivity = parent;
-		parentGroup = parent.getResources().getStringArray(R.array.navigation);
-		landmarks = parent.getResources().getStringArray(R.array.landmarks_submenu);
-		checkin = parent.getResources().getStringArray(R.array.checkin_submenu);
+		rebuild();
+	}
+	
+	public void rebuild() {
+		String[] parentGroup = parentActivity.getResources().getStringArray(R.array.navigation);
+		String[] landmark = parentActivity.getResources().getStringArray(R.array.landmarks_submenu);
+		String[] checkin = parentActivity.getResources().getStringArray(R.array.checkin_submenu);
+	
+		//0 <item>Layers</item>
+        //1 <item>Landmarks</item> <!-- submenu -->
+        //2 <item>Check-in</item> <!-- submenu -->
+        //3 <item>Friends activities</item>
+		//4 <item>Deals</item>
+        //5 <item>Social Networks</item>
+		
+		//TODO add conditions to show items
+		
+		parents.clear();	    
+	    parents.add(new NavigationDrawerListItem(parentGroup[0], R.id.showLayers));
+	    parents.add(new NavigationDrawerListItem(parentGroup[1], LANDMARK));
+	    parents.add(new NavigationDrawerListItem(parentGroup[2], CHECKIN));
+	    parents.add(new NavigationDrawerListItem(parentGroup[3], R.id.friendsCheckins));
+	    parents.add(new NavigationDrawerListItem(parentGroup[4], R.id.deals));
+	    parents.add(new NavigationDrawerListItem(parentGroup[5], R.id.socialNetworks));
+	
+	    //<item>Nearby landmarks</item>
+    	//<item>Create new landmark</item>
+    	//<item>Recently opened</item>
+    	//<item>Newest landmarks</item>
+    	//<item>Saved landmarks</item>
+    	//<item>Calendar</item>
+    	//<item>Poi files</item>
+    	
+	    landmarks.clear();
+	    landmarks.add(new NavigationDrawerListItem(landmark[0], R.id.listLandmarks));
+	    landmarks.add(new NavigationDrawerListItem(landmark[1], R.id.addLandmark));
+	    landmarks.add(new NavigationDrawerListItem(landmark[2], R.id.recentLandmarks));
+	    landmarks.add(new NavigationDrawerListItem(landmark[3], R.id.newestLandmarks));
+	    landmarks.add(new NavigationDrawerListItem(landmark[4], R.id.showMyLandmarks));
+	    landmarks.add(new NavigationDrawerListItem(landmark[5], R.id.events));
+	    landmarks.add(new NavigationDrawerListItem(landmark[6], R.id.loadPoiFile));
+	    
+	    //<item>Auto Check-In</item>
+        //<item>Check-in at location</item>
+        //<item>Check-in with QR code</item>
+    	
+	    checkins.clear();
+	    checkins.add(new NavigationDrawerListItem(checkin[0], R.id.autocheckin));
+	    checkins.add(new NavigationDrawerListItem(checkin[1], R.id.searchcheckin));
+	    checkins.add(new NavigationDrawerListItem(checkin[2], R.id.qrcheckin));
 	}
 	
 	@Override
@@ -26,44 +80,13 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 
 	@Override
 	public long getChildId(int groupPosition, int childPosition) {
-		//1 Landmarks
-      	//2 Check-in
-      	if (groupPosition == 1) {
-        	//<item>Nearby landmarks</item>
-        	//<item>Create new landmark</item>
-        	//<item>Recently opened</item>
-        	//<item>Newest landmarks</item>
-        	//<item>Saved landmarks</item>
-        	//<item>Calendar</item>
-        	//<item>Poi files</item>
-        	if (childPosition == 0) {
-        		return R.id.listLandmarks;
-        	} else if (childPosition == 1) {
-        		return R.id.addLandmark;
-        	} else if (childPosition == 2) {
-        		return R.id.recentLandmarks;
-        	} else if (childPosition == 3) {
-        		return R.id.newestLandmarks;
-        	} else if (childPosition == 4) {
-        		return R.id.showMyLandmarks;
-        	} else if (childPosition == 5) {
-        		return R.id.events;
-        	} else if (childPosition == 6) {
-        		return R.id.loadPoiFile;
-        	} 
-        } else if (groupPosition == 2) {
-        	//<item>Auto Check-In</item>
-            //<item>Check-in at location</item>
-            //<item>Check-in with QR code</item>
-        	if (childPosition == 0) {
-        		return R.id.autocheckin;
-        	} else if (childPosition == 1) {
-        		return R.id.searchcheckin;
-        	} else if (childPosition == 2) {
-        		return R.id.qrcheckin;
-        	}
-        } 
-        return 0;
+		if (parents.get(groupPosition).getResource() == LANDMARK) {
+			return landmarks.get(childPosition).getResource();
+		} else if (parents.get(groupPosition).getResource() == CHECKIN) {
+			return checkins.get(childPosition).getResource();
+		} else {
+			return 0;
+		}
 	}
 
 	@Override
@@ -73,24 +96,20 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
             LayoutInflater inflater = parentActivity.getLayoutInflater();
             rowView = inflater.inflate(R.layout.drawerrow_child, null, true);
         }    
-        //1 Landmarks
-      	//2 Check-in
-      	if (groupPosition == 1) {
-        	((TextView)rowView).setText(landmarks[childPosition]);
-        } else if (groupPosition == 2) {
-        	((TextView)rowView).setText(checkin[childPosition]);
+        if (parents.get(groupPosition).getResource() == LANDMARK) {
+        	((TextView)rowView).setText(landmarks.get(childPosition).getName());
+        } else if (parents.get(groupPosition).getResource() == CHECKIN) {
+        	((TextView)rowView).setText(checkins.get(childPosition).getName());
         } 
       	return rowView;
 	}
 
 	@Override
 	public int getChildrenCount(int position) {
-		//1 Landmarks - 7
-		//2 Check-in - 3
-		if (position == 1) {
-			return 7;
-		} else if (position == 2) {
-			return 3;
+		if (parents.get(position).getResource() == LANDMARK) {
+			return landmarks.size();
+		} else if (parents.get(position).getResource() == CHECKIN) {
+			return checkins.size();
 		} else {
 			return 0;
 		}
@@ -103,27 +122,12 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 
 	@Override
 	public int getGroupCount() {
-		return parentGroup.length;
+		return parents.size();
 	}
 
 	@Override
 	public long getGroupId(int position) {
-		//0 <item>Layers</item>
-        //1 <item>Landmarks</item> <!-- submenu -->
-        //2 <item>Check-in</item> <!-- submenu -->
-        //3 <item>Deals</item>
-        //4 <item>Social Networks</item>
-        if (position == 0) {
-			return R.id.showLayers;
-		} else if (position == 3) {
-			return R.id.friendsCheckins;
-		} else if (position == 4) {
-			return R.id.deals;
-		} else if (position == 5) {
-			return R.id.socialNetworks;
-		} else {
-			return 0;
-		}
+		return parents.get(position).getResource();
 	}
 
 	@Override
@@ -134,7 +138,7 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
             rowView = inflater.inflate(R.layout.drawerrow_parent, null, true);
         }    
         TextView textView = (TextView)rowView;
-        textView.setText(parentGroup[groupPosition]);
+        textView.setText(parents.get(groupPosition).getName());
         return rowView;
 	}
 
