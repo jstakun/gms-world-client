@@ -3,6 +3,12 @@ package com.jstakun.gms.android.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.FilenameFilterFactory;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.landmarks.LandmarkManager;
+
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,11 +44,15 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 		
 		//TODO add conditions to show items
 		
+		LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
+		
 		parents.clear();	    
 	    parents.add(new NavigationDrawerListItem(parentGroup[0], R.id.showLayers));
 	    parents.add(new NavigationDrawerListItem(parentGroup[1], LANDMARK));
 	    parents.add(new NavigationDrawerListItem(parentGroup[2], CHECKIN));
+	    //TODO condition
 	    parents.add(new NavigationDrawerListItem(parentGroup[3], R.id.friendsCheckins));
+	    //TODO condition
 	    parents.add(new NavigationDrawerListItem(parentGroup[4], R.id.deals));
 	    parents.add(new NavigationDrawerListItem(parentGroup[5], R.id.socialNetworks));
 	
@@ -55,21 +65,28 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
     	//<item>Poi files</item>
     	
 	    landmarks.clear();
+	    //TODO condition
 	    landmarks.add(new NavigationDrawerListItem(landmark[0], R.id.listLandmarks));
 	    landmarks.add(new NavigationDrawerListItem(landmark[1], R.id.addLandmark));
-	    landmarks.add(new NavigationDrawerListItem(landmark[2], R.id.recentLandmarks));
+	    if (landmarkManager != null && landmarkManager.hasRecentlyOpenedLandmarks()) {
+	    	landmarks.add(new NavigationDrawerListItem(landmark[2], R.id.recentLandmarks));
+	    }
+	    //TODO condition
 	    landmarks.add(new NavigationDrawerListItem(landmark[3], R.id.newestLandmarks));
 	    landmarks.add(new NavigationDrawerListItem(landmark[4], R.id.showMyLandmarks));
 	    landmarks.add(new NavigationDrawerListItem(landmark[5], R.id.events));
-	    landmarks.add(new NavigationDrawerListItem(landmark[6], R.id.loadPoiFile));
-	    
+	    if (!PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getFileFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {
+	    	landmarks.add(new NavigationDrawerListItem(landmark[6], R.id.loadPoiFile));
+	    }
 	    //<item>Auto Check-In</item>
         //<item>Check-in at location</item>
         //<item>Check-in with QR code</item>
     	
 	    checkins.clear();
 	    checkins.add(new NavigationDrawerListItem(checkin[0], R.id.autocheckin));
+	    //TODO condition
 	    checkins.add(new NavigationDrawerListItem(checkin[1], R.id.searchcheckin));
+	    //TODO condition
 	    checkins.add(new NavigationDrawerListItem(checkin[2], R.id.qrcheckin));
 	}
 	

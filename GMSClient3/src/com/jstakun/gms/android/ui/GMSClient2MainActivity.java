@@ -42,6 +42,9 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.FilenameFilterFactory;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
 import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
@@ -658,8 +661,12 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         				pauseRecording.setTitle(R.string.Routes_PauseRecording);
         			}
         		}
-        		//TODO check if routes catalog is empty
-        		//loadRoute.setVisible(arg0);
+        		//TODO add to others
+        		if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
+        			loadRoute.setVisible(false);
+        		} else {
+        			loadRoute.setVisible(true);
+        		}
         	} else {
         		routes.setVisible(false);	
         	}

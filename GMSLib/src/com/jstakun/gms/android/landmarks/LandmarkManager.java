@@ -814,6 +814,10 @@ public class LandmarkManager {
         landmarkPaintManager.addRecentlyOpenedLandmark(landmark);
     }
 
+    public boolean hasRecentlyOpenedLandmarks() {
+    	return !landmarkPaintManager.getRecentlyOpenedLandmarks().isEmpty() || !landmarkPaintManager.getRecentlyOpenedLandmarksExcluded().isEmpty();
+    }
+    
     public void getRecentlyOpenedLandmarks(List<LandmarkParcelable> recentlySelected, double lat, double lng) {
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         landmarks.addAll(landmarkPaintManager.getRecentlyOpenedLandmarks());

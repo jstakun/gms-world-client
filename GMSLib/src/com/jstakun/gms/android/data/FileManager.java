@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.data;
 
 import android.content.Context;
@@ -837,7 +833,7 @@ public class FileManager implements PersistenceManager {
                 }
             }
         } catch (Exception ex) {
-            LoggerUtils.error("FileManager.readFolder exception", ex);
+            LoggerUtils.error("FileManager.readFolder() exception", ex);
         }
 
         return files;
@@ -855,10 +851,24 @@ public class FileManager implements PersistenceManager {
                 files.addAll(Lists.transform(Arrays.asList(fileList), transformFunction));
             }
         } catch (Exception ex) {
-            LoggerUtils.error("FileManager.readFolder exception", ex);
+            LoggerUtils.error("FileManager.readFolderAsLandmarkParcelable() exception", ex);
         }
 
         return files;
+    }
+    
+    public boolean isFolderEmpty(String path, FilenameFilter filter) {
+    	try {
+            File fc = getExternalDirectory(path, null);
+            if (fc.isDirectory()) {
+                //apply filefilter
+                String[] fileList = fc.list(filter);
+                return (fileList == null || fileList.length == 0);
+            }
+        } catch (Exception ex) {
+            LoggerUtils.error("FileManager.isFolderEmpty() exception", ex);
+        }
+    	return true;
     }
 
     public File getExternalDirectory(String path, String file) {
