@@ -41,6 +41,9 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.FilenameFilterFactory;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -620,6 +623,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         		MenuItem routeRecording = menu.findItem(R.id.trackPos);
             	MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
             	MenuItem saveRoute = menu.findItem(R.id.saveRoute);
+            	MenuItem loadRoute = menu.findItem(R.id.loadRoute);
             
             	if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 	routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
@@ -635,6 +639,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                     	pauseRecording.setTitle(R.string.Routes_PauseRecording);
                 	}
             	}
+            	if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
+        			loadRoute.setVisible(false);
+        		} else {
+        			loadRoute.setVisible(true);
+        		}
         	} else {
         		routes.setVisible(false);	
         	}

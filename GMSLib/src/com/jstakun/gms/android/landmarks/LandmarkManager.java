@@ -629,6 +629,26 @@ public class LandmarkManager {
     	return null;
     }
     
+    public boolean hasVisibleLandmarks(ProjectionInterface projection, boolean includeDisabled) {
+    	Predicate<ExtendedLandmark> visibleLandmarkPredicate = new VisibleLandmarkPredicate(projection);
+        List<String> i;
+
+        if (includeDisabled) {
+            i = layerManager.getLayers();
+        } else {
+            i = layerManager.getEnabledLayers();
+        }
+
+        for (String key : i) {
+        	for (ExtendedLandmark landmark : getLandmarkStoreLayer(key)) {
+        		if (visibleLandmarkPredicate.apply(landmark)) {
+        			return true;
+        		}
+        	}
+        }
+        return false;
+    }
+    
     public void findVisibleLandmarks(ProjectionInterface projection, boolean includeDisabled) {
         landmarkPaintManager.setSelectedLandmark(null, -1);
         List<ExtendedLandmark> newFocusQueue = new ArrayList<ExtendedLandmark>();
@@ -767,6 +787,20 @@ public class LandmarkManager {
         }
     }
 
+    public boolean hasFriendsCheckinLandmarks() {
+    	FriendsCheckinsPredicate friendsCheckinsPredicate = new FriendsCheckinsPredicate();
+    	final String[] friendsLayers = new String[]{Commons.FOURSQUARE_LAYER, Commons.FACEBOOK_LAYER, Commons.TWITTER_LAYER};
+    	for (int i = 0; i < friendsLayers.length; i++) {
+    		for (ExtendedLandmark landmark : getLandmarkStoreLayer(friendsLayers[i])) {
+    			if (friendsCheckinsPredicate.apply(landmark)) {
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
+    		
+    }
+    
     public void findFriendsCheckinLandmarks(List<LandmarkParcelable> checkins, double lat, double lng) {
         FriendsCheckinsPredicate friendsCheckinsPredicate = new FriendsCheckinsPredicate();
         final String[] friendsLayers = new String[]{Commons.FOURSQUARE_LAYER, Commons.FACEBOOK_LAYER, Commons.TWITTER_LAYER};

@@ -36,6 +36,9 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.FilenameFilterFactory;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -559,7 +562,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
         		MenuItem saveRoute = menu.findItem(R.id.saveRoute);
         		menu.findItem(R.id.events).setVisible(false);
-
+        		MenuItem loadRoute = menu.findItem(R.id.loadRoute);
+        		
         		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         			routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
         			saveRoute.setVisible(false);
@@ -573,6 +577,11 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         			} else {
         				pauseRecording.setTitle(R.string.Routes_PauseRecording);
         			}
+        		}
+        		if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
+        			loadRoute.setVisible(false);
+        		} else {
+        			loadRoute.setVisible(true);
         		}
         	} else {
         		routes.setVisible(false);	
@@ -805,7 +814,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
       	  			}
       	  		}	else if (v == newestButton) {
       	  			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestLandmarks", "", 0);
-      	  			final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.HOTWIRE_LAYER};
+      	  			final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
       	  			intents.startNewestLandmarkIntent(getMyLocation(), excluded, 7);
       	  		} else if (v == listButton) {
       	  			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleLandmarks", "", 0);

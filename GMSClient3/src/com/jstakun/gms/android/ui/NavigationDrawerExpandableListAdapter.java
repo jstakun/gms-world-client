@@ -50,8 +50,9 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	    parents.add(new NavigationDrawerListItem(parentGroup[0], R.id.showLayers));
 	    parents.add(new NavigationDrawerListItem(parentGroup[1], LANDMARK));
 	    parents.add(new NavigationDrawerListItem(parentGroup[2], CHECKIN));
-	    //TODO condition
-	    parents.add(new NavigationDrawerListItem(parentGroup[3], R.id.friendsCheckins));
+	    if (landmarkManager != null && landmarkManager.hasFriendsCheckinLandmarks()) {
+	    	parents.add(new NavigationDrawerListItem(parentGroup[3], R.id.friendsCheckins));
+	    }
 	    //TODO condition
 	    parents.add(new NavigationDrawerListItem(parentGroup[4], R.id.deals));
 	    parents.add(new NavigationDrawerListItem(parentGroup[5], R.id.socialNetworks));
@@ -66,7 +67,9 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
     	
 	    landmarks.clear();
 	    //TODO condition
+	    //if (landmarkManager != null && landmarkManager.hasVisibleLandmarks())
 	    landmarks.add(new NavigationDrawerListItem(landmark[0], R.id.listLandmarks));
+	    //
 	    landmarks.add(new NavigationDrawerListItem(landmark[1], R.id.addLandmark));
 	    if (landmarkManager != null && landmarkManager.hasRecentlyOpenedLandmarks()) {
 	    	landmarks.add(new NavigationDrawerListItem(landmark[2], R.id.recentLandmarks));

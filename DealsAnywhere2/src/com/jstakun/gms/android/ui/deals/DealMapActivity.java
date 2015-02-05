@@ -468,7 +468,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             loadRoutePressedAction(landmarkManager.getSeletedLandmarkUI());
         } else if (v == newestButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestDeals", "", 0);
-            final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.HOTWIRE_LAYER, Commons.LOCAL_LAYER};
+            final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.LOCAL_LAYER};
             intents.startNewestLandmarkIntent(getMyLocation(), excluded, 2);
         } else if (v == listButton || v == nearbyLandmarksButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleDeals", "", 0);

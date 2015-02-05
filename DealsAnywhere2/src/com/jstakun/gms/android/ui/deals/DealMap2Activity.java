@@ -291,7 +291,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 intents.startDealsOfTheDayIntent(getMyPosition(), null);
                 break;
             case R.id.newestDeals:
-                final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.HOTWIRE_LAYER, Commons.LOCAL_LAYER};
+                final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.LOCAL_LAYER};
                 intents.startNewestLandmarkIntent(getMyPosition(), excluded, 2);
                 break;
             case R.id.nearbyDeals:

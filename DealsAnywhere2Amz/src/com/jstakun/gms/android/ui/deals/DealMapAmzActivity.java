@@ -311,7 +311,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 intents.startDealsOfTheDayIntent(getMyPosition(), null);
                 break;
             case R.id.newestDeals:
-                final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.HOTWIRE_LAYER, Commons.LOCAL_LAYER};
+                final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.LOCAL_LAYER};
                 intents.startNewestLandmarkIntent(getMyPosition(), excluded, 2);
                 break;
             case R.id.nearbyDeals:
@@ -383,7 +383,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             if (!landmarkManager.isInitialized()) {
                 UserTracker.getInstance().sendMyLocation();
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase(), Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
-                		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.HOTWIRE_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
+                		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
 
             AmzLandmarkOverlay landmarkOverlay = new AmzLandmarkOverlay(landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});

@@ -36,6 +36,9 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.FilenameFilterFactory;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
 import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
@@ -216,19 +219,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         mapController = mapView.getController();
 
         setBuiltInZoomControls(true);
-
-        /*StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
-        ViewResizeListener viewResizeListener = new ViewResizeListener() {
-            @Override
-            public void onResize(int id, int xNew, int yNew, int xOld, int yOld) {
-                if (mapProvider == ConfigurationManager.OSM_MAPS) {
-                    ((OsmInfoOverlay) infoOverlay).setFontSize(yNew);
-                } else {
-                    ((GoogleInfoOverlay) infoOverlay).setFontSize(yNew);
-                }
-            }
-        };
-        bottomPanel.setViewResizeListener(viewResizeListener);*/
 
         IGeoPoint mapCenter = (IGeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, IGeoPoint.class);
 
@@ -599,6 +589,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
         		MenuItem saveRoute = menu.findItem(R.id.saveRoute);
         		menu.findItem(R.id.events).setVisible(false);
+        		MenuItem loadRoute = menu.findItem(R.id.loadRoute);
 
         		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         			routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
@@ -613,6 +604,11 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         			} else {
         				pauseRecording.setTitle(R.string.Routes_PauseRecording);
         			}
+        		}
+        		if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
+        			loadRoute.setVisible(false);
+        		} else {
+        			loadRoute.setVisible(true);
         		}
         	} else {
         		routes.setVisible(false);	

@@ -661,7 +661,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         				pauseRecording.setTitle(R.string.Routes_PauseRecording);
         			}
         		}
-        		//TODO add to others
         		if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
         			loadRoute.setVisible(false);
         		} else {
