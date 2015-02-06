@@ -1,5 +1,9 @@
 package com.jstakun.gms.android.ui.deals;
 
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.deals.CategoriesManager;
+import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.ui.NavigationDrawerListItem;
 
 import android.app.Activity;
@@ -33,21 +37,35 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<NavigationDrawerLi
 	
 	public void rebuild() {
 		clear();
-		//TODO add conditions to show items
+		
+		LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
+		
 		add(new NavigationDrawerListItem(names[0], R.id.listMode));
-		//TODO condition for Hot deals
-		add(new NavigationDrawerListItem(names[1], R.id.hotDeals));
-		//TODO condition for Newest Deals
-		add(new NavigationDrawerListItem(names[2], R.id.newestDeals));
-		//TODO condition for Deals Nearby
-		add(new NavigationDrawerListItem(names[3], R.id.nearbyDeals));
+		
+		final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.LOCAL_LAYER};
+        if (landmarkManager != null && landmarkManager.hasDealsOfTheDay(excluded)) {
+        	add(new NavigationDrawerListItem(names[1], R.id.hotDeals));
+        }
+        
+        if (landmarkManager != null && landmarkManager.hasNewLandmarks(2, excluded)) {
+        	add(new NavigationDrawerListItem(names[2], R.id.newestDeals));
+        }
+		
+        add(new NavigationDrawerListItem(names[3], R.id.nearbyDeals));
 		add(new NavigationDrawerListItem(names[4], R.id.pickMyPos));
 		add(new NavigationDrawerListItem(names[5], R.id.showMyLandmarks));
-		//TODO condition for Recently viewed deals
-		add(new NavigationDrawerListItem(names[6], R.id.recentLandmarks));
-		//TODO condition for Show deal of the day
-		add(new NavigationDrawerListItem(names[7], R.id.showDoD));
+		
+		if (landmarkManager != null && landmarkManager.hasRecentlyOpenedLandmarks()) {
+		    add(new NavigationDrawerListItem(names[6], R.id.recentLandmarks));
+		}
+		
+		CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
+		if (landmarkManager != null && cm != null && landmarkManager.hasRecommendedCategory(cm.getTopCategory(), cm.getTopSubCategory())) {
+			add(new NavigationDrawerListItem(names[7], R.id.showDoD));
+		}
 		add(new NavigationDrawerListItem(names[8], R.id.events));
+		
+		notifyDataSetChanged();
 	}
 	
 	@Override

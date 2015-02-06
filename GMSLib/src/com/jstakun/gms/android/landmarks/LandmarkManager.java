@@ -720,6 +720,37 @@ public class LandmarkManager {
         return !newFocusQueue.isEmpty();
     }
 
+    public boolean hasRecommendedCategory(int category, int subcategory) {
+    	double highestDiscountSubcat = 0.0, highestDiscountCat = 0.0,
+                highestSaveSubcat = 0.0, highestSaveCat = 0.0;
+        String recommendedDealShown = ConfigurationManager.getInstance().getString(ConfigurationManager.RECOMMENDED_DEALS_SHOWN);
+        List<Integer> lastShownDeals = new ArrayList<Integer>();
+        if (recommendedDealShown != null) {
+            lastShownDeals = StringUtil.stringToLongArray(recommendedDealShown, ",");
+        }
+        for (String key : Iterables.filter(layerManager.getLayers(), new LayerExistsPredicate())) {
+            for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
+                Deal deal = landmark.getDeal();
+
+                if (deal != null) {
+                    RecommendedDealPredicate predicateSubcat = new RecommendedDealPredicate(lastShownDeals, highestDiscountSubcat, highestSaveSubcat, category, subcategory);
+
+                    if (predicateSubcat.apply(landmark)) {
+                        return true;
+                    }
+
+                    RecommendedDealPredicate predicateCat = new RecommendedDealPredicate(lastShownDeals, highestDiscountCat, highestSaveCat, category, -1);
+
+                    if (predicateCat.apply(landmark)) {
+                        return true;
+                    }
+                    
+                }
+            }
+        }   	
+    	return false;
+    }
+    
     public ExtendedLandmark findRecommendedLandmark(int category, int subcategory) {
         ExtendedLandmark recommendedBySubcat = null, recommendedByCat = null;
         double highestDiscountSubcat = 0.0, highestDiscountCat = 0.0,
@@ -856,6 +887,18 @@ public class LandmarkManager {
         }
     }
 
+    public boolean hasDealsOfTheDay(String[] excluded) {
+    	DealsOfTheDayPredicate dealsOfTheDayPredicate = new DealsOfTheDayPredicate();
+    	for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedPredicate(excluded))) {
+            for (ExtendedLandmark deal : getLandmarkStoreLayer(key)) {
+            	if (dealsOfTheDayPredicate.apply(deal)) {
+            		return true;
+            	}
+            }
+        }
+    	return false;
+    }
+    
     public void findDealsOfTheDay(List<LandmarkParcelable> deals, String[] excluded, double lat, double lng) {
         DealsOfTheDayPredicate dealsOfTheDayPredicate = new DealsOfTheDayPredicate();
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();

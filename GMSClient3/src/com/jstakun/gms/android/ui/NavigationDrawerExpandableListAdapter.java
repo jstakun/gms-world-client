@@ -103,6 +103,7 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	    if (IntentsHelper.isIntentAvailable(IntentsHelper.SCAN_INTENT, parentActivity)) {
 	    	checkins.add(new NavigationDrawerListItem(checkin[2], R.id.qrcheckin));
 	    }
+	    
 	    notifyDataSetChanged();
 	}
 	
