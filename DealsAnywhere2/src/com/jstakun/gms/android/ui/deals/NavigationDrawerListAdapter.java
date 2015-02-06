@@ -5,6 +5,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.ui.NavigationDrawerListItem;
+import com.jstakun.gms.android.utils.ProjectionInterface;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -32,10 +33,10 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<NavigationDrawerLi
 		super(context, resource);
 		this.names = context.getResources().getStringArray(R.array.navigation);
 		this.parentActivity = context;
-		rebuild();
+		rebuild(null);
 	}
 	
-	public void rebuild() {
+	public void rebuild(ProjectionInterface projection) {
 		clear();
 		
 		LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
@@ -51,8 +52,11 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<NavigationDrawerLi
         	add(new NavigationDrawerListItem(names[2], R.id.newestDeals));
         }
 		
-        add(new NavigationDrawerListItem(names[3], R.id.nearbyDeals));
-		add(new NavigationDrawerListItem(names[4], R.id.pickMyPos));
+        if (landmarkManager != null && projection != null && landmarkManager.hasVisibleLandmarks(projection, true)) {
+        	add(new NavigationDrawerListItem(names[3], R.id.nearbyDeals));
+        }
+		
+        add(new NavigationDrawerListItem(names[4], R.id.pickMyPos));
 		add(new NavigationDrawerListItem(names[5], R.id.showMyLandmarks));
 		
 		if (landmarkManager != null && landmarkManager.hasRecentlyOpenedLandmarks()) {

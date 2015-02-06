@@ -269,7 +269,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (drawerLayout.isDrawerOpen(drawerList)) {
     		NavigationDrawerListAdapter adapter = (NavigationDrawerListAdapter) drawerList.getAdapter();
-    		adapter.rebuild();
+    		adapter.rebuild(new GoogleLandmarkProjection(mapView));
     	}
     	return super.onPrepareOptionsMenu(menu);
     }
