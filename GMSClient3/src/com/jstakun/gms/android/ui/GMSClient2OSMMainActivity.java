@@ -659,7 +659,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             
             if (drawerLayout.isDrawerOpen(drawerList)) {
             	NavigationDrawerExpandableListAdapter adapter = (NavigationDrawerExpandableListAdapter) drawerList.getExpandableListAdapter();
-            	adapter.rebuild();
+            	adapter.rebuild(new OsmLandmarkProjection(mapView));
         	}
 
             return super.onPrepareOptionsMenu(menu);

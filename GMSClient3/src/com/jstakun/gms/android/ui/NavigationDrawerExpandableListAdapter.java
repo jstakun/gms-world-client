@@ -9,6 +9,7 @@ import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.utils.ProjectionInterface;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -28,10 +29,10 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	
 	public NavigationDrawerExpandableListAdapter(Activity parent) {
 		this.parentActivity = parent;
-		rebuild();
+		rebuild(null);
 	}
 	
-	public void rebuild() {
+	public void rebuild(ProjectionInterface projection) {
 		String[] parentGroup = parentActivity.getResources().getStringArray(R.array.navigation);
 		String[] landmark = parentActivity.getResources().getStringArray(R.array.landmarks_submenu);
 		String[] checkin = parentActivity.getResources().getStringArray(R.array.checkin_submenu);
@@ -52,9 +53,10 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	    if (landmarkManager != null && landmarkManager.hasFriendsCheckinLandmarks()) {
 	    	parents.add(new NavigationDrawerListItem(parentGroup[3], R.id.friendsCheckins));
 	    }
-	    //TODO condition
-	    parents.add(new NavigationDrawerListItem(parentGroup[4], R.id.deals));
-	    parents.add(new NavigationDrawerListItem(parentGroup[5], R.id.socialNetworks));
+        if (landmarkManager != null && landmarkManager.hasDeals()) {
+        	parents.add(new NavigationDrawerListItem(parentGroup[4], R.id.deals));
+        }
+        parents.add(new NavigationDrawerListItem(parentGroup[5], R.id.socialNetworks));
 	
 	    //<item>Nearby landmarks</item>
     	//<item>Create new landmark</item>
@@ -65,10 +67,10 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
     	//<item>Poi files</item>
     	
 	    landmarks.clear();
-	    //TODO condition
-	    //if (landmarkManager != null && landmarkManager.hasVisibleLandmarks())
-	    landmarks.add(new NavigationDrawerListItem(landmark[0], R.id.listLandmarks));
-	    //
+	    
+	    if (landmarkManager != null && projection != null && landmarkManager.hasVisibleLandmarks(projection, true)) {
+	    	landmarks.add(new NavigationDrawerListItem(landmark[0], R.id.listLandmarks));
+	    }
 	    landmarks.add(new NavigationDrawerListItem(landmark[1], R.id.addLandmark));
 	    
 	    if (landmarkManager != null && landmarkManager.hasRecentlyOpenedLandmarks()) {
@@ -93,11 +95,14 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
     	
 	    checkins.clear();
 	    checkins.add(new NavigationDrawerListItem(checkin[0], R.id.autocheckin));
-	    //TODO condition
-	    checkins.add(new NavigationDrawerListItem(checkin[1], R.id.searchcheckin));
-	    //TODO condition
-	    checkins.add(new NavigationDrawerListItem(checkin[2], R.id.qrcheckin));
 	    
+	    if (landmarkManager != null && landmarkManager.hasCheckinableLandmarks()) {
+	    	checkins.add(new NavigationDrawerListItem(checkin[1], R.id.searchcheckin));
+	    }
+	    
+	    if (IntentsHelper.isIntentAvailable(IntentsHelper.SCAN_INTENT, parentActivity)) {
+	    	checkins.add(new NavigationDrawerListItem(checkin[2], R.id.qrcheckin));
+	    }
 	    notifyDataSetChanged();
 	}
 	

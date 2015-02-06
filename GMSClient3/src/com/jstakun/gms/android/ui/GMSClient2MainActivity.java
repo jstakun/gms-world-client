@@ -682,7 +682,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             
             if (drawerLayout.isDrawerOpen(drawerList)) {
             	NavigationDrawerExpandableListAdapter adapter = (NavigationDrawerExpandableListAdapter) drawerList.getExpandableListAdapter();
-                adapter.rebuild();
+                adapter.rebuild(ProjectionFactory.getProjection(mapView, googleMapsView));
         	}
             
             return super.onPrepareOptionsMenu(menu);

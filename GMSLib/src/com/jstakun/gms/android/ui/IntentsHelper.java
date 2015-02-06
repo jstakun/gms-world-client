@@ -101,7 +101,7 @@ public final class IntentsHelper {
     public static final int INTENT_CALENDAR = 12;
     private static final int INTENT_CONFIGURATION_VIEWER = 13;
     
-    private static final String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
+    public static final String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
     
     private Activity activity;
     private LandmarkManager landmarkManager;
@@ -312,15 +312,15 @@ public final class IntentsHelper {
         }
     }
 
-    private boolean isIntentAvailable(String action) {
-        final PackageManager packageManager = activity.getPackageManager();
+    public static boolean isIntentAvailable(String action, Context context) {
+        final PackageManager packageManager = context.getPackageManager();
         final Intent intent = new Intent(action);
         List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         return (list.size() > 0);
     }
 
     public void startQrCodeCheckinActivity(double[] currentLocation) {
-        final boolean scanAvailable = isIntentAvailable(SCAN_INTENT);
+        final boolean scanAvailable = isIntentAvailable(SCAN_INTENT, activity);
         if (scanAvailable) {
             Intent intent = new Intent(SCAN_INTENT);
             intent.putExtra("SCAN_MODE", "QR_CODE_MODE");

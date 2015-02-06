@@ -369,6 +369,19 @@ public class LandmarkManager {
         //System.out.println(ac + " ac");
     }
 
+    public boolean hasCheckinableLandmarks() {
+    	final String[] excluded = new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER,
+                Commons.FOURSQUARE_MERCHANT_LAYER, Commons.GOOGLE_PLACES_LAYER};
+
+    	for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedAndCheckinablePredicate(excluded))) {
+            if (!getLandmarkStoreLayer(key).isEmpty()) {
+            	return true;
+            }
+        }
+    	
+    	return false;
+    }
+    
     public void getCheckinableLandmarks(List<LandmarkParcelable> checkinable, double lat, double lng) {
         final String[] excluded = new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER,
             Commons.FOURSQUARE_MERCHANT_LAYER, Commons.GOOGLE_PLACES_LAYER};
@@ -392,7 +405,7 @@ public class LandmarkManager {
     }
 
     public void searchDeals(List<LandmarkParcelable> results, String searchTerm, String[] searchTermTokens, double lat, double lng, int searchType) {
-        final List<String> included = Arrays.asList(new String[]{Commons.HOTWIRE_LAYER, Commons.COUPONS_LAYER,
+        final List<String> included = Arrays.asList(new String[]{Commons.COUPONS_LAYER,
                     Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER,
                     Commons.HOTELS_LAYER, Commons.LOCAL_LAYER, Commons.YELP_LAYER});
         searchLandmarks(results, searchTerm, searchTermTokens, included, lat, lng, searchType);
@@ -982,10 +995,23 @@ public class LandmarkManager {
         }
     }
 
+    public boolean hasDeals() {
+    	final List<String> included = Arrays.asList(new String[]{Commons.COUPONS_LAYER,
+                Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.HOTELS_LAYER, Commons.YELP_LAYER});
+
+    	for (String key : Iterables.filter(included, new LayerExistsPredicate())) {
+            if (! getLandmarkStoreLayer(key).isEmpty()) {
+            	return true;
+            }
+        }
+    	
+    	return false;
+    }
+    
     //deal categories
     public void selectCategoryLandmarks(List<LandmarkParcelable> landmarkParcelable, int categoryId, int subCategoryId, double lat, double lng) {
         //landmarkPaintManager.clearLandmarkOnFocusQueue();
-        final List<String> included = Arrays.asList(new String[]{Commons.HOTWIRE_LAYER, Commons.COUPONS_LAYER,
+        final List<String> included = Arrays.asList(new String[]{Commons.COUPONS_LAYER,
                     Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.HOTELS_LAYER, Commons.YELP_LAYER});
 
         List<ExtendedLandmark> categoryLandmarks = new ArrayList<ExtendedLandmark>();
@@ -1008,7 +1034,6 @@ public class LandmarkManager {
         int count = 0;
 
         if (categoryId == CategoriesManager.CATEGORY_TRAVEL && (subCategoryId == CategoriesManager.SUBCATEGORY_HOTEL || subCategoryId == -1)) {
-            count += getLayerSize(Commons.HOTWIRE_LAYER);
             count += getLayerSize(Commons.HOTELS_LAYER);
         }
 
@@ -1024,9 +1049,7 @@ public class LandmarkManager {
 
     public boolean isCategoryLandmarksEmpty(int categoryId, int subCategoryId) {
         if (categoryId == CategoriesManager.CATEGORY_TRAVEL && (subCategoryId == CategoriesManager.SUBCATEGORY_HOTEL || subCategoryId == -1)) {
-            if (getLayerSize(Commons.HOTWIRE_LAYER) > 0) {
-                return false;
-            } else if (getLayerSize(Commons.HOTELS_LAYER) > 0) {
+            if (getLayerSize(Commons.HOTELS_LAYER) > 0) {
                 return false;
             }
         }
