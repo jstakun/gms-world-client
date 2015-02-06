@@ -759,7 +759,31 @@ public class LandmarkManager {
         }
     }
 
-    public void findNewestLandmarks(List<LandmarkParcelable> newest, int minDays, String[] excluded, double lat, double lng) {
+    public boolean hasNewLandmarks(int minDays, String[] excluded) {
+    	long lastStartTime = System.currentTimeMillis() - (1000l * 60 * 60 * 24 * minDays); //maximum landmark age
+
+        //if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.LAST_STARTING_DATE)) {
+            long lastStartingDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.LAST_STARTING_DATE);
+
+            if (lastStartingDate > 0 && lastStartTime > lastStartingDate) {
+                lastStartTime = lastStartingDate;
+            }        
+         //}
+            
+         NewerThanDatePredicate newerThanDatePredicate = new NewerThanDatePredicate(lastStartTime);
+ 
+         for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedPredicate(excluded))) {
+        	 for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
+        		  if (newerThanDatePredicate.apply(landmark)) {
+        			  return true;
+        		  }
+        	 }
+         }
+    	
+         return false;
+    }
+    
+    public void findNewLandmarks(List<LandmarkParcelable> newest, int minDays, String[] excluded, double lat, double lng) {
         long lastStartTime = System.currentTimeMillis() - (1000l * 60 * 60 * 24 * minDays); //maximum landmark age
 
         //if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.LAST_STARTING_DATE)) {

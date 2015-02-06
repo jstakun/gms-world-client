@@ -815,7 +815,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
       	  		}	else if (v == newestButton) {
       	  			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestLandmarks", "", 0);
       	  			final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
-      	  			intents.startNewestLandmarkIntent(getMyLocation(), excluded, 7);
+      	  			intents.startNewestLandmarkIntent(getMyLocation(), excluded, 2);
       	  		} else if (v == listButton) {
       	  			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowVisibleLandmarks", "", 0);
       	  			if (!lvView.isShown()) {

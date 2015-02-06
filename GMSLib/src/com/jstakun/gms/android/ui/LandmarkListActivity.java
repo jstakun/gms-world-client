@@ -325,7 +325,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
                 } else if (source == SOURCE.NEWEST) {
                     String[] excluded = intent.getStringArrayExtra("excluded");
                     int maxDays = intent.getIntExtra("maxDays", 31);
-                    landmarkManager.findNewestLandmarks(landmarks, maxDays, excluded, lat, lng);
+                    landmarkManager.findNewLandmarks(landmarks, maxDays, excluded, lat, lng);
                 } else if (source == SOURCE.RECENT) {
                     landmarkManager.getRecentlyOpenedLandmarks(landmarks, lat, lng);
                 } else if (source == SOURCE.DOD) {
