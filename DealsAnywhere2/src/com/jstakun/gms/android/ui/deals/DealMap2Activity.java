@@ -271,6 +271,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     		NavigationDrawerListAdapter adapter = (NavigationDrawerListAdapter) drawerList.getAdapter();
     		adapter.rebuild(new GoogleLandmarkProjection(mapView));
     	}
+        
+        MenuItem config = menu.findItem(R.id.config);
+    	config.setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        
     	return super.onPrepareOptionsMenu(menu);
     }
 
@@ -327,10 +331,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             case R.id.exit:
                 dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
                 break;
-            //case android.R.id.home:
-            //    dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
-            //    break;
-            case R.id.about:
+            case R.id.config:
+				intents.startConfigurationViewerActivity();
+				break;
+			case R.id.about:
                 dialogManager.showAlertDialog(AlertDialogBuilder.INFO_DIALOG, null, null);
                 break;
             case R.id.releaseNotes:

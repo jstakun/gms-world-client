@@ -50,6 +50,7 @@
         </activity>
         <activity android:name="com.jstakun.gms.android.ui.PickLocationActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|keyboardHidden"></activity>
         <activity android:name="com.jstakun.gms.android.ui.WebViewActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize" android:configChanges="keyboard|keyboardHidden|orientation"></activity>
+        <activity android:name="com.jstakun.gms.android.ui.ConfigurationViewerActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="SettingsActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

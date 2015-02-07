@@ -311,6 +311,7 @@ containing a value of this type.
         public static final int closingWidgetP=0x7f0d001f;
         public static final int commentLabel=0x7f0d0023;
         public static final int commentText=0x7f0d0024;
+        public static final int config=0x7f0d009d;
         public static final int current_value=0x7f0d0025;
         public static final int dateButton=0x7f0d004e;
         public static final int descLabel=0x7f0d0006;

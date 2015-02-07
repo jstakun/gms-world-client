@@ -11,6 +11,7 @@
     <item android:id="@+id/discoverPlaces" android:title="@string/discoverPlaces"/> <!-- a -->
     <item android:id="@+id/reset" android:title="@string/reset"/>          
     <item android:id="@+id/releaseNotes" android:title="@string/releaseNotes" /> <!-- a -->
+    <item android:id="@+id/config" android:title="@string/config"/> <!-- a -->
     <item android:id="@+id/rateUs" android:title="@string/rateUs" /> <!-- a -->
     <item android:id="@+id/about" android:title="@string/about" /> <!-- a -->
     <item android:id="@+id/exit" android:title="@string/exit" /> <!-- a -->

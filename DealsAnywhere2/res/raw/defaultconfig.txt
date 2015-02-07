@@ -51,5 +51,6 @@ radius;10
 searchType;1
 networkMode;0
 defaultSort;CD
+devMode;0
 appUrl;http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui.deals
 # End of file.
