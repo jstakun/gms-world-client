@@ -24,7 +24,7 @@
     	<LinearLayout
 			android:id="@+id/left_drawer_view"
 			android:paddingTop="?android:attr/actionBarSize"
-        	android:layout_width="256dp"
+        	android:layout_width="@dimen/navigation_drawer_width"
 			android:layout_height="match_parent"
 			android:orientation="vertical"
 			android:layout_gravity="start">
