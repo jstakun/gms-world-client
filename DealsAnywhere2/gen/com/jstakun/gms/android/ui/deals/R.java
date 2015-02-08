@@ -89,11 +89,13 @@ containing a value of this type.
         public static final int yellow=0x7f080003;
     }
     public static final class dimen {
-        public static final int cell_heigh=0x7f090003;
+        public static final int cell_heigh=0x7f090008;
+        public static final int cell_height=0x7f090003;
         public static final int cell_margin_left=0x7f090005;
         public static final int cell_margin_top=0x7f090004;
         public static final int cell_text_size=0x7f090006;
         public static final int cell_width=0x7f090002;
+        public static final int navigation_drawer_width=0x7f090007;
         public static final int week_left_margin=0x7f090001;
         public static final int week_top_margin=0x7f090000;
     }
