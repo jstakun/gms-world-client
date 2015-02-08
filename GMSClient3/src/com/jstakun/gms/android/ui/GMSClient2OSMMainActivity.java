@@ -33,6 +33,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -74,7 +75,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private MapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
-    //private OsmInfoOverlay infoOverlay;
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
     private MessageStack messageStack;
@@ -91,6 +91,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             lvActionButton, lvRouteButton, thumbnailButton, loadingImage;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
+    private LinearLayout drawerLinearLayout;
     private ExpandableListView drawerList;
     private ProgressBar loadingProgressBar;
     private int mapProvider;
@@ -213,6 +214,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         
+        drawerLinearLayout = (LinearLayout) findViewById(R.id.left_drawer_view);
+        
         drawerList = (ExpandableListView) findViewById(R.id.left_drawer);
         drawerList.setAdapter(new NavigationDrawerExpandableListAdapter(this));
         drawerList.setOnGroupClickListener(new DrawerOnGroupClickListener());
@@ -238,15 +241,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         drawerLayout.setDrawerListener(drawerToggle);
 
         mapController = mapView.getController();
-
-        /*StatusBarLinearLayout bottomPanel = (StatusBarLinearLayout) findViewById(R.id.bottomPanel);
-        ViewResizeListener viewResizeListener = new ViewResizeListener() {
-            @Override
-            public void onResize(int id, int xNew, int yNew, int xOld, int yOld) {
-                infoOverlay.setFontSize(yNew);
-            }
-        };
-        bottomPanel.setViewResizeListener(viewResizeListener);*/
 
         GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
 
@@ -657,7 +651,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             MenuItem register = menu.findItem(R.id.register);
             register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
             
-            if (drawerLayout.isDrawerOpen(drawerList)) {
+            if (drawerLayout.isDrawerOpen(drawerLinearLayout)) {
             	NavigationDrawerExpandableListAdapter adapter = (NavigationDrawerExpandableListAdapter) drawerList.getExpandableListAdapter();
             	adapter.rebuild(new OsmLandmarkProjection(mapView));
         	}
@@ -1181,7 +1175,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", "AddName", "", 0);
         	if (groupPosition == 0 || groupPosition == 3 || groupPosition == 4 || groupPosition == 5) {
-        		drawerLayout.closeDrawer(drawerList);
+        		drawerLayout.closeDrawer(drawerLinearLayout);
         		onMenuItemSelected((int)id);
         		return true;
         	} else if (groupPosition == 1 || groupPosition == 2) {
@@ -1204,7 +1198,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 			TextView textView = (TextView) parent.getChildAt(groupPosition);
 			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
-			drawerLayout.closeDrawer(drawerList);
+			drawerLayout.closeDrawer(drawerLinearLayout);
     		onMenuItemSelected((int)id);
 			return true;
 		}

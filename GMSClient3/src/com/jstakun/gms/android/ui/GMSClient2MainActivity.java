@@ -31,6 +31,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -95,6 +96,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             thumbnailButton, lvActionButton, lvRouteButton, loadingImage;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
+    private LinearLayout drawerLinearLayout;
     private ExpandableListView drawerList;
     private ProgressBar loadingProgressBar;
     private int mapProvider;
@@ -229,6 +231,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        
+        drawerLinearLayout = (LinearLayout) findViewById(R.id.left_drawer_view);
         
         drawerList = (ExpandableListView) findViewById(R.id.left_drawer);
         drawerList.setAdapter(new NavigationDrawerExpandableListAdapter(this));
@@ -680,7 +684,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             MenuItem register = menu.findItem(R.id.register);
             register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
             
-            if (drawerLayout.isDrawerOpen(drawerList)) {
+            if (drawerLayout.isDrawerOpen(drawerLinearLayout)) {
             	NavigationDrawerExpandableListAdapter adapter = (NavigationDrawerExpandableListAdapter) drawerList.getExpandableListAdapter();
                 adapter.rebuild(ProjectionFactory.getProjection(mapView, googleMapsView));
         	}
@@ -1244,7 +1248,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", "AddName", "", 0);
         	if (groupPosition == 0 || groupPosition == 3 || groupPosition == 4 || groupPosition == 5) {
-        		drawerLayout.closeDrawer(drawerList);
+        		drawerLayout.closeDrawer(drawerLinearLayout);
         		onMenuItemSelected((int)id);
         		return true;
         	} else if (groupPosition == 1 || groupPosition == 2) {
@@ -1267,7 +1271,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 			TextView textView = (TextView) parent.getChildAt(groupPosition);
 			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
-			drawerLayout.closeDrawer(drawerList);
+			drawerLayout.closeDrawer(drawerLinearLayout);
 			onMenuItemSelected((int)id);
 			return true;
 		}

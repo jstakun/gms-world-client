@@ -20,15 +20,29 @@
         	<include layout="@layout/mapbuttons"/>
        		<include layout="@layout/statusbar"/>       		
     	</FrameLayout>
-    	<ExpandableListView android:id="@+id/left_drawer"
-        	android:paddingTop="?android:attr/actionBarSize"
-        	android:layout_width="320dp"
-        	android:layout_height="match_parent"
-        	android:layout_gravity="start"
-        	android:choiceMode="singleChoice"
-        	android:dividerHeight="1dip"
-        	android:background="#FFFFFF"
-        	android:divider="@color/trans_dim_gray"/>
+    	<!-- navigation drawer -->
+    	<LinearLayout
+			android:id="@+id/left_drawer_view"
+			android:paddingTop="?android:attr/actionBarSize"
+        	android:layout_width="256dp"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:layout_gravity="start">
+    		<ImageView
+				android:id="@+id/drawer_header_image"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/lm_banner"
+				android:scaleType="centerCrop"/>
+    		<ExpandableListView android:id="@+id/left_drawer"
+        		android:layout_width="match_parent"
+        		android:layout_height="match_parent"
+        		android:layout_gravity="start"
+        		android:choiceMode="singleChoice"
+        		android:dividerHeight="1dip"
+        		android:background="#FFFFFF"
+        		android:divider="@color/trans_dim_gray"/>
+	     </LinearLayout>
 	</android.support.v4.widget.DrawerLayout>
 
     <include layout="@layout/landmarkdetails"/>
