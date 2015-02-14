@@ -47,6 +47,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -102,7 +103,8 @@ public class HttpUtils {
             HttpParams params = new BasicHttpParams();
             params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, SOCKET_TIMEOUT);
             params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, SOCKET_TIMEOUT);
-
+            params.setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
+            
             ConnPerRouteBean connPerRoute = new ConnPerRouteBean();
             connPerRoute.setDefaultMaxPerRoute(12);
             HttpHost gmsHost1 = new HttpHost(ConfigurationManager.SERVER_HOST, 443);

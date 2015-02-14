@@ -41,7 +41,6 @@ setLastKnownLocAtStartup;1
 adsProvider;3
 memoryCacheSize;48
 routeType;0
-Google Places_status;0
 Groupon_status;0
 Coupons_status;0
 Eventful_status;0
