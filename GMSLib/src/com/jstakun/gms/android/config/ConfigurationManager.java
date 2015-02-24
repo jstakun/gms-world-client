@@ -690,8 +690,12 @@ public final class ConfigurationManager {
     	
     	public String getAboutMessage() throws NameNotFoundException {
     		PackageInfo info = getPackageInfo(); 
-            int versionCode = info.versionCode;
-            String versionName = info.versionName;
+    		int versionCode = 0;
+    		String versionName = "Latest";
+            if (info != null) {
+            	versionCode = info.versionCode;
+            	versionName = info.versionName;
+            }
             String app_name = Locale.getMessage(R.string.app_name);
             String message = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), ConfigurationManager.SERVER_URL);
     	    return message;
