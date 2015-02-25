@@ -37,9 +37,9 @@
                   android:launchMode="singleTop" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
                 <meta-data android:name="android.app.default_searchable" android:value="com.jstakun.gms.android.ui.GMSSearchActivity"/>
         </activity>
-        <activity android:name="DealCategoryListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+        <!--activity android:name="com.jstakun.gms.android.ui.DealCategoryListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
             <meta-data android:name="android.app.default_searchable" android:value="com.jstakun.gms.android.ui.GMSSearchActivity"/>
-        </activity>
+        </activity-->
         <activity android:name="com.jstakun.gms.android.ui.GridCategoryListActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
             <meta-data android:name="android.app.default_searchable" android:value="com.jstakun.gms.android.ui.GMSSearchActivity"/>
         </activity>
