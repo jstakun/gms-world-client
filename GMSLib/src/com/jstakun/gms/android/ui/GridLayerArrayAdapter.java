@@ -87,15 +87,15 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        if (layerThumbnail > 0) {
 	        	holder.detailText.setText("" + count);
 		        holder.layerThumbnail.setImageResource(layerThumbnail);
-		        rowView.setVisibility(View.VISIBLE);
+		        //rowView.setVisibility(View.VISIBLE);
 	        } else if (count > 0) {
 	        	holder.detailText.setText("" + count);
 	        	holder.layerThumbnail.setImageResource(R.drawable.getin);
-	        	rowView.setVisibility(View.VISIBLE);
+	        	//rowView.setVisibility(View.VISIBLE);
 	        } else {
 	        	holder.detailText.setText("");
 	        	holder.layerThumbnail.setImageResource(R.drawable.image_missing128);
-	        	rowView.setVisibility(View.GONE);
+	        	//rowView.setVisibility(View.GONE);
 	        }
 
 	        rowView.setOnCreateContextMenuListener(parentActivity);

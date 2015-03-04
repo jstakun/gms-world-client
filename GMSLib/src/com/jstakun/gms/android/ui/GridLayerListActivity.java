@@ -16,14 +16,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.lib.R;
@@ -98,11 +99,14 @@ public class GridLayerListActivity extends Activity {
             Collections.sort(layers, new LayerSizeComparator());
             for (String key : layers) {
                 if (!key.equals(Commons.MY_POSITION_LAYER)) {
-                    String formatted = landmarkManager.getLayerManager().getLayerFormatted(key);
-                    if (formatted == null) {
-                        formatted = key;
-                    }
-                    names.add(key + ";" + formatted);
+                	Layer layer = landmarkManager.getLayerManager().getLayer(key);
+                	if (layer.getCount() > 0 || layer.getImage() > 0) {
+                		String formatted = layer.getFormatted();
+                		if (formatted == null) {
+                			formatted = key;
+                		}
+                		names.add(key + ";" + formatted);
+                	}
                 }
             }
         }
@@ -371,7 +375,15 @@ public class GridLayerListActivity extends Activity {
             } else if (lhsCount < rhsCount) {
                 return 1;
             } else {
-                return 0;
+            	int lhsType = landmarkManager.getLayerType(lhs);
+            	int rhsType = landmarkManager.getLayerType(rhs);
+            	if (lhsType > rhsType) {
+                    return 1;
+                } else if (lhsType < rhsType) {
+                    return -1;
+                } else {
+                	return 0;
+                }
             }
         }
     }
