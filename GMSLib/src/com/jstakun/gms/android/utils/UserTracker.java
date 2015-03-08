@@ -119,8 +119,9 @@ public class UserTracker {
     public void sendMyLocation() {
         int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0);
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)
-             && ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
+        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
+        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)
+        //     && ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
             ConfigurationManager.getInstance().remove(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
             ConfigurationManager.getDatabaseManager().saveConfiguration(false);
             LoggerUtils.debug("Sending my location at startup.");

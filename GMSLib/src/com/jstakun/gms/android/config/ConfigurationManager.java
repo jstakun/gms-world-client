@@ -14,7 +14,6 @@ import org.acra.ACRA;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.util.encoders.Base64;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
