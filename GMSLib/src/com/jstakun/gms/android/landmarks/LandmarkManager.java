@@ -594,6 +594,8 @@ public class LandmarkManager {
             params.add(new BasicNameValuePair("email", email));
         }
 
+        params.add(new BasicNameValuePair("anonymous", ConfigurationManager.getInstance().getString(ConfigurationManager.TRACK_USER)));
+        
         HttpUtils utils = new HttpUtils();
         utils.sendPostRequest(url, params, true);
         errorMessage = utils.getResponseCodeErrorMessage();
