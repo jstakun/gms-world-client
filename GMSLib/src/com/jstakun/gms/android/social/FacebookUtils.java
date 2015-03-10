@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.social;
 
 import java.util.ArrayList;
@@ -65,7 +61,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 			result = ConfigurationManager.getDatabaseManager().saveConfiguration(false);
 				
 		} catch (Exception ex) {
-			LoggerUtils.error("FacebookUtils.initOnTokenPresent error:", ex);
+			LoggerUtils.error("FacebookUtils.initOnTokenPresent() error:", ex);
 		} finally {
 			if (!result) {
 				logout();
@@ -167,9 +163,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 		          logout();
 		       }	
 	           message = Locale.getMessage(R.string.Social_checkin_failure, message);
-	        }
-	        
-		    
+	        }    
 		} catch (Exception ex) {
 			LoggerUtils.error("FacebookUtils.checkin() exception", ex);
 			message = Locale.getMessage(R.string.Http_error,ex.getMessage());

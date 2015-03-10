@@ -165,8 +165,11 @@ public class AsyncTaskManager {
         }
 
         if (myPos != null && msg == null) {
-            String tmp = sendSocialNotification(myPos, Commons.MY_POS);
+        	String tmp = null;
             msg = Locale.getMessage(R.string.Location_sent);
+            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
+            	tmp = sendSocialNotification(myPos, Commons.MY_POS);	
+            }
             if (tmp != null) {
             	msg = msg + ",\n" + tmp;
             }

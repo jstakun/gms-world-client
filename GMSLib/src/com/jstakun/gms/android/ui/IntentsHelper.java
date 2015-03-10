@@ -45,6 +45,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.Logger;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.jstakun.gms.android.ads.AdsUtils;
@@ -322,9 +323,14 @@ public final class IntentsHelper {
     public void startQrCodeCheckinActivity(double[] currentLocation) {
         final boolean scanAvailable = isIntentAvailable(SCAN_INTENT, activity);
         if (scanAvailable) {
-            Intent intent = new Intent(SCAN_INTENT);
-            intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-            activity.startActivityForResult(intent, INTENT_QRCODECHECKIN);
+        	try {
+        		Intent intent = new Intent(SCAN_INTENT);
+        		intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+        		activity.startActivityForResult(intent, INTENT_QRCODECHECKIN);
+        	} catch (Exception e) {
+        		LoggerUtils.error("IntentsHelper.startQrCodeCheckinActivity() exception:", e);
+        		showInfoToast(Locale.getMessage(R.string.QRCode_scanner_missing_error));
+        	}      	
         } else {
             showInfoToast(Locale.getMessage(R.string.QRCode_scanner_missing_error));
         }

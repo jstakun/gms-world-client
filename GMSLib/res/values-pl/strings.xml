@@ -191,7 +191,7 @@
      <string name="Network.connection.error.message">Czy chcesz sprawdzi\u0107 ustawienia sieciowe?</string>
      <string name="Location.connection.error.title">Brak po\u0142\u0105czenia GPS!</string>
      <string name="Location.connection.error.message">Czy chcesz sprawdzi\u0107 ustawienia GPS?</string>
-     <string name="QRCode.scanner.missing.error">Prosz\u0119 zainstalowa\u0107 Barcode Scanner</string>
+     <string name="QRCode.scanner.missing.error">Barcode Scanner jest niezainstalowany lub niedost\u0119pny!</string>
      <string name="OAuth.authz.url.missing">Brak adresu autoryzacji. Spr\u00f3buj ponownie!</string>
      <string name="OAuth.service.missing">Brak us\u0142ugi OAuth. Spr\u00f3buj ponownie!</string>
      <string name="Share.no.share.apps">Brak aplikacji do udost\u0119pniania!</string>

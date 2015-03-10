@@ -218,7 +218,7 @@
      <string name="Network.connection.error.message">Do you want to check network settings?</string>
      <string name="Location.connection.error.title">No GPS connection!</string>
      <string name="Location.connection.error.message">Do you want to check GPS settings?</string>
-     <string name="QRCode.scanner.missing.error">Please install Barcode Scanner</string>
+     <string name="QRCode.scanner.missing.error">Barcode Scanner is not installed or unavailable!</string>
      <string name="OAuth.authz.url.missing">Missing authorization url. Please try again!</string>
      <string name="OAuth.service.missing">Missing OAuth service. Please try again!</string>
      <string name="Share.no.share.apps">No share apps available!</string>
