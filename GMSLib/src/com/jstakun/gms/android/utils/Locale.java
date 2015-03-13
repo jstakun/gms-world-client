@@ -18,7 +18,11 @@ public class Locale {
 
     static {
         res = ConfigurationManager.getInstance().getContext().getResources();
-        String localeISO3Code = ConfigurationManager.getInstance().getCurrentLocale().getISO3Country();
+        String localeISO3Code = "USA";
+        try {
+        	localeISO3Code = ConfigurationManager.getInstance().getCurrentLocale().getISO3Country();
+        } catch (Exception e) {
+        }
         ConfigurationManager.getInstance().putString(ConfigurationManager.ISO3COUNTRY, localeISO3Code);
         LoggerUtils.debug("System ISO3 country code is: " + localeISO3Code);
     }
