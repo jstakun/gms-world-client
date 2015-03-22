@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.utils;
 
 import android.content.Context;
@@ -114,20 +110,17 @@ public class UserTracker {
     	return context.getResources().getString(R.string.gaId);
     }
     
-    //send my location action
-    
+    //send my location action 
     public void sendMyLocation() {
-        int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0);
-        ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
         //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)
         //     && ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
-            ConfigurationManager.getInstance().remove(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
+        	ConfigurationManager.getInstance().remove(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
             ConfigurationManager.getDatabaseManager().saveConfiguration(false);
-            LoggerUtils.debug("Sending my location at startup.");
+            LoggerUtils.debug("I'm sending current location.");
             new SendMyLocationTask(10).execute();
         } else {
-        	LoggerUtils.debug("Skipping sending my location at startup.");
+        	LoggerUtils.debug("I'm skipping sending current location.");
         }
     }
 
