@@ -243,7 +243,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.mapMode);
         item.setVisible(false);
-        //TODO R.id.showDoD
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -312,7 +311,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             mapController.setCenter(location);
             
             if (!landmarkManager.isInitialized()) {
-                UserTracker.getInstance().sendMyLocation();
+                //UserTracker.getInstance().sendMyLocation();
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase(), Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
@@ -825,6 +824,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         				activity.mapButtons.setVisibility(View.VISIBLE);
                 	}
                 	activity.intents.vibrateOnLocationUpdate();
+                	UserTracker.getInstance().sendMyLocation();
             	}
         	} 
         }

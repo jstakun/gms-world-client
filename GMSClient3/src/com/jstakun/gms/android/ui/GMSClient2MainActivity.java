@@ -519,7 +519,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	mapController.setCenter(location);
         	
         	if (!landmarkManager.isInitialized()) {
-        		//TODO Testing
         		//UserTracker.getInstance().sendMyLocation();
         		landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
             }
@@ -1065,8 +1064,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private void updateLocation(Location l) {
     	intents.addMyLocationLandmark(l);     
     	intents.vibrateOnLocationUpdate();
-    	//TODO Testing
-		UserTracker.getInstance().sendMyLocation();
+    	UserTracker.getInstance().sendMyLocation();
     	
     	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.GONE);

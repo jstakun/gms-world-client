@@ -381,7 +381,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());; //save mapcenter coords
 
             if (!landmarkManager.isInitialized()) {
-                UserTracker.getInstance().sendMyLocation();
+                //UserTracker.getInstance().sendMyLocation();
                 landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase(), Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
@@ -930,6 +930,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         				activity.mapButtons.setVisibility(View.VISIBLE);
                     }
                     activity.intents.vibrateOnLocationUpdate();
+                    UserTracker.getInstance().sendMyLocation();
                 }
             }
         }	
