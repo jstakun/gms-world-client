@@ -42,6 +42,7 @@ import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MercatorUtils;
 import com.jstakun.gms.android.utils.OsUtil;
+import com.jstakun.gms.android.utils.StringUtil;
 
 /**
  *
@@ -925,24 +926,32 @@ public class AsyncTaskManager {
     }
 
     public void executeUploadImageTask(double lat, double lng, boolean notify) {
-    	if (notify) {
-    		String message = Locale.getMessage(R.string.shareScreenshot);
-    		intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
-    	}
-    	if (ConfigurationManager.getInstance().isNetworkModeAccepted()) {
-    		//loading time & sdk version & number of landmarks
-    		long loadingTime = 0; 
-    		Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
-    		if (l != null) {
-    			loadingTime = l.longValue();
+    	//if (notify || ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
+    	if (!ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), String.class)) {
+    	    if (notify) {
+    			String message = Locale.getMessage(R.string.shareScreenshot);
+    			intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
     		}
-    		int version = OsUtil.getSdkVersion();
-    		int numOfLandmarks = landmarkManager.getAllLayersSize();
-    		int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
-    		String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
-    		new UploadImageTask(filename).execute(lat, lng);   		
+    		if (ConfigurationManager.getInstance().isNetworkModeAccepted()) {
+    			//loading time & sdk version & number of landmarks
+    			long loadingTime = 0; 
+    			Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
+    			if (l != null) {
+    				loadingTime = l.longValue();
+    			}
+    			int version = OsUtil.getSdkVersion();
+    			int numOfLandmarks = landmarkManager.getAllLayersSize();
+    			int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
+    			String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
+    			new UploadImageTask(filename).execute(lat, lng);   		
+    		} else {
+    			LoggerUtils.debug("Skipping image upload due to lack of wi-fi...");
+    		}
+    	} else if (notify) {
+    		//TODO translate
+    		intents.showInfoToast("Screenshot for current location has been already sent!");
     	} else {
-    		LoggerUtils.debug("Skipping image upload due to lack of wi-fi...");
+    		LoggerUtils.debug("Screenshot for current location has been already sent!");
     	}
     }
 
@@ -1010,6 +1019,9 @@ public class AsyncTaskManager {
         		if (file != null) {
         			String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
         			utils.uploadFile(url, true, coords[0], coords[1], file, filename);
+        			if (utils.getResponseCode() == 200) {
+        				ConfigurationManager.getInstance().putObject("screenshot_" + StringUtil.formatCoordE2(coords[0]) + "_" + StringUtil.formatCoordE2(coords[1]), "1");
+        			}
         		} else {
         			LoggerUtils.debug("Screenshot is empty!");
         		}
