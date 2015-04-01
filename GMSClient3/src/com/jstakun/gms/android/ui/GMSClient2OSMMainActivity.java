@@ -1226,7 +1226,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             	} else if (msg.what == LayerLoader.LAYER_LOADED) {
             		activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-                	activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
+            		//TODO check if mapView has loaded map tiles activity.mapView.getTileProvider()
+            		//activity.mapView.getOverlayManager().getTilesOverlay()
+            		//activity.mapView.getTileProvider().getMapTile(arg0)
+            		activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
                             MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));

@@ -324,4 +324,35 @@ public class AndroidDevice implements LocationListener {
         }
         return provider1.equals(provider2);
     }
+    
+    public static Location getLastKnownLocation(Context context) {
+    	Location location = ConfigurationManager.getInstance().getLocation();
+
+		if (location == null) {
+			LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+			if (locationManager != null) {
+				try {
+					location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+				} catch (Exception e) {
+					LoggerUtils.error("AndroidDevice.getLastKnownLocation() exception:", e);
+				}
+				if (location == null) {
+					try {
+						location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+					} catch (Exception e) {
+						LoggerUtils.error("AndroidDevice.getLastKnownLocation() exception:", e);
+					}
+				}
+				if (location == null) {
+					LoggerUtils.debug("AndroidDevice.getLastKnownLocation() no location from location manager available");
+				}
+			} else {
+				LoggerUtils.debug("AndroidDevice.getLastKnownLocation() no location manager available");
+			}
+		} else {
+			LoggerUtils.debug("AndroidDevice.getLastKnownLocation() no saved location");
+		}
+		
+		return location;
+    }
 }

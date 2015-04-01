@@ -12,8 +12,10 @@ import org.json.JSONObject;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.location.AndroidDevice;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -26,17 +28,25 @@ public class NotificationReceiver extends BroadcastReceiver {
 		if (ConfigurationManager.getInstance().getContext() == null) {
     		ConfigurationManager.getInstance().setContext(context);
     	}
-		new SendNotificationTask(10).execute();
+		
+		Location location = AndroidDevice.getLastKnownLocation(context);
+		
+		if (location != null)
+		{
+			new SendNotificationTask(10).execute(location.getLatitude(), location.getLongitude());
+		} else {
+			new SendNotificationTask(10).execute();
+		}
 	}
 	
-	private class SendNotificationTask extends GMSAsyncTask<Void, Void, String> {
+	private class SendNotificationTask extends GMSAsyncTask<Double, Void, String> {
 
 		public SendNotificationTask(int priority) {
             super(priority);
         }
 		
 		@Override
-		protected String doInBackground(Void... params) {
+		protected String doInBackground(Double... params) {
 			HttpUtils utils = new HttpUtils();
 	        
 	        try {
@@ -50,6 +60,11 @@ public class NotificationReceiver extends BroadcastReceiver {
 	            String email = ConfigurationManager.getUserManager().getUserEmail();
 	            if (StringUtils.isNotEmpty(email)) {
 	            	postParams.add(new BasicNameValuePair("e", email));
+	            }
+	            
+	            if (params != null && params.length == 2) {
+	            	postParams.add(new BasicNameValuePair("lat", params[0].toString()));
+	            	postParams.add(new BasicNameValuePair("lng", params[1].toString()));
 	            }
 	            
 	            utils.sendPostRequest(url, postParams, true);

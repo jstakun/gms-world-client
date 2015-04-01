@@ -51,6 +51,7 @@ import com.jstakun.gms.android.utils.StringUtil;
 public class AsyncTaskManager {
 
     public static final int SHOW_ROUTE_MESSAGE = 30;
+    private static final double BLACK_FACTOR = 0.75;
     private Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress;
     private GMSNotificationManager notificationManager;
     private LandmarkManager landmarkManager;
@@ -959,23 +960,25 @@ public class AsyncTaskManager {
         byte[] scr = null;
         View v = activity.findViewById(android.R.id.content);
         v.setDrawingCacheEnabled(true);
+        //v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        //TODO check if mapview is loaded
         try {
         	SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
             int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
             
-        	Bitmap screenShot = v.getDrawingCache();
+        	Bitmap screenShot = v.getDrawingCache(); 
             //check if screenshot is black
             boolean isBlack = false;
             int blackPixelsCount = 0;
     		int w = screenShot.getWidth();
     	    int h = screenShot.getHeight();
-    	    int totalPixels = w * h;
+    	    int blackFactor = (int)(w * h * BLACK_FACTOR);
             if (screenShot != null) {
             	for(int i=0; i < w; i++) {
             		for(int j=0; j < h; j++)  {                    
             			if (screenShot.getPixel(i, j) == Color.BLACK) {
             				blackPixelsCount++;
-            				if ((blackPixelsCount / totalPixels) > 0.75) {
+            				if (blackPixelsCount > blackFactor) {
         	    				isBlack = true;
         	    				break;
         	    			}

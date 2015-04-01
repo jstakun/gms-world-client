@@ -904,8 +904,10 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 	activity.mapView.postInvalidate();
                 } else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
                 	activity.showRecommendedDeal(false);
-                    activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
+                	if (activity.mapView.canCoverCenter()) {       			
+                		activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
                                 MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
+                	}
                 } else if (msg.what == AmzLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
                 	int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), activity.cm, new AmzLandmarkProjection(activity.mapView));
                     if (coordsE6 != null) {

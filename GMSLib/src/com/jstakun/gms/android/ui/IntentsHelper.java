@@ -967,6 +967,12 @@ public final class IntentsHelper {
 			params.add(new BasicNameValuePair(ConfigurationManager.APP_ID, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID)));
 			params.add(new BasicNameValuePair("type", "v")); 
             String url = ConfigurationManager.getInstance().getServerUrl() + "notifications";
+            
+            Location location = ConfigurationManager.getInstance().getLocation();
+            if (location != null) {
+            	params.add(new BasicNameValuePair("lat", Double.toString(location.getLatitude())));
+            	params.add(new BasicNameValuePair("lng", Double.toString(location.getLongitude())));
+            }
 
             utils.sendPostRequest(url, params, true);
             if (utils.getResponseCode() == HttpStatus.SC_OK) {
