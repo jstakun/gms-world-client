@@ -4,9 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.location.AndroidDevice;
 import com.jstakun.gms.android.utils.LoggerUtils;
 

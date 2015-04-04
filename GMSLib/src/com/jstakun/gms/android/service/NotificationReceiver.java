@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.location.AndroidDevice;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
@@ -65,6 +66,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 	            if (params != null && params.length == 2) {
 	            	postParams.add(new BasicNameValuePair("lat", params[0].toString()));
 	            	postParams.add(new BasicNameValuePair("lng", params[1].toString()));
+	            	postParams.add(new BasicNameValuePair("username", Commons.MY_POS_USER));
 	            }
 	            
 	            utils.sendPostRequest(url, postParams, true);

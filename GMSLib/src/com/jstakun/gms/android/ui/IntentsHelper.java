@@ -45,7 +45,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.analytics.tracking.android.Logger;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.jstakun.gms.android.ads.AdsUtils;
@@ -972,6 +971,7 @@ public final class IntentsHelper {
             if (location != null) {
             	params.add(new BasicNameValuePair("lat", Double.toString(location.getLatitude())));
             	params.add(new BasicNameValuePair("lng", Double.toString(location.getLongitude())));
+            	params.add(new BasicNameValuePair("username", Commons.MY_POS_USER));
             }
 
             utils.sendPostRequest(url, params, true);
