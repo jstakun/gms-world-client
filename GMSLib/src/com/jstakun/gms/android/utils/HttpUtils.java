@@ -228,7 +228,12 @@ public class HttpUtils {
             postRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
             postRequest.addHeader(Commons.LAT_HEADER, StringUtil.formatCoordE6(latitude));
             postRequest.addHeader(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
-
+            
+            String myPosKey = (String)ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
+            if (StringUtils.isNotEmpty(myPosKey)) {
+            	 postRequest.addHeader(Commons.MYPOS_KEY_HEADER, myPosKey);
+            }
+            
             if (auth) {
                 setAuthHeader(postRequest, url.contains(ConfigurationManager.SERVICES_SUFFIX));
                 String username = ConfigurationManager.getUserManager().getLoggedInUsername();

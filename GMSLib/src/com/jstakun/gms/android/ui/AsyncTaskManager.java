@@ -171,6 +171,10 @@ public class AsyncTaskManager {
             if (tmp != null) {
             	msg = msg + ",\n" + tmp;
             }
+            String key = myPos.getServerKey();
+            if (StringUtils.isNotEmpty(key)) {
+            	ConfigurationManager.getInstance().putObject(Commons.MY_POS_CODE, key);
+            }
         } else {
             msg = Locale.getMessage(R.string.Location_send_error, msg);
         }
@@ -959,11 +963,11 @@ public class AsyncTaskManager {
     private byte[] takeScreenshot() {
         byte[] scr = null;
         View v = activity.findViewById(android.R.id.content);
-        v.setDrawingCacheEnabled(true);
-        //v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         //TODO check if mapview is loaded
         try {
-        	SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+        	v.setDrawingCacheEnabled(true);
+            //v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+            SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
             int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
             
         	Bitmap screenShot = v.getDrawingCache(); 
