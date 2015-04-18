@@ -1,0 +1,114 @@
+1128
+
+esb rhcloud support rest - wip
+OAuth server for gms world - todo
+migrate gms-world web app to rhcloud - todo
+migrate social (oauth:/OAuthLogin, outh:/OAuth, tasks:/NotificationTaskServlet, social:/socialCheckin, social:/socialComment, social:/socialMessage) to rhcloud (create hornetq queue with dead letter, and mdb to consume messages) - wip
+migrate gms world login to web - todo
+When adding foursquare place delete layer from cache - todo
+MasterCard Places API: https://developer.mastercard.com/portal/display/api/Places (requires zip code) - todo
+
+1127
+
+Send screenshot only when map is loaded and all layers are loaded (OSM map view check if loaded) - wip
+RestFB upgrade to 30 Apr - wip
+Improve twitter notification - wip 
+Picasa api doesn't work on APP ENGINE server - wip
+LinkedIn api update 12 May - todo
+RouteRecorder MAX_BEARING_RANGE should be based on zoom level - todo
+Publish screenshots to Instagram - todo
+Search for new layer to be added - todo
+pinterest Pin places api - todo
+Instagram tag link - todo
+
+RFEs
+
+ExecutorCompletionService in multi threading actions
+pick location: select country in english
+create indexes in landmark db
+struts 2 migration - wip
+Screenshot delete task - todo
+calendarview (change color for day with landmarks, onclick current date)
+Freebase - output add category, location - wip
+Car rental api - todo
+Google places photo - todo
+Mail to user after 25, 50, 100, 150, ... - todo
+Acra custom report sender with deflate - todo
+Hotels combined url - todo
+Yelp - deals da (category mapping) - wip
+Cloudmade geocode v3 - wip
+Testing framework - todo
+Don't create landmark from geocode if place not found - todo
+
+ln post share - wip
+Google Plus publish from profile to page - wip
+Unregistration process - todo 
+settings intent: android.intent.category.PREFERENCE - wip
+Show last searches in index.jsp - todo
+Login activity: add show password checkbox - todo
+Check if sd card is present when reading and writing to sd card - todo
+
+Other
+
+Android client
+
+1. Manage layers from server - android and j2me
+2. Webview fields on focus hide when soft keyboard visible - android
+3. Uploading photos to cloud storage
+4. Forms imeoptions - not working on all devices
+5. Badges for users
+6. Add place to contacts
+7. Ask fb users for likes
+8. Sort landmarks by price asc/desc, stars asc/desc, 
+9. LM game unlock layers after number of openings
+10. Search - picasaweb lat,lng instread of bbox
+
+1. commercial release Play - todo
+2. landmark full text search - todo
+3. KidsEatFor, restaurant.com layer - restaurant deals
+4. https://developer.mastercard.com/ offer
+5. https://api.dealsurf.com/ - required city name
+6. hotukdeals - no lat,lon
+http://api.hotukdeals.com/rest_api/v2/?key=dd9e966199fefa9e31f9955cd0a8d386&tag=wii&results_per_page=15
+7. RealEstate API
+8. Jambase - http://developer.jambase.com/ - events
+9. Plancast - http://plancast.com/api - events
+10. http://www.songkick.com/developer
+
+Deals anywhere 0.5
+
+personalizacja w oparciu o rejestracje email - po rejestracji email system sam zgaduje 
+jakie kategorie pokazywac uzytkownikowi
+a. formularz rejestracji
+b. wywolanie rapleaf i zapis wyniku do bazy
+c. personalizacja w aplikacji (sortowanie kategorii wedlug profilu)
+
+Server
+
+1. Don't store password just hash (allow reset password) - user management framework/api
+2. Profiles - caplinked, android market, handster, twitter, facebook, google blogger, 
+amazon, crunchbase
+
+J2ME Client
+
+1. Load map only outside of screen in mapcanvas
+2. Blackberry certification
+	
+        httpconnection via different networks
+        wifi http://www.testserver.com;interface=wifi
+	apn/direct tcp http://www.testserver.com;deviceside=true
+	bes/mds http://www.testserver.com;deviceside=false
+	
+        signed code
+
+3. Checking for newer midlet version
+4. Searching 
+5. ExtendedLandmark, LandmarkFactory 
+6. Opinie o miejscach FB (post on wall), FS (tip) 
+7. Checkin at FB, FS
+
+Blogeospot
+
+-
+
+

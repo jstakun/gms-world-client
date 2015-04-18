@@ -1,0 +1,329 @@
+1127
+
+Link screenshot with landmark for better user experience - done
+
+1126
+
+Notification receiver to send lat/lng - done
+Upgrade google apis (blogger, plus, freebase) - done
+Youtube upgrade to v3 - done
+showLoc.jsp web browser version - done
+Url shortening alternative (using Google) - done
+https://developers.google.com/+/api/moment-types/add-activity - done
+Use count in web ui - done
+
+1125
+
+Send my pos always anonymously - done
+MC api url based on street view api - done
+Adding geojson files into long time cache - done
+Layers add/remove instread of hide/show in layers grid view - done
+Layers web ui - done
+
+1124
+
+LM Added navigation drawer banner - done
+Da config view - done
+Da Remove dod menu item if no dod available - done
+Lm Dynamic navigation drawer - add/remove items (dod, deals, poi files, recent landmarks) - done
+Lm Routes files menu item hide if no routes available - done
+osmdroid 4.3 upgrade (https://github.com/osmdroid/osmdroid/issues/22) - done
+Animate to in showMyPositionAction - done
+Show only not empty layers in layers list view - done
+Google places api (placeid, photos, sensor)- done
+Add checkin social notification - done
+
+1121
+
+distance calulation - done
+info overlay change - done
+searching improvements - done
+Add development mode to settings - done
+
+1122
+
+grid view - all layers (layer images) - done
+grid view - deal categories (category images) - done
+foursquare api and branding - done
+done
+
+1120
+
+add dynamic layer related to sport - done
+grid view - done
+vibrate when gps location is found - done
+
+1119
+
+Show unavailable status message while loading layer from different endpoint - done
+load route image in constructor - done
+show route button only if location is present - done
+web app filters improvements - done
+
+1118
+
+java.lang.NumberFormatException: For input string: "2402037634" - done
+java.lang.NullPointerException at net.gmsworld.server.layers.OsmXapiUtils.processRequest(OsmXapiUtils.java:151) - done
+net.gmsworld.server.layers.OsmXapiUtils getAmenities: Received following response from osm server: 500 OK - done
+net.gmsworld.server.layers.OsmXapiUtils processBinaryRequest: OSMFile is null! - done
+net.gmsworld.server.layers.TwitterUtils.processBinaryRequest(TwitterUtils.java:214) - done
+use esb deployed at rhcloud as alternate url for layer readers (header accept, url format) - done
+call autocheckin when location updated event occurs - done
+Add dynamic layers (cafe) - done
+
+1116
+
+Auto checkin list fix - done
+Landmark list delete from context menu fix - done
+Call RH cloud rest api - done
+http://hotels-gmsworld.rhcloud.com/snoop.jsp - done
+add image to layer - done
+Move search2Servlet logic to searchutils - done
+Layerstest extended - done
+Dynamic layers list button on the map - done
+Dynamic layers list activity - done
+Add user friendly Dynamic layer desc - done
+Dynamic layer search improvements - done
+
+1115
+
+Badges - done
+Hide call button when device has no telephony - done
+DA 10' and 7' screenshot upload - done
+Opinie użytkowników pokazac liczbe - done
+Handle failed file delete (Failed to delete screenshot screenshot_time_7sec_sdk_v17_num_469_l_30.jpg) - done
+Configuration manager viewer (implement as landmark list view) - done
+On take screenshot play sound - done
+
+1114
+
+Repeating landmarks in layers having multiple readers - done?
+New route tracking algorithm using bearing to filter points - done?
+Handle tw, fs, fb social 401 in layers provider (test removing tw token) - done?
+Routes actions on layers view - done?
+Dont paint my pos and routes from recently opened landmarks list - done?
+Routes drawing algorithm (not drawing with high zoom level) - done
+Release - add routes improvements to desc - done
+If 503 in serialparser retry call to open service - done? 
+
+1110
+
+glsendpost - done?
+After FB, FS login reload layer - done
+Save oauth date to db - done?
+IconCache clear all - done?
+Landmark list context menu add checkin menu item if applicable - done?
+Update foursquare layers in gms client - done
+Friend tweets - done
+Flickr4Java upgrade - done
+ScreenshotPersistenceUtils delete files older than 90 days (start on 02-07-14) - done
+
+1109
+
+don't create geocode every time - done
+freebaseProvider fix - done
+verify on server if screenshot is black - done
+Show my location button on map view if location is present - done?
+Add Friends activities to drawer, remove my pos from menu, keep single menu lm - done?
+Add my pos button, remove my pos from menu, keep single menu da - done?
+
+1107
+
+RoutesManager send post request - done
+JSONUtils formatAddress by locale - done
+hardClose(), softClose()  move to intents - done
+If logged-in to GMS World don't show register menu item - done
+Add progress bar to loading screen - done
+hardClose() working faster - done
+On orientation change when loading in progress - done
+On orientation change landmark manager disappers - done
+
+1105
+
+Flickr ssl - done
+Bitmap recycle fix - done
+Change AbstractLandmarkList sort to handle properly adapter sort exception - done
+Set default landmark sorting per app - done
+Migrate from cloudmade to mapquest (http://www.mapquestapi.com/geocoding/) - done
+Service authorization filter handle 503 exception - done
+
+1104
+
+FBcheckins, FBPhotos, FSCheckins, FSRecommended to LayersProvider - done
+Move servlets to layers directory - done
+NotificationTaskServlet create notification methods - done
+File store layers policy - done
+Save logcat to file - done
+pgsql full text search - done
+migrate users to rhcloud - done
+Commons properties - done
+OAuth2 call /s/* when api version >= 8 - done
+App closing task (closing toast) - done
+
+1103
+
+403, 404, 500 error pages for mobile and desktop with different messages - done
+OAuthCommons.getOAuthSuccessHTML to jsp page - done
+migrate screenshots to rhcloud (Replace FileService with GCS) - done
+Navigation drawer on orientation change when child is clicked - done
+remove landmark <br/>creation date in persistLandmark - done
+Verify if uploaded image is black - done
+Mobile page footer - done
+cancel showing toast when showing new - done
+McOpenAPi download multiple pages - done
+OAuth2Activity handle errors with toast - done
+
+1101
+
+AdsUtils config file - done
+Implement token security for anonymous clients - done
+reset application menu item - done
+da v3 not starting - done
+Navigation drawer icons - done
+user agent changed to app info - done
+migrate layersProvider to rhcloud - done
+foursquare api version date must be after 20120609 - done
+Show default image when screenshot is removed (check if key is present in db) - done
+
+1099
+
+migrate geocode to rhcloud - done
+When creating new landmark set creationDate = now in desc - done
+checkin at newly created landmark not working - done
+enable service log and session cleanup - done
+migrate layers to rhcloud - done
+migrate landmarks, comments, checkins to rhcloud  - done
+new ads provider (amazon) - done
+google app engine sessions - done
+enable/disable all layers in layes list - done
+
+1097
+
+navigation drawer - done
+youtube layer - done
+plural arrays - done
+pick location cancel string - done
+replace admob with tapfortap - done
+hotels moved to openshift - done
+
+1095
+
+freebase landing page - done
+register_mobile action - done
+OSM Droid 4 upgrade - done
+Mobile webpage template - done
+Mastercard renew certificate - done
+LandmarkArrayAdapter desc remove flowtexthelper - done
+
+Before 1095
+
+Google Plus write moments  (change scope, uncomment createpluspost) - done
+Twitter layer - done
+Share to social when new landmark is created - done
+social notification when login - done
+draw overlay stop - done?
+set default location based on country - done?
+Formatted usernames in social networks activity - done
+Reports with user profiles url - done
+handlers merge - done
+Opening and closing db moved to ConfigurationManager - done
+merge gms3, gms3osm, gms2, gms2osm - done
+Create shortcut - done
+OSM droid ontap - done
+GMS3 settings remove map provider when google not available - done
+osm PathOverlay - done
+Cloudmade geocoding - done
+Remove from cache layers list key when adding landmark - done
+remove upcoming layer - done
+Check if goole maps api present - done
+Location services manager - done
+merge da2, da - done
+rebuild landmarkManager.findLandmarkById - done
+OSM routes cache intern values - done
+minimum landmarks increase to 50 for api v14 - done
+Enable layers with prompt - done
+Layers view sort by count - done
+Registration captcha - done
+Facebook changes, Restfb migration - done
+Store key in seperate string field on server - done
+Blogger v3 api - done
+Search types settings: phrase, fuzzy matching all words, fuzzy any words - done
+recycled bitmap - done?
+geocode search check distance between geocode and country - done
+Remove scribe from mobile - done
+Send post requests in search - done
+Hide passwords in source code - done
+Jar with all defs common for all projects - done
+FB: checkin, comments - done
+*auth via ssl (except tw) - done
+*auth page show oauth_logon_confirmation.jsp - done
+GL: getEmail, checkin, refreshToken - done
+send toast when logout - done
+Send email to user who login or/and created landmark - done
+Sending messages to social as task - done
+On GMS world login send user email - todo
+Files landmarks desc is null - done
+Search2Servlet parse post params into query string - done
+Landmark, image key lower case - done
+Duplicate landmark in FS and FB - done
+Auto checkin rule inline with fs mayorship checkin rule - done
+FB showing address in category - done
+Auto checkin service - done
+Send crash report with auth - done
+Security (logout user after installation of version onAppVersionChanged) - done
+Exclude UserManager from ConfigurationManager - done
+Instagram api http://instagram.com/developer/ - done
+Send serialized landmarks to gms - coupons, groupon, yelp, hotels, foursquare, facebook - done 
+Load icons only when wi-fi available in iconcache - done
+/services/persistLandmark 401 - done
+Lint performance issue with textview and bitmapdrawable - done
+Send serialized landmarks to gms - gms layer, foursquare merchant, - done
+Handlers - done
+HttpRequestRetryHandler - done
+Image loading settings - done
+showSelectedLandmark move to intents - done
+showLandmarkDetailAction - done
+Externalization - done
+migrate json layers to bin, enable compression - done
+User take screen shot  menu item - done
+loadLandmarkList using post method - done
+Search migrate to bin with compression, add meetup - done
+Lastfm, eventful, meetup start date - done?
+AutoCheckin update only after successful checkin - done?
+List of permissions in FB token - done
+Social Checkin - verify if required params are present - done 
+layerjsonparser post - done
+Config save to db confirm - done?
+Layer loader stop when app closed - ?
+Fsaddvenue check if empty token - done
+Showlandmark, showimage cache image and landmark object and error - done
+socialcheckin check key if start with http - done? check locationCheckIn
+Blogger 403 send info to cache to stop sending messages for 1 hour - done?
+Cache set validity of spefic entry or create short time cache, Cache front page geocodes and landmarks for 1 minute - done
+Add user feedback string to landmark description - done
+Hotels stars - done
+On open url redirect to server - done
+Baza jarka: unavailable, Gms world: only 35 checkins - done
+Landmark redirect foursquare - done?
+Share message: remove img tag or point img to http - done?
+After x usages require to login - onOptionsItemSelected, onClick, onKeyDown - done?
+New icons - done?
+Auto checkin: Check if other checkin in the meantime to the same layer - done?
+replace getLastNonConfigurationInstance() - done
+java.io.IOException: Connection already shutdown - done?
+FS checkin shout must be maximum 200 character - done
+Layerhelper.java 53 npe - done
+Add gms link to engage mail - done
+send emails as support@gms-world.net -  done
+Clear map: clear recently opened landmarks - done?
+Instagramprovider return 400 when missing lat or LNG - done?
+java.lang.Throwable: Error: WebView.destroy() called while still attached! - done?
+Value: java.io.EOFException - at java.io.ObjectInputStream.readInt() at com.jstakun.gms.android.utils.HttpUtils.loadLandmarkList(HttpUtils.java:430) - done?
+httputils check if network connection present before connecting - done
+Google places api call radar search - done
+(1. persist startup date - done, 2. service sends notification to server - done, 3. If email address present send email else create notification - done) - done
+Use entity utils in httputils - done
+Engage mail - create excluded list - done
+projects mavenization - done
+Google Analytics api update - done
+
