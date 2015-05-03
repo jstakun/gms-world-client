@@ -932,7 +932,8 @@ public class AsyncTaskManager {
 
     public void executeUploadImageTask(double lat, double lng, boolean notify) {
     	//if (notify || ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
-    	if (!ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), String.class)) {
+    	if (!ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), String.class) &&
+    			!activity.isFinishing()) {
     	    if (notify) {
     			String message = Locale.getMessage(R.string.shareScreenshot);
     			intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
