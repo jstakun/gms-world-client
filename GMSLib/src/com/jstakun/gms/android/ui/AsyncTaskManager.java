@@ -949,36 +949,35 @@ public class AsyncTaskManager {
     			int numOfLandmarks = landmarkManager.getAllLayersSize();
     			int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
     			String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
-    			new UploadImageTask(filename).execute(lat, lng);   		
+    			TakeScreenshot takeScreenshot = new TakeScreenshot(filename, lat, lng);
+    			activity.runOnUiThread(takeScreenshot);
     		} else {
     			LoggerUtils.debug("Skipping image upload due to lack of wi-fi...");
     		}
     	} else if (notify) {
     		//TODO translate
-    		intents.showInfoToast("Screenshot for current location has been already sent!");
+    		intents.showInfoToast("Screenshot for current location has already been sent!");
     	} else {
-    		LoggerUtils.debug("Screenshot for current location has been already sent!");
+    		LoggerUtils.debug("Screenshot for current location has already been sent!");
     	}
     }
-
+    
     private byte[] takeScreenshot() {
+    	Bitmap screenShot = null;
+        View v = activity.getWindow().getDecorView();
         byte[] scr = null;
-        View v = activity.findViewById(android.R.id.content);
-        //TODO check if mapview is loaded
+        
         try {
         	v.setDrawingCacheEnabled(true);
             //v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-            SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
-            int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
-            
-        	Bitmap screenShot = v.getDrawingCache(); 
-            //check if screenshot is black
-            boolean isBlack = false;
+        	screenShot = v.getDrawingCache();
+        	/*boolean isBlack = false;
             int blackPixelsCount = 0;
-    		int w = screenShot.getWidth();
-    	    int h = screenShot.getHeight();
-    	    int blackFactor = (int)(w * h * BLACK_FACTOR);
-            if (screenShot != null) {
+        	if (screenShot != null) {
+            	int w = screenShot.getWidth();
+            	int h = screenShot.getHeight();
+            	int blackFactor = (int)(w * h * BLACK_FACTOR);
+            
             	for(int i=0; i < w; i++) {
             		for(int j=0; j < h; j++)  {                    
             			if (screenShot.getPixel(i, j) == Color.BLACK) {
@@ -991,17 +990,12 @@ public class AsyncTaskManager {
             		}   
             	}
             }
-            //
-            if (screenShot != null && !isBlack) {
+        	if (screenShot != null && !isBlack) {*/
+            if (screenShot != null) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 screenShot.compress(Bitmap.CompressFormat.JPEG, 50, out);
-                screenShot.recycle();
                 scr = out.toByteArray();
-                //play camera click sound
-                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
-                LoggerUtils.debug("Shutter sound played with id " + id);
-                //
-            }
+        	}
         } catch (Throwable ex) {
             LoggerUtils.error("AsyncTaskManager.takeScreenshot() exception", ex);
         } finally {
@@ -1010,23 +1004,58 @@ public class AsyncTaskManager {
         return scr;
     }
 
+    private void checkScreenshot(byte[] scr) {
+        try {
+            if (scr != null) {
+                SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+                int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
+                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
+                LoggerUtils.debug("Shutter sound played with id " + id);
+            }
+        } catch (Throwable ex) {
+            LoggerUtils.error("AsyncTaskManager.checkScreenshot() exception", ex);
+        } 
+    }
+
+    private class TakeScreenshot implements Runnable {
+
+    	double lat, lng;
+    	String filename;
+    	
+    	public TakeScreenshot(String filename, double lat, double lng) {
+    		this.lat = lat;
+    		this.lng = lng;
+    		this.filename = filename;
+    	}
+    	
+		@Override
+		public void run() {
+			byte[] screenshot = takeScreenshot();
+			new UploadImageTask(filename, screenshot).execute(lat, lng);   					
+		}
+    	
+    }
+    
     private class UploadImageTask extends GMSAsyncTask<Double, Void, Void> {
 
         private String filename;
+        private byte[] image;
 
-        public UploadImageTask(String filename) {
+        public UploadImageTask(String filename, byte[] image) {
             super(10);
             this.filename = filename;
+            this.image = image;
         }
 
         @Override
         protected Void doInBackground(Double... coords) {
-            HttpUtils utils = new HttpUtils();
+            HttpUtils utils = null;
             try {
-            	byte[] file = takeScreenshot();
-        		if (file != null) {
+            	checkScreenshot(image);
+            	if (image != null) {
+            		utils = new HttpUtils();
         			String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
-        			utils.uploadFile(url, true, coords[0], coords[1], file, filename);
+        			utils.uploadFile(url, true, coords[0], coords[1], image, filename);
         			if (utils.getResponseCode() == 200) {
         				ConfigurationManager.getInstance().putObject("screenshot_" + StringUtil.formatCoordE2(coords[0]) + "_" + StringUtil.formatCoordE2(coords[1]), "1");
         			}

@@ -14,7 +14,7 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
  *
  * @author jstakun
  */
-public class FbPhotosReader extends AbstractSerialReader {
+public class FbTaggedReader extends AbstractSerialReader {
 	
 	private boolean hasToken = false;
 
@@ -55,6 +55,6 @@ public class FbPhotosReader extends AbstractSerialReader {
 	
 	@Override
 	protected String getUri() {
-		return "fbPhotos";
+		return "fbTagged";
 	}
 }
