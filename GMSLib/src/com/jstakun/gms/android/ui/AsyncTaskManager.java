@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -51,7 +50,7 @@ import com.jstakun.gms.android.utils.StringUtil;
 public class AsyncTaskManager {
 
     public static final int SHOW_ROUTE_MESSAGE = 30;
-    private static final double BLACK_FACTOR = 0.75;
+    //private static final double BLACK_FACTOR = 0.75;
     private Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress;
     private GMSNotificationManager notificationManager;
     private LandmarkManager landmarkManager;
@@ -968,6 +967,9 @@ public class AsyncTaskManager {
         byte[] scr = null;
         
         try {
+        	SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+            int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
+            
         	v.setDrawingCacheEnabled(true);
             //v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         	screenShot = v.getDrawingCache();
@@ -995,6 +997,9 @@ public class AsyncTaskManager {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 screenShot.compress(Bitmap.CompressFormat.JPEG, 50, out);
                 scr = out.toByteArray();
+                
+                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
+                LoggerUtils.debug("Shutter sound played with id " + id);
         	}
         } catch (Throwable ex) {
             LoggerUtils.error("AsyncTaskManager.takeScreenshot() exception", ex);
@@ -1002,19 +1007,6 @@ public class AsyncTaskManager {
             v.setDrawingCacheEnabled(false);
         }
         return scr;
-    }
-
-    private void checkScreenshot(byte[] scr) {
-        try {
-            if (scr != null) {
-                SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
-                int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
-                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
-                LoggerUtils.debug("Shutter sound played with id " + id);
-            }
-        } catch (Throwable ex) {
-            LoggerUtils.error("AsyncTaskManager.checkScreenshot() exception", ex);
-        } 
     }
 
     private class TakeScreenshot implements Runnable {
@@ -1051,7 +1043,6 @@ public class AsyncTaskManager {
         protected Void doInBackground(Double... coords) {
             HttpUtils utils = null;
             try {
-            	checkScreenshot(image);
             	if (image != null) {
             		utils = new HttpUtils();
         			String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
