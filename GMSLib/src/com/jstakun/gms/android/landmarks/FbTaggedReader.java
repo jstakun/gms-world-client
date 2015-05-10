@@ -38,7 +38,7 @@ public class FbTaggedReader extends AbstractSerialReader {
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
 			init(latitude, longitude, zoom, width, height);
 			if (hasToken) {
-				errorMessage = parser.parse(getUrls(), 0, params, landmarks, task, true, Commons.FACEBOOK);
+				errorMessage = parser.parse(getUrls(), 0, params, landmarks, task, true, Commons.FACEBOOK, true);
 			}
 		}
 		

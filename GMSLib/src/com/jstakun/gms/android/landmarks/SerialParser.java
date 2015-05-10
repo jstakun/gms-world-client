@@ -35,7 +35,7 @@ public class SerialParser {
         }
     }
 	
-    protected String parse(String[] urls, int urlIndex, List<NameValuePair> params, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService) { 	
+    protected String parse(String[] urls, int urlIndex, List<NameValuePair> params, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService, boolean removeIfExists) { 	
         String errorMessage = null;
         LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         
@@ -52,7 +52,7 @@ public class SerialParser {
         				landmarks.addAll(received);
         			} else {
         				synchronized (landmarks) {
-        					Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks)); 
+        					Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks, removeIfExists)); 
         					//System.out.println("2. Indexing " + urls[0] + " " + filtered.size());         				
         					if (landmarkManager != null) {
         						landmarkManager.addLandmarkListToDynamicLayer(filtered);
@@ -72,7 +72,7 @@ public class SerialParser {
         			service.logout();
         		}
         	} else if (responseCode >= 500 && urlIndex+1 < urls.length) {
-        		return parse(urls, urlIndex+1, params, landmarks, task, close, socialService);
+        		return parse(urls, urlIndex+1, params, landmarks, task, close, socialService, removeIfExists);
         	}
         	errorMessage = utils.getResponseCodeErrorMessage();
             if (close) {
@@ -86,13 +86,27 @@ public class SerialParser {
     private class ExistsPredicate implements Predicate<ExtendedLandmark> {
 
     	private List<ExtendedLandmark> source;
+    	private boolean removeIfExists = false;
     	
-    	public ExistsPredicate(List<ExtendedLandmark> source) {
+    	public ExistsPredicate(List<ExtendedLandmark> source, boolean removeIfExists) {
     		this.source = source;
+    		this.removeIfExists = removeIfExists;
     	}
     	
         public boolean apply(ExtendedLandmark landmark) {
-        	return (landmark != null && !source.contains(landmark));
+        	boolean decision = false;
+        	if (landmark != null) {
+        		if (removeIfExists) {
+        			source.remove(landmark);
+        			decision = true;
+        			//if (decision) {
+        			//	System.out.println("----------------------- removing landmark " + landmark.getName());
+        			//}
+        		} else {
+        			decision = !source.contains(landmark);
+        		}
+        	}
+        	return decision;
         }
     }
 }   

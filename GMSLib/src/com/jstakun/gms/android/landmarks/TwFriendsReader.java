@@ -36,7 +36,7 @@ public class TwFriendsReader extends AbstractSerialReader {
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TWEET_AUTH_STATUS)) {
 			init(latitude, longitude, zoom, width, height);
 			if (hasToken) {
-				errorMessage = parser.parse(getUrls(), 0, params, landmarks, task, true, Commons.TWITTER);
+				errorMessage = parser.parse(getUrls(), 0, params, landmarks, task, true, Commons.TWITTER, true);
 			}
 		}		
         return errorMessage;

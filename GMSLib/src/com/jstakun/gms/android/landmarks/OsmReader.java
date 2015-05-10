@@ -36,7 +36,7 @@ public class OsmReader extends AbstractSerialReader {
             amenity = "parking";
         }
         params.add(new BasicNameValuePair("amenity", amenity));
-	    return parser.parse(getUrls(), 0, params, landmarks, task, true, layer);	
+	    return parser.parse(getUrls(), 0, params, landmarks, task, true, layer, false);	
     }
 
 	@Override

@@ -43,7 +43,7 @@ public class FsCheckinsReader extends AbstractSerialReader {
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
 			init(latitude, longitude, zoom, width, height);
 			if (hasToken) {
-				errorMessage = parser.parse(getUrls(), 0, params, landmarks, task, true, Commons.FOURSQUARE);
+				errorMessage = parser.parse(getUrls(), 0, params, landmarks, task, true, Commons.FOURSQUARE, true);
 			}
 		}
 		
