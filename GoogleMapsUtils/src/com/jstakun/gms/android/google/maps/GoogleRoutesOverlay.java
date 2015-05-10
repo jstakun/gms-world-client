@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.google.maps;
 
 import android.content.Context;
@@ -36,12 +32,12 @@ public class GoogleRoutesOverlay extends Overlay {
     private final Point point1 = new Point();
     private final Point point2 = new Point();
     private List<ExtendedLandmark> routePoints = new ArrayList<ExtendedLandmark>();
-    private int routeSize = 0, w, h;
+    private int routeSize = 0, w = 0, h = 0;
     private boolean isCurrentlyRecording = false;
     private RoutesManager routesManager = null;
     private String routeName = null;
     private final Rect viewportRect = new Rect();
-    private Bitmap routesLayerBitmap;
+    private Bitmap routesLayerBitmap = null;
 
     public GoogleRoutesOverlay(Context context, RoutesManager routesManager, String routeName) {
         this.routeName = routeName;
@@ -53,8 +49,10 @@ public class GoogleRoutesOverlay extends Overlay {
         }
         
         routesLayerBitmap = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, context.getResources().getDisplayMetrics(), null).getBitmap();
-        w = routesLayerBitmap.getWidth();
-        h = routesLayerBitmap.getHeight();
+        if (routesLayerBitmap != null) {
+            w = routesLayerBitmap.getWidth();
+            h = routesLayerBitmap.getHeight();
+        }
         
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
@@ -74,7 +72,9 @@ public class GoogleRoutesOverlay extends Overlay {
                 ExtendedLandmark firstPoint = routePoints.get(0);
                 GeoPoint gp1 = new GeoPoint(firstPoint.getLatitudeE6(), firstPoint.getLongitudeE6());
                 projection.toPixels(gp1, point1);
-                canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - h, lmpaint); 
+                if (routesLayerBitmap != null) {
+                	canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - h, lmpaint); 
+                }
                 path.moveTo(point1.x, point1.y);
 
                 for (int i = 1; i < routeSize; i++) {
@@ -89,7 +89,9 @@ public class GoogleRoutesOverlay extends Overlay {
                 }
 
                 canvas.drawPath(path, paint);
-                canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
+                if (routesLayerBitmap != null) {
+                	canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
+                }
             } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point only
                 routePoints = routesManager.getRoute(routeName);
@@ -123,7 +125,7 @@ public class GoogleRoutesOverlay extends Overlay {
                     canvas.drawPath(path, paint);
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
-                    if (i == -1) {
+                    if (i == -1 && routesLayerBitmap != null) {
                         canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint); 
                     }
                 }
