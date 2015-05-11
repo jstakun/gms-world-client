@@ -8,8 +8,8 @@
     <string name="blogeo">Send post to Blogeo</string>
     <string name="trackPos">Record my route</string>
     <string name="login">Login</string>
-    <string name="socialNetworks">Social networks</string>
-    <string name="friendsCheckins">Friends activities</string>
+    <string name="socialNetworks">Social login</string>
+    <string name="friendsCheckins">Social activities</string>
     <string name="addLandmark">Add landmark</string>
     <string name="addLayer">Add layer</string>
     <string name="refreshLayers">Refresh layers</string>
@@ -28,9 +28,9 @@
     <string name="landmarks">My landmarks</string>
     <string name="landmarksNearby">Nearby landmarks</string>
     <string name="dataPacket">Data packets</string>
-    <string name="checkin">Check-ins</string>
+    <string name="checkin">Check-in</string>
     <string name="qrcheckin">Check-in with QR code</string>
-    <string name="searchcheckin">Check-in to location</string>
+    <string name="searchcheckin">Check-in at GMS World location</string>
     <string name="autocheckin">Auto Check-In</string>
     <string name="search">Search</string>
     <string name="pickMyPos">Search location</string>

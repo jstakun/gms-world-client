@@ -8,7 +8,7 @@
     <string name="blogeo">Prze\u015blij posta na Blogeo</string>
     <string name="trackPos">\u015aledzenie Twojej trasy</string>
     <string name="login">Zaloguj si\u0119</string>
-    <string name="socialNetworks">Sieci spo\u0142eczno\u015bciowe</string>
+    <string name="socialNetworks">Logowanie do spo\u0142eczno\u015bci</string>
     <string name="addLandmark">Dodaj miejsce</string>
     <string name="addLayer">Dodaj warstw\u0119</string>
     <string name="refreshLayers">Od\u015bwie\u017c warstwy</string>
@@ -17,7 +17,7 @@
     <string name="showLayers">Poka\u017c warstwy</string>
     <string name="saveRoute">Zapisz tras\u0119</string>
     <string name="routes">Trasy</string>
-    <string name="friendsCheckins">Aktywno\u015bci znajomych</string>
+    <string name="friendsCheckins">Aktywno\u015bci w spo\u0142eczno\u015bciach</string>
     <string name="events">Kalendarz</string>
     <string name="loadRoute">Za\u0142aduj tras\u0119 z pliku</string>
     <string name="loadPoiFile">Pliki z miejscami</string>
@@ -31,7 +31,7 @@
     <string name="checkin">Meldowanie</string>
     <string name="search">Szukaj</string>
     <string name="qrcheckin">Zamelduj si\u0119 kodem QR</string>
-    <string name="searchcheckin">Zamelduj si\u0119 do miejsca</string>
+    <string name="searchcheckin">Zamelduj si\u0119 do miejsca GMS World</string>
     <string name="autocheckin">Auto Check-In</string>
     <string name="pickMyPos">Szukaj lokalizacji</string>
     <string name="discoverPlaces">Odkrywaj nowe miejsca w okolicy</string>

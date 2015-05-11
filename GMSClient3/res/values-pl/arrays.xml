@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="navigation">
-        <item>Warstwy</item>
+        <item>@string/layers</item>
         <item>Miejsca</item> <!-- submenu -->
-        <item>Meldowanie</item> <!-- submenu -->
-        <item>Aktywno\u015bci znajomych</item>
-        <item>Okazje</item>
-        <item>Sieci spo\u0142eczno\u015bciowe</item>
+        <item>@string/checkin</item> <!-- submenu -->
+        <item>@string/friendsCheckins</item>
+        <item>@string/deals</item>
+        <item>@string/socialNetworks</item>
     </string-array>
     <string-array name="landmarks_submenu">
-        <item>Miejsca wok\u00f3\u0142</item>
-        <item>Utw\u00f3rz nowe miejsce</item>
-        <item>Miejsca ostatnio ogl\u0105dane</item>
-        <item>Najnowsze miejsca</item>
-        <item>Zapisane miejsca</item>
+        <item>@string/landmarksNearby</item>
+        <item>Create new landmark</item>
+        <item>Recently opened landmarks</item>
+        <item>@string/newestLandmarks</item>
+        <item>@string/showMyLandmarks</item>
         <item>Kalendarz miejsc</item>
-        <item>Pliki z miejscami</item>
+         <item>@string/loadPoiFile</item>
     </string-array>    
     <string-array name="checkin_submenu">
-        <item>Auto Check-In</item>
-        <item>Zamelduj si\u0119 do miejsca GMS World</item>
-        <item>Zamelduj si\u0119 kodem QR</item>
+        <item>@string/autocheckin</item>
+        <item>@string/searchcheckin</item>
+        <item>@string/qrcheckin</item>
     </string-array>   
 </resources>
