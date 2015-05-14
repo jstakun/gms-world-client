@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.google.maps;
 
 import android.graphics.Canvas;
@@ -67,7 +63,7 @@ public class GoogleLandmarkOverlay extends Overlay {
             
         
         } catch (Exception e) {
-            LoggerUtils.error("GoogleLandmarkOverlay exception", e);
+            LoggerUtils.error("GoogleLandmarkOverlay.draw() exception", e);
         }
         //no shadow by default
     }

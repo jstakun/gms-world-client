@@ -15,11 +15,15 @@ public class ConfigurationViewerActivity extends AbstractLandmarkList {
         UserTracker.getInstance().trackActivity(getClass().getName());
         
         Bundle extras = getIntent().getExtras();
+        List<LandmarkParcelable> configuration = null;
 
         if (extras != null) {
-        	 List<LandmarkParcelable> configuration = extras.getParcelableArrayList("configuration");
-        	 setListAdapter(new LandmarkArrayAdapter(this, configuration));
-             sort(ORDER_TYPE.ORDER_BY_NAME, ORDER.ASC, false);
+        	configuration = extras.getParcelableArrayList("configuration");
+        }
+        
+        if (configuration != null) {
+        	setListAdapter(new LandmarkArrayAdapter(this, configuration));
+            sort(ORDER_TYPE.ORDER_BY_NAME, ORDER.ASC, false);
         } else {
         	finish();
         }

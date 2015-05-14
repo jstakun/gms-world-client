@@ -231,18 +231,11 @@ public class LandmarkManager {
         List<ExtendedLandmark> recentlyOpenedLandmarks = new ArrayList<ExtendedLandmark>();
         List<ExtendedLandmark> recentlyOpenedLandmarksAll = landmarkPaintManager.getRecentlyOpenedLandmarks();
         List<Drawable> recentlyOpenedDrawables = new ArrayList<Drawable>();
-        List<LayerPoint> layerPoints = new ArrayList<LayerPoint>();
-        if (!recentlyOpenedLandmarksAll.isEmpty()) {
-        	layerPoints.addAll(Lists.transform(recentlyOpenedLandmarksAll, transformFunction));
-        }
-        int layersSize = layerPoints.size();
-
-        for (int i = 0; i < layersSize; i++) {
-            LayerPoint point = layerPoints.get(i);
+        
+        for (ExtendedLandmark landmark : recentlyOpenedLandmarksAll) {
+            LayerPoint point = transformFunction.apply(landmark);
             if (projection.isVisible(point)) {
-                ExtendedLandmark landmark = recentlyOpenedLandmarksAll.get(i);
                 boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-
                 if (selectedLandmark == null || !selectedLandmark.equals(landmark)) {
                     recentlyOpenedLandmarks.add(landmark);
                     drawablePoints.add(point);
@@ -274,16 +267,10 @@ public class LandmarkManager {
             List<ExtendedLandmark> layer = getLandmarkStoreLayer(key);
             boolean isMyPosLayer = key.equals(Commons.MY_POSITION_LAYER);
             int layer_counter = 0;
-            layerPoints.clear();
-            if (!layer.isEmpty()) {
-                layerPoints.addAll(Lists.transform(layer, transformFunction));
-            }
-            int layerSize = layerPoints.size();
-
-            for (int i = 0; i < layerSize; i++) {
-                LayerPoint point = layerPoints.get(i);
+            
+            for (ExtendedLandmark landmark : layer) {
+                LayerPoint point = transformFunction.apply(landmark);
                 if (projection.isVisible(point)) {
-                    ExtendedLandmark landmark = layer.get(i);
                     layer_counter++;
                     total_counter++;
                     if ((selectedLandmark == null || !selectedLandmark.equals(landmark))

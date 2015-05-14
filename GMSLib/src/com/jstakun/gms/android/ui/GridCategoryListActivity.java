@@ -117,7 +117,9 @@ public class GridCategoryListActivity extends Activity {
 
         if (parent != -1 && cm != null) {
             Category parentCat = cm.getCategory(parent);
-            setTitle(Locale.getMessage(R.string.dealsString, parentCat.getCategory()));
+            if (parentCat != null) {
+            	setTitle(Locale.getMessage(R.string.dealsString, parentCat.getCategory()));
+            }
         }
 
         gridView.setAdapter(new GridCategoryArrayAdapter(this, names, categories, new PositionClickListener()));	
