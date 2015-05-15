@@ -390,7 +390,7 @@ public class LandmarkManager {
     }
 
     public void searchLandmarks(List<LandmarkParcelable> results, String searchTerm, String[] searchTermTokens, double lat, double lng, int searchType) {
-        searchLandmarks(results, searchTerm, searchTermTokens, layerManager.getEnabledLayers(), lat, lng, searchType);
+        searchLandmarks(results, searchTerm, searchTermTokens, layerManager.getLayers()/*.getEnabledLayers()*/, lat, lng, searchType);
     }
 
     public void searchDeals(List<LandmarkParcelable> results, String searchTerm, String[] searchTermTokens, double lat, double lng, int searchType) {
@@ -1000,6 +1000,7 @@ public class LandmarkManager {
         if (landmarkStore.containsKey(layer)) {
             List<ExtendedLandmark> layerVector = getLandmarkStoreLayer(layer);
             layerVector.remove(landmark);
+            removeLandmarkFromDynamicLayer(landmark);
             response = 1;
         }
 
@@ -1182,7 +1183,20 @@ public class LandmarkManager {
             Layer layer = layerManager.getLayer(key);
             Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
             if (searchPredicate.apply(landmark)) {
-                layer.incrementCount();
+                layer.increaseCount();
+                //System.out.println("------------" + layer.getName() + " " + layer.getCount());
+            }
+        }
+    }
+    
+    public void removeLandmarkFromDynamicLayer(ExtendedLandmark landmark) {
+        List<String> dynamicLayers = layerManager.getDynamicLayers();
+        for (String key : dynamicLayers) {
+            Layer layer = layerManager.getLayer(key);
+            Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
+            if (searchPredicate.apply(landmark)) {
+                layer.decreaseCount();
+                //System.out.println("------------" + layer.getName() + " " + layer.getCount());
             }
         }
     }
@@ -1201,11 +1215,12 @@ public class LandmarkManager {
         		}
         		if (count > 0) {
         			layer.increaseCount(count);
+        			//System.out.println("------------" + layer.getName() + " " + layer.getCount());
         		}
         	}
         }
     }
-
+    
     public int countLandmarks(Category c) {
         if (c != null) {
             if (c.isCustom()) {

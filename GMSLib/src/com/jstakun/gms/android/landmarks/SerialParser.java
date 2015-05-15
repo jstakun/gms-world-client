@@ -52,7 +52,7 @@ public class SerialParser {
         				landmarks.addAll(received);
         			} else {
         				synchronized (landmarks) {
-        					Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks, removeIfExists)); 
+        					Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks, removeIfExists, landmarkManager)); 
         					//System.out.println("2. Indexing " + urls[0] + " " + filtered.size());         				
         					if (landmarkManager != null) {
         						landmarkManager.addLandmarkListToDynamicLayer(filtered);
@@ -87,10 +87,12 @@ public class SerialParser {
 
     	private List<ExtendedLandmark> source;
     	private boolean removeIfExists = false;
+    	private LandmarkManager landmarkManager;
     	
-    	public ExistsPredicate(List<ExtendedLandmark> source, boolean removeIfExists) {
+    	public ExistsPredicate(List<ExtendedLandmark> source, boolean removeIfExists, LandmarkManager landmarkManager) {
     		this.source = source;
     		this.removeIfExists = removeIfExists;
+    		this.landmarkManager = landmarkManager;
     	}
     	
         public boolean apply(ExtendedLandmark landmark) {
@@ -99,9 +101,9 @@ public class SerialParser {
         		if (removeIfExists) {
         			source.remove(landmark);
         			decision = true;
-        			//if (decision) {
-        			//	System.out.println("----------------------- removing landmark " + landmark.getName());
-        			//}
+        			if (landmarkManager != null) {
+        				landmarkManager.removeLandmarkFromDynamicLayer(landmark);
+        			}
         		} else {
         			decision = !source.contains(landmark);
         		}

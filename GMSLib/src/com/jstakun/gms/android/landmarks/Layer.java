@@ -169,8 +169,12 @@ public class Layer {
         this.count = count;
     }
 
-    public synchronized void incrementCount() {
+    public synchronized void increaseCount() {
         count++;
+    }
+    
+    public synchronized void decreaseCount() {
+        count--;
     }
     
     public synchronized void increaseCount(int inc) {
