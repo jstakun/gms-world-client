@@ -174,7 +174,7 @@ public class Layer {
     }
     
     public synchronized void decreaseCount() {
-        count--;
+    	count--;
     }
     
     public synchronized void increaseCount(int inc) {

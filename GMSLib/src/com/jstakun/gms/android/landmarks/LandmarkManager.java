@@ -999,8 +999,9 @@ public class LandmarkManager {
 
         if (landmarkStore.containsKey(layer)) {
             List<ExtendedLandmark> layerVector = getLandmarkStoreLayer(layer);
-            layerVector.remove(landmark);
-            removeLandmarkFromDynamicLayer(landmark);
+            if (layerVector.remove(landmark)) {
+            	removeLandmarkFromDynamicLayer(landmark);
+            }
             response = 1;
         }
 
@@ -1079,6 +1080,7 @@ public class LandmarkManager {
         for (String key : Iterables.filter(included, new LayerExistsPredicate())) {
             count += Collections2.filter(getLandmarkStoreLayer(key), categoryLandmarkPredicate).size();
         }
+        
         return count;
     }
 
@@ -1184,7 +1186,7 @@ public class LandmarkManager {
             Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
             if (searchPredicate.apply(landmark)) {
                 layer.increaseCount();
-                //System.out.println("------------" + layer.getName() + " " + layer.getCount());
+                System.out.println("------------" + layer.getName() + " " + layer.getCount());
             }
         }
     }
@@ -1196,7 +1198,7 @@ public class LandmarkManager {
             Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
             if (searchPredicate.apply(landmark)) {
                 layer.decreaseCount();
-                //System.out.println("------------" + layer.getName() + " " + layer.getCount());
+                System.out.println("------------" + layer.getName() + " " + layer.getCount());
             }
         }
     }
@@ -1215,7 +1217,7 @@ public class LandmarkManager {
         		}
         		if (count > 0) {
         			layer.increaseCount(count);
-        			//System.out.println("------------" + layer.getName() + " " + layer.getCount());
+        			System.out.println("------------" + layer.getName() + " " + layer.getCount());
         		}
         	}
         }
@@ -1378,7 +1380,7 @@ public class LandmarkManager {
         }
 
         public boolean apply(ExtendedLandmark l) {
-            return ((l.getCategoryId() == categoryId && subcategoryId == -1) || (l.getSubCategoryId() == subcategoryId && subcategoryId != -1));
+        	return ((l.getCategoryId() == categoryId && subcategoryId == -1) || (l.getSubCategoryId() == subcategoryId && subcategoryId != -1));
         }
     }
 

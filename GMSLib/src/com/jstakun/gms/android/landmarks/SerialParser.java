@@ -99,9 +99,8 @@ public class SerialParser {
         	boolean decision = false;
         	if (landmark != null) {
         		if (removeIfExists) {
-        			source.remove(landmark);
         			decision = true;
-        			if (landmarkManager != null) {
+        			if (source.remove(landmark) && landmarkManager != null) {
         				landmarkManager.removeLandmarkFromDynamicLayer(landmark);
         			}
         		} else {
