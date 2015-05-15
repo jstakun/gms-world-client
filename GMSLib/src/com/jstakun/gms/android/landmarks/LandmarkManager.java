@@ -1186,7 +1186,6 @@ public class LandmarkManager {
             Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
             if (searchPredicate.apply(landmark)) {
                 layer.increaseCount();
-                System.out.println("------------" + layer.getName() + " " + layer.getCount());
             }
         }
     }
@@ -1198,7 +1197,6 @@ public class LandmarkManager {
             Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
             if (searchPredicate.apply(landmark)) {
                 layer.decreaseCount();
-                System.out.println("------------" + layer.getName() + " " + layer.getCount());
             }
         }
     }
@@ -1217,7 +1215,6 @@ public class LandmarkManager {
         		}
         		if (count > 0) {
         			layer.increaseCount(count);
-        			System.out.println("------------" + layer.getName() + " " + layer.getCount());
         		}
         	}
         }
