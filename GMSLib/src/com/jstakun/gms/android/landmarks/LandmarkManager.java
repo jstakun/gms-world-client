@@ -1081,6 +1081,8 @@ public class LandmarkManager {
             count += Collections2.filter(getLandmarkStoreLayer(key), categoryLandmarkPredicate).size();
         }
         
+        //System.out.println("---------" + categoryId + " " +  subCategoryId + ": " + count);
+        
         return count;
     }
 
@@ -1377,7 +1379,13 @@ public class LandmarkManager {
         }
 
         public boolean apply(ExtendedLandmark l) {
-        	return ((l.getCategoryId() == categoryId && subcategoryId == -1) || (l.getSubCategoryId() == subcategoryId && subcategoryId != -1));
+        	boolean decision = false;
+        	if (subcategoryId == -1) {
+        		decision = (l.getCategoryId() == categoryId  && l.getSubCategoryId() != -1);
+        	} else if (subcategoryId != -1) {
+        		decision = (l.getSubCategoryId() == subcategoryId);
+        	} 
+        	return decision;
         }
     }
 
