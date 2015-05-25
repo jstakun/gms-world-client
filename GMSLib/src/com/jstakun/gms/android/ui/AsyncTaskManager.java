@@ -152,11 +152,7 @@ public class AsyncTaskManager {
 
         if (location != null) {
         	myPos = landmarkManager.createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), Commons.MY_POSITION_LAYER, null, null);
-        	String username = ConfigurationManager.getUserManager().getLoggedInUsername();
-            if (username == null || ConfigurationManager.getInstance().isOff(ConfigurationManager.TRACK_USER)) {
-            	username = Commons.MY_POS_USER;
-            }
-        	msg = landmarkManager.persistToServer(myPos, Commons.MY_POS_CODE, null, username);
+        	msg = landmarkManager.persistToServer(myPos, null);
         } else {
         	LoggerUtils.debug("Can't send my location !!!");
         }
@@ -632,8 +628,8 @@ public class AsyncTaskManager {
             String desc = landmarkData[3];
             String validityDate = landmarkData[4];
             Location lastPosition = ConfigurationManager.getInstance().getLocation();
-            ExtendedLandmark landmark = landmarkManager.createLandmark(lastPosition.getLatitude(), lastPosition.getLongitude(), (float) lastPosition.getAltitude(), name, desc, Commons.LM_SERVER_LAYER);
-            String msg = landmarkManager.persistToServer(landmark, "Social", validityDate, ConfigurationManager.getUserManager().getLoggedInUsername());
+            ExtendedLandmark landmark = landmarkManager.createLandmark(lastPosition.getLatitude(), lastPosition.getLongitude(), (float) lastPosition.getAltitude(), name, desc, Commons.BLOGEO_LAYER);
+            String msg = landmarkManager.persistToServer(landmark, validityDate);
 
             if (msg == null) {
                 String tmp = sendSocialNotification(landmark, Commons.BLOGEO);

@@ -1007,5 +1007,29 @@ public final class ConfigurationManager {
     		}
     		LoggerUtils.debug("GMS Token is present!");
     	}
+    	
+    	public String getSocialIds() {
+    		List<String> ids = new ArrayList<String>();
+    		if (isOn(GMS_AUTH_STATUS)) {
+    			ids.add(getString(GMS_USERNAME));
+    		} 
+    		if (isOn(FB_AUTH_STATUS)) {
+    			ids.add(getString(FB_USERNAME));
+        	} 
+    		if (isOn(TWEET_AUTH_STATUS)) {
+    			ids.add(getString(TWEET_USERNAME));
+        	} 
+    		if (isOn(LN_AUTH_STATUS)) {
+    			ids.add(getString(LN_USERNAME));
+        	} 
+    		if (isOn(GL_AUTH_STATUS)) {
+        		ids.add(getString(GL_USERNAME));
+        	} 
+    		if (isOn(FS_AUTH_STATUS)) {
+    			ids.add(getString(FS_USERNAME));
+        	} 
+
+        	return StringUtils.join(ids, ',');
+    	}
     }
 }

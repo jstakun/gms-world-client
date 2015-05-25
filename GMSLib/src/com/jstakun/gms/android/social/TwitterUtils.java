@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.ui.lib.R;
@@ -54,7 +55,7 @@ public final class TwitterUtils extends AbstractSocialUtils {
         try {
         	String id = json.getString(ConfigurationManager.TWEET_USERNAME);
         	ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, json.optString(ConfigurationManager.GMS_TOKEN));
-			ConfigurationManager.getInstance().putString(ConfigurationManager.TWEET_USERNAME, id + "@tw");
+			ConfigurationManager.getInstance().putString(ConfigurationManager.TWEET_USERNAME, id + "@" + Commons.TWITTER);
 			String name = json.optString(ConfigurationManager.TWEET_NAME);
 			if (name != null) {
 				ConfigurationManager.getInstance().putString(ConfigurationManager.TWEET_NAME, name);	

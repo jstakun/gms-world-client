@@ -32,7 +32,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 		ConfigurationManager.getInstance().setOn(ConfigurationManager.FB_SEND_STATUS);
 		boolean result = false;
 		try {
-			ConfigurationManager.getInstance().putString(ConfigurationManager.FB_USERNAME, json.getString(ConfigurationManager.FB_USERNAME) + "@fb");
+			ConfigurationManager.getInstance().putString(ConfigurationManager.FB_USERNAME, json.getString(ConfigurationManager.FB_USERNAME) + "@" + Commons.FACEBOOK);
 
 			ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, json.getString(ConfigurationManager.GMS_TOKEN));
 			

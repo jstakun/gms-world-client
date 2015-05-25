@@ -63,7 +63,7 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 
         try {
         	String id = json.getString(ConfigurationManager.FS_USERNAME);
-            ConfigurationManager.getInstance().putString(ConfigurationManager.FS_USERNAME, id + "@fs");
+            ConfigurationManager.getInstance().putString(ConfigurationManager.FS_USERNAME, id + "@" + Commons.FOURSQUARE);
             ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, json.getString(ConfigurationManager.GMS_TOKEN));
             String user = json.optString(ConfigurationManager.FS_NAME); 
             if (user != null) {

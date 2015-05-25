@@ -11,6 +11,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.ui.lib.R;
@@ -48,7 +49,7 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 		try {
 			String id = json.getString(ConfigurationManager.LN_USERNAME);
 		
-			ConfigurationManager.getInstance().putString(ConfigurationManager.LN_USERNAME, id + "@ln");
+			ConfigurationManager.getInstance().putString(ConfigurationManager.LN_USERNAME, id + "@" + Commons.LINKEDIN);
 			
 			ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, json.optString(ConfigurationManager.GMS_TOKEN));
 			

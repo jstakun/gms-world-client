@@ -126,7 +126,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 			}
 						
 			String userid = json.getString(ConfigurationManager.GL_USERNAME);
-			ConfigurationManager.getInstance().putString(ConfigurationManager.GL_USERNAME,userid + "@gg");
+			ConfigurationManager.getInstance().putString(ConfigurationManager.GL_USERNAME,userid + "@" + Commons.GOOGLE);
 			String username = json.optString(ConfigurationManager.GL_NAME);
 			if (username != null) {
 				ConfigurationManager.getInstance().putString(ConfigurationManager.GL_NAME, username);

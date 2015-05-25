@@ -480,7 +480,7 @@ public class LandmarkManager {
             List<ExtendedLandmark> layer = getLandmarkStoreLayer(landmark.getLayer());
             layer.add(landmark);
         } else if (persist == ConfigurationManager.PERSIST_SERVER) {
-            errorMessage = persistToServer(landmark, landmark.getLayer(), null, ConfigurationManager.getUserManager().getLoggedInUsername());
+            errorMessage = persistToServer(landmark, null);
         } else if (persist == ConfigurationManager.PERSIST_LOCAL) {
             //Local store
             List<ExtendedLandmark> layer = getLandmarkStoreLayer(Commons.LOCAL_LAYER);
@@ -551,28 +551,30 @@ public class LandmarkManager {
         landmarkPaintManager.clearRecentlyOpenedLandmarks();
     }
 
-    public String persistToServer(ExtendedLandmark landmark, String layer, String validityDate, String username) {
+    public String persistToServer(ExtendedLandmark landmark, String validityDate) {
 
         String errorMessage;
 
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+        if (username == null || ConfigurationManager.getInstance().isOff(ConfigurationManager.TRACK_USER)) {
+        	username = Commons.MY_POS_USER;
+        } else {
+        	params.add(new BasicNameValuePair("socialIds", ConfigurationManager.getUserManager().getSocialIds()));
+        }
+        params.add(new BasicNameValuePair("username", username));
+        
         double[] coords = MercatorUtils.normalizeE6(new double[]{landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()});
         double alt = MercatorUtils.normalizeE6(landmark.getQualifiedCoordinates().getAltitude());
         String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "persistLandmark";
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("name", landmark.getName()));
         params.add(new BasicNameValuePair("description", landmark.getDescription()));
         params.add(new BasicNameValuePair("longitude", Double.toString(coords[1])));
         params.add(new BasicNameValuePair("latitude", Double.toString(coords[0])));
         params.add(new BasicNameValuePair("altitude", Double.toString(alt)));
-        params.add(new BasicNameValuePair("radius", Integer.toString(DistanceUtils.radiusInKilometer())));
+        params.add(new BasicNameValuePair("radius", Integer.toString(DistanceUtils.radiusInKilometer()))); 
 
-        if (StringUtils.isNotEmpty(username)) {
-        	params.add(new BasicNameValuePair("username", username));
-        } 
-
-        if (StringUtils.isNotEmpty(layer)) {
-            params.add(new BasicNameValuePair("layer", layer));
-        }
+        params.add(new BasicNameValuePair("layer", landmark.getLayer()));
 
         if (StringUtils.isNotEmpty(validityDate)) {
             params.add(new BasicNameValuePair("validityDate", validityDate));
