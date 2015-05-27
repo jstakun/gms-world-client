@@ -75,14 +75,19 @@ public class FavouritesDbDataSource {
     }
 
     public boolean hasLandmark(String key) {
-    	if (countStatement == null) {
+    	long count = 0l;
+    	try {
+    		if (countStatement == null) {
                 String countSql = "SELECT COUNT(*) FROM " + FavouritesDbSQLiteOpenHelper.TABLE_NAME
                         + " where " + FavouritesDbSQLiteOpenHelper.COLUMN_KEY + "=?";
                 countStatement = getDatabase().compileStatement(countSql);
+    		}
+    		countStatement.bindString(1, key);
+    		count = countStatement.simpleQueryForLong();
+    	} catch (Exception e) {
+            LoggerUtils.error("FavouritesDbDataSource.hasLandmark() exception:", e);
         }
-        countStatement.bindString(1, key);
-        long count = countStatement.simpleQueryForLong();
-        return (count > 0);
+    	return (count > 0);
     }
 
     public int updateMaxDist(long newMaxDist, long hashcode) {
