@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
 
 import com.jstakun.gms.android.config.Commons;
@@ -86,7 +82,7 @@ public class LayerJSONParser {
             boolean manageable = layer.getBoolean("manageable");
             boolean enabled = layer.getBoolean("enabled");
             boolean checkinable = layer.getBoolean("checkinable");
-            if (layer.getBoolean("isEmpty") == true) {
+            if (layer.getBoolean("isEmpty")) {
                 excluded.add(lname);
             }
             boolean searchable = true;
