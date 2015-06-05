@@ -151,7 +151,7 @@ public class AsyncTaskManager {
         ExtendedLandmark myPos = null;
 
         if (location != null) {
-        	myPos = landmarkManager.createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), null, null, Commons.MY_POSITION_LAYER);
+        	myPos = landmarkManager.createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), Commons.MY_POSITION_LAYER, null, Commons.MY_POS_CODE);
         	msg = landmarkManager.persistToServer(myPos, null);
         } else {
         	LoggerUtils.debug("Can't send my location !!!");
