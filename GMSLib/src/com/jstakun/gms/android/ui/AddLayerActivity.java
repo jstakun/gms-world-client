@@ -174,7 +174,10 @@ public class AddLayerActivity extends Activity implements OnClickListener {
 
             String keywordsJoin = StringUtils.join(keywordsList, ",");
 
-            boolean containsLayer = landmarkManager.getLayerManager().addDynamicLayer(keywordsJoin);
+            boolean containsLayer = false;
+            if (landmarkManager != null) {
+            	containsLayer = landmarkManager.getLayerManager().addDynamicLayer(keywordsJoin);
+            }
           
             if (containsLayer) {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
