@@ -16,6 +16,7 @@ import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.Token;
 
 /**
@@ -134,7 +135,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 	}
 
 	@Override
-	public String checkin(String placeId, String name) {
+	public String checkin(String placeId, String name, Double lat, Double lng) {
 		//socialCheckin  accessToken, venueId, name, service
         HttpUtils utils = new HttpUtils();
 		String message = null;
@@ -151,6 +152,8 @@ public final class FacebookUtils extends AbstractSocialUtils {
 		    params.add(new BasicNameValuePair("venueId", placeId));
 		    params.add(new BasicNameValuePair("name", name));
 		    params.add(new BasicNameValuePair("service", Commons.FACEBOOK));
+		    params.add(new BasicNameValuePair("lat", StringUtil.formatCoordE6(lat)));
+		    params.add(new BasicNameValuePair("lng", StringUtil.formatCoordE6(lng)));
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();

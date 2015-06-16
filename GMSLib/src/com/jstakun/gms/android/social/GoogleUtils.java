@@ -20,6 +20,7 @@ import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.Token;
 
 /**
@@ -171,7 +172,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
         return result;
 	}
 
-	public String checkin(String reference, String name) {
+	public String checkin(String reference, String name, Double lat, Double lng) {
 		HttpUtils utils = new HttpUtils();
 		String message = null;
 
@@ -180,6 +181,8 @@ public final class GoogleUtils extends AbstractSocialUtils {
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 		    params.add(new BasicNameValuePair("reference", reference));
 		    params.add(new BasicNameValuePair("service", Commons.GOOGLE));
+		    params.add(new BasicNameValuePair("lat", StringUtil.formatCoordE6(lat)));
+		    params.add(new BasicNameValuePair("lng", StringUtil.formatCoordE6(lng)));
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();

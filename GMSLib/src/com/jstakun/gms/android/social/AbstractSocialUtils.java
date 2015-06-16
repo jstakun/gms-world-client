@@ -47,7 +47,7 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 	}
 
 	@Override
-	public String checkin(String placeId, String name) {
+	public String checkin(String placeId, String name, Double lat, Double lng) {
 		return null;
 	}
 

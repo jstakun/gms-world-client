@@ -457,14 +457,14 @@ public class AsyncTaskManager {
     }
 
     //CheckIn tasks
-    public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name) {
+    public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name, Double lat, Double lng) {
      String notificationId = "-1";
      if (!silent) {
             intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
             notificationId = createNotification(icon, message, message, true);
         }
         SocialCheckInTask checkInTask = new SocialCheckInTask();
-        checkInTask.execute("", notificationId, Boolean.toString(silent), layer, venueid, name);
+        checkInTask.execute("", notificationId, Boolean.toString(silent), layer, venueid, name, Double.toString(lat), Double.toString(lng));
     }
 
     private class SocialCheckInTask extends GenericTask {
@@ -475,7 +475,7 @@ public class AsyncTaskManager {
         protected String doInBackground(String... fileData) {
         	super.doInBackground(fileData);
             silent = Boolean.parseBoolean(fileData[2]);
-            return socialCheckin(fileData[3], fileData[4], fileData[5]);
+            return socialCheckin(fileData[3], fileData[4], fileData[5], Double.valueOf(fileData[6]), Double.valueOf(fileData[7]));
         }
 
         @Override
@@ -489,16 +489,16 @@ public class AsyncTaskManager {
         }
     }
     
-    private String socialCheckin(String layer, String venueid, String name) {
+    private String socialCheckin(String layer, String venueid, String name, Double lat, Double lng) {
     	String msg;// = Locale.getMessage(R.string.Social_Checkin_error, selectedLandmark.getName());
 		
 		try {
 			if (layer.equals(Commons.FOURSQUARE_LAYER) || layer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {
-				msg = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).checkin(venueid, name);
+				msg = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).checkin(venueid, name, lat, lng);
 			} else if (layer.equals(Commons.FACEBOOK_LAYER)) {
-				msg = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).checkin(venueid, name);
+				msg = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK).checkin(venueid, name, lat, lng);
 			} else if (layer.equals(Commons.GOOGLE_PLACES_LAYER)) {
-				msg = OAuthServiceFactory.getSocialUtils(Commons.GOOGLE).checkin(venueid, name);
+				msg = OAuthServiceFactory.getSocialUtils(Commons.GOOGLE).checkin(venueid, name, lat, lng);
 			} else {
 				msg = Locale.getMessage(R.string.Checkin_layer_error, layer);
 			}
