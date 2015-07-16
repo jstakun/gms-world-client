@@ -10,13 +10,11 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 
 public class AutoCheckinStartServiceReceiver extends BroadcastReceiver {
 	
-	private static final long THRITY_MINS = 1000 * 60 * 30;
-
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Location location = AndroidDevice.getLastKnownLocation(context);
+		Location location = AndroidDevice.getLastKnownLocation(context, 30);
 
-		if (location != null && (System.currentTimeMillis() - location.getTime()) < THRITY_MINS) {
+		if (location != null) {
 			Intent service = new Intent(context, AutoCheckinService.class);
 			service.putExtra("lat", location.getLatitude());
 			service.putExtra("lng", location.getLongitude());

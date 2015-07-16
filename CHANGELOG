@@ -1,6 +1,13 @@
+1131
+
+Recaptcha upgrade - done
+Daily service call, send last known location only if newer than 8 hours - done
+Load layers web page /newLandmark/lat/lng/token - done
+
 1130
 
 Send all user social ids to server - done
+yelp api v2 upgrade - done
 
 1127
 

@@ -325,7 +325,7 @@ public class AndroidDevice implements LocationListener {
         return provider1.equals(provider2);
     }
     
-    public static Location getLastKnownLocation(Context context) {
+    public static Location getLastKnownLocation(Context context, long validityMinutes) {
     	Location location = ConfigurationManager.getInstance().getLocation();
 
 		if (location == null) {
@@ -353,6 +353,10 @@ public class AndroidDevice implements LocationListener {
 			LoggerUtils.debug("AndroidDevice.getLastKnownLocation() no saved location");
 		}
 		
-		return location;
+		if (location != null && (System.currentTimeMillis() - location.getTime()) < (validityMinutes * 60 * 1000)) {
+			return location;
+		} else {
+			return null;
+		}
     }
 }

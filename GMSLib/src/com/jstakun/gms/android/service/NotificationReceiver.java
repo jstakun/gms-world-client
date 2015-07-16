@@ -30,10 +30,9 @@ public class NotificationReceiver extends BroadcastReceiver {
     		ConfigurationManager.getInstance().setContext(context);
     	}
 		
-		Location location = AndroidDevice.getLastKnownLocation(context);
+		Location location = AndroidDevice.getLastKnownLocation(context, 480); //8 hours
 		
-		if (location != null)
-		{
+		if (location != null) {
 			new SendNotificationTask(10).execute(location.getLatitude(), location.getLongitude());
 		} else {
 			new SendNotificationTask(10).execute();
