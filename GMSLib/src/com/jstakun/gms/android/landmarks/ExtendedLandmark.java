@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
 
 import java.io.Externalizable;
@@ -124,7 +120,7 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
      * @return the latitudeE6
      */
     public int getLatitudeE6() {
-        if (latitudeE6 == -1) {
+        if (latitudeE6 == -1 && getQualifiedCoordinates() != null) {
             latitudeE6 = MathUtils.coordDoubleToInt(getQualifiedCoordinates().getLatitude());
         }
         return latitudeE6;
@@ -141,7 +137,7 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
      * @return the longitudeE6
      */
     public int getLongitudeE6() {
-        if (longitudeE6 == -1) {
+        if (longitudeE6 == -1 && getQualifiedCoordinates() != null) {
            longitudeE6 = MathUtils.coordDoubleToInt(getQualifiedCoordinates().getLongitude());
         }
         return longitudeE6;
