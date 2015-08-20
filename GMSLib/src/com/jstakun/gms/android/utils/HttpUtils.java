@@ -161,6 +161,7 @@ public class HttpUtils {
             postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
             postRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
             postRequest.addHeader(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            postRequest.addHeader(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
             postRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
             if (auth) {
@@ -225,6 +226,7 @@ public class HttpUtils {
             postRequest = new HttpPost(uri);
 
             postRequest.addHeader(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            postRequest.addHeader(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
             postRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
             postRequest.addHeader(Commons.LAT_HEADER, StringUtil.formatCoordE6(latitude));
             postRequest.addHeader(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
@@ -311,6 +313,7 @@ public class HttpUtils {
             getRequest.addHeader("Connection", "close");
             getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
             getRequest.addHeader(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            getRequest.addHeader(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
             getRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
             // HTTP Response
@@ -404,7 +407,8 @@ public class HttpUtils {
         		postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
         		postRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
         		postRequest.addHeader(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-        		postRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+        		postRequest.addHeader(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
+                postRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
         		if (auth) {
         			setAuthHeader(postRequest, uri.getPath().contains(ConfigurationManager.SERVICES_SUFFIX));

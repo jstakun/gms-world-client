@@ -1,13 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.WindowManager;
@@ -18,7 +13,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.LoggerUtils;
 
 /**
  *
@@ -82,14 +76,10 @@ public class AlertDialogBuilder {
 
         final TextView text = new TextView(activity);
         text.setPadding(10, 5, 10, 5);
-        try {
-            String message = ConfigurationManager.getAppUtils().getAboutMessage();
-            text.setText(message);
-            Linkify.addLinks(text, Linkify.WEB_URLS);
-            text.setMovementMethod(LinkMovementMethod.getInstance());
-        } catch (NameNotFoundException ex) {
-            LoggerUtils.error("AlertDialogBuilder.createInfoAlertDialog error", ex);
-        }
+        String message = ConfigurationManager.getAppUtils().getAboutMessage();
+        text.setText(message);
+        Linkify.addLinks(text, Linkify.WEB_URLS);
+        text.setMovementMethod(LinkMovementMethod.getInstance());
         builder.setView(text).
                 setCancelable(true)
                 .setIcon(android.R.drawable.ic_dialog_info)

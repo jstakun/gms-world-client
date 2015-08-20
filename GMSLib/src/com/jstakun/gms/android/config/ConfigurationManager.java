@@ -591,16 +591,17 @@ public final class ConfigurationManager {
     			putInteger(ConfigurationManager.SEARCH_RADIUS, 10);
     		}
 
-    		long installed;
+    		long installed = System.currentTimeMillis();
     		try {
-    			PackageManager pm = applicationContext.getPackageManager();
-    			//Version
-    			ApplicationInfo appInfo = pm.getApplicationInfo(applicationContext.getPackageName(), 0);
-    			String appFile = appInfo.sourceDir;
-    			installed = new File(appFile).lastModified();
+    			if (applicationContext != null) {
+    				PackageManager pm = applicationContext.getPackageManager();
+    				//Version
+    				ApplicationInfo appInfo = pm.getApplicationInfo(applicationContext.getPackageName(), 0);
+    				String appFile = appInfo.sourceDir;
+    				installed = new File(appFile).lastModified();
+    			}	
     		} catch (Exception ex) {
-    			LoggerUtils.error("ConfigurationManager.initApp() exception", ex);
-    			installed = System.currentTimeMillis();
+    			LoggerUtils.error("ConfigurationManager.initApp() exception", ex);   			
     		}
 
     		default_locations.clear();
@@ -687,17 +688,35 @@ public final class ConfigurationManager {
         	return ReturnVal;
     	}
     	
-    	public String getAboutMessage() throws NameNotFoundException {
-    		PackageInfo info = getPackageInfo(); 
+    	public String getAboutMessage() {
     		int versionCode = 0;
     		String versionName = "Latest";
-            if (info != null) {
-            	versionCode = info.versionCode;
-            	versionName = info.versionName;
-            }
+    		try {
+    		PackageInfo info = getPackageInfo(); 
+    			if (info != null) {
+    				versionCode = info.versionCode;
+    				versionName = info.versionName;
+    			}
+    		} catch (NameNotFoundException e) {
+    			LoggerUtils.error("ConfigurationManager.AppUtils.getAboutMessage() exception", e);
+    		}
             String app_name = Locale.getMessage(R.string.app_name);
             String message = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), ConfigurationManager.SERVER_URL);
     	    return message;
+    	}
+    	
+    	public int getVersionCode() {
+    		int versionCode = 0;
+    		try {
+    			PackageInfo info = getPackageInfo(); 
+    			if (info != null) {
+    				versionCode = info.versionCode;
+    			}
+    		} catch (NameNotFoundException e) {
+    			LoggerUtils.error("ConfigurationManager.AppUtils.getVersionCode() exception", e);
+    		}
+    		
+    		return versionCode;
     	}
     	
     	private String getBuildDate() {
