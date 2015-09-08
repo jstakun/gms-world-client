@@ -1320,7 +1320,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 	}
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
-            	} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION || msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
+            	} else if (GoogleMyLocationOverlay.UPDATE_LOCATION == msg.what || OsmMyLocationNewOverlay.UPDATE_LOCATION == msg.what) {
                 	Location location = (Location) msg.obj;
                 	activity.updateLocation(location);
             	}

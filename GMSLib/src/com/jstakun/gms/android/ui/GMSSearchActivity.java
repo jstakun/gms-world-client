@@ -92,8 +92,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 	};
 	private DialogInterface.OnClickListener cancelAddLayerListener = new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int item) {
-			ConfigurationManager.getInstance().removeObject(
-					AlertDialogBuilder.OPEN_DIALOG, Integer.class);
+			ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
 			dialog.cancel();
 			callSearchTask();
 		}
@@ -126,12 +125,13 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 			loading.setVisibility(View.VISIBLE);
 			setTitle(R.string.Please_Wait);
 		} else {
-			final Intent queryIntent = getIntent();
-			final String queryAction = queryIntent.getAction();
+			Intent queryIntent = getIntent();
+			String queryAction = null;
+			if (queryIntent != null) {
+				queryAction = queryIntent.getAction();
+			}
 
-			if (Intent.ACTION_SEARCH.equals(queryAction)
-					|| Intent.ACTION_VIEW.equals(queryAction)
-					&& queryIntent != null) {
+			if (StringUtils.equals(Intent.ACTION_SEARCH, queryAction) || StringUtils.equals(Intent.ACTION_VIEW, queryAction)) {
 				query = queryIntent.getStringExtra(SearchManager.QUERY);
 
 				layerCodeIndex = query.lastIndexOf("(");
@@ -171,14 +171,10 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				// imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(),
 				// 0); // InputMethodManager.HIDE_IMPLICIT_ONLY);
 				
-				if (StringUtils.endsWith(query, "/l")) {
-					AlertDialog addLayerDialog = alertBuilder.getAlertDialog(
-							AlertDialogBuilder.ADD_LAYER_DIALOG, null,
-							addLayerListener, cancelAddLayerListener);
-					addLayerDialog.setTitle(Locale.getMessage(
-							R.string.Layer_add_message_short, query.substring(0, query.length()-2)));
-					addLayerDialog.setMessage(Html.fromHtml(Locale.getMessage(
-							R.string.Layer_add_message_long, query.substring(0, query.length()-2))));
+				if (StringUtils.endsWith(query, "/l") && query.length() > 2) {
+					AlertDialog addLayerDialog = alertBuilder.getAlertDialog(AlertDialogBuilder.ADD_LAYER_DIALOG, null, addLayerListener, cancelAddLayerListener);
+					addLayerDialog.setTitle(Locale.getMessage(R.string.Layer_add_message_short, query.substring(0, query.length()-2)));
+					addLayerDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Layer_add_message_long, query.substring(0, query.length()-2))));
 					addLayerDialog.show();
 				} else {
 					callSearchTask();
@@ -394,12 +390,12 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 						searchType = ConfigurationManager.FUZZY_SEARCH;
 					}
 					
-					String q;
-					if (query.length() > 2 && query.lastIndexOf("/") == query.length()-2) {
-						q = query.substring(0, query.length()-2);
-					} else {
-						q = query;
-					} 
+					//String q;
+					//if (query.length() > 2 && query.lastIndexOf("/") == query.length()-2) {
+					//	q = query.substring(0, query.length()-2);
+					//} else {
+					//	q = query;
+					//} 
 					
 					if (type == TYPE.DEALS) {
 						landmarkManager.searchDeals(landmarkList, query, null, MathUtils.coordIntToDouble(lat),
@@ -423,17 +419,9 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 			String message = null;
 			if (landmarkList != null) {
 				if (type == TYPE.DEALS) {
-					//if (landmarkList.size() > 2) {
-						message = Locale.getQuantityMessage(R.plurals.foundDeals, landmarkList.size());
-					//} else {
-					//	message = Locale.getMessage(R.string.foundDealsLow);
-					//}
+					message = Locale.getQuantityMessage(R.plurals.foundDeals, landmarkList.size());
 				} else if (type == TYPE.LANDMARKS) {
-					//if (landmarkList.size() > 2) {
-						message = Locale.getQuantityMessage(R.plurals.foundLandmarks, landmarkList.size());
-					//} else {
-					//	message = Locale.getMessage(R.string.foundLandmarksLow);
-					//}
+					message = Locale.getQuantityMessage(R.plurals.foundLandmarks, landmarkList.size());
 				}
 				intents.showInfoToast(message);
 			}
@@ -483,7 +471,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					params.add(new BasicNameValuePair("version", Integer.toString(info.versionCode)));
 				}
 				String q;
-				if (query.lastIndexOf("/") == query.length()-2) {
+				if (query.length() > 2 && query.lastIndexOf("/") == query.length()-2) {
 					q = query.substring(0, query.length()-2);
 				} else {
 					q = query;

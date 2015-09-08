@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.data;
 
 import android.content.ContentValues;
@@ -37,7 +33,7 @@ public class ConfigDbDataSource {
         	if (dbHelper == null) {
         		throw new SQLException("Config SQLiteDatabase is null!");
         	}
-            database = dbHelper.getWritableDatabase();
+            database = dbHelper.getWritableDatabase(); //TODO handle NPE
         }
         return database;
     }

@@ -168,30 +168,30 @@ public class OsUtil {
 
     private static String getUniqueID(Context context) {
 
-        String telephonyDeviceId = "NoTelephonyId";
-        String androidDeviceId = "NoAndroidId";
+        String telephonyDeviceId = null;
+        String androidDeviceId = null;
 
+        if (context != null) {
         // get telephony id
-        try {
-        	if (context != null) {
+        	try {
         		final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         		telephonyDeviceId = tm.getDeviceId();     		
+        	} catch (Exception e) {
+        		LoggerUtils.error("OsUtil.getUniqueId() exception", e);
         	}
-        } catch (Exception e) {
-        	LoggerUtils.error("OsUtil.getUniqueId() exception", e);
+        
+                // get internal android device id
+        	try {
+        		androidDeviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);          
+        	} catch (Exception e) {
+        		LoggerUtils.error("OsUtil.getUniqueId() exception", e);  
+        	}
         }
         
         if (telephonyDeviceId == null) {
 			telephonyDeviceId = "NoTelephonyId";
 		}
 
-        // get internal android device id
-        try {
-            androidDeviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);          
-        } catch (Exception e) {
-        	LoggerUtils.error("OsUtil.getUniqueId() exception", e);  
-        }
-        
         if (androidDeviceId == null) {
             androidDeviceId = "NoAndroidId";
         }

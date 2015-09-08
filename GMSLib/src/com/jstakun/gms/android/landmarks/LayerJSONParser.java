@@ -70,7 +70,7 @@ public class LayerJSONParser {
         JSONArray jsonLayers = jsonRoot.getJSONArray("ResultSet");
 
         for (int i = 0; i < jsonLayers.length(); i++) {
-            JSONObject layer = (JSONObject) jsonLayers.getJSONObject(i);
+            JSONObject layer = jsonLayers.getJSONObject(i);
 
             String lname = layer.getString("name");
             String desc = null;
@@ -91,7 +91,7 @@ public class LayerJSONParser {
             layerReader.add(new GMSWorldReader());
             Layer l = LayerFactory.getLayer(lname, false, manageable, enabled, checkinable, searchable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, desc, formatted, FileManager.ClearPolicy.ONE_DAY, 0);
 
-            if (!(layer == null || l.getName().equals(Commons.LM_SERVER_LAYER))) {
+            if (! StringUtils.equals(l.getName(),Commons.LM_SERVER_LAYER)) {
                 LoggerUtils.debug("Adding layer: " + l.getName());
                 layers.put(l.getName(), l);
             }
