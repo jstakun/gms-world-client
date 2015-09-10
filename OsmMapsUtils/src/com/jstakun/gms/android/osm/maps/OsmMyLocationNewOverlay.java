@@ -15,7 +15,8 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.location.AndroidDevice;
 
 public class OsmMyLocationNewOverlay extends MyLocationNewOverlay implements IMyLocationOverlay {
-	public static final int UPDATE_LOCATION = 21;
+	
+	public static final int UPDATE_LOCATION = 23;
     private Handler positionHandler;
 
     public OsmMyLocationNewOverlay(Context context, MapView mapView, Handler handler) {

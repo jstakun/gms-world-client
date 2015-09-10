@@ -72,7 +72,6 @@ public class LayerJSONParser {
         for (int i = 0; i < jsonLayers.length(); i++) {
             JSONObject layer = jsonLayers.getJSONObject(i);
 
-            String lname = layer.getString("name");
             String desc = null;
             if (layer.has("desc") && !layer.isNull("desc")) {
                 desc = layer.getString("desc");
@@ -82,6 +81,7 @@ public class LayerJSONParser {
             boolean manageable = layer.getBoolean("manageable");
             boolean enabled = layer.getBoolean("enabled");
             boolean checkinable = layer.getBoolean("checkinable");
+            String lname = layer.getString("name");
             if (layer.getBoolean("isEmpty")) {
                 excluded.add(lname);
             }

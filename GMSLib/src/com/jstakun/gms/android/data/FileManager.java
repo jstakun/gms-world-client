@@ -822,14 +822,15 @@ public class FileManager implements PersistenceManager {
             fc = getExternalDirectory(path, null);
             if (fc.isDirectory()) {
                 File[] fileList = fc.listFiles(filter);
-                java.util.Locale currentLocale = ConfigurationManager.getInstance().getCurrentLocale();
-
-                for (int i = 0; i < fileList.length; i++) {
-                    File f = fileList[i];
-                    files.add(f.getName());
-                    String length = Formatter.formatFileSize(ConfigurationManager.getInstance().getContext(), f.length());
-                    String date = DateTimeUtils.getShortDateTimeString(f.lastModified(), currentLocale);
-                    files.add(length + " | " + date);
+                if (fileList != null) {
+                	java.util.Locale currentLocale = ConfigurationManager.getInstance().getCurrentLocale();
+                	for (int i = 0; i < fileList.length; i++) {
+                		File f = fileList[i];
+                		files.add(f.getName());
+                		String length = Formatter.formatFileSize(ConfigurationManager.getInstance().getContext(), f.length());
+                		String date = DateTimeUtils.getShortDateTimeString(f.lastModified(), currentLocale);
+                		files.add(length + " | " + date);
+                	}
                 }
             }
         } catch (Exception ex) {

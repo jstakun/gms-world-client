@@ -509,7 +509,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         asyncTaskManager.setActivity(this);
         
-        if (landmarkManager.hasMyLocation()){
+        if (landmarkManager != null && landmarkManager.hasMyLocation()){
         	mapButtons.setVisibility(View.VISIBLE);
         }
         

@@ -489,8 +489,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     ExtendedLandmark l = landmarkManager.getPhoneLandmark(id);
-                    GeoPoint location = new GeoPoint(l.getLatitudeE6(), l.getLongitudeE6());
                     if (l != null) {
+                    	GeoPoint location = new GeoPoint(l.getLatitudeE6(), l.getLongitudeE6());
                         pickPositionAction(location, true, true, true);
                     }
                 } else if (action.equals("delete")) {
@@ -569,7 +569,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
         asyncTaskManager.setActivity(this);
         
-        if (landmarkManager.hasMyLocation()){
+        if (landmarkManager != null && landmarkManager.hasMyLocation()){
         	mapButtons.setVisibility(View.VISIBLE);
         }
         

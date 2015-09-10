@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import android.app.Activity;
@@ -158,9 +154,16 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
     	
     	@Override
         public void handleMessage(Message message) {
-    		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing() && viewHolder != null && viewHolder.get() != null) {
-    			BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, parentActivity.get().getResources().getDisplayMetrics(), null);
-                viewHolder.get().headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+    		Activity a = null;
+    		if (parentActivity != null) {
+    			a = parentActivity.get();
+    		}
+    		if (a != null && !a.isFinishing() && viewHolder != null) {
+    			BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, a.getResources().getDisplayMetrics(), null);
+    			ViewHolder v = viewHolder.get();
+    			if (v != null) {
+    				v.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+    			}
     		}
         }
     }

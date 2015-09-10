@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.osm.maps;
 
 import android.content.Context;
@@ -24,7 +20,7 @@ import org.osmdroid.views.overlay.Overlay;
  */
 public class OsmLandmarkOverlay extends Overlay {
 
-    public static final int SHOW_LANDMARK_DETAILS = 20;
+    public static final int SHOW_LANDMARK_DETAILS = 22;
     
     private LandmarkManager lm;
     private Handler landmarkDetailsHandler;

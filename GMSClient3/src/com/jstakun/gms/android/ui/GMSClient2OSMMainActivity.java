@@ -310,7 +310,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         asyncTaskManager.setActivity(this);
         
         //check if myloc is available
-        if (landmarkManager.hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        if (landmarkManager != null && landmarkManager.hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.VISIBLE);
         }
         

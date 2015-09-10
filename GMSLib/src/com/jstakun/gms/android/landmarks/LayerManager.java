@@ -297,21 +297,23 @@ public class LayerManager {
     public static BitmapDrawable getLayerIcon(String layerName, int type, DisplayMetrics displayMetrics, Handler handler) {
         IconCache imageCache = IconCache.getInstance();
         BitmapDrawable layerDrawable = null;
-        try {
-            Layer layer = layers.get(layerName);
-            if (layer != null) {
-              if (type == LAYER_ICON_LARGE && (layer.getLargeIconPath() != null || layer.getLargeIconResource() != -1)) {
-                //layer has large icon
-            	  layerDrawable = imageCache.getLayerImageResource(layer.getName(), "_large", layer.getLargeIconPath(),
+        if (StringUtils.isNotEmpty(layerName)) {
+        	try {
+            	Layer layer = layers.get(layerName);
+            	if (layer != null) {
+            		if (type == LAYER_ICON_LARGE && (layer.getLargeIconPath() != null || layer.getLargeIconResource() != -1)) {
+            	  		//layer has large icon
+            	  		layerDrawable = imageCache.getLayerImageResource(layer.getName(), "_large", layer.getLargeIconPath(),
                         layer.getLargeIconResource(), null, layer.getType(), displayMetrics, handler);
-              } else {
-                //SMALL icon default
-            	  layerDrawable = imageCache.getLayerImageResource(layer.getName(), "_small", layer.getSmallIconPath(),
+              		} else {
+            	  		//SMALL icon default
+            	  		layerDrawable = imageCache.getLayerImageResource(layer.getName(), "_small", layer.getSmallIconPath(),
                         layer.getSmallIconResource(), null, layer.getType(), displayMetrics, handler);
-              }
-            } 
-        } catch (Exception e) {
-            LoggerUtils.error("LayerManager.getLayerIcon() exception", e);
+              		}	
+            	} 
+        	} catch (Exception e) {
+        		LoggerUtils.error("LayerManager.getLayerIcon() exception", e);
+        	}
         }
         if (layerDrawable == null || layerDrawable.getBitmap() == null || layerDrawable.getBitmap().isRecycled()) {
         	if (type == LAYER_ICON_SMALL) {

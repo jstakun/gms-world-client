@@ -332,7 +332,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         asyncTaskManager.setActivity(this);
        
-        if (landmarkManager.hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        if (landmarkManager != null && landmarkManager.hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.VISIBLE);
         }
         

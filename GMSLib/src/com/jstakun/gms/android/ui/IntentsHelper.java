@@ -724,7 +724,6 @@ public final class IntentsHelper {
         TextView name = (TextView) lvView.findViewById(R.id.lvname);
         TextView header = (TextView) lvView.findViewById(R.id.lvheader);
         ImageButton lvActionButton = (ImageButton) lvView.findViewById(R.id.lvActionButton);
-        ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
         View lvOpenButton = lvView.findViewById(R.id.lvOpenButton);
         View lvCommentButton = lvView.findViewById(R.id.lvCommentButton);
         View lvCallButton = lvView.findViewById(R.id.lvCallButton);
@@ -794,15 +793,18 @@ public final class IntentsHelper {
             name.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
         }
 
+        ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
         if (selectedLandmark.getThumbnail() != null) {
             Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), selectedLandmark.getLayer(), activity.getResources().getDisplayMetrics(), new ThumbnailLoadedHandler(activity));
             int width = activity.getWindowManager().getDefaultDisplay().getWidth();            
-            if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
-                thumbnail.setImageBitmap(image);
-                thumbnail.setTag(null);
-            } else {
-                thumbnail.setImageResource(R.drawable.download48);
-                thumbnail.setTag(selectedLandmark);
+            if (thumbnail != null) {
+            	if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
+                	thumbnail.setImageBitmap(image);
+                	thumbnail.setTag(null);
+            	} else {
+                	thumbnail.setImageResource(R.drawable.download48);
+                	thumbnail.setTag(selectedLandmark);
+            	}
             }
             if (StringUtils.isNotEmpty(descr)) {
                 desc.setText(Html.fromHtml(descr, imgGetter, null));
@@ -1345,19 +1347,23 @@ public final class IntentsHelper {
     	
         @Override
         public void handleMessage(Message message) {
-        	if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
+        	Activity a = null;
+    		if (parentActivity != null) {
+    			a = parentActivity.get();
+    		}
+    		if (a != null && !a.isFinishing()) {
         		String url = message.getData().getString("url");
              	//System.out.println("Refreshing thumbnail icon " + url + " -----------------------------------------------------");
 
              	try {
-             		View lvView = parentActivity.get().findViewById(R.id.lvView);
+             		View lvView = a.findViewById(R.id.lvView);
              		ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
              		TextView desc = (TextView) lvView.findViewById(R.id.lvdesc);
              		ExtendedLandmark selectedLandmark = (ExtendedLandmark) thumbnail.getTag();
 
                 	if (selectedLandmark != null && StringUtils.equals(url, selectedLandmark.getThumbnail())) {
-                    	Bitmap image = IconCache.getInstance().getThumbnailResource(url, selectedLandmark.getLayer(), parentActivity.get().getResources().getDisplayMetrics(), null);
-                    	int width = parentActivity.get().getWindowManager().getDefaultDisplay().getWidth();            
+                    	Bitmap image = IconCache.getInstance().getThumbnailResource(url, selectedLandmark.getLayer(), a.getResources().getDisplayMetrics(), null);
+                    	int width = a.getWindowManager().getDefaultDisplay().getWidth();            
                         if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
                         	thumbnail.setImageBitmap(image);
                         	String descr = "";

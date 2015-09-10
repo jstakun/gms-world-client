@@ -150,16 +150,23 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     	
     	@Override
         public void handleMessage(Message message) {
-    		//System.out.println("Running handleMessage for " + landmark.get().getName() + "...");
-    		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing() && view.get() != null) {
-    			Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.get().getThunbnail(), landmark.get().getLayer(), parentActivity.get().getResources().getDisplayMetrics(), null);
+    		Activity a = null;
+    		if (parentActivity != null) {
+    			a = parentActivity.get();
+    		}
+    		LandmarkParcelable l = null;
+    		if (landmark != null) {
+    			l = landmark.get();
+    		}
+    		if (a != null && !a.isFinishing() && l != null) {
+    			Bitmap image = IconCache.getInstance().getThumbnailResource(l.getThunbnail(), l.getLayer(), a.getResources().getDisplayMetrics(), null);
+                int width = a.getWindowManager().getDefaultDisplay().getWidth();            
                 View v = view.get();
-                int width = parentActivity.get().getWindowManager().getDefaultDisplay().getWidth();            
-                if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
+                if (image != null && v != null  && (width == 0 || image.getWidth() < width * 0.5)) {
                 	ViewHolder holder = (ViewHolder) v.getTag();
-                	buildView(landmark.get(), holder, v, parentActivity.get());
+                	buildView(l, holder, v, a);
                 } else {
-                	LoggerUtils.debug(landmark.get().getThunbnail() + " size is too big or image is empty!");
+                	LoggerUtils.debug(l.getThunbnail() + " size is too big or image is empty!");
                 }
     		}
         }
@@ -179,12 +186,29 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     	
     	@Override
         public void handleMessage(Message message) {
+    		Activity a = null;
+    		if (parentActivity != null) {
+    			a = parentActivity.get();
+    		}
+    		if (a != null && !a.isFinishing()) {
+    			BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, a.getResources().getDisplayMetrics(), null);
+    			if (image != null && viewHolder != null) {
+    				ViewHolder v = viewHolder.get();
+    				if (v != null) {
+    					v.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+    				}
+    			}
+    		}
+        }
+    	
+    	/*@Override
+        public void handleMessage(Message message) {
     		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
     			BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, parentActivity.get().getResources().getDisplayMetrics(), null);
     			if (image != null) {
     				viewHolder.get().landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
     			}
     		}
-        }
+        }*/
     }
 }

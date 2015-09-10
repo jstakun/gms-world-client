@@ -290,7 +290,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
         asyncTaskManager.setActivity(this);
         
-        if (landmarkManager.hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        if (landmarkManager != null && landmarkManager.hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
@@ -1216,7 +1216,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
             	} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION || msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
-                	Location location = (Location) msg.obj;
+            		Location location = (Location) msg.obj;
                 	activity.updateLocation(location);
             	}
         	}
