@@ -598,7 +598,7 @@ public final class IntentsHelper {
                     message = Html.fromHtml(sb.toString()).toString();
                 }
 
-                message += "\nLink: " + url + "\nSent from " + Locale.getMessage(R.string.app_name) + " for Android";
+                message += "\nLink: " + url + "\n\nSent from " + Locale.getMessage(R.string.app_name) + " for Android";
 
                 email = ConfigurationManager.getUserManager().getUserEmail();
                 if (StringUtils.isNotEmpty(email)) {
@@ -679,16 +679,16 @@ public final class IntentsHelper {
                 landmarkManager.clearLandmarkOnFocusQueue();
                 coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, layerLoader, zoomLevel, cm, projection);
             } else {
-                showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+            	showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
             }
         } else {
-            showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
+        	showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
         }
     	return coordsE6;
     }
     
     public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, CategoriesManager cm, ProjectionInterface projection) {
-        int[] anitmateTo = null;
+        int[] animateTo = null;
     	ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
         if (selectedLandmark != null) {
             if (!selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
@@ -712,12 +712,13 @@ public final class IntentsHelper {
                     		selectedLandmark.getQualifiedCoordinates().getLongitude(),
                             zoomLevel, projection);
                 }
-                anitmateTo = new int[]{selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6()};
+                animateTo = new int[]{selectedLandmark.getLatitudeE6(), selectedLandmark.getLongitudeE6()};
             }
         } else {
-            LoggerUtils.debug(Locale.getMessage(R.string.Landmark_opening_error));
+            LoggerUtils.error(Locale.getMessage(R.string.Landmark_opening_error));
+            this.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
         }
-        return anitmateTo;
+        return animateTo;
     }
 
     public void showLandmarkDetailsView(final ExtendedLandmark selectedLandmark, final View lvView, double[] currentLocation, boolean loadAd) {

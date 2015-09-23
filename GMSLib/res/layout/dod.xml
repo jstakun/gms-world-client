@@ -145,7 +145,7 @@ android:background="@color/ivory2"
 android:id="@+id/lvSendMailButton"
 android:layout_width="56dip"
 android:layout_height="56dip"
-android:src="@drawable/email_send"
+android:src="@drawable/share_social"
 android:layout_gravity="right"
 android:background="@color/ivory2"
         />

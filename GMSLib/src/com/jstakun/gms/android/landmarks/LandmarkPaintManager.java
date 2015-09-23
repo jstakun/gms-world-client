@@ -58,7 +58,7 @@ public class LandmarkPaintManager {
     protected ExtendedLandmark getLandmarkOnFocus() {
         int size = landmarkOnFocus.size();
         //System.out.println("Landmark on focus queue size: " + size);
-        if (size == 1) {
+        if (size == 1 || size == 0) {
             return getSelectedLandmark();
         } else if (size > 1) {
             return getMultiLandmark(getSelectedLandmark().getQualifiedCoordinates());
