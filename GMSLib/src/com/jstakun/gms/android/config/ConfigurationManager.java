@@ -12,7 +12,7 @@ import java.util.zip.ZipFile;
 
 import org.acra.ACRA;
 import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.util.encoders.Base64;
+import org.spongycastle.util.encoders.Base64;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
