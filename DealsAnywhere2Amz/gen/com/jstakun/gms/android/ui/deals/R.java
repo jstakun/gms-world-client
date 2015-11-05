@@ -594,43 +594,43 @@ containing a value of this type.
         public static final int Landmark_url_empty_error=0x7f0a00e0;
         public static final int Landmarks_day_empty=0x7f0a00e5;
         public static final int Last_update=0x7f0a00af;
-        public static final int Layer_8Coupons_desc=0x7f0a014b;
-        public static final int Layer_Eventful_desc=0x7f0a0147;
-        public static final int Layer_Expedia_desc=0x7f0a014d;
+        public static final int Layer_8Coupons_desc=0x7f0a014c;
+        public static final int Layer_Eventful_desc=0x7f0a0148;
+        public static final int Layer_Expedia_desc=0x7f0a014e;
         /**  English only LayerManager layer descs 
          */
-        public static final int Layer_Facebook_desc=0x7f0a013b;
-        public static final int Layer_Flickr_desc=0x7f0a0151;
-        public static final int Layer_Foursquare_Merchant_desc=0x7f0a0149;
-        public static final int Layer_Foursquare_desc=0x7f0a013c;
-        public static final int Layer_Freebase_desc=0x7f0a014f;
-        public static final int Layer_Google_Places_desc=0x7f0a013f;
-        public static final int Layer_Groupon_desc=0x7f0a014a;
-        public static final int Layer_Hotels_Combined_desc=0x7f0a013e;
-        public static final int Layer_Hotwire_desc=0x7f0a014c;
-        public static final int Layer_Instagram_desc=0x7f0a0153;
-        public static final int Layer_LastFM_desc=0x7f0a0144;
+        public static final int Layer_Facebook_desc=0x7f0a013c;
+        public static final int Layer_Flickr_desc=0x7f0a0152;
+        public static final int Layer_Foursquare_Merchant_desc=0x7f0a014a;
+        public static final int Layer_Foursquare_desc=0x7f0a013d;
+        public static final int Layer_Freebase_desc=0x7f0a0150;
+        public static final int Layer_Google_Places_desc=0x7f0a0140;
+        public static final int Layer_Groupon_desc=0x7f0a014b;
+        public static final int Layer_Hotels_Combined_desc=0x7f0a013f;
+        public static final int Layer_Hotwire_desc=0x7f0a014d;
+        public static final int Layer_Instagram_desc=0x7f0a0154;
+        public static final int Layer_LastFM_desc=0x7f0a0145;
         public static final int Layer_Loading=0x7f0a0126;
         public static final int Layer_Loading_1=0x7f0a0127;
         public static final int Layer_Loading_counter=0x7f0a0128;
         public static final int Layer_Loading_processing=0x7f0a0129;
-        public static final int Layer_MasterCard_ATMs_desc=0x7f0a0142;
-        public static final int Layer_Meetup_desc=0x7f0a0145;
-        public static final int Layer_My_Location_desc=0x7f0a0158;
-        public static final int Layer_OSM_ATMs_desc=0x7f0a0143;
-        public static final int Layer_OSM_Parkings_desc=0x7f0a0148;
-        public static final int Layer_Panoramio_desc=0x7f0a0150;
-        public static final int Layer_Phone_Landmarks_desc=0x7f0a0156;
-        public static final int Layer_Picasa_desc=0x7f0a0152;
-        public static final int Layer_Public_desc=0x7f0a0159;
-        public static final int Layer_Qype_desc=0x7f0a0140;
-        public static final int Layer_Routes_desc=0x7f0a0157;
-        public static final int Layer_Travel_Webcams_desc=0x7f0a0155;
-        public static final int Layer_Twitter_desc=0x7f0a0141;
-        public static final int Layer_Upcoming_desc=0x7f0a0146;
-        public static final int Layer_Wikipedia_desc=0x7f0a014e;
-        public static final int Layer_Yelp_desc=0x7f0a013d;
-        public static final int Layer_YouTube_desc=0x7f0a0154;
+        public static final int Layer_MasterCard_ATMs_desc=0x7f0a0143;
+        public static final int Layer_Meetup_desc=0x7f0a0146;
+        public static final int Layer_My_Location_desc=0x7f0a0159;
+        public static final int Layer_OSM_ATMs_desc=0x7f0a0144;
+        public static final int Layer_OSM_Parkings_desc=0x7f0a0149;
+        public static final int Layer_Panoramio_desc=0x7f0a0151;
+        public static final int Layer_Phone_Landmarks_desc=0x7f0a0157;
+        public static final int Layer_Picasa_desc=0x7f0a0153;
+        public static final int Layer_Public_desc=0x7f0a015a;
+        public static final int Layer_Qype_desc=0x7f0a0141;
+        public static final int Layer_Routes_desc=0x7f0a0158;
+        public static final int Layer_Travel_Webcams_desc=0x7f0a0156;
+        public static final int Layer_Twitter_desc=0x7f0a0142;
+        public static final int Layer_Upcoming_desc=0x7f0a0147;
+        public static final int Layer_Wikipedia_desc=0x7f0a014f;
+        public static final int Layer_Yelp_desc=0x7f0a013e;
+        public static final int Layer_YouTube_desc=0x7f0a0155;
         public static final int Layer_action=0x7f0a012a;
         public static final int Layer_add_message_long=0x7f0a0130;
         public static final int Layer_add_message_short=0x7f0a012f;
@@ -850,7 +850,7 @@ containing a value of this type.
         /**  deal preferences 
  deal preferences 
          */
-        public static final int enableDealCategories=0x7f0a015c;
+        public static final int enableDealCategories=0x7f0a015d;
         public static final int enableLayers=0x7f0a0012;
         public static final int events=0x7f0a001b;
         public static final int exit=0x7f0a002a;
@@ -860,7 +860,7 @@ containing a value of this type.
         public static final int gaId=0x7f0a0003;
         public static final int googleMaps=0x7f0a003e;
         public static final int googleMapsKey=0x7f0a0000;
-        public static final int hotDeals=0x7f0a015a;
+        public static final int hotDeals=0x7f0a015b;
         public static final int imageLoading=0x7f0a0032;
         public static final int keywordDesc=0x7f0a013a;
         public static final int keywordsHint=0x7f0a0059;
@@ -904,19 +904,20 @@ containing a value of this type.
         public static final int loginButton=0x7f0a006b;
         public static final int loginFull=0x7f0a006d;
         public static final int loginLabel=0x7f0a006c;
+        public static final int mailMessageSuffix=0x7f0a013b;
         public static final int mapLoad=0x7f0a003d;
         public static final int mapMode=0x7f0a002e;
         /**  preferences 
  preferences 
          */
         public static final int mapProvider=0x7f0a0036;
-        public static final int messageDealPreferences=0x7f0a0162;
+        public static final int messageDealPreferences=0x7f0a0163;
         public static final int more=0x7f0a002b;
         public static final int nameLabel=0x7f0a005b;
-        public static final int newestDeals=0x7f0a015b;
+        public static final int newestDeals=0x7f0a015c;
         public static final int newestLandmarks=0x7f0a0030;
         public static final int noButton=0x7f0a00bf;
-        public static final int noDodAvailable=0x7f0a0167;
+        public static final int noDodAvailable=0x7f0a0168;
         public static final int okButton=0x7f0a005c;
         /**  Transparent 
  Transparent 
@@ -931,7 +932,7 @@ containing a value of this type.
         public static final int pickButton=0x7f0a006f;
         public static final int pickCategory=0x7f0a005e;
         public static final int pickMyPos=0x7f0a0026;
-        public static final int preferencesDealCategories=0x7f0a015e;
+        public static final int preferencesDealCategories=0x7f0a015f;
         public static final int qrcheckin=0x7f0a0022;
         public static final int radius=0x7f0a0042;
         public static final int rate_us_message=0x7f0a00b5;
@@ -941,7 +942,7 @@ containing a value of this type.
         public static final int register=0x7f0a002c;
         public static final int releaseNotes=0x7f0a0028;
         public static final int reset=0x7f0a0034;
-        public static final int resetButton=0x7f0a015f;
+        public static final int resetButton=0x7f0a0160;
         public static final int routeType=0x7f0a0045;
         public static final int routes=0x7f0a0016;
         public static final int saveRoute=0x7f0a0015;
@@ -969,18 +970,18 @@ containing a value of this type.
          */
         public static final int sort=0x7f0a0080;
         public static final int summary=0x7f0a0053;
-        public static final int summaryDealPreferences=0x7f0a0161;
-        public static final int summaryOffDod=0x7f0a0165;
-        public static final int summaryOnDod=0x7f0a0164;
+        public static final int summaryDealPreferences=0x7f0a0162;
+        public static final int summaryOffDod=0x7f0a0166;
+        public static final int summaryOnDod=0x7f0a0165;
         public static final int tapForTapKey=0x7f0a0002;
         public static final int tileCache=0x7f0a003c;
-        public static final int titleDealCategories=0x7f0a015d;
-        public static final int titleDealPreferences=0x7f0a0160;
-        public static final int titleDod=0x7f0a0163;
+        public static final int titleDealCategories=0x7f0a015e;
+        public static final int titleDealPreferences=0x7f0a0161;
+        public static final int titleDod=0x7f0a0164;
         /**  dodDialog 
  dodDialog 
          */
-        public static final int titleDodDialog=0x7f0a0166;
+        public static final int titleDodDialog=0x7f0a0167;
         public static final int trackPos=0x7f0a000b;
         public static final int trackUserSummaryOff=0x7f0a004c;
         public static final int trackUserSummaryOn=0x7f0a004b;

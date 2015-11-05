@@ -398,6 +398,7 @@
      <string name="checkboxDodDialog">Show deal of the day at startup</string>
      <string name="Zoom.info">Zoom %1$d/%2$d</string>
      <string name="keywordDesc">Discover nearby %1$s</string>
+     <string name="mailMessageSuffix">\nLink: %1$s\n&#8212;&#8212;\nSent from %2$s for Android</string>
      
      <!-- English only LayerManager layer descs -->
      <string name="Layer.Facebook.desc">Places around your current location</string>

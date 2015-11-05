@@ -598,8 +598,8 @@ public final class IntentsHelper {
                     message = Html.fromHtml(sb.toString()).toString();
                 }
 
-                message += "\nLink: " + url + "\n\nSent from " + Locale.getMessage(R.string.app_name) + " for Android";
-
+                message += Locale.getMessage(R.string.mailMessageSuffix, Locale.getMessage(R.string.app_name));
+                		
                 email = ConfigurationManager.getUserManager().getUserEmail();
                 if (StringUtils.isNotEmpty(email)) {
                     intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{email});
