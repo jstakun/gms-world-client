@@ -434,26 +434,34 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
             }
         }
 
-        private int comp(LandmarkParcelable s0, LandmarkParcelable s1) {
-        	//TODO check in desc how many stars hotel has and then sort by stars first
-        	//s0.getDesc(); //s0.getLayer()
-        	double r0 = s0.getRating();
-        	double r1 = s1.getRating();
-            if (r0 > r1) {
-                return 1;
-            } else if (r0 == r1) {
-            	int n0 = s0.getNumberOfReviews();
-            	int n1 = s1.getNumberOfReviews();
-                if (n0 > n1) {
-                    return 1;
-                } else if (n0 == n1) {
-                    return 0;
-                } else {
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
+        private int comp(LandmarkParcelable l0, LandmarkParcelable l1) {
+        	//compare by stars, rating, number of reviews
+        	int s0 = l0.getStars();
+        	int s1 = l1.getStars();
+        	
+        	if (s0 > s1) {
+        		return 1;
+        	} else if (s1 > s0) {
+        		return -1;
+        	} else {
+        		double r0 = l0.getRating();
+        		double r1 = l1.getRating();
+        		if (r0 > r1) {
+        			return 1;
+        		} else if (r0 == r1) {
+        			int n0 = l0.getNumberOfReviews();
+        			int n1 = l1.getNumberOfReviews();
+        			if (n0 > n1) {
+        				return 1;
+        			} else if (n0 == n1) {
+        				return 0;
+        			} else {
+        				return -1;
+        			}
+        		} else {
+        			return -1;
+        		}
+        	}
         }
         
         /*private int comp(LandmarkParcelable s0, LandmarkParcelable s1) {

@@ -1,8 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
+
+import org.apache.commons.lang.StringUtils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -177,5 +175,13 @@ public class LandmarkParcelable implements Parcelable {
     @Override
     public int hashCode() {
     	return hashCode;
+    }
+    
+    public int getStars() {
+    	int stars = 0;
+    	if (desc != null) {
+    		return StringUtils.countMatches(desc, "*");
+    	}
+    	return stars;
     }
 }

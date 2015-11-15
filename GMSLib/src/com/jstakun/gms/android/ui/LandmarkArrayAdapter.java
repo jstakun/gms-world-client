@@ -70,7 +70,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             holder.landmarkNameText = (TextView) rowView.findViewById(R.id.landmarkNameText);
             holder.landmarkDescText = (TextView) rowView.findViewById(R.id.landmarkDescText);
             holder.landmarkDescText.setMovementMethod(null);
-            holder.thunbnailImage = (ImageView) rowView.findViewById(R.id.landmarkThumbnail);
+            holder.thumbnailImage = (ImageView) rowView.findViewById(R.id.landmarkThumbnail);
             rowView.setTag(holder);
         } else {
             rowView = convertView;
@@ -114,17 +114,17 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
         if (landmark.getThunbnail() != null) {
             Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.getThunbnail(), landmark.getLayer(), parentListActivity.getResources().getDisplayMetrics(), new LandmarkThumbnailLoadingHandler(rowView, parentListActivity, landmark));
             int width = parentListActivity.getWindowManager().getDefaultDisplay().getWidth();            
-            if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
+            if (image != null && (width == 0 || image.getWidth() < width * 0.9)) {
                 //System.out.println(image.getWidth() + " " + rowView.getWidth() + " " + parentListActivity.getWindowManager().getDefaultDisplay().getWidth());
-            	holder.thunbnailImage.setImageBitmap(image);
+            	holder.thumbnailImage.setImageBitmap(image);
             	//holder.landmarkDescText.setCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
             } else {
-                holder.thunbnailImage.setImageResource(R.drawable.download48);
+                holder.thumbnailImage.setImageResource(R.drawable.download48);
             }
-            holder.thunbnailImage.setVisibility(View.VISIBLE);      
+            holder.thumbnailImage.setVisibility(View.VISIBLE);      
             holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
         } else {
-        	holder.thunbnailImage.setVisibility(View.GONE);
+        	holder.thumbnailImage.setVisibility(View.GONE);
         	holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
             //holder.landmarkDescText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
@@ -133,7 +133,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     private static class ViewHolder {
         protected TextView landmarkNameText;
         protected TextView landmarkDescText;
-        protected ImageView thunbnailImage;
+        protected ImageView thumbnailImage;
     }
     
     private static class LandmarkThumbnailLoadingHandler extends Handler {
