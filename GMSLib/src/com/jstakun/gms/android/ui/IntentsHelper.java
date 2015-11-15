@@ -799,7 +799,7 @@ public final class IntentsHelper {
             Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), selectedLandmark.getLayer(), activity.getResources().getDisplayMetrics(), new ThumbnailLoadedHandler(activity));
             int width = activity.getWindowManager().getDefaultDisplay().getWidth();            
             if (thumbnail != null) {
-            	if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
+            	if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) { //TODO change image size to higher value
                 	thumbnail.setImageBitmap(image);
                 	thumbnail.setTag(null);
             	} else {
