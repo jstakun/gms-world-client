@@ -180,7 +180,7 @@ public class LandmarkParcelable implements Parcelable {
     public int getStars() {
     	int stars = 0;
     	if (desc != null) {
-    		return StringUtils.countMatches(desc, "*");
+    		return StringUtils.countMatches(desc, "star_blue"); //hotels stars
     	}
     	return stars;
     }
