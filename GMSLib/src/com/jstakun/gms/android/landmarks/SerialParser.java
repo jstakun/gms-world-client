@@ -71,7 +71,7 @@ public class SerialParser {
         		if (service != null) {
         			service.logout();
         		}
-        	} else if (responseCode >= 500 && urlIndex+1 < urls.length) {
+        	} else if (responseCode >= 400 && urlIndex+1 < urls.length) {
         		return parse(urls, urlIndex+1, params, landmarks, task, close, socialService, removeIfExists);
         	}
         	errorMessage = utils.getResponseCodeErrorMessage();

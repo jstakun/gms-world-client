@@ -1253,6 +1253,7 @@ public class LandmarkManager {
     }
 
     //PREDICATES /////////////////////////////////////////////////////////////////////
+    
     private class DealsOfTheDayPredicate implements Predicate<ExtendedLandmark> {
 
         public boolean apply(ExtendedLandmark input) {

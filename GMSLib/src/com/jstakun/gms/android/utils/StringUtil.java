@@ -202,12 +202,17 @@ public class StringUtil {
     }
     
     public static List<String> removeDuplicates(String[] first, String[] second) {
-		List<String> result = new ArrayList<String>(Arrays.asList(first));
-		for(int i=0;i<second.length;i++) {
-		    if (!result.contains(second[i])) {
-		        result.add(second[i]);
-		    }
-		}
+    	List<String> result = new ArrayList<String>();
+    	if (first != null) {
+    		result.addAll(Arrays.asList(first));
+    	}
+    	if (second != null) {
+    		for(int i=0;i<second.length;i++) {
+    			if (!result.contains(second[i])) {
+    				result.add(second[i]);
+    			}
+    		}
+    	}
 		return result;
 	}
 }

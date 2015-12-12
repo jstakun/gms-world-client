@@ -425,7 +425,7 @@ public final class IntentsHelper {
     		try {
     			url += "&url=" + URLEncoder.encode(landmark.getUrl(), "UTF-8");
     		} catch (Exception e) {
-    			LoggerUtils.error("Intents.builUrl()", e);
+    			LoggerUtils.error("IntentsHelper.builUrl()", e);
     		}
     	}
     	
@@ -433,9 +433,14 @@ public final class IntentsHelper {
     }
     
     public void startActionViewIntent(final String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
+        try {
+        	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        	activity.startActivity(intent);
+        } catch (Exception e) {
+			LoggerUtils.error("IntentsHelper.startActionViewIntent()", e);
+			showInfoToast(Locale.getMessage(R.string.Unexpected_error));
+		}
     }
 
     public void startNewestLandmarkIntent(double[] currentLocation, String[] excluded, int maxDays) {

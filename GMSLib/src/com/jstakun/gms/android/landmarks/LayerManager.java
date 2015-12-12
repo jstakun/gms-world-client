@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -35,7 +36,7 @@ public class LayerManager {
 
     private static final Map<String, Layer> layers = new LinkedHashMap<String, Layer>();
     private static final Map<String, Layer> allLayers = new LinkedHashMap<String, Layer>();
-    private static final List<String> dynamicLayers = new ArrayList<String>();
+    private static final List<String> dynamicLayers = new CopyOnWriteArrayList<String>();
     
     public static final int LAYER_LOCAL = 1;
     public static final int LAYER_EXTERNAL = 2;
@@ -408,7 +409,7 @@ public class LayerManager {
 
     //DYNAMIC LAYERS
     //
-    //
+    
     private void initializeDynamicLayers() {
         String dl = ConfigurationManager.getInstance().getString(ConfigurationManager.DYNAMIC_LAYERS);
         if (StringUtils.isNotEmpty(dl)) {
@@ -535,6 +536,7 @@ public class LayerManager {
     }
     
     //////////////////////////////////////////////////////////////////////////////////////
+    
     private class LayerEnabledPredicate implements Predicate<String> {
 
         public boolean apply(String layer) {
