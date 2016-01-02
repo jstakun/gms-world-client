@@ -394,7 +394,7 @@
      <!-- English only -->
      <string name="Crash.error">An unexpected error occurred. Crash raport has been sent to developer and the issue will be fixed soon!</string>
      <string name="Status.bar.default">Landmark Manager</string>
-     <string name="Info.about">%1$s (R)\nVersion: %2$s-%3$d built on %4$s\nCopyright &#169; 2010&#8211;15 GMS World\n%5$s</string>
+     <string name="Info.about">%1$s (R)\nVersion: %2$s-%3$d built on %4$s\nCopyright &#169; 2010&#8211;16 GMS World\n%5$s</string>
      <string name="checkboxDodDialog">Show deal of the day at startup</string>
      <string name="Zoom.info">Zoom %1$d/%2$d</string>
      <string name="keywordDesc">Discover nearby %1$s</string>
