@@ -1111,9 +1111,10 @@ public class AsyncTaskManager {
         	
         	//System.out.println("Processing layers -----------------------------");
         	List<String> layers = landmarkManager.getLayerManager().getLayers();
+        	String[] dynamicLayersArr = dynamicLayers.toArray(new String[dynamicLayers.size()]);
         	for (String layer : layers) {
         		//System.out.println("Processing layer " + layer + " -----------------------------");
-        		landmarkManager.addLandmarkListToDynamicLayer(landmarkManager.getLandmarkStoreLayer(layer));
+        		landmarkManager.addLandmarkListToDynamicLayer(landmarkManager.getLandmarkStoreLayer(layer), dynamicLayersArr);
         	}
         	//System.out.println("Done -----------------------------");           	
 			return null;

@@ -1,10 +1,22 @@
 package com.jstakun.gms.android.landmarks;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.jstakun.gms.android.config.Commons;
@@ -16,17 +28,6 @@ import com.jstakun.gms.android.deals.Category;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -36,7 +37,7 @@ public class LayerManager {
 
     private static final Map<String, Layer> layers = new LinkedHashMap<String, Layer>();
     private static final Map<String, Layer> allLayers = new LinkedHashMap<String, Layer>();
-    private static final List<String> dynamicLayers = new CopyOnWriteArrayList<String>();
+    private static final List<String> dynamicLayers = new ArrayList<String>();
     
     public static final int LAYER_LOCAL = 1;
     public static final int LAYER_EXTERNAL = 2;

@@ -1205,24 +1205,31 @@ public class LandmarkManager {
         }
     }
     
-    public void addLandmarkListToDynamicLayer(Collection<ExtendedLandmark> landmarks) {
+    protected void addLandmarkListToDynamicLayer(Collection<ExtendedLandmark> landmarks) {
         if (!landmarks.isEmpty()) {
         	List<String> dynamicLayers = layerManager.getDynamicLayers();
-        	for (String key : dynamicLayers) {
-        		Layer layer = layerManager.getLayer(key);
-        		Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
-        		int count = 0;
-        		for (ExtendedLandmark landmark : landmarks) {
-        			if (searchPredicate.apply(landmark)) {
-        				count++;
-        			}
-        		}
-        		if (count > 0) {
-        			layer.increaseCount(count);
-        		}
-        	}
+        	String[] layers = dynamicLayers.toArray(new String[dynamicLayers.size()]);
+        	addLandmarkListToDynamicLayer(landmarks, layers);
         }
     }
+    
+    public void addLandmarkListToDynamicLayer(Collection<ExtendedLandmark> landmarks, String[] dynamicLayers) {
+    	for (int i=0;i<dynamicLayers.length;i++) {
+    		Layer layer = layerManager.getLayer(dynamicLayers[i]);
+    		Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
+    		int count = 0;
+    		for (ExtendedLandmark landmark : landmarks) {
+    			if (searchPredicate.apply(landmark)) {
+    				count++;
+    			}
+    		}
+    		if (count > 0) {
+    			layer.increaseCount(count);
+    		}
+    	}
+    }
+    
+    
     
     public int countLandmarks(Category c) {
         if (c != null) {
