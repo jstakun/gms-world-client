@@ -356,16 +356,20 @@ public class GridLayerListActivity extends Activity {
 	private class LayerSizeComparator implements Comparator<String> {
 
         public int compare(String lhs, String rhs) {
-            int lhsCount;
+            int lhsCount = 0;
             if (lhs.equals(Commons.ROUTES_LAYER)) {
-                lhsCount = routesManager.getCount();
+            	if (routesManager != null) {
+            		lhsCount = routesManager.getCount();
+            	}
             } else {
                 lhsCount = landmarkManager.getLayerSize(lhs);
             }
 
-            int rhsCount;
+            int rhsCount = 0;
             if (rhs.equals(Commons.ROUTES_LAYER)) {
-                rhsCount = routesManager.getCount();
+            	if (routesManager != null) {
+                	rhsCount = routesManager.getCount();
+            	}	
             } else {
                 rhsCount = landmarkManager.getLayerSize(rhs);
             }
