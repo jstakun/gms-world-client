@@ -2,12 +2,9 @@ package com.jstakun.gms.android.utils;
 
 import android.content.Context;
 
-import com.google.analytics.tracking.android.Fields;
-import com.google.analytics.tracking.android.GAServiceManager;
-import com.google.analytics.tracking.android.GoogleAnalytics;
-import com.google.analytics.tracking.android.Logger;
-import com.google.analytics.tracking.android.MapBuilder;
-import com.google.analytics.tracking.android.Tracker;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.lib.R;
@@ -36,65 +33,31 @@ public class UserTracker {
     public synchronized void initialize(final Context context) {
     	try {
     		if (tracker == null && OsUtil.isDonutOrHigher()) {
-        		tracker = GoogleAnalytics.getInstance(context).getTracker(getId(context));
-        		GAServiceManager.getInstance().setLocalDispatchPeriod(30);
+        		tracker = GoogleAnalytics.getInstance(context).newTracker(getId(context));
+        		//GAServiceManager.getInstance().setLocalDispatchPeriod(30);
         	}
     	} catch (Throwable t) {
     		LoggerUtils.error("UserTracker.initialize exception:", t);
     	}
     }
     
-    /*public void startSession(final Context context) {
-    	//System.out.println("UserTracker.startSession()");
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && !running) {
-            trackEvent("SessionStart", "", "", 0);
-            running = true;
-        }
-    }
-
-    public void stopSession(final Context context) {
-    	//System.out.println("UserTracker.stopSession()");
-    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && running) {
-            trackEvent("SessionStop", "", "", 0);
-        	running = false;
-        }
-    }*/
-
     public void trackActivity(final String activityName) {
     	//System.out.println("UserTracker.trackAcivity() " + activityName);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
-            //Map<String, String> hitParameters = new HashMap<String, String>();
-        	//hitParameters.put(Fields.HIT_TYPE, "appview");
-        	//hitParameters.put(Fields.SCREEN_NAME, activityName);
-        	//tracker.send(hitParameters);
-        	tracker.set(Fields.SCREEN_NAME, activityName);
-        	tracker.send(MapBuilder.createAppView().build());
+            tracker.setScreenName(activityName);
+        	tracker.send(new HitBuilders.EventBuilder().setCategory("appview").build());
         }
     }
 
     public void trackEvent(final String category, final String action, final String label, final long value) {
     	//System.out.println("UserTracker.trackEvent() " + category + " " + action);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
-            //HashMap<String, String> hitParameters = new HashMap<String, String>();
-        	//hitParameters.put(Fields.EVENT_CATEGORY, category);
-        	//hitParameters.put(Fields.EVENT_ACTION, action);
-        	//hitParameters.put(Fields.EVENT_LABEL, label);
-        	//hitParameters.put(Fields.EVENT_VALUE, Integer.toString(value));
-        	//tracker.send(hitParameters);
-        	tracker.send(MapBuilder.createEvent(category, action, label, value).build());
+            tracker.send(new HitBuilders.EventBuilder()
+            	.setCategory(category)
+            	.setAction(action)
+            	.setLabel(label).
+            	setValue(value).build());
         }
-    }
-
-    public void setDebug(boolean debug, Context context) {
-    	try {
-    		Logger.LogLevel logLevel = Logger.LogLevel.ERROR;
-    		if (debug) {
-    			logLevel = Logger.LogLevel.VERBOSE;
-    		}
-    		GoogleAnalytics.getInstance(context).getLogger().setLogLevel(logLevel);
-    	} catch (Throwable t) {
-    		LoggerUtils.error("UserTracker.setDebug() error:", t);
-    	}
     }
 
     public void setDryRun(boolean dryRun, Context context) {

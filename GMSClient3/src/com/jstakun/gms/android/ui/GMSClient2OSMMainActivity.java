@@ -901,7 +901,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        //super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
                 String lats = intent.getStringExtra("lat");

@@ -102,6 +102,8 @@
         <meta-data android:name="CLOUDMADE_KEY" android:value="@string/cloudmadeKey" />
         <meta-data android:name="com.tapfortap.API_KEY" android:value="@string/tapForTapKey"/>
         <meta-data android:name="com.tapfortap.TEST_MODE" android:value="false"/>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/googlePlayKey"/>     
     </application>    
     <!-- Allows an application to access fine (e.g., GPS) location  -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>

@@ -47,6 +47,10 @@ import android.widget.Toast;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -134,7 +138,22 @@ public final class IntentsHelper {
     }
 
     public void startPickLocationActivity() {
-        activity.startActivityForResult(new Intent(activity, PickLocationActivity.class), INTENT_PICKLOCATION);
+    	//TODO use places auto complete
+    	//https://developers.google.com/places/android-api/autocomplete
+    	try {
+    		AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+            .setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
+            .build();
+
+    		Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+    		.setFilter(typeFilter)
+    		.build(activity);
+    		
+    		activity.startActivityForResult(intent, INTENT_PICKLOCATION);
+    	} catch (Exception e) {
+    		LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
+    	}
+    	//activity.startActivityForResult(new Intent(activity, PickLocationActivity.class), INTENT_PICKLOCATION);
     }
 
     public void startSettingsActivity(Class<?> settingsActivityClass) {

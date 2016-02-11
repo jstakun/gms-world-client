@@ -3,6 +3,10 @@
 	<name>GMSClient3</name>
 	<comment></comment>
 	<projects>
+		<project>GMSLib</project>
+		<project>google-play-services_lib</project>
+		<project>GoogleMapsUtils</project>
+		<project>OsmMapsUtils</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

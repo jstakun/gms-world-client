@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ads;
 
 import java.util.Date;
@@ -11,8 +7,8 @@ import org.apache.commons.lang.StringUtils;
 import android.app.Activity;
 import android.view.ViewGroup;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.DateTimeUtils;
@@ -30,7 +26,7 @@ public class AdMobUtils {
     protected synchronized static void loadAd(Activity activity) {
         AdView adView = (AdView) activity.findViewById(R.id.adView);
         if (adReq == null) {
-            adReq = new AdRequest();
+        	AdRequest.Builder adReqBuilder = new AdRequest.Builder();
             //adReq.addTestDevice(AdRequest.TEST_EMULATOR);
             if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.FB_GENDER)) {
                 String gender = ConfigurationManager.getInstance().getString(ConfigurationManager.FB_GENDER);
@@ -39,15 +35,15 @@ public class AdMobUtils {
                 }
                 if (gender != null) {
                     if (StringUtils.equalsIgnoreCase(gender, "male")) {
-                        adReq.setGender(AdRequest.Gender.MALE);
+                        adReqBuilder.setGender(AdRequest.GENDER_MALE);
                     } else if (StringUtils.equalsIgnoreCase(gender, "female")) {
-                        adReq.setGender(AdRequest.Gender.FEMALE);
+                        adReqBuilder.setGender(AdRequest.GENDER_FEMALE);
                     }
                 }
             }
 
             if (ConfigurationManager.getInstance().getLocation() != null) {
-                adReq.setLocation(ConfigurationManager.getInstance().getLocation());
+                adReqBuilder.setLocation(ConfigurationManager.getInstance().getLocation());
             }
 
             if (ConfigurationManager.getInstance().containsKey(ConfigurationManager.FB_BIRTHDAY)) {
@@ -71,9 +67,10 @@ public class AdMobUtils {
                 }
 
                 if (birthday != null) {
-                    adReq.setBirthday(birthday);
+                    adReqBuilder.setBirthday(birthday);
                 }
             }
+            adReq = adReqBuilder.build();
         }
 
         adView.loadAd(adReq);
