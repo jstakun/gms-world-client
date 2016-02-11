@@ -139,13 +139,12 @@ public final class IntentsHelper {
 
     public void startPickLocationActivity() {
     	//TODO use places auto complete
-    	//https://developers.google.com/places/android-api/autocomplete
     	try {
     		AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
             .setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
             .build();
 
-    		Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+    		Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)//.MODE_FULLSCREEN)
     		.setFilter(typeFilter)
     		.build(activity);
     		
