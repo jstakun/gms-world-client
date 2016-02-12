@@ -137,22 +137,25 @@ public final class IntentsHelper {
         this.asyncTaskManager = asyncTaskManager;
     }
 
-    public void startPickLocationActivity() {
-    	//TODO use places auto complete
-    	try {
-    		AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-            .setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
-            .build();
+    public void startPickLocationActivity(boolean isGoogleApiAvailable) {
+    	Intent intent = null;
+    	if (isGoogleApiAvailable) {
+    		try {
+    			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+    			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
+    			.build();
 
-    		Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)//.MODE_FULLSCREEN)
-    		.setFilter(typeFilter)
-    		.build(activity);
-    		
-    		activity.startActivityForResult(intent, INTENT_PICKLOCATION);
-    	} catch (Exception e) {
-    		LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
+    			intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)//.MODE_FULLSCREEN)
+    			.setFilter(typeFilter)
+    			.build(activity);
+    		} catch (Exception e) {
+    			LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
+    			intent = new Intent(activity, PickLocationActivity.class);
+    		}
+    	} else {
+    		intent = new Intent(activity, PickLocationActivity.class);
     	}
-    	//activity.startActivityForResult(new Intent(activity, PickLocationActivity.class), INTENT_PICKLOCATION);
+    	activity.startActivityForResult(intent, INTENT_PICKLOCATION);
     }
 
     public void startSettingsActivity(Class<?> settingsActivityClass) {

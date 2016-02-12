@@ -84,7 +84,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             newestButton, listButton, layersButton,
             lvActionButton, lvRouteButton, thumbnailButton, loadingImage;
     private ProgressBar loadingProgressBar;
-    private boolean appInitialized = false;
+    private boolean appInitialized = false, isGoogleApiAvailable = false;
     //Handlers
     private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
@@ -96,7 +96,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
                     //start only if helpactivity not on top
                     if (!ConfigurationManager.getInstance().containsObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class)) {
-                        intents.startPickLocationActivity();
+                        intents.startPickLocationActivity(isGoogleApiAvailable);
                     }
                 } else if (!appInitialized) {
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
@@ -729,7 +729,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 dialogManager.showAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, null);
                 break;
             case R.id.pickMyPos:
-                intents.startPickLocationActivity();
+                intents.startPickLocationActivity(isGoogleApiAvailable);
                 break;
             case R.id.deals:
                 if (ConfigurationManager.getUserManager().isUserLoggedIn()) {

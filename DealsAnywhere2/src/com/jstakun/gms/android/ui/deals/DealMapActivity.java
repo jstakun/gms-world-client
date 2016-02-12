@@ -78,9 +78,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             newestButton, listButton, categoriesButton,
             lvSendMailButton, lvRouteButton, thumbnailButton, loadingImage;
     private ProgressBar loadingProgressBar;
-    private boolean isStopped = false;
-    private boolean appInitialized = false;
-    private boolean isRouteDisplayed = false;
+    private boolean isStopped = false, appInitialized = false, isRouteDisplayed = false, isGoogleApiAvailable = false;
     //Handlers
     private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
@@ -92,7 +90,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
                     //start only if helpactivity not on top
                     if (!ConfigurationManager.getInstance().containsObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class)) {
-                        intents.startPickLocationActivity();
+                        intents.startPickLocationActivity(isGoogleApiAvailable);
                     }
                 } else if (!appInitialized) {
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
@@ -258,7 +256,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                         mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
                 break;
             case R.id.pickMyPos:
-                intents.startPickLocationActivity();
+                intents.startPickLocationActivity(isGoogleApiAvailable);
                 break;
             case R.id.search:
                 onSearchRequested();

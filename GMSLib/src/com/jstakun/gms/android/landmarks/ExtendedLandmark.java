@@ -178,7 +178,8 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
             boolean isEqual = Objects.equal(l.getName(), getName()) && 
                Objects.equal(l.getLatitudeE6(), getLatitudeE6()) &&
                Objects.equal(l.getLongitudeE6(), getLongitudeE6()) &&
-               Objects.equal(l.getLayer(), layer);
+               Objects.equal(l.getLayer(), layer) &&
+               Objects.equal(l.getThumbnail(), thumbnail);
             
             //if (isEqual) {
             //	System.out.println(getName() + " " + layer + " " + getLatitudeE6() + " " + getLongitudeE6() + " -------------------------------");

@@ -95,7 +95,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private ExpandableListView drawerList;
     private ProgressBar loadingProgressBar;
     private int mapProvider;
-    private boolean appInitialized = false;
+    private boolean appInitialized = false, isGoogleApiAvailable = false;
     private  Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
@@ -106,7 +106,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
                     //start only if helpactivity not on top
                     if (!ConfigurationManager.getInstance().containsObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class)) {
-                        intents.startPickLocationActivity();
+                        intents.startPickLocationActivity(isGoogleApiAvailable);
                     }
                 } else if (!appInitialized) {
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
@@ -807,7 +807,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		dialogManager.showAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, null);
 		    		break;
 		    	case R.id.pickMyPos:
-		    		intents.startPickLocationActivity();
+		    		intents.startPickLocationActivity(isGoogleApiAvailable);
 		    		break;
 		    	case R.id.deals:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
