@@ -775,6 +775,7 @@ public final class IntentsHelper {
         lvView.findViewById(R.id.lvOpenSeparator).setVisibility(View.VISIBLE);
         
         //show only if location is available
+        //TODO open dialog to dynamically select type of route
         if (landmarkManager.hasMyLocation()) {
         	lvRouteButton.setVisibility(View.VISIBLE);
         	lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.VISIBLE);

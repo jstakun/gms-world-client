@@ -634,10 +634,10 @@ public class FileManager implements PersistenceManager {
                         throw new Exception("Separator character not found.");
                     }
 
-                    double latitude = Double.parseDouble(line.substring(0, separatorPos).trim());
+                    //double latitude = Double.parseDouble(line.substring(0, separatorPos).trim());
                     int oldSeparatorPos = separatorPos;
                     separatorPos = line.indexOf(SEPARATOR_CHAR, oldSeparatorPos + 1);
-                    double longitude = Double.parseDouble(line.substring(oldSeparatorPos + 1, separatorPos).trim());
+                    //double longitude = Double.parseDouble(line.substring(oldSeparatorPos + 1, separatorPos).trim());
                     oldSeparatorPos = separatorPos;
                     separatorPos = line.indexOf(SEPARATOR_CHAR, oldSeparatorPos + 1);
                     int xtile = Integer.parseInt(line.substring(oldSeparatorPos + 1, separatorPos).trim());

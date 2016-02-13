@@ -974,7 +974,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 	}
                 	landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
                 } else {
-                	
+                	intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
                 }
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
