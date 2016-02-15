@@ -166,6 +166,7 @@ public final class ConfigurationManager {
     private static final int NETWORK_TEXT = 1;
     public static final int LM = 0;
     public static final int DA = 1;
+    public static final int ROUTE_WALK = 2;
     
     //private static final int NETWORK_NONE = 2;
     

@@ -134,7 +134,7 @@ android:background="@color/ivory2"
 android:id="@+id/lvCarRouteButton"
 android:layout_width="56dip"
 android:layout_height="56dip"
-android:src="@drawable/route48"
+android:src="@drawable/navigation48"
 android:layout_gravity="right"
 android:background="@color/ivory2"
         />

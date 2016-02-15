@@ -775,17 +775,15 @@ public final class IntentsHelper {
         lvView.findViewById(R.id.lvOpenSeparator).setVisibility(View.VISIBLE);
         
         //show only if location is available
-        //TODO open dialog to dynamically select type of route
         if (landmarkManager.hasMyLocation()) {
         	lvRouteButton.setVisibility(View.VISIBLE);
-        	lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.VISIBLE);
-     
-        	int routeType = ConfigurationManager.getInstance().getInt(ConfigurationManager.ROUTE_TYPE);
-        	if (routeType == 2) {
-        		lvRouteButton.setImageResource(R.drawable.walk48);
-        	} else {
-        		lvRouteButton.setImageResource(R.drawable.route48);
-        	}
+        	lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.VISIBLE);  
+        	//int routeType = ConfigurationManager.getInstance().getInt(ConfigurationManager.ROUTE_TYPE);
+        	//if (routeType == ConfigurationManager.ROUTE_WALK) {
+        	//	lvRouteButton.setImageResource(R.drawable.walk48);
+        	//} else {
+        	//lvRouteButton.setImageResource(R.drawable.route48);
+        	//}
         } else {
         	lvRouteButton.setVisibility(View.GONE);
         	lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.GONE);

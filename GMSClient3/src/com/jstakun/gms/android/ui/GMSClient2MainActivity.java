@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -930,8 +931,17 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         				intents.startPhoneCallActivity(selectedLandmark);
         			} else if (v == lvRouteButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-        					asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
+        				//TODO open dialog to dynamically select type of route
+        		        if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
+        					//TODO handle google maps navigation
+        					Uri gmmIntentUri = Uri.parse("google.navigation:q=" + selectedLandmark.getQualifiedCoordinates().getLatitude() + "," + selectedLandmark.getQualifiedCoordinates().getLongitude());
+        		        	Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        		        	mapIntent.setPackage("com.google.android.apps.maps");
+        		        	if (mapIntent.resolveActivity(getPackageManager()) != null) {
+        		        	    startActivity(mapIntent);
+        		        	} else {
+        		        		asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
+        		        	}
         				} else {
         					intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
         				}
