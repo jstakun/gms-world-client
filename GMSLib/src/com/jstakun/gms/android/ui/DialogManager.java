@@ -1,12 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.text.Spannable;
 import android.widget.ArrayAdapter;
 
@@ -30,6 +27,7 @@ public class DialogManager {
     private AsyncTaskManager asyncTaskManager;
     private LandmarkManager landmarkManager;
     private CheckinManager checkinManager;
+    private Handler loadingHandler;
 
     private DialogInterface.OnClickListener exitListener = new DialogInterface.OnClickListener() {
 
@@ -144,6 +142,12 @@ public class DialogManager {
         this.trackMyPosListener = trackMyPosListener;
         dialogBuilder = new AlertDialogBuilder(activity);
     }
+    
+    public DialogManager(Activity activity, IntentsHelper intents, AsyncTaskManager asyncTaskManager,
+            LandmarkManager landmarkManager, CheckinManager checkinManager, Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
+        this(activity, intents, asyncTaskManager, landmarkManager, checkinManager, trackMyPosListener);
+        this.loadingHandler = loadingHandler;
+    }
 
     public void showAlertDialog(int type, ArrayAdapter<?> arrayAdapter, Spannable message) {
         AlertDialog alertDialog = null;
@@ -191,7 +195,15 @@ public class DialogManager {
                     break;
                 case AlertDialogBuilder.RESET_DIALOG:
                     alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, resetListener);
-                    break;    
+                    break;  
+                case AlertDialogBuilder.ROUTE_DIALOG:
+                	alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, new DialogInterface.OnClickListener() {
+    			        public void onClick(DialogInterface dialog, int id) {
+    			        	ConfigurationManager.getInstance().putInteger(ConfigurationManager.ROUTE_TYPE, id);
+    			        	intents.startRouteLoadingTask(landmarkManager.getSeletedLandmarkUI(), loadingHandler);
+    			        }
+    			    });
+                	break;
                 default:
                     break;
             }

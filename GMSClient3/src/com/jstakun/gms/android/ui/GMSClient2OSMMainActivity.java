@@ -37,6 +37,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -58,6 +63,7 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -156,7 +162,15 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         getActionBar().hide();
         
         loadingHandler = new LoadingHandler(this);
-
+        
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {
+        	isGoogleApiAvailable = true;
+        	LoggerUtils.debug("Google Places API is available!");
+        } else {
+        	isGoogleApiAvailable = false;
+            LoggerUtils.error("Google Places API is not available!");
+        }
+        
         LoggerUtils.debug("Map provider is " + mapProvider);
 
         setContentView(R.layout.osmdroidcanvasview_2);
@@ -279,7 +293,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             asyncTaskManager.executeDealCategoryLoaderTask(cm, false);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, loadingHandler, trackMyPosListener);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
@@ -777,7 +791,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		intents.saveRouteAction();
 		    		break;
 		    	case R.id.loadRoute:
-		    		if (intents.startRouteLoadingActivity()) {
+		    		if (intents.startRouteFileLoadingActivity()) {
 		    			intents.showInfoToast(Locale.getMessage(R.string.Routes_NoRoutes));
 		    		}
 		    		break;
@@ -882,10 +896,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         			} else if (v == lvRouteButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
         				if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-        					asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
+        					dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
         				} else {
         					intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
-        				}
+        				}	
         			} else if (v == lvSendMailButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.shareLandmarkAction(dialogManager);
@@ -903,18 +917,29 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
-                String lats = intent.getStringExtra("lat");
-                String lngs = intent.getStringExtra("lng");
-                String names = intent.getStringExtra("name");
-                double lat = Double.parseDouble(lats);
-                double lng = Double.parseDouble(lngs);
-                GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
-                if (!appInitialized) {
-                    initOnLocationChanged(location);
+            	Double lat = null, lng = null;
+            	String name = null;
+                if (intent.hasExtra("name") && intent.hasExtra("lat") && intent.hasExtra("lng")) {
+            		lat = intent.getDoubleExtra("lat", -200d);
+                    lng = intent.getDoubleExtra("lng", -200d);
+                    name = intent.getStringExtra("name");
+            	} else {
+            		Place place = PlaceAutocomplete.getPlace(this, intent);
+            		name = place.getName().toString();
+            		lat = place.getLatLng().latitude;
+            		lng = place.getLatLng().longitude;
+            	}
+                if (lat != null && lng != null && name != null && lat > -200d && lng > -200d) { 
+                	GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
+                	if (!appInitialized) {
+                		initOnLocationChanged(location);
+                	} else {
+                		pickPositionAction(location, true, true);
+                	}
+                	landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
                 } else {
-                    pickPositionAction(location, true, true);
+                	intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
                 }
-                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(names), "", Commons.LOCAL_LAYER, true);
             } else if (resultCode == RESULT_CANCELED && intent != null && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
@@ -925,7 +950,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 intents.showInfoToast(message);
             } else if (resultCode != RESULT_CANCELED) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
-            }
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            	Status status = PlaceAutocomplete.getStatus(this, intent);
+                intents.showInfoToast(status.getStatusMessage());
+            } 
         } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");

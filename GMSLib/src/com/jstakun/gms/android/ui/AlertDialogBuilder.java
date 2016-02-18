@@ -36,11 +36,12 @@ public class AlertDialogBuilder {
     public static final int RATE_US_DIALOG = 13;
     public static final int NEW_VERSION_DIALOG = 14;
     public static final int RESET_DIALOG = 15;
+    public static final int ROUTE_DIALOG = 16;
     public static final String OPEN_DIALOG = "openDialog";
     private AlertDialog exitDialog, infoDialog, trackMyPosDialog, saveRouteDialog,
             packetDataDialog, networkErrorDialog, loginDialog, checkinDialog,
             shareIntentsDialog, autoCheckinDialog, locationErrorDialog, addLayerDialog,
-            rateUsDialog, newVersionDialog, resetDialog;
+            rateUsDialog, newVersionDialog, resetDialog, routeDialog;
     private Activity activity;
 
     public AlertDialogBuilder(Activity activity) {
@@ -69,6 +70,17 @@ public class AlertDialogBuilder {
                 setNegativeButton(Locale.getMessage(R.string.cancelButton), dialogClickListener).
                 setOnCancelListener(dialogCancelListener);
         exitDialog = builder.create();
+    }
+    
+    private void createRouteAlertDialog(DialogInterface.OnClickListener routeListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(Locale.getMessage(R.string.Routes_title)).
+                setCancelable(true).
+                setIcon(android.R.drawable.ic_dialog_alert).
+                setItems(R.array.routeType, routeListener).
+                setNegativeButton(Locale.getMessage(R.string.cancelButton), dialogClickListener).
+                setOnCancelListener(dialogCancelListener);
+        routeDialog = builder.create();
     }
 
     private void createInfoAlertDialog() {
@@ -254,6 +266,13 @@ public class AlertDialogBuilder {
         }
         return exitDialog;
     }
+    
+    private AlertDialog getRouteAlertDialog(DialogInterface.OnClickListener routeListener) {
+        if (routeDialog == null) {
+            createRouteAlertDialog(routeListener);
+        }
+        return routeDialog;
+    }
 
     private AlertDialog getTrackMyPosDialog(DialogInterface.OnClickListener trackMyPosListener) {
         createTrackMyPosDialog(trackMyPosListener);
@@ -392,6 +411,9 @@ public class AlertDialogBuilder {
                 break;
             case RESET_DIALOG:
             	alertDialog = getResetAlertDialog(listeners[0]);
+                break;
+            case ROUTE_DIALOG:
+            	alertDialog = getRouteAlertDialog(listeners[0]);
                 break;
             default:
                 break;

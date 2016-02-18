@@ -177,7 +177,7 @@ public final class IntentsHelper {
         activity.startActivityForResult(new Intent(activity, SendBlogeoPostActivity.class), INTENT_BLOGEO_POST);
     }
 
-    public boolean startRouteLoadingActivity() {
+    public boolean startRouteFileLoadingActivity() {
         ArrayList<LandmarkParcelable> routes = PersistenceManagerFactory.getFileManager().readFolderAsLandmarkParcelable(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"), Commons.ROUTES_LAYER);
 
         if (!routes.isEmpty()) {
@@ -677,6 +677,27 @@ public final class IntentsHelper {
         extras.putDouble("lng", coords[1]);
         intent.putExtras(extras);
         activity.startActivityForResult(intent, INTENT_CALENDAR);
+    }
+    
+    public void startRouteLoadingTask(ExtendedLandmark selectedLandmark, Handler showRouteHandler) {
+    	String navigationUri = "google.navigation:q=" + selectedLandmark.getQualifiedCoordinates().getLatitude() + "," + selectedLandmark.getQualifiedCoordinates().getLongitude();
+    	int routeType = ConfigurationManager.getInstance().getInt(ConfigurationManager.ROUTE_TYPE);
+    	if (routeType == ConfigurationManager.ROUTE_WALK) {
+    		navigationUri += "&mode=w";
+    	}
+    	
+    	Intent mapIntent = null;
+    	try {
+    		//API v4 workaround
+    		mapIntent = IntentHelper.getNavigationIntent(navigationUri);
+    	} catch (VerifyError e) {   			
+    	}
+    	
+    	if (mapIntent != null && mapIntent.resolveActivity(activity.getPackageManager()) != null) {
+    		activity.startActivity(mapIntent);
+    	} else {
+    		asyncTaskManager.executeRouteServerLoadingTask(showRouteHandler, true, selectedLandmark);
+    	}
     }
 
     public void loadLayersAction(boolean loadExternal, String selectedLayer, boolean clear, boolean loadServerLayers, LayerLoader layerLoader, double latitude, double longitude, int zoomLevel, ProjectionInterface projection) {
@@ -1441,6 +1462,16 @@ public final class IntentsHelper {
 			return LandmarkParcelableFactory.getLandmarkParcelable(f, lat, lng);
 		}
     	
+    }
+    
+    private static class IntentHelper {
+    	public static Intent getNavigationIntent(String navigationUri) {
+    		Uri gmmIntentUri = Uri.parse(navigationUri);
+    		Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+    		//since API v4
+    		mapIntent.setPackage("com.google.android.apps.maps");
+    		return mapIntent;
+    	}
     }
 
 }

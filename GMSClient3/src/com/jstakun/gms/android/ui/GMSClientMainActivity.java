@@ -729,7 +729,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 intents.saveRouteAction();
                 break;
             case R.id.loadRoute:
-                if (intents.startRouteLoadingActivity()) {
+                if (intents.startRouteFileLoadingActivity()) {
                     intents.showInfoToast(Locale.getMessage(R.string.Routes_NoRoutes));
                 }
                 break;

@@ -68,6 +68,7 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -143,7 +144,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 dialogManager.showAlertDialog(AlertDialogBuilder.LOCATION_ERROR_DIALOG, null, null);
             }
         }
-    };
+    };   
 
     /**
      * Called when the activity is first created.
@@ -314,7 +315,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             asyncTaskManager.executeDealCategoryLoaderTask(cm, false);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, loadingHandler, trackMyPosListener);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
         	initOnLocationChanged(mapCenter, 2);
@@ -825,7 +826,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		    		intents.saveRouteAction();
 		    		break;
 				case R.id.loadRoute:
-		    		if (intents.startRouteLoadingActivity()) {
+		    		if (intents.startRouteFileLoadingActivity()) {
 		        		intents.showInfoToast(Locale.getMessage(R.string.Routes_NoRoutes));
 		    		}
 		    		break;
@@ -908,7 +909,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	} else if (v == nearbyLandmarksButton) {
         		intents.startLayersListActivity(true);
         	} else {
-        		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+        		final ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
         		if (selectedLandmark != null) {
         			if (v == lvCloseButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", selectedLandmark.getLayer(), 0);
@@ -931,21 +932,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         				intents.startPhoneCallActivity(selectedLandmark);
         			} else if (v == lvRouteButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				//TODO open dialog to dynamically select type of route
-        		        if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-        					//TODO handle google maps navigation
-        					Uri gmmIntentUri = Uri.parse("google.navigation:q=" + selectedLandmark.getQualifiedCoordinates().getLatitude() + "," + selectedLandmark.getQualifiedCoordinates().getLongitude());
-        		        	Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        		        	mapIntent.setPackage("com.google.android.apps.maps");
-        		        	if (mapIntent.resolveActivity(getPackageManager()) != null) {
-        		        	    startActivity(mapIntent);
-        		        	} else {
-        		        		asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
-        		        	}
+        				//TODO change in other activities
+        				if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
+        					dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
         				} else {
         					intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
-        				}
-        			} else if (v == lvSendMailButton) {
+        				}	
+             		} else if (v == lvSendMailButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.shareLandmarkAction(dialogManager);
         			} 
