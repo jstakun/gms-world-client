@@ -199,6 +199,7 @@ public class DialogManager {
                 case AlertDialogBuilder.ROUTE_DIALOG:
                 	alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, new DialogInterface.OnClickListener() {
     			        public void onClick(DialogInterface dialog, int id) {
+    			        	dialog.cancel();
     			        	ConfigurationManager.getInstance().putInteger(ConfigurationManager.ROUTE_TYPE, id);
     			        	intents.startRouteLoadingTask(landmarkManager.getSeletedLandmarkUI(), loadingHandler);
     			        }

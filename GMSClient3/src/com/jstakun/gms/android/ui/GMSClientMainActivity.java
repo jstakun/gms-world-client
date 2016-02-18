@@ -64,7 +64,7 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
-
+ 
 public class GMSClientMainActivity extends MapActivity implements OnClickListener {
 
     private static final int SHOW_MAP_VIEW = 0;
