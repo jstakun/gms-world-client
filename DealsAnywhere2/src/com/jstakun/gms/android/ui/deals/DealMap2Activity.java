@@ -15,6 +15,7 @@ import android.os.Vibrator;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.SpannableString;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -131,9 +137,17 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         setContentView(R.layout.mapcanvasview_2);
         
-        loadingHandler = new LoadingHandler(this);
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {
+        	isGoogleApiAvailable = true;
+        	LoggerUtils.debug("Google Places API is available!");
+        } else {
+        	isGoogleApiAvailable = false;
+            LoggerUtils.error("Google Places API is not available!");
+        }
         
         initComponents();
+        
+        loadingHandler = new LoadingHandler(this, dialogManager);
     }
 
     @Override
@@ -438,20 +452,29 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             }
         } else if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
-                String lats = intent.getStringExtra("lat");
-                String lngs = intent.getStringExtra("lng");
-                String names = intent.getStringExtra("name");
-                double lat = Double.parseDouble(lats);
-                double lng = Double.parseDouble(lngs);
-
-                GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
-                if (!appInitialized) {
-                    initOnLocationChanged(location);
+            	Double lat = null, lng = null;
+            	String name = null;
+                if (intent.hasExtra("name") && intent.hasExtra("lat") && intent.hasExtra("lng")) {
+            		lat = intent.getDoubleExtra("lat", -200d);
+                    lng = intent.getDoubleExtra("lng", -200d);
+                    name = intent.getStringExtra("name");
+            	} else {
+            		Place place = PlaceAutocomplete.getPlace(this, intent);
+            		name = place.getName().toString();
+            		lat = place.getLatLng().latitude;
+            		lng = place.getLatLng().longitude;
+            	}
+                if (lat != null && lng != null && name != null && lat > -200d && lng > -200d) { 
+                	GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
+                	if (!appInitialized) {
+                		initOnLocationChanged(location);
+                	} else {
+                		pickPositionAction(location, true, false, true);
+                	}
+                	landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
                 } else {
-                    pickPositionAction(location, true, false, true);
+                	intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
                 }
-
-                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(names), "", Commons.LOCAL_LAYER, true);
 
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
@@ -463,7 +486,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 intents.showInfoToast(message);
             } else if (resultCode != RESULT_CANCELED) { //if (!appInitialized) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
-            }
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            	Status status = PlaceAutocomplete.getStatus(this, intent);
+                intents.showInfoToast(status.getStatusMessage());
+            } 
         } else if (requestCode == IntentsHelper.INTENT_MYLANDMARKS) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
@@ -519,7 +545,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     				callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
     			} else if (v == lvRouteButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
-    				loadRoutePressedAction(landmarkManager.getSeletedLandmarkUI());
+    				dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
     			} else if (v == lvSendMailButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
     				sendMessageAction();
@@ -854,9 +880,11 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private static class LoadingHandler extends Handler {
     	
         private WeakReference<DealMap2Activity> parentActivity;
+        private WeakReference<DialogManager> dialogManager;
     	
-    	public LoadingHandler(DealMap2Activity parentActivity) {
+    	public LoadingHandler(DealMap2Activity parentActivity, DialogManager dialogManager) {
     		this.parentActivity = new WeakReference<DealMap2Activity>(parentActivity);
+    		this.dialogManager = new WeakReference<DialogManager>(dialogManager); 
     	}
     	
         @Override
@@ -876,8 +904,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			ExtendedLandmark recommended = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class);
         			activity.callButtonPressedAction(recommended);
         		} else if (msg.what == DealOfTheDayDialog.ROUTE) {
-        			ExtendedLandmark recommended = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class);
-        			activity.loadRoutePressedAction(recommended);
+        			dialogManager.get().showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, new SpannableString("dod"));
+        			//ExtendedLandmark recommended = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class);
+        			//activity.loadRoutePressedAction(recommended);
         		} else if (msg.what == DealOfTheDayDialog.SEND_MAIL) {
         			activity.sendMessageAction();
         		} else if (msg.what == LayerLoader.LAYER_LOADED) {

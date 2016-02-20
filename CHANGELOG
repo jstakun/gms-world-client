@@ -1,6 +1,10 @@
 1137
 
 add fb photos sublayer - done
+add google maps search to gms client - done
+migrate fb fql query - done
+Dynamically select type of route - done
+Add start navigation button to landmark details - done
 
 1136
 

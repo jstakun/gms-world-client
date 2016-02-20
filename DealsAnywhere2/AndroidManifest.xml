@@ -69,6 +69,8 @@
           </intent-filter>
           <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
           <meta-data android:name="com.tapfortap.API_KEY" android:value="@string/tapForTapKey"/>
+          <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+          <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/googlePlayKey"/> 
         </activity>
         <provider android:authorities="com.jstakun.gms.android.deals" android:name="com.jstakun.gms.android.ui.deals.DealsSuggestionProvider"/>
     </application>

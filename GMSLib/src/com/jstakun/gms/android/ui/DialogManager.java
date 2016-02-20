@@ -197,11 +197,18 @@ public class DialogManager {
                     alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, resetListener);
                     break;  
                 case AlertDialogBuilder.ROUTE_DIALOG:
+                	ExtendedLandmark l = null;
+                	if (message != null && message.toString().equals("dod") && ConfigurationManager.getInstance().containsObject("dod", ExtendedLandmark.class)) {
+                		l = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class); 
+                	} else {
+                		l = landmarkManager.getSeletedLandmarkUI();
+                	}
+                	final ExtendedLandmark landmark = l;
                 	alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, new DialogInterface.OnClickListener() {
     			        public void onClick(DialogInterface dialog, int id) {
     			        	dialog.cancel();
     			        	ConfigurationManager.getInstance().putInteger(ConfigurationManager.ROUTE_TYPE, id);
-    			        	intents.startRouteLoadingTask(landmarkManager.getSeletedLandmarkUI(), loadingHandler);
+    			        	intents.startRouteLoadingTask(landmark, loadingHandler);
     			        }
     			    });
                 	break;

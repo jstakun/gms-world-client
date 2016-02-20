@@ -142,7 +142,7 @@ public final class IntentsHelper {
     	if (isGoogleApiAvailable) {
     		try {
     			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-    			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
+    			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
     			.build();
 
     			intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)//.MODE_FULLSCREEN)
@@ -333,15 +333,15 @@ public final class IntentsHelper {
         }
     }
 
-    public static boolean isIntentAvailable(String action, Context context) {
-        final PackageManager packageManager = context.getPackageManager();
+    public boolean isIntentAvailable(String action) {
         final Intent intent = new Intent(action);
-        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return (list.size() > 0);
+        return (intent.resolveActivity(activity.getPackageManager()) != null);      
+        //List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        //return (list.size() > 0);
     }
 
     public void startQrCodeCheckinActivity(double[] currentLocation) {
-        final boolean scanAvailable = isIntentAvailable(SCAN_INTENT, activity);
+        final boolean scanAvailable = isIntentAvailable(SCAN_INTENT);
         if (scanAvailable) {
         	try {
         		Intent intent = new Intent(SCAN_INTENT);
