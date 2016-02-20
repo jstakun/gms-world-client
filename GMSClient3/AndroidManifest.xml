@@ -95,10 +95,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver" >
-        </receiver>
-         <receiver android:name="com.jstakun.gms.android.service.NotificationReceiver" >
-        </receiver>
+        <receiver android:name="com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver"/>
+        <receiver android:name="com.jstakun.gms.android.service.NotificationReceiver"/>
         <meta-data android:name="CLOUDMADE_KEY" android:value="@string/cloudmadeKey" />
         <meta-data android:name="com.tapfortap.API_KEY" android:value="@string/tapForTapKey"/>
         <meta-data android:name="com.tapfortap.TEST_MODE" android:value="false"/>

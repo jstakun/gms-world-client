@@ -146,8 +146,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         }
         
         initComponents();
-        
-        loadingHandler = new LoadingHandler(this, dialogManager);
     }
 
     @Override
@@ -250,6 +248,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
 
+        loadingHandler = new LoadingHandler(this, dialogManager);
+        
         GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
