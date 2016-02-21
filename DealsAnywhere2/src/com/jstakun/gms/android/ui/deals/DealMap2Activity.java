@@ -214,6 +214,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         
         ((ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
         
+        loadingHandler = new LoadingHandler(this);
+        
         myLocation = new GoogleMyLocationOverlay(this, mapView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
 
         mapController = mapView.getController();
@@ -247,9 +249,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         }
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
-
-        loadingHandler = new LoadingHandler(this, dialogManager);
         
+        ((LoadingHandler) loadingHandler).setDialogManager(dialogManager);
+
         GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
@@ -882,8 +884,11 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         private WeakReference<DealMap2Activity> parentActivity;
         private WeakReference<DialogManager> dialogManager;
     	
-    	public LoadingHandler(DealMap2Activity parentActivity, DialogManager dialogManager) {
+    	public LoadingHandler(DealMap2Activity parentActivity) {
     		this.parentActivity = new WeakReference<DealMap2Activity>(parentActivity);
+    	}
+    	
+    	public void setDialogManager(DialogManager dialogManager) {
     		this.dialogManager = new WeakReference<DialogManager>(dialogManager); 
     	}
     	
