@@ -32,7 +32,7 @@ public class DealMapApp extends Application {
         LoggerUtils.debug("DealsAnywhereApp.onCreate...");
         ACRA.init(this);
         ConfigurationManager.getAppUtils().initApp(this);
-        UserTracker.getInstance().initialize(getApplicationContext());
+        UserTracker.getInstance().initialize(this);
         //comment in production
         //UserTracker.getInstance().setDebug(true, this);
         //

@@ -1,5 +1,7 @@
 package com.jstakun.gms.android.utils;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -30,15 +32,27 @@ public class UserTracker {
         return userTracker;
     }
 
-    public synchronized void initialize(final Context context) {
+    public synchronized void initialize(Application context) {
     	try {
     		if (tracker == null && OsUtil.isDonutOrHigher()) {
-        		tracker = GoogleAnalytics.getInstance(context).newTracker(getId(context));
-        		//GAServiceManager.getInstance().setLocalDispatchPeriod(30);
+    			GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
+    			analytics.setLocalDispatchPeriod(30);
+    			analytics.enableAutoActivityReports(context);
+    			tracker = analytics.newTracker(getId(context));
+    			tracker.enableAutoActivityTracking(true);
+    			tracker.enableExceptionReporting(true);
         	}
     	} catch (Throwable t) {
     		LoggerUtils.error("UserTracker.initialize exception:", t);
     	}
+    }
+    
+    public void trackActivityStart(Activity activity) {
+    	GoogleAnalytics.getInstance(activity).reportActivityStart(activity);
+    }
+    
+    public void trackActivityStop(Activity activity) {
+    	GoogleAnalytics.getInstance(activity).reportActivityStop(activity);
     }
     
     public void trackActivity(final String activityName) {

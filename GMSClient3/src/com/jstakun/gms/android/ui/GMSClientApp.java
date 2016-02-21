@@ -27,7 +27,7 @@ public class GMSClientApp extends Application {
         LoggerUtils.debug("GMSClientApp.onCreate...");
         ACRA.init(this);  
         ConfigurationManager.getAppUtils().initApp(this);  
-        UserTracker.getInstance().initialize(getApplicationContext());
+        UserTracker.getInstance().initialize(this);
         //comment in production
         //UserTracker.getInstance().setDebug(true, this);
         //
