@@ -60,6 +60,7 @@ import com.jstakun.gms.android.ui.IntentArrayAdapter;
 import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.ui.LandmarkListActivity;
 import com.jstakun.gms.android.ui.MapInfoView;
+import com.jstakun.gms.android.ui.NavigationDrawerListItem;
 import com.jstakun.gms.android.ui.ZoomChangeListener;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
@@ -294,8 +295,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	if (drawerToggle.onOptionsItemSelected(item)) {
-    		UserTracker.getInstance().trackEvent("NavigationDrawerClicks", item.getTitle().toString(), "", 0);
-            return true;
+    		return true;
         } else {
         	UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
         	return onMenuItemSelected(item.getItemId());
@@ -873,6 +873,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        	//TODO modify elsewhere
+        	NavigationDrawerListItem listItem = (NavigationDrawerListItem) drawerList.getAdapter().getItem(position);
+        	UserTracker.getInstance().trackEvent("NavigationDrawerClicks", listItem.getName(), "", 0);
         	drawerList.setItemChecked(position, true);
             drawerLayout.closeDrawer(drawerList);
             onMenuItemSelected((int)id);

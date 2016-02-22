@@ -712,8 +712,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         if (appInitialized) {
         	if (drawerToggle.onOptionsItemSelected(item)) {
-        		UserTracker.getInstance().trackEvent("NavigationDrawerClicks", item.getTitle().toString(), "", 0);
-                return true;
+        		return true;
             } else {
             	UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
                 return onMenuItemSelected(item.getItemId());
@@ -1279,13 +1278,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
 		@Override
 		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", "AddName", "", 0);
+			TextView textView = (TextView)v;
+			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
         	if (groupPosition == 0 || groupPosition == 3 || groupPosition == 4 || groupPosition == 5) {
         		drawerLayout.closeDrawer(drawerLinearLayout);
         		onMenuItemSelected((int)id);
         		return true;
         	} else if (groupPosition == 1 || groupPosition == 2) {
-        		TextView textView = (TextView)v;
     	        if (parent.isGroupExpanded(groupPosition)) {
         			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);
         		} else {
@@ -1304,7 +1303,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 			TextView textView = (TextView) parent.getChildAt(groupPosition);
 			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
-			drawerLayout.closeDrawer(drawerLinearLayout);
+			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
+        	drawerLayout.closeDrawer(drawerLinearLayout);
 			onMenuItemSelected((int)id);
 			return true;
 		}

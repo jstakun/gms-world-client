@@ -59,7 +59,7 @@ public class UserTracker {
     	//System.out.println("UserTracker.trackAcivity() " + activityName);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
             tracker.setScreenName(activityName);
-        	tracker.send(new HitBuilders.EventBuilder().setCategory("appview").build());
+        	tracker.send(new HitBuilders.EventBuilder().setCategory(activityName).setAction("start").build());
         }
     }
 
