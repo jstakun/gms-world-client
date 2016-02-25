@@ -24,7 +24,7 @@ import com.jstakun.gms.android.utils.UserTracker;
  */
 public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCancelListener {
 
-    private View lvCloseButton, lvCallButton, lvOpenButton, lvSendMailButton, lvRouteButton;
+    private View lvCloseButton, lvCallButton, lvOpenButton, lvShareButton, lvRouteButton;
     private CheckBox showAtStratup;
     private DealMapAmzActivity activity;
     private ExtendedLandmark recommended;
@@ -60,9 +60,9 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
 
         lvCloseButton = findViewById(R.id.lvCloseButton);
         lvOpenButton = findViewById(R.id.lvOpenButton);
-        lvSendMailButton = findViewById(R.id.lvSendMailButton);
+        lvShareButton = findViewById(R.id.lvShareButton);
         lvCallButton = findViewById(R.id.lvCallButton);
-        lvRouteButton = findViewById(R.id.lvCarRouteButton);
+        lvRouteButton = findViewById(R.id.lvRouteButton);
 
         showAtStratup.setVisibility(View.VISIBLE);
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.SHOW_DEAL_OF_THE_DAY)) {
@@ -74,7 +74,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
         showAtStratup.setOnClickListener(this);
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
-        lvSendMailButton.setOnClickListener(this);
+        lvShareButton.setOnClickListener(this);
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
     }
@@ -97,7 +97,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
         } else if (v == lvRouteButton) {
             UserTracker.getInstance().trackEvent("Clicks", "DealOfTheDayDialog.ShowRouteSelectedDeal", recommended.getLayer(), 0);
             activity.loadRoutePressedAction(recommended);
-        } else if (v == lvSendMailButton) {
+        } else if (v == lvShareButton) {
             UserTracker.getInstance().trackEvent("Clicks", "DealOfTheDayDialog.ShareSelectedDeal", recommended.getLayer(), 0);
             activity.sendMessageAction();
         } else if (v == showAtStratup) {

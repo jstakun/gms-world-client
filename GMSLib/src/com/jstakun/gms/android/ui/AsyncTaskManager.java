@@ -431,7 +431,7 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeClearCacheTask(String message) {
+    /*public void executeClearCacheTask(String message) {
         intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
         ClearCacheTask clearCache = new ClearCacheTask();
         String notificationId = createNotification(-1, message, message, true);
@@ -454,7 +454,7 @@ public class AsyncTaskManager {
             super.doInBackground(fileData);
             return Integer.toString(PersistenceManagerFactory.getPersistenceManagerInstance().deleteTilesCache());
         }
-    }
+    }*/
 
     //CheckIn tasks
     public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name, Double lat, Double lng) {

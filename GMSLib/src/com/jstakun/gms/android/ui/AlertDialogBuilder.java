@@ -77,7 +77,7 @@ public class AlertDialogBuilder {
         builder.setTitle(Locale.getMessage(R.string.Routes_title)).
                 setCancelable(true).
                 setIcon(android.R.drawable.ic_dialog_alert).
-                setItems(R.array.routeType, routeListener).
+                setItems(R.array.navigationType, routeListener).
                 setNegativeButton(Locale.getMessage(R.string.cancelButton), dialogClickListener).
                 setOnCancelListener(dialogCancelListener);
         routeDialog = builder.create();
@@ -149,7 +149,7 @@ public class AlertDialogBuilder {
                 setTitle(R.string.dataPacket).
                 setIcon(android.R.drawable.ic_dialog_info).
                 setPositiveButton(Locale.getMessage(R.string.Clear_Counter), packetDataListener).
-                setNegativeButton(Locale.getMessage(R.string.cancelButton), dialogClickListener).
+                setNegativeButton(Locale.getMessage(R.string.okButton), dialogClickListener).
                 setOnCancelListener(dialogCancelListener);
         packetDataDialog = builder.create();
     }

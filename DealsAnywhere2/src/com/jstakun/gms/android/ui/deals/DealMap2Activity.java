@@ -89,7 +89,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvOpenButton, mapButtons,
-            lvView, lvSendMailButton, lvRouteButton, myLocationButton, nearbyLandmarksButton,
+            lvView, lvShareButton, lvRouteButton, myLocationButton, nearbyLandmarksButton,
             thumbnailButton, loadingImage;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -166,16 +166,16 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         lvCloseButton = findViewById(R.id.lvCloseButton);
         lvOpenButton = findViewById(R.id.lvOpenButton);
-        lvSendMailButton = findViewById(R.id.lvSendMailButton);
+        lvShareButton = findViewById(R.id.lvShareButton);
         lvCallButton = findViewById(R.id.lvCallButton);
-        lvRouteButton = findViewById(R.id.lvCarRouteButton);
+        lvRouteButton = findViewById(R.id.lvRouteButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
         myLocationButton = findViewById(R.id.myLocationButton);
         nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
         
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
-        lvSendMailButton.setOnClickListener(this);
+        lvShareButton.setOnClickListener(this);
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
@@ -548,7 +548,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     			} else if (v == lvRouteButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
     				dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
-    			} else if (v == lvSendMailButton) {
+    			} else if (v == lvShareButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
     				sendMessageAction();
     			}
@@ -873,7 +873,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        	//TODO modify elsewhere
         	NavigationDrawerListItem listItem = (NavigationDrawerListItem) drawerList.getAdapter().getItem(position);
         	UserTracker.getInstance().trackEvent("NavigationDrawerClicks", listItem.getName(), "", 0);
         	drawerList.setItemChecked(position, true);

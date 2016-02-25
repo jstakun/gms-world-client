@@ -38,7 +38,7 @@ import org.apache.commons.lang.StringUtils;
 public class AndroidPersistenceManager implements PersistenceManager {
 
     private static final String CONFIGURATION_FILE = "lm_configuration";
-    private static final String MAP_FILE = "lm_map" + FORMAT;
+    private static final String MAP_FILE = "lm_map" + FORMAT_PNG;
     private static final String TILES_FILE = "lm_tiles.txt";
     private static final String LANDMARKDB_FILE = "lm_landmarkdb.txt";
 
@@ -221,7 +221,7 @@ public class AndroidPersistenceManager implements PersistenceManager {
             for (int i = 0; i < ConfigurationManager.getInstance().getInt(ConfigurationManager.SCREEN_SIZE); i++) {
                 Tile tile = tilesCache.getTile(i);
                 //save image
-                saveImageFile(tile.getImage(), i + FORMAT);
+                saveImageFile(tile.getImage(), i + FORMAT_PNG);
 
                 String line = Double.toString(tile.getLatitude()) + PersistenceManager.SEPARATOR_CHAR + Double.toString(tile.getLongtude()) + PersistenceManager.SEPARATOR_CHAR
                         + Integer.toString(tile.getXTile()) + PersistenceManager.SEPARATOR_CHAR + Integer.toString(tile.getYTile())
@@ -297,7 +297,7 @@ public class AndroidPersistenceManager implements PersistenceManager {
                 int ytile = Integer.parseInt(line.substring(oldSeparatorPos + 1, separatorPos).trim());
                 int zoom = Integer.parseInt(line.substring(separatorPos + 1).trim());
 
-                image = readImageFile(i + FORMAT);
+                image = readImageFile(i + FORMAT_PNG);
 
                 if (image == null) {
                     return -1;
@@ -364,7 +364,7 @@ public class AndroidPersistenceManager implements PersistenceManager {
         Context ctx = ConfigurationManager.getInstance().getContext();
         String[] fileList = ctx.fileList();
         for (int i = 0; i < fileList.length; i++) {
-            if (fileList[i].endsWith(FORMAT)) {
+            if (fileList[i].endsWith(FORMAT_PNG)) {
                 ctx.deleteFile(fileList[i]);
                 result++;
             }

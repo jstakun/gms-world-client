@@ -98,8 +98,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private DialogManager dialogManager;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton, mapButtons,
-            lvOpenButton, lvView, lvSendMailButton, myLocationButton, nearbyLandmarksButton,
-            thumbnailButton, lvActionButton, lvRouteButton, loadingImage;
+            lvOpenButton, lvView, lvShareButton, myLocationButton, nearbyLandmarksButton,
+            thumbnailButton, lvCheckinButton, lvRouteButton, loadingImage;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private LinearLayout drawerLinearLayout;
@@ -167,7 +167,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         //getActionBar().hide();
         loadingHandler = new LoadingHandler(this);
         
-        //TODO autocomplete
         if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {
         	isGoogleApiAvailable = true;
         	LoggerUtils.debug("Google Places API is available!");
@@ -219,24 +218,24 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         lvView = findViewById(R.id.lvView);
         mapButtons = findViewById(R.id.mapButtons);
 
-        lvActionButton = findViewById(R.id.lvActionButton);
+        lvCheckinButton = findViewById(R.id.lvCheckinButton);
         lvCloseButton = findViewById(R.id.lvCloseButton);
         lvOpenButton = findViewById(R.id.lvOpenButton);
         lvCommentButton = findViewById(R.id.lvCommentButton);
         lvCallButton = findViewById(R.id.lvCallButton);
-        lvRouteButton = findViewById(R.id.lvCarRouteButton);
-        lvSendMailButton = findViewById(R.id.lvSendMailButton);
+        lvRouteButton = findViewById(R.id.lvRouteButton);
+        lvShareButton = findViewById(R.id.lvShareButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
         myLocationButton = findViewById(R.id.myLocationButton);
         nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
         
-        lvActionButton.setOnClickListener(this);
+        lvCheckinButton.setOnClickListener(this);
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
         lvCommentButton.setOnClickListener(this);
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
-        lvSendMailButton.setOnClickListener(this);
+        lvShareButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
         myLocationButton.setOnClickListener(this);
         nearbyLandmarksButton.setOnClickListener(this);
@@ -915,28 +914,35 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         			} else if (v == lvCommentButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CommentSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.commentButtonPressedAction();
-        			} else if (v == lvActionButton) {
+        			} else if (v == lvCheckinButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
         				boolean authStatus = intents.checkAuthStatus(selectedLandmark);
         				if (authStatus) {
         					boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
         					checkinManager.checkinAction(addToFavourites, false, selectedLandmark);
         				}
-        			} else if (v == lvOpenButton || v == thumbnailButton) {
+        			} else if (v == lvOpenButton) { 
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.openButtonPressedAction(selectedLandmark);
+        			} else if (v == thumbnailButton) {
+        				//TODO use in other activities
+        				if (intents.startStreetViewActivity(selectedLandmark)) {
+        					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenStreetView", selectedLandmark.getLayer(), 0);
+        				} else {
+        					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
+            				intents.openButtonPressedAction(selectedLandmark);
+        				}
         			} else if (v == lvCallButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.startPhoneCallActivity(selectedLandmark);
         			} else if (v == lvRouteButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				//TODO change in other activities
         				if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
         					dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
         				} else {
         					intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
         				}	
-             		} else if (v == lvSendMailButton) {
+             		} else if (v == lvShareButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.shareLandmarkAction(dialogManager);
         			} 
@@ -953,7 +959,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
-            	//TODO autocomplete
             	Double lat = null, lng = null;
             	String name = null;
                 if (intent.hasExtra("name") && intent.hasExtra("lat") && intent.hasExtra("lng")) {
@@ -988,7 +993,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             } else if (resultCode != RESULT_CANCELED) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-            	//TODO autocomplete
             	Status status = PlaceAutocomplete.getStatus(this, intent);
                 intents.showInfoToast(status.getStatusMessage());
             } 

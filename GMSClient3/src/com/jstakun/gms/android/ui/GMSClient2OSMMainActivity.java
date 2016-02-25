@@ -92,8 +92,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private DialogManager dialogManager;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton, mapButtons,
-            lvOpenButton, lvView, lvSendMailButton, myLocationButton, nearbyLandmarksButton,
-            lvActionButton, lvRouteButton, thumbnailButton, loadingImage;
+            lvOpenButton, lvView, lvShareButton, myLocationButton, nearbyLandmarksButton,
+            lvCheckinButton, lvRouteButton, thumbnailButton, loadingImage;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private LinearLayout drawerLinearLayout;
@@ -199,24 +199,24 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         lvView = findViewById(R.id.lvView);
         mapButtons = findViewById(R.id.mapButtons);
 
-        lvActionButton = findViewById(R.id.lvActionButton);
+        lvCheckinButton = findViewById(R.id.lvCheckinButton);
         lvCloseButton = findViewById(R.id.lvCloseButton);
         lvOpenButton = findViewById(R.id.lvOpenButton);
         lvCommentButton = findViewById(R.id.lvCommentButton);
         lvCallButton = findViewById(R.id.lvCallButton);
-        lvRouteButton = findViewById(R.id.lvCarRouteButton);
-        lvSendMailButton = findViewById(R.id.lvSendMailButton);
+        lvRouteButton = findViewById(R.id.lvRouteButton);
+        lvShareButton = findViewById(R.id.lvShareButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
         myLocationButton = findViewById(R.id.myLocationButton);
         nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
 
-        lvActionButton.setOnClickListener(this);
+        lvCheckinButton.setOnClickListener(this);
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
         lvCommentButton.setOnClickListener(this);
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
-        lvSendMailButton.setOnClickListener(this);
+        lvShareButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
         myLocationButton.setOnClickListener(this);
         nearbyLandmarksButton.setOnClickListener(this);
@@ -878,7 +878,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         			} else if (v == lvCommentButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CommentSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.commentButtonPressedAction();
-        			} else if (v == lvActionButton) {
+        			} else if (v == lvCheckinButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
         				boolean authStatus = intents.checkAuthStatus(selectedLandmark);
         				if (authStatus) {
@@ -898,7 +898,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         				} else {
         					intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
         				}	
-        			} else if (v == lvSendMailButton) {
+        			} else if (v == lvShareButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.shareLandmarkAction(dialogManager);
         			}

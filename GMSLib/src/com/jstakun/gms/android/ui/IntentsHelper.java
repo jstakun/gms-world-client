@@ -684,6 +684,8 @@ public final class IntentsHelper {
     	int routeType = ConfigurationManager.getInstance().getInt(ConfigurationManager.ROUTE_TYPE);
     	if (routeType == ConfigurationManager.ROUTE_WALK) {
     		navigationUri += "&mode=w";
+    	} else if (routeType == ConfigurationManager.ROUTE_BICYCLE) {
+    		navigationUri += "&mode=b";
     	}
     	
     	Intent mapIntent = null;
@@ -697,6 +699,23 @@ public final class IntentsHelper {
     		activity.startActivity(mapIntent);
     	} else {
     		asyncTaskManager.executeRouteServerLoadingTask(showRouteHandler, true, selectedLandmark);
+    	}
+    }
+    
+    public boolean startStreetViewActivity(ExtendedLandmark selectedLandmark) {
+    	String streetViewUri = "google.streetview:cbll=" + selectedLandmark.getQualifiedCoordinates().getLatitude() + "," + selectedLandmark.getQualifiedCoordinates().getLongitude();
+    	Intent mapIntent = null;
+    	try {
+    		//API v4 workaround
+    		mapIntent = IntentHelper.getNavigationIntent(streetViewUri);
+    	} catch (VerifyError e) {   			
+    	}
+    	
+    	if (mapIntent != null && mapIntent.resolveActivity(activity.getPackageManager()) != null) {
+    		activity.startActivity(mapIntent);
+    		return true;
+    	} else {
+    		return false;
     	}
     }
 
@@ -771,11 +790,11 @@ public final class IntentsHelper {
     public void showLandmarkDetailsView(final ExtendedLandmark selectedLandmark, final View lvView, double[] currentLocation, boolean loadAd) {
         TextView name = (TextView) lvView.findViewById(R.id.lvname);
         TextView header = (TextView) lvView.findViewById(R.id.lvheader);
-        ImageButton lvActionButton = (ImageButton) lvView.findViewById(R.id.lvActionButton);
+        ImageButton lvCheckinButton = (ImageButton) lvView.findViewById(R.id.lvCheckinButton);
         View lvOpenButton = lvView.findViewById(R.id.lvOpenButton);
         View lvCommentButton = lvView.findViewById(R.id.lvCommentButton);
         View lvCallButton = lvView.findViewById(R.id.lvCallButton);
-        ImageButton lvRouteButton = (ImageButton) lvView.findViewById(R.id.lvCarRouteButton);
+        ImageButton lvRouteButton = (ImageButton) lvView.findViewById(R.id.lvRouteButton);
         TextView desc = (TextView) lvView.findViewById(R.id.lvdesc);
         desc.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -788,8 +807,8 @@ public final class IntentsHelper {
         header.setText("");
         int visibleButtons = 5;
 
-        lvActionButton.setVisibility(View.VISIBLE);
-        lvView.findViewById(R.id.lvActionSeparator).setVisibility(View.VISIBLE);
+        lvCheckinButton.setVisibility(View.VISIBLE);
+        lvView.findViewById(R.id.lvCheckinSeparator).setVisibility(View.VISIBLE);
         lvCommentButton.setVisibility(View.VISIBLE);
         lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.VISIBLE);
         lvOpenButton.setVisibility(View.VISIBLE);
@@ -798,7 +817,7 @@ public final class IntentsHelper {
         //show only if location is available
         if (landmarkManager.hasMyLocation()) {
         	lvRouteButton.setVisibility(View.VISIBLE);
-        	lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.VISIBLE);  
+        	lvView.findViewById(R.id.lvRouteSeparator).setVisibility(View.VISIBLE);  
         	//int routeType = ConfigurationManager.getInstance().getInt(ConfigurationManager.ROUTE_TYPE);
         	//if (routeType == ConfigurationManager.ROUTE_WALK) {
         	//	lvRouteButton.setImageResource(R.drawable.walk48);
@@ -807,7 +826,7 @@ public final class IntentsHelper {
         	//}
         } else {
         	lvRouteButton.setVisibility(View.GONE);
-        	lvView.findViewById(R.id.lvCarRouteSeparator).setVisibility(View.GONE);
+        	lvView.findViewById(R.id.lvRouteSeparator).setVisibility(View.GONE);
         }
         //
         
@@ -872,11 +891,11 @@ public final class IntentsHelper {
         }
 
         //try {
-        lvActionButton.setImageResource(R.drawable.checkin);
+        lvCheckinButton.setImageResource(R.drawable.checkin);
         if (selectedLandmark.getLayer().equals(Commons.FOURSQUARE_LAYER)) {
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
-                lvActionButton.setImageResource(R.drawable.login);
+                lvCheckinButton.setImageResource(R.drawable.login);
                 lvCommentButton.setVisibility(View.GONE);
                 lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
                 visibleButtons--;
@@ -885,8 +904,8 @@ public final class IntentsHelper {
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
                 //lvActionButton.setImageResource(R.drawable.login);
-                lvActionButton.setVisibility(View.GONE);
-                lvView.findViewById(R.id.lvActionSeparator).setVisibility(View.GONE);
+                lvCheckinButton.setVisibility(View.GONE);
+                lvView.findViewById(R.id.lvCheckinSeparator).setVisibility(View.GONE);
                 lvCommentButton.setVisibility(View.GONE);
                 lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
                 visibleButtons -= 2;
@@ -894,7 +913,7 @@ public final class IntentsHelper {
         } else if (selectedLandmark.getLayer().equals(Commons.FACEBOOK_LAYER)) {
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FB_AUTH_STATUS)) {
-                lvActionButton.setImageResource(R.drawable.login);
+                lvCheckinButton.setImageResource(R.drawable.login);
                 lvCommentButton.setVisibility(View.GONE);
                 lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
                 visibleButtons--;
@@ -905,15 +924,15 @@ public final class IntentsHelper {
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
             visibleButtons--;
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.GL_AUTH_STATUS)) {
-                lvActionButton.setImageResource(R.drawable.login);
+                lvCheckinButton.setImageResource(R.drawable.login);
             }
         } else if (selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
             if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
-                lvActionButton.setVisibility(View.GONE);
-                lvView.findViewById(R.id.lvActionSeparator).setVisibility(View.GONE);
+                lvCheckinButton.setVisibility(View.GONE);
+                lvView.findViewById(R.id.lvCheckinSeparator).setVisibility(View.GONE);
             } else {
-                lvActionButton.setImageResource(R.drawable.share);
+                lvCheckinButton.setImageResource(R.drawable.share);
             }
             lvCommentButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
@@ -924,23 +943,23 @@ public final class IntentsHelper {
             lvRouteButton.setVisibility(View.GONE);
         } else if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
-            lvActionButton.setVisibility(View.GONE);
-            lvView.findViewById(R.id.lvActionSeparator).setVisibility(View.GONE);
+            lvCheckinButton.setVisibility(View.GONE);
+            lvView.findViewById(R.id.lvCheckinSeparator).setVisibility(View.GONE);
             lvCommentButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
             visibleButtons -= 2;
         } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLandmark.getLayer())) { //GMS World checkinable layers
             header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
             if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
-                lvActionButton.setImageResource(R.drawable.login);
+                lvCheckinButton.setImageResource(R.drawable.login);
                 lvCommentButton.setVisibility(View.GONE);
                 lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
                 visibleButtons--;
             }
         } else {
             header.setText(selectedLandmark.getLayer());
-            lvActionButton.setVisibility(View.GONE);
-            lvView.findViewById(R.id.lvActionSeparator).setVisibility(View.GONE);
+            lvCheckinButton.setVisibility(View.GONE);
+            lvView.findViewById(R.id.lvCheckinSeparator).setVisibility(View.GONE);
             lvCommentButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
             visibleButtons -= 2;

@@ -57,7 +57,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class FileManager implements PersistenceManager {
 
-    private static final String MAP_FILE = "lm_map" + FORMAT;
+    private static final String MAP_FILE = "lm_map" + FORMAT_PNG;
     private static final String TILES_FILE = "lm_tiles.txt";
     public static final String CONFIGURATION_FILE = "lm_configuration.txt";
     public static final String LANDMARKDB_FILE = "lm_landmarkdb.txt";
@@ -112,7 +112,7 @@ public class FileManager implements PersistenceManager {
                 }
             }
         } catch (Exception ex) {
-            LoggerUtils.error("FileManager.readImageFile exception", ex);
+            LoggerUtils.error("FileManager.readImageFile() exception", ex);
         }
         return image;
     }
@@ -506,7 +506,7 @@ public class FileManager implements PersistenceManager {
                             try {
                                 is.close();
                             } catch (Exception ex) {
-                                LoggerUtils.error("FileManager.readResourceBundleFile exception", ex);
+                                LoggerUtils.error("FileManager.readResourceBundleFile() exception", ex);
                             }
                         }
                         throw new Exception("Separator character not found.");
@@ -519,20 +519,20 @@ public class FileManager implements PersistenceManager {
             }
             result = 0;
         } catch (Exception e) {
-            LoggerUtils.error("FileManager.readResourceBundleFile exception", e);
+            LoggerUtils.error("FileManager.readResourceBundleFile() exception", e);
         } finally {
             if (isr != null) {
                 try {
                     isr.close();
                 } catch (Exception ex) {
-                    LoggerUtils.error("FileManager.readResourceBundleFile exception", ex);
+                    LoggerUtils.error("FileManager.readResourceBundleFile() exception", ex);
                 }
             }
             if (is != null) {
                 try {
                     is.close();
                 } catch (Exception ex) {
-                    LoggerUtils.error("FileManager.readResourceBundleFile exception", ex);
+                    LoggerUtils.error("FileManager.readResourceBundleFile() exception", ex);
                 }
             }
         }
@@ -583,7 +583,7 @@ public class FileManager implements PersistenceManager {
             for (int i = 0; i < ConfigurationManager.getInstance().getInt(ConfigurationManager.SCREEN_SIZE); i++) {
                 Tile tile = tilesCache.getTile(i);
                 //save image
-                saveImageFile(tile.getImage(), i + FORMAT);
+                saveImageFile(tile.getImage(), i + FORMAT_PNG);
 
                 String line = Double.toString(tile.getLatitude()) + PersistenceManager.SEPARATOR_CHAR + Double.toString(tile.getLongtude()) + PersistenceManager.SEPARATOR_CHAR
                         + Integer.toString(tile.getXTile()) + PersistenceManager.SEPARATOR_CHAR + Integer.toString(tile.getYTile())
@@ -646,7 +646,7 @@ public class FileManager implements PersistenceManager {
                     int ytile = Integer.parseInt(line.substring(oldSeparatorPos + 1, separatorPos).trim());
                     int zoom = Integer.parseInt(line.substring(separatorPos + 1).trim());
 
-                    image = readImageFile(getImagesFolder(), i + FORMAT, null);
+                    image = readImageFile(getImagesFolder(), i + FORMAT_PNG, null);
 
                     if (image == null) {
                         return -1;
@@ -701,6 +701,10 @@ public class FileManager implements PersistenceManager {
 
     public static String getTilesFolder() {
         return TILES_FOLDER;
+    }
+    
+    private static String getLogsFolder() {
+        return LOGS_FOLDER;
     }
 
     public void createDefaultDirs() {
@@ -782,13 +786,15 @@ public class FileManager implements PersistenceManager {
     public int deleteTilesCache() {
         int result = 0;
 
-        for (int i = 0; i < 9; i++) {
-            deleteFile(getImagesFolder(), i + FORMAT);
+        /*for (int i = 0; i < 9; i++) {
+            deleteFile(getImagesFolder(), i + FORMAT_PNG);
             result++;
         }
-        List<String> files = readFolder(getImagesFolder(), FilenameFilterFactory.getFilenameFilter(FORMAT));
-        new DeletingTilesTask().execute(files);
-
+        
+        //delete old images
+        List<String> images = readFolder(getImagesFolder(), FilenameFilterFactory.getFilenameFilter(FORMAT_PNG));
+        new DeletingTilesTask().execute(images);*/
+                 
         return result;
     }
 
@@ -1075,7 +1081,7 @@ public class FileManager implements PersistenceManager {
         LoggerUtils.debug("FileManager.copyDatabaseToSdCard() finished.");
     }
 
-    private class DeletingTilesTask extends GMSAsyncTask<List<String>, Void, Void> {
+    /*private class DeletingTilesTask extends GMSAsyncTask<List<String>, Void, Void> {
 
         public DeletingTilesTask() {
             super(10);
@@ -1088,15 +1094,18 @@ public class FileManager implements PersistenceManager {
             int size = files.size();
             for (int i = 0; i < size; i += 2) {
                 String file = files.get(i);
-                if (file.endsWith(FORMAT)) {
+                if (file.endsWith(FORMAT_PNG)) {
                     LoggerUtils.debug("Deleting image file (" + i + "/" + size + "): " + file);
                     deleteFile(getImagesFolder(), file);
+                } else if (file.endsWith(FORMAT_LOG)) {
+                	LoggerUtils.debug("Deleting log file (" + i + "/" + size + "): " + file);
+                    deleteFile(getLogsFolder(), file);
                 }
             }
             
             return null;
         }
-    }
+    }*/
 
     private class ClearCacheTask extends GMSAsyncTask<Void, Void, Void> {
 
@@ -1112,10 +1121,12 @@ public class FileManager implements PersistenceManager {
 
         @Override
         protected Void doInBackground(Void... params) {
-        	if (lm != null) {
-        		deleteFiles(cacheDir, new FileDeletePredicate(lm));
-        		LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/files/" + LOGS_FOLDER + "/logcat" + System.currentTimeMillis() + ".txt");       	
-        	}
+        	//delete old images
+        	deleteFiles(cacheDir, new FileDeletePredicate(lm));
+        	//TODO delete old logs
+        	deleteFiles(getExternalDirectory(getLogsFolder(), null), new FileDeletePredicate(null));
+        	//save log file in debug mode
+        	LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/files/" + LOGS_FOLDER + "/logcat" + System.currentTimeMillis() + ".txt");       	
         	return null;
         }
         
@@ -1149,7 +1160,7 @@ public class FileManager implements PersistenceManager {
 			String[] tokens = StringUtils.split(name, "_");
 			ClearPolicy policy = null;
 			
-			if (tokens.length > 1) {
+			if (tokens.length > 1 && lm != null) {
 				String layerName = tokens[tokens.length-1];
 				LoggerUtils.debug("Checking clear policy for " + file.getName());
 				policy = lm.getClearPolicy(layerName);

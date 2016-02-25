@@ -13,34 +13,35 @@ public final class R {
         public static int rotate_indefinitely=0x7f040001;
     }
     public static final class array {
-        public static int checkin=0x7f070019;
-        public static int codes11=0x7f070012;
-        public static int codes2=0x7f07000d;
-        public static int codes2LargeDisplay=0x7f07000e;
-        public static int codes3=0x7f07000f;
-        public static int codes4=0x7f070010;
-        public static int codes6=0x7f070011;
-        public static int countries=0x7f070014;
+        public static int checkin=0x7f07001a;
+        public static int codes11=0x7f070013;
+        public static int codes2=0x7f07000e;
+        public static int codes2LargeDisplay=0x7f07000f;
+        public static int codes3=0x7f070010;
+        public static int codes4=0x7f070011;
+        public static int codes6=0x7f070012;
+        public static int countries=0x7f070015;
         public static int dealLimit=0x7f070007;
-        public static int empty=0x7f070013;
-        public static int filesContextMenu=0x7f070017;
+        public static int empty=0x7f070014;
+        public static int filesContextMenu=0x7f070018;
         public static int googleMaps=0x7f070004;
-        public static int imageLoading=0x7f07000b;
-        public static int iso3countryCodes=0x7f070015;
-        public static int landmarkContextMenu=0x7f070016;
+        public static int imageLoading=0x7f07000c;
+        public static int iso3countryCodes=0x7f070016;
+        public static int landmarkContextMenu=0x7f070017;
         /** item>SMS</item
 item>SMS</item
          */
         public static int landmarkPersist=0x7f070002;
         public static int landmarksPerLayer=0x7f070006;
-        public static int layersContextMenu=0x7f070018;
+        public static int layersContextMenu=0x7f070019;
         public static int logLevel=0x7f070001;
         public static int mapLoad=0x7f070003;
         public static int mapProvider=0x7f070000;
+        public static int navigationType=0x7f07000a;
         public static int osmMaps=0x7f070005;
-        public static int radius=0x7f07000c;
+        public static int radius=0x7f07000d;
         public static int routeType=0x7f070009;
-        public static int searchType=0x7f07000a;
+        public static int searchType=0x7f07000b;
         public static int unitOfLength=0x7f070008;
     }
     public static final class attr {
@@ -351,20 +352,20 @@ containing a value of this type.
         public static int loginButton=0x7f0e0063;
         public static int loginLabel=0x7f0e005f;
         public static int loginText=0x7f0e0060;
-        public static int lvActionButton=0x7f0e002f;
-        public static int lvActionSeparator=0x7f0e0030;
         public static int lvCallButton=0x7f0e002d;
         public static int lvCallSeparator=0x7f0e002e;
-        public static int lvCarRouteButton=0x7f0e0033;
-        public static int lvCarRouteSeparator=0x7f0e0034;
+        public static int lvCheckinButton=0x7f0e002f;
+        public static int lvCheckinSeparator=0x7f0e0030;
         public static int lvCloseButton=0x7f0e0026;
         public static int lvCommentButton=0x7f0e002b;
         public static int lvCommentSeparator=0x7f0e002c;
         public static int lvDescLayout=0x7f0e0046;
         public static int lvOpenButton=0x7f0e0035;
         public static int lvOpenSeparator=0x7f0e0036;
-        public static int lvSendMailButton=0x7f0e0031;
-        public static int lvSendMailSeparator=0x7f0e0032;
+        public static int lvRouteButton=0x7f0e0033;
+        public static int lvRouteSeparator=0x7f0e0034;
+        public static int lvShareButton=0x7f0e0031;
+        public static int lvShareSeparator=0x7f0e0032;
         public static int lvView=0x7f0e0025;
         public static int lvdesc=0x7f0e002a;
         public static int lvheader=0x7f0e0027;

@@ -15,6 +15,7 @@ public class FilenameFilterFactory {
 
     private static KMLFilenameFilter kmlFilter = null;
     private static PNGFilenameFilter pngFilter = null;
+    private static LogFilenameFilter logFilter = null;
 
     public static FilenameFilter getFilenameFilter(String type) {
         if (type.equals("kml")) {
@@ -27,7 +28,12 @@ public class FilenameFilterFactory {
                pngFilter = new PNGFilenameFilter();
             }
             return pngFilter;
-        } else {
+        } else if (type.equals("log")) {
+            if (logFilter == null) {
+                logFilter = new LogFilenameFilter();
+             }
+             return pngFilter;
+         } else {
             return null;
         }
     }

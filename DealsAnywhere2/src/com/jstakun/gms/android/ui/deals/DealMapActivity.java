@@ -76,7 +76,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private View lvCloseButton, lvCallButton, lvOpenButton, mapButtons,
             lvView, lvHotDealsButton, myLocationButton, nearbyLandmarksButton,
             newestButton, listButton, categoriesButton,
-            lvSendMailButton, lvRouteButton, thumbnailButton, loadingImage;
+            lvShareButton, lvRouteButton, thumbnailButton, loadingImage;
     private ProgressBar loadingProgressBar;
     private boolean isStopped = false, appInitialized = false, isRouteDisplayed = false, isGoogleApiAvailable = false;
     //Handlers
@@ -138,15 +138,15 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         lvCloseButton = findViewById(R.id.lvCloseButton);
         lvOpenButton = findViewById(R.id.lvOpenButton);
-        lvSendMailButton = findViewById(R.id.lvSendMailButton);
+        lvShareButton = findViewById(R.id.lvShareButton);
         lvCallButton = findViewById(R.id.lvCallButton);
-        lvRouteButton = findViewById(R.id.lvCarRouteButton);
+        lvRouteButton = findViewById(R.id.lvRouteButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
         nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
 
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
-        lvSendMailButton.setOnClickListener(this);
+        lvShareButton.setOnClickListener(this);
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
@@ -474,7 +474,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowDealCategoriesList", "", 0);
             intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
                     mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
-        } else if (v == lvSendMailButton) {
+        } else if (v == lvShareButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
             sendMessageAction();

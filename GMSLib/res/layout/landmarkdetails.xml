@@ -103,7 +103,7 @@ android:background="@color/ivory2"
         android:id="@+id/lvCallSeparator"
         />
         <ImageButton
-android:id="@+id/lvActionButton"
+android:id="@+id/lvCheckinButton"
 android:layout_width="56dip"
 android:layout_height="56dip"
 android:src="@drawable/checkin"
@@ -114,10 +114,10 @@ android:background="@color/ivory2"
         android:layout_height="56dip"
         android:layout_width="2dip"
         android:background="#00000000"
-        android:id="@+id/lvActionSeparator"
+        android:id="@+id/lvCheckinSeparator"
         />
         <ImageButton
-android:id="@+id/lvSendMailButton"
+android:id="@+id/lvShareButton"
 android:layout_width="56dip"
 android:layout_height="56dip"
 android:src="@drawable/share_social"
@@ -128,10 +128,10 @@ android:background="@color/ivory2"
         android:layout_height="56dip"
         android:layout_width="2dip"
         android:background="#00000000"
-        android:id="@+id/lvSendMailSeparator"
+        android:id="@+id/lvShareSeparator"
         />
         <ImageButton
-android:id="@+id/lvCarRouteButton"
+android:id="@+id/lvRouteButton"
 android:layout_width="56dip"
 android:layout_height="56dip"
 android:src="@drawable/navigation48"
@@ -142,7 +142,7 @@ android:background="@color/ivory2"
         android:layout_height="56dip"
         android:layout_width="2dip"
         android:background="#00000000"
-        android:id="@+id/lvCarRouteSeparator"
+        android:id="@+id/lvRouteSeparator"
         />
         <ImageButton
 android:id="@+id/lvOpenButton"

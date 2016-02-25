@@ -132,12 +132,12 @@ public class TilesCache {
 
             if (tile.getXTile() != -1 && tile.getYTile() != -1 && tile.getZoom() != -1 && tile.isPersistent()) {
                 //LoggerUtils.debug("Caching tile: " + tile.getXTile() + " " + tile.getYTile() + " " + tile.getZoom());
-                String label = tile.getXTile() + PersistenceManager.SEPARATOR_CHAR + tile.getYTile() + PersistenceManager.SEPARATOR_CHAR + tile.getZoom() + "tile" + PersistenceManager.FORMAT;
+                String label = tile.getXTile() + PersistenceManager.SEPARATOR_CHAR + tile.getYTile() + PersistenceManager.SEPARATOR_CHAR + tile.getZoom() + "tile" + PersistenceManager.FORMAT_PNG;
                 cacheTile(tile, label, recycle);
             } else if (tile.getLatitude() != -999.0 && tile.getLongtude() != -999.0 && tile.isPersistent()) {
                 double[] coords = MercatorUtils.normalizeE6(new double[]{tile.getLatitude(), tile.getLongtude()});
                 //LoggerUtils.debug("Caching tile: " + coords[0] + " " + coords[1]);
-                String label = coords[0] + PersistenceManager.SEPARATOR_CHAR + coords[1] + "tile" + PersistenceManager.FORMAT;
+                String label = coords[0] + PersistenceManager.SEPARATOR_CHAR + coords[1] + "tile" + PersistenceManager.FORMAT_PNG;
                 cacheTile(tile, label, recycle);
             }
         } catch (Exception e) {
@@ -167,7 +167,7 @@ public class TilesCache {
                 tile = memoryCache.getTile(pos);
             } else {
                 //LoggerUtils.debug("Searching for tile: " + x + " " + y + " " + zoom);
-                String label = x + PersistenceManager.SEPARATOR_CHAR + y + PersistenceManager.SEPARATOR_CHAR + zoom + "tile" + PersistenceManager.FORMAT;
+                String label = x + PersistenceManager.SEPARATOR_CHAR + y + PersistenceManager.SEPARATOR_CHAR + zoom + "tile" + PersistenceManager.FORMAT_PNG;
                 if (PersistenceManagerFactory.getPersistenceManagerInstance().tileExists(label)) {
                     Bitmap image = PersistenceManagerFactory.getPersistenceManagerInstance().readImageFile(label);
                     if (image != null) {

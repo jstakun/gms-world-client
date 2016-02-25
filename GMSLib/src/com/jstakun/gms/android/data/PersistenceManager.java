@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.gms.android.data;
 
 import android.graphics.Bitmap;
@@ -16,7 +11,8 @@ import java.util.List;
  */
 public interface PersistenceManager {
     public static final String SEPARATOR_CHAR = ";";
-    public static final String FORMAT = ".png";
+    public static final String FORMAT_PNG = ".png";
+    public static final String FORMAT_LOG = ".log";
 
     Bitmap readImageFile();
     Bitmap readImageFile(String filename);

@@ -62,6 +62,11 @@
         <item>Car shortest</item>
         <item>Foot</item>
     </string-array>
+    <string-array name="navigationType">
+        <item>Car</item>
+        <item>Bicycle</item>
+        <item>Foot</item>
+    </string-array>
     <string-array name="searchType">
         <item>Exact phrase</item>
         <item>Phrase words</item>

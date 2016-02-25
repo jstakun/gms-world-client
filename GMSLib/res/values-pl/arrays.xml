@@ -33,8 +33,13 @@
         <item>Mile morskie</item>
     </string-array>
     <string-array name="routeType">
-        <item>Samoch\u00f3d najszybsza </item>
+        <item>Samoch\u00f3d najszybsza</item>
         <item>Samoch\u00f3d najkr\u00f3tsza</item>
+        <item>Spacer</item>
+    </string-array>
+    <string-array name="navigationType">
+        <item>Samoch\u00f3d</item>
+        <item>Rower</item>
         <item>Spacer</item>
     </string-array>
     <string-array name="searchType">

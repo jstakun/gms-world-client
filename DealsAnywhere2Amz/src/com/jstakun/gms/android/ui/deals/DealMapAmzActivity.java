@@ -84,7 +84,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private DealOfTheDayDialog dealOfTheDayDialog;
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvOpenButton, mapButtons, nearbyLandmarksButton,
-            lvView, lvSendMailButton, lvRouteButton, myLocationButton,
+            lvView, lvShareButton, lvRouteButton, myLocationButton,
             thumbnailButton, loadingImage;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -167,16 +167,16 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
         lvCloseButton = findViewById(R.id.lvCloseButton);
         lvOpenButton = findViewById(R.id.lvOpenButton);
-        lvSendMailButton = findViewById(R.id.lvSendMailButton);
+        lvShareButton = findViewById(R.id.lvShareButton);
         lvCallButton = findViewById(R.id.lvCallButton);
-        lvRouteButton = findViewById(R.id.lvCarRouteButton);
+        lvRouteButton = findViewById(R.id.lvRouteButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
         myLocationButton = findViewById(R.id.myLocationButton);
         nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
 
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
-        lvSendMailButton.setOnClickListener(this);
+        lvShareButton.setOnClickListener(this);
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
@@ -533,7 +533,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 				} else if (v == lvRouteButton) {
 					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
 					loadRoutePressedAction(landmarkManager.getSeletedLandmarkUI());
-				} else if (v == lvSendMailButton) {
+				} else if (v == lvShareButton) {
 					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
 					sendMessageAction();
 				}
