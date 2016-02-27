@@ -1159,10 +1159,10 @@ public class FileManager implements PersistenceManager {
 			
 			if (tokens.length > 1 && lm != null) {
 				String layerName = tokens[tokens.length-1];
-				LoggerUtils.debug("Checking clear policy for " + file.getName());
+				//LoggerUtils.debug("Checking clear policy for " + file.getName());
 				policy = lm.getClearPolicy(layerName);
 			} else {
-				LoggerUtils.debug("Applying default clear policy for " + file.getName());
+				//LoggerUtils.debug("Applying default clear policy for " + file.getName());
 			}
 			
 			if (policy == null) {

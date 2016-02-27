@@ -1042,7 +1042,7 @@ public class AsyncTaskManager {
             	if (image != null) {
             		utils = new HttpUtils();
         			String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
-        			utils.uploadFile(url, true, coords[0], coords[1], image, filename);
+        			utils.uploadScreenshot(url, true, coords[0], coords[1], image, filename);
         			if (utils.getResponseCode() == 200) {
         				ConfigurationManager.getInstance().putObject("screenshot_" + StringUtil.formatCoordE2(coords[0]) + "_" + StringUtil.formatCoordE2(coords[1]), "1");
         			}

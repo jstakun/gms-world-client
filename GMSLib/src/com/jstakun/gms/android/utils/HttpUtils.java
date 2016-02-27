@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.utils;
 
 import java.io.ByteArrayInputStream;
@@ -58,7 +54,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -216,7 +212,7 @@ public class HttpUtils {
         }
     }
 
-    public void uploadFile(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
+    public void uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
         getThreadSafeClientConnManagerStats();
         InputStream is = null;
         
@@ -245,8 +241,11 @@ public class HttpUtils {
             }
     
             ByteArrayBody bab = new ByteArrayBody(file, filename);
-            MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-            entity.addPart("screenshot", bab);
+            
+            HttpEntity entity = MultipartEntityBuilder.create()
+                    .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                    .addPart("screenshot", bab)
+                    .build();
 
             postRequest.setEntity(entity);        
 
@@ -279,8 +278,8 @@ public class HttpUtils {
                 errorMessage = handleHttpStatus(responseCode);
             }
             respEntity.consumeContent();
-        } catch (Exception e) {
-            LoggerUtils.debug("HttpUtils.loadHttpFile() exception: " + e.getMessage(), e);
+        } catch (Throwable e) {
+            LoggerUtils.debug("HttpUtils.uploadScreenshot() exception: " + e.getMessage(), e);
             errorMessage = handleHttpException(e);
         } finally {
             try {
@@ -669,7 +668,7 @@ public class HttpUtils {
     	return responseCode;
     }
 
-    public static String handleHttpException(Exception e) {
+    public static String handleHttpException(Throwable e) {
         if (e instanceof java.net.UnknownHostException) {
             //unknown host exception
             return Locale.getMessage(R.string.Internet_connection_error);
