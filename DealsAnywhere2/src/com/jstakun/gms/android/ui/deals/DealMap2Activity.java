@@ -539,9 +539,16 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     			if (v == lvCloseButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
     				hideLandmarkView();
-    			} else if (v == lvOpenButton || v == thumbnailButton) {
+    			} else if (v == lvOpenButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
     				intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+    			} else if (v == thumbnailButton) {
+    				if (intents.startStreetViewActivity(selectedLandmark)) {
+    					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenStreetView", selectedLandmark.getLayer(), 0);
+    				} else {
+    					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
+        				intents.openButtonPressedAction(selectedLandmark);
+    				}
     			} else if (v == lvCallButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
     				callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());

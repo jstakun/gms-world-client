@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ads;
 
 import java.util.Calendar;
@@ -102,20 +98,6 @@ public class TapForTapUtils {
     	TapForTap.disableTapForTap();
     }
 
-    /*private static int getAge(Date dateOfBirth) {
-        Calendar now = Calendar.getInstance();
-        Calendar dob = Calendar.getInstance();
-        dob.setTime(dateOfBirth);
-        if (dob.after(now)) {
-            throw new IllegalArgumentException("Can't be born in the future");
-        }
-        int age = now.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
-        if (now.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
-            age--;
-        }
-        return age;
-    }*/
-    
     private static int getYearOfBirth(Date dateOfBirth) {
     	Calendar dob = Calendar.getInstance();
         dob.setTime(dateOfBirth);

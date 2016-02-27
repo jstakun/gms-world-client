@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.location;
 
 import android.content.Context;
@@ -26,7 +22,6 @@ public class LocationServicesManager {
     private static boolean isGpsHardwarePresent = false;
 
     public static void initLocationServicesManager(Context context, Handler locationHandler, IMyLocationOverlay imyLocation) {
-
         if (imyLocation != null && isGpsHardwarePresent(context)) {
             LoggerUtils.debug("GPS is present !!!");
             isGpsHardwarePresent = true;
@@ -96,8 +91,7 @@ public class LocationServicesManager {
             location = myLocation.getLastFix();
         }
         if (location != null) {
-            return new GeoPoint(MathUtils.coordDoubleToInt(location.getLatitude()),
-                    MathUtils.coordDoubleToInt(location.getLongitude()));
+            return new GeoPoint(MathUtils.coordDoubleToInt(location.getLatitude()), MathUtils.coordDoubleToInt(location.getLongitude()));
         } else {
             return null;
         }
@@ -106,8 +100,6 @@ public class LocationServicesManager {
     private static class HelperInternal {
 
         public static boolean isGpsHardwarePresent(Context context) {
-            //LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            //return (locationManager != null && locationManager.getProvider(LocationManager.GPS_PROVIDER) != null);
             return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
         }
     }

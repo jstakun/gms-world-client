@@ -925,7 +925,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.openButtonPressedAction(selectedLandmark);
         			} else if (v == thumbnailButton) {
-        				//TODO use in other activities
         				if (intents.startStreetViewActivity(selectedLandmark)) {
         					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenStreetView", selectedLandmark.getLayer(), 0);
         				} else {

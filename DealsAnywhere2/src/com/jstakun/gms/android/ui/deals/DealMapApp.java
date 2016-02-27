@@ -19,7 +19,7 @@ import com.jstakun.gms.android.utils.UserTracker;
  *
  * @author jstakun
  */
-@ReportsCrashes(formKey = "",
+@ReportsCrashes(
 formUri = ConfigurationManager.CRASH_REPORT_URL,
 mode = ReportingInteractionMode.TOAST,
 socketTimeout = 30000,

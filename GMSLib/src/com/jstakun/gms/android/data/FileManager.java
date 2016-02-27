@@ -46,9 +46,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -1123,7 +1120,7 @@ public class FileManager implements PersistenceManager {
         protected Void doInBackground(Void... params) {
         	//delete old images
         	deleteFiles(cacheDir, new FileDeletePredicate(lm));
-        	//TODO delete old logs
+        	//delete old logs
         	deleteFiles(getExternalDirectory(getLogsFolder(), null), new FileDeletePredicate(null));
         	//save log file in debug mode
         	LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/files/" + LOGS_FOLDER + "/logcat" + System.currentTimeMillis() + ".txt");       	
@@ -1213,7 +1210,7 @@ public class FileManager implements PersistenceManager {
     	}
     	
 		@Override
-		public LandmarkParcelable apply(@Nullable File f) {
+		public LandmarkParcelable apply(File f) {
 			pos++;
 			return LandmarkParcelableFactory.getLandmarkParcelable(f, pos, layer, locale);
 		}

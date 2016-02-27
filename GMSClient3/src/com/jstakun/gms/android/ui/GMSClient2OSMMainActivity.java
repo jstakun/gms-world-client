@@ -885,9 +885,16 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         					boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
         					checkinManager.checkinAction(addToFavourites, false, selectedLandmark);
         				}
-        			} else if (v == lvOpenButton || v == thumbnailButton) {
+        			} else if (v == lvOpenButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.openButtonPressedAction(selectedLandmark);
+        			} else if (v == thumbnailButton) {
+        				if (intents.startStreetViewActivity(selectedLandmark)) {
+        					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenStreetView", selectedLandmark.getLayer(), 0);
+        				} else {
+        					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
+            				intents.openButtonPressedAction(selectedLandmark);
+        				}
         			} else if (v == lvCallButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
         				intents.startPhoneCallActivity(selectedLandmark);

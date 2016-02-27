@@ -34,7 +34,7 @@ public class SkyhookUtils {
 
     private static final WPSAuthentication auth = new WPSAuthentication(new String(Base64.decode(Commons.SKYHOOK_USERNAME)), 
     		new String(Base64.decode(Commons.SHYHOOK_REALM)));
-    private final GMSRegistrationCallback regCallback = new GMSRegistrationCallback();
+    //private final GMSRegistrationCallback regCallback = new GMSRegistrationCallback();
     private XPS xps;
     private boolean isRegistered, hasRunOnFirstFix, isRegistering;
     private Handler locationHandler;
@@ -70,16 +70,17 @@ public class SkyhookUtils {
 
     public SkyhookUtils(Context context, Handler locationHandler) {
         xps = new XPS(context);
+        xps.setKey(Commons.SHYHOOK_API_KEY);
         FileManager fm = PersistenceManagerFactory.getFileManager();
         String cache = fm.getExternalDirectory(FileManager.getTilesFolder(), null).getAbsolutePath();
         LoggerUtils.debug("Setting WPS tiling at " + cache + "...");
         xps.setTiling(cache, 460800, 4608000, new GMSTilingCallback());
         this.locationHandler = locationHandler;
-        isRegistered = false;
+        isRegistered = true;
         hasRunOnFirstFix = false;
         //TODO call in task
-        isRegistering = true;
-        xps.registerUser(auth, null, regCallback);
+        //isRegistering = true;
+        //xps.registerUser(auth, null, regCallback);
     }
 
     private WPSContinuation handleErrorStatus(WPSReturnCode error) {
@@ -176,7 +177,7 @@ public class SkyhookUtils {
         this.runOnFirstFix = runOnFirstFix;
     }
 
-    private class GMSRegistrationCallback implements RegistrationCallback {
+    /*private class GMSRegistrationCallback implements RegistrationCallback {
 
         public void handleSuccess() {
             isRegistered = true;
@@ -197,7 +198,7 @@ public class SkyhookUtils {
             LoggerUtils.debug("Calling GMSRegistrationCallback.done()...");
             isRegistering = false;
         }
-    }
+    }*/
 
     private class GMSTilingCallback implements TilingListener {
 
