@@ -15,6 +15,8 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
 
+import com.skyhookwireless.wps.IPLocation;
+import com.skyhookwireless.wps.IPLocationCallback;
 import com.skyhookwireless.wps.RegistrationCallback;
 import com.skyhookwireless.wps.TilingListener;
 import com.skyhookwireless.wps.WPSAuthentication;
@@ -49,7 +51,7 @@ public class SkyhookUtils {
         }
 
         public void done() {
-            LoggerUtils.debug("Calling WPSLocationCallback.done()...");
+            LoggerUtils.debug("Calling WPSLocationOnTimeCallback.done()...");
         }
 
         public WPSContinuation handleError(WPSReturnCode error) {
@@ -68,6 +70,25 @@ public class SkyhookUtils {
         public WPSContinuation handleError(WPSReturnCode error) {
             return handleErrorStatus(error);
         }
+    };
+    private IPLocationCallback ipLocationCallback = new IPLocationCallback() {
+
+		@Override
+		public void done() {
+			LoggerUtils.debug("Calling WPS IPLocationCallback.done()...");
+		}
+
+		@Override
+		public WPSContinuation handleError(WPSReturnCode error) {
+			return handleErrorStatus(error);
+		}
+
+		@Override
+		public void handleIPLocation(IPLocation ipLocation) {
+			LoggerUtils.debug("WPS Found IP location: " + ipLocation.getLatitude() + "," + ipLocation.getLongitude());
+			
+		}
+    	
     };
 
     public SkyhookUtils(Context context, Handler locationHandler) {
@@ -124,6 +145,7 @@ public class SkyhookUtils {
     private void getLocation() {
         LoggerUtils.debug("Calling SkyhookUtils.getLocation()...");
         //xps.getLocation(auth, WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP, oneTimeCallback);
+        xps.getIPLocation(auth, WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP, ipLocationCallback);
         xps.getPeriodicLocation(auth, WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP, 10000, 0, periodicCallback);
     }
 
@@ -166,7 +188,7 @@ public class SkyhookUtils {
     private class GMSTilingCallback implements TilingListener {
 
         public WPSContinuation tilingCallback(int tileNumber, int tileTotal) {
-            LoggerUtils.debug("Calling GMSTilingCallback.tilingCallback() with params " + tileNumber + "," + tileTotal);
+            LoggerUtils.debug("Calling WPS GMSTilingCallback.tilingCallback() with params " + tileNumber + "," + tileTotal);
             return WPSContinuation.WPS_CONTINUE;
         }
     }
@@ -187,7 +209,7 @@ public class SkyhookUtils {
         }
 
         public void done() {
-            LoggerUtils.debug("Calling GMSRegistrationCallback.done()...");
+            LoggerUtils.debug("Calling WPS GMSRegistrationCallback.done()...");
             isRegistering = false;
         }
     }
@@ -200,7 +222,7 @@ public class SkyhookUtils {
         
         @Override
         protected Void doInBackground(Void... params) {
-            LoggerUtils.debug("Running GetLocationTask...");
+            LoggerUtils.debug("Running WPS GetLocationTask...");
             
             while (!isRegistered && !isCancelled()) {
                 try {
@@ -220,7 +242,7 @@ public class SkyhookUtils {
             while (isRegistering && !isCancelled()) {
                 try {
                     Thread.sleep(1000L);
-                    LoggerUtils.debug("Finishing registration ...");
+                    LoggerUtils.debug("Finishing WPS registration ...");
                 } catch (InterruptedException ex) {
                     //LoggerUtils.error("SkyhookUtils.GetLocationTask exception", ex);
                 }
@@ -234,7 +256,7 @@ public class SkyhookUtils {
             if (isRegistered && !isRegistering) {
                 getLocation();
             }
-            LoggerUtils.debug("Finishing GetLocationTask...");
+            LoggerUtils.debug("Finishing WPS GetLocationTask...");
         }
     }
 }
