@@ -63,7 +63,7 @@ public class LoggerUtils {
         return (ConfigurationManager.getInstance().getInt(ConfigurationManager.LOG_LEVEL, 3) <= 3);
     }
 
-    private static boolean isDebug()
+    public static boolean isDebug()
     {
         return (ConfigurationManager.getInstance().getInt(ConfigurationManager.LOG_LEVEL, 3) == 0);
     }
