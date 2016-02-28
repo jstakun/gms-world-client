@@ -1109,7 +1109,7 @@ public class FileManager implements PersistenceManager {
     	private LayerManager lm = null;
     	
         public ClearCacheTask() {
-        	super(10);
+        	super(10, ClearCacheTask.class.getName());
         	LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         	if (landmarkManager != null) {
         		lm = landmarkManager.getLayerManager();

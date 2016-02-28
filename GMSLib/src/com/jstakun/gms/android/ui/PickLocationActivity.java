@@ -241,7 +241,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     private class PickLocationTask extends GMSAsyncTask<Void, Void, Void> {
 
         public PickLocationTask() {
-            super(1);
+            super(1, PickLocationTask.class.getName());
         }
         
         @Override

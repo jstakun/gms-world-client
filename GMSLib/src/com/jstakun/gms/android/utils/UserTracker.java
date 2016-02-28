@@ -104,7 +104,7 @@ public class UserTracker {
     private class SendMyLocationTask extends GMSAsyncTask<Void, Void, String> {
 
         public SendMyLocationTask(int priority) {
-            super(priority);
+            super(priority, SendMyLocationTask.class.getName());
         }
 
         @Override

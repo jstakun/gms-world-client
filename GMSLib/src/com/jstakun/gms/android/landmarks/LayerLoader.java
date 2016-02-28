@@ -199,7 +199,7 @@ public class LayerLoader {
         private LayerReader currentReader = null;
         
         public LayerLoaderTask() {
-            super(1);
+            super(1, LayerLoaderTask.class.getName());
         }
         
         @Override
@@ -260,7 +260,7 @@ public class LayerLoader {
     private class InitLayerLoadingTask extends GMSAsyncTask<Boolean, Void, Void> {
         
         public InitLayerLoadingTask() {
-            super(1);
+            super(1, InitLayerLoadingTask.class.getName());
         }
         
         @Override
@@ -322,7 +322,7 @@ public class LayerLoader {
     private class ExternalLayersInitiatorTask extends GMSAsyncTask<String, Void, String> {
         
         public ExternalLayersInitiatorTask() {
-            super(1);
+            super(1, ExternalLayersInitiatorTask.class.getName());
         }
         
         @Override

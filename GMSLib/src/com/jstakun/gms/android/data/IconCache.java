@@ -426,7 +426,7 @@ public class IconCache {
         private Handler handler;
 
         public LoadExternalImageTask(DisplayMetrics displayMetrics, boolean isImage, Handler handler) {
-            super(3);
+            super(3, LoadExternalImageTask.class.getName());
             this.displayMetrics = displayMetrics;
             this.isImage = isImage;
             this.handler = handler;

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.utils;
 
 import android.os.Handler;
@@ -211,14 +207,15 @@ public abstract class GMSAsyncTask<Params, Progress, Result> {
     /**
      * Creates a new asynchronous task. This constructor must be invoked on the
      * UI thread.
+     * @param name TODO
      */
-    public GMSAsyncTask(int priority) {
+    public GMSAsyncTask(int priority, final String name) {
 
         mWorker = new WorkerRunnable<Params, Result>(priority) {
             public Result call() throws Exception {
                 mTaskInvoked.set(true);
 
-                LoggerUtils.debug("GMSAsyncTask: executing task with priority " + priority);
+                LoggerUtils.debug("GMSAsyncTask " + name + " executing task with priority " + priority);
                 
                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 //noinspection unchecked

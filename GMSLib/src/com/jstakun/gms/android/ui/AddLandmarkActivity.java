@@ -266,7 +266,7 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
     private class ParseFoursquareCategoriesTask extends GMSAsyncTask<String, Void, Void> {
 
         public ParseFoursquareCategoriesTask(int priority) {
-            super(priority);
+            super(priority, ParseFoursquareCategoriesTask.class.getName());
         }
         
         @Override

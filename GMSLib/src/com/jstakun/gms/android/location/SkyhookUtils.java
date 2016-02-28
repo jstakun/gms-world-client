@@ -195,7 +195,7 @@ public class SkyhookUtils {
     private class GetLocationTask extends GMSAsyncTask<Void, Void, Void> {
 
         public GetLocationTask() {
-            super(1);
+            super(1, GetLocationTask.class.getName());
         }
         
         @Override

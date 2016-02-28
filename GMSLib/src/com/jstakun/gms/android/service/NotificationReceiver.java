@@ -42,7 +42,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 	private class SendNotificationTask extends GMSAsyncTask<Double, Void, String> {
 
 		public SendNotificationTask(int priority) {
-            super(priority);
+            super(priority, SendNotificationTask.class.getName());
         }
 		
 		@Override

@@ -181,7 +181,7 @@ public class CalendarActivity extends Activity {
     private class GetLandmarksTask extends GMSAsyncTask<Integer, Void, Void> {
 
     	public GetLandmarksTask() {
-            super(1);
+            super(1, GetLandmarksTask.class.getName());
         }
     	
     	@Override

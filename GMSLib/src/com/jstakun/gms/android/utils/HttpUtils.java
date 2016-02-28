@@ -803,7 +803,7 @@ public class HttpUtils {
     private static class HttpClientClosingTask extends GMSAsyncTask<Void, Void, Void> {
 
 		public HttpClientClosingTask(int priority) {
-			super(priority);
+			super(priority, HttpClientClosingTask.class.getName());
 		}
 
 		@Override

@@ -263,7 +263,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         private LandmarkListActivity caller;
 
         public GetLandmarksTask(LandmarkListActivity caller) {
-            super(1);
+            super(1, GetLandmarksTask.class.getName());
             this.caller = caller;
         }
 

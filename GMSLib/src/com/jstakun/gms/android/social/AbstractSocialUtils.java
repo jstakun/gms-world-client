@@ -84,7 +84,7 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
     	private ExtendedLandmark landmark;
     	
         public SendPostTask(int priority, int type, ExtendedLandmark landmark) {
-			super(priority);
+			super(priority, SendPostTask.class.getName());
 			this.type = type;
 			this.landmark = landmark;
 		}

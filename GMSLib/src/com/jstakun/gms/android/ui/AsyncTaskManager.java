@@ -182,7 +182,7 @@ public class AsyncTaskManager {
         protected int notificationId;
 
         public GenericTask() {
-            super(5);
+            super(5, GenericTask.class.getName());
         }
 
         @Override
@@ -846,7 +846,7 @@ public class AsyncTaskManager {
         private boolean initStats;
 
         public DealCategoryLoaderTask(CategoriesManager cm, boolean initStats) {
-            super(1);
+            super(1, DealCategoryLoaderTask.class.getName());
             this.cm = cm;
             this.initStats = initStats;
         }
@@ -885,7 +885,7 @@ public class AsyncTaskManager {
     private class GetTokenTask extends GMSAsyncTask<Void, Void, Void> {
 
     	public GetTokenTask() {
-    		super(10);
+    		super(10, GetTokenTask.class.getName());
     	}
     	
 		@Override
@@ -903,7 +903,7 @@ public class AsyncTaskManager {
     private class NewVersionCheckTask extends GMSAsyncTask<Void, Void, Boolean> {
 
         public NewVersionCheckTask() {
-            super(10);
+            super(10, NewVersionCheckTask.class.getName());
         }
 
         @Override
@@ -1030,7 +1030,7 @@ public class AsyncTaskManager {
         private byte[] image;
 
         public UploadImageTask(String filename, byte[] image) {
-            super(10);
+            super(10, UploadImageTask.class.getName());
             this.filename = filename;
             this.image = image;
         }
@@ -1073,7 +1073,7 @@ public class AsyncTaskManager {
         private String name;
 
         public IndexDynamicLayerTask(String name, String[] keywords) {
-            super(1);
+            super(1, IndexDynamicLayerTask.class.getName());
             this.name = name;
             this.keywords = keywords;
         }
@@ -1097,7 +1097,7 @@ public class AsyncTaskManager {
     private class ReIndexDynamicLayersTask extends GMSAsyncTask<Void, Void, Void> {
 
     	public ReIndexDynamicLayersTask() {
-    		super(1);
+    		super(1, ReIndexDynamicLayersTask.class.getName());
     	}
     	
 		@Override

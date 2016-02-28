@@ -346,7 +346,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 		private String query;
 	
 		public SearchTask(GMSSearchActivity caller, String query) {
-			super(1);
+			super(1, SearchTask.class.getName());
 			this.caller = caller;
 			this.query = query;
 		}
