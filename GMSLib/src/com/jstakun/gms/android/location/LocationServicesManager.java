@@ -17,6 +17,7 @@ import org.osmdroid.util.GeoPoint;
  */
 public class LocationServicesManager {
 
+	public static final int UPDATE_LOCATION = 21;
     private static SkyhookUtils skyhook;
     private static IMyLocationOverlay myLocation;
     private static boolean isGpsHardwarePresent = false;

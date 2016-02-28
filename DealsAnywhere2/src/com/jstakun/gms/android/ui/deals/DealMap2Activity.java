@@ -51,6 +51,7 @@ import com.jstakun.gms.android.google.maps.ObservableMapView;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.AlertDialogBuilder;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
@@ -946,7 +947,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			}
         		} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
         			activity.showRouteAction((String)msg.obj);
-        		} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION) {
+        		} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
         			Location location = (Location) msg.obj;
         			if (activity.landmarkManager != null) {
         				activity.intents.addMyLocationLandmark(location);
@@ -954,7 +955,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			}
         			activity.intents.vibrateOnLocationUpdate();
         			UserTracker.getInstance().sendMyLocation();
-        		}
+        		} else if (msg.obj != null) {
+            		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
+            	}
         	}
         }
     }

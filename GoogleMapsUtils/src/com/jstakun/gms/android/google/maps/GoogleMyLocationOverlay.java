@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.google.maps;
 
 import android.content.Context;
@@ -18,6 +14,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Projection;
 import com.jstakun.gms.android.location.AndroidDevice;
+import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.config.ConfigurationManager;
 
 /**
@@ -26,7 +23,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
  */
 public class GoogleMyLocationOverlay extends MyLocationOverlay {
 
-    public static final int UPDATE_LOCATION = 21;
     private Handler positionHandler;
     //private boolean bugged = false;
     private final Paint accuracyPaint = new Paint();
@@ -54,7 +50,7 @@ public class GoogleMyLocationOverlay extends MyLocationOverlay {
 
     private void updatePositionUi(Location currentLocation) {
         if (positionHandler != null) {
-            Message msg = positionHandler.obtainMessage(UPDATE_LOCATION, currentLocation);
+            Message msg = positionHandler.obtainMessage(LocationServicesManager.UPDATE_LOCATION, currentLocation);
             positionHandler.handleMessage(msg);
         } 
     }

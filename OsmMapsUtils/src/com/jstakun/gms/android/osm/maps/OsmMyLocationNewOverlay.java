@@ -13,11 +13,11 @@ import android.os.Message;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.location.AndroidDevice;
+import com.jstakun.gms.android.location.LocationServicesManager;
 
 public class OsmMyLocationNewOverlay extends MyLocationNewOverlay implements IMyLocationOverlay {
 	
-	public static final int UPDATE_LOCATION = 23;
-    private Handler positionHandler;
+	private Handler positionHandler;
 
     public OsmMyLocationNewOverlay(Context context, MapView mapView, Handler handler) {
         super(context, mapView);
@@ -35,7 +35,7 @@ public class OsmMyLocationNewOverlay extends MyLocationNewOverlay implements IMy
 
     private void updatePositionUi(Location currentLocation) {
         if (positionHandler != null) {
-            Message msg = positionHandler.obtainMessage(UPDATE_LOCATION, currentLocation);
+            Message msg = positionHandler.obtainMessage(LocationServicesManager.UPDATE_LOCATION, currentLocation);
             positionHandler.handleMessage(msg);
         }    
     }

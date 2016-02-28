@@ -42,7 +42,6 @@ import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
 import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
-import com.jstakun.gms.android.google.maps.GoogleMyLocationOverlay;
 import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
 import com.jstakun.gms.android.google.maps.ObservableMapView;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -1214,9 +1213,11 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 	mapCanvas.setVisibility(View.VISIBLE);
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
-            	} else if (msg.what == GoogleMyLocationOverlay.UPDATE_LOCATION || msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
+            	} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
             		Location location = (Location) msg.obj;
                 	activity.updateLocation(location);
+            	} else if (msg.obj != null) {
+            		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}
         	}
         }

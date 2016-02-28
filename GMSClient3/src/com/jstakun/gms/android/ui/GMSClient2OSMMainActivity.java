@@ -1281,9 +1281,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 	}
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
-            	} else if (msg.what == OsmMyLocationNewOverlay.UPDATE_LOCATION) {
+            	} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
             		Location location = (Location) msg.obj;
                 	activity.updateLocation(location);
+            	} else if (msg.obj != null) {
+            		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}
         	}
         }

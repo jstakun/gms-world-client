@@ -54,7 +54,6 @@ import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
 import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
-import com.jstakun.gms.android.google.maps.GoogleMyLocationOverlay;
 import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
 import com.jstakun.gms.android.google.maps.ObservableMapView;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -1354,9 +1353,12 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 	}
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
-            	} else if (GoogleMyLocationOverlay.UPDATE_LOCATION == msg.what || OsmMyLocationNewOverlay.UPDATE_LOCATION == msg.what) {
-                	Location location = (Location) msg.obj;
+            	} else if (LocationServicesManager.UPDATE_LOCATION == msg.what) {
+                	//TODO handle skyhook location
+            		Location location = (Location) msg.obj;
                 	activity.updateLocation(location);
+            	} else if (msg.obj != null) {
+            		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}
         	}
         }

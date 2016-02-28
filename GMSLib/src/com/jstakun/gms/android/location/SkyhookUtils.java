@@ -4,7 +4,6 @@ import org.spongycastle.util.encoders.Base64;
 
 import android.content.Context;
 import android.location.Location;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
@@ -15,6 +14,7 @@ import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
+
 import com.skyhookwireless.wps.RegistrationCallback;
 import com.skyhookwireless.wps.TilingListener;
 import com.skyhookwireless.wps.WPSAuthentication;
@@ -32,14 +32,16 @@ import com.skyhookwireless.wps.XPS;
  */
 public class SkyhookUtils {
 
+	private static final int ERROR = 666;
     private static final WPSAuthentication auth = new WPSAuthentication(new String(Base64.decode(Commons.SKYHOOK_USERNAME)), 
     		new String(Base64.decode(Commons.SHYHOOK_REALM)));
-    //private final GMSRegistrationCallback regCallback = new GMSRegistrationCallback();
+    private final GMSRegistrationCallback regCallback = new GMSRegistrationCallback();
     private XPS xps;
     private boolean isRegistered, hasRunOnFirstFix, isRegistering;
     private Handler locationHandler;
     private Runnable runOnFirstFix;
     private GMSAsyncTask<Void, Void, Void> getLocationTask;
+    
     // Callback objects
     private WPSLocationCallback oneTimeCallback = new WPSLocationCallback() {
         public void handleWPSLocation(WPSLocation wpsLocation) {
@@ -70,28 +72,22 @@ public class SkyhookUtils {
 
     public SkyhookUtils(Context context, Handler locationHandler) {
         xps = new XPS(context);
-        xps.setKey(Commons.SHYHOOK_API_KEY);
+        //xps.setKey(Commons.SHYHOOK_API_KEY);
         FileManager fm = PersistenceManagerFactory.getFileManager();
         String cache = fm.getExternalDirectory(FileManager.getTilesFolder(), null).getAbsolutePath();
         LoggerUtils.debug("Setting WPS tiling at " + cache + "...");
         xps.setTiling(cache, 460800, 4608000, new GMSTilingCallback());
         this.locationHandler = locationHandler;
-        isRegistered = true;
         hasRunOnFirstFix = false;
-        //TODO call in task
-        //isRegistering = true;
-        //xps.registerUser(auth, null, regCallback);
+        //
+        isRegistered = false;
+        xps.registerUser(auth, null, regCallback);
     }
 
     private WPSContinuation handleErrorStatus(WPSReturnCode error) {
-    	if (error == WPSReturnCode.WPS_ERROR_UNAUTHORIZED) {
-    		//TODO handle 90 days old token
-    	}
-        String errorMsg = "WPS location request error: " + error.toString();
-        Message msg = locationHandler.obtainMessage();
-        Bundle b = new Bundle();
-        b.putString("msg", errorMsg);
-        msg.setData(b);
+    	String errorMsg = "WPS location request error: " + error.toString();
+        LoggerUtils.error(errorMsg);
+        Message msg = locationHandler.obtainMessage(ERROR, errorMsg);
         locationHandler.handleMessage(msg);
         return WPSContinuation.WPS_CONTINUE;
     }
@@ -118,17 +114,7 @@ public class SkyhookUtils {
                 hasRunOnFirstFix = true;
             }
 
-            Message msg = locationHandler.obtainMessage();
-            Bundle b = new Bundle();
-
-            b.putDouble("lat", wpsLocation.getLatitude());
-            b.putDouble("lng", wpsLocation.getLongitude());
-            b.putFloat("alt", (float) wpsLocation.getAltitude());
-            //b.putFloat("acc", accuracy);
-            b.putFloat("bea", (float) wpsLocation.getBearing());
-            b.putFloat("spe", (float) wpsLocation.getSpeed());
-
-            msg.setData(b);
+            Message msg = locationHandler.obtainMessage(LocationServicesManager.UPDATE_LOCATION, location);
             locationHandler.handleMessage(msg);
         }
 
@@ -177,7 +163,16 @@ public class SkyhookUtils {
         this.runOnFirstFix = runOnFirstFix;
     }
 
-    /*private class GMSRegistrationCallback implements RegistrationCallback {
+    private class GMSTilingCallback implements TilingListener {
+
+        public WPSContinuation tilingCallback(int tileNumber, int tileTotal) {
+            LoggerUtils.debug("Calling GMSTilingCallback.tilingCallback() with params " + tileNumber + "," + tileTotal);
+            return WPSContinuation.WPS_CONTINUE;
+        }
+    }
+   
+
+    private class GMSRegistrationCallback implements RegistrationCallback {
 
         public void handleSuccess() {
             isRegistered = true;
@@ -186,10 +181,7 @@ public class SkyhookUtils {
 
         public WPSContinuation handleError(final WPSReturnCode error) {
             String errorMsg = "WPS registration error: " + error.name();
-            Message msg = locationHandler.obtainMessage();
-            Bundle b = new Bundle();
-            b.putString("msg", errorMsg);
-            msg.setData(b);
+            Message msg = locationHandler.obtainMessage(ERROR, errorMsg);
             locationHandler.handleMessage(msg);
             return WPSContinuation.WPS_CONTINUE;
         }
@@ -197,14 +189,6 @@ public class SkyhookUtils {
         public void done() {
             LoggerUtils.debug("Calling GMSRegistrationCallback.done()...");
             isRegistering = false;
-        }
-    }*/
-
-    private class GMSTilingCallback implements TilingListener {
-
-        public WPSContinuation tilingCallback(int tileNumber, int tileTotal) {
-            LoggerUtils.debug("Calling GMSTilingCallback.tilingCallback() with params " + tileNumber + "," + tileTotal);
-            return WPSContinuation.WPS_CONTINUE;
         }
     }
 

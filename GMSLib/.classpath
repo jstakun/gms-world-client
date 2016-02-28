@@ -12,7 +12,6 @@
 	<classpathentry kind="lib" path="libs/osmdroid-android-4.3.jar"/>
 	<classpathentry kind="lib" path="libs/osmdroid-third-party-4.3.jar"/>
 	<classpathentry kind="lib" path="/home/jstakun/redhat/git/gms-client-workspace/google-play-services_lib/libs/google-play-services.jar"/>
-	<classpathentry kind="lib" path="libs/httpmime-4.5.1.jar"/>
 	<classpathentry kind="lib" path="libs/jsr-275-0.9.4.jar"/>
 	<classpathentry kind="lib" path="libs/spongycastle-core-1.54.0.0.jar"/>
 	<classpathentry kind="lib" path="libs/guava-19.0.jar"/>
@@ -20,6 +19,6 @@
 	<classpathentry kind="lib" path="libs/acra-4.8.2.jar"/>
 	<classpathentry kind="lib" path="libs/amazon-ads-5.6.20.jar"/>
 	<classpathentry kind="lib" path="libs/wpsapi-4.9.3_03.jar"/>
-	<classpathentry kind="lib" path="libs/httpcore-4.4.3.jar"/>
+	<classpathentry kind="lib" path="libs/httpmime-4.2.6.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
