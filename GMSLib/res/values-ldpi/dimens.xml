@@ -7,5 +7,5 @@
 	<dimen name="cell_margin_top">46px</dimen>
 	<dimen name="cell_margin_left">19.5px</dimen>
 	<dimen name="cell_text_size">13.0px</dimen>
-	<dimen name="navigation_drawer_width">192dp</dimen>
+	<dimen name="navigation_drawer_width">256dp</dimen>
 </resources>
