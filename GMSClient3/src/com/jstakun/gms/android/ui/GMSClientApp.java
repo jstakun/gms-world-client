@@ -18,7 +18,8 @@ import com.jstakun.gms.android.utils.UserTracker;
 formUri = ConfigurationManager.CRASH_REPORT_URL,
 mode = ReportingInteractionMode.TOAST,
 resToastText = R.string.Crash_error,
-socketTimeout = 30000)
+socketTimeout = 30000, 
+formKey = "")
 public class GMSClientApp extends Application {
 
     @Override
@@ -28,9 +29,6 @@ public class GMSClientApp extends Application {
         ACRA.init(this);  
         ConfigurationManager.getAppUtils().initApp(this);  
         UserTracker.getInstance().initialize(this);
-        //comment in production
-        //UserTracker.getInstance().setDebug(true, this);
-        //
         UserTracker.getInstance().setDryRun(false, this);
     }
 

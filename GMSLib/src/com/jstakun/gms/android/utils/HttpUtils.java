@@ -427,7 +427,7 @@ public class HttpUtils {
         					if (contentType != null) {
         						String contentTypeValue = contentType.getValue();
         						if (!contentTypeValue.contains(format)) {
-        							responseCode = 500;
+        							responseCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
         							throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + uri.toString());
         						}
         					} else {
@@ -435,21 +435,6 @@ public class HttpUtils {
         						LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + uri.toString());
         					}
 
-        					//1. read bytes stream
-                    	
-        					/*InputStream is = entity.getContent();
-                    		ByteArrayOutputStream baos = new ByteArrayOutputStream();				
-            				byte[] buffer = new byte[1024];
-            				int read = 0;
-            				while ((read = is.read(buffer, 0, buffer.length)) != -1) {
-            					baos.write(buffer, 0, read);
-            				}		
-            				baos.flush();
-            				is.close();
-            			
-            				int bufferSize = baos.size();
-        					 */
-                    	
         					byte[] buffer = EntityUtils.toByteArray(entity);
         					int bufferSize = buffer.length;
                     
@@ -459,13 +444,18 @@ public class HttpUtils {
         						increaseCounter(0, bufferSize);
         						ObjectInputStream ois = null;
         						ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-        						if (contentType != null && contentType.getValue().indexOf("deflate") != -1) {
-        							ois = new ObjectInputStream(new InflaterInputStream(bais, new Inflater(false)));
-        						} else {
-        							ois = new ObjectInputStream(bais);
+        						try {
+        							if (contentType != null && contentType.getValue().indexOf("deflate") != -1) {
+        								ois = new ObjectInputStream(new InflaterInputStream(bais, new Inflater(false)));
+        							} else {
+        								ois = new ObjectInputStream(bais);
+        							}
+        						} catch (IOException e) {
+        							responseCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
+        							throw new IOException("Unable to create object input stream from " + uri, e);
         						}
                    
-        						if (ois.available() > 0) {
+        						if (ois != null && ois.available() > 0) {
         							int size = ois.readInt();
         							LoggerUtils.debug("Reading " + size + " landmarks from " + uri.toString());
         							if (size > 0) {
@@ -679,12 +669,14 @@ public class HttpUtils {
             //return null;
         } else if (e instanceof java.lang.IllegalStateException) {
             return null;
-        } else if (e.getMessage() != null && StringUtils.containsIgnoreCase(e.getMessage(), "IOException")) {
+        } else if (StringUtils.containsIgnoreCase(e.getMessage(), "IOException")) {
             return Locale.getMessage(R.string.Internet_connection_error);
-        } else if (e instanceof java.io.IOException && StringUtils.containsIgnoreCase(e.getMessage(), "SSL shutdown failed")) {
+        } else if (StringUtils.containsIgnoreCase(e.getMessage(), "SSL shutdown failed")) {
             return Locale.getMessage(R.string.Internet_connection_error); //ssl connection error
-        } else if (e.getMessage() != null && StringUtils.containsIgnoreCase(e.getMessage(), "Wrong content format")) {
+        } else if (StringUtils.containsIgnoreCase(e.getMessage(), "Wrong content format")) {
             return Locale.getMessage(R.string.Internet_connection_error);
+        } else if (StringUtils.containsIgnoreCase(e.getMessage(), "Unable to create object input stream")) {
+        	return Locale.getMessage(R.string.Internet_connection_error);
         } else if (e.getMessage() != null) {
             return e.getMessage();
         } else {

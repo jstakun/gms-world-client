@@ -23,7 +23,7 @@ import com.jstakun.gms.android.utils.UserTracker;
 formUri = ConfigurationManager.CRASH_REPORT_URL,
 mode = ReportingInteractionMode.TOAST,
 resToastText = R.string.Crash_error,
-socketTimeout = 30000)
+socketTimeout = 30000, formKey = "")
 public class DealMapApp extends Application {
 
     @Override
