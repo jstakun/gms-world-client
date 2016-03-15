@@ -379,7 +379,7 @@ public class HttpUtils {
         return byteBuffer;
     }
     
-    public List<ExtendedLandmark> loadLandmarkList(URI uri, List<NameValuePair> params, boolean auth, String format) {
+    public List<ExtendedLandmark> loadLandmarkList(URI uri, List<NameValuePair> params, boolean auth, String[] formats) {
         getThreadSafeClientConnManagerStats();
         
         List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
@@ -426,13 +426,13 @@ public class HttpUtils {
         					Header contentType = entity.getContentType();
         					if (contentType != null) {
         						String contentTypeValue = contentType.getValue();
-        						if (!contentTypeValue.contains(format)) {
+        						if (!StringUtils.startsWithAny(contentTypeValue, formats)) {
         							responseCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-        							throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + uri.toString());
+        							throw new IOException("Wrong content format! Expected: " + StringUtils.join(formats," or ") + ", found: " + contentTypeValue + " at url: " + uri.toString());
         						}
         					} else {
         						//throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
-        						LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + uri.toString());
+        						LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + uri.toString());
         					}
 
         					byte[] buffer = EntityUtils.toByteArray(entity);

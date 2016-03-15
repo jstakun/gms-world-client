@@ -1,5 +1,26 @@
 package com.jstakun.gms.android.data;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,26 +48,6 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MercatorUtils;
 import com.openlapi.QualifiedCoordinates;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -1130,8 +1131,9 @@ public class FileManager implements PersistenceManager {
         private int deleteFiles(File dir, FileDeletePredicate fp) {
         	File[] fileList = dir.listFiles();
         	int count = 0;
-        	int total = fileList.length;
+        	int total = 0; 
         	if (fileList != null) {
+        		total = fileList.length;
         		LoggerUtils.debug("Found " + total +  " files in " + dir.getAbsolutePath());
         		for (File f : Iterables.filter(Arrays.asList(fileList), fp)) {
         			if (f.isDirectory()) {

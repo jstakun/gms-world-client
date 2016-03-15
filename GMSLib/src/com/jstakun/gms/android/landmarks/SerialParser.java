@@ -42,7 +42,7 @@ public class SerialParser {
         try {
         	URI uri = new URI(urls[urlIndex]);
         	if (!task.isCancelled()) {
-        		List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, "deflate");
+        		List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, new String[]{"deflate", "application/x-java-serialized-object"});
         		if (!received.isEmpty()) {
         			if (landmarks.isEmpty()) {
         				if (landmarkManager != null) {
