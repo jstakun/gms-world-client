@@ -76,7 +76,7 @@ public final class BCTools {
     		PKCS12ParametersGenerator pGen = new PKCS12ParametersGenerator(new SHA1Digest());
     		String salt = OsUtil.getDeviceId(ConfigurationManager.getInstance().getContext());
     		//System.out.println("Salt: " + salt + " ----------------------------");
-    		char[] password = new String(Base64.decode(Commons.BC_PWD)).toCharArray();
+    		char[] password = Commons.BC_PWD.toCharArray();
             pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(password), Hex.decode(salt), 128);
             cipherParameters = pGen.generateDerivedParameters(192, 64);
     	}
