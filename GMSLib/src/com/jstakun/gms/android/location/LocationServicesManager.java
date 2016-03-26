@@ -34,7 +34,7 @@ public class LocationServicesManager {
     }
 
     private static boolean isGpsHardwarePresent(Context context) {
-        try {
+    	try {
             return HelperInternal.isGpsHardwarePresent(context);
         } catch (VerifyError e) {
             return true;

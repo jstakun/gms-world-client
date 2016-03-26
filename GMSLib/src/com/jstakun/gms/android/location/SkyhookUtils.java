@@ -1,25 +1,20 @@
 package com.jstakun.gms.android.location;
 
-import org.spongycastle.util.encoders.Base64;
-
 import android.content.Context;
 import android.location.Location;
 import android.os.Handler;
 import android.os.Message;
 
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
-
 import com.skyhookwireless.wps.IPLocation;
 import com.skyhookwireless.wps.IPLocationCallback;
-import com.skyhookwireless.wps.RegistrationCallback;
 import com.skyhookwireless.wps.TilingListener;
-import com.skyhookwireless.wps.WPSAuthentication;
 import com.skyhookwireless.wps.WPSContinuation;
 import com.skyhookwireless.wps.WPSLocation;
 import com.skyhookwireless.wps.WPSLocationCallback;
@@ -35,9 +30,6 @@ import com.skyhookwireless.wps.XPS;
 public class SkyhookUtils {
 
 	private static final int ERROR = 666;
-    private static final WPSAuthentication auth = new WPSAuthentication(new String(Base64.decode(Commons.SKYHOOK_USERNAME)), 
-    		new String(Base64.decode(Commons.SHYHOOK_REALM)));
-    private final GMSRegistrationCallback regCallback = new GMSRegistrationCallback();
     private XPS xps;
     private boolean isRegistered, hasRunOnFirstFix, isRegistering;
     private Handler locationHandler;
@@ -93,7 +85,7 @@ public class SkyhookUtils {
 
     public SkyhookUtils(Context context, Handler locationHandler) {
         xps = new XPS(context);
-        //xps.setKey(Commons.SHYHOOK_API_KEY);
+        xps.setKey(context.getString(R.string.skyhookApiKey));
         FileManager fm = PersistenceManagerFactory.getFileManager();
         String cache = fm.getExternalDirectory(FileManager.getTilesFolder(), null).getAbsolutePath();
         LoggerUtils.debug("Setting WPS tiling at " + cache + "...");
@@ -101,8 +93,9 @@ public class SkyhookUtils {
         this.locationHandler = locationHandler;
         hasRunOnFirstFix = false;
         //
-        isRegistered = false;
-        xps.registerUser(auth, null, regCallback);
+        //isRegistered = false;
+        //xps.registerUser(auth, null, regCallback);
+        isRegistered = true;
     }
 
     private WPSContinuation handleErrorStatus(WPSReturnCode error) {
@@ -145,16 +138,16 @@ public class SkyhookUtils {
     private void getLocation() {
         LoggerUtils.debug("Calling SkyhookUtils.getLocation()...");
         //xps.getLocation(auth, WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP, oneTimeCallback);
-        xps.getIPLocation(auth, WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP, ipLocationCallback);
-        xps.getPeriodicLocation(auth, WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP, 10000, 0, periodicCallback);
+        xps.getIPLocation(null, WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP, ipLocationCallback);
+        xps.getPeriodicLocation(null, WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP, 10000, 0, periodicCallback);
     }
 
     public void enableMyLocation() {
     	//byte[] key = Commons.SKYHOOK_KEY.getBytes();
     	byte[] key = OsUtil.getDeviceId(ConfigurationManager.getInstance().getContext()).getBytes();
-        byte[] token = xps.getOfflineToken(auth, key);
+        byte[] token = xps.getOfflineToken(null, key);
         if (token != null) {
-            xps.getOfflineLocation(auth, key, token, oneTimeCallback);
+            xps.getOfflineLocation(null, key, token, oneTimeCallback);
         } else {
             LoggerUtils.debug("WPS offline token missing...");
         }
@@ -194,7 +187,7 @@ public class SkyhookUtils {
     }
    
 
-    private class GMSRegistrationCallback implements RegistrationCallback {
+    /*private class GMSRegistrationCallback implements RegistrationCallback {
 
         public void handleSuccess() {
             isRegistered = true;
@@ -212,7 +205,7 @@ public class SkyhookUtils {
             LoggerUtils.debug("Calling WPS GMSRegistrationCallback.done()...");
             isRegistering = false;
         }
-    }
+    }*/
 
     private class GetLocationTask extends GMSAsyncTask<Void, Void, Void> {
 

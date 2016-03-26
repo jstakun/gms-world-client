@@ -17,6 +17,7 @@ import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.Hex;
 
+import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.OsUtil;
 
 
@@ -76,7 +77,7 @@ public final class BCTools {
     		PKCS12ParametersGenerator pGen = new PKCS12ParametersGenerator(new SHA1Digest());
     		String salt = OsUtil.getDeviceId(ConfigurationManager.getInstance().getContext());
     		//System.out.println("Salt: " + salt + " ----------------------------");
-    		char[] password = Commons.BC_PWD.toCharArray();
+    		char[] password = ConfigurationManager.getInstance().getContext().getString(R.string.bcPwd).toCharArray();
             pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(password), Hex.decode(salt), 128);
             cipherParameters = pGen.generateDerivedParameters(192, 64);
     	}
