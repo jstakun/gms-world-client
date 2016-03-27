@@ -157,7 +157,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             ((org.osmdroid.views.MapView) mapView).setMultiTouchControls(true);
             ((com.jstakun.gms.android.osm.maps.ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
             myLocation = new OsmMyLocationNewOverlay(this.getApplicationContext(), (org.osmdroid.views.MapView) mapView, loadingHandler);
-            //infoOverlay = new OsmInfoOverlay(this);
         } else {
             //default view is Google
             setContentView(R.layout.googlemapscanvasview);
@@ -165,7 +164,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             ((ObservableMapView)googleMapsView).setOnZoomChangeListener(new ZoomListener());
             mapView = new org.osmdroid.google.wrapper.MapView(googleMapsView);
             myLocation = new GoogleIMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
-            //infoOverlay = new GoogleInfoOverlay();
         }
 
         LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
@@ -1033,10 +1031,20 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     private void addLandmarkOverlay() {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            OsmLandmarkOverlay landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
+        	 OsmLandmarkOverlay landmarkOverlay = null;
+        	 if (LocationServicesManager.isGpsHardwarePresent()) {
+                 landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
+             } else {
+                 landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
+             }
             addOverlay(landmarkOverlay);
         } else {
-            GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);
+            GoogleLandmarkOverlay landmarkOverlay = null;
+            if (LocationServicesManager.isGpsHardwarePresent()) {
+            	landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);
+            } else {
+            	landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
+            }
             addOverlay(landmarkOverlay);
         }
     }

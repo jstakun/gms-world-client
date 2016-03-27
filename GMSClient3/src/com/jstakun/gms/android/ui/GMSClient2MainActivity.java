@@ -1134,10 +1134,20 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     
     private void addLandmarkOverlay() {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            OsmLandmarkOverlay landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
+        	 OsmLandmarkOverlay landmarkOverlay = null;
+        	 if (LocationServicesManager.isGpsHardwarePresent()) {
+                 landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
+             } else {
+                 landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
+             }
             addOverlay(landmarkOverlay);
         } else {
-            GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);
+            GoogleLandmarkOverlay landmarkOverlay = null;
+            if (LocationServicesManager.isGpsHardwarePresent()) {
+            	landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);
+            } else {
+            	landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
+            }
             addOverlay(landmarkOverlay);
         }
     }

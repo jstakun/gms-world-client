@@ -273,8 +273,8 @@ public class LandmarkManager {
                 if (projection.isVisible(point)) {
                     layer_counter++;
                     total_counter++;
-                    if ((selectedLandmark == null || !selectedLandmark.equals(landmark))
-                            && !recentlyOpenedLandmarks.contains(landmark) && (isMyPosLayer || !drawablePoints.contains(point))) {
+                    if ((selectedLandmark == null || !selectedLandmark.equals(landmark)) && !recentlyOpenedLandmarks.contains(landmark) && 
+                    	(isMyPosLayer || !drawablePoints.contains(point))) {
 
                         drawablePoints.add(point);
                         int color = COLOR_WHITE;

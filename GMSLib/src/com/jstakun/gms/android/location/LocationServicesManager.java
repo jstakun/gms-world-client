@@ -29,6 +29,7 @@ public class LocationServicesManager {
             myLocation = imyLocation;
         } else {
             LoggerUtils.debug("GPS is missing. Using Skyhook !!!");
+            isGpsHardwarePresent = false;
             skyhook = new SkyhookUtils(context, locationHandler);
         }
     }
