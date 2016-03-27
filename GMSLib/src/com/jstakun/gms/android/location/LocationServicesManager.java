@@ -34,12 +34,13 @@ public class LocationServicesManager {
         }
     }
 
-    private static boolean isGpsHardwarePresent(Context context) {
+    public static boolean isGpsHardwarePresent(Context context) {
     	try {
             return HelperInternal.isGpsHardwarePresent(context);
         } catch (VerifyError e) {
             return true;
         }
+    	//return false;
     }
     
     public static boolean isGpsHardwarePresent() {

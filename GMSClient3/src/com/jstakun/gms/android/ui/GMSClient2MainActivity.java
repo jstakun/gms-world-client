@@ -185,8 +185,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             ((com.jstakun.gms.android.osm.maps.ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
             //set this to solve path painting issue
             ((org.osmdroid.views.MapView) mapView).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            myLocation = new OsmMyLocationNewOverlay(this, (org.osmdroid.views.MapView) mapView, loadingHandler);
-            //infoOverlay = new OsmInfoOverlay(this);
+            if (LocationServicesManager.isGpsHardwarePresent(this)) {
+            	myLocation = new OsmMyLocationNewOverlay(this, (org.osmdroid.views.MapView) mapView, loadingHandler);
+            }
         } else {
             //default view is Google
         	//System.out.println("2.2 --------------------------------");
@@ -196,9 +197,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             //set this to solve path painting issue
             googleMapsView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             mapView = new org.osmdroid.google.wrapper.MapView(googleMapsView);
-            myLocation = new GoogleIMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
-            //infoOverlay = new GoogleInfoOverlay();
-        }
+            if (LocationServicesManager.isGpsHardwarePresent(this)) {
+            	myLocation = new GoogleIMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
+            }
+        }    
 
         LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
         initComponents(savedInstanceState);
@@ -536,8 +538,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
             
             addLandmarkOverlay();
-            //addOverlay(infoOverlay);
-            addOverlay(myLocation);
+
+            if (myLocation != null) {
+            	addOverlay(myLocation);
+            }
 
             routesManager = ConfigurationManager.getInstance().getRoutesManager();
 
