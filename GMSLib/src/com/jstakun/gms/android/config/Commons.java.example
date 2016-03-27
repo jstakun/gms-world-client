@@ -50,8 +50,6 @@ public final class Commons {
 	public static final String FOURSQUARE = "fs";
 	public static final Object GMS_WORLD = "gms";
 	
-	public static final String BC_PWD = null;
-	
 	public static final String MY_POS_USER = "";
 	
 	public static final String TOKEN_HEADER = null;
@@ -62,9 +60,6 @@ public final class Commons {
 	public static final String APP_VERSION_HEADER = null;
 	public static final String LAT_HEADER = null;
 	public static final String LNG_HEADER = null;
-	
-	public static final byte[] SKYHOOK_USERNAME = null;
-	public static final byte[] SHYHOOK_REALM = null;
 		
 	private Commons() {}
 }

@@ -17,6 +17,8 @@ import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.Hex;
 
+import android.content.Context;
+
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.OsUtil;
 
@@ -38,22 +40,22 @@ public final class BCTools {
         return result;
     }
 
-    protected static byte[] decrypt(byte[] cipher) throws Exception {
+    protected static byte[] decrypt(byte[] cipher, Context context) throws Exception {
         DESedeEngine des = new DESedeEngine();
         CBCBlockCipher des_CBC = new CBCBlockCipher(des);
         PaddedBufferedBlockCipher cipherAES = new PaddedBufferedBlockCipher(des_CBC);
         
-        cipherAES.init(false, getCipherParameters());
+        cipherAES.init(false, getCipherParameters(context));
         
         return cipherData(cipherAES, cipher);
     }
 
-    protected static byte[] encrypt(byte[] plain) throws Exception {
+    protected static byte[] encrypt(byte[] plain, Context context) throws Exception {
         DESedeEngine des = new DESedeEngine();
         CBCBlockCipher des_CBC = new CBCBlockCipher(des);
         PaddedBufferedBlockCipher cipherAES = new PaddedBufferedBlockCipher(des_CBC);
 
-        cipherAES.init(true, getCipherParameters());
+        cipherAES.init(true, getCipherParameters(context));
         
         return cipherData(cipherAES, plain);
     }
@@ -72,12 +74,12 @@ public final class BCTools {
         return md;
     }
     
-    private static CipherParameters getCipherParameters() {
+    private static CipherParameters getCipherParameters(Context context) {
     	if (cipherParameters == null) {
     		PKCS12ParametersGenerator pGen = new PKCS12ParametersGenerator(new SHA1Digest());
-    		String salt = OsUtil.getDeviceId(ConfigurationManager.getInstance().getContext());
+    		String salt = OsUtil.getDeviceId(context);
     		//System.out.println("Salt: " + salt + " ----------------------------");
-    		char[] password = ConfigurationManager.getInstance().getContext().getString(R.string.bcPwd).toCharArray();
+    		char[] password = context.getString(R.string.bcPwd).toCharArray();
             pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(password), Hex.decode(salt), 128);
             cipherParameters = pGen.generateDerivedParameters(192, 64);
     	}

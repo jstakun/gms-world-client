@@ -975,13 +975,13 @@ public final class ConfigurationManager {
     	public boolean putStringAndEncrypt(String key, String value) {
     		if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
     			try {
-    				String tmp = new String(Base64.encode(BCTools.encrypt(value.getBytes())));
+    				String tmp = new String(Base64.encode(BCTools.encrypt(value.getBytes(), getContext())));
     				putString(key, tmp);
     				//System.out.println("Encrypted: " +  key + " = " + tmp);
     				tmp = null;
     				return true;
     			} catch (Exception ex) {
-    				LoggerUtils.error("ConfigurationManager.putStringAndEncrypt exception:", ex);
+    				LoggerUtils.error("UserManager.putStringAndEncrypt() exception:", ex);
     				return false;
     			}
     		} else {
@@ -995,10 +995,10 @@ public final class ConfigurationManager {
     			String encValue = getString(key);
 				if (encValue != null) {
 					try {
-						decrypted = new String(BCTools.decrypt(Base64.decode(encValue.getBytes())));
+						decrypted = new String(BCTools.decrypt(Base64.decode(encValue.getBytes()), getContext()));
 						//System.out.println("Decrypted: " +  key + " = " + decrypted);
 					} catch (Exception e) {
-						LoggerUtils.error("ConfigurationManager.getDecryptedString exception: ", e);
+						LoggerUtils.error("UserManager.getDecryptedString exception: ", e);
 					}		
 				}
     		}
