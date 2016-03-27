@@ -818,6 +818,13 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
         }
     }
+    
+    private void updateLocation(Location location) {
+    	intents.addMyLocationLandmark(location);
+		mapButtons.setVisibility(View.VISIBLE);
+		intents.vibrateOnLocationUpdate();
+        UserTracker.getInstance().sendMyLocation();
+    }
 
     private void showRecommendedDeal(boolean forceToShow) {
         ExtendedLandmark recommended = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class);
@@ -923,12 +930,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 	activity.showRouteAction((String)msg.obj);
                 } else if (msg.what == AmzMyLocationOverlay.UPDATE_LOCATION) {
                     Location location = (Location) msg.obj;
-                    if (activity.landmarkManager != null) {
-                    	activity.intents.addMyLocationLandmark(location);
-        				activity.mapButtons.setVisibility(View.VISIBLE);
-                    }
-                    activity.intents.vibrateOnLocationUpdate();
-                    UserTracker.getInstance().sendMyLocation();
+                    activity.updateLocation(location);
                 }
             }
         }	
