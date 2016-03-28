@@ -586,7 +586,7 @@ public class AsyncTaskManager {
         	//intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
         	intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
         	SocialSendMyLocationTask socialSendMyLocationTask = new SocialSendMyLocationTask();
-        	String notificationId = createNotification(-1, message, message, true);
+        	String notificationId = createNotification(R.drawable.checkin_24, message, message, true);
         	socialSendMyLocationTask.execute("", notificationId);
         } else {
         	sendMyPos();

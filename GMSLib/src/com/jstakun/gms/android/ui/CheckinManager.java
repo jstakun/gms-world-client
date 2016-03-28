@@ -55,17 +55,15 @@ public class CheckinManager {
         
         UserTracker.getInstance().trackEvent("AutoCheckin", "CheckinManager.AutoCheckinAction", selectedLayer, 0);
         String checkinat = Locale.getMessage(R.string.Social_checkin_prompt, name);
-        if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER))
-                && ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
-            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.foursquare_24, silent, selectedLayer, venueid, name, lat, lng);
+        if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) && ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
+            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng);
             result = true;
         } else if (selectedLayer.equals(Commons.FACEBOOK_LAYER) && ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
-            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.facebook_24, silent, selectedLayer, venueid, name, lat, lng);
+            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng);
             result = true;
-        } else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER)
-                && ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
+        } else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER) && ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
             if (venueid != null) {
-            	asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.google_24, silent, selectedLayer, venueid, name, lat, lng);
+            	asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng);
             	result = true;
             }
         } else if (selectedLayer.equals(Commons.MY_POSITION_LAYER)) {
@@ -74,7 +72,7 @@ public class CheckinManager {
         } else if (ConfigurationManager.getUserManager().isUserLoggedIn() && 
         		!(selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER) ||
         		selectedLayer.equals(Commons.FACEBOOK_LAYER) || selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER))) {
-            asyncTaskManager.executeLocationCheckInTask(-1, venueid, Locale.getMessage(R.string.searchcheckin), name, silent);
+            asyncTaskManager.executeLocationCheckInTask(R.drawable.checkin_24, venueid, Locale.getMessage(R.string.searchcheckin), name, silent);
             result = true;
         }
 
