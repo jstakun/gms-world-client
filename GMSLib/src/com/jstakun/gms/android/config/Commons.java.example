@@ -48,7 +48,7 @@ public final class Commons {
 	public static final String TWITTER = "tw";
 	public static final String FACEBOOK = "fb";
 	public static final String FOURSQUARE = "fs";
-	public static final Object GMS_WORLD = "gms";
+	public static final String GMS_WORLD = "gms";
 	
 	public static final String MY_POS_USER = "";
 	
