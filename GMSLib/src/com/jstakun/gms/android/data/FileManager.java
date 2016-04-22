@@ -1129,9 +1129,12 @@ public class FileManager implements PersistenceManager {
         }
         
         private int deleteFiles(File dir, FileDeletePredicate fp) {
-        	File[] fileList = dir.listFiles();
         	int count = 0;
         	int total = 0; 
+        	File[] fileList = null;
+        	if (dir != null) {
+        		fileList = dir.listFiles();
+        	}
         	if (fileList != null) {
         		total = fileList.length;
         		LoggerUtils.debug("Found " + total +  " files in " + dir.getAbsolutePath());
