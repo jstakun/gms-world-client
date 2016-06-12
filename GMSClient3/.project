@@ -4,7 +4,6 @@
 	<comment></comment>
 	<projects>
 		<project>GMSLib</project>
-		<project>google-play-services_lib</project>
 		<project>GoogleMapsUtils</project>
 		<project>OsmMapsUtils</project>
 	</projects>

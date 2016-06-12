@@ -28,9 +28,9 @@ public class AdsUtils {
                 TapForTapUtils.loadAd(activity);
             } else if (adsProvider == AMZADS) {
                 AmazonUtils.loadAd(activity);
-            } else if (adsProvider == ADMOB)  {
-                AdMobUtils.loadAd(activity);
-            } 
+            } else if (adsProvider == ADMOB) {
+            	//AdMobUtils.loadAd(activity);
+            }
         }
     }
 
@@ -42,7 +42,7 @@ public class AdsUtils {
     		} else if (adsProvider == AMZADS) {
     			AmazonUtils.destroyAdView(activity);
     		} else if (adsProvider == ADMOB) {
-    			AdMobUtils.destroyAdView(activity);
+    			//AdMobUtils.destroyAdView(activity);
     		}
     	}
     }
