@@ -34,6 +34,7 @@ public class UserTracker {
 
     public synchronized void initialize(Application context) {
     	try {
+    		LoggerUtils.debug("UserTracker.initialize() called...");
     		if (tracker == null && OsUtil.isDonutOrHigher()) {
     			GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
     			analytics.setLocalDispatchPeriod(30);
@@ -41,32 +42,34 @@ public class UserTracker {
     			tracker = analytics.newTracker(getId(context));
     			tracker.enableAutoActivityTracking(true);
     			tracker.enableExceptionReporting(true);
-        	}
+          	}
     	} catch (Throwable t) {
     		LoggerUtils.error("UserTracker.initialize exception:", t);
     	}
     }
     
     public void trackActivityStart(Activity activity) {
-    	GoogleAnalytics.getInstance(activity).reportActivityStart(activity);
+    	LoggerUtils.debug("UserTracker.trackActivityStart() called...");
+		GoogleAnalytics.getInstance(activity).reportActivityStart(activity);
     }
     
     public void trackActivityStop(Activity activity) {
-    	GoogleAnalytics.getInstance(activity).reportActivityStop(activity);
+    	LoggerUtils.debug("UserTracker.trackActivityStop() called...");
+		GoogleAnalytics.getInstance(activity).reportActivityStop(activity);
     }
     
     public void trackActivity(final String activityName) {
-    	//System.out.println("UserTracker.trackAcivity() " + activityName);
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
-            tracker.setScreenName(activityName);
+    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
+    		LoggerUtils.debug("UserTracker.trackActivity() called...");
+    		tracker.setScreenName(activityName);
         	tracker.send(new HitBuilders.EventBuilder().setCategory(activityName).setAction("start").build());
         }
     }
 
     public void trackEvent(final String category, final String action, final String label, final long value) {
-    	//System.out.println("UserTracker.trackEvent() " + category + " " + action);
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
-            tracker.send(new HitBuilders.EventBuilder()
+    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
+    		LoggerUtils.debug("UserTracker.trackEvent() called...");
+    		tracker.send(new HitBuilders.EventBuilder()
             	.setCategory(category)
             	.setAction(action)
             	.setLabel(label).
