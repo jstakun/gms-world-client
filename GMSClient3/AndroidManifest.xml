@@ -124,6 +124,12 @@
         </receiver>
         <receiver android:name="com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver"/>
         <receiver android:name="com.jstakun.gms.android.service.NotificationReceiver"/>
+        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver" android:enabled="true">
+         	<intent-filter>
+             	<action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+         	</intent-filter>
+     	</receiver>
+     	<service android:name="com.google.android.gms.analytics.AnalyticsService" android:enabled="true" android:exported="false"/>
         <meta-data android:name="com.tapfortap.API_KEY" android:value="@string/tapForTapKey"/>
         <meta-data android:name="com.tapfortap.TEST_MODE" android:value="false"/>
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />

@@ -358,7 +358,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 showRecommendedDeal(true);
                 break;
             case R.id.discoverPlaces:
-                intents.startActionViewIntent(ConfigurationManager.LM_MARKET_URL);
+                intents.startActionViewIntent(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL));
                 break;
             case R.id.events:
                 intents.startCalendarActivity(getMyPosition());

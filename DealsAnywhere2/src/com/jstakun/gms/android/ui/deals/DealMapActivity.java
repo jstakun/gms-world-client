@@ -290,7 +290,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
             	break;
             case R.id.discoverPlaces:
-                intents.startActionViewIntent(ConfigurationManager.LM_MARKET_URL);
+                intents.startActionViewIntent(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL));
                 break;
             //case R.id.events:
                 //intents.startCalendarActivity(getMyPosition());

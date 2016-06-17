@@ -17,12 +17,12 @@ import com.tapfortap.TapForTap.Gender;
  *
  * @author jstakun
  */
-public class TapForTapUtils {
+public class TapForTapProvider implements AdsProvider {
 
     private static final String fbFormat = "yyyyMMdd";
     private static final String ggFormat = "yyyy-MM-dd";
 
-    protected static void loadAd(final Activity activity) {
+    public void loadAd(final Activity activity) {
     	TapForTap.enableTapForTap();
     	
         final Banner adView = (Banner) activity.findViewById(R.id.adView);
@@ -93,7 +93,7 @@ public class TapForTapUtils {
         }
     }
 
-    protected static void destroyAdView(Activity activity) {
+    public void destroyAdView(Activity activity) {
         //Banner adView = (Banner) activity.findViewById(R.id.adView);     
     	TapForTap.disableTapForTap();
     }

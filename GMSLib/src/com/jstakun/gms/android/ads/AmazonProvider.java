@@ -12,9 +12,9 @@ import com.amazon.device.ads.AdTargetingOptions;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
-public class AmazonUtils {
+public class AmazonProvider implements AdsProvider {
 	
-	protected static void loadAd(final Activity activity) {
+	public void loadAd(final Activity activity) {
 		// For debugging purposes enable logging, but disable for production builds
         if (LoggerUtils.isDebug()) {
         	AdRegistration.enableLogging(true);
@@ -62,7 +62,7 @@ public class AmazonUtils {
         adView.loadAd(adOptions);
 	}
 	
-	protected static void destroyAdView(Activity activity) {
+	public void destroyAdView(Activity activity) {
 		AdLayout adView = (AdLayout) activity.findViewById(R.id.adView);
 		adView.destroy();
 	}

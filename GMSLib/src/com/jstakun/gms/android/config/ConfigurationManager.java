@@ -152,7 +152,6 @@ public final class ConfigurationManager {
     public static final String CRASH_REPORT_URL = SSL_SERVER_SERVICES_URL + "crashReport";
     
     public static final String GMS_WORLD = "GMS World";
-    public static final String LM_MARKET_URL = "http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     public static final int PERSIST_SERVER = 0;
     public static final int PERSIST_LOCAL = 1;
     public static final int PERSIST_SMS = 2;

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.service;
 
 import android.app.Notification;
@@ -31,9 +27,9 @@ public class TimeAlarm extends BroadcastReceiver {
         CharSequence message = "New version available...";
         Intent view = new Intent(Intent.ACTION_VIEW, Uri.parse(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL)));
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, view, 0);
-        Notification notif = new Notification(R.drawable.globe64_new, message, System.currentTimeMillis());
-        notif.flags |= Notification.FLAG_AUTO_CANCEL;
-        notif.setLatestEventInfo(context, from, message, contentIntent);
-        nm.notify(1, notif);
+        Notification notification = new Notification(R.drawable.globe64_new, message, System.currentTimeMillis());
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.setLatestEventInfo(context, from, message, contentIntent);
+        nm.notify(1, notification);
     }
 }

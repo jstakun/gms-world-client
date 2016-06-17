@@ -1,8 +1,3 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ads;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -17,33 +12,38 @@ import android.app.Activity;
 public class AdsUtils {
 
 	private static final int NONE = 0;
-    private static final int ADMOB = 1;
+    //private static final int ADMOB = 1;
     private static final int TAPFORTAP = 2;
     private static final int AMZADS = 3;
     
+    
+    
     public static void loadAd(Activity activity) {
-    	int adsProvider = ConfigurationManager.getInstance().getInt(ConfigurationManager.ADS_PROVIDER, AMZADS);
-        if (adsProvider != NONE && OsUtil.isDonutOrHigher()) {
-            if (adsProvider == TAPFORTAP) {
-                TapForTapUtils.loadAd(activity);
-            } else if (adsProvider == AMZADS) {
-                AmazonUtils.loadAd(activity);
-            } else if (adsProvider == ADMOB) {
-            	//AdMobUtils.loadAd(activity);
-            }
-        }
+    	AdsProvider adsProvider = getAdsProvider();
+    	if (adsProvider != null) {
+    		adsProvider.loadAd(activity);
+    	}
     }
 
     public static void destroyAdView(Activity activity) {
+    	AdsProvider adsProvider = getAdsProvider();
+    	if (adsProvider != null) {
+    		adsProvider.destroyAdView(activity);
+    	}
+    }
+    
+    private static AdsProvider getAdsProvider() {
     	int adsProvider = ConfigurationManager.getInstance().getInt(ConfigurationManager.ADS_PROVIDER, AMZADS);
     	if (adsProvider != NONE && OsUtil.isDonutOrHigher()) {
     		if (adsProvider == TAPFORTAP) {
-    			TapForTapUtils.destroyAdView(activity);
+    			return AdsFactory.getTapForTapInstance();
     		} else if (adsProvider == AMZADS) {
-    			AmazonUtils.destroyAdView(activity);
-    		} else if (adsProvider == ADMOB) {
-    			//AdMobUtils.destroyAdView(activity);
+    			return AdsFactory.getAmazonInstance();
+    		} else {
+    			return null;
     		}
+    	} else {
+    		return null;
     	}
     }
 }
