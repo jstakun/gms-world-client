@@ -60,31 +60,6 @@ public class OsmLandmarkOverlay extends Overlay {
         //no shadow by default
     }
 
-    /*@Override
-     public boolean onTouchEvent(android.view.MotionEvent event, MapView mapView) {
-     final int action = event.getAction();
-
-     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-     //System.out.println("Action Down x: " + event.getX() + " y: " + event.getY());
-     xmove = (int) event.getX();
-     ymove = (int) event.getY();
-     } else if (action == MotionEvent.ACTION_UP) {
-     int x = (int) event.getX();
-     int y = (int) event.getY();
-     int movex = xmove - x;
-     int movey = ymove - y;
-
-     if (movex == 0 && movey == 0) {
-     ProjectionInterface proj = new OsmLandmarkProjection(mapView);
-     final Projection projection = mapView.getProjection();
-     viewportRect.set(projection.getScreenRect());
-     if (lm.findLandmarksInRadius(viewportRect.left + x, viewportRect.top + y, proj, true, mapView.getResources().getDisplayMetrics())) {
-     landmarkDetailsHandler.sendEmptyMessage(0);
-     }
-     }
-     }
-     return super.onTouchEvent(event, mapView);
-     }*/
     @Override
     public boolean onSingleTapUp(final MotionEvent e, final MapView mapView) {
         //System.out.println("onSingleTapUp");

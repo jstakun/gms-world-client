@@ -500,7 +500,8 @@ public class LandmarkManager {
     }
 
     public void deleteLayer(String layerName) {
-        Layer layer = layerManager.getLayer(layerName);
+    	//TODO notify marker cluster manager on layer deletion
+    	Layer layer = layerManager.getLayer(layerName);
 
         if (layer != null) {
             landmarkStore.remove(layerName);
@@ -513,6 +514,7 @@ public class LandmarkManager {
     }
 
     public void deletePhoneLandmark(int id) {
+    	//TODO notify marker cluster manager on landmark deletion
         List<ExtendedLandmark> mypos = getLandmarkStoreLayer(Commons.MY_POSITION_LAYER);
         List<ExtendedLandmark> local = getLandmarkStoreLayer(Commons.LOCAL_LAYER);
         if (id == local.size() && mypos.size() > 0) {
@@ -977,6 +979,10 @@ public class LandmarkManager {
 
     public void clearLandmarkOnFocusQueue() {
         landmarkPaintManager.clearLandmarkOnFocusQueue();
+    }
+    
+    public void addLandmarkToFocusQueue(ExtendedLandmark landmark) {
+    	landmarkPaintManager.addLandmarkToFocusQueue(landmark);
     }
 
     public ExtendedLandmark getLandmarkOnFocus() {

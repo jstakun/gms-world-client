@@ -49,7 +49,7 @@ public class GMSClientDispatchActivity extends Activity {
             	Intent mapActivity;
                 if (OsUtil.isHoneycombOrHigher()) {
                     if (OsUtil.isGoogleMapActivityInstalled() && OsUtil.hasSystemSharedLibraryInstalled(this, "com.google.android.maps")) {
-                        mapActivity = new Intent(this, GMSClient2MainActivity.class);
+                    	mapActivity = new Intent(this, GMSClient2MainActivity.class);
                     } else {
                         ConfigurationManager.getInstance().putInteger(ConfigurationManager.MAP_PROVIDER, ConfigurationManager.OSM_MAPS);
                         mapActivity = new Intent(this, GMSClient2OSMMainActivity.class);

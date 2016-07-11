@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.landmarks;
 
 import android.os.Handler;
+import android.os.Message;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.social.FacebookUtils;
@@ -53,7 +54,10 @@ public class LayerLoader {
     
     private void sendRepaintMessage(String layerKey) {
         if (repaintHandler != null) {
-            repaintHandler.sendEmptyMessage(LAYER_LOADED);
+        	Message msg = new Message();
+        	msg.what = LAYER_LOADED;
+        	msg.obj = layerKey;
+        	repaintHandler.sendMessage(msg);
         }
     }
     

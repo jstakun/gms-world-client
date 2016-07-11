@@ -24,7 +24,7 @@ public class TimeAlarm extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence from = Locale.getMessage(R.string.app_name);
-        CharSequence message = "New version available...";
+        CharSequence message = Locale.getMessage(R.string.New_version_short_message);
         Intent view = new Intent(Intent.ACTION_VIEW, Uri.parse(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL)));
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, view, 0);
         Notification notification = new Notification(R.drawable.globe64_new, message, System.currentTimeMillis());
