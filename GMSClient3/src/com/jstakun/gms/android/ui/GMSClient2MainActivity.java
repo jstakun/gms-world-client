@@ -9,6 +9,7 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
 import org.osmdroid.api.IMyLocationOverlay;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -35,11 +36,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+//import com.google.android.gms.common.ConnectionResult;
+//import com.google.android.gms.common.GoogleApiAvailability;
+//import com.google.android.gms.common.api.Status;
+//import com.google.android.gms.location.places.Place;
+//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -62,6 +63,7 @@ import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
 import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
+import com.jstakun.gms.android.osm.maps.OsmMarkerClusterOverlay;
 import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
@@ -83,6 +85,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private IMapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
+    private OsmMarkerClusterOverlay markerCluster;
     private MapView googleMapsView;
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
@@ -165,13 +168,14 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         //getActionBar().hide();
         loadingHandler = new LoadingHandler(this);
         
-        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {
-        	isGoogleApiAvailable = true;
-        	LoggerUtils.debug("Google Places API is available!");
-        } else {
+        //TODO uncomment 
+        //if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {
+        //	isGoogleApiAvailable = true;
+        //	LoggerUtils.debug("Google Places API is available!");
+        //} else {
         	isGoogleApiAvailable = false;
-            LoggerUtils.error("Google Places API is not available!");
-        }
+            LoggerUtils.debug("Google Places API is not available!");
+        //}
         
         LoggerUtils.debug("Map provider is " + mapProvider);
 
@@ -392,6 +396,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         }
         
         syncRoutesOverlays();
+        
+        //TODO testing
+        if (markerCluster != null) {
+        	markerCluster.deleteOrphanMarkers();
+        }
         
         intents.startAutoCheckinBroadcast(); 
     }
@@ -966,12 +975,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             		lat = intent.getDoubleExtra("lat", -200d);
                     lng = intent.getDoubleExtra("lng", -200d);
                     name = intent.getStringExtra("name");
-            	} else {
+            	} //TODO uncomment 
+                /*else {
             		Place place = PlaceAutocomplete.getPlace(this, intent);
             		name = place.getName().toString();
             		lat = place.getLatLng().latitude;
             		lng = place.getLatLng().longitude;
-            	}
+            	}*/
                 if (lat != null && lng != null && name != null && lat > -200d && lng > -200d) { 
                 	GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
                 	if (!appInitialized) {
@@ -993,10 +1003,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 intents.showInfoToast(message);
             } else if (resultCode != RESULT_CANCELED) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            } //TODO uncomment  
+            /*else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             	Status status = PlaceAutocomplete.getStatus(this, intent);
                 intents.showInfoToast(status.getStatusMessage());
-            } 
+            }*/
         } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
@@ -1138,13 +1149,19 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     
     private void addLandmarkOverlay() {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-        	 OsmLandmarkOverlay landmarkOverlay = null;
-        	 if (LocationServicesManager.isGpsHardwarePresent()) {
-                 landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
-             } else {
-                 landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
-             }
-            addOverlay(landmarkOverlay);
+        	//OsmLandmarkOverlay landmarkOverlay = null;
+        	//if (LocationServicesManager.isGpsHardwarePresent()) {
+            //    landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
+            //} else {
+            //    landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
+            //}
+            //addOverlay(landmarkOverlay);
+        	//TODO testing
+        	markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
+        	for (String layer : landmarkManager.getLayerManager().getLayers()) {
+        		markerCluster.addMarkers(layer, (org.osmdroid.views.MapView)mapView);
+        	}
+        	addOverlay(markerCluster);
         } else {
             GoogleLandmarkOverlay landmarkOverlay = null;
             if (LocationServicesManager.isGpsHardwarePresent()) {
@@ -1344,6 +1361,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             	} else if (msg.what == MessageStack.STATUS_GONE) {
             		activity.loadingImage.setVisibility(View.GONE);
             	} else if (msg.what == LayerLoader.LAYER_LOADED) {
+            		//TODO testing
+            		if (activity.mapProvider == ConfigurationManager.OSM_MAPS) {
+            			activity.markerCluster.addMarkers((String)msg.obj, (org.osmdroid.views.MapView)activity.mapView);
+            		} 
             		activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
             		if (activity.mapProvider == ConfigurationManager.OSM_MAPS || activity.googleMapsView.canCoverCenter()) {
@@ -1352,11 +1373,14 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             		}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
-            	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
+            	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {
             		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null, ProjectionFactory.getProjection(activity.mapView, activity.googleMapsView));
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }
+            	} else if (msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_LIST) {
+                	//TODO testing 
+            		activity.intents.startMultiLandmarkIntent(activity.getMyPosition());
             	} else if (msg.what == SHOW_MAP_VIEW) {
                 	View loading = activity.findViewById(R.id.mapCanvasWidgetL);
                 	loading.setVisibility(View.GONE);

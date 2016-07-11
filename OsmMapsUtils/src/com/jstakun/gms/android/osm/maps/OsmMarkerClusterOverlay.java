@@ -14,7 +14,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.Message;
 import android.util.DisplayMetrics;
 
 import com.jstakun.gms.android.config.Commons;
@@ -26,8 +25,8 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 
 public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 
-	public static final int SHOW_LANDMARK_DETAILS = 23;
-	public static final int SHOW_LANDMARK_LIST = 24;
+	public static final int SHOW_LANDMARK_DETAILS = 22;
+	public static final int SHOW_LANDMARK_LIST = 23;
 	
 	private static final int COLOR_WHITE = Color.argb(128, 255, 255, 255); //white
     private static final int COLOR_LIGHT_SALMON = Color.argb(128, 255, 160, 122); //red Light Salmon
@@ -90,11 +89,9 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
             marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 				
 				@Override
-				public boolean onMarkerClick(Marker arg0, MapView arg1) {
-					Message msg = new Message();
-					msg.what = SHOW_LANDMARK_DETAILS;
-					msg.obj = landmark;
-					landmarkDetailsHandler.sendMessage(msg);
+				public boolean onMarkerClick(Marker m, MapView arg1) {
+					lm.setSelectedLandmark((ExtendedLandmark)m.getRelatedObject());
+					landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
 					return true;
 				}
 			});
@@ -124,5 +121,14 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 			}
 		});
 		return m;
+	}
+	
+	public void deleteOrphanMarkers() {
+		for (Marker m : mItems) {
+			if (m.getRelatedObject() == null) {
+				mItems.remove(m);
+			}
+		}
+		
 	}
 }
