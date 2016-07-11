@@ -155,7 +155,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         super.onCreate(savedInstanceState);
 
         LoggerUtils.debug("onCreate");
-        LoggerUtils.debug("GMSClientMainActivity.onCreate called...");
+        LoggerUtils.debug("GMSClient2MainActivity.onCreate called...");
         
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
@@ -1149,13 +1149,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     
     private void addLandmarkOverlay() {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-        	//OsmLandmarkOverlay landmarkOverlay = null;
-        	//if (LocationServicesManager.isGpsHardwarePresent()) {
-            //    landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
-            //} else {
-            //    landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
-            //}
-            //addOverlay(landmarkOverlay);
+        	/*OsmLandmarkOverlay landmarkOverlay = null;
+        	if (LocationServicesManager.isGpsHardwarePresent()) {
+                landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
+            } else {
+                landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
+            }
+            addOverlay(landmarkOverlay);*/
         	//TODO testing
         	markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
         	for (String layer : landmarkManager.getLayerManager().getLayers()) {
@@ -1374,6 +1374,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
             	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {
+            		//TODO testing 
             		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null, ProjectionFactory.getProjection(activity.mapView, activity.googleMapsView));
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);

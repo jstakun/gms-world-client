@@ -35,17 +35,17 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<NavigationDrawerLi
 		clear();
 		//TODO add conditions to show items
 		add(new NavigationDrawerListItem(names[0], R.id.listMode));
-		//TODO condition for Hot deals
+		//TODO add condition for Hot deals
 		add(new NavigationDrawerListItem(names[1], R.id.hotDeals));
-		//TODO condition for Newest Deals
+		//TODO add condition for Newest Deals
 		add(new NavigationDrawerListItem(names[2], R.id.newestDeals));
-		//TODO condition for Deals Nearby
+		//TODO add condition for Deals Nearby
 		add(new NavigationDrawerListItem(names[3], R.id.nearbyDeals));
 		add(new NavigationDrawerListItem(names[4], R.id.pickMyPos));
 		add(new NavigationDrawerListItem(names[5], R.id.showMyLandmarks));
-		//TODO condition for Recently viewed deals
+		//TODO add condition for Recently viewed deals
 		add(new NavigationDrawerListItem(names[6], R.id.recentLandmarks));
-		//TODO condition for Show deal of the day
+		//TODO add condition for Show deal of the day
 		add(new NavigationDrawerListItem(names[7], R.id.showDoD));
 		add(new NavigationDrawerListItem(names[8], R.id.events));
 	}

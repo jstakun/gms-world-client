@@ -33,7 +33,7 @@ public class ConfigDbDataSource {
         	if (dbHelper == null) {
         		throw new SQLException("Config SQLiteDatabase is null!");
         	}
-            database = dbHelper.getWritableDatabase(); //TODO handle NPE
+            database = dbHelper.getWritableDatabase();
         }
         return database;
     }
