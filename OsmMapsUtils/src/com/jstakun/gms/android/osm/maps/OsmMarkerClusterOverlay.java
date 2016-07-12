@@ -1,5 +1,6 @@
 package com.jstakun.gms.android.osm.maps;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer;
@@ -102,6 +103,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 				}
 			});
             
+            landmark.setRelatedUIObject(marker);
             add(marker);
 		}
 		LoggerUtils.debug(getItems().size() + " markers stored in cluster.");
@@ -134,11 +136,21 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 	}
 	
 	public void deleteOrphanMarkers() {
+		List<Marker> toRemove = new ArrayList<Marker>();
 		for (Marker m : mItems) {
-			if (m.getRelatedObject() == null) {
-				mItems.remove(m);
+			ExtendedLandmark l = (ExtendedLandmark)m.getRelatedObject();
+			if (l.getRelatedUIObject() == null) {
+				LoggerUtils.debug("Removing marker for landmark " + l.getName());
+				toRemove.add(m);
+			}
+		}		
+		if (!toRemove.isEmpty()) {
+			try {
+				mItems.removeAll(toRemove);
+				invalidate();
+			} catch (Exception e) {
+				LoggerUtils.error(e.getMessage(), e);
 			}
 		}
-		
 	}
 }

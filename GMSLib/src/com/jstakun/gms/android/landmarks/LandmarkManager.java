@@ -503,6 +503,9 @@ public class LandmarkManager {
     	Layer layer = layerManager.getLayer(layerName);
 
         if (layer != null) {
+        	for (ExtendedLandmark l : landmarkStore.get(layerName)) {
+        		l.setRelatedUIObject(null);
+        	}
             landmarkStore.remove(layerName);
             layerManager.removeLayer(layerName);
 
@@ -517,9 +520,10 @@ public class LandmarkManager {
         List<ExtendedLandmark> local = getLandmarkStoreLayer(Commons.LOCAL_LAYER);
         if (id == local.size() && mypos.size() > 0) {
             //mypos.remove(0);
-            mypos.clear();
+        	mypos.clear();
         } else if (id >= 0 && id < local.size()) {
-            local.remove(id);
+            local.get(id).setRelatedUIObject(null);
+        	local.remove(id);
         }
     }
 
@@ -1006,6 +1010,7 @@ public class LandmarkManager {
         if (landmarkStore.containsKey(layer)) {
         	LoggerUtils.debug(layer + " size before delete: " + landmarkStore.get(layer).size());
             if (landmarkStore.get(layer).remove(landmark)) {
+            	landmark.setRelatedUIObject(null);
             	removeLandmarkFromDynamicLayer(landmark);
             }
             response = 1;
@@ -1016,7 +1021,7 @@ public class LandmarkManager {
             LandmarkDbDataSource db = (LandmarkDbDataSource) ConfigurationManager.getInstance().getObject("LANDMARKDB", LandmarkDbDataSource.class);
             response = db.deleteLandmark(landmark);
         }
-
+        
         return response;
     }
 

@@ -40,6 +40,7 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
     private String searchTerm = null;
     private String serverKey = null;
     private transient Map<String, Integer> layerRevelance = new HashMap<String, Integer>();
+    private Object relatedUIObject = null;
     
     public ExtendedLandmark() {
 		
@@ -336,5 +337,13 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
 		if (in.readBoolean()) {
 			this.deal = (Deal)in.readObject();
 		}
+	}
+
+	public Object getRelatedUIObject() {
+		return relatedUIObject;
+	}
+
+	public void setRelatedUIObject(Object relatedUIObject) {
+		this.relatedUIObject = relatedUIObject;
 	}
 }

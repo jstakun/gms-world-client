@@ -374,7 +374,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         syncRoutesOverlays();
         
         //TODO testing
-        if (markerCluster != null) {
+        if (markerCluster != null && mapProvider == ConfigurationManager.OSM_MAPS) {
         	markerCluster.deleteOrphanMarkers();
         }
         
