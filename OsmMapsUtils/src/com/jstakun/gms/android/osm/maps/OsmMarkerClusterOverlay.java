@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 
 import com.jstakun.gms.android.config.Commons;
@@ -47,8 +48,10 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		
 		setRadius((int)(48f * ctx.getResources().getDisplayMetrics().density));
 		
+		this.setMaxClusteringZoomLevel(18);
+		
 		//and text
-		//getTextPaint().setTextSize(12 * ctx.getResources().getDisplayMetrics().density);
+		getTextPaint().setTextSize(14 * ctx.getResources().getDisplayMetrics().density);
 		//this.mAnchorV = Marker.ANCHOR_BOTTOM;
 		//this.mTextAnchorU = 0.70f;
 		//this.mTextAnchorV = 0.27f;
@@ -91,6 +94,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 				@Override
 				public boolean onMarkerClick(Marker m, MapView arg1) {
 					lm.setSelectedLandmark((ExtendedLandmark)m.getRelatedObject());
+					lm.clearLandmarkOnFocusQueue();
 					landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
 					return true;
 				}
@@ -107,7 +111,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		Marker m = super.buildClusterMarker(cluster, mapView);
 		m.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 			@Override
-			public boolean onMarkerClick(Marker arg0, MapView arg1) {
+			public boolean onMarkerClick(Marker selected, MapView arg1) {
 				lm.clearLandmarkOnFocusQueue();
 				for (int i=0;i<cluster.getSize();i++) {
 					Marker m = cluster.getItem(i);
@@ -116,7 +120,11 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 						lm.addLandmarkToFocusQueue((ExtendedLandmark)o);
 					}
 				}
-				landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_LIST);			
+				Message msg = new Message();
+				msg.what = SHOW_LANDMARK_LIST;
+				msg.arg1 = selected.getPosition().getLatitudeE6();
+				msg.arg2 = selected.getPosition().getLongitudeE6();
+				landmarkDetailsHandler.sendMessage(msg);			
 				return true;
 			}
 		});

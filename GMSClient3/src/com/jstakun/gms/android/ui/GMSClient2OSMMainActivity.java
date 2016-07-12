@@ -1294,6 +1294,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             	} else if (msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_LIST) {
                 	//TODO testing 
             		activity.intents.startMultiLandmarkIntent(activity.getMyLocation());
+            		activity.animateTo(new int[]{msg.arg1, msg.arg2});
             	} else if (msg.what == SHOW_MAP_VIEW) {
                 	View loading = activity.findViewById(R.id.mapCanvasWidgetL);
                 	loading.setVisibility(View.GONE);
