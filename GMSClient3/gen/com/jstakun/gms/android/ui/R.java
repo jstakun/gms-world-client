@@ -906,12 +906,12 @@ containing a value of this type.
          */
         public static final int gaId=0x7f0a0000;
         public static final int googleMaps=0x7f0a003c;
-        /**   
-         */
-        public static final int googleMapsKey=0x7f0a0159;
         /**  https://developers.google.com/maps/documentation/android-api/signup 
          */
         public static final int googlePlayKey=0x7f0a015a;
+        /**   
+         */
+        public static final int google_maps_key=0x7f0a0159;
         public static final int imageLoading=0x7f0a0030;
         public static final int keywordDesc=0x7f0a0138;
         public static final int keywordsHint=0x7f0a0057;

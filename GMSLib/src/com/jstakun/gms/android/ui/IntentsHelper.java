@@ -875,7 +875,9 @@ public final class IntentsHelper {
             	}
             }*/
         	if (thumbnail != null) {
-        		Picasso.with(activity).load(selectedLandmark.getThumbnail()).tag(selectedLandmark).error(R.drawable.image_missing48).placeholder(R.drawable.download48).into(thumbnail);
+        		int targetWidth = (int)(128f * activity.getResources().getDisplayMetrics().density);
+                int targetHeight = (int)(128f * activity.getResources().getDisplayMetrics().density);
+                Picasso.with(activity).load(selectedLandmark.getThumbnail()).resize(targetWidth, targetHeight).centerInside().tag(selectedLandmark).error(R.drawable.image_missing48).placeholder(R.drawable.download48).into(thumbnail);
         		thumbnail.setVisibility(View.VISIBLE);
         	}
         	if (StringUtils.isNotEmpty(descr)) {
