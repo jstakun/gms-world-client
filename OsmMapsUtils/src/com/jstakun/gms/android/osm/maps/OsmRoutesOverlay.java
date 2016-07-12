@@ -26,7 +26,6 @@ import com.jstakun.gms.android.routes.RoutesManager;
  *
  * @author jstakun
  */
-//TODO replace with https://github.com/grote/OSMBonusPack/blob/master/src/org/osmdroid/bonuspack/overlays/Polyline.java
 public class OsmRoutesOverlay extends Overlay {
 
     private RoutesManager routesManager = null;

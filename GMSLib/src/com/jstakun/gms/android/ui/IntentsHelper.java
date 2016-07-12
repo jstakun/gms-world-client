@@ -48,8 +48,8 @@ import android.widget.Toast;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+//import com.google.android.gms.location.places.AutocompleteFilter;
+//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
@@ -83,6 +83,7 @@ import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
+import com.squareup.picasso.Picasso;
 
 /**
  *
@@ -139,7 +140,8 @@ public final class IntentsHelper {
 
     public void startPickLocationActivity(boolean isGoogleApiAvailable) {
     	Intent intent = null;
-    	if (isGoogleApiAvailable) {
+    	//TODO uncomment
+    	/*if (isGoogleApiAvailable) {
     		try {
     			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
     			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
@@ -152,9 +154,9 @@ public final class IntentsHelper {
     			LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
     			intent = new Intent(activity, PickLocationActivity.class);
     		}
-    	} else {
+    	} else {*/
     		intent = new Intent(activity, PickLocationActivity.class);
-    	}
+    	//}
     	activity.startActivityForResult(intent, INTENT_PICKLOCATION);
     }
 
@@ -782,7 +784,7 @@ public final class IntentsHelper {
             }
         } else {
             LoggerUtils.error(Locale.getMessage(R.string.Landmark_opening_error));
-            this.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+            showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
         }
         return animateTo;
     }
@@ -860,8 +862,8 @@ public final class IntentsHelper {
         }
 
         ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
-        if (selectedLandmark.getThumbnail() != null) {
-            Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), selectedLandmark.getLayer(), activity.getResources().getDisplayMetrics(), new ThumbnailLoadedHandler(activity));
+        if (StringUtils.isNotEmpty(selectedLandmark.getThumbnail())) {
+            /*Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), selectedLandmark.getLayer(), activity.getResources().getDisplayMetrics(), new ThumbnailLoadedHandler(activity));
             int width = activity.getWindowManager().getDefaultDisplay().getWidth();            
             if (thumbnail != null) {
             	if (image != null && (width == 0 || image.getWidth() < width * 0.9)) { 
@@ -871,12 +873,13 @@ public final class IntentsHelper {
                 	thumbnail.setImageResource(R.drawable.download48);
                 	thumbnail.setTag(selectedLandmark);
             	}
-            }
-            if (StringUtils.isNotEmpty(descr)) {
+            }*/
+        	if (thumbnail != null) {
+        		Picasso.with(activity).load(selectedLandmark.getThumbnail()).tag(selectedLandmark).error(R.drawable.image_missing48).placeholder(R.drawable.download48).into(thumbnail);
+        		thumbnail.setVisibility(View.VISIBLE);
+        	}
+        	if (StringUtils.isNotEmpty(descr)) {
                 desc.setText(Html.fromHtml(descr, imgGetter, null));
-            }
-            if (thumbnail != null) {
-                thumbnail.setVisibility(View.VISIBLE);
             }
         } else {
             if (thumbnail != null) {

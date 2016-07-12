@@ -29,6 +29,7 @@ import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.squareup.picasso.Picasso;
 
 /**
  *
@@ -111,8 +112,8 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             desc = Locale.getMessage(R.string.Landmark_distance, dist)
                     + "<br/>" + desc;
         }
-        if (landmark.getThunbnail() != null) {
-            Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.getThunbnail(), landmark.getLayer(), parentListActivity.getResources().getDisplayMetrics(), new LandmarkThumbnailLoadingHandler(rowView, parentListActivity, landmark));
+        if (StringUtils.isNotEmpty(landmark.getThunbnail())) {
+            /*Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.getThunbnail(), landmark.getLayer(), parentListActivity.getResources().getDisplayMetrics(), new LandmarkThumbnailLoadingHandler(rowView, parentListActivity, landmark));
             int width = parentListActivity.getWindowManager().getDefaultDisplay().getWidth();            
             if (image != null && (width == 0 || image.getWidth() < width * 0.9)) {
                 //System.out.println(image.getWidth() + " " + rowView.getWidth() + " " + parentListActivity.getWindowManager().getDefaultDisplay().getWidth());
@@ -121,12 +122,13 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             } else {
                 holder.thumbnailImage.setImageResource(R.drawable.download48);
             }
+            holder.thumbnailImage.setVisibility(View.VISIBLE);*/
             holder.thumbnailImage.setVisibility(View.VISIBLE);      
-            holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
+        	Picasso.with(parentListActivity).load(landmark.getThunbnail()).placeholder(R.drawable.download48).error(R.drawable.image_missing48).into(holder.thumbnailImage);
+        	holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
         } else {
         	holder.thumbnailImage.setVisibility(View.GONE);
         	holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
-            //holder.landmarkDescText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
 	}
 

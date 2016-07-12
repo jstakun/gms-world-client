@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.GoogleAnalytics;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.lib.R;
@@ -17,9 +17,9 @@ import com.jstakun.gms.android.ui.lib.R;
  */
 public class UserTracker {
 
-	private static Tracker tracker;
-	//private boolean running = false;
-    private boolean dryRun = false;
+	//TODO uncomment
+	//private static Tracker tracker;
+	private boolean dryRun = false;
     private static UserTracker userTracker = null;
 
     private UserTracker() {
@@ -33,7 +33,8 @@ public class UserTracker {
     }
 
     public synchronized void initialize(Application context) {
-    	try {
+    	//TODO uncomment
+    	/*try {
     		LoggerUtils.debug("UserTracker.initialize() called...");
     		if (tracker == null && OsUtil.isDonutOrHigher()) {
     			GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
@@ -45,45 +46,50 @@ public class UserTracker {
           	}
     	} catch (Throwable t) {
     		LoggerUtils.error("UserTracker.initialize exception:", t);
-    	}
+    	}*/
     }
     
     public void trackActivityStart(Activity activity) {
     	LoggerUtils.debug("UserTracker.trackActivityStart() called...");
-		GoogleAnalytics.getInstance(activity).reportActivityStart(activity);
+    	//TODO uncomment
+    	//GoogleAnalytics.getInstance(activity).reportActivityStart(activity);
     }
     
     public void trackActivityStop(Activity activity) {
     	LoggerUtils.debug("UserTracker.trackActivityStop() called...");
-		GoogleAnalytics.getInstance(activity).reportActivityStop(activity);
+    	//TODO uncomment
+    	//GoogleAnalytics.getInstance(activity).reportActivityStop(activity);
     }
     
     public void trackActivity(final String activityName) {
-    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
+    	//TODO uncomment
+    	/*if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
     		LoggerUtils.debug("UserTracker.trackActivity() called...");
     		tracker.setScreenName(activityName);
         	tracker.send(new HitBuilders.EventBuilder().setCategory(activityName).setAction("start").build());
-        }
+        }*/
     }
 
     public void trackEvent(final String category, final String action, final String label, final long value) {
-    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
+    	//TODO uncomment
+    	/*if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER) && tracker != null) {
     		LoggerUtils.debug("UserTracker.trackEvent() called...");
     		tracker.send(new HitBuilders.EventBuilder()
             	.setCategory(category)
             	.setAction(action)
             	.setLabel(label).
             	setValue(value).build());
-        }
+        }*/
     }
 
     public void setDryRun(boolean dryRun, Context context) {
-    	try {
+    	//TODO uncomment
+    	/*try {
     		this.dryRun = dryRun;
     		GoogleAnalytics.getInstance(context).setDryRun(dryRun);
     	} catch (Throwable t) {
     		LoggerUtils.error("UserTracker.setDryRun() error:", t);
-    	}
+    	}*/
     }
     
     private String getId(final Context context) {
