@@ -207,7 +207,7 @@ public abstract class GMSAsyncTask<Params, Progress, Result> {
     /**
      * Creates a new asynchronous task. This constructor must be invoked on the
      * UI thread.
-     * @param name TODO
+     * @param name 
      */
     public GMSAsyncTask(int priority, final String name) {
 

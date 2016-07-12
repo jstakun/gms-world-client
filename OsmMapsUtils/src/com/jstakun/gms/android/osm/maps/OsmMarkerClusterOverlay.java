@@ -11,6 +11,7 @@ import org.osmdroid.views.MapView;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -48,10 +49,11 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		
 		setRadius((int)(48f * ctx.getResources().getDisplayMetrics().density));
 		
-		this.setMaxClusteringZoomLevel(18);
+		setMaxClusteringZoomLevel(18);
 		
 		//and text
 		getTextPaint().setTextSize(14 * ctx.getResources().getDisplayMetrics().density);
+		getTextPaint().setTypeface(Typeface.DEFAULT_BOLD);
 		//this.mAnchorV = Marker.ANCHOR_BOTTOM;
 		//this.mTextAnchorU = 0.70f;
 		//this.mTextAnchorV = 0.27f;

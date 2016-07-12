@@ -1004,11 +1004,12 @@ public class LandmarkManager {
         int response = 0;
 
         if (landmarkStore.containsKey(layer)) {
-            List<ExtendedLandmark> layerVector = getLandmarkStoreLayer(layer);
-            if (layerVector.remove(landmark)) {
+        	LoggerUtils.debug(layer + " size before delete: " + landmarkStore.get(layer).size());
+            if (landmarkStore.get(layer).remove(landmark)) {
             	removeLandmarkFromDynamicLayer(landmark);
             }
             response = 1;
+            LoggerUtils.debug(layer + " size after delete: " + landmarkStore.get(layer).size());
         }
 
         if (layer.equals(Commons.LOCAL_LAYER)) {
