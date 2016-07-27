@@ -100,7 +100,7 @@ public class GridLayerListActivity extends Activity {
             for (String key : layers) {
                 if (!key.equals(Commons.MY_POSITION_LAYER)) {
                 	Layer layer = landmarkManager.getLayerManager().getLayer(key);
-                	if (layer.getCount() > 0 || layer.getImage() > 0 || landmarkManager.getLayerSize(key) > 0) {
+                	if (layer.getType() == LayerManager.LAYER_DYNAMIC || layer.getCount() > 0 || layer.getImage() > 0 || landmarkManager.getLayerSize(key) > 0) {
                 		String formatted = layer.getFormatted();
                 		if (formatted == null) {
                 			formatted = key;

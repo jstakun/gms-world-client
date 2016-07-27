@@ -663,14 +663,15 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         		routes.setVisible(false);	
         	}
 
-            MenuItem login = menu.findItem(R.id.login);
-            login.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
-            
-            MenuItem config = menu.findItem(R.id.config);
-        	config.setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
-            
-            MenuItem register = menu.findItem(R.id.register);
-            register.setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
+        	menu.findItem(R.id.shareScreenshot).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	menu.findItem(R.id.dataPacket).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	menu.findItem(R.id.reset).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	menu.findItem(R.id.releaseNotes).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	menu.findItem(R.id.config).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	      	
+            menu.findItem(R.id.login).setVisible(!ConfigurationManager.getUserManager().isUserLoggedInFully());
+
+            menu.findItem(R.id.register).setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
             
             if (drawerLayout.isDrawerOpen(drawerLinearLayout)) {
             	NavigationDrawerExpandableListAdapter adapter = (NavigationDrawerExpandableListAdapter) drawerList.getExpandableListAdapter();

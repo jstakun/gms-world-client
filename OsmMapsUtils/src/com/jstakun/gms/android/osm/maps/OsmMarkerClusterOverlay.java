@@ -64,47 +64,55 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
 		LoggerUtils.debug("Loading " + landmarks.size() + " markers from layer " + layerKey);
 		for (final ExtendedLandmark landmark : landmarks) {
-			Marker marker = new Marker(mapView);
-			marker.setPosition(new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6())); 
-			marker.setTitle(landmark.getName());
+			Marker marker = null; 
+			if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof Marker) {
+				marker = (Marker)landmark.getRelatedUIObject();
+			}
+			if (marker == null) {
+				marker = new Marker(mapView);
+				marker.setPosition(new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6())); 
+				marker.setTitle(landmark.getName());
 			
-			boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-			DisplayMetrics displayMetrics = mapView.getResources().getDisplayMetrics();
+				boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
+				DisplayMetrics displayMetrics = mapView.getResources().getDisplayMetrics();
 			
-			int color = COLOR_WHITE;
-            if (landmark.isCheckinsOrPhotos()) {
-                color = COLOR_LIGHT_SALMON;
-            } else if (landmark.getRating() >= 0.85) {
-                color = COLOR_PALE_GREEN;
-            }
+				int color = COLOR_WHITE;
+            	if (landmark.isCheckinsOrPhotos()) {
+                	color = COLOR_LIGHT_SALMON;
+            	} else if (landmark.getRating() >= 0.85) {
+                	color = COLOR_PALE_GREEN;
+            	}
 
-            Drawable frame;
+            	Drawable frame;
             
-            if (landmark.getCategoryId() != -1) {
-                int icon = LayerManager.getDealCategoryIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, landmark.getCategoryId());
-                frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
-            } else {
-                //if layer icon is loading, frame can't be cached
-                BitmapDrawable icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-                frame = IconCache.getInstance().getLayerBitmap(icon, layerKey, color, !isMyPosLayer, displayMetrics);
-            }
+            	if (landmark.getCategoryId() != -1) {
+                	int icon = LayerManager.getDealCategoryIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, landmark.getCategoryId());
+                	frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
+            	} else {
+                	//if layer icon is loading, frame can't be cached
+                	BitmapDrawable icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
+                	frame = IconCache.getInstance().getLayerBitmap(icon, layerKey, color, !isMyPosLayer, displayMetrics);
+            	}
 
-            marker.setIcon(frame); 
-            marker.setRelatedObject(landmark);
+            	marker.setIcon(frame); 
+            	marker.setRelatedObject(landmark);
             
-            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            	marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 				
-				@Override
-				public boolean onMarkerClick(Marker m, MapView arg1) {
-					lm.setSelectedLandmark((ExtendedLandmark)m.getRelatedObject());
-					lm.clearLandmarkOnFocusQueue();
-					landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
-					return true;
-				}
-			});
+					@Override
+					public boolean onMarkerClick(Marker m, MapView arg1) {
+						lm.setSelectedLandmark((ExtendedLandmark)m.getRelatedObject());
+						lm.clearLandmarkOnFocusQueue();
+						landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
+						return true;
+					}
+				});
             
-            landmark.setRelatedUIObject(marker);
-            add(marker);
+            	landmark.setRelatedUIObject(marker);
+            	add(marker);
+			} else if (!mItems.contains(marker)) {
+				add(marker);
+			}
 		}
 		LoggerUtils.debug(getItems().size() + " markers stored in cluster.");
 		invalidate();
