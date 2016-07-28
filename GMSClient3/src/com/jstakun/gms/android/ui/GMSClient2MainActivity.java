@@ -1111,8 +1111,12 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
 
             if (loadLayers && !isVisible) {
-            	//System.out.println("--------2-" + myLoc.getLatitudeE6() + " " + myLoc.getLongitudeE6());
-                intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
+            	//TODO testing
+            	if (clearLandmarks && mapProvider == ConfigurationManager.OSM_MAPS && markerCluster != null) {
+            		markerCluster.clearMarkers();
+            	}
+            	//
+            	intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));

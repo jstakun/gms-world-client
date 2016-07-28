@@ -140,9 +140,9 @@ public final class IntentsHelper {
 
     public void startPickLocationActivity(boolean isGoogleApiAvailable) {
     	Intent intent = null;
-    	//TODO uncomment
-    	/*if (isGoogleApiAvailable) {
-    		try {
+    	if (isGoogleApiAvailable) {
+    		//TODO uncomment
+        	/*try {
     			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
     			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
     			.build();
@@ -153,10 +153,10 @@ public final class IntentsHelper {
     		} catch (Exception e) {
     			LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
     			intent = new Intent(activity, PickLocationActivity.class);
-    		}
-    	} else {*/
+    		}*/
+    	} else {
     		intent = new Intent(activity, PickLocationActivity.class);
-    	//}
+    	}
     	activity.startActivityForResult(intent, INTENT_PICKLOCATION);
     }
 
@@ -852,7 +852,7 @@ public final class IntentsHelper {
         }
 
         if (selectedLandmark.getCategoryId() != -1) {
-            int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL, activity.getResources().getDisplayMetrics(), selectedLandmark.getCategoryId());
+            int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL, selectedLandmark.getCategoryId());
             //layerImage.setImageResource(icon);
             name.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
         } else {
@@ -1408,7 +1408,7 @@ public final class IntentsHelper {
         }
     }
     
-    private static class ThumbnailLoadedHandler extends Handler {
+    /*private static class ThumbnailLoadedHandler extends Handler {
     	
     	private WeakReference<Activity> parentActivity;
     	
@@ -1458,7 +1458,7 @@ public final class IntentsHelper {
                 }
         	}   
         }
-    }
+    }*/
     
     private class ConfigurationEntryToLandmarkParcelableFunction implements Function<Map.Entry<String, String>, LandmarkParcelable> {
 

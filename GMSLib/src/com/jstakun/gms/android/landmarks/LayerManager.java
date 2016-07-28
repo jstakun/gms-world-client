@@ -273,8 +273,8 @@ public class LayerManager {
         return layers.containsKey(layerName);
     }
 
-    public static int getDealCategoryIcon(String layerName, int type, DisplayMetrics displayMetrics, int categoryId) {
-        int icon = 0;
+    public static int getDealCategoryIcon(String layerName, int type, int categoryId) {
+        int icon = -1;
         try {
             CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
             if (cm != null) {
@@ -290,12 +290,39 @@ public class LayerManager {
         } catch (Exception e) {
             LoggerUtils.error("LayerManager.getDealCategoryIcon() exception:", e);
         }
-        if (icon == 0) {
-            icon = R.drawable.image_missing32;
+        if (icon == -1) {
+        	if (type == LAYER_ICON_LARGE) {
+        		icon = R.drawable.image_missing32;
+        	} else {
+        		icon = R.drawable.image_missing16;
+        	}
         }
         return icon;
     }
 
+    public static int getLayerIcon(String layerName, int type) {
+    	int icon = -1;
+    	
+    	if (StringUtils.isNotEmpty(layerName)) {
+        	Layer layer = layers.get(layerName);
+        	if (type == LAYER_ICON_LARGE) {
+    			icon = layer.getSmallIconResource();
+    		} else {
+    			icon = layer.getLargeIconResource();
+    		}	
+    	}
+    	
+    	if (icon == -1) {
+        	if (type == LAYER_ICON_LARGE) {
+        		icon = R.drawable.image_missing32;
+        	} else {
+        		icon = R.drawable.image_missing16;
+        	}
+        }
+    	
+    	return icon;
+    }
+    
     public static BitmapDrawable getLayerIcon(String layerName, int type, DisplayMetrics displayMetrics, Handler handler) {
         IconCache imageCache = IconCache.getInstance();
         BitmapDrawable layerDrawable = null;

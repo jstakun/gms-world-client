@@ -86,11 +86,14 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
 	private static void buildView(final LandmarkParcelable landmark, final ViewHolder holder, final View rowView, Activity parentListActivity) {
 		if (StringUtils.isNotEmpty(landmark.getLayer())) {
             if (landmark.getCategoryid() != -1) {
-                int image = LayerManager.getDealCategoryIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, parentListActivity.getResources().getDisplayMetrics(), landmark.getCategoryid());
-                holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, 0, 0, 0);
+                int iconId = LayerManager.getDealCategoryIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, landmark.getCategoryid());
+                //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
+            	Picasso.with(parentListActivity).load(iconId).error(R.drawable.image_missing16).into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
             } else {
-                BitmapDrawable image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, parentListActivity.getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentListActivity, landmark.getLayer()));
-                holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+                //BitmapDrawable image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, parentListActivity.getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentListActivity, landmark.getLayer()));
+                //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+            	int iconId = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
+            	Picasso.with(parentListActivity).load(iconId).error(R.drawable.image_missing16).into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
             }
         } else {
             String filename = landmark.getName();
@@ -176,7 +179,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
         }
     }
     
-    private static class LayerImageLoadingHandler extends Handler {
+    /*private static class LayerImageLoadingHandler extends Handler {
     	
     	private WeakReference<ViewHolder> viewHolder;
     	private WeakReference<Activity> parentActivity;
@@ -205,14 +208,14 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     		}
         }
     	
-    	/*@Override
-        public void handleMessage(Message message) {
-    		if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
-    			BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, parentActivity.get().getResources().getDisplayMetrics(), null);
-    			if (image != null) {
-    				viewHolder.get().landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-    			}
-    		}
-        }*/
-    }
+    	//@Override
+        //public void handleMessage(Message message) {
+    	//	if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
+    	//		BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, parentActivity.get().getResources().getDisplayMetrics(), null);
+    	//		if (image != null) {
+    	//			viewHolder.get().landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+    	//		}
+    	//	}
+        //}
+    }*/
 }
