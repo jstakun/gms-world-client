@@ -110,7 +110,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
             
             	landmark.setRelatedUIObject(marker);
             	add(marker);
-			} else if (!mItems.contains(marker)) {
+			} else if (!getItems().contains(marker)) {
 				add(marker);
 			}
 		}
@@ -160,5 +160,10 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 				LoggerUtils.error(e.getMessage(), e);
 			}
 		}
+	}
+	
+	public void clearMarkers() {
+		getItems().clear();
+		invalidate();
 	}
 }

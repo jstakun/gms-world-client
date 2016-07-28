@@ -52,7 +52,7 @@ public class LayerLoader {
         this.repaintHandler = repaintHandler;
     }
     
-    private void sendRepaintMessage(String layerKey) {
+    private void sendLayerLoadedMessage(String layerKey) {
         if (repaintHandler != null) {
         	Message msg = new Message();
         	msg.what = LAYER_LOADED;
@@ -234,14 +234,17 @@ public class LayerLoader {
                         for (LayerReader reader : readers) {
                         	currentReader = reader;
                         	if (!concurrentLayerLoader.isCancelled() && !isCancelled()) {
-                        		String errorMessage = reader.readRemoteLayer(landmarkManager.getLandmarkStoreLayer(key), latitude, longitude, zoom, width, height, key, this);
+                        		List<ExtendedLandmark> items = landmarkManager.getLandmarkStoreLayer(key);
+                        		int initialSize = items.size();
+                        		String errorMessage = reader.readRemoteLayer(items, latitude, longitude, zoom, width, height, key, this);
                             	if (errorMessage != null) {
                         			messageStack.addMessage(errorMessage, 10, -1, -1);
                         			if (repaintHandler != null && errorMessage.equals(FacebookUtils.FB_OAUTH_ERROR)) {
                         				repaintHandler.sendEmptyMessage(FB_TOKEN_EXPIRED);
                         			}
-                        		} else if (repaintIfNoError && layer.isEnabled()) {
-                        			sendRepaintMessage(key);
+                        		} else if (repaintIfNoError && items.size() > initialSize && layer.isEnabled()) {
+                        			//TODO send message only if loaded more than 0 landmarks
+                        			sendLayerLoadedMessage(key);
                         		}
                         	}
                         }

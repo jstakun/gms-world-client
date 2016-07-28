@@ -1068,8 +1068,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean clearMap) {
-        mapController.setCenter(new org.osmdroid.google.wrapper.GeoPoint(newCenter));
-        if (loadLayers) {
+    	//TODO testing
+    	if (clearMap && mapProvider == ConfigurationManager.OSM_MAPS && markerCluster != null) {
+    		markerCluster.clearMarkers();
+    	}
+    	//
+    	mapController.setCenter(new org.osmdroid.google.wrapper.GeoPoint(newCenter));
+        if (loadLayers) {     	
             intents.loadLayersAction(true, null, clearMap, true, layerLoader,
                     MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                     MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
@@ -1295,6 +1300,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     private void clearMapAction() {
         landmarkManager.clearLandmarkStore();
+        //TODO testing
+    	if (mapProvider == ConfigurationManager.OSM_MAPS && markerCluster != null) {
+    		markerCluster.clearMarkers();
+    	}
+    	//
         routesManager.clearRoutesStore();
         syncRoutesOverlays();
 		postInvalidate();

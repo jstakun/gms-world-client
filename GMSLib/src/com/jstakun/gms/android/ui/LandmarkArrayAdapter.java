@@ -126,8 +126,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             holder.thumbnailImage.setVisibility(View.VISIBLE);      
             int targetWidth = (int)(128f * parentListActivity.getResources().getDisplayMetrics().density);
             int targetHeight = (int)(128f * parentListActivity.getResources().getDisplayMetrics().density);
-            
-        	Picasso.with(parentListActivity).load(landmark.getThunbnail()).resize(targetWidth, targetHeight).centerInside().placeholder(R.drawable.download48).error(R.drawable.image_missing48).into(holder.thumbnailImage);
+            Picasso.with(parentListActivity).load(landmark.getThunbnail()).resize(targetWidth, targetHeight).centerInside().placeholder(R.drawable.download48).error(R.drawable.image_missing48).into(holder.thumbnailImage);
         	holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
         } else {
         	holder.thumbnailImage.setVisibility(View.GONE);

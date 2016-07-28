@@ -1030,9 +1030,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     }
 
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean clearMap) {
+    	if (clearMap && markerCluster != null) {
+    		markerCluster.clearMarkers();
+    	}
         mapController.setCenter(newCenter);
         if (loadLayers) {
-            intents.loadLayersAction(true, null, clearMap, true, layerLoader,
+        	intents.loadLayersAction(true, null, clearMap, true, layerLoader,
                     MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
                     MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
                     mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
@@ -1207,6 +1210,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     private void clearMapAction() {
         landmarkManager.clearLandmarkStore();
+        if (markerCluster != null) {
+    		markerCluster.clearMarkers();
+    	}
         routesManager.clearRoutesStore();
         syncRoutesOverlays();
         postInvalidate();
