@@ -86,14 +86,14 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
 	private static void buildView(final LandmarkParcelable landmark, final ViewHolder holder, final View rowView, Activity parentListActivity) {
 		if (StringUtils.isNotEmpty(landmark.getLayer())) {
             if (landmark.getCategoryid() != -1) {
-                int iconId = LayerManager.getDealCategoryIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, landmark.getCategoryid());
+                int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryid(), LayerManager.LAYER_ICON_SMALL);
                 //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
-            	Picasso.with(parentListActivity).load(iconId).error(R.drawable.image_missing16).into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
+            	Picasso.with(parentListActivity).load(iconId).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
             } else {
                 //BitmapDrawable image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, parentListActivity.getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentListActivity, landmark.getLayer()));
                 //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
             	int iconId = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
-            	Picasso.with(parentListActivity).load(iconId).error(R.drawable.image_missing16).into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
+            	Picasso.with(parentListActivity).load(iconId).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
             }
         } else {
             String filename = landmark.getName();
@@ -143,7 +143,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
         protected ImageView thumbnailImage;
     }
     
-    private static class LandmarkThumbnailLoadingHandler extends Handler {
+    /*private static class LandmarkThumbnailLoadingHandler extends Handler {
     	
     	private WeakReference<View> view;
     	private WeakReference<Activity> parentActivity;
@@ -177,7 +177,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
                 }
     		}
         }
-    }
+    }*/
     
     /*private static class LayerImageLoadingHandler extends Handler {
     	

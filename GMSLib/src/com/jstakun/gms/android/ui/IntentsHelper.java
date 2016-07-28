@@ -852,7 +852,7 @@ public final class IntentsHelper {
         }
 
         if (selectedLandmark.getCategoryId() != -1) {
-            int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL, selectedLandmark.getCategoryId());
+            int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
             //layerImage.setImageResource(icon);
             name.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
         } else {

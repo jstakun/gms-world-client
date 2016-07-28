@@ -273,7 +273,7 @@ public class LayerManager {
         return layers.containsKey(layerName);
     }
 
-    public static int getDealCategoryIcon(String layerName, int type, int categoryId) {
+    public static int getDealCategoryIcon(int categoryId, int type) {
         int icon = -1;
         try {
             CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);

@@ -86,7 +86,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
             	Drawable frame;
             
             	if (landmark.getCategoryId() != -1) {
-                	int icon = LayerManager.getDealCategoryIcon(layerKey, LayerManager.LAYER_ICON_LARGE, landmark.getCategoryId());
+                	int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
                 	frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
             	} else {
                 	//if layer icon is loading, frame can't be cached
