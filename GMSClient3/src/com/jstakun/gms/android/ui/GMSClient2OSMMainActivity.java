@@ -933,28 +933,35 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             if (resultCode == RESULT_OK) {
             	Double lat = null, lng = null;
             	String name = null;
-                if (intent.hasExtra("name") && intent.hasExtra("lat") && intent.hasExtra("lng")) {
-            		lat = intent.getDoubleExtra("lat", -200d);
-                    lng = intent.getDoubleExtra("lng", -200d);
+            	if (intent.hasExtra("name") && intent.hasExtra("lat") && intent.hasExtra("lng")) {
+                	String lats = intent.getStringExtra("lat");
+                    String lngs = intent.getStringExtra("lng");
+                    lat = Double.parseDouble(lats);
+                    lng = Double.parseDouble(lngs);                   
                     name = intent.getStringExtra("name");
-            	} //TODO uncomment  
+            	}  //TODO uncomment  
                 /*else {
             		Place place = PlaceAutocomplete.getPlace(this, intent);
             		name = place.getName().toString();
             		lat = place.getLatLng().latitude;
             		lng = place.getLatLng().longitude;
             	}*/
-                if (lat != null && lng != null && name != null && lat > -200d && lng > -200d) { 
-                	GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
-                	if (!appInitialized) {
-                		initOnLocationChanged(location);
-                	} else {
-                		pickPositionAction(location, true, true);
-                	}
-                	landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
-                } else {
-                	intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
+                
+                if (lat == null || lng == null || name == null) {
+                	ExtendedLandmark defaultLocation = ConfigurationManager.getInstance().getDefaultCoordinate();
+                    name = defaultLocation.getName();
+                    lat = defaultLocation.getQualifiedCoordinates().getLatitude();
+                    lng = defaultLocation.getQualifiedCoordinates().getLongitude();
                 }
+                	
+                GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
+                if (!appInitialized) {
+                	initOnLocationChanged(location);
+                } else {
+                	pickPositionAction(location, true, true);
+                }
+                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
+                
             } else if (resultCode == RESULT_CANCELED && intent != null && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));

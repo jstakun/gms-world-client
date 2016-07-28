@@ -839,18 +839,28 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         //super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
-                String lats = intent.getStringExtra("lat");
-                String lngs = intent.getStringExtra("lng");
-                String names = intent.getStringExtra("name");
-                double lat = Double.parseDouble(lats);
-                double lng = Double.parseDouble(lngs);
+            	Double lat = null, lng = null;
+            	String name = null;
+            	if (intent.hasExtra("name") && intent.hasExtra("lat") && intent.hasExtra("lng")) {
+                	String lats = intent.getStringExtra("lat");
+                    String lngs = intent.getStringExtra("lng");
+                    lat = Double.parseDouble(lats);
+                    lng = Double.parseDouble(lngs);                   
+                    name = intent.getStringExtra("name");
+            	} 
+            	if (lat == null || lng == null || name == null) {
+                	ExtendedLandmark defaultLocation = ConfigurationManager.getInstance().getDefaultCoordinate();
+                    name = defaultLocation.getName();
+                    lat = defaultLocation.getQualifiedCoordinates().getLatitude();
+                    lng = defaultLocation.getQualifiedCoordinates().getLongitude();
+                }
                 GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
                 if (!appInitialized) {
                     initOnLocationChanged(location);
                 } else {
                     pickPositionAction(location, true, true);
                 }
-                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(names), "", Commons.LOCAL_LAYER, true);
+                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
             } else if (resultCode == RESULT_CANCELED && intent != null && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
