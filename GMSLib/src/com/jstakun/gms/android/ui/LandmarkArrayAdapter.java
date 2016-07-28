@@ -85,16 +85,18 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
 
 	private static void buildView(final LandmarkParcelable landmark, final ViewHolder holder, final View rowView, Activity parentListActivity) {
 		if (StringUtils.isNotEmpty(landmark.getLayer())) {
-            if (landmark.getCategoryid() != -1) {
-                int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryid(), LayerManager.LAYER_ICON_SMALL);
+			int targetWidth = (int)(16f * parentListActivity.getResources().getDisplayMetrics().density);
+            int targetHeight = (int)(16f * parentListActivity.getResources().getDisplayMetrics().density);
+            int iconId = -1;
+			if (landmark.getCategoryid() != -1) {
                 //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
-            	Picasso.with(parentListActivity).load(iconId).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
+				iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryid(), LayerManager.LAYER_ICON_SMALL);
             } else {
                 //BitmapDrawable image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, parentListActivity.getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentListActivity, landmark.getLayer()));
                 //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-            	int iconId = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
-            	Picasso.with(parentListActivity).load(iconId).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
+            	iconId = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
             }
+			Picasso.with(parentListActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));	           
         } else {
             String filename = landmark.getName();
             final String layerName = filename.substring(0, filename.lastIndexOf('.'));
