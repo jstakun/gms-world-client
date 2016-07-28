@@ -73,7 +73,7 @@ public class LayerManager {
         allLayers.put(Commons.YOUTUBE_LAYER, LayerFactory.getLayer(Commons.YOUTUBE_LAYER, false, true, isLayerEnabledConf(Commons.YOUTUBE_LAYER), false, true, Arrays.asList(new LayerReader[]{new YouTubeReader()}), null, R.drawable.youtube_icon, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_YouTube_desc), Commons.YOUTUBE_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.youtube_128)); 
         allLayers.put(Commons.WEBCAM_LAYER, LayerFactory.getLayer(Commons.WEBCAM_LAYER, false, true, isLayerEnabledConf(Commons.WEBCAM_LAYER), false, true, Arrays.asList(new LayerReader[]{new WebcamReader()}), null, R.drawable.webcam, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Travel_Webcams_desc), "Webcams", FileManager.ClearPolicy.ONE_DAY, R.drawable.webcam_128)); 
         allLayers.put(Commons.LM_SERVER_LAYER, LayerFactory.getLayer(Commons.LM_SERVER_LAYER, false, true, isLayerEnabledConf(Commons.LM_SERVER_LAYER), true, true, Arrays.asList(new LayerReader[]{new GMSWorldReader()}), null, R.drawable.globe16_new, null, R.drawable.globe24_new, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Public_desc, ConfigurationManager.GMS_WORLD), Commons.LM_SERVER_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.discover_128)); 
-        allLayers.put(Commons.LOCAL_LAYER, LayerFactory.getLayer(Commons.LOCAL_LAYER, false, true, isLayerEnabledConf(Commons.LOCAL_LAYER), false, false, null, null, R.drawable.star, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Phone_Landmarks_desc), Commons.LOCAL_LAYER, FileManager.ClearPolicy.ONE_MONTH, 0)); 
+        allLayers.put(Commons.LOCAL_LAYER, LayerFactory.getLayer(Commons.LOCAL_LAYER, false, true, isLayerEnabledConf(Commons.LOCAL_LAYER), false, false, null, null, R.drawable.star, null, R.drawable.star24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Phone_Landmarks_desc), Commons.LOCAL_LAYER, FileManager.ClearPolicy.ONE_MONTH, 0)); 
         allLayers.put(Commons.ROUTES_LAYER, LayerFactory.getLayer(Commons.ROUTES_LAYER, false, true, isLayerEnabledConf(Commons.ROUTES_LAYER), false, false, null, null, R.drawable.route, null, R.drawable.start_marker, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Routes_desc), Commons.ROUTES_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.routes_128));
         allLayers.put(Commons.MY_POSITION_LAYER, LayerFactory.getLayer(Commons.MY_POSITION_LAYER, false, true, isLayerEnabledConf(Commons.MY_POSITION_LAYER), false, false, null, null, R.drawable.mypos16, null, R.drawable.ic_maps_indicator_current_position, LAYER_LOCAL, null, Commons.MY_POSITION_LAYER, FileManager.ClearPolicy.ONE_MONTH, 0));
     }
@@ -306,9 +306,9 @@ public class LayerManager {
     	if (StringUtils.isNotEmpty(layerName)) {
         	Layer layer = layers.get(layerName);
         	if (type == LAYER_ICON_LARGE) {
-    			icon = layer.getSmallIconResource();
-    		} else {
     			icon = layer.getLargeIconResource();
+    		} else {
+    			icon = layer.getSmallIconResource();
     		}	
     	}
     	
