@@ -450,6 +450,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         LoggerUtils.debug("onDestroy");
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
+        	//TODO testing
+        	if (mapProvider == ConfigurationManager.OSM_MAPS && markerCluster != null) {
+        		markerCluster.clearMarkers();
+        	}
+        	//
             intents.hardClose(layerLoader, routeRecorder, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
             intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());

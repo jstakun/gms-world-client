@@ -323,6 +323,19 @@ public class LayerManager {
     	return icon;
     }
     
+    public static String getLayerIconUri(String layerName, int type) {
+    	String icon = null;
+    	if (StringUtils.isNotEmpty(layerName)) {
+        	Layer layer = layers.get(layerName);
+        	if (type == LAYER_ICON_LARGE) {
+    			icon = layer.getLargeIconPath();
+    		} else {
+    			icon = layer.getSmallIconPath();
+    		}	
+    	}
+    	return icon;
+    }
+    
     public static BitmapDrawable getLayerIcon(String layerName, int type, DisplayMetrics displayMetrics, Handler handler) {
         IconCache imageCache = IconCache.getInstance();
         BitmapDrawable layerDrawable = null;

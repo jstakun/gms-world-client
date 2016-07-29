@@ -87,16 +87,23 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
 		if (StringUtils.isNotEmpty(landmark.getLayer())) {
 			int targetWidth = (int)(16f * parentListActivity.getResources().getDisplayMetrics().density);
             int targetHeight = (int)(16f * parentListActivity.getResources().getDisplayMetrics().density);
-            int iconId = -1;
-			if (landmark.getCategoryid() != -1) {
+            if (landmark.getCategoryid() != -1) {
                 //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
-				iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryid(), LayerManager.LAYER_ICON_SMALL);
+				int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryid(), LayerManager.LAYER_ICON_SMALL);
+				Picasso.with(parentListActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));	           
             } else {
                 //BitmapDrawable image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, parentListActivity.getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentListActivity, landmark.getLayer()));
                 //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-            	iconId = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
+            	int iconId = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
+    			if (iconId != R.drawable.image_missing16) {
+    				Picasso.with(parentListActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
+    			} else {
+    				String iconUri = LayerManager.getLayerIconUri(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
+    				if (iconUri != null) {
+    					Picasso.with(parentListActivity).load(iconUri).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
+    				}
+    			}
             }
-			Picasso.with(parentListActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));	           
         } else {
             String filename = landmark.getName();
             final String layerName = filename.substring(0, filename.lastIndexOf('.'));
