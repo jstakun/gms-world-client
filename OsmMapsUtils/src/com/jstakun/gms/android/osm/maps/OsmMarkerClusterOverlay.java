@@ -42,15 +42,16 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		super(ctx);
 		this.lm = lm;
 		this.landmarkDetailsHandler = landmarkDetailsHandler;
-        
+    
 		//custom icon 
 		Drawable clusterIconD = ctx.getResources().getDrawable(R.drawable.marker_cluster); //marker_poi_cluster
 		Bitmap clusterIcon = ((BitmapDrawable) clusterIconD).getBitmap();
 		setIcon(clusterIcon);
 		
+		//custom radius
 		setRadius((int)(48f * ctx.getResources().getDisplayMetrics().density));
 		
-		setMaxClusteringZoomLevel(18);
+		setMaxClusteringZoomLevel(17);
 		
 		//and text
 		getTextPaint().setTextSize(14 * ctx.getResources().getDisplayMetrics().density);
@@ -71,6 +72,10 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 				}
 				if (marker == null) {
 					marker = new Marker(mapView);
+					
+					marker.setRelatedObject(landmark);
+					landmark.setRelatedUIObject(marker);
+            		
 					marker.setPosition(new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6())); 
 					marker.setTitle(landmark.getName());
 			
@@ -84,20 +89,19 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 						color = COLOR_PALE_GREEN;
 					}
 
-            			Drawable frame;
+            		Drawable frame;
             
-            			if (landmark.getCategoryId() != -1) {
-                			int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-                			frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
-            			} else {
-                			BitmapDrawable icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-                			frame = IconCache.getInstance().getLayerBitmap(icon, layerKey, color, !isMyPosLayer, displayMetrics);
-            			}
-
-            			marker.setIcon(frame); 
-            			marker.setRelatedObject(landmark);
-            
-            			marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            		if (landmark.getCategoryId() != -1) {
+                		int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
+                		frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
+            		} else {
+                		BitmapDrawable icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
+                		frame = IconCache.getInstance().getLayerBitmap(icon, layerKey, color, !isMyPosLayer, displayMetrics);
+            		}
+            		
+            		marker.setIcon(frame); 
+            		       		
+            		marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 				
 						@Override
 						public boolean onMarkerClick(Marker m, MapView arg1) {
@@ -108,7 +112,6 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 						}
 					});
             
-            		landmark.setRelatedUIObject(marker);
             		add(marker);
 				} else if (!getItems().contains(marker)) {
 					add(marker);
@@ -167,4 +170,5 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		getItems().clear();
 		invalidate();
 	}
+	
 }

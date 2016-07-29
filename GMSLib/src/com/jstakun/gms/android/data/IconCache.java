@@ -152,12 +152,12 @@ public class IconCache {
     }
 
     private boolean isImageLoaded(String resourceName) {
-        /*if (images.containsKey(resourceName)) {
+        if (images.containsKey(resourceName)) {
         	return (!images.get(resourceName).isRecycled());
         } else {
         	return false;
-        }*/
-    	return (images.containsKey(resourceName));
+        }
+    	//return (images.containsKey(resourceName));
     }
 
     public BitmapDrawable getLayerImageResource(String layerName, String suffix, String uri, int resourceId, String resourceIdStr, int type, DisplayMetrics displayMetrics, Handler handler) {

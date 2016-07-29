@@ -28,6 +28,7 @@ import com.jstakun.gms.android.landmarks.KMLParser;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.Layer;
+import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.social.GMSUtils;
@@ -336,11 +337,11 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executePoiFileLoadingTask(String filename) {
+    public void executePoiFileLoadingTask(String filename, Handler handler) {
         if (!landmarkManager.getLayerManager().layerExists(filename)) {
             String files_loading_msg = Locale.getMessage(R.string.Files_Background_task_loading);
             intents.showInfoToast(Locale.getMessage(R.string.Task_started, files_loading_msg));
-            LoadPoiFileTask poiLoading = new LoadPoiFileTask();
+            LoadPoiFileTask poiLoading = new LoadPoiFileTask(handler);
             String notificationId = createNotification(R.drawable.star24, files_loading_msg, files_loading_msg, true);
             poiLoading.execute(filename, notificationId);
             //if (!AsyncTaskExecutor.execute(poiLoading, activity, filename, Integer.toString(notificationId))) {
@@ -353,6 +354,12 @@ public class AsyncTaskManager {
 
     private class LoadPoiFileTask extends GenericTask {
 
+    	private Handler handler;
+    	
+    	public LoadPoiFileTask(Handler handler) {
+    		this.handler = handler;
+    	}
+    	
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
@@ -366,12 +373,12 @@ public class AsyncTaskManager {
         @Override
         protected String doInBackground(String... fileData) {
             super.doInBackground(fileData);
-            int count = loadFileAction(filename, this);
+            int count = loadFileAction(filename, handler, this);
             return Integer.toString(count);
         }
     }
 
-    private int loadFileAction(String filename, GMSAsyncTask<?,?,?> caller) {
+    private int loadFileAction(String filename, Handler handler, GMSAsyncTask<?,?,?> caller) {
         String iconPath = filename.substring(0, filename.lastIndexOf('.')) + ".png";
         KMLParser parser = new KMLParser();
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
@@ -388,6 +395,11 @@ public class AsyncTaskManager {
             }
 
             landmarkManager.addLayer(filename, false, true, true, false, true, iconPath, null, null, filename, landmarks);
+            
+            Message msg = new Message();
+        	msg.what = LayerLoader.LAYER_LOADED;
+        	msg.obj = filename;
+        	handler.sendMessage(msg);
         }
 
         return landmarks.size();

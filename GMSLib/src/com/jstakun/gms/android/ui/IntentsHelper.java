@@ -1218,7 +1218,7 @@ public final class IntentsHelper {
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public void processActivityResult(int requestCode, int resultCode, Intent intent, double[] myLocation, double[] mapCenter, Handler showRouteHandler, int zoomLevel, LayerLoader layerLoader, ProjectionInterface projection) {
+    public void processActivityResult(int requestCode, int resultCode, Intent intent, double[] myLocation, double[] mapCenter, Handler uiHandler, int zoomLevel, LayerLoader layerLoader, ProjectionInterface projection) {
         if (requestCode == INTENT_CATEGORIES) {
             if (resultCode == Activity.RESULT_OK) {
                 String action = intent.getStringExtra("action");
@@ -1293,9 +1293,9 @@ public final class IntentsHelper {
                 String filename = intent.getStringExtra("filename");
                 if (action.equals("load")) {
                     if (type == FilesActivity.ROUTES) {
-                        asyncTaskManager.executeRouteLoadingTask(filename, showRouteHandler);
+                        asyncTaskManager.executeRouteLoadingTask(filename, uiHandler);
                     } else if (type == FilesActivity.FILES) {
-                        asyncTaskManager.executePoiFileLoadingTask(filename);
+                        asyncTaskManager.executePoiFileLoadingTask(filename, uiHandler);
                     }
                 }
             }
