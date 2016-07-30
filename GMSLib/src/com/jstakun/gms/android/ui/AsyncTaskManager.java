@@ -470,8 +470,8 @@ public class AsyncTaskManager {
 
     //CheckIn tasks
     public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name, Double lat, Double lng) {
-     String notificationId = "-1";
-     if (!silent) {
+    	String notificationId = "-1";
+    	if (!silent) {
             intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
             notificationId = createNotification(icon, message, message, true);
         }
@@ -592,8 +592,8 @@ public class AsyncTaskManager {
 
        
 
-    public void executeSocialSendMyLocationTask(boolean executeInTask) {
-        if (executeInTask) {
+    public void executeSocialSendMyLocationTask(boolean silent) {
+        if (!silent) {
         	String message = Locale.getMessage(R.string.Task_Background_sendMyLoc);
         	//intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
         	intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));

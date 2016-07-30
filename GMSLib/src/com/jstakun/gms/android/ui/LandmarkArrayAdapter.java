@@ -110,13 +110,13 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     				}
     			}
             }
-        } else {
+        } /*else {
             String filename = landmark.getName();
             final String layerName = filename.substring(0, filename.lastIndexOf('.'));
             final String iconPath = layerName + ".png";
             BitmapDrawable image = IconCache.getInstance().getLayerImageResource(layerName, "_small", iconPath, -1, null, LayerManager.LAYER_FILESYSTEM, parentListActivity.getResources().getDisplayMetrics(), null);
             holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-        }
+        }*/
 
         holder.landmarkNameText.setText(landmark.getName());
 
