@@ -1,5 +1,6 @@
 package com.jstakun.gms.android.ui;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -22,7 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.IconCache;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.ui.lib.R;
@@ -99,8 +102,11 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     				Picasso.with(parentListActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
     			} else {
     				String iconUri = LayerManager.getLayerIconUri(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
-    				if (iconUri != null) {
+    				if (iconUri != null && StringUtils.startsWith(iconUri, "http")) {
     					Picasso.with(parentListActivity).load(iconUri).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
+    				} else {
+    					File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
+    					Picasso.with(parentListActivity).load(fc).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
     				}
     			}
             }
