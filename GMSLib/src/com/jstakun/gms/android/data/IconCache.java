@@ -29,6 +29,7 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -54,7 +55,7 @@ public class IconCache {
     public static final String IMAGE_LOADING_TILE = "image-loading-tile";
     public static final String IMAGE_LOADING_MAP = "image-loading-map";
     public static final String IMAGE_MISSING = "image-missing";
-    private Map<String, Bitmap> images = new HashMap<String, Bitmap>();
+    private static Map<String, Bitmap> images = new HashMap<String, Bitmap>();
     private Map<String, GMSAsyncTask<?,?,?>> loadingTasks = new HashMap<String, GMSAsyncTask<?,?,?>>();
     private static IconCache instance;
     private static Paint paint;
@@ -283,10 +284,6 @@ public class IconCache {
         return img;
     }
 
-    protected void setResource(String name, Bitmap resource) {
-        images.put(name, resource);
-    }
-
     public Drawable getLayerBitmap(BitmapDrawable bd, String layerName, int color, boolean frame, DisplayMetrics displayMetrics) {
         if (frame) {
             String resourceName = layerName + "_selected_" + Integer.toString(color);
@@ -295,7 +292,7 @@ public class IconCache {
             } else {
                 Context ctx = ConfigurationManager.getInstance().getContext();
                 if (ctx != null) {
-                    return createLayerBitmap(ctx, bd.getBitmap(), color, resourceName);
+                    return createLayerBitmap(ctx, bd.getBitmap(), color, resourceName, true);
                 } else {
                     return null;
                 }
@@ -314,7 +311,7 @@ public class IconCache {
                     return getImageDrawable(resourceName);
                 } else {
                     Bitmap b = BitmapFactory.decodeResource(ctx.getResources(), res);
-                    return createLayerBitmap(ctx, b, color, resourceName);
+                    return createLayerBitmap(ctx, b, color, resourceName, true);
                 }
             } else {
                 return ctx.getResources().getDrawable(res); //getBitmapDrawable(BitmapFactory.decodeResource(ctx.getResources(), res));
@@ -324,84 +321,91 @@ public class IconCache {
         }
     }
 
-    private Drawable createLayerBitmap(Context ctx, Bitmap b, int color, String resourceName) {
-        Bitmap bottom = images.get(GRID);
-        final int bottomSpace = (bottom.getHeight() / 2) + 5;
-        int w = 4 * b.getWidth() / 3;
-        int h = 4 * b.getHeight() / 3 + bottomSpace;
+    public Drawable createLayerBitmap(Context ctx, Bitmap b, int color, String resourceName, boolean save) {
+        
+    	Bitmap bmp = PersistenceManagerFactory.getFileManager().readImageFile(FileManager.getIconsFolderPath(), resourceName + ".bmp", null);;
+    	
+    	if (bmp == null) {
 
-        //System.out.println(b.getWidth() + " x " + b.getHeight() + ", " + w + " x " + h + " ---------------------------------- " + resourceName);
+    		Bitmap bottom = images.get(GRID);
+    		final int bottomSpace = (bottom.getHeight() / 2) + 5;
+    		int w = 4 * b.getWidth() / 3;
+    		int h = 4 * b.getHeight() / 3 + bottomSpace;
 
-        Bitmap bmp = Bitmap.createBitmap(w, h, Config.ARGB_8888);
-        Canvas c = new Canvas(bmp);
+    		bmp = Bitmap.createBitmap(w, h, Config.ARGB_8888);
+    		Canvas c = new Canvas(bmp);
 
-        //draw bottom bitmap       
-        c.drawBitmap(bottom, (w - bottom.getWidth()) / 2, h - bottom.getHeight(), paint);
+    		//draw bottom bitmap       
+    		c.drawBitmap(bottom, (w - bottom.getWidth()) / 2, h - bottom.getHeight(), paint);
 
-        RectF rect = new RectF();
-        rect.left = 0;
-        rect.right = w;
-        rect.top = 0;
-        rect.bottom = h - bottomSpace;
+    		RectF rect = new RectF();
+    		rect.left = 0;
+    		rect.right = w;
+    		rect.top = 0;
+    		rect.bottom = h - bottomSpace;
 
-        //fill rect
-        int ovalx = b.getWidth() / 3;
-        int ovaly = b.getHeight() / 3;
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(color);
-        c.drawRoundRect(rect, ovalx, ovaly, paint);
+    		//fill rect
+    		int ovalx = b.getWidth() / 3;
+    		int ovaly = b.getHeight() / 3;
+    		paint.setStyle(Paint.Style.FILL);
+    		paint.setColor(color);
+    		c.drawRoundRect(rect, ovalx, ovaly, paint);
 
-        //fill triange
-        Path triangle = new Path();
-        float ovalx_half = (ovalx * 0.5f);
-        triangle.moveTo(w / 2 - ovalx_half, h - bottomSpace);
-        triangle.lineTo(w / 2, h - (bottomSpace / 2));
-        triangle.lineTo(w / 2 + ovalx_half, h - bottomSpace);
-        triangle.lineTo(w / 2 - ovalx_half, h - bottomSpace);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(color);
-        c.drawPath(triangle, paint);
+    		//fill triange
+    		Path triangle = new Path();
+    		float ovalx_half = (ovalx * 0.5f);
+    		triangle.moveTo(w / 2 - ovalx_half, h - bottomSpace);
+    		triangle.lineTo(w / 2, h - (bottomSpace / 2));
+    		triangle.lineTo(w / 2 + ovalx_half, h - bottomSpace);
+    		triangle.lineTo(w / 2 - ovalx_half, h - bottomSpace);
+    		paint.setStyle(Paint.Style.FILL);
+    		paint.setColor(color);
+    		c.drawPath(triangle, paint);
 
-        paint.setStyle(Paint.Style.STROKE);
-        //paint.setStrokeWidth(2);
-        if (ctx != null) {
-            paint.setColor(ctx.getResources().getColor(R.color.trans_dim_gray));
-        }
+    		paint.setStyle(Paint.Style.STROKE);
+    		//paint.setStrokeWidth(2);
+    		if (ctx != null) {
+    			paint.setColor(ctx.getResources().getColor(R.color.trans_dim_gray));
+    		}
 
-        //draw rect & triangle bounds
-        Path bounds = new Path();
-        bounds.moveTo(w - ovalx, h - bottomSpace);
-        bounds.lineTo(w / 2 + ovalx_half, h - bottomSpace);
-        bounds.lineTo(w / 2, h - (bottomSpace / 2));
-        bounds.lineTo(w / 2 - ovalx_half, h - bottomSpace);
-        bounds.lineTo(ovalx, h - bottomSpace);
+    		//draw rect & triangle bounds
+    		Path bounds = new Path();
+    		bounds.moveTo(w - ovalx, h - bottomSpace);
+    		bounds.lineTo(w / 2 + ovalx_half, h - bottomSpace);
+    		bounds.lineTo(w / 2, h - (bottomSpace / 2));
+    		bounds.lineTo(w / 2 - ovalx_half, h - bottomSpace);
+    		bounds.lineTo(ovalx, h - bottomSpace);
 
-        c.drawLine(ovalx, 0, w - ovalx, 0, paint);
-        c.drawLine(w, ovaly, w, h - bottomSpace - ovaly, paint);
-        c.drawLine(0, ovaly, 0, h - bottomSpace - ovaly, paint);
+    		c.drawLine(ovalx, 0, w - ovalx, 0, paint);
+    		c.drawLine(w, ovaly, w, h - bottomSpace - ovaly, paint);
+    		c.drawLine(0, ovaly, 0, h - bottomSpace - ovaly, paint);
 
-        int two_ovalx = 2 * ovalx;
-        int two_ovaly = 2 * ovaly;
-        c.drawArc(new RectF(0, 0, two_ovalx, two_ovaly), 180, 90, false, paint);
-        c.drawArc(new RectF(w - two_ovalx, 0, w, two_ovaly), 270, 90, false, paint);
-        c.drawArc(new RectF(0, h - bottomSpace - two_ovaly, two_ovalx, h - bottomSpace), 90, 90, false, paint);
-        c.drawArc(new RectF(w - two_ovalx, h - bottomSpace - two_ovaly, w, h - bottomSpace), 0, 90, false, paint);
+    		int two_ovalx = 2 * ovalx;
+    		int two_ovaly = 2 * ovaly;
+    		c.drawArc(new RectF(0, 0, two_ovalx, two_ovaly), 180, 90, false, paint);
+    		c.drawArc(new RectF(w - two_ovalx, 0, w, two_ovaly), 270, 90, false, paint);
+    		c.drawArc(new RectF(0, h - bottomSpace - two_ovaly, two_ovalx, h - bottomSpace), 90, 90, false, paint);
+    		c.drawArc(new RectF(w - two_ovalx, h - bottomSpace - two_ovaly, w, h - bottomSpace), 0, 90, false, paint);
 
-        c.drawPath(bounds, paint);
+    		c.drawPath(bounds, paint);
 
-        if (!b.isRecycled()) {
-        	//draw layer bitmap
-        	Rect src = new Rect(0, 0, b.getWidth(), b.getHeight());
-        	Rect dest = new Rect(src);
-        	dest.offset(b.getWidth() / 6, b.getHeight() / 6);
-        	c.drawBitmap(b, src, dest, paint);
-        }
+    		if (!b.isRecycled()) {
+    			//draw layer bitmap
+    			Rect src = new Rect(0, 0, b.getWidth(), b.getHeight());
+    			Rect dest = new Rect(src);
+    			dest.offset(b.getWidth() / 6, b.getHeight() / 6);
+    			c.drawBitmap(b, src, dest, paint);
+    		}
+        
+    		PersistenceManagerFactory.getFileManager().saveIconFile(bmp, resourceName + ".bmp");
+        
+    	}
         
         //if b == DOWNLOAD don't cache
-        if (!b.equals(images.get(DOWNLOAD))) {
-            setResource(resourceName, bmp);
+        if (save && !b.equals(images.get(DOWNLOAD))) {
+            images.put(resourceName, bmp);
         }
-
+        
         return getBitmapDrawable(bmp);
     }
 
