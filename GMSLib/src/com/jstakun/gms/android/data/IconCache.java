@@ -148,12 +148,12 @@ public class IconCache {
     }
 
     private boolean isImageLoaded(String resourceName) {
-        if (images.containsKey(resourceName)) {
-        	return (!images.get(resourceName).isRecycled());
-        } else {
-        	return false;
-        }
-    	//return (images.containsKey(resourceName));
+        //if (images.containsKey(resourceName)) {
+        //	return (!images.get(resourceName).isRecycled());
+        //} else {
+        //	return false;
+        //}
+    	return (images.containsKey(resourceName));
     }
 
     public BitmapDrawable getLayerImageResource(String layerName, String suffix, String uri, int resourceId, String resourceIdStr, int type, DisplayMetrics displayMetrics, Handler handler) {
@@ -281,7 +281,7 @@ public class IconCache {
 
     public Drawable getLayerBitmap(BitmapDrawable bd, String layerName, int color, boolean frame, DisplayMetrics displayMetrics) {
         if (frame) {
-            String resourceName = StringUtils.replace(layerName, " ", "_") + "_selected_" + Integer.toString(color);
+            String resourceName = layerName + "_selected_" + Integer.toString(color);
             if (isImageLoaded(resourceName)) {
                 return getImageDrawable(resourceName);
             } else {
@@ -297,11 +297,11 @@ public class IconCache {
         }
     }
 
-    public Drawable getLayerBitmap(int res, String layerName, int color, boolean frame, DisplayMetrics displayMetrics) {
+    public Drawable getCategoryBitmap(int res, String categoryId, int color, boolean frame, DisplayMetrics displayMetrics) {
         Context ctx = ConfigurationManager.getInstance().getContext();
         if (ctx != null) {
             if (frame) {
-                String resourceName = StringUtils.replace(layerName, " ", "_") + "_selected_" + Integer.toString(color);
+            	String resourceName = categoryId + "_selected_" + Integer.toString(color);
                 if (isImageLoaded(resourceName)) {
                     return getImageDrawable(resourceName);
                 } else {
@@ -465,7 +465,7 @@ public class IconCache {
                     }
                 }
             } catch (Throwable ex) {
-                LoggerUtils.error("IconCache.getLayerImageResource exception 1", ex);
+                LoggerUtils.error("IconCache.LoadExternalImageTask exception", ex);
             } finally {
                 try {
                     if (input != null) {

@@ -242,7 +242,7 @@ public class LandmarkManager {
 
                     if (landmark.getCategoryId() != -1) {
                         int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-                        frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), COLOR_DODGER_BLUE, !isMyPosLayer, displayMetrics);
+                        frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), COLOR_DODGER_BLUE, !isMyPosLayer, displayMetrics);
                     } else {
                         BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
                         frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), COLOR_DODGER_BLUE, !isMyPosLayer, displayMetrics);
@@ -287,7 +287,7 @@ public class LandmarkManager {
                         
                         if (landmark.getCategoryId() != -1) {
                             int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-                            frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
+                            frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
                         } else {
                             //if layer icon is loading, frame can't be cached
                             BitmapDrawable icon = LayerManager.getLayerIcon(key, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
@@ -331,7 +331,7 @@ public class LandmarkManager {
 
                 if (selectedLandmark.getCategoryId() != -1) {
                     int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-                    frame = IconCache.getInstance().getLayerBitmap(icon, selectedLandmark.getLayer(), COLOR_YELLOW, !isMyPosLayer, displayMetrics);
+                    frame = IconCache.getInstance().getCategoryBitmap(icon, selectedLandmark.getLayer(), COLOR_YELLOW, !isMyPosLayer, displayMetrics);
                 } else {
                 	BitmapDrawable icon = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
                     frame = IconCache.getInstance().getLayerBitmap(icon, selectedLandmark.getLayer(), COLOR_YELLOW, !isMyPosLayer, displayMetrics);

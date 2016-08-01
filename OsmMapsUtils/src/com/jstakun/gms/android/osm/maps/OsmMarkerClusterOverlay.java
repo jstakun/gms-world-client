@@ -1,9 +1,9 @@
 package com.jstakun.gms.android.osm.maps;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer;
 import org.osmdroid.bonuspack.clustering.StaticCluster;
 import org.osmdroid.bonuspack.overlays.Marker;
@@ -11,9 +11,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -23,17 +21,11 @@ import android.os.Message;
 import android.util.DisplayMetrics;
 
 import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.IconCache;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import com.squareup.picasso.Picasso.LoadedFrom;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 
@@ -99,23 +91,22 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 						color = COLOR_PALE_GREEN;
 					}
 
-            		Drawable frame;
+            		Drawable frame = null;
             
             		if (landmark.getCategoryId() != -1) {
                 		int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-                		frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
-            		} else {
-                		BitmapDrawable icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
+                		frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
+            		} else if (!StringUtils.equals(layerKey, Commons.LOCAL_LAYER)) {
+                		//doesn't work with local layer
+            			BitmapDrawable icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
                 		frame = IconCache.getInstance().getLayerBitmap(icon, layerKey, color, !isMyPosLayer, displayMetrics);
             		}
             		
-            		marker.setIcon(frame); 
+            		if (frame != null) {
+            			marker.setIcon(frame); 
+            		}
 					
-					//String iconUri = layerKey + "_selected_" + Integer.toString(color) + ".bmp";
-					//File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
-					//Picasso.with(mapView.getContext()).load(fc).into(new MarkerTarget(marker, mapView.getContext(), landmark));
-            		       		
-            		marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+					marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 				
 						@Override
 						public boolean onMarkerClick(Marker m, MapView arg1) {
@@ -183,76 +174,9 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 	}
 	
 	public void clearMarkers() {
-		getItems().clear();
-		invalidate();
+		if (!getItems().isEmpty()) {
+			getItems().clear();
+			invalidate();
+		}
 	}
-	
-	/*private class MarkerTarget implements Target {
-
-		private Marker marker;
-		private Context ctx;
-		private ExtendedLandmark landmark;
-		
-		public MarkerTarget(Marker marker, Context ctx, ExtendedLandmark landmark) {
-			this.marker = marker;
-			this.ctx = ctx;
-			this.landmark = landmark;
-		}
-		
-		@Override
-		public void onBitmapFailed(Drawable error) {
-			int color = COLOR_WHITE;
-			if (landmark.isCheckinsOrPhotos()) {
-				color = COLOR_LIGHT_SALMON;
-			} else if (landmark.getRating() >= 0.85) {
-				color = COLOR_PALE_GREEN;
-			}
-		
-			boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-			DisplayMetrics displayMetrics = ctx.getResources().getDisplayMetrics();
-			
-			Drawable frame;
-				
-			LoggerUtils.debug("Loading " + landmark.getLayer() + " icon...");
-			if (landmark.getCategoryId() != -1) {
-        		int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-        		frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
-    		} else {
-    			BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-    			frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, displayMetrics);
-    		}
-			LoggerUtils.debug("Loaded " + landmark.getLayer() + " icon.");
-				
-			marker.setIcon(frame);
-		}
-
-		@Override
-		public void onBitmapLoaded(Bitmap bmp, LoadedFrom arg1) {
-			marker.setIcon(getBitmapDrawable(bmp));
-		}
-
-		@Override
-		public void onPrepareLoad(Drawable placeholder) {
-			
-		}
-		
-	}
-	
-	private static BitmapDrawable getBitmapDrawable(Bitmap bitmap) {
-    	try {
-    		//API version >= 4
-    		Context ctx = ConfigurationManager.getInstance().getContext();
-    		return BitmapDrawableHelperInternal.getBitmapDrawable(bitmap, ctx.getResources());
-    	} catch (Throwable e) {
-    		//API version 3
-    		return new BitmapDrawable(bitmap);
-    	}
-    }
-    
-    private static class BitmapDrawableHelperInternal { 
-        private static BitmapDrawable getBitmapDrawable(Bitmap bitmap, Resources res) {
-            return new BitmapDrawable(res, bitmap);
-        }
-    }*/
-	
 }

@@ -1,18 +1,13 @@
 package com.jstakun.gms.android.ui;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Html;
 import android.text.Html.ImageGetter;
 import android.view.LayoutInflater;
@@ -24,14 +19,12 @@ import android.widget.TextView;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.LoggerUtils;
 import com.squareup.picasso.Picasso;
 
 /**
