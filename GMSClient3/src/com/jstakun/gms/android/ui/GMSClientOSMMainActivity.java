@@ -426,7 +426,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         	
             if (!landmarkManager.isInitialized()) {
                 //UserTracker.getInstance().sendMyLocation();
-                landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
+                landmarkManager.initialize();
             }
 
             addLandmarkOverlay();

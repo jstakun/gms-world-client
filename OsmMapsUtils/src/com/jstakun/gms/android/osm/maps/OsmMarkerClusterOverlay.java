@@ -73,6 +73,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 	public void addMarkers(String layerKey, MapView mapView) {
 		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
 		LoggerUtils.debug("Loading " + landmarks.size() + " markers from layer " + layerKey);
+		int size = getItems().size();
 		for (final ExtendedLandmark landmark : landmarks) {
 			synchronized (landmark) {
 				Marker marker = null; 
@@ -88,8 +89,8 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 					marker.setPosition(new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6())); 
 					marker.setTitle(landmark.getName());
 			
-					//boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-					//DisplayMetrics displayMetrics = mapView.getResources().getDisplayMetrics();
+					boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
+					DisplayMetrics displayMetrics = mapView.getResources().getDisplayMetrics();
 			
 					int color = COLOR_WHITE;
 					if (landmark.isCheckinsOrPhotos()) {
@@ -98,7 +99,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 						color = COLOR_PALE_GREEN;
 					}
 
-            		/*Drawable frame;
+            		Drawable frame;
             
             		if (landmark.getCategoryId() != -1) {
                 		int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
@@ -108,11 +109,11 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
                 		frame = IconCache.getInstance().getLayerBitmap(icon, layerKey, color, !isMyPosLayer, displayMetrics);
             		}
             		
-            		marker.setIcon(frame); */
+            		marker.setIcon(frame); 
 					
-					String iconUri = layerKey + "_selected_" + Integer.toString(color) + ".bmp";
-					File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
-					Picasso.with(mapView.getContext()).load(fc).into(new MarkerTarget(marker, mapView.getContext(), landmark));
+					//String iconUri = layerKey + "_selected_" + Integer.toString(color) + ".bmp";
+					//File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
+					//Picasso.with(mapView.getContext()).load(fc).into(new MarkerTarget(marker, mapView.getContext(), landmark));
             		       		
             		marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 				
@@ -131,8 +132,10 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 				}
 			}
 		}
-		LoggerUtils.debug(getItems().size() + " markers stored in cluster.");
-		invalidate();
+		//LoggerUtils.debug(getItems().size() + " markers stored in cluster.");
+		if (getItems().size() > size) {
+			invalidate();
+		}
 	}
 	
 	@Override
@@ -184,7 +187,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		invalidate();
 	}
 	
-	private class MarkerTarget implements Target {
+	/*private class MarkerTarget implements Target {
 
 		private Marker marker;
 		private Context ctx;
@@ -210,6 +213,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 			
 			Drawable frame;
 				
+			LoggerUtils.debug("Loading " + landmark.getLayer() + " icon...");
 			if (landmark.getCategoryId() != -1) {
         		int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
         		frame = IconCache.getInstance().getLayerBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
@@ -217,6 +221,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
     			BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
     			frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, displayMetrics);
     		}
+			LoggerUtils.debug("Loaded " + landmark.getLayer() + " icon.");
 				
 			marker.setIcon(frame);
 		}
@@ -248,6 +253,6 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
         private static BitmapDrawable getBitmapDrawable(Bitmap bitmap, Resources res) {
             return new BitmapDrawable(res, bitmap);
         }
-    }
+    }*/
 	
 }

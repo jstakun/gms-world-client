@@ -90,11 +90,10 @@ public class LandmarkManager {
         pointsPool = new ObjectPool(new LayerPointFactory(), TOTAL_LIMIT + 1);
     }
 
-    public void initialize(List<ExtendedLandmark> dbfile, String... layers) {
+    public void initialize(String... layers) {
         initialized = true;
         int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0);
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
-        landmarkStore.put(Commons.LOCAL_LAYER, dbfile);
         layerManager.initialize(layers);
     }
     

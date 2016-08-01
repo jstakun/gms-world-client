@@ -243,7 +243,6 @@ public class LayerLoader {
                         				repaintHandler.sendEmptyMessage(FB_TOKEN_EXPIRED);
                         			}
                         		} else if (repaintIfNoError && items.size() > initialSize && layer.isEnabled()) {
-                        			//TODO send message only if loaded more than 0 landmarks
                         			sendLayerLoadedMessage(key);
                         		}
                         	}

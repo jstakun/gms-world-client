@@ -1,8 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.data;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -28,15 +33,6 @@ import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -47,7 +43,6 @@ public class IconCache {
     public static final String ICON_MISSING32 = "icon-missing32";
     public static final String ICON_MISSING16 = "icon-missing16";
     private static final String LOADING = "loading";
-    //private static final String COMPASS = "compass";
     private static final String DOWNLOAD = "download";
     public static final String CURSOR = "cursor";
     public static final String MAGNIFIER = "magnifier";
@@ -56,7 +51,7 @@ public class IconCache {
     public static final String IMAGE_LOADING_MAP = "image-loading-map";
     public static final String IMAGE_MISSING = "image-missing";
     private static Map<String, Bitmap> images = new HashMap<String, Bitmap>();
-    private Map<String, GMSAsyncTask<?,?,?>> loadingTasks = new HashMap<String, GMSAsyncTask<?,?,?>>();
+    private static Map<String, GMSAsyncTask<?,?,?>> loadingTasks = new HashMap<String, GMSAsyncTask<?,?,?>>();
     private static IconCache instance;
     private static Paint paint;
     
@@ -122,7 +117,7 @@ public class IconCache {
             }
 
         } catch (Exception ex) {
-            LoggerUtils.error("IconCache.IconCache exception", ex);
+            LoggerUtils.error("IconCache.IconCache() exception", ex);
         }
     }
 
@@ -153,12 +148,12 @@ public class IconCache {
     }
 
     private boolean isImageLoaded(String resourceName) {
-        /*if (images.containsKey(resourceName)) {
+        if (images.containsKey(resourceName)) {
         	return (!images.get(resourceName).isRecycled());
         } else {
         	return false;
-        }*/
-    	return (images.containsKey(resourceName));
+        }
+    	//return (images.containsKey(resourceName));
     }
 
     public BitmapDrawable getLayerImageResource(String layerName, String suffix, String uri, int resourceId, String resourceIdStr, int type, DisplayMetrics displayMetrics, Handler handler) {
@@ -286,13 +281,13 @@ public class IconCache {
 
     public Drawable getLayerBitmap(BitmapDrawable bd, String layerName, int color, boolean frame, DisplayMetrics displayMetrics) {
         if (frame) {
-            String resourceName = layerName + "_selected_" + Integer.toString(color);
+            String resourceName = StringUtils.replace(layerName, " ", "_") + "_selected_" + Integer.toString(color);
             if (isImageLoaded(resourceName)) {
                 return getImageDrawable(resourceName);
             } else {
                 Context ctx = ConfigurationManager.getInstance().getContext();
                 if (ctx != null) {
-                    return createLayerBitmap(ctx, bd.getBitmap(), color, resourceName, true);
+                    return createLayerBitmap(ctx, bd.getBitmap(), color, resourceName);
                 } else {
                     return null;
                 }
@@ -306,12 +301,12 @@ public class IconCache {
         Context ctx = ConfigurationManager.getInstance().getContext();
         if (ctx != null) {
             if (frame) {
-                String resourceName = layerName + "_selected_" + Integer.toString(color);
+                String resourceName = StringUtils.replace(layerName, " ", "_") + "_selected_" + Integer.toString(color);
                 if (isImageLoaded(resourceName)) {
                     return getImageDrawable(resourceName);
                 } else {
                     Bitmap b = BitmapFactory.decodeResource(ctx.getResources(), res);
-                    return createLayerBitmap(ctx, b, color, resourceName, true);
+                    return createLayerBitmap(ctx, b, color, resourceName);
                 }
             } else {
                 return ctx.getResources().getDrawable(res); //getBitmapDrawable(BitmapFactory.decodeResource(ctx.getResources(), res));
@@ -321,18 +316,16 @@ public class IconCache {
         }
     }
 
-    public Drawable createLayerBitmap(Context ctx, Bitmap b, int color, String resourceName, boolean save) {
+    public Drawable createLayerBitmap(Context ctx, Bitmap b, int color, String resourceName) {
         
-    	Bitmap bmp = PersistenceManagerFactory.getFileManager().readImageFile(FileManager.getIconsFolderPath(), resourceName + ".bmp", null);;
+    	    LoggerUtils.debug("Creating new bitmap: " + resourceName);
     	
-    	if (bmp == null) {
-
     		Bitmap bottom = images.get(GRID);
     		final int bottomSpace = (bottom.getHeight() / 2) + 5;
     		int w = 4 * b.getWidth() / 3;
     		int h = 4 * b.getHeight() / 3 + bottomSpace;
 
-    		bmp = Bitmap.createBitmap(w, h, Config.ARGB_8888);
+    		Bitmap bmp = Bitmap.createBitmap(w, h, Config.ARGB_8888);
     		Canvas c = new Canvas(bmp);
 
     		//draw bottom bitmap       
@@ -396,17 +389,13 @@ public class IconCache {
     			dest.offset(b.getWidth() / 6, b.getHeight() / 6);
     			c.drawBitmap(b, src, dest, paint);
     		}
+    	
+    		//if b == DOWNLOAD don't cache
+    		if (!b.equals(images.get(DOWNLOAD))) {
+    			images.put(resourceName, bmp);
+    		}
         
-    		PersistenceManagerFactory.getFileManager().saveIconFile(bmp, resourceName + ".bmp");
-        
-    	}
-        
-        //if b == DOWNLOAD don't cache
-        if (save && !b.equals(images.get(DOWNLOAD))) {
-            images.put(resourceName, bmp);
-        }
-        
-        return getBitmapDrawable(bmp);
+    		return getBitmapDrawable(bmp);
     }
 
     public synchronized void clearAll() {
@@ -419,7 +408,6 @@ public class IconCache {
     		entry.getValue().cancel(true);
     	}
     	loadingTasks.clear();
-    	//
     	instance = null;
     }
 

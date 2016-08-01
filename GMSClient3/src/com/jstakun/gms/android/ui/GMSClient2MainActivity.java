@@ -62,6 +62,7 @@ import com.jstakun.gms.android.google.maps.ObservableMapView;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
 import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
@@ -544,8 +545,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	mapController.setCenter(location);
         	
         	if (!landmarkManager.isInitialized()) {
-        		//UserTracker.getInstance().sendMyLocation();
-        		landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
+        		landmarkManager.initialize();
             }
             
             addLandmarkOverlay();
@@ -1177,7 +1177,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	//TODO testing
         	markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
         	for (String layer : landmarkManager.getLayerManager().getLayers()) {
-        		markerCluster.addMarkers(layer, (org.osmdroid.views.MapView)mapView);
+        		if (landmarkManager.getLayerManager().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && landmarkManager.getLayerSize(layer) > 0) {
+        			markerCluster.addMarkers(layer, (org.osmdroid.views.MapView)mapView);
+        		}      		
         	}
         	addOverlay(markerCluster);
         	//

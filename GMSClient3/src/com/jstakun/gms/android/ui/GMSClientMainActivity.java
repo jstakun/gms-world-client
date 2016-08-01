@@ -452,7 +452,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
         	if (!landmarkManager.isInitialized()) {
                 //UserTracker.getInstance().sendMyLocation();
-                landmarkManager.initialize(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
+                landmarkManager.initialize();
             }
 
             addLandmarkOverlay();
