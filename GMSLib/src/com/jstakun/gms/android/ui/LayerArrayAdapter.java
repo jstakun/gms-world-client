@@ -1,9 +1,11 @@
 package com.jstakun.gms.android.ui;
 
+import java.io.File;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import android.app.Activity;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +17,15 @@ import android.widget.TextView;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
+import com.squareup.picasso.Picasso;
 
 /**
  *
@@ -72,10 +73,25 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
 
         holder.headerText.setText(layerName);
 
-        BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-                        getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));
-        holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+        //BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
+        //                getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));
+        //holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
   
+        int targetWidth = (int)(16f * parentActivity.getResources().getDisplayMetrics().density);
+        int targetHeight = (int)(16f * parentActivity.getResources().getDisplayMetrics().density);
+        int iconId = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL);
+		if (iconId != R.drawable.image_missing16) {
+			Picasso.with(parentActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
+		} else {
+			String iconUri = LayerManager.getLayerIconUri(layerKey, LayerManager.LAYER_ICON_SMALL);
+			if (iconUri != null && StringUtils.startsWith(iconUri, "http")) {
+				Picasso.with(parentActivity).load(iconUri).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
+			} else {
+				File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
+				Picasso.with(parentActivity).load(fc).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
+			}
+		}
+        
         holder.layerCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -140,7 +156,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         protected ImageView layerThumbnail;
     }
 
-    private static class LayerImageLoadingHandler extends Handler {
+    /*private static class LayerImageLoadingHandler extends Handler {
     	
     	private WeakReference<ViewHolder> viewHolder;
     	private WeakReference<Activity> parentActivity;
@@ -166,5 +182,5 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
     			}
     		}
         }
-    }
+    }*/
 }

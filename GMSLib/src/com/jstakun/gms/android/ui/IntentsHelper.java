@@ -1,6 +1,6 @@
 package com.jstakun.gms.android.ui;
 
-import java.lang.ref.WeakReference;
+import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,14 +24,11 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.Parcelable;
 import android.os.Vibrator;
 import android.provider.Settings;
@@ -47,10 +44,6 @@ import android.widget.Toast;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-
-//import com.google.android.gms.location.places.AutocompleteFilter;
-//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -84,6 +77,8 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 import com.squareup.picasso.Picasso;
+//import com.google.android.gms.location.places.AutocompleteFilter;
+//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 /**
  *
@@ -851,14 +846,28 @@ public final class IntentsHelper {
             descr += selectedLandmark.getDescription();
         }
 
+        int targetWidth = (int)(16f * activity.getResources().getDisplayMetrics().density);
+        int targetHeight = (int)(16f * activity.getResources().getDisplayMetrics().density);
         if (selectedLandmark.getCategoryId() != -1) {
-            int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
-            //layerImage.setImageResource(icon);
-            name.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
+            //int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
+            //name.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
+        	int iconId = LayerManager.getDealCategoryIcon(selectedLandmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
+			Picasso.with(activity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(name, PicassoTextViewTarget.Position.LEFT));	           
         } else {
-            BitmapDrawable icon = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL, activity.getResources().getDisplayMetrics(), null);
-            //layerImage.setImageBitmap(icon);
-            name.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+            //BitmapDrawable icon = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL, activity.getResources().getDisplayMetrics(), null);
+            //name.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        	int iconId = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
+			if (iconId != R.drawable.image_missing16) {
+				Picasso.with(activity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(name, PicassoTextViewTarget.Position.LEFT));
+			} else {
+				String iconUri = LayerManager.getLayerIconUri(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
+				if (iconUri != null && StringUtils.startsWith(iconUri, "http")) {
+					Picasso.with(activity).load(iconUri).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(name, PicassoTextViewTarget.Position.LEFT));
+				} else {
+					File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
+					Picasso.with(activity).load(fc).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(name, PicassoTextViewTarget.Position.LEFT));
+				}
+			}
         }
 
         ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
@@ -875,8 +884,8 @@ public final class IntentsHelper {
             	}
             }*/
         	if (thumbnail != null) {
-        		int targetWidth = (int)(128f * activity.getResources().getDisplayMetrics().density);
-                int targetHeight = (int)(128f * activity.getResources().getDisplayMetrics().density);
+        		targetWidth = (int)(128f * activity.getResources().getDisplayMetrics().density);
+                targetHeight = (int)(128f * activity.getResources().getDisplayMetrics().density);
                 Picasso.with(activity).load(selectedLandmark.getThumbnail()).resize(targetWidth, targetHeight).centerInside().tag(selectedLandmark).error(R.drawable.image_missing48).placeholder(R.drawable.download48).into(thumbnail);
         		thumbnail.setVisibility(View.VISIBLE);
         	}

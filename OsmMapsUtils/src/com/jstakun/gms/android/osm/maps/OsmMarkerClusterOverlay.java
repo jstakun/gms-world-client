@@ -100,6 +100,8 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
                 		//doesn't work with local layer
             			BitmapDrawable icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
                 		frame = IconCache.getInstance().getLayerBitmap(icon, layerKey, color, !isMyPosLayer, displayMetrics);
+            		} else if (StringUtils.equals(layerKey, Commons.LOCAL_LAYER)) {
+            			frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
             		}
             		
             		if (frame != null) {

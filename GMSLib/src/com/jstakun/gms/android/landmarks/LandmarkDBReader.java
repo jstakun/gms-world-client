@@ -9,7 +9,9 @@ public class LandmarkDBReader implements LayerReader {
 
 	@Override
 	public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task) {
-		landmarks.addAll(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
+		if (landmarks.isEmpty()) {
+			landmarks.addAll(ConfigurationManager.getDatabaseManager().getLandmarkDatabase());
+		}
 		return null;
 	}
 

@@ -1,13 +1,12 @@
 package com.jstakun.gms.android.ui;
 
-import java.lang.ref.WeakReference;
+import java.io.File;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +16,14 @@ import android.widget.TextView;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.lib.R;
+import com.squareup.picasso.Picasso;
 
 public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 
@@ -72,10 +74,25 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        	holder.headerText.setTextColor(Color.BLACK);
 	        }
 
-	        BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-	                        getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));
-	        holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+	        //BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
+	        //                getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));
+	        //holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
 	  
+	        int targetWidth = (int)(16f * parentActivity.getResources().getDisplayMetrics().density);
+	        int targetHeight = (int)(16f * parentActivity.getResources().getDisplayMetrics().density);
+	        int iconId = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL);
+			if (iconId != R.drawable.image_missing16) {
+				Picasso.with(parentActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
+			} else {
+				String iconUri = LayerManager.getLayerIconUri(layerKey, LayerManager.LAYER_ICON_SMALL);
+				if (iconUri != null && StringUtils.startsWith(iconUri, "http")) {
+					Picasso.with(parentActivity).load(iconUri).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
+				} else {
+					File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
+					Picasso.with(parentActivity).load(fc).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
+				}
+			}
+	        
 	        int count = 0;
 	        if (layerKey.equals(Commons.ROUTES_LAYER)) {
 	            count = routesManager.getCount();	
@@ -90,11 +107,11 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 		        //rowView.setVisibility(View.VISIBLE);
 	        } else if (count > 0) {
 	        	holder.detailText.setText("" + count);
-	        	holder.layerThumbnail.setImageResource(R.drawable.getin);
+	        	holder.layerThumbnail.setImageResource(R.drawable.folder_doc);
 	        	//rowView.setVisibility(View.VISIBLE);
 	        } else {
 	        	holder.detailText.setText("");
-	        	holder.layerThumbnail.setImageResource(R.drawable.image_missing128);
+	        	holder.layerThumbnail.setImageResource(R.drawable.folder_empty);
 	        	//rowView.setVisibility(View.GONE);
 	        }
 
@@ -109,7 +126,7 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        protected ImageView layerThumbnail;
 	    }
 
-	    private static class LayerImageLoadingHandler extends Handler {
+	    /*private static class LayerImageLoadingHandler extends Handler {
 	    	
 	    	private WeakReference<ViewHolder> viewHolder;
 	    	private WeakReference<Activity> parentActivity;
@@ -135,6 +152,6 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
     				}	
 	    		}
 	        }
-	    }
+	    }*/
 	}
 

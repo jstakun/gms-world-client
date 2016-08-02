@@ -3,6 +3,7 @@ package com.jstakun.gms.android.landmarks;
 import android.os.Handler;
 import android.os.Message;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.social.FacebookUtils;
 import com.jstakun.gms.android.ui.lib.R;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -242,7 +245,7 @@ public class LayerLoader {
                         			if (repaintHandler != null && errorMessage.equals(FacebookUtils.FB_OAUTH_ERROR)) {
                         				repaintHandler.sendEmptyMessage(FB_TOKEN_EXPIRED);
                         			}
-                        		} else if (repaintIfNoError && items.size() > initialSize && layer.isEnabled()) {
+                        		} else if (repaintIfNoError && (items.size() > initialSize || StringUtils.equals(key, Commons.LOCAL_LAYER)) && layer.isEnabled()) {
                         			sendLayerLoadedMessage(key);
                         		}
                         	}
