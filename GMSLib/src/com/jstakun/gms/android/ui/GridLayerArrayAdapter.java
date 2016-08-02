@@ -102,15 +102,15 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        
 	        int layerThumbnail = layer.getImage();
 	        if (layerThumbnail > 0) {
-	        	holder.detailText.setText("" + count);
+	        	holder.detailText.setText(Integer.toString(count));
 		        holder.layerThumbnail.setImageResource(layerThumbnail);
 		        //rowView.setVisibility(View.VISIBLE);
 	        } else if (count > 0) {
-	        	holder.detailText.setText("" + count);
+	        	holder.detailText.setText(Integer.toString(count));
 	        	holder.layerThumbnail.setImageResource(R.drawable.folder_doc);
 	        	//rowView.setVisibility(View.VISIBLE);
 	        } else {
-	        	holder.detailText.setText("");
+	        	holder.detailText.setText("0");
 	        	holder.layerThumbnail.setImageResource(R.drawable.folder_empty);
 	        	//rowView.setVisibility(View.GONE);
 	        }
