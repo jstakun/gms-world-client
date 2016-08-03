@@ -3,6 +3,7 @@ package com.jstakun.gms.android.ui;
 import java.util.List;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.maps.android.clustering.Cluster;
@@ -30,20 +31,19 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 
 	@Override
 	public boolean onClusterItemClick(GoogleMarker item) {
-		// show landmark details view
-		return false;
+		Log.d(this.getClass().getName(), "Clicked: " + item.getRelatedObject().getName());
+		return true;
 	}
 
 	@Override
 	public void onClusterInfoWindowClick(Cluster<GoogleMarker> cluster) {
-		// Does nothing, but you could go to a list of markers.
-		
+		// Does nothing, but you could go to a list of markers.		
 	}
 
 	@Override
 	public boolean onClusterClick(Cluster<GoogleMarker> cluster) {
 		for (GoogleMarker item : cluster.getItems()) {
-			//TODO send ids of landmarks to be shown in the list
+			Log.d(this.getClass().getName(), "Clicked: " + item.getRelatedObject().getName());
 		}
 		return true;
 	}
@@ -66,12 +66,15 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
             		}
 					marker = new GoogleMarker(landmark, icon);
 					landmark.setRelatedUIObject(marker);
+					Log.d(this.getClass().getName(), "Adding marker " + landmark.getName());
 					mClusterManager.addItem(marker);
 				} else if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
+					Log.d(this.getClass().getName(), "Adding marker " + landmark.getName());
 					mClusterManager.addItem(marker);
 				}
 			}	
 		}
+		
 		mClusterManager.cluster();	
 	}
 	
