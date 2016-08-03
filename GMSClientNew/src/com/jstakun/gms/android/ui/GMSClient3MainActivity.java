@@ -2,9 +2,7 @@ package com.jstakun.gms.android.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,6 +52,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
         
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
+        }
+        
         mapFragment.getMapAsync(this); 
         
         loadingHandler = new LoadingHandler(this);
@@ -65,7 +70,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             actionBar.hide();
         }
         
-        //loadingHandler.sendEmptyMessageDelayed(SHOW_MAP_VIEW, 5000);
+        Log.d(this.getClass().getName(), "Waiting for map to get ready...");
+        loadingHandler.sendEmptyMessageDelayed(SHOW_MAP_VIEW, 5000);
     }
 
     @Override
@@ -117,7 +123,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        //int id = item.getItemId();
         //if (id == R.id.action_settings) {
         //    return true;
         //}
@@ -166,16 +172,23 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
 	@Override
 	public void onMapReady(GoogleMap map) {
+		Log.d(this.getClass().getName(), "Google Map is ready!");
+		loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
 		this.mMap = map;
 		LatLng latLng = new LatLng(52.25, 20.95);
-	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 8);
 	    mMap.moveCamera(cameraUpdate);
-	    loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
+	    mMap.getUiSettings().setZoomControlsEnabled(true);
+	    loadMarkers();
+	}    
+	    
+	private void loadMarkers() {    
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap);
 	    
-	    //TODO load overlays here
+	    //load overlays here
 	    List<ExtendedLandmark> default_locations = new ArrayList<ExtendedLandmark>();
 	    long installed = System.currentTimeMillis();
+	    for (int i=0;i<5;i++){
 	    default_locations.add(LandmarkFactory.getLandmark("United States, Los Angeles", "", new QualifiedCoordinates(34.052234, -118.243685, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //United States Los Angeles 34.052234,-118.243685
 		default_locations.add(LandmarkFactory.getLandmark("United States, New York", "", new QualifiedCoordinates(40.71427, -74.00597, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //United States Los Angeles 34.052234,-118.243685
 		default_locations.add(LandmarkFactory.getLandmark("United States, San Francisco", "", new QualifiedCoordinates(37.77493, -122.41942, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //United States Los Angeles 34.052234,-118.243685
@@ -202,7 +215,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	default_locations.add(LandmarkFactory.getLandmark("Portugal, Lisbon", "", new QualifiedCoordinates(38.7252993, -9.1500364, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PRT Portugal, Lisbon 38.7252993, 9.1500364
     	default_locations.add(LandmarkFactory.getLandmark("Pakistan, Islamabad", "", new QualifiedCoordinates(33.718151, 73.060547, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PAK Pakistan, Islamabad 33.718151, 73.060547
     	default_locations.add(LandmarkFactory.getLandmark("Sweden, Stockholm", "", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SWE Sweden, Stockholm 59.32893, 18.06491  	       	
-  	
+	    }
     	markerCluster.addMarkers(default_locations);
 	}
 	
@@ -219,8 +232,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			GMSClient3MainActivity activity = parentActivity.get();
         	if (activity != null && !activity.isFinishing()) {
         		if (msg.what == SHOW_MAP_VIEW) {
-                	activity.findViewById(R.id.mapCanvasWidgetL).setVisibility(View.GONE);
-                	activity.findViewById(R.id.mapContainer).setVisibility(View.VISIBLE);
+        			if (!activity.findViewById(R.id.mapContainer).isShown()) {
+        				Log.d(this.getClass().getName(), "Showing map view...");
+            			activity.findViewById(R.id.mapContainer).setVisibility(View.VISIBLE);
+        				activity.findViewById(R.id.mapCanvasWidgetL).setVisibility(View.GONE);
+        			}
                 	//TODO uncomment
                 	//if (activity.lvView == null || !activity.lvView.isShown()) {
                 	if (activity.getSupportActionBar() != null) {

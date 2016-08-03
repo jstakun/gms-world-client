@@ -13,7 +13,7 @@ public class GoogleMarker implements ClusterItem {
     public GoogleMarker(ExtendedLandmark landmark, int icon) {
     	this.mRelatedObject = landmark;
     	this.mIcon = icon;
-        mPosition = new LatLng(landmark.getLatitudeE6(), landmark.getLongitudeE6());
+        mPosition = new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude());
     }
 	
 	@Override
