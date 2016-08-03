@@ -13,9 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,11 +35,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-//import com.google.android.gms.common.ConnectionResult;
-//import com.google.android.gms.common.GoogleApiAvailability;
-//import com.google.android.gms.common.api.Status;
-//import com.google.android.gms.location.places.Place;
-//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -81,6 +73,11 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
+//import com.google.android.gms.common.ConnectionResult;
+//import com.google.android.gms.common.GoogleApiAvailability;
+//import com.google.android.gms.common.api.Status;
+//import com.google.android.gms.location.places.Place;
+//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 public class GMSClient2MainActivity extends MapActivity implements OnClickListener {
 
@@ -157,7 +154,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         super.onCreate(savedInstanceState);
 
-        LoggerUtils.debug("onCreate");
         LoggerUtils.debug("GMSClient2MainActivity.onCreate called...");
         
         //UserTracker.getInstance().startSession(this);
@@ -248,7 +244,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         nearbyLandmarksButton.setOnClickListener(this);
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        //getActionBar().setHomeButtonEnabled(true);
         
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
