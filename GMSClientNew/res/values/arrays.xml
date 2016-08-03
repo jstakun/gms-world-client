@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="navigation">
+        <item>@string/layers</item>
+        <item>Landmarks</item> <!-- submenu -->
+        <item>@string/checkin</item> <!-- submenu -->
+        <item>@string/friendsCheckins</item>
+        <item>@string/deals</item>
+        <item>@string/socialNetworks</item>
+    </string-array>
+    <string-array name="landmarks_submenu">
+        <item>@string/landmarksNearby</item>
+        <item>New landmark</item>
+        <item>@string/recentLandmarks</item>
+        <item>@string/newestLandmarks</item>
+        <item>@string/showMyLandmarks</item>
+        <item>Landmarks calendar</item>
+        <item>@string/loadPoiFile</item>
+    </string-array>    
+    <string-array name="checkin_submenu">
+        <item>@string/autocheckin</item>
+        <item>@string/searchcheckin</item>
+        <item>@string/qrcheckin</item>
+    </string-array>   
+</resources>

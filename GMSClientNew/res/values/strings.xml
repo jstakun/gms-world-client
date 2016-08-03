@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- main_menu -->
+    <string name="app_name">Landmark Manager</string>
+    <string name="settings">Settings</string>
+    <string name="zoomin">Zoom in</string>
+    <string name="zoomout">Zoom out</string>
+    <string name="blogeo">Send post to Blogeo</string>
+    <string name="trackPos">Record my route</string>
+    <string name="login">Login</string>
+    <string name="socialNetworks">Social login</string>
+    <string name="friendsCheckins">Social activities</string>
+    <string name="addLandmark">Add landmark</string>
+    <string name="addLayer">Add layer</string>
+    <string name="refreshLayers">Refresh layers</string>
+    <string name="enableLayers">Enable all layers</string>
+    <string name="disableLayers">Disable all layers</string>
+    <string name="showLayers">Show layers</string>
+    <string name="saveRoute">Save route</string>
+    <string name="routes">Routes</string>
+    <string name="loadRoute">Load route from file</string>
+    <string name="loadPoiFile">Poi files</string>
+    <string name="clearMap">Clear map</string>
+    <string name="showMyPos">My location</string>
+    <string name="events">Calendar</string>
+    <string name="showMyLandmarks">Saved landmarks</string>
+    <string name="recentLandmarks">Recently opened</string>
+    <string name="landmarks">My landmarks</string>
+    <string name="landmarksNearby">Nearby landmarks</string>
+    <string name="dataPacket">Data packets</string>
+    <string name="checkin">Check-in</string>
+    <string name="qrcheckin">Check-in with QR code</string>
+    <string name="searchcheckin">Check-in at GMS World location</string>
+    <string name="autocheckin">Auto Check-In</string>
+    <string name="search">Search</string>
+    <string name="pickMyPos">Search location</string>
+    <string name="discoverPlaces">Discover new places nearby</string>
+    <string name="releaseNotes">Release notes</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+    <string name="more">More&#8230;</string>
+    <string name="register">Register to GMS World</string>
+    <string name="deals">Deals</string>
+    <string name="mapMode">Map</string>
+    <string name="listMode">List</string>
+    <string name="newestLandmarks">Newest landmarks</string>
+    <string name="rateUs">Rate us</string>
+    <string name="imageLoading">Image download</string>
+    <string name="shareScreenshot">Share screenshot</string>
+    <string name="reset">Reset to default settings</string>
+    <string name="config">Configuration</string>
+    
+    <!-- preferences -->
+    <string name="mapProvider">Map provider</string>
+    <string name="locale">Locale</string>
+    <string name="logLevel">Log level</string>
+    <string name="landmarkPersist">Landmark persistence</string>
+    <string name="layers">Layers</string>
+    <string name="persistMgr">Persistence Manager</string>
+    <string name="tileCache">Tile caching</string>
+    <string name="mapLoad">Map loading</string>
+    <string name="googleMaps">Google Maps</string>
+    <string name="osmMaps">Open Street Maps</string>
+    <string name="unitOfLength">Unit of length</string>
+    <string name="landmarksPerLayer">Landmarks in layer</string>
+    <string name="radius">Search radius</string>
+    <string name="dealLimit">Deals in layer</string>
+    <string name="clearCache">Clear map cache</string>
+    <string name="routeType">Routes type</string>
+    <string name="searchType">Search type</string>
+    <string name="autoCheckinTitle">Auto Check-In</string>
+    <string name="autoCheckinSummaryOn">Click to disable Auto Check-In</string>
+    <string name="autoCheckinSummaryOff">Click to enable Auto Check-In</string>
+    <string name="trackUserTitle">User tracking</string>
+    <string name="trackUserSummaryOn">Click to disable user tracking</string>
+    <string name="trackUserSummaryOff">Click to enable user tracking</string>
+    <string name="devModeTitle">Developer mode</string>
+    <string name="devModeSummaryOn">Click to disable developer mode</string>
+    <string name="devModeSummaryOff">Click to enable developer mode</string>
+
+    <string name="select">Select option</string>
+    <string name="select.value">Select value</string>
+    <string name="enable">Enable or disable layer</string>
+    <string name="summary">Click to pop up a list to choose from</string>
+
+    <string name="confirmDealPreferences">Deal recommendations cleared!</string>
+
+    <!-- addLandmark, addLayer -->
+    <string name="addButton">Add</string>
+    <string name="descLabel">Description</string>
+    <string name="categoryLabel">Category</string>
+    <string name="keywordsLabel">Keywords</string>
+    <string name="keywordsHint">Enter keywords comma separated. Layer name will be included to keywords by default.</string>
+    <string name="cancelButton">Cancel</string>
+    <string name="nameLabel">Name</string>
+    <string name="okButton">OK</string>
+    <string name="addVenue">Create venue in Foursquare</string>
+    <string name="pickCategory">Pick Foursquare venue category</string>
+    <string name="venueCreated.success">Venue created in Foursquare successfully!</string>
+    <string name="venueCreated.failed">Error creating venue in Foursquare: %1$s</string>
+    <string name="Venue.exists.error">Venue already exists!</string>
+    <string name="layerCreated">Layer created!</string>
+    <string name="Layer.name.empty.error">Layer name can\'t be empty!</string>
+    <string name="Layer.exists.error">Layer already exists! Choose different name.</string>
+    <string name="Layer.creating.dynamic"><![CDATA[Creating dynamic layer <b>%1$s</b>...]]></string>
+    
+     <!-- blogeoview -->
+     <string name="validityLabel">Validity Time</string>
+     <string name="sendButton">Send</string>
+
+     <!-- closing -->
+     <string name="closingText">Closing Landmark Manager&#8230;</string>
+
+     <!-- loading -->
+     <string name="loadingText">Loading Landmark Manager&#8230;</string>
+     
+     <!-- login -->
+     <string name="passwordLabel">Password</string>
+     <string name="loginButton">Login</string>
+     <string name="loginLabel">Login</string>
+     <string name="loginFull">You are logged in to all available services!</string>
+
+     <!-- picklocation -->
+     <string name="country_prompt">Select your country</string>
+     <string name="pickButton">Search</string>
+     <string name="countryLabel">Country</string>
+     <string name="addressLabel">City or place</string>
+     <string name="Pick.location.default">Loading default location %1$s&#8230;\nIn order to search for other locations go to Menu->Search location.</string>
+     <string name="Action.canceled">Location search cancelled!</string>
+     
+     <!-- comment -->
+     <string name="commentTitle">Enter your comment</string>
+     <string name="commentLabel">Your comment:</string>
+
+     <!-- Transparent -->
+     <string name="open">Open</string>
+     <string name="close">Close</string>
+     <string name="comment">Comment</string>
+     <string name="call">Call</string>
+
+     <!-- LandmarkList -->
+     <string name="listSelection">Select landmark</string>
+     <string name="listLocations">Select location</string>
+     <string name="foundLandmarksLow">
+         If you want to improve search results go to Menu -> Settings -> Search type
+     </string>
+     <string name="foundDealsLow">
+         If you want to improve search results go to Menu -> Settings -> Search type
+     </string>
+     <!-- Deals list -->
+     <string name="searchDeals">Available deals</string>
+     <string name="dealsString">%1$s deals</string>
+
+     <!-- Sort list -->
+     <string name="sort">Sort by</string>
+     <string name="list.sorted.name">List is sorted by name</string>
+     <string name="list.sorted.date">List is sorted by date</string>
+     <string name="list.sorted.distance">List is sorted by distance</string>
+     <string name="list.sorted.category">List is sorted by deal category popularity</string>
+     <string name="list.sorted.rating">List is sorted by rating</string>
+     <string name="list.sorted.relevance">List is sorted by relevance</string>
+     <string name="list.sortby.name">Sort by name</string>
+     <string name="list.sortby.date">Sort by date</string>
+     <string name="list.sortby.distance">Sort by distance</string>
+     <string name="list.sortby.rating">Sort by rating</string>
+
+     <!-- help -->
+     <string name="back">Back</string>
+     <string name="done">Done</string>
+
+     <!-- JSONParser -->
+     <string name="creation_date">Creation date: %1$s</string>
+     <!--string name="category">Category: %1$s</string>
+     <string name="merchant">Merchant: %1$s</string>
+     <string name="artist">Artist: %1$s</string>
+     <string name="venue">Venue: %1$s</string>
+     <string name="description">Description: %1$s</string>
+     <string name="address">Address: %1$s</string>
+     <string name="phone">Phone: %1$s</string>
+     <string name="checkinUser">%1$s has been here %2$s</string>
+     <string name="start_date">Start date: %1$s</string>
+     <string name="end_date">End date: %1$s</string>
+     <string name="expiration_date">Expiration date: %1$s</string>
+     <string name="upload_date">Upload date: %1$s</string>
+     <string name="taken_date">Date taken: %1$s</string>
+     <string name="rating">Rating: %1$s</string>
+     <string name="price">Price: %1$s</string>
+     <string name="discount">, discount: %1$s, save: %2$s off</string>
+     <string name="dealOfTheDay">This is Deal of the day!</string>
+     <string name="dealType">Deal type: %1$s</string>
+     <string name="photo.url.noname"><![CDATA[<font color=\"red\">%1$s on %2$s has taken here </font><a href=\"%3$s\">the photo</a>.]]></string>
+     <string name="photo.url"><![CDATA[<font color=\"red\">%1$s on %2$s has taken here the photo </font><a href=\"%3$s\">%4$s</a>.]]></string>
+     <string name="label.empty">No name</string>
+     <string name="source">Sold by: %1$s</string>
+     <string name="homepage">Homepage</string>
+     <string name="menu">Menu</string>
+     <string name="photo">Photo</string>
+     <string name="twitter">Twitter: %1$s</string>
+     <string name="trending"><![CDATA[<font color=\"red\">There are %1$s people checked-in here now!</font>]]></string-->
+    
+     <!-- Errors -->
+     <string name="Internet.connection.error">Internet connection error!</string>
+     <string name="Authn.error">Authentication error!</string>
+     <string name="Authz.error">Authorization error!</string>
+     <string name="Http.error">Operation failed with code %1$s!</string>
+     <string name="GPS.location.missing.error">I\'m still waiting for your location&#8230;</string>
+     <string name="Pick.location.failed.error">Failed to find location %1$s due to: %2$s</string>
+     <string name="Login.required.error">This function is available only for logged in users! Please go to Menu->Login and login to any social network.</string>
+     <string name="Checkin.required.error">This function requires Facebook, Foursquare or Twitter login!</string>
+     <string name="Checkin.layer.error">Wrong layer for check-in: %1$s</string>
+     <string name="Location.send.error">Location upload failed due to %1$s</string>
+     <string name="Empty.credentials.error">Login and password can\'t be empty!</string>
+     <string name="Comment.empty.error">Comment must be at least 10 character long!</string>
+     <string name="SDcard.readmode.error">SD card is only in read mode!</string>
+     <string name="SDcard.missing.error">Please insert SD card!</string>
+     <string name="Location.checkin.error">No landmarks available. Please refresh layers.</string>
+     <string name="Network.connection.error.title">No network connection!</string>
+     <string name="Network.connection.error.message">Do you want to check network settings?</string>
+     <string name="Location.connection.error.title">No GPS connection!</string>
+     <string name="Location.connection.error.message">Do you want to check GPS settings?</string>
+     <string name="QRCode.scanner.missing.error">Barcode Scanner is not installed or unavailable!</string>
+     <string name="OAuth.authz.url.missing">Missing authorization url. Please try again!</string>
+     <string name="OAuth.service.missing">Missing OAuth service. Please try again!</string>
+     <string name="Share.no.share.apps">No share apps available!</string>
+     <string name="Share.no.matching.apps">Can\'t find matching application!</string>
+     <string name="Call.not.supported.error">Can\'t make a call from your device!</string>
+     <string name="Unexpected.error">Oops! Something went wrong. Please try again!</string>
+     <string name="Forbidden.connection.error">Connection limit exceeded!</string>
+     <string name="Service.unavailable.error">Service temporary unavailable</string>
+     
+     <!-- Misc -->
+     <string name="Your.Location">Your location</string>
+     <string name="Your.Location.Desc">Location received from %1$s provider with %2$.2f meters accuracy on %3$s.</string>
+     <string name="Authn.success">Logon successful!</string>
+     <string name="Please.Wait">Please wait&#8230;</string>
+     <string name="Processing.results">Processing results (%1$d/%2$d)&#8230;</string>
+     <string name="Last.update">Last update: %1$s</string>
+     <string name="Location.sent">Location uploaded</string>
+     <string name="Close.app.prompt">Exit Landmark Manager?</string>
+     <string name="Searching.dialog.message"><![CDATA[Searching for: <br/><b>%1$s</b>...]]></string>
+     <string name="Searching.calendar.message">Searching for landmarks on %1$s</string>
+     <string name="Oauth.progress.message"><![CDATA[Authenticating to <b>%1$s</b>...]]></string>
+     <string name="rate.us.message">You\'ve been using our app for %1$d times. Do you want to rate our app?</string>
+     <string name="Reset.short.message">Reset to default settings</string>
+     <string name="Reset.long.message">Do you want to reset application to default settings?</string>
+     <string name="Reset.confirmation">Default settings reset successfully!</string>
+     <string name="New.version.short.message">New version</string>
+     <string name="New.version.long.message">New version is available. Do you want to update now?</string>
+     <string name="search_hint">Find a place nearby</string>
+     <string name="Migation.1086.message">You have been logged out from all social networks. This is one time operation due to changes in our application. Please login once again and enjoy the application!</string>
+     <string name="Close.app.bye">See you soon!</string>
+     
+     <!-- Auto Check-In alert -->
+     <string name="yesButton">Yes</string>
+     <string name="noButton">No</string>
+     <string name="autoCheckinMessage"><![CDATA[Do you want to be checked-in automatically next time you\'ll visit <b>%1$s</b>?]]></string>
+     <string name="autoCheckinListEmpty">Your Auto Check-In list is empty!</string>
+     <string name="lastCheckinDate">Last check-in: %1$s</string>
+     
+     <!-- Settings -->
+     <string name="Settings.Summary">Current value is: %1$s</string>
+     <string name="Settings.Summary.1">Current value is: %1$s %2$s</string>
+     <string name="Settings.MapProvider.Changed">Maps will be changed after application restart</string>
+     <string name="Settings.general">General Settings</string>
+     
+     <!-- Packet data -->
+     <string name="Packet.data">All sent data: %1$sMB\nAll received data: %2$sMB\nCollecting data from date: %3$s</string>
+     <string name="Clear.Counter">Clear counter</string>
+     <string name="Counter.cleared">Counter cleared</string>
+
+     <!-- Tasks -->
+     <string name="Task.started">%1$s started</string>
+     <string name="Task.stopped">Task stopped successfully!</string>
+     <string name="Task.finished">Task has already finished!</string>
+     <string name="Task.in.progress">%1$s in progress</string>
+     <string name="Task.Click.to.cancel">Click to cancel this task</string>
+     <string name="Task.Click.to.open">Click to open</string>
+     <string name="Task.Background.send.comment">Send comment</string>
+     <string name="Task.Background.login">Login to GMS World</string>
+     <string name="Task.Background.sendMyLoc">Send my location</string>
+
+     <!-- Landmark -->
+     <string name="Landmark.delete.prompt">Delete landmark %1$s?</string>
+     <string name="Landmark.deleted">Landmark deleted</string>
+     <string name="Landmark.deleted.error">Landmark deleting error!</string>
+     <string name="Landmark.distance">Distance: %1$s</string>
+     <string name="Landmark.distance.max">Max distance: %1$s</string>
+     <string name="Landmark.MultiLandmark">Multiple landmarks: %1$s</string>
+     <string name="Landmark.search.empty.result">No matching landmarks!</string>
+     <string name="Landmark.deals.in.category">Number of deals in category: %1$d</string>
+     <string name="Landmark.in.layer.count">Number of landmarks in layer: %1$d</string>
+     <string name="Landmark.NoLandmarks">No landmarks in folder.</string>
+     <string name="Landmark.delete.not.allowed.error">Landmark deletion is not allowed in this view!</string>
+     <string name="Landmark.exists.error">Landmark already exists!</string>
+     <string name="Landmark.add.error">Landmark adding error!</string>
+     <string name="Landmark.url.empty.error">Selected landmark url is empty!</string>
+     <string name="Landmark.name.empty.error">Landmark name can\'t be empty!</string>
+     <string name="Landmark.opening.error">Oops! Can\'t take action on selected landmark. Try again!</string>
+     <string name="Landmark.share">Share landmark</string>
+     <string name="Landmark.see">See %1$s</string>
+     <string name="Landmarks.day.empty">No landmarks for the day</string>
+     <string name="Landmark.Loading">Loading landmarks&#8230;</string>
+
+     <!-- MapLoader, OsmTilesLoader -->
+     <string name="Maps.LoadingMap">Loading map&#8230;</string>
+     <string name="Maps.MapLoaded">Map loaded!</string>
+     <string name="Maps.CacheCleared">Removed %1$s map tiles from cache</string>
+     <string name="Maps.cleared">Map cleared</string>
+
+     <!-- Routes -->
+     <string name="Routes.title">Select route</string>
+     <string name="Routes.Label">Route recording</string>
+     <string name="Routes.TrackMyPosStart">Start route recording</string>
+     <string name="Routes.TrackMyPosStop">Stop route recording</string>
+     <string name="Routes.TrackMyPosOn">Route recording started</string>
+     <string name="Routes.TrackMyPosOff">Route recording stopped</string>
+     <string name="Routes.TrackMyPosStopped">First you need to enable route tracking!</string>
+     <string name="Routes.TrackMyPosEnable">Start recording?</string>
+     <string name="Routes.TrackMyPosDisable">Stop recording?</string>
+     <string name="Routes.PauseRecording">Pause recording</string>
+     <string name="Routes.ResumeRecording">Resume recording</string>
+     <string name="Routes.PauseRecordingOn">Route recording paused</string>
+     <string name="Routes.PauseRecordingOff">Route recording resumed</string>
+     <string name="Routes.NoRoute">No route is recorded</string>
+     <string name="Routes.Background.task.loading">Route loading</string>
+     <string name="Routes.Recording.Saved">Route saved to file %1$s\n%2$s</string>
+     <string name="Routes.Recording.Question">Save route to file %1$s?</string>
+     <string name="Routes.Recording.description">Route distance: %1$s, Average speed: %2$s, Time elapsed: %3$s</string>
+     <string name="Routes.Loaded">Route loaded</string>
+     <string name="Routes.Failed">Failed to load route</string>
+     <string name="Routes.NoRoutes">No routes in folder.</string>
+     <string name="Routes.in.layer.count">Number of routes in layer: %1$d</string>
+     <string name="Routes.Server.route.loaded">Route loaded! Distance: %1$s, estimated time %2$s</string>
+     <string name="Routes.loading.error.0">Failed to load route</string>
+     <string name="Routes.loading.error.1">Failed to load route due to %1$s</string>
+     <string name="Routes.starting.point">Starting point</string>
+     <string name="Routes.end.point">End point</string>
+     
+     <!-- Files -->
+     <string name="Files.title">Select file</string>
+     <string name="Files.Background.task.loading">Poi file loading</string>
+     <string name="Files.delete.prompt">Delete file %1$s?</string>
+     <string name="Files.deleted">File deleted</string>
+     <string name="Files.NoFiles">No files in folder.</string>
+     <string name="Files.Loaded">Loaded %1$s places from KML file</string>
+     <string name="Files.Failed">Failed to load KML file</string>
+
+     <!-- Social -->
+     <string name="Social.comment.sent">Comment sent successfully</string>
+     <string name="Social.comment.failed">Comment sending failed due to %1$s</string>
+     <string name="Social.checkin.success">Successfully checked-in at %1$s</string>
+     <string name="Social.checkin.failure">Check-in failed due to %1$s</string>
+     <string name="Social.checkin.prompt">Check-in at %1$s</string>
+     <string name="Social.send.post.success">%1$s update successful</string>
+     <string name="Social.send.post.failure">%1$s update failed</string>
+     <string name="Social.login.string">Your primary login is %1$s</string>
+     <string name="Social.notLogged">You are not logged in.</string>
+     <string name="Social.Checkin.wrong.key.0">Wrong landmark key format</string>
+     <string name="Social.Checkin.wrong.key.1">Wrong landmark key format: %1$s</string>
+     <string name="Social.allow.sending">Allow sending %1$s updates</string>
+     <string name="Social.Logout.successful">Logout successful</string>
+     <string name="Social.loginButton">Login to %1$s</string>
+     <string name="Social.logoutButton">Logout from %1$s</string>
+     <string name="Social.login.statusyeswithdate">You\'ve logged in as %1$s on %2$s.\nTap to view profile.</string>
+     <string name="Social.login.statusyes">You are logged in as %1$s.\nTap to view profile.</string>
+     <string name="Social.login.statusno">You are not logged in %1$s.\nTap to login.</string>
+     <string name="Social.Checkin.error">Check-in error</string>
+     <string name="Social.token.expired">Your token has expired! Please login again to %1$s.</string>
+
+     <!-- Layers -->
+     <string name="Layer.enabled">Layer enabled</string>
+     <string name="Layer.all.enabled">All layers enabled</string>
+     <string name="Layer.all.disabled">All layers disabled</string>
+     <string name="Layer.disabled">Layer disabled</string>
+     <string name="Layer.operation.unsupported">This operation is unsupported for this layer</string>
+     <string name="Layer.Loading">Loading layers&#8230;</string>
+     <string name="Layer.Loading.1"><![CDATA[Loading layer <b>%1$s</b>...]]></string>
+     <string name="Layer.Loading.counter">Loading layer (%1$d/%2$d)&#8230;</string>
+     <string name="Layer.Loading.processing">Processing loaded layers&#8230;</string>
+     <string name="Layer.action">Select action for layer %1$s</string>
+     <string name="Layer.cleared">Layer %1$s cleared!</string>
+     <string name="Layer.exists">Layer already exists!</string>
+     <string name="Layer.deleted">Layer %1$s deleted!</string>
+     <string name="Layer.delete.prompt">Delete layer %1$s?</string>
+     <string name="Layer.add.message.short">Searching for %1$s&#8230;</string>
+     <string name="Layer.add.message.long"><![CDATA[Do you want to save your query <b>%1$s</b> as layer?]]></string>
+     <string name="Layer.enableLayers.prompt">Enable all layers?</string>
+     <string name="Layer.disableLayers.prompt">Disable all layers?</string>
+    
+     <!-- DealCategoryListActivity -->
+     <string name="Category.title">Select category</string>
+     <string name="Category.Loading.1"><![CDATA[Loading category <b>%1$s</b>...]]></string>
+
+     <!-- English only -->
+     <string name="Crash.error">An unexpected error occurred. Crash raport has been sent to developer and the issue will be fixed soon!</string>
+     <string name="Status.bar.default">Landmark Manager</string>
+     <string name="Info.about">%1$s (R)\nVersion: %2$s-%3$d built on %4$s\nCopyright &#169; 2010&#8211;16 GMS World\n%5$s</string>
+     <string name="checkboxDodDialog">Show deal of the day at startup</string>
+     <string name="Zoom.info">Zoom %1$d/%2$d</string>
+     <string name="keywordDesc">Discover nearby %1$s</string>
+     <string name="mailMessageSuffix">\nLink: %1$s\n&#8212;&#8212;\nSent from %2$s for Android</string>
+     
+     <!-- English only LayerManager layer descs -->
+     <string name="Layer.Facebook.desc">Places around your current location</string>
+     <string name="Layer.Foursquare.desc">Venues around your current location</string>
+     <string name="Layer.Yelp.desc">Businesses around your current location</string>
+     <string name="Layer.Hotels.Combined.desc">Hotel booking offers from multiple providers</string>
+     <string name="Layer.Google.Places.desc">Places around your current location</string>
+     <string name="Layer.Qype.desc">Places reviews around your current location</string>
+     <string name="Layer.Twitter.desc">Discover what people are talking about nearby</string>
+     <string name="Layer.MasterCard.ATMs.desc">MasterCard ATMs near your current location</string>
+     <string name="Layer.OSM.ATMs.desc">ATMs near your current location</string>
+     <string name="Layer.LastFM.desc">Events around your current location</string>
+     <string name="Layer.Meetup.desc">Events around your current location</string>
+     <string name="Layer.Upcoming.desc">Events around your current location</string>
+     <string name="Layer.Eventful.desc">Events around your current location</string>
+     <string name="Layer.OSM.Parkings.desc">Parkings near your current location</string>
+     <string name="Layer.Foursquare.Merchant.desc">Daily deals around your current location</string>
+     <string name="Layer.Groupon.desc">Daily deals around your current location</string>
+     <string name="Layer.8Coupons.desc">Daily deals around your current location aggregated from multiple services</string>
+     <string name="Layer.Hotwire.desc">Hotel daily deals around your current location</string>
+     <string name="Layer.Expedia.desc">Hotel booking offers around your current location</string>
+     <string name="Layer.Wikipedia.desc">Free, collaborative, web-based encyclopedia project</string>
+     <string name="Layer.Freebase.desc">A community-curated database of well-known people, places, and things</string>
+     <string name="Layer.Panoramio.desc">Geolocation oriented photo sharing service</string>
+     <string name="Layer.Flickr.desc">Geolocation oriented photo sharing service</string>
+     <string name="Layer.Picasa.desc">Geolocation oriented photo sharing service</string>
+     <string name="Layer.Instagram.desc">Geolocation oriented photo sharing service</string>
+     <string name="Layer.YouTube.desc">Video sharing service</string>
+     <string name="Layer.Travel.Webcams.desc">Webcams near your current location</string>
+     <string name="Layer.Phone.Landmarks.desc">Landmarks from your phone</string>
+     <string name="Layer.Routes.desc">Recorded or saved routes</string>
+     <string name="Layer.My.Location.desc"></string>
+     <string name="Layer.Public.desc">%1$s community public landmarks</string>
+</resources>

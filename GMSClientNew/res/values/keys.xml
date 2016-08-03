@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- https://analytics.google.com -->
+    <string name="gaId">UA-29392038-1</string>
+    <!-- https://developer.amazon.com/ -->
+    <string name="amzAppKey">463437384f535750464c4839464e5257</string>
+    <!-- https://developers.google.com/maps/documentation/android-api/signup -->
+    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">0Q5BK7pxEm_m0aijUlJBq5HLrgrHiLyhj4U87XA</string>
+    <!-- https://developers.google.com/maps/documentation/android-api/signup -->
+    <string name="googlePlayKey" translatable="false" templateMergeStrategy="preserve">AIzaSyAKmHLyGE0pYfee3gbkAWPKLc22ESy_V9E</string>
+    <!-- https://my.skyhookwireless.com/ -->
+    <string name="skyhookApiKey">eJwz5DQ0AAFTI2NzzmoTF2cDJ3MnY10TAxMLXQNzUyNdF1c3U10jE3MLEyMDF0tHI8NaAA3oCuk</string>
+    <string name="tapForTapKey" translatable="false" templateMergeStrategy="preserve"/>
+    <string name="bcPwd">LandmarkManager2071086</string>
+</resources>
