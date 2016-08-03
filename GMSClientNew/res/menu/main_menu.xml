@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/showLayers"
+                 android:title="@string/layers" android:showAsAction="ifRoom|withText"
+                 android:icon="@drawable/layers"/> 
+    <item android:id="@+id/search"
+          android:title="@string/search" android:icon="@drawable/ic_menu_search"
+          android:showAsAction="ifRoom|withText"/> 
+    <item android:id="@+id/login" android:showAsAction="ifRoom|withText"
+          android:title="@string/login" android:icon="@drawable/ic_menu_login"/> 
+    <item android:id="@+id/listLandmarks" android:icon="@android:drawable/ic_menu_compass"
+                 android:title="@string/landmarksNearby" android:showAsAction="ifRoom|withText"/> 
+    <item android:id="@+id/addLandmark" android:showAsAction="ifRoom|withText"
+          android:title="@string/addLandmark" android:icon="@android:drawable/ic_menu_add" /> 
+    <item android:id="@+id/pickMyPos" android:showAsAction="ifRoom|withText"
+          android:title="@string/pickMyPos" android:icon="@android:drawable/ic_menu_mapmode"/> 
+    <!-- item android:id="@+id/showMyPos" android:showAsAction="ifRoom|withText"
+          android:title="@string/showMyPos" android:icon="@android:drawable/ic_menu_mylocation"/-->
+    <item android:id="@+id/settings" android:showAsAction="ifRoom|withText"
+          android:title="@string/settings" android:icon="@android:drawable/ic_menu_preferences"/>
+    <item android:id="@+id/checkin"
+          android:title="@string/checkin">
+          <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/checkin">
+            <item android:id="@+id/autocheckin"
+                android:title="@string/autocheckin"/>
+            <item android:id="@+id/searchcheckin"
+                android:title="@string/searchcheckin"/>
+            <item android:id="@+id/qrcheckin"
+                android:title="@string/qrcheckin"/>
+          </menu>
+    </item>
+    <item android:id="@+id/friendsCheckins"
+          android:title="@string/friendsCheckins"/>
+    <item android:id="@+id/deals"
+          android:title="@string/deals"/>
+    <item android:id="@+id/landmarks"
+          android:title="@string/landmarks">
+        <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/landmarks">
+            <item android:id="@+id/recentLandmarks"
+          android:title="@string/recentLandmarks"/>
+            <item android:id="@+id/showMyLandmarks"
+          android:title="@string/showMyLandmarks"/>
+            <item android:id="@+id/events"
+          android:title="@string/events"/>
+            <item android:id="@+id/newestLandmarks"
+          android:title="@string/newestLandmarks"/>
+            <item android:id="@+id/loadPoiFile"
+          android:title="@string/loadPoiFile" />
+        </menu>
+    </item>
+    <item android:id="@+id/socialNetworks"
+          android:title="@string/socialNetworks" />
+    <item android:id="@+id/routes"
+          android:title="@string/routes">
+        <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/routes">
+            <item android:id="@+id/trackPos"
+          android:title="@string/trackPos" />
+            <item android:id="@+id/pauseRoute"
+          android:title="@string/Routes.PauseRecording"/>
+            <item android:id="@+id/saveRoute"
+          android:title="@string/saveRoute"/>
+              <item android:id="@+id/loadRoute"
+          android:title="@string/loadRoute" />
+        </menu>
+    </item>
+    <item android:id="@+id/more"
+          android:title="@string/more">
+        <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/more">
+            <item android:id="@+id/shareScreenshot" android:title="@string/shareScreenshot" />
+            <item android:id="@+id/register" android:title="@string/register" /> 
+            <item android:id="@+id/blogeo" android:title="@string/blogeo" /> 
+            <item android:id="@+id/clearMap" android:title="@string/clearMap" /> 
+            <item android:id="@+id/dataPacket" android:title="@string/dataPacket" /> 
+            <item android:id="@+id/reset" android:title="@string/reset"/>
+            <item android:id="@+id/releaseNotes" android:title="@string/releaseNotes" /> 
+            <item android:id="@+id/rateUs" android:title="@string/rateUs" />
+            <item android:id="@+id/config" android:title="@string/config"/>
+            <item android:id="@+id/about" android:title="@string/about" /> 
+            <item android:id="@+id/exit" android:title="@string/exit" /> 
+        </menu>
+    </item>
+</menu>
+

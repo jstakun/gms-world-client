@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapButtons"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|right"
+    android:layout_marginBottom="48dip"
+    android:layout_marginRight="6dip"
+    android:orientation="horizontal"
+    android:visibility="gone">
+
+    <ImageButton
+        android:id="@+id/nearbyLandmarksButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mypos_shape"
+        android:contentDescription="@string/landmarksNearby"
+        android:src="@drawable/pin_location_2" />
+
+    <View
+        android:layout_width="6dip"
+        android:layout_height="fill_parent"
+        android:background="@android:color/transparent" />
+
+    <ImageButton
+        android:id="@+id/myLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mypos_shape"
+        android:contentDescription="@string/showMyPos"
+        android:src="@drawable/compass" />
+
+</LinearLayout>
