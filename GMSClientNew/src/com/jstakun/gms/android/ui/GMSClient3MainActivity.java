@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -32,7 +34,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.openlapi.QualifiedCoordinates;
 
-public class GMSClient3MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, OnMapReadyCallback {
+public class GMSClient3MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, OnMapReadyCallback, OnClickListener {
 
 	private static final int SHOW_MAP_VIEW = 0;
 	
@@ -86,6 +88,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         loadingHandler.sendEmptyMessageDelayed(SHOW_MAP_VIEW, 5000);
     }
 
+    private void initComponents(Bundle savedInstanceState) {
+    	
+    }
+    
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
@@ -95,28 +101,53 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 .commit();
     }
 
-    /*public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
-    }*/
-
-    public void restoreActionBar() {
+    /*public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(getTitle());
+    }*/
+
+    @Override
+    public void onResume() {
+    	super.onResume();
+        //LoggerUtils.debug("onResume");
+    }
+    
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
-
+    @Override
+    public void onDestroy() {
+    	super.onDestroy();
+    }
+    
+    @Override
+    public void onRestart() {
+        super.onRestart();
+    }
+    
+    @Override
+    public void onNewIntent(Intent intent) {
+    }
+    
+    @Override
+    public boolean onSearchRequested() {
+    	return false;
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
@@ -129,7 +160,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         }
         return super.onCreateOptionsMenu(menu);
     }
-
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	return false;
+    }
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -141,47 +177,15 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         //}
         return super.onOptionsItemSelected(item);
     }
+    
+    @Override
+	public void onClick(View v) {		
+	}
 
-    //
-    // A placeholder fragment containing a simple view.
-    //
-    public static class PlaceholderFragment extends Fragment {
-        //
-        // The fragment argument representing the section number for this
-        // fragment.
-        //
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        //
-        // Returns a new instance of this fragment for the given section
-        // number.
-        //
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.gmsclient3_fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            //((GMSClient3MainActivity) activity).onSectionAttached(
-            //        getArguments().getInt(ARG_SECTION_NUMBER));
-        }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     }
-
+    
 	@Override
 	public void onMapReady(GoogleMap map) {
 		Log.d(this.getClass().getName(), "Google Map is ready!");
@@ -195,8 +199,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    mMap.setOnMyLocationChangeListener(myLocationChangeListener);
 	    
 	    loadMarkers();
-	}    
-	    
+	}  
+    
 	private void loadMarkers() {    
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap);
 	    
@@ -234,6 +238,43 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	markerCluster.addMarkers(default_locations);
 	}
 	
+    public static class PlaceholderFragment extends Fragment {
+        //
+        // The fragment argument representing the section number for this
+        // fragment.
+        //
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        //
+        // Returns a new instance of this fragment for the given section
+        // number.
+        //
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.gmsclient3_fragment_main, container, false);
+            return rootView;
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            //((GMSClient3MainActivity) activity).onSectionAttached(
+            //        getArguments().getInt(ARG_SECTION_NUMBER));
+        }
+    }  
+	    
 	private static class LoadingHandler extends Handler {
 		
 		private WeakReference<GMSClient3MainActivity> parentActivity;
@@ -263,5 +304,4 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			
 		}
 	}
-
 }
