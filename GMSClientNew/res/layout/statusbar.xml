@@ -7,17 +7,11 @@
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
     android:orientation="vertical">
-    <!--ZoomControls android:id="@+id/zoomControls"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
-    android:gravity="center"
-    android:background="@android:color/transparent"/-->
     <com.jstakun.gms.android.ui.MapInfoView
         android:layout_height="wrap_content"
         android:paddingLeft="4dip"
         android:paddingRight="4dip"
-        android:paddingBottom="8dip"
+        android:paddingBottom="4dip"
         android:id="@+id/info"
         android:layout_width="fill_parent"/>
     <View
@@ -30,9 +24,8 @@
         android:layout_height="wrap_content"
         android:background="@color/trans_light_gray"
         android:weightSum="1"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:padding="2dip">
+        android:paddingLeft="4dip"
+        android:paddingRight="4dip">
         <TextView
             android:id="@+id/statusBar"
             android:layout_width="wrap_content"

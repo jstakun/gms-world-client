@@ -46,27 +46,27 @@ public class MapInfoView extends View {
         canvas.drawText(zoomText, getPaddingLeft(), getHeight() - getPaddingBottom(), paint);
         
         //draw distance
-        String text = "10ft " + " ";//DistanceUtils.formatDistance(getDistance()) + " ";
+        //String text = "10ft " + " ";//DistanceUtils.formatDistance(getDistance()) + " ";
         
-        float textSize = paint.measureText(text);
-        canvas.drawText(text, getWidth() - textSize - getPaddingRight(), getHeight() - getPaddingBottom(), paint);
+        //float textSize = paint.measureText(text);
+        //canvas.drawText(text, getWidth() - textSize - getPaddingRight(), getHeight() - getPaddingBottom(), paint);
 
         //draw line
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(2f * dip);
+        //paint.setStyle(Paint.Style.STROKE);
+        //paint.setStrokeWidth(2f * dip);
 
         //------------
-        canvas.drawLine(3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom() + (3f * dip), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() + (3f * dip), paint);
+        //canvas.drawLine(3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom() + (3f * dip), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() + (3f * dip), paint);
         //|-----------
-        canvas.drawLine(3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom(), 3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom() + (6f * dip), paint);
+        //canvas.drawLine(3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom(), 3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom() + (6f * dip), paint);
         //-----------|
-        canvas.drawLine(getWidth() - getPaddingRight(), getHeight() - getPaddingBottom(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() + (6f * dip), paint);
+        //canvas.drawLine(getWidth() - getPaddingRight(), getHeight() - getPaddingBottom(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() + (6f * dip), paint);
 	}
 	
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
 	    int desiredWidth = 100;
-	    int desiredHeight = (int)(FONT_SIZE*getResources().getDisplayMetrics().density) + getPaddingBottom() + getPaddingTop();
+	    int desiredHeight = (int)(FONT_SIZE * getResources().getDisplayMetrics().density) + getPaddingBottom() + getPaddingTop();
 
 	    int widthMode = MeasureSpec.getMode(widthMeasureSpec);
 	    int widthSize = MeasureSpec.getSize(widthMeasureSpec);

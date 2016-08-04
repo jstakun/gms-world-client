@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,6 +42,17 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private NavigationDrawerFragment mNavigationDrawerFragment;
     private GoogleMap mMap;
 
+    private GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
+        @Override
+        public void onMyLocationChange(Location location) {
+            //LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+            //mMarker = mMap.addMarker(new MarkerOptions().position(loc));
+            //if(mMap != null){
+            //    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+            //}
+        }
+    };
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,6 +191,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 8);
 	    mMap.moveCamera(cameraUpdate);
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
+	    mMap.setMyLocationEnabled(true);
+	    mMap.setOnMyLocationChangeListener(myLocationChangeListener);
+	    
 	    loadMarkers();
 	}    
 	    

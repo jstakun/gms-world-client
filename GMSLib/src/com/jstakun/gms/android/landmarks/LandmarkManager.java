@@ -141,8 +141,10 @@ public class LandmarkManager {
             layer.add(landmark);
             //save landmark to sqlite database
             LandmarkDbDataSource db = (LandmarkDbDataSource) ConfigurationManager.getInstance().getObject("LANDMARKDB", LandmarkDbDataSource.class);
-            long id = db.addLandmark(landmark);
-            LoggerUtils.debug("Insterted new landmark to db: " + id);
+            if (db != null) {
+            	long id = db.addLandmark(landmark);
+            	LoggerUtils.debug("Insterted new landmark to db: " + id);
+            }
             //
             addLandmarkToDynamicLayer(landmark);
         } else {
