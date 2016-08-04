@@ -185,8 +185,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         myLocation = new OsmMyLocationNewOverlay(this, mapView, loadingHandler);
         LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
-        //infoOverlay = new OsmInfoOverlay(this);
-
+        
         initComponents();
         
     }
@@ -438,13 +437,14 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     public void onRestart() {
         super.onRestart();
         LoggerUtils.debug("onRestart");
-        if (mapProvider != ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER)) {
-            Intent intent = getIntent();
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
-            LocationServicesManager.disableMyLocation();
-            finish();
-            startActivity(intent);
-        }
+        //this activity works only with osm maps
+        //if (mapProvider != ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER)) {
+        //    Intent intent = getIntent();
+        //    ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
+        //    LocationServicesManager.disableMyLocation();
+        //    finish();
+        //    startActivity(intent);
+        //}
     }
     
     @Override
@@ -1106,7 +1106,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     private void addLandmarkOverlay() {
         markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
-    	markerCluster.loadAllMarkers(mapView);
     	addOverlay(markerCluster);
     }
 
