@@ -37,11 +37,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-//import com.google.android.gms.common.ConnectionResult;
-//import com.google.android.gms.common.GoogleApiAvailability;
-//import com.google.android.gms.common.api.Status;
-//import com.google.android.gms.location.places.Place;
-//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -54,7 +49,6 @@ import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
-import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.osm.maps.ObservableMapView;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
@@ -75,6 +69,11 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
+//import com.google.android.gms.common.ConnectionResult;
+//import com.google.android.gms.common.GoogleApiAvailability;
+//import com.google.android.gms.common.api.Status;
+//import com.google.android.gms.location.places.Place;
+//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 public class GMSClient2OSMMainActivity extends Activity implements OnClickListener {
 
@@ -376,7 +375,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         //TODO testing
         if (markerCluster != null && mapProvider == ConfigurationManager.OSM_MAPS) {
-        	markerCluster.deleteOrphanMarkers();
+        	markerCluster.loadAllMarkers(mapView);
         }
         
         intents.startAutoCheckinBroadcast();
@@ -1121,12 +1120,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         addOverlay(landmarkOverlay);*/
     	//TODO testing
     	markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
-    	markerCluster.clearMarkers();
-    	for (String layer : landmarkManager.getLayerManager().getLayers()) {
-    		if (landmarkManager.getLayerManager().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && landmarkManager.getLayerManager().getLayer(layer).isEnabled() && landmarkManager.getLayerSize(layer) > 0 ) {
-        		markerCluster.addMarkers(layer, (org.osmdroid.views.MapView)mapView);
-    		}   		
-    	}
+    	markerCluster.loadAllMarkers(mapView);
     	addOverlay(markerCluster);
     }
 

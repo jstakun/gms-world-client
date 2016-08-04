@@ -166,18 +166,6 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		return m;
 	}
 	
-	public void deleteOrphanMarkers() {
-		List<Marker> toRemove = new ArrayList<Marker>();
-		for (Marker m : getItems()) {
-			ExtendedLandmark l = (ExtendedLandmark)m.getRelatedObject();
-			if (l.getRelatedUIObject() == null) {
-				LoggerUtils.debug("Removing marker for landmark " + l.getName());
-				toRemove.add(m);
-			}
-		}		
-		deleteMarkers(toRemove);
-	}
-	
 	public void deleteLayerMarkers(String layer) {
 		List<Marker> toRemove = new ArrayList<Marker>();
 		for (Marker m : getItems()) {
@@ -212,5 +200,15 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 			readWriteLock.writeLock().unlock();
 			invalidate();
 		}
+	}
+	
+	public void loadAllMarkers(MapView mapView) {
+		LoggerUtils.debug("Loading all markers!");
+		clearMarkers();
+		for (String layer : lm.getLayerManager().getLayers()) {
+    		if (lm.getLayerManager().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && lm.getLayerManager().getLayer(layer).isEnabled() && lm.getLayerSize(layer) > 0) {
+    			addMarkers(layer, mapView);
+    		}      		
+    	}
 	}
 }
