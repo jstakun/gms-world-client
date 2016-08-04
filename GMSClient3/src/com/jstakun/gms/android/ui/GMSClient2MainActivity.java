@@ -1171,6 +1171,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             addOverlay(landmarkOverlay);*/
         	//TODO testing
         	markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
+        	markerCluster.clearMarkers();
         	for (String layer : landmarkManager.getLayerManager().getLayers()) {
         		if (landmarkManager.getLayerManager().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && landmarkManager.getLayerManager().getLayer(layer).isEnabled() && landmarkManager.getLayerSize(layer) > 0) {
         			markerCluster.addMarkers(layer, (org.osmdroid.views.MapView)mapView);
