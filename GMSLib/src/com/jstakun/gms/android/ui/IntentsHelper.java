@@ -77,8 +77,8 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 import com.squareup.picasso.Picasso;
-//import com.google.android.gms.location.places.AutocompleteFilter;
-//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 /**
  *
@@ -136,8 +136,7 @@ public final class IntentsHelper {
     public void startPickLocationActivity(boolean isGoogleApiAvailable) {
     	Intent intent = null;
     	if (isGoogleApiAvailable) {
-    		//TODO uncomment
-        	/*try {
+    		try {
     			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
     			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
     			.build();
@@ -148,7 +147,7 @@ public final class IntentsHelper {
     		} catch (Exception e) {
     			LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
     			intent = new Intent(activity, PickLocationActivity.class);
-    		}*/
+    		}
     	} else {
     		intent = new Intent(activity, PickLocationActivity.class);
     	}

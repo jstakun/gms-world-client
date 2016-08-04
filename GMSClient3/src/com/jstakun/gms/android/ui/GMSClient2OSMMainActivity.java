@@ -69,11 +69,11 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
-//import com.google.android.gms.common.ConnectionResult;
-//import com.google.android.gms.common.GoogleApiAvailability;
-//import com.google.android.gms.common.api.Status;
-//import com.google.android.gms.location.places.Place;
-//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 public class GMSClient2OSMMainActivity extends Activity implements OnClickListener {
 
@@ -164,14 +164,13 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         loadingHandler = new LoadingHandler(this);
         
-        //TODO uncomment 
-        //if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {
-        //	isGoogleApiAvailable = true;
-        //	LoggerUtils.debug("Google Places API is available!");
-        //} else {
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {
+        	isGoogleApiAvailable = true;
+        	LoggerUtils.debug("Google Places API is available!");
+        } else {
         	isGoogleApiAvailable = false;
             LoggerUtils.error("Google Places API is not available!");
-        //}
+        }
         
         LoggerUtils.debug("Map provider is " + mapProvider);
 
@@ -373,7 +372,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         syncRoutesOverlays();
         
-        //TODO testing
         if (markerCluster != null && mapProvider == ConfigurationManager.OSM_MAPS) {
         	markerCluster.loadAllMarkers(mapView);
         }
@@ -939,13 +937,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                     lat = Double.parseDouble(lats);
                     lng = Double.parseDouble(lngs);                   
                     name = intent.getStringExtra("name");
-            	}  //TODO uncomment  
-                /*else {
+            	} else {
             		Place place = PlaceAutocomplete.getPlace(this, intent);
             		name = place.getName().toString();
             		lat = place.getLatLng().latitude;
             		lng = place.getLatLng().longitude;
-            	}*/
+            	}
                 
                 if (lat == null || lng == null || name == null) {
                 	ExtendedLandmark defaultLocation = ConfigurationManager.getInstance().getDefaultCoordinate();
@@ -972,11 +969,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 intents.showInfoToast(message);
             } else if (resultCode != RESULT_CANCELED) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
-            } //TODO uncomment 
-            /*else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             	Status status = PlaceAutocomplete.getStatus(this, intent);
                 intents.showInfoToast(status.getStatusMessage());
-            }*/ 
+            } 
         } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
@@ -1072,11 +1068,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
 
             if (loadLayers && !isVisible) {
-            	//TODO testing
             	if (clearLandmarks && mapProvider == ConfigurationManager.OSM_MAPS && markerCluster != null) {
             		markerCluster.clearMarkers();
             	}
-            	//
                 intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
             }
         } else {
@@ -1111,15 +1105,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     }
 
     private void addLandmarkOverlay() {
-        /*OsmLandmarkOverlay landmarkOverlay;
-        if (LocationServicesManager.isGpsHardwarePresent()) {
-            landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
-        } else {
-            landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
-        }
-        addOverlay(landmarkOverlay);*/
-    	//TODO testing
-    	markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
+        markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
     	markerCluster.loadAllMarkers(mapView);
     	addOverlay(markerCluster);
     }
@@ -1290,7 +1276,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             	} else if (msg.what == MessageStack.STATUS_GONE) {
             		activity.loadingImage.setVisibility(View.GONE);
             	} else if (msg.what == LayerLoader.LAYER_LOADED) {
-            		//TODO testing
             		if (activity.mapProvider == ConfigurationManager.OSM_MAPS) {
             			activity.markerCluster.addMarkers((String)msg.obj, (org.osmdroid.views.MapView)activity.mapView);
             		} 
@@ -1309,8 +1294,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                     	activity.animateTo(coordsE6);
                     }
             	} else if (msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_LIST) {
-                	//TODO testing 
-            		activity.intents.startMultiLandmarkIntent(activity.getMyLocation());
+                	activity.intents.startMultiLandmarkIntent(activity.getMyLocation());
             		activity.animateTo(new int[]{msg.arg1, msg.arg2});
             	} else if (msg.what == SHOW_MAP_VIEW) {
                 	View loading = activity.findViewById(R.id.mapCanvasWidgetL);
