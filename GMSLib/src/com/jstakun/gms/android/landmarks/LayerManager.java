@@ -102,7 +102,6 @@ public class LayerManager {
         Layer layer = layers.get(name);
         if (layer != null) {
             layer.setEnabled(enabled);
-            //TODO add/remove layer markers to map view
         }
     }
 
@@ -115,7 +114,7 @@ public class LayerManager {
     public boolean isAllLayersEnabled() {
         for (String key : getLayers()) {
             Layer layer = layers.get(key);
-            if (layer != null && !layer.isEnabled()) {
+            if (layer != null && (!layer.isEnabled() && layer.getType() != LAYER_DYNAMIC)) {
                 return false;
             }
         }
