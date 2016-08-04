@@ -108,6 +108,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private int mapProvider;
     private boolean appInitialized = false, isRouteDisplayed = false, isGoogleApiAvailable = false;
     private Handler loadingHandler;
+    
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             IGeoPoint location = LocationServicesManager.getMyLocation();
@@ -436,7 +437,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        //UserTracker.getInstance().stopSession(this);
     }
 
     @Override
@@ -480,14 +480,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private void hideLandmarkView() {
-    	lvView.setVisibility(View.GONE);
-		getActionBar().show();
-		landmarkManager.clearLandmarkOnFocusQueue();
-		landmarkManager.setSelectedLandmark(null);
-		landmarkManager.setSeletedLandmarkUI();
-    }
-   
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	UserTracker.getInstance().trackEvent("onKeyDown", "", "", 0);
@@ -521,6 +513,14 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	}
     }
 
+    private void hideLandmarkView() {
+    	lvView.setVisibility(View.GONE);
+		getActionBar().show();
+		landmarkManager.clearLandmarkOnFocusQueue();
+		landmarkManager.setSelectedLandmark(null);
+		landmarkManager.setSeletedLandmarkUI();
+    }
+   
     private synchronized void initOnLocationChanged(final IGeoPoint location, int source) {
     	//remove
     	//try {
@@ -904,6 +904,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         return isRouteDisplayed;
     }
 
+    @Override
     public void onClick(View v) {
     	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton || v == myLocationButton || v == nearbyLandmarksButton) {
     		if (v == myLocationButton) {
