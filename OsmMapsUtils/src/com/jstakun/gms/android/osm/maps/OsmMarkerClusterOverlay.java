@@ -168,13 +168,30 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 	
 	public void deleteOrphanMarkers() {
 		List<Marker> toRemove = new ArrayList<Marker>();
-		for (Marker m : mItems) {
+		for (Marker m : getItems()) {
 			ExtendedLandmark l = (ExtendedLandmark)m.getRelatedObject();
 			if (l.getRelatedUIObject() == null) {
 				LoggerUtils.debug("Removing marker for landmark " + l.getName());
 				toRemove.add(m);
 			}
 		}		
+		deleteMarkers(toRemove);
+	}
+	
+	public void deleteLayerMarkers(String layer) {
+		List<Marker> toRemove = new ArrayList<Marker>();
+		for (Marker m : getItems()) {
+			ExtendedLandmark l = (ExtendedLandmark)m.getRelatedObject();
+			if (l.getLayer().equals(layer)) {
+				LoggerUtils.debug("Removing marker for landmark " + l.getName());
+				l.setRelatedUIObject(null);
+				toRemove.add(m);
+			}
+		}		
+		deleteMarkers(toRemove);
+	}
+	
+	private void deleteMarkers(List<Marker> toRemove) {
 		if (!toRemove.isEmpty()) {
 			try {
 				readWriteLock.writeLock().lock();

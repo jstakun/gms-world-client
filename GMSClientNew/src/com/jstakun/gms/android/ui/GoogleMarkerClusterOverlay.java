@@ -1,11 +1,13 @@
 package com.jstakun.gms.android.ui;
 
+import java.util.Collection;
 import java.util.List;
 
 import android.app.Activity;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -82,5 +84,12 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		if (!mClusterManager.getMarkerCollection().getMarkers().isEmpty()) {
 			mClusterManager.clearItems();
 		}
+	}
+	
+	public void deleteLayerMarkers(String layer) {
+		//Collection<Marker> markers = mClusterManager.getMarkerCollection().getMarkers();
+		//for (Marker marker : markers) {
+		//TODO must be implemented
+		//}
 	}
 }
