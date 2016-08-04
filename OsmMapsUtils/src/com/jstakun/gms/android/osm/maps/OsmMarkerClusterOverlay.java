@@ -1,6 +1,5 @@
 package com.jstakun.gms.android.osm.maps;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -166,7 +165,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		return m;
 	}
 	
-	public void deleteLayerMarkers(String layer) {
+	/*public void deleteLayerMarkers(String layer) {
 		List<Marker> toRemove = new ArrayList<Marker>();
 		for (Marker m : getItems()) {
 			ExtendedLandmark l = (ExtendedLandmark)m.getRelatedObject();
@@ -190,7 +189,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 				LoggerUtils.error(e.getMessage(), e);
 			}
 		}
-	}
+	}*/
 	
 	public void clearMarkers() {
 		if (!getItems().isEmpty()) {
