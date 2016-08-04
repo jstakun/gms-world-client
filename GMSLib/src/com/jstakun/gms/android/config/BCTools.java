@@ -14,7 +14,6 @@ import org.spongycastle.crypto.engines.DESedeEngine;
 import org.spongycastle.crypto.generators.PKCS12ParametersGenerator;
 import org.spongycastle.crypto.modes.CBCBlockCipher;
 import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
-import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.Hex;
 
 import android.content.Context;

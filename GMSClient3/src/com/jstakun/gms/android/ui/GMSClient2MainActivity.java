@@ -458,6 +458,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     public void onRestart() {
         super.onRestart();
         LoggerUtils.debug("onRestart");
+        //when map provider is changing we need to restart activity
         if (mapProvider != ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER)) {
             Intent intent = getIntent();
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
@@ -1152,7 +1153,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private void addLandmarkOverlay() {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
         	markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
-        	markerCluster.loadAllMarkers((org.osmdroid.views.MapView)mapView);
         	addOverlay(markerCluster);
         } else {
             GoogleLandmarkOverlay landmarkOverlay = null;
