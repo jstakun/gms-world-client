@@ -90,7 +90,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
     private ProgressBar loadingProgressBar;
-    private boolean appAbort = false, isStopped = false, appInitialized = false, isRouteDisplayed = false, isGoogleApiAvailable = false;
+    private boolean appAbort = false, isStopped = false, appInitialized = false, isRouteDisplayed = false;
     //Handlers
     private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
@@ -102,7 +102,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
                     //start only if helpactivity not on top
                     if (!ConfigurationManager.getInstance().containsObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class)) {
-                        intents.startPickLocationActivity(isGoogleApiAvailable);
+                        intents.startPickLocationActivity();
                     }
                 } else if (!appInitialized) {
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
@@ -323,7 +323,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                         mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
                 break;
             case R.id.pickMyPos:
-                intents.startPickLocationActivity(isGoogleApiAvailable);
+                intents.startPickLocationActivity();
                 break;
             case R.id.search:
                 onSearchRequested();

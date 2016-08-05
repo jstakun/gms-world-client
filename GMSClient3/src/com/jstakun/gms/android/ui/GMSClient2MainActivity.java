@@ -35,6 +35,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -72,11 +75,6 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 public class GMSClient2MainActivity extends MapActivity implements OnClickListener {
 
@@ -106,7 +104,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private ExpandableListView drawerList;
     private ProgressBar loadingProgressBar;
     private int mapProvider;
-    private boolean appInitialized = false, isRouteDisplayed = false, isGoogleApiAvailable = false;
+    private boolean appInitialized = false, isRouteDisplayed = false;
     private Handler loadingHandler;
     
     private final Runnable gpsRunnable = new Runnable() {
@@ -118,7 +116,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
                     //start only if helpactivity not on top
                     if (!ConfigurationManager.getInstance().containsObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class)) {
-                        intents.startPickLocationActivity(isGoogleApiAvailable);
+                        intents.startPickLocationActivity();
                     }
                 } else if (!appInitialized) {
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
@@ -164,14 +162,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         OsUtil.setDisplayType(getResources().getConfiguration());
         loadingHandler = new LoadingHandler(this);
-        
-        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {
-        	isGoogleApiAvailable = true;
-        	LoggerUtils.debug("Google Places API is available!");
-        } else {
-        	isGoogleApiAvailable = false;
-            LoggerUtils.debug("Google Places API is not available!");
-        }
         
         LoggerUtils.debug("Map provider is " + mapProvider);
 
@@ -855,7 +845,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		    		dialogManager.showAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, null);
 		    		break;
 				case R.id.pickMyPos:
-		    		intents.startPickLocationActivity(isGoogleApiAvailable);
+		    		intents.startPickLocationActivity();
 		    		break;
 				case R.id.deals:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
