@@ -29,8 +29,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
@@ -96,7 +94,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
     private ProgressBar loadingProgressBar;
-    private boolean isStopped = false, appInitialized = false, isRouteDisplayed = false, isGoogleApiAvailable = false;
+    private boolean isStopped = false, appInitialized = false, isRouteDisplayed = false;
     //Handlers
     private Handler loadingHandler;
     private final Runnable gpsRunnable = new Runnable() {
@@ -108,7 +106,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
                     //start only if help activity not on top
                     if (!ConfigurationManager.getInstance().containsObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class)) {
-                        intents.startPickLocationActivity(isGoogleApiAvailable);
+                        intents.startPickLocationActivity();
                     }
                 } else if (!appInitialized) {
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
@@ -138,15 +136,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         getActionBar().hide();
 
         setContentView(R.layout.mapcanvasview_2);
-        
-        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {
-        	isGoogleApiAvailable = true;
-        	LoggerUtils.debug("Google Places API is available!");
-        } else {
-        	isGoogleApiAvailable = false;
-            LoggerUtils.error("Google Places API is not available!");
-        }
-        
+             
         initComponents();
     }
 
@@ -325,7 +315,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                         mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
                 break;
             case R.id.pickMyPos:
-                intents.startPickLocationActivity(isGoogleApiAvailable);
+                intents.startPickLocationActivity();
                 break;
             case R.id.search:
                 onSearchRequested();

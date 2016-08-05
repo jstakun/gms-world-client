@@ -77,6 +77,8 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 import com.squareup.picasso.Picasso;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
@@ -133,9 +135,9 @@ public final class IntentsHelper {
         this.asyncTaskManager = asyncTaskManager;
     }
 
-    public void startPickLocationActivity(boolean isGoogleApiAvailable) {
+    public void startPickLocationActivity() {
     	Intent intent = null;
-    	if (isGoogleApiAvailable) {
+    	if (isGoogleApiAvailable()) {
     		try {
     			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
     			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
@@ -1416,57 +1418,13 @@ public final class IntentsHelper {
         }
     }
     
-    /*private static class ThumbnailLoadedHandler extends Handler {
-    	
-    	private WeakReference<Activity> parentActivity;
-    	
-    	public ThumbnailLoadedHandler(Activity parentActivity) {
-    		this.parentActivity = new WeakReference<Activity>(parentActivity);  	
-    	}
-    	
-        @Override
-        public void handleMessage(Message message) {
-        	Activity a = null;
-    		if (parentActivity != null) {
-    			a = parentActivity.get();
-    		}
-    		if (a != null && !a.isFinishing()) {
-        		String url = message.getData().getString("url");
-             	//System.out.println("Refreshing thumbnail icon " + url + " -----------------------------------------------------");
-
-             	try {
-             		View lvView = a.findViewById(R.id.lvView);
-             		ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
-             		TextView desc = (TextView) lvView.findViewById(R.id.lvdesc);
-             		ExtendedLandmark selectedLandmark = (ExtendedLandmark) thumbnail.getTag();
-
-                	if (selectedLandmark != null && StringUtils.equals(url, selectedLandmark.getThumbnail())) {
-                    	Bitmap image = IconCache.getInstance().getThumbnailResource(url, selectedLandmark.getLayer(), a.getResources().getDisplayMetrics(), null);
-                    	int width = a.getWindowManager().getDefaultDisplay().getWidth();            
-                        if (image != null  && (width == 0 || image.getWidth() < width * 0.5)) {
-                        	thumbnail.setImageBitmap(image);
-                        	String descr = "";
-                        	double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
-                        	double lng = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
-                        	float dist = DistanceUtils.distanceInKilometer(lat, lng, selectedLandmark.getQualifiedCoordinates().getLatitude(), selectedLandmark.getQualifiedCoordinates().getLongitude());
-                        	if (dist >= 0.001f) {
-                            	descr += Locale.getMessage(R.string.Landmark_distance, DistanceUtils.formatDistance(dist)) + "<br/>";
-                        	}
-                        	if (selectedLandmark.getDescription() != null) {
-                            	descr += selectedLandmark.getDescription();
-                        	}
-                        	if (StringUtils.isNotEmpty(descr)) {
-                            	//FlowTextHelper.tryFlowText(descr, thumbnail, desc, parentActivity.get().getWindowManager().getDefaultDisplay(), 3, imgGetter);
-                        		desc.setText(Html.fromHtml(descr, imgGetter, null));
-                        	}
-                    	}
-                	}
-             	} catch (Exception e) {
-            	 	LoggerUtils.error("Intents.thumbnailLoadedHandler exception:", e);
-                }
-        	}   
+    private boolean isGoogleApiAvailable() {
+    	if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(activity) == ConnectionResult.SUCCESS) {
+        	return true;
+        } else {
+        	return false;
         }
-    }*/
+    }
     
     private class ConfigurationEntryToLandmarkParcelableFunction implements Function<Map.Entry<String, String>, LandmarkParcelable> {
 
