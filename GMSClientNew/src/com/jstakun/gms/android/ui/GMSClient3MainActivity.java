@@ -23,6 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -54,6 +57,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private GoogleMarkerClusterOverlay markerCluster;
 	private GoogleApiClient mGoogleApiClient;
     
+	private TextView statusBar;
+    private View lvCloseButton, lvCallButton, lvCommentButton, mapButtons,
+            lvOpenButton, lvView, lvShareButton, myLocationButton, nearbyLandmarksButton,
+            thumbnailButton, lvCheckinButton, lvRouteButton, loadingImage;
+    private ProgressBar loadingProgressBar;
+   
 	private NavigationDrawerFragment mNavigationDrawerFragment;
     private GoogleMap mMap;
 
@@ -62,7 +71,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		@Override
 		public void onCameraChange(CameraPosition position) {
 			//check if zoom has changed
-			
+			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
+			mapInfo.setZoomLevel((int)position.zoom); 
+			//mapInfo.postInvalidate();
 		}
 	};
     
@@ -204,7 +215,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		//user location has changed		
+		//user location has changed	
+		Toast.makeText(this, "Location new received: " + location.getLatitude() + "," + location.getLongitude() + " from " + location.getProvider(), Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -322,12 +334,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             			activity.findViewById(R.id.mapContainer).setVisibility(View.VISIBLE);
         				activity.findViewById(R.id.mapCanvasWidgetL).setVisibility(View.GONE);
         			}
-                	//TODO uncomment
-                	//if (activity.lvView == null || !activity.lvView.isShown()) {
-                	if (activity.getSupportActionBar() != null) {
-                		activity.getSupportActionBar().show();
-                	}	
-                	//}
+                	if (activity.lvView == null || !activity.lvView.isShown()) {
+                		if (activity.getSupportActionBar() != null) {
+                			activity.getSupportActionBar().show();
+                		}	
+                	}
             	}
         	}
 			
