@@ -79,6 +79,7 @@ import com.jstakun.gms.android.utils.UserTracker;
 public class GMSClient2MainActivity extends MapActivity implements OnClickListener {
 
     private static final int SHOW_MAP_VIEW = 0;
+    
     private IMapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
@@ -94,18 +95,20 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private CategoriesManager cm;
     private IntentsHelper intents;
     private DialogManager dialogManager;
+    private int mapProvider;
+    private boolean appInitialized = false, isRouteDisplayed = false;
+    private Handler loadingHandler;
+    
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton, mapButtons,
             lvOpenButton, lvView, lvShareButton, myLocationButton, nearbyLandmarksButton,
             thumbnailButton, lvCheckinButton, lvRouteButton, loadingImage;
+    private ProgressBar loadingProgressBar;
+    
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private LinearLayout drawerLinearLayout;
     private ExpandableListView drawerList;
-    private ProgressBar loadingProgressBar;
-    private int mapProvider;
-    private boolean appInitialized = false, isRouteDisplayed = false;
-    private Handler loadingHandler;
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
