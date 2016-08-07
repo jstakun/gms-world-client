@@ -130,6 +130,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
         }
     };
+    
     //OnClickListeners
     private DialogInterface.OnClickListener trackMyPosListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int id) {
