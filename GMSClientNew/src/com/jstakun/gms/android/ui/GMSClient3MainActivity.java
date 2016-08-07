@@ -1002,6 +1002,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 	}
             	} else if (msg.what == PICK_LOCATION) {
             		if (! activity.appInitialized) {
+            			Toast.makeText(activity, "Please select location you want to start with!", Toast.LENGTH_LONG).show();
             			try {
             				AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
             				.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
