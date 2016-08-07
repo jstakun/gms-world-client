@@ -651,8 +651,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (ConfigurationManager.getInstance().isClosing()) {
             return false;
-        } else {
-            
+        } else {         
         	//if routes layer doesn't exists don't show routes menu
         	MenuItem routes = menu.findItem(R.id.routes);
         	if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
