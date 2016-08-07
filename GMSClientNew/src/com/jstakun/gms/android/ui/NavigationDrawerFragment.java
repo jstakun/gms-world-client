@@ -184,7 +184,7 @@ public class NavigationDrawerFragment extends Fragment {
             }
         };
 
-        //TODO this code opens drawer at startup
+        //this code opens drawer at startup
         // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer,
         // per the navigation drawer design guidelines.
         //if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
@@ -257,22 +257,18 @@ public class NavigationDrawerFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        //if (item.getItemId() == R.id.action_example) {
-        //    Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
-        //    return true;
+    	//if (appInitialized) {
+        	if (mDrawerToggle.onOptionsItemSelected(item)) {
+        		return true;
+            } else {
+            	//UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
+                return ((GMSClient3MainActivity)getActivity()).onMenuItemSelected(item.getItemId());
+            }
+        //} else {
+        //	return true;
         //}
-
-        return super.onOptionsItemSelected(item);
     }
     
-    private boolean onMenuItemSelected(int itemId) {
-    	return true;
-    }
-
     /**
      * Per the navigation drawer design guidelines, updates the action bar to show the global app
      * 'context', rather than just what's in the current screen.
@@ -307,7 +303,7 @@ public class NavigationDrawerFragment extends Fragment {
 			//UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
         	if (groupPosition == 0 || groupPosition == 3 || groupPosition == 4 || groupPosition == 5) {
         		mDrawerLayout.closeDrawer(mFragmentContainerView);
-        		onMenuItemSelected((int)id);
+        		((GMSClient3MainActivity)getActivity()).onMenuItemSelected((int)id);
         		return true;
         	} else if (groupPosition == 1 || groupPosition == 2) {
     	        if (parent.isGroupExpanded(groupPosition)) {
@@ -331,7 +327,7 @@ public class NavigationDrawerFragment extends Fragment {
 			//TODO uncomment
 			//UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
         	mDrawerLayout.closeDrawer(mFragmentContainerView);
-			onMenuItemSelected((int)id);
+        	((GMSClient3MainActivity)getActivity()).onMenuItemSelected((int)id);
 			return true;
 		}
     }
