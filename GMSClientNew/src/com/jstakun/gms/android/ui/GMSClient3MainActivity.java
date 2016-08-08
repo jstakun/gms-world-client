@@ -566,7 +566,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    mMap.setOnMyLocationButtonClickListener(this);
 	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
 	    
-	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap);
+	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler);
 	    
 	    loadMarkers();
 	}  
@@ -904,12 +904,20 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
 	
 	private void hideLandmarkView() {
-    	//lvView.setVisibility(View.GONE);
-		//getSupportedActionBar().show();
+    	lvView.setVisibility(View.GONE);
+		getSupportActionBar().show();
 		//landmarkManager.clearLandmarkOnFocusQueue();
 		//landmarkManager.setSelectedLandmark(null);
 		//landmarkManager.setSeletedLandmarkUI();
     }
+	
+	private void animateTo(LatLng newLocation) {
+		if (mMap != null) {
+			CameraUpdate location = CameraUpdateFactory.newLatLng(newLocation);
+			mMap.animateCamera(location);
+		}
+		
+	}
 	
 	private void loadMarkers() {    
 	    //load overlays here
@@ -1037,15 +1045,17 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
-            	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null, ProjectionFactory.getProjection(activity.mapView, activity.googleMapsView));
-                    if (coordsE6 != null) {
-                    	activity.animateTo(coordsE6);
-                    }
-            	} else if (msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_LIST) {
-                	activity.intents.startMultiLandmarkIntent(activity.getMyPosition());
-            		activity.animateTo(new int[]{msg.arg1, msg.arg2});
-            	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
+            	} */else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {
+            		Toast.makeText(activity, "Landmark clicker", Toast.LENGTH_LONG).show();
+            		//int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null, ProjectionFactory.getProjection(activity.mapView, activity.googleMapsView));
+                    //if (coordsE6 != null) {
+                    //	activity.animateTo(coordsE6);
+                    //}
+            	} else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_LIST) {
+            		Toast.makeText(activity, "Cluster clicker", Toast.LENGTH_LONG).show();
+            		//activity.intents.startMultiLandmarkIntent(activity.getMyPosition());
+            		//activity.animateTo(new int[]{msg.arg1, msg.arg2});
+            	} /*else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
             	} else if (LocationServicesManager.UPDATE_LOCATION == msg.what) {
                 	Location location = (Location) msg.obj;
