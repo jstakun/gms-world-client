@@ -47,7 +47,6 @@ import com.jstakun.gms.android.utils.LayerPoint;
 import com.jstakun.gms.android.utils.LayerPointFactory;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.MercatorUtils;
 import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.ProjectionInterface;
@@ -1131,7 +1130,7 @@ public class LandmarkManager {
     	return !getLandmarkStoreLayer(Commons.MY_POSITION_LAYER).isEmpty();
     }
     
-    public double[] getMyLocation(int lat, int lon) {
+    public double[] getMyLocation(double lat, double lon) {
         double latt, lonn;
 
         List<ExtendedLandmark> myPosV = getLandmarkStoreLayer(Commons.MY_POSITION_LAYER);
@@ -1140,8 +1139,8 @@ public class LandmarkManager {
             latt = myPos.getQualifiedCoordinates().getLatitude();
             lonn = myPos.getQualifiedCoordinates().getLongitude();
         } else {
-            latt = MathUtils.coordIntToDouble(lat);
-            lonn = MathUtils.coordIntToDouble(lon);
+            latt = lat;
+            lonn = lon;
         }
 
         return new double[]{latt, lonn};

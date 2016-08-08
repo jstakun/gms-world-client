@@ -254,8 +254,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 intents.startSettingsActivity(SettingsActivity.class);
                 break;
             case R.id.listMode:
-                intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                        mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
+                intents.startCategoryListActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
                 break;
             case R.id.pickMyPos:
                 intents.startPickLocationActivity();
@@ -474,8 +473,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             intents.showNearbyLandmarks(getMyLocation(), new GoogleLandmarkProjection(mapView));
         } else if (v == categoriesButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowDealCategoriesList", "", 0);
-            intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                    mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
+            intents.startCategoryListActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
         } else if (v == lvShareButton) {
             ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
@@ -489,8 +487,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     @Override
     public boolean onSearchRequested() {
         if (appInitialized) {
-            intents.startSearchActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                    mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, true);
+            intents.startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, true);
             return true;
         } else {
             return false;
@@ -650,8 +647,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     }
 
     private double[] getMyLocation() {
-        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitudeE6(),
-                mapView.getMapCenter().getLongitudeE6());
+    	return landmarkManager.getMyLocation(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()));
     }
 
     private void loadRoutePressedAction(ExtendedLandmark landmark) {

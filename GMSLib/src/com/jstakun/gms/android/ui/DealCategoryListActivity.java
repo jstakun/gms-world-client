@@ -142,7 +142,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
     @Override
     public boolean onSearchRequested() {
-        intents.startSearchActivity(-1, -1, lat, lng, radius, true);
+        intents.startSearchActivity(lat, lng, radius, true);
         return true;
     }
 
@@ -271,7 +271,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
     protected void onClickAction(int position, String action) {
         if (action.equals("drill")) {
-            intents.startCategoryListActivity(-1, -1, lat, lng, categories.get(position).getCategoryID(), radius);
+            intents.startCategoryListActivity(lat, lng, categories.get(position).getCategoryID(), radius);
         } else if (action.equals("cancel")) {
             cancelActivity(false);
         } else {

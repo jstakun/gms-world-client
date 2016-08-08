@@ -530,8 +530,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     @Override
     public boolean onSearchRequested() {
         if (appInitialized) {
-            intents.startSearchActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                    mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, false);
+            intents.startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, false);
             return true;
         } else {
             return false;
@@ -734,8 +733,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 break;
             case R.id.deals:
                 if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-                    intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                            mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
+                    intents.startCategoryListActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
                 }
@@ -1051,8 +1049,7 @@ private void syncRoutesOverlays() {
     }
 
     private double[] getMyLocation() {
-        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitudeE6(),
-                mapView.getMapCenter().getLongitudeE6());
+        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude());
     }
 
     private void showRouteAction(String routeKey) {

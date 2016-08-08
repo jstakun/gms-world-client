@@ -127,7 +127,7 @@ public class GridCategoryListActivity extends Activity {
 	
 	@Override
     public boolean onSearchRequested() {
-        intents.startSearchActivity(-1, -1, lat, lng, radius, true);
+        intents.startSearchActivity(lat, lng, radius, true);
         return true;
     }
 
@@ -216,7 +216,7 @@ public class GridCategoryListActivity extends Activity {
     
     private void onClickAction(int position, String action) {
         if (action.equals("drill")) {
-            intents.startCategoryListActivity(-1, -1, lat, lng, categories.get(position).getCategoryID(), radius);
+            intents.startCategoryListActivity(lat, lng, categories.get(position).getCategoryID(), radius);
         } else if (action.equals("cancel")) {
             cancelActivity(false);
         } else {
