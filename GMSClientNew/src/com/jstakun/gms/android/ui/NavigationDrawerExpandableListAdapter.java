@@ -3,13 +3,13 @@ package com.jstakun.gms.android.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-//import com.jstakun.gms.android.config.Commons;
-//import com.jstakun.gms.android.config.ConfigurationManager;
-//import com.jstakun.gms.android.data.FileManager;
-//import com.jstakun.gms.android.data.FilenameFilterFactory;
-//import com.jstakun.gms.android.data.PersistenceManagerFactory;
-//import com.jstakun.gms.android.landmarks.LandmarkManager;
-//import com.jstakun.gms.android.utils.ProjectionInterface;
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.FilenameFilterFactory;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.utils.ProjectionInterface;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -26,15 +26,15 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	private List<NavigationDrawerListItem> checkins = new ArrayList<NavigationDrawerListItem>(); 
 	private static final int CHECKIN = -1;
 	private static final int LANDMARK = -2;
-	//private IntentsHelper intents;
+	private IntentsHelper intents;
 	
 	public NavigationDrawerExpandableListAdapter(Activity parent) {
 		this.parentActivity = parent;
-		//intents = new IntentsHelper(parent, null, null);
-		rebuild();
+		intents = new IntentsHelper(parent, null, null);
+		rebuild(null);
 	}
 	
-	public void rebuild() {
+	public void rebuild(ProjectionInterface projection) {
 		String[] parentGroup = parentActivity.getResources().getStringArray(R.array.navigation);
 		String[] landmark = parentActivity.getResources().getStringArray(R.array.landmarks_submenu);
 		String[] checkin = parentActivity.getResources().getStringArray(R.array.checkin_submenu);
@@ -46,16 +46,18 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 		//4 <item>Deals</item>
         //5 <item>Social Networks</item>
 		
+		LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
+		
 		parents.clear();	    
 	    parents.add(new NavigationDrawerListItem(parentGroup[0], R.id.showLayers));
 	    parents.add(new NavigationDrawerListItem(parentGroup[1], LANDMARK));
 	    parents.add(new NavigationDrawerListItem(parentGroup[2], CHECKIN));
-	    //if (landmarkManager != null && landmarkManager.hasFriendsCheckinLandmarks()) {
+	    if (landmarkManager != null && landmarkManager.hasFriendsCheckinLandmarks()) {
 	    	parents.add(new NavigationDrawerListItem(parentGroup[3], R.id.friendsCheckins));
-	    //}
-        //if (landmarkManager != null && landmarkManager.hasDeals()) {
+	    }
+        if (landmarkManager != null && landmarkManager.hasDeals()) {
         	parents.add(new NavigationDrawerListItem(parentGroup[4], R.id.deals));
-        //}
+        }
         parents.add(new NavigationDrawerListItem(parentGroup[5], R.id.socialNetworks));
 	
 	    //<item>Nearby landmarks</item>
@@ -68,26 +70,26 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
     	
 	    landmarks.clear();
 	    
-	    //if (landmarkManager != null && projection != null && landmarkManager.hasVisibleLandmarks(projection, true)) {
+	    if (landmarkManager != null && projection != null && landmarkManager.hasVisibleLandmarks(projection, true)) {
 	    	landmarks.add(new NavigationDrawerListItem(landmark[0], R.id.listLandmarks));
-	    //}
+	    }
 	    landmarks.add(new NavigationDrawerListItem(landmark[1], R.id.addLandmark));
 	    
-	    //if (landmarkManager != null && landmarkManager.hasRecentlyOpenedLandmarks()) {
+	    if (landmarkManager != null && landmarkManager.hasRecentlyOpenedLandmarks()) {
 	    	landmarks.add(new NavigationDrawerListItem(landmark[2], R.id.recentLandmarks));
-	    //}
+	    }
 	    
-	    //final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
-	    //if (landmarkManager != null && landmarkManager.hasNewLandmarks(2, excluded)) {
+	    final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
+	    if (landmarkManager != null && landmarkManager.hasNewLandmarks(2, excluded)) {
 	    	landmarks.add(new NavigationDrawerListItem(landmark[3], R.id.newestLandmarks));
-	    //}
+	    }
 	    
 	    landmarks.add(new NavigationDrawerListItem(landmark[4], R.id.showMyLandmarks));
 	    
 	    landmarks.add(new NavigationDrawerListItem(landmark[5], R.id.events));
-	    //if (!PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getFileFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {
-	    	landmarks.add(new NavigationDrawerListItem(landmark[6], R.id.loadPoiFile)); 
-	    //}
+	    if (!PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getFileFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {
+	    	landmarks.add(new NavigationDrawerListItem(landmark[6], R.id.loadPoiFile));
+	    }
 	    
 	    //<item>Auto Check-In</item>
         //<item>Check-in at location</item>
@@ -96,13 +98,13 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	    checkins.clear();
 	    checkins.add(new NavigationDrawerListItem(checkin[0], R.id.autocheckin));
 	    
-	    //if (landmarkManager != null && landmarkManager.hasCheckinableLandmarks()) {
+	    if (landmarkManager != null && landmarkManager.hasCheckinableLandmarks()) {
 	    	checkins.add(new NavigationDrawerListItem(checkin[1], R.id.searchcheckin));
-	    //}
+	    }
 	    
-	    //if (intents.isIntentAvailable(IntentsHelper.SCAN_INTENT)) {
+	    if (intents.isIntentAvailable(IntentsHelper.SCAN_INTENT)) {
 	    	checkins.add(new NavigationDrawerListItem(checkin[2], R.id.qrcheckin));
-	    //}
+	    }
 	    
 	    notifyDataSetChanged();
 	}
