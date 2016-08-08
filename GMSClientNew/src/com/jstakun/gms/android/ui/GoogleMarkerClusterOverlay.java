@@ -7,12 +7,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.utils.MathUtils;
 
 public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClickListener<GoogleMarker>, ClusterManager.OnClusterInfoWindowClickListener<GoogleMarker>, ClusterManager.OnClusterItemClickListener<GoogleMarker>, ClusterManager.OnClusterItemInfoWindowClickListener<GoogleMarker> {
 	
@@ -23,9 +25,12 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	
 	private ClusterManager<GoogleMarker> mClusterManager;
 	private Handler landmarkDetailsHandler;
+	private LandmarkManager lm;
 	
-	public GoogleMarkerClusterOverlay(Activity activity, GoogleMap map, Handler landmarkDetailsHandler) {
+	public GoogleMarkerClusterOverlay(Activity activity, GoogleMap map, Handler landmarkDetailsHandler, LandmarkManager lm) {
 		mClusterManager = new ClusterManager<GoogleMarker>(activity, map);
+		this.landmarkDetailsHandler =landmarkDetailsHandler;
+		this.lm = lm;
 		map.setOnMarkerClickListener(mClusterManager);
         map.setOnInfoWindowClickListener(mClusterManager);
         mClusterManager.setOnClusterClickListener(this);
@@ -41,8 +46,8 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 
 	@Override
 	public boolean onClusterItemClick(GoogleMarker item) {
-		//lm.setSelectedLandmark(item.getRelatedObject());
-		//lm.clearLandmarkOnFocusQueue();
+		lm.setSelectedLandmark(item.getRelatedObject());
+		lm.clearLandmarkOnFocusQueue();
 		landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
 		return true;
 	}
@@ -54,19 +59,20 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 
 	@Override
 	public boolean onClusterClick(Cluster<GoogleMarker> cluster) {
-		//lm.clearLandmarkOnFocusQueue();
+		lm.clearLandmarkOnFocusQueue();
 		for (GoogleMarker item : cluster.getItems()) {
-			//lm.addLandmarkToFocusQueue(item.getRelatedObject());
+			lm.addLandmarkToFocusQueue(item.getRelatedObject());
 		}
 		Message msg = new Message();
 		msg.what = SHOW_LANDMARK_LIST;
-		//msg.arg1 = selected.getPosition().getLatitudeE6();
-		//msg.arg2 = selected.getPosition().getLongitudeE6();
+		msg.arg1 = MathUtils.coordDoubleToInt(cluster.getPosition().latitude);
+		msg.arg2 = MathUtils.coordDoubleToInt(cluster.getPosition().longitude);
 		landmarkDetailsHandler.sendMessage(msg);			
 		return true;
 	}
 
-	public void addMarkers(List<ExtendedLandmark> landmarks) {
+	public void addMarkers(String layerKey) {
+		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
 		boolean added = false;
 		for (final ExtendedLandmark landmark : landmarks) {
 			readWriteLock.writeLock().lock();
@@ -77,20 +83,17 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 				marker = (GoogleMarker)landmark.getRelatedUIObject();
 			}
 			if (marker == null) {
-			int icon = -1;
-			if (landmark.getCategoryId() != -1) {
-                //TODO implement later
-				icon = -1; //LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-            } else {
-                icon = -1;
-            }
+				int icon = -1;
+				if (landmark.getCategoryId() != -1) {
+					icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
+				} else {
+					icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE);
+				}
 				marker = new GoogleMarker(landmark, icon);
 				landmark.setRelatedUIObject(marker);
-				//Log.d(this.getClass().getName(), "Adding marker " + landmark.getName());
 				mClusterManager.addItem(marker);
 				added = true;
 			} else if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
-				//Log.d(this.getClass().getName(), "Adding marker " + landmark.getName());
 				mClusterManager.addItem(marker);
 				added = true;
 			}
