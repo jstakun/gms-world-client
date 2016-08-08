@@ -246,7 +246,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         if (mapCenter != null) {
         	initOnLocationChanged(mapCenter, 2);
         } else {
-        	loadingHandler.sendEmptyMessageDelayed(PICK_LOCATION, 5000);//ConfigurationManager.FIVE_SECONDS);
+        	loadingHandler.sendEmptyMessageDelayed(PICK_LOCATION, ConfigurationManager.FIVE_SECONDS);
         }
         
         loadingProgressBar.setProgress(50);
@@ -287,7 +287,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
             }
         } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
-            getActionBar().hide();
+            getSupportActionBar().hide();
             ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
             intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
@@ -670,32 +670,30 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	@Override
 	public void onLocationChanged(Location location) {
 		//user location has changed	
-		Toast.makeText(this, "New location received: " + location.getLatitude() + "," + location.getLongitude() + " from " + location.getProvider(), Toast.LENGTH_SHORT).show();
 		if (! appInitialized) {
 			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 3);
-		} else {
-			intents.addMyLocationLandmark(location);     
-	    	intents.vibrateOnLocationUpdate();
-	    	UserTracker.getInstance().sendMyLocation();
-	    	
-	    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-	        	mapButtons.setVisibility(View.GONE);
-	        	showMyPositionAction(false);
-	            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-	                if (routeRecorder != null) {
-	                	routeRecorder.addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
-	                }
-	            }
-	        } else {
-	        	mapButtons.setVisibility(View.VISIBLE);
-	        	//postInvalidate();
-	        }
-	        
-	        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-	            checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
-	        }
 		}
 		
+		intents.addMyLocationLandmark(location);     
+	    intents.vibrateOnLocationUpdate();
+	    UserTracker.getInstance().sendMyLocation();
+	    	
+	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+	        mapButtons.setVisibility(View.GONE);
+	        showMyPositionAction(false);
+	        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+	        	if (routeRecorder != null) {
+	                	routeRecorder.addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+	            }
+	        }
+	    } else {
+	        mapButtons.setVisibility(View.VISIBLE);
+	        //postInvalidate();
+	    }
+	        
+	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+	        checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
+	    }
 	}
 
 	@Override
