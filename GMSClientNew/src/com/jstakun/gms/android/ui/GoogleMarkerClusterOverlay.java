@@ -5,6 +5,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -14,11 +16,15 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 
 public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClickListener<GoogleMarker>, ClusterManager.OnClusterInfoWindowClickListener<GoogleMarker>, ClusterManager.OnClusterItemClickListener<GoogleMarker>, ClusterManager.OnClusterItemInfoWindowClickListener<GoogleMarker> {
 	
-	private ClusterManager<GoogleMarker> mClusterManager;
+	public static final int SHOW_LANDMARK_DETAILS = 22;
+	public static final int SHOW_LANDMARK_LIST = 23;
 	
 	private static final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 	
-	public GoogleMarkerClusterOverlay(Activity activity, GoogleMap map) {
+	private ClusterManager<GoogleMarker> mClusterManager;
+	private Handler landmarkDetailsHandler;
+	
+	public GoogleMarkerClusterOverlay(Activity activity, GoogleMap map, Handler landmarkDetailsHandler) {
 		mClusterManager = new ClusterManager<GoogleMarker>(activity, map);
 		map.setOnMarkerClickListener(mClusterManager);
         map.setOnInfoWindowClickListener(mClusterManager);
@@ -35,7 +41,9 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 
 	@Override
 	public boolean onClusterItemClick(GoogleMarker item) {
-		Log.d(this.getClass().getName(), "Clicked: " + item.getRelatedObject().getName());
+		//lm.setSelectedLandmark(item.getRelatedObject());
+		//lm.clearLandmarkOnFocusQueue();
+		landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
 		return true;
 	}
 
@@ -46,9 +54,15 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 
 	@Override
 	public boolean onClusterClick(Cluster<GoogleMarker> cluster) {
+		//lm.clearLandmarkOnFocusQueue();
 		for (GoogleMarker item : cluster.getItems()) {
-			Log.d(this.getClass().getName(), "Clicked: " + item.getRelatedObject().getName());
+			//lm.addLandmarkToFocusQueue(item.getRelatedObject());
 		}
+		Message msg = new Message();
+		msg.what = SHOW_LANDMARK_LIST;
+		//msg.arg1 = selected.getPosition().getLatitudeE6();
+		//msg.arg2 = selected.getPosition().getLongitudeE6();
+		landmarkDetailsHandler.sendMessage(msg);			
 		return true;
 	}
 
