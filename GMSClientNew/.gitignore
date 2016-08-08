@@ -6,3 +6,5 @@
 /.settings
 /lint.xml
 /project.properties
+/proguard.cfg
+/proguard/
