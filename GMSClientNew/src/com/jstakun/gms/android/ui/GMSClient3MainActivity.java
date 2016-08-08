@@ -1098,6 +1098,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         boolean isVisible = false;
         boolean clearLandmarks = false;
        
+        //TODO
         /*if (projection.isVisible(myLoc.getLatitudeE6(), myLoc.getLongitudeE6())) {
             isVisible = true;
         }
