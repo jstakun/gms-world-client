@@ -319,8 +319,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 intents.startSettingsActivity(SettingsActivity.class);
                 break;
             case R.id.listMode:
-                intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                        mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
+                intents.startCategoryListActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
                 break;
             case R.id.pickMyPos:
                 intents.startPickLocationActivity();
@@ -545,8 +544,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     @Override
     public boolean onSearchRequested() {
         if (appInitialized) {
-            intents.startSearchActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                    mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, true);
+            intents.startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, true);
             return true;
         } else {
             return false;

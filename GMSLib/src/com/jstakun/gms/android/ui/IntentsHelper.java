@@ -243,7 +243,7 @@ public final class IntentsHelper {
     	activity.startActivityForResult(intent, INTENT_LAYERS);
     }
 
-    public void startCategoryListActivity(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude, int parent, int radius) {
+    public void startCategoryListActivity(int cursorLatitude, int cursorLongitude, int parent, int radius) {
     	Intent intent = new Intent(activity, GridCategoryListActivity.class);
     	Bundle appData = new Bundle();
         appData.putInt("parent", parent);
@@ -1087,7 +1087,7 @@ public final class IntentsHelper {
         return response;
     }
 
-    public void startSearchActivity(int latitudeSpan, int longitudeSpan, int cursorLatitude, int cursorLongitude, int radius, boolean isDeal) {
+    public void startSearchActivity(int cursorLatitude, int cursorLongitude, int radius, boolean isDeal) {
         Bundle appData = new Bundle();
         if (isDeal) {
             appData.putString("type", GMSSearchActivity.TYPE.DEALS.name());
@@ -1377,8 +1377,10 @@ public final class IntentsHelper {
     	
         UserTracker.getInstance().trackEvent("Exit", activity.getLocalClassName() + ".hardClose", "", 0);
         
-        loadingHandler.removeCallbacks(gpsRunnable);
-
+        if (gpsRunnable != null) {
+        	loadingHandler.removeCallbacks(gpsRunnable);
+        }
+        
         LocationServicesManager.disableMyLocation();
 
         ConfigurationManager.getInstance().setOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP);

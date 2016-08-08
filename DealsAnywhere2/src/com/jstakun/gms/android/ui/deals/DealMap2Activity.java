@@ -311,8 +311,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 intents.startSettingsActivity(SettingsActivity.class);
                 break;
             case R.id.listMode:
-                intents.startCategoryListActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                        mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
+                intents.startCategoryListActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, -1);
                 break;
             case R.id.pickMyPos:
                 intents.startPickLocationActivity();
@@ -559,8 +558,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     @Override
     public boolean onSearchRequested() {
         if (appInitialized) {
-            intents.startSearchActivity(mapView.getLatitudeSpan(), mapView.getLongitudeSpan(),
-                    mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, true);
+            intents.startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, true);
             return true;
         } else {
             return false;
@@ -754,12 +752,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     }
 
     private double[] getMyPosition() {
-        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitudeE6(),
-                mapView.getMapCenter().getLongitudeE6());
-    }
-
-    private void loadRoutePressedAction(ExtendedLandmark landmark) {
-        asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, false, landmark);
+    	return landmarkManager.getMyLocation(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()));
     }
 
     private void callButtonPressedAction(ExtendedLandmark landmark) {
