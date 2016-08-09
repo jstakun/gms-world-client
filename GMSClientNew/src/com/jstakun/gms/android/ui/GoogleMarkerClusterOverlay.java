@@ -4,17 +4,18 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import android.app.Activity;
-import android.os.Handler;
-import android.os.Message;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
+
+import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 
 public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClickListener<GoogleMarker>, ClusterManager.OnClusterInfoWindowClickListener<GoogleMarker>, ClusterManager.OnClusterItemClickListener<GoogleMarker>, ClusterManager.OnClusterItemInfoWindowClickListener<GoogleMarker> {
 	
@@ -107,9 +108,24 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	
 	public void clearMarkers() {
 		if (!mClusterManager.getMarkerCollection().getMarkers().isEmpty()) {
+			LoggerUtils.debug("Removing all markers!");
 			readWriteLock.writeLock().lock();
 			mClusterManager.clearItems();
 			readWriteLock.writeLock().unlock();
 		}
+	}
+	
+	public void loadAllMarkers() {
+		LoggerUtils.debug("Loading all markers!");
+		clearMarkers();
+		for (String layer : lm.getLayerManager().getLayers()) {
+    		if (lm.getLayerManager().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && lm.getLayerManager().getLayer(layer).isEnabled() && lm.getLayerSize(layer) > 0) {
+    			addMarkers(layer);
+    		}      		
+    	}
+	}
+	
+	public void cluster() {
+		mClusterManager.cluster();
 	}
 }
