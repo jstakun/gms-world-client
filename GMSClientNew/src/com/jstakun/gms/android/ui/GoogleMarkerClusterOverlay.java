@@ -5,17 +5,25 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.google.maps.android.ui.IconGenerator;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.ImageView;
 
 public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClickListener<GoogleMarker>, ClusterManager.OnClusterInfoWindowClickListener<GoogleMarker>, ClusterManager.OnClusterItemClickListener<GoogleMarker>, ClusterManager.OnClusterItemInfoWindowClickListener<GoogleMarker> {
 	
@@ -30,6 +38,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	
 	public GoogleMarkerClusterOverlay(Activity activity, GoogleMap map, Handler landmarkDetailsHandler, LandmarkManager lm) {
 		mClusterManager = new ClusterManager<GoogleMarker>(activity, map);
+		mClusterManager.setRenderer(new MarkerRenderer(activity, map));
 		this.landmarkDetailsHandler =landmarkDetailsHandler;
 		this.lm = lm;
 		map.setOnMarkerClickListener(mClusterManager);
@@ -87,8 +96,14 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 				int icon = -1;
 				if (landmark.getCategoryId() != -1) {
 					icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
+					if (icon == R.drawable.image_missing32) {
+						icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
+					}
 				} else {
 					icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE);
+					if (icon == R.drawable.image_missing32) {
+						icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
+					}
 				}
 				marker = new GoogleMarker(landmark, icon);
 				landmark.setRelatedUIObject(marker);
@@ -112,6 +127,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 			readWriteLock.writeLock().lock();
 			mClusterManager.clearItems();
 			readWriteLock.writeLock().unlock();
+			mClusterManager.cluster();
 		}
 	}
 	
@@ -127,5 +143,33 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	
 	public void cluster() {
 		mClusterManager.cluster();
+	}
+	
+	private class MarkerRenderer extends DefaultClusterRenderer<GoogleMarker> {
+
+		private final IconGenerator mIconGenerator;
+		private final ImageView mImageView;
+		
+		public MarkerRenderer(Context context, GoogleMap map) {
+			super(context, map, mClusterManager);
+			
+			mImageView = new ImageView(context);
+			mIconGenerator = new IconGenerator(context);
+            //mDimension = (int) getResources().getDimension(R.dimen.custom_profile_image);
+            //mImageView.setLayoutParams(new ViewGroup.LayoutParams(mDimension, mDimension));
+            //int padding = (int) getResources().getDimension(R.dimen.custom_profile_padding);
+            //mImageView.setPadding(padding, padding, padding, padding);
+            mIconGenerator.setContentView(mImageView);
+		}
+		
+		@Override
+	    protected void onBeforeClusterItemRendered(GoogleMarker marker, MarkerOptions markerOptions) {
+	            // Draw a single person.
+	            // Set the info window to show their name.
+			mImageView.setImageResource(marker.getIcon());
+	        Bitmap icon = mIconGenerator.makeIcon();
+	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));//.title("title");
+	    }
+		
 	}
 }

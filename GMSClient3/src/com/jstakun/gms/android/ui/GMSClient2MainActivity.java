@@ -484,7 +484,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     				hideLandmarkView();
     			} else {
     				dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
-    			} //System.out.println("key back pressed in activity");
+    			} 
             	return true;
         	} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
         		int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, mapView.getZoomLevel(), null, ProjectionFactory.getProjection(mapView, googleMapsView));

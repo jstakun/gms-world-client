@@ -1,5 +1,7 @@
 package com.jstakun.gms.android.ui;
 
+import com.jstakun.gms.android.utils.ProjectionInterface;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -267,6 +269,11 @@ public class NavigationDrawerFragment extends Fragment {
         //} else {
         //	return true;
         //}
+    }
+    
+    public void refreshDrawer(ProjectionInterface projection) {
+    	NavigationDrawerExpandableListAdapter adapter = (NavigationDrawerExpandableListAdapter) mDrawerListView.getExpandableListAdapter();
+        adapter.rebuild(projection);
     }
     
     /**
