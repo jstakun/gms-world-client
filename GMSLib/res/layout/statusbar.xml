@@ -7,12 +7,6 @@
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
     android:orientation="vertical">
-    <!--ZoomControls android:id="@+id/zoomControls"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
-    android:gravity="center"
-    android:background="@android:color/transparent"/-->
     <com.jstakun.gms.android.ui.MapInfoView
         android:layout_height="wrap_content"
         android:paddingLeft="4dip"
@@ -29,12 +23,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/trans_light_gray"
-        android:weightSum="1"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:padding="2dip">
+        android:weightSum="1">
         <TextView
             android:id="@+id/statusBar"
+            android:paddingLeft="2dip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -44,7 +36,8 @@
             android:text="@string/Status.bar.default"
             android:textColor="#000000"/>
         <ProgressBar
-            android:id="@+id/loadingAnim"
+            android:paddingRight="2dip"
+        	android:id="@+id/loadingAnim"
             style="@android:style/Widget.ProgressBar.Small"
             android:layout_gravity="center"
             android:visibility="gone"
