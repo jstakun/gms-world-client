@@ -11,6 +11,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
@@ -101,7 +102,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 					}
 				} else {
 					icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE);
-					if (icon == R.drawable.image_missing32) {
+					if (icon == R.drawable.image_missing32 || landmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
 						icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
 					}
 				}
@@ -169,6 +170,11 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 			mImageView.setImageResource(marker.getIcon());
 	        Bitmap icon = mIconGenerator.makeIcon();
 	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));//.title("title");
+	    }
+		
+		@Override
+		protected boolean shouldRenderAsCluster(Cluster<GoogleMarker> cluster) {
+	        return cluster.getSize() > 1;
 	    }
 		
 	}
