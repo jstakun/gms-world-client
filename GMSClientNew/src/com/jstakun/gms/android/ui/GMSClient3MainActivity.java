@@ -326,7 +326,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     
     private void syncRoutesOverlays() {
     	
-    	//TODO 
+    	//TODO must be implemented
     	
     	/*int routesCount = 0;
     	if (routesManager != null) {
@@ -436,7 +436,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         LoggerUtils.debug("onRestart");
         //when map provider is changing we need to restart activity
         if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS ) {
-            //TODO 
+            //TODO must be implemented
         	intents.showInfoToast("Should start osm map now. Not yet implemented!");
         	//Intent intent = getIntent();
             //ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
@@ -545,11 +545,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         		menu.findItem(R.id.register).setVisible(!ConfigurationManager.getUserManager().isUserLoggedInGMSWorld());
         	}
         	
-            //TODO
-            //if (drawerLayout.isDrawerOpen(drawerLinearLayout)) {
-            //	NavigationDrawerExpandableListAdapter adapter = (NavigationDrawerExpandableListAdapter) drawerList.getExpandableListAdapter();
-            //    adapter.rebuild(ProjectionFactory.getProjection(mapView, googleMapsView));
-        	//}
+        	mNavigationDrawerFragment.refreshDrawer(projection);
             
             return super.onPrepareOptionsMenu(menu);
         }   	 
@@ -734,7 +730,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	
 	@Override
 	public boolean onMyLocationButtonClick() {
-		showMyPositionAction(true);
+		if (ConfigurationManager.getInstance().getLocation() != null) {
+			showMyPositionAction(true);
+		} else {
+			intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+		}
 		return true;
 	}
 	
@@ -784,6 +784,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 		if (location != null && !appInitialized) {
 			//Toast.makeText(this, "Last known location received: " + location.getLatitude() + "," + location.getLongitude() + " from " + location.getProvider(), Toast.LENGTH_SHORT).show();
+			ConfigurationManager.getInstance().setLocation(location);
 			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 0);
 		}
 		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -804,7 +805,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     				hideLandmarkView();
     			} else {
     				dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
-    			} //System.out.println("key back pressed in activity");
+    			} 
             	return true;
         	} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
         		int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, null, projection);
@@ -812,14 +813,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 	getSupportActionBar().hide();
                 	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
                 }
-            	return true;
-        	} else if (keyCode == KeyEvent.KEYCODE_8) { //key *
-            	//TODO
-        		//mapController.zoomIn();
-            	return true;
-        	} else if (keyCode == KeyEvent.KEYCODE_0) {
-        		//TODO
-        		//mapController.zoomOut();
             	return true;
         	} else {
             	return super.onKeyDown(keyCode, event);
@@ -834,9 +827,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == android.R.id.home || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
 		 switch (itemId) {
 				case R.id.settings:
-					//TODO
-					intents.showInfoToast("Settings activity will be added soon!");
-					//intents.startSettingsActivity(SettingsActivity.class);
+					intents.startSettingsActivity(SettingsActivity.class);
 					break;
 				case R.id.search:
 					onSearchRequested();
@@ -1108,8 +1099,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	    	loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
     	    	appInitialized = true;
     	    } else {
-    	    	//TODO show toast something went wrong
-    	    	//intents.showInfoToast("Map initialization has failed. Please restart appllcation!");
+    	    	//might need to show toast that something went wrong
+    	    	//intents.showInfoToast("Map initialization has failed. Please restart application!");
     	    }
         } 
     }
@@ -1172,7 +1163,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
 
     private void showRouteAction(String routeKey) {
-        //TODO
+    	//TODO must be implemented
     	/*LoggerUtils.debug("Adding route to view: " + routeKey);
         if (routesManager.containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
             addRoutesOverlay(routeKey);
@@ -1208,9 +1199,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         if (!isVisible) {
             hideLandmarkView();
-            //TODO
-            //clearLandmarks = intents.isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
-            //            myLoc.getLatitudeE6(), myLoc.getLongitudeE6());
+            clearLandmarks = intents.isClearLandmarksRequired(projection, 
+            		 MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
+            		 MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude),
+                     MathUtils.coordDoubleToInt(myLoc.getLatitude()), MathUtils.coordDoubleToInt(myLoc.getLongitude()));
         }
         
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
@@ -1309,10 +1301,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		activity.markerCluster.addMarkers((String)msg.obj); 
             		//activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-            		//TODO
-            		//if (activity.mapProvider == ConfigurationManager.OSM_MAPS || activity.googleMapsView.canCoverCenter()) {
-            		//	activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
-                    //        MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
+            		//TODO must be implemented
+            		//if (activity.mMap != null) {
+            		//	activity.asyncTaskManager.executeUploadImageTask(activity.mMap.getCameraPosition().target.latitude, activity.mMap.getCameraPosition().target.longitude, false);
             		//}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
