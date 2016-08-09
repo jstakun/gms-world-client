@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.ui;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -16,8 +17,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -47,6 +51,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -317,57 +322,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             }
         }
         
-        syncRoutesOverlays();
-        
         intents.startAutoCheckinBroadcast();
-    }
-    
-    private void syncRoutesOverlays() {
-    	
-    	//TODO must be implemented
-    	
-    	/*int routesCount = 0;
-    	if (routesManager != null) {
-    	   routesCount = routesManager.getCount();
-    	}
-    	
-    	int routesOverlaysCount = 0;
-    	if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-            	if (iter.next() instanceof OsmRoutesOverlay) {
-            		routesOverlaysCount++;
-            	}
-            }         
-        } else {
-            for (Iterator<com.google.android.maps.Overlay> iter = googleMapsView.getOverlays().listIterator(); iter.hasNext();) {
-            	if (iter.next() instanceof GoogleRoutesOverlay) {
-            		routesOverlaysCount++;
-            	}
-            }
-        }
-    	
-    	boolean isRoutesEnabled = landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER);
-    		
-    	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
-    		if (mapProvider == ConfigurationManager.OSM_MAPS) {
-    			for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-    				if (iter.next() instanceof OsmRoutesOverlay) {
-    					iter.remove();
-    				}
-    			}         
-    		} else {
-    			for (Iterator<com.google.android.maps.Overlay> iter = googleMapsView.getOverlays().listIterator(); iter.hasNext();) {
-    				if (iter.next() instanceof GoogleRoutesOverlay) {
-    					iter.remove();
-    				}
-    			}
-    		}
-    	} else if (routesCount > 0 && isRoutesEnabled && routesOverlaysCount == 0) {
-    		for (Iterator<String> i = routesManager.getRoutes().iterator(); i.hasNext();) {
-                addRoutesOverlay(i.next());
-            }
-    		isRouteDisplayed = true;
-    	}*/
     }
     
     @Override
@@ -734,6 +689,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager);	
 	    markerCluster.loadAllMarkers();
+	    
+	    //TODO load routes    
 	}  
 	
 	@Override
@@ -1031,9 +988,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 LoggerUtils.debug("Creating RoutesManager...");
                 routesManager = new RoutesManager();
                 ConfigurationManager.getInstance().putObject("routesManager", routesManager);
-            } else {
-            	syncRoutesOverlays();
-            }
+            } 
 
             messageStack = ConfigurationManager.getInstance().getMessageStack();
 
@@ -1125,6 +1080,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	
 	private String followMyPositionAction() {
 		intents.showInfoToast("Not implemented yet");
+		//TODO must be implemented
         /*if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
             String route = routeRecorder.startRecording();
@@ -1165,26 +1121,37 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
 
     private void showRouteAction(String routeKey) {
-    	//TODO must be implemented
-    	/*LoggerUtils.debug("Adding route to view: " + routeKey);
+    	LoggerUtils.debug("Adding route to map view: " + routeKey);
         if (routesManager.containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
-            addRoutesOverlay(routeKey);
-            isRouteDisplayed = true;
             if (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
-                double[] locationCoords = routesManager.calculateRouteCenter(routeKey);
-                IGeoPoint newCenter = new org.osmdroid.google.wrapper.GeoPoint(new GeoPoint(MathUtils.coordDoubleToInt(locationCoords[0]), MathUtils.coordDoubleToInt(locationCoords[1])));
-                mapController.setCenter(newCenter);
-                mapController.setZoom(routesManager.calculateRouteZoom(routeKey));
-            }
-            postInvalidate();
-        }*/
+                //TODO zoom map to see all route
+            	//double[] locationCoords = routesManager.calculateRouteCenter(routeKey);
+                //IGeoPoint newCenter = new org.osmdroid.google.wrapper.GeoPoint(new GeoPoint(MathUtils.coordDoubleToInt(locationCoords[0]), MathUtils.coordDoubleToInt(locationCoords[1])));
+                //mapController.setCenter(newCenter);
+                //mapController.setZoom(routesManager.calculateRouteZoom(routeKey));
+                List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
+                List<LatLng> pointsLatLng = new ArrayList<LatLng>();
+                for (ExtendedLandmark l : points) {
+                	pointsLatLng.add(new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude()));
+                }
+                
+                mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
+                mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
+                for (int i=0;i<pointsLatLng.size()-1;i++) {
+                	mMap.addPolyline(new PolylineOptions()
+                		.add(pointsLatLng.get(i), pointsLatLng.get(1+1))
+                        .width(12)
+                        .color(Color.parseColor("#05b1fb"))//Google maps blue color
+                        .geodesic(true));
+                }	
+            }           
+        }
     }
 
     private void clearMapAction() {
         landmarkManager.clearLandmarkStore();
         markerCluster.clearMarkers();
     	routesManager.clearRoutesStore();
-        syncRoutesOverlays();
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
     }
     

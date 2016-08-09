@@ -7,6 +7,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 import com.jstakun.gms.android.utils.BoundingBox;
+import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 
@@ -31,7 +32,9 @@ public class GoogleLandmarkProjectionV2 implements ProjectionInterface {
 
 	@Override
 	public boolean isVisible(int latE6, int lngE6) {
-		return mProj.getVisibleRegion().latLngBounds.contains(new LatLng(MathUtils.coordIntToDouble(latE6), MathUtils.coordIntToDouble(lngE6)));
+		double lat = MathUtils.coordIntToDouble(latE6);
+		double lng = MathUtils.coordIntToDouble(lngE6);
+		return mProj.getVisibleRegion().latLngBounds.contains(new LatLng(lat, lng));
 	}
 
 	@Override

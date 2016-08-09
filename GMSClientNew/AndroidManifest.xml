@@ -46,9 +46,9 @@
         android:allowBackup="true"
         android:icon="@drawable/globe64_new"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/GMSTheme.Light"
         android:name=".GMSClientApp" >
-        <activity android:name=".GMSClient3MainActivity" android:label="@string/app_name" >
+        <activity android:name=".GMSClient3MainActivity" android:label="@string/app_name" android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
