@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,9 +48,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.maps.GeoPoint;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FavouritesDAO;
+import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
@@ -112,12 +116,15 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		@Override
 		public void onCameraChange(CameraPosition position) {
 			//check if zoom has changed
-	        //TODO rebuild marker cluster
+			int currentZoom = ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
+			if (currentZoom != (int)position.zoom) {
+				ConfigurationManager.getInstance().putInteger(ConfigurationManager.ZOOM, (int)position.zoom);
+				markerCluster.cluster();
+			}
 			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
 			mapInfo.setZoomLevel((int)position.zoom); 
 			mapInfo.setMaxZoom((int)mMap.getMaxZoomLevel());
 			mapInfo.setDrawDistance(false);
-			markerCluster.cluster();
 			mapInfo.postInvalidate();
 		}
 	};    
@@ -314,10 +321,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         syncRoutesOverlays();
         
-        if (markerCluster != null) {
-        	markerCluster.loadAllMarkers();
-        }
-        
         intents.startAutoCheckinBroadcast();
     }
     
@@ -418,10 +421,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
         	intents.hardClose(layerLoader, routeRecorder, loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
-        } //else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
-        //    intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
-        //    ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
-        //}
+        } else {
+            intents.softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
+            ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
+        }
         AdsUtils.destroyAdView(this);
         System.gc();
     	super.onDestroy();
@@ -434,7 +437,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         //when map provider is changing we need to restart activity
         if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS ) {
             //TODO 
-        	intents.showInfoToast("Shoud start osm map now. Not yet implemented");
+        	intents.showInfoToast("Should start osm map now. Not yet implemented!");
         	//Intent intent = getIntent();
             //ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
             //LocationServicesManager.disableMyLocation();
@@ -643,7 +646,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
-                initOnLocationChanged(new LatLng(52.25, 20.95), 5);
+                initOnLocationChanged(new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()), 5);
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 intents.showInfoToast(message);
@@ -653,10 +656,66 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	Status status = PlaceAutocomplete.getStatus(this, intent);
                 intents.showInfoToast(status.getStatusMessage());
             	if (! appInitialized) {
-            		initOnLocationChanged(new LatLng(52.25, 20.95), 6);
+            		ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
+                    initOnLocationChanged(new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()), 6);
             	}
             }
+        } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
+            if (resultCode == RESULT_OK) {
+                String action = intent.getStringExtra("action");
+                if (action.equals("load")) {
+                    String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
+                    int id = Integer.parseInt(ids);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, null, projection);
+                    if (coordsE6 != null) {
+                    	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));;
+                    }
+                }
+            }
+        } else if (requestCode == IntentsHelper.INTENT_MYLANDMARKS) {
+            if (resultCode == RESULT_OK) {
+                String action = intent.getStringExtra("action");
+                String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
+                int id = Integer.parseInt(ids);
+                if (action.equals("load")) {
+                    ExtendedLandmark l = landmarkManager.getPhoneLandmark(id);
+                    if (l != null) {
+                        pickPositionAction(new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude()), true, true);
+                    }
+                } else if (action.equals("delete")) {
+                    //delete landmark
+                    landmarkManager.deletePhoneLandmark(id);
+                    intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
+                }
+            }
+        } else if (requestCode == IntentsHelper.INTENT_AUTO_CHECKIN) {
+            if (resultCode == RESULT_OK) {
+                int favouriteId = intent.getIntExtra("favourite", 0);
+                FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+                FavouritesDAO fav = fdb.getLandmark(favouriteId);
+                if (fav != null) {
+                    pickPositionAction(new LatLng(fav.getLatitude(), fav.getLongitude()), true, false);
+                } else {
+                    intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+                }
+            }
+        } else if (requestCode == IntentsHelper.INTENT_CALENDAR) {
+            if (resultCode == RESULT_OK) {
+                String action = intent.getStringExtra("action");
+                String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
+
+                if (action.equals("load")) {
+                    int id = Integer.parseInt(ids);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, null, projection);
+                    if (coordsE6 != null) {
+                    	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
+                    }
+                }
+            }
+        } else {
+            intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), new double[]{mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude}, loadingHandler, (int)mMap.getCameraPosition().zoom, layerLoader, projection);
         }
+
     }
     
 	@Override
@@ -669,7 +728,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    mMap.setOnMyLocationButtonClickListener(this);
 	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
 	    
-	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager);	    
+	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager);	
+	    markerCluster.loadAllMarkers();
 	}  
 	
 	@Override
@@ -733,13 +793,49 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	public void onConnectionSuspended(int reason) {
 		//call logger
 	}
-    
+	
+	@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	UserTracker.getInstance().trackEvent("onKeyDown", "", "", 0);
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {	
+            //System.out.println("Key pressed in activity: " + keyCode);
+    		if (keyCode == KeyEvent.KEYCODE_BACK) {
+    			if (lvView.isShown()) {
+    				hideLandmarkView();
+    			} else {
+    				dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+    			} //System.out.println("key back pressed in activity");
+            	return true;
+        	} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+        		int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, null, projection);
+                if (coordsE6 != null) {
+                	getSupportActionBar().hide();
+                	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
+                }
+            	return true;
+        	} else if (keyCode == KeyEvent.KEYCODE_8) { //key *
+            	//TODO
+        		//mapController.zoomIn();
+            	return true;
+        	} else if (keyCode == KeyEvent.KEYCODE_0) {
+        		//TODO
+        		//mapController.zoomOut();
+            	return true;
+        	} else {
+            	return super.onKeyDown(keyCode, event);
+        	}
+    	} else {
+    		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+    		return true;
+    	}
+	}
+	
 	protected boolean onMenuItemSelected(int itemId) {
 		if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == android.R.id.home || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
 		 switch (itemId) {
 				case R.id.settings:
 					//TODO
-					intents.showInfoToast("Settings activity will be added");
+					intents.showInfoToast("Settings activity will be added soon!");
 					//intents.startSettingsActivity(SettingsActivity.class);
 					break;
 				case R.id.search:
@@ -1013,7 +1109,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	    	appInitialized = true;
     	    } else {
     	    	//TODO show toast something went wrong
-    	    	intents.showInfoToast("Map initialization has failed. Please restart appllcation!");
+    	    	//intents.showInfoToast("Map initialization has failed. Please restart appllcation!");
     	    }
         } 
     }
@@ -1072,7 +1168,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
 	
 	private double[] getMyPosition() {
-        return landmarkManager.getMyLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+		return landmarkManager.getMyLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
     }
 
     private void showRouteAction(String routeKey) {
