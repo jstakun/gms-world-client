@@ -3,6 +3,46 @@ package com.jstakun.gms.android.ui;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FavouritesDAO;
+import com.jstakun.gms.android.data.FavouritesDbDataSource;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.FilenameFilterFactory;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.deals.CategoriesManager;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.location.LocationServicesManager;
+import com.jstakun.gms.android.routes.RouteRecorder;
+import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.utils.LayersMessageCondition;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.MathUtils;
+import com.jstakun.gms.android.utils.MessageStack;
+import com.jstakun.gms.android.utils.OsUtil;
+import com.jstakun.gms.android.utils.ServicesUtils;
+import com.jstakun.gms.android.utils.StringUtil;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,48 +71,6 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.maps.GeoPoint;
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FavouritesDAO;
-import com.jstakun.gms.android.data.FavouritesDbDataSource;
-import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.FilenameFilterFactory;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
-import com.jstakun.gms.android.deals.CategoriesManager;
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkManager;
-import com.jstakun.gms.android.landmarks.LayerLoader;
-import com.jstakun.gms.android.location.LocationServicesManager;
-import com.jstakun.gms.android.routes.RouteRecorder;
-import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.utils.LayersMessageCondition;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.MathUtils;
-import com.jstakun.gms.android.utils.MessageStack;
-import com.jstakun.gms.android.utils.OsUtil;
-import com.jstakun.gms.android.utils.ServicesUtils;
-import com.jstakun.gms.android.utils.StringUtil;
-import com.jstakun.gms.android.utils.UserTracker;
 
 public class GMSClient3MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, 
                                                                          OnMapReadyCallback, OnClickListener, 
@@ -609,7 +607,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    	if (requestCode == PICK_LOCATION) {
+    	if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
             	Double lat = null, lng = null;
             	String name = null;
@@ -723,6 +721,16 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    mMap.setMyLocationEnabled(true);
 	    mMap.setOnMyLocationButtonClickListener(this);
 	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
+	    
+	    int googleMapsType = ConfigurationManager.getInstance().getInt(ConfigurationManager.GOOGLE_MAPS_TYPE);
+
+        if (googleMapsType == 1) {
+        	mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        } else if (googleMapsType == 2) {
+        	mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        } else {
+        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        }
 	    
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager);	
 	    markerCluster.loadAllMarkers();
@@ -1017,12 +1025,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         		landmarkManager.initialize();
             }
             
-            //addLandmarkOverlay();
-
-            //if (myLocation != null) {
-            //	addOverlay(myLocation);
-            //}
-
             routesManager = ConfigurationManager.getInstance().getRoutesManager();
 
             if (routesManager == null) {
