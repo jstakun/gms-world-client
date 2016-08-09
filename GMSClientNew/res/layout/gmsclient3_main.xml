@@ -24,8 +24,7 @@
     		android:layout_width="match_parent"
     		android:layout_height="match_parent"
     		android:name="com.google.android.gms.maps.SupportMapFragment" /> 
-    	<include layout="@layout/mapbuttons"/>
-        <include layout="@layout/statusbar"/>	       
+    	<include layout="@layout/statusbar"/>	       
     </FrameLayout>
 
     <!--

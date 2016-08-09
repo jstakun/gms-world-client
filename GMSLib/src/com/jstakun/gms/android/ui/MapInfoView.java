@@ -18,6 +18,7 @@ public class MapInfoView extends View {
 	private static final float FONT_SIZE = 14;
 	private int zoomLevel = 1, maxZoom = 21;
 	private float distance = 40075.16f;
+	private boolean drawDistance = true;
 	
 	public MapInfoView(Context context) {
 		super(context);
@@ -49,22 +50,24 @@ public class MapInfoView extends View {
         String zoomText = Locale.getMessage(R.string.Zoom_info, zoomLevel, maxZoom);
         canvas.drawText(zoomText, getPaddingLeft(), getHeight() - getPaddingBottom(), paint);
         
-        //draw distance
-        String text = DistanceUtils.formatDistance(getDistance()) + " ";
+        if (drawDistance) {
+        	//draw distance
+        	String text = DistanceUtils.formatDistance(getDistance()) + " ";
         
-        float textSize = paint.measureText(text);
-        canvas.drawText(text, getWidth() - textSize - getPaddingRight(), getHeight() - getPaddingBottom(), paint);
+        	float textSize = paint.measureText(text);
+        	canvas.drawText(text, getWidth() - textSize - getPaddingRight(), getHeight() - getPaddingBottom(), paint);
 
-        //draw line
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(2f * dip);
+        	//draw line
+        	paint.setStyle(Paint.Style.STROKE);
+        	paint.setStrokeWidth(2f * dip);
 
-        //------------
-        canvas.drawLine(3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom() + (3f * dip), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() + (3f * dip), paint);
-        //|-----------
-        canvas.drawLine(3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom(), 3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom() + (6f * dip), paint);
-        //-----------|
-        canvas.drawLine(getWidth() - getPaddingRight(), getHeight() - getPaddingBottom(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() + (6f * dip), paint);
+        	//------------
+        	canvas.drawLine(3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom() + (3f * dip), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() + (3f * dip), paint);
+        	//|-----------
+        	canvas.drawLine(3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom(), 3 * getWidth() / 4 - getPaddingRight(), getHeight() - getPaddingBottom() + (6f * dip), paint);
+        	//-----------|
+        	canvas.drawLine(getWidth() - getPaddingRight(), getHeight() - getPaddingBottom(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() + (6f * dip), paint);
+        }
 	}
 	
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -121,6 +124,14 @@ public class MapInfoView extends View {
 
 	public void setDistance(float distance) {
 		this.distance = distance;
+	}
+
+	public boolean isDrawDistance() {
+		return drawDistance;
+	}
+
+	public void setDrawDistance(boolean drawDistance) {
+		this.drawDistance = drawDistance;
 	}
 
 	
