@@ -104,6 +104,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
 	private GoogleMap mMap;
+	private GoogleRoutesOverlay routesCluster;
 	
 	private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton, 
@@ -250,6 +251,14 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, loadingHandler, trackMyPosListener);
 
+        routesManager = ConfigurationManager.getInstance().getRoutesManager();
+
+        if (routesManager == null) {
+            LoggerUtils.debug("Creating RoutesManager...");
+            routesManager = new RoutesManager();
+            ConfigurationManager.getInstance().putObject("routesManager", routesManager);
+        } 
+        
         LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
             
         if (mapCenter != null) {
@@ -690,7 +699,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager);	
 	    markerCluster.loadAllMarkers();
 	    
-	    //TODO load routes    
+	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager);
+	    routesCluster.loadAllRoutes();
 	}  
 	
 	@Override
@@ -982,14 +992,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         		landmarkManager.initialize();
             }
             
-            routesManager = ConfigurationManager.getInstance().getRoutesManager();
-
-            if (routesManager == null) {
-                LoggerUtils.debug("Creating RoutesManager...");
-                routesManager = new RoutesManager();
-                ConfigurationManager.getInstance().putObject("routesManager", routesManager);
-            } 
-
             messageStack = ConfigurationManager.getInstance().getMessageStack();
 
             if (messageStack == null) {
@@ -1013,7 +1015,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 }
 
                 if (route != null) {
-                    showRouteAction(route);
+                	routesCluster.showRouteAction(route, true);
                 }
 
                 messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
@@ -1079,19 +1081,16 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	}
 	
 	private String followMyPositionAction() {
-		intents.showInfoToast("Not implemented yet");
-		//TODO must be implemented
-        /*if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
             String route = routeRecorder.startRecording();
-            showRouteAction(route);
+            routesCluster.showRouteAction(route, true);
             if (layerLoader.isLoading()) {
                 layerLoader.stopLoading();
             }
             List<ExtendedLandmark> myPosV = landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER);
             if (!myPosV.isEmpty()) {
                 ExtendedLandmark landmark = myPosV.get(0);
-                ProjectionInterface projection = ProjectionFactory.getProjection(mapView, googleMapsView);
                 if (projection.isVisible(landmark.getLatitudeE6(), landmark.getLongitudeE6())) {
                     showMyPositionAction(false);
                 } else {
@@ -1112,40 +1111,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOff));
             }
-        }*/
-        return null;
+        }
+		return null;
     }
 	
 	private double[] getMyPosition() {
 		return landmarkManager.getMyLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
-    }
-
-    private void showRouteAction(String routeKey) {
-    	LoggerUtils.debug("Adding route to map view: " + routeKey);
-        if (routesManager.containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
-            if (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
-                //TODO zoom map to see all route
-            	//double[] locationCoords = routesManager.calculateRouteCenter(routeKey);
-                //IGeoPoint newCenter = new org.osmdroid.google.wrapper.GeoPoint(new GeoPoint(MathUtils.coordDoubleToInt(locationCoords[0]), MathUtils.coordDoubleToInt(locationCoords[1])));
-                //mapController.setCenter(newCenter);
-                //mapController.setZoom(routesManager.calculateRouteZoom(routeKey));
-                List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
-                List<LatLng> pointsLatLng = new ArrayList<LatLng>();
-                for (ExtendedLandmark l : points) {
-                	pointsLatLng.add(new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude()));
-                }
-                
-                mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
-                mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
-                for (int i=0;i<pointsLatLng.size()-1;i++) {
-                	mMap.addPolyline(new PolylineOptions()
-                		.add(pointsLatLng.get(i), pointsLatLng.get(i+1))
-                        .width(12)
-                        .color(Color.RED)
-                        .geodesic(true));
-                }	
-            }           
-        }
     }
 
     private void clearMapAction() {
@@ -1202,7 +1173,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         }
     }
 	
-	//autogenerated placeholder
+	//auto generated placeholder
     public static class PlaceholderFragment extends Fragment {
         
     	private static final String ARG_SECTION_NUMBER = "section_number";
@@ -1286,7 +1257,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		activity.intents.startMultiLandmarkIntent(activity.getMyPosition());
             		activity.animateTo(new LatLng(MathUtils.coordIntToDouble(msg.arg1), MathUtils.coordIntToDouble(msg.arg2)));
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
-            		activity.showRouteAction((String) msg.obj);
+            		activity.routesCluster.showRouteAction((String) msg.obj, true);
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}

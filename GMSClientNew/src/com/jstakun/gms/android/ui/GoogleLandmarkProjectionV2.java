@@ -13,52 +13,54 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 
 public class GoogleLandmarkProjectionV2 implements ProjectionInterface {
 
-	private Projection mProj;
+	private GoogleMap mMap;
 	
 	public GoogleLandmarkProjectionV2(GoogleMap map) {
-		mProj = map.getProjection();
+		this.mMap = map;
 	}
 	
 	@Override
 	public void toPixels(int latE6, int lngE6, Point point) {
-		point = mProj.toScreenLocation(new LatLng(MathUtils.coordIntToDouble(latE6), MathUtils.coordIntToDouble(lngE6)));
+		point = mMap.getProjection().toScreenLocation(new LatLng(MathUtils.coordIntToDouble(latE6), MathUtils.coordIntToDouble(lngE6)));
 	}
 
 	@Override
 	public int[] fromPixels(int x, int y) {
-		LatLng pos = mProj.fromScreenLocation(new Point(x,y));
+		LatLng pos = mMap.getProjection().fromScreenLocation(new Point(x,y));
 		return new int[]{MathUtils.coordDoubleToInt(pos.latitude),MathUtils.coordDoubleToInt(pos.longitude)};
 	}
 
 	@Override
 	public boolean isVisible(int latE6, int lngE6) {
-		double lat = MathUtils.coordIntToDouble(latE6);
-		double lng = MathUtils.coordIntToDouble(lngE6);
-		return mProj.getVisibleRegion().latLngBounds.contains(new LatLng(lat, lng));
+		LatLng point = new LatLng(MathUtils.coordIntToDouble(latE6), MathUtils.coordIntToDouble(lngE6));
+		return mMap.getProjection().getVisibleRegion().latLngBounds.contains(point);
 	}
 
 	@Override
 	public boolean isVisible(Point point) {
-		LatLng pos = mProj.fromScreenLocation(point);
-		return mProj.getVisibleRegion().latLngBounds.contains(pos);
+		Projection proj = mMap.getProjection();
+		LatLng pos = proj.fromScreenLocation(point);
+		return proj.getVisibleRegion().latLngBounds.contains(pos);
 	}
 
 	@Override
 	public BoundingBox getBoundingBox() {
 		
 		BoundingBox bbox = new BoundingBox();
+		Projection proj = mMap.getProjection();
         
-        bbox.north = mProj.getVisibleRegion().latLngBounds.northeast.latitude;
-        bbox.south = mProj.getVisibleRegion().latLngBounds.southwest.latitude;
-        bbox.east = mProj.getVisibleRegion().latLngBounds.northeast.longitude;
-        bbox.west = mProj.getVisibleRegion().latLngBounds.southwest.longitude;
+        bbox.north = proj.getVisibleRegion().latLngBounds.northeast.latitude;
+        bbox.south = proj.getVisibleRegion().latLngBounds.southwest.latitude;
+        bbox.east = proj.getVisibleRegion().latLngBounds.northeast.longitude;
+        bbox.west = proj.getVisibleRegion().latLngBounds.southwest.longitude;
         
         return bbox;
 	}
 
 	@Override
 	public float getViewDistance() {
-		return (float)SphericalUtil.computeDistanceBetween(mProj.getVisibleRegion().latLngBounds.northeast, mProj.getVisibleRegion().latLngBounds.southwest) / 1000f;
+		Projection proj = mMap.getProjection();
+		return (float)SphericalUtil.computeDistanceBetween(proj.getVisibleRegion().latLngBounds.northeast, proj.getVisibleRegion().latLngBounds.southwest) / 1000f;
 	}
 
 }
