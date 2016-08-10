@@ -158,14 +158,14 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
         
+        loadingHandler = new LoadingHandler(this);
+        
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         
         if (mapFragment == null) {
             mapFragment = SupportMapFragment.newInstance();
             getSupportFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
         }
-        
-        loadingHandler = new LoadingHandler(this);
         
         mapFragment.getMapAsync(this); 
         
@@ -372,7 +372,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     @Override
     protected void onStop() {
         super.onStop();
-        ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
+        if (mMap != null) {
+        	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
+        }
     }
 
     @Override
@@ -403,7 +405,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             }
             finish();
             startActivity(intent);
-        }
+        } //else if () 
+        //TODO if map type has changed reload mapfragment
+        //
     }
     
     @Override
@@ -684,23 +688,24 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    mMap.setOnMyLocationButtonClickListener(this);
 	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
 	    
+	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+	    	mMap.getUiSettings().setCompassEnabled(true);
+	    }
+	    
 	    int googleMapsType = ConfigurationManager.getInstance().getInt(ConfigurationManager.GOOGLE_MAPS_TYPE);
 
-        if (googleMapsType == 1) {
+	    if (googleMapsType == 1) {
         	mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        	mMap.setTrafficEnabled(false);
         } else if (googleMapsType == 2) {
-        	mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        	mMap.setTrafficEnabled(true);
         } else {
         	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        	mMap.setTrafficEnabled(false);
         }
-	    
-	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager);	
-	    markerCluster.loadAllMarkers();
-	    
-	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager);
-	    routesCluster.loadAllRoutes();
 	}  
-	
+
 	@Override
 	public boolean onMyLocationButtonClick() {
 		if (ConfigurationManager.getInstance().getLocation() != null) {
@@ -1170,6 +1175,24 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                     (int)mMap.getCameraPosition().zoom, projection);
         }
     }
+    
+    private void showMapAndMarkers() {
+    	if (!findViewById(R.id.mapContainer).isShown()) {
+			findViewById(R.id.mapContainer).setVisibility(View.VISIBLE);
+			findViewById(R.id.mapCanvasWidgetL).setVisibility(View.GONE);
+		}
+    	if ((lvView == null || !lvView.isShown()) && getSupportActionBar() != null) {
+    		getSupportActionBar().show();
+    	}
+    	
+	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager);	
+	    markerCluster.loadAllMarkers();
+	    
+	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager);
+	    routesCluster.loadAllRoutes();
+	}
+	
+	
 	
 	//auto generated placeholder
     public static class PlaceholderFragment extends Fragment {
@@ -1215,16 +1238,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			GMSClient3MainActivity activity = parentActivity.get();
         	if (activity != null && !activity.isFinishing()) {
         		if (msg.what == SHOW_MAP_VIEW) {
-        			if (!activity.findViewById(R.id.mapContainer).isShown()) {
-        				Log.d(this.getClass().getName(), "Showing map view...");
-            			activity.findViewById(R.id.mapContainer).setVisibility(View.VISIBLE);
-        				activity.findViewById(R.id.mapCanvasWidgetL).setVisibility(View.GONE);
-        			}
-                	if (activity.lvView == null || !activity.lvView.isShown()) {
-                		if (activity.getSupportActionBar() != null) {
-                			activity.getSupportActionBar().show();
-                		}	
-                	}
+        			activity.showMapAndMarkers();
             	} else if (msg.what == PICK_LOCATION) {
             		if (! activity.appInitialized) {
             			activity.intents.startPickLocationActivity();
@@ -1236,8 +1250,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	} else if (msg.what == MessageStack.STATUS_GONE) {
             		activity.loadingImage.setVisibility(View.GONE);
             	} else if (msg.what == LayerLoader.LAYER_LOADED) {
-            		activity.markerCluster.addMarkers((String)msg.obj); 
-            		//activity.postInvalidate();
+            		if (activity.markerCluster != null) {
+            			activity.markerCluster.addMarkers((String)msg.obj); 
+            		}
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
             		//TODO uncomment after tests 
             		//if (activity.mMap != null) {

@@ -84,7 +84,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 
 	public void addMarkers(String layerKey) {
 		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
-		boolean added = false;
+		int count = 0;
 		for (final ExtendedLandmark landmark : landmarks) {
 			readWriteLock.writeLock().lock();
 			
@@ -109,22 +109,23 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 				marker = new GoogleMarker(landmark, icon);
 				landmark.setRelatedUIObject(marker);
 				mClusterManager.addItem(marker);
-				added = true;
+				count++;
 			} else if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
 				mClusterManager.addItem(marker);
-				added = true;
+				count++;
 			}
 			readWriteLock.writeLock().unlock();	
 		}
 		
-		if (added) {
+		if (count > 0) {
 			mClusterManager.cluster();
 		}
+		//LoggerUtils.debug(count + " markers from layer " + layerKey + " stored in cluster.");
 	}
 	
 	public void clearMarkers() {
 		if (!mClusterManager.getMarkerCollection().getMarkers().isEmpty()) {
-			LoggerUtils.debug("Removing all markers!");
+			LoggerUtils.debug("Removing all markers from Google Map!");
 			readWriteLock.writeLock().lock();
 			mClusterManager.clearItems();
 			readWriteLock.writeLock().unlock();
@@ -133,7 +134,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	}
 	
 	public void loadAllMarkers() {
-		LoggerUtils.debug("Loading all markers!");
+		LoggerUtils.debug("Loading all markers to Google Map!");
 		clearMarkers();
 		for (String layer : lm.getLayerManager().getLayers()) {
     		if (lm.getLayerManager().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && lm.getLayerManager().getLayer(layer).isEnabled() && lm.getLayerSize(layer) > 0) {
