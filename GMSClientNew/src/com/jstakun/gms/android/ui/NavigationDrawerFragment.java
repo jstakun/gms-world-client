@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.ui;
 
 import com.jstakun.gms.android.utils.ProjectionInterface;
+import com.jstakun.gms.android.utils.UserTracker;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -306,8 +307,7 @@ public class NavigationDrawerFragment extends Fragment {
 		@Override
 		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 			TextView textView = (TextView)v;
-			//TODO uncomment
-			//UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
+			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
         	if (groupPosition == 0 || groupPosition == 3 || groupPosition == 4 || groupPosition == 5) {
         		mDrawerLayout.closeDrawer(mFragmentContainerView);
         		((GMSClient3MainActivity)getActivity()).onMenuItemSelected((int)id);
@@ -331,8 +331,7 @@ public class NavigationDrawerFragment extends Fragment {
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 			TextView textView = (TextView) parent.getChildAt(groupPosition);
 			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
-			//TODO uncomment
-			//UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
+			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
         	mDrawerLayout.closeDrawer(mFragmentContainerView);
         	((GMSClient3MainActivity)getActivity()).onMenuItemSelected((int)id);
 			return true;

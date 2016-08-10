@@ -1,15 +1,14 @@
 package com.jstakun.gms.android.ui;
 
-import android.graphics.Point;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 import com.jstakun.gms.android.utils.BoundingBox;
-import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.ProjectionInterface;
+
+import android.graphics.Point;
 
 public class GoogleLandmarkProjectionV2 implements ProjectionInterface {
 
