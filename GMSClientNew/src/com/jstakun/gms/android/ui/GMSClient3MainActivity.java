@@ -410,9 +410,24 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             }
             finish();
             startActivity(intent);
-        } //else if () 
-        //TODO if map type has changed reload mapfragment
-        //
+        } 
+        
+        if (mMap != null) {
+        	int googleMapsType = ConfigurationManager.getInstance().getInt(ConfigurationManager.GOOGLE_MAPS_TYPE);
+
+    	    LoggerUtils.debug("Google Maps type is " + googleMapsType);
+    	    
+    	    if (googleMapsType == 1) {
+            	mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            	mMap.setTrafficEnabled(false);
+            } else if (googleMapsType == 2) {
+            	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            	mMap.setTrafficEnabled(true);
+            } else {
+            	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            	mMap.setTrafficEnabled(false);
+            }
+        }
     }
     
     @Override
@@ -688,17 +703,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		Log.d(this.getClass().getName(), "Google Map is ready!");
 		this.mMap = map;
 		this.projection = new GoogleLandmarkProjectionV2(mMap);
-		mMap.getUiSettings().setZoomControlsEnabled(true);
-	    mMap.setMyLocationEnabled(true);
-	    mMap.setOnMyLocationButtonClickListener(this);
-	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
-	    
-	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-	    	mMap.getUiSettings().setCompassEnabled(true);
-	    }
-	    
+		
 	    int googleMapsType = ConfigurationManager.getInstance().getInt(ConfigurationManager.GOOGLE_MAPS_TYPE);
 
+	    LoggerUtils.debug("Google Maps type is " + googleMapsType);
+	    
 	    if (googleMapsType == 1) {
         	mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         	mMap.setTrafficEnabled(false);
@@ -709,6 +718,15 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         	mMap.setTrafficEnabled(false);
         }
+	    
+	    mMap.getUiSettings().setZoomControlsEnabled(true);
+	    mMap.setMyLocationEnabled(true);
+	    mMap.setOnMyLocationButtonClickListener(this);
+	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
+	    
+	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+	    	mMap.getUiSettings().setCompassEnabled(true);
+	    }
 	}  
 
 	@Override
@@ -1131,9 +1149,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
 
     private void clearMapAction() {
-        landmarkManager.clearLandmarkStore();
-        markerCluster.clearMarkers();
-    	routesManager.clearRoutesStore();
+    	mMap.clear();
+    	landmarkManager.clearLandmarkStore();
+        routesManager.clearRoutesStore();
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
     }
     
