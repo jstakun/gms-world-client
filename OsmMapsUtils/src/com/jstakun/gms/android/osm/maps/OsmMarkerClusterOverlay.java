@@ -55,7 +55,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		//custom radius
 		setRadius((int)(48f * ctx.getResources().getDisplayMetrics().density));
 		
-		setMaxClusteringZoomLevel(17);
+		setMaxClusteringZoomLevel(18);
 		
 		//and text
 		getTextPaint().setTextSize(14 * ctx.getResources().getDisplayMetrics().density);
