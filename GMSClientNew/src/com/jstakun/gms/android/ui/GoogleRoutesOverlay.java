@@ -52,7 +52,7 @@ public class GoogleRoutesOverlay {
                 for (int i=0;i<pointsLatLng.size()-1;i++) {
                 	mMap.addPolyline(new PolylineOptions()
                 		.add(pointsLatLng.get(i), pointsLatLng.get(i+1))
-                        .width(8f * density)
+                        .width(5f * density)
                         .color(Color.RED)
                         .geodesic(true));
                 }
