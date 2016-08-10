@@ -332,6 +332,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         if (markerCluster != null) {
         	markerCluster.loadAllMarkers();
+        	routesCluster.loadAllRoutes();
         }
     }
     

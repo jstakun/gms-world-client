@@ -12,12 +12,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
+import android.content.Context;
 import android.graphics.Color;
 
 public class GoogleRoutesOverlay {
@@ -36,7 +38,9 @@ public class GoogleRoutesOverlay {
     	LoggerUtils.debug("Adding route to map view: " + routeKey);
         if (routesManager.containsRoute(routeKey) && mLm.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
             if (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
-                List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
+                Context c = ConfigurationManager.getInstance().getContext();
+                float density = c.getResources().getDisplayMetrics().density;
+            	List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
                 List<LatLng> pointsLatLng = new ArrayList<LatLng>();
                 for (ExtendedLandmark l : points) {
                 	LatLng p = new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
@@ -48,7 +52,7 @@ public class GoogleRoutesOverlay {
                 for (int i=0;i<pointsLatLng.size()-1;i++) {
                 	mMap.addPolyline(new PolylineOptions()
                 		.add(pointsLatLng.get(i), pointsLatLng.get(i+1))
-                        .width(12)
+                        .width(8f * density)
                         .color(Color.RED)
                         .geodesic(true));
                 }
@@ -59,7 +63,7 @@ public class GoogleRoutesOverlay {
                     	builder.include(p);
                     }
                 	LatLngBounds bounds = builder.build();
-                	int padding = 4; // offset from edges of the map in pixels
+                	int padding = (int)(8 * density); // offset from edges of the map in pixels
                 	CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                 	mMap.animateCamera(cu);
                 }
