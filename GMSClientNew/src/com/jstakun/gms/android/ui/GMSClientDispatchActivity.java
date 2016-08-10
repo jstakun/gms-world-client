@@ -3,6 +3,9 @@ package com.jstakun.gms.android.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -48,8 +51,9 @@ public class GMSClientDispatchActivity extends Activity {
                 
             	Intent mapActivity;
                 if (OsUtil.isHoneycombOrHigher()) {
-                    if (OsUtil.isGoogleMapActivityInstalled() && OsUtil.hasSystemSharedLibraryInstalled(this, "com.google.android.maps")) {
-                    	mapActivity = new Intent(this, GMSClient3MainActivity.class);
+                    if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS &&
+                    		ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.GOOGLE_MAPS) {
+                        mapActivity = new Intent(this, GMSClient3MainActivity.class);
                     } else {
                         ConfigurationManager.getInstance().putInteger(ConfigurationManager.MAP_PROVIDER, ConfigurationManager.OSM_MAPS);
                         mapActivity = new Intent(this, GMSClient2OSMMainActivity.class);

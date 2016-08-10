@@ -415,7 +415,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
         	intents.hardClose(layerLoader, routeRecorder, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
-        } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
+        } else {
         	intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
@@ -1066,25 +1066,27 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     }
 
     private void updateLocation(Location l) {
-    	intents.addMyLocationLandmark(l);
-        intents.vibrateOnLocationUpdate();
-        UserTracker.getInstance().sendMyLocation();
+    	if (appInitialized) {
+    		intents.addMyLocationLandmark(l);
+        	intents.vibrateOnLocationUpdate();
+        	UserTracker.getInstance().sendMyLocation();
     	
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        	mapButtons.setVisibility(View.GONE);
-        	showMyPositionAction(false);
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                if (routeRecorder != null) {
-                	routeRecorder.addCoordinate(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), l.getAccuracy(), l.getSpeed(), l.getBearing());
-                }
-            }
-        } else {
-        	mapButtons.setVisibility(View.VISIBLE);
-        }
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        		mapButtons.setVisibility(View.GONE);
+        		showMyPositionAction(false);
+            	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+                	if (routeRecorder != null) {
+                		routeRecorder.addCoordinate(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), l.getAccuracy(), l.getSpeed(), l.getBearing());
+                	}
+            	}
+        	} else {
+        		mapButtons.setVisibility(View.VISIBLE);
+        	}
 
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-            checkinManager.autoCheckin(l.getLatitude(), l.getLongitude(), false);
-        }
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+            	checkinManager.autoCheckin(l.getLatitude(), l.getLongitude(), false);
+        	}
+    	}
     }
 
     private void addOverlay(Object overlay) {

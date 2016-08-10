@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/search"
           android:title="@string/search" android:icon="@drawable/ic_menu_search"
-          app:showAsAction="ifRoom|withText"/> <!-- a -->
-    <item android:id="@+id/pickMyPos" app:showAsAction="ifRoom|withText"
+          android:showAsAction="ifRoom|withText" app:showAsAction="ifRoom|withText"/> <!-- a -->
+    <item android:id="@+id/pickMyPos" android:showAsAction="ifRoom|withText" app:showAsAction="ifRoom|withText"
           android:title="@string/pickMyPos" android:icon="@android:drawable/ic_menu_mapmode"/> <!-- a -->
-    <item android:id="@+id/login" app:showAsAction="ifRoom|withText"
+    <item android:id="@+id/login" android:showAsAction="ifRoom|withText" app:showAsAction="ifRoom|withText"
           android:title="@string/login" android:icon="@drawable/ic_menu_login"/> <!-- a -->
-    <!-- item android:id="@+id/showMyPos" app:showAsAction="ifRoom|withText"
+    <!-- item android:id="@+id/showMyPos" android:showAsAction="ifRoom|withText" app:showAsAction="ifRoom|withText"
           android:title="@string/showMyPos" android:icon="@android:drawable/ic_menu_mylocation"/--> <!-- a -->
-    <item android:id="@+id/settings" app:showAsAction="ifRoom|withText"
+    <item android:id="@+id/settings" android:showAsAction="ifRoom|withText" app:showAsAction="ifRoom|withText"
           android:title="@string/settings" android:icon="@android:drawable/ic_menu_preferences"/> <!-- a -->
     <item android:id="@+id/routes" android:title="@string/routes"> <!-- a -->
         <menu android:icon="@drawable/ic_dialog_menu_generic" android:title="@string/routes">
