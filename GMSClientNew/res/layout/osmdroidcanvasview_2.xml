@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <include layout="@layout/loading"/>
+    
+    <android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    	<FrameLayout
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:id="@+id/mapCanvasWidgetM"
+    	android:background="#ffffffff"
+    	android:visibility="gone">
+        	<com.jstakun.gms.android.osm.maps.ObservableMapView
+    		android:id="@+id/mapCanvas"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent"/>
+        	<include layout="@layout/mapbuttons"/>
+       		<include layout="@layout/statusbar"/>       		
+    	</FrameLayout>
+    	<!-- navigation drawer -->
+    	<LinearLayout
+			android:id="@+id/left_drawer_view"
+			android:paddingTop="?android:attr/actionBarSize"
+        	android:layout_width="@dimen/navigation_drawer_width"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:layout_gravity="start">
+    		<ImageView
+				android:id="@+id/drawer_header_image"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/lm_banner"
+				android:scaleType="centerCrop"/>
+    		<ExpandableListView android:id="@+id/left_drawer"
+        		android:layout_width="match_parent"
+        		android:layout_height="match_parent"
+        		android:layout_gravity="start"
+        		android:choiceMode="singleChoice"
+        		android:dividerHeight="1dip"
+        		android:background="#FFFFFF"
+        		android:divider="@color/trans_dim_gray"/>
+	     </LinearLayout>
+	</android.support.v4.widget.DrawerLayout>
+
+    <include layout="@layout/landmarkdetails"/>
+
+</merge>

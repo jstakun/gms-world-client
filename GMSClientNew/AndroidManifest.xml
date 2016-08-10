@@ -48,11 +48,27 @@
         android:label="@string/app_name"
         android:theme="@style/GMSTheme.Light"
         android:name=".GMSClientApp" >
-        <activity android:name=".GMSClient3MainActivity" android:label="@string/app_name" android:theme="@style/AppTheme">
+        <activity android:name="GMSClientDispatchActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="sensor"
+                  android:launchMode="singleTop">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity-alias android:name="LauncherShortcut" android:label="@string/app_name" android:targetActivity="GMSClientDispatchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+        <activity android:name=".GMSClient3MainActivity" android:label="@string/app_name" android:theme="@style/AppTheme" 
+                  android:launchMode="singleTop" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
+             <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
+        </activity>
+        <activity android:name="GMSClient2OSMMainActivity" android:label="@string/app_name" android:screenOrientation="sensor"
+                  android:launchMode="singleTop" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
              <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
         </activity>     
         <activity android:name="SettingsActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY">

@@ -1,8 +1,9 @@
 package com.jstakun.gms.android.ui;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
+
+import org.osmdroid.util.GeoPoint;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -17,11 +18,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -51,7 +49,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -375,6 +372,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     @Override
     protected void onStop() {
         super.onStop();
+        ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
     }
 
     @Override
@@ -385,7 +383,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	intents.hardClose(layerLoader, routeRecorder, loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else {
             intents.softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
+            //ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
         }
         AdsUtils.destroyAdView(this);
         System.gc();
@@ -396,15 +394,15 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public void onRestart() {
         super.onRestart();
         LoggerUtils.debug("onRestart");
-        //when map provider is changing we need to restart activity
-        if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS ) {
-            //TODO must be implemented
-        	intents.showInfoToast("Should start osm map now. Not yet implemented!");
-        	//Intent intent = getIntent();
-            //ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
-            //LocationServicesManager.disableMyLocation();
-            //finish();
-            //startActivity(intent);
+        if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS) {
+            Intent intent = new Intent(this, GMSClient2OSMMainActivity.class);
+            LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
+            if (mapCenter != null) {
+            	GeoPoint center = new GeoPoint(MathUtils.coordDoubleToInt(mapCenter.latitude), MathUtils.coordDoubleToInt(mapCenter.longitude));
+            	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, center);
+            }
+            finish();
+            startActivity(intent);
         }
     }
     
@@ -1241,7 +1239,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		activity.markerCluster.addMarkers((String)msg.obj); 
             		//activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-            		//TODO must be implemented
+            		//TODO uncomment after tests 
             		//if (activity.mMap != null) {
             		//	activity.asyncTaskManager.executeUploadImageTask(activity.mMap.getCameraPosition().target.latitude, activity.mMap.getCameraPosition().target.longitude, false);
             		//}	
