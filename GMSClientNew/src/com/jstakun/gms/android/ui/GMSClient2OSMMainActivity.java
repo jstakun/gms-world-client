@@ -362,7 +362,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         syncRoutesOverlays();
         
-        if (markerCluster != null && mapProvider == ConfigurationManager.OSM_MAPS) {
+        if (markerCluster != null) {
         	markerCluster.loadAllMarkers(mapView);
         }
         
@@ -1066,7 +1066,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     }
 
     private void updateLocation(Location l) {
-    	if (appInitialized) {
+    	if (appInitialized && !ConfigurationManager.getInstance().isClosing()) {
     		intents.addMyLocationLandmark(l);
         	intents.vibrateOnLocationUpdate();
         	UserTracker.getInstance().sendMyLocation();

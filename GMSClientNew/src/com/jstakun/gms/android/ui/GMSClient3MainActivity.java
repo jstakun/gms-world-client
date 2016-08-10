@@ -329,6 +329,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         }
         
         intents.startAutoCheckinBroadcast();
+        
+        if (markerCluster != null) {
+        	markerCluster.loadAllMarkers();
+        }
     }
     
     @Override
@@ -719,28 +723,31 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	@Override
 	public void onLocationChanged(Location location) {
 		//user location has changed	
-		if (! appInitialized) {
+		if (!appInitialized && !ConfigurationManager.getInstance().isClosing()) {
 			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 3);
 		}
 		
-		ConfigurationManager.getInstance().setLocation(location);
+		if (appInitialized && !ConfigurationManager.getInstance().isClosing()) {
 		
-		intents.addMyLocationLandmark(location);     
-	    intents.vibrateOnLocationUpdate();
-	    UserTracker.getInstance().sendMyLocation();
+			ConfigurationManager.getInstance().setLocation(location);
+		
+			intents.addMyLocationLandmark(location);     
+			intents.vibrateOnLocationUpdate();
+			UserTracker.getInstance().sendMyLocation();
 	    	
-	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-	        showMyPositionAction(false);
-	        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-	        	if (routeRecorder != null) {
+			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+				showMyPositionAction(false);
+				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+					if (routeRecorder != null) {
 	                	routeRecorder.addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
-	            }
-	        }
-	    } 
+					}
+				}
+			} 
 	        
-	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-	        checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
-	    }
+			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+				checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
+			}
+		}
 	}
 
 	@Override
