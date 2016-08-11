@@ -937,7 +937,7 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeUploadImageTask(double lat, double lng, boolean notify) {
+    public void executeImageUploadTask(double lat, double lng, boolean notify) {
     	//if (notify || ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)) {
     	if (!ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), String.class) &&
     			!activity.isFinishing()) {
@@ -981,26 +981,6 @@ public class AsyncTaskManager {
         	v.setDrawingCacheEnabled(true);
             //v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         	screenShot = v.getDrawingCache();
-        	/*boolean isBlack = false;
-            int blackPixelsCount = 0;
-        	if (screenShot != null) {
-            	int w = screenShot.getWidth();
-            	int h = screenShot.getHeight();
-            	int blackFactor = (int)(w * h * BLACK_FACTOR);
-            
-            	for(int i=0; i < w; i++) {
-            		for(int j=0; j < h; j++)  {                    
-            			if (screenShot.getPixel(i, j) == Color.BLACK) {
-            				blackPixelsCount++;
-            				if (blackPixelsCount > blackFactor) {
-        	    				isBlack = true;
-        	    				break;
-        	    			}
-            			}	
-            		}   
-            	}
-            }
-        	if (screenShot != null && !isBlack) {*/
             if (screenShot != null) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 screenShot.compress(Bitmap.CompressFormat.JPEG, 50, out);
@@ -1017,6 +997,10 @@ public class AsyncTaskManager {
         return scr;
     }
 
+    public void executeImageUploadTask(byte[] image, String filename, double lat, double lng) {
+    	new UploadImageTask(filename, image).execute(lat, lng);
+    }
+    
     private class TakeScreenshot implements Runnable {
 
     	double lat, lng;
@@ -1030,8 +1014,7 @@ public class AsyncTaskManager {
     	
 		@Override
 		public void run() {
-			byte[] screenshot = takeScreenshot();
-			new UploadImageTask(filename, screenshot).execute(lat, lng);   					
+			executeImageUploadTask(takeScreenshot(), filename, lat, lng);   					
 		}
     	
     }

@@ -842,7 +842,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		}
 		    		break;
 		    	case R.id.shareScreenshot:
-		    		asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+		    		asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
 		                MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), true);
 		    		break;    
 		    	case R.id.reset:

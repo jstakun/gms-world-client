@@ -1,5 +1,6 @@
 package com.jstakun.gms.android.ui;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.SnapshotReadyCallback;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -35,6 +37,7 @@ import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -49,7 +52,10 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.location.Location;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -742,11 +748,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	@Override
 	public void onLocationChanged(Location location) {
 		//user location has changed	
-		if (!appInitialized && !ConfigurationManager.getInstance().isClosing()) {
+		if (!appInitialized && !isFinishing()) {
 			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 3);
 		}
 		
-		if (appInitialized && !ConfigurationManager.getInstance().isClosing()) {
+		if (appInitialized && !isFinishing()) {
 		
 			ConfigurationManager.getInstance().setLocation(location);
 		
@@ -983,7 +989,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		    		}
 		    		break;
 				case R.id.shareScreenshot:
-					asyncTaskManager.executeUploadImageTask(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude, true);
+					takeScreenshot();
 					break;
 				case R.id.reset:
 	            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
@@ -1182,8 +1188,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
         if (loadLayers && !isVisible) {
             markerCluster.clearMarkers();
-            intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, mMap.getCameraPosition().target.latitude, 
-            		mMap.getCameraPosition().target.latitude, (int)mMap.getCameraPosition().zoom, projection);
+            intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), 
+            		myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
         }
     }
     
@@ -1218,8 +1224,47 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    routesCluster.loadAllRoutes();
 	}
 	
-	
-	
+    private void takeScreenshot()
+    {
+    	if (!ConfigurationManager.getInstance().containsObject("screenshot_gms_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), String.class) &&
+    			!isFinishing()) {
+    		
+    		intents.showInfoToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
+    	
+    		try {
+    			SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+                int shutterSound = soundPool.load(this, R.raw.camera_click, 0);
+    		} catch (Exception e) {
+    			
+    		}
+    		
+        	SnapshotReadyCallback callback = new SnapshotReadyCallback() {
+
+				@Override
+				public void onSnapshotReady(Bitmap screenshot) {
+					LoggerUtils.debug("Google Map snapshot taken!");
+				
+					long loadingTime = 0; 
+    				Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
+    				if (l != null) {
+    					loadingTime = l.longValue();
+    				}
+    				int version = OsUtil.getSdkVersion();
+    				int numOfLandmarks = landmarkManager.getAllLayersSize();
+    				int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
+    				String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
+    			
+    				ByteArrayOutputStream out = new ByteArrayOutputStream();
+                	screenshot.compress(Bitmap.CompressFormat.JPEG, 50, out);
+                
+					asyncTaskManager.executeImageUploadTask(out.toByteArray(), filename, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+				}        	
+        	};
+        
+        	mMap.snapshot(callback);
+    	}
+    }
+    
 	//auto generated placeholder
     public static class PlaceholderFragment extends Fragment {
         
@@ -1282,7 +1327,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
             		//TODO uncomment after tests 
             		//if (activity.mMap != null) {
-            		//	activity.asyncTaskManager.executeUploadImageTask(activity.mMap.getCameraPosition().target.latitude, activity.mMap.getCameraPosition().target.longitude, false);
+            		//	activity.takeScreenshot();
             		//}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));

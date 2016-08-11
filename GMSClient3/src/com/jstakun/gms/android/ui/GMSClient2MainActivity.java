@@ -875,7 +875,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		    		}
 		    		break;
 				case R.id.shareScreenshot:
-					asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+					asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
 		            MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), true);
 					break;
 				case R.id.reset:
@@ -1353,7 +1353,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             		activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
             		if (activity.mapProvider == ConfigurationManager.OSM_MAPS || activity.googleMapsView.canCoverCenter()) {
-            			activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
+            			activity.asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
                             MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
             		}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
