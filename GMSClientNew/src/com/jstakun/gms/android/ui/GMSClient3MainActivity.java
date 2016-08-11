@@ -37,7 +37,6 @@ import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -989,7 +988,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		    		}
 		    		break;
 				case R.id.shareScreenshot:
-					takeScreenshot();
+					takeScreenshot(true);
 					break;
 				case R.id.reset:
 	            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
@@ -1042,21 +1041,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 routeRecorder = new RouteRecorder(routesManager);
                 ConfigurationManager.getInstance().putObject("routeRecorder", routeRecorder);
             }
-
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                String route = routeRecorder.getRouteLabel();
-                if (route == null) {
-                    route = routeRecorder.startRecording();
-                }
-
-                if (route != null) {
-                	routesCluster.showRouteAction(route, true);
-                }
-
-                messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
-            } //else {
-            //    messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOff), 10, -1, -1);
-            //}
 
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
 
@@ -1222,20 +1206,37 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    
 	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager);
 	    routesCluster.loadAllRoutes();
+	    
+	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+            String route = routeRecorder.getRouteLabel();
+            if (route == null) {
+                route = routeRecorder.startRecording();
+            }
+
+            if (route != null) {
+            	routesCluster.showRouteAction(route, true);
+            }
+
+            messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
+        }
 	}
 	
-    private void takeScreenshot()
+    private void takeScreenshot(boolean notify)
     {
     	if (!ConfigurationManager.getInstance().containsObject("screenshot_gms_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), String.class) &&
     			!isFinishing()) {
     		
-    		intents.showInfoToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
-    	
+    		if (notify) {
+    			intents.showInfoToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
+    		}
+    		
     		try {
     			SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
                 int shutterSound = soundPool.load(this, R.raw.camera_click, 0);
+                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
+                LoggerUtils.debug("Shutter sound played with id " + id);
     		} catch (Exception e) {
-    			
+    			LoggerUtils.error("GMSClient3MainActivity.takeScreenshot exception", e);
     		}
     		
         	SnapshotReadyCallback callback = new SnapshotReadyCallback() {
@@ -1327,7 +1328,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		}
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
             		if (activity.mMap != null) {
-            			activity.takeScreenshot();
+            			activity.takeScreenshot(false);
             		}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
