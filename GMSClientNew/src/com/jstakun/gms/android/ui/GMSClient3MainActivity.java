@@ -760,12 +760,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			UserTracker.getInstance().sendMyLocation();
 	    	
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-				showMyPositionAction(false);
-				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-					if (routeRecorder != null) {
-	                	routeRecorder.addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE) && routeRecorder != null) {
+					routeRecorder.addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+					if (routesCluster != null) {
+					   routesCluster.showRouteAction(routeRecorder.getRouteLabel(), false);
 					}
 				}
+				showMyPositionAction(false);
 			} 
 	        
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
@@ -1152,29 +1153,30 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         Location myLoc = ConfigurationManager.getInstance().getLocation();
         LatLng myLocLatLng = new LatLng(myLoc.getLatitude(), myLoc.getLongitude());
         
-        if (mMap.getProjection().getVisibleRegion().latLngBounds.contains(myLocLatLng)) {
-            isVisible = true;
+        if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
+        
+        	if (mMap.getProjection().getVisibleRegion().latLngBounds.contains(myLocLatLng)) {
+        		isVisible = true;
+        	}
+        
+        	if (!isVisible) {
+        		hideLandmarkView();
+        		clearLandmarks = intents.isClearLandmarksRequired(projection, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
+            		 MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), MathUtils.coordDoubleToInt(myLoc.getLatitude()), MathUtils.coordDoubleToInt(myLoc.getLongitude()));
+        	}
+        	
+        	if (loadLayers && !isVisible) {
+                markerCluster.clearMarkers();
+                intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
+            }
+        
         }
         
-        if (!isVisible) {
-            hideLandmarkView();
-            clearLandmarks = intents.isClearLandmarksRequired(projection, 
-            		 MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
-            		 MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude),
-                     MathUtils.coordDoubleToInt(myLoc.getLatitude()), MathUtils.coordDoubleToInt(myLoc.getLongitude()));
-        }
-        
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocLatLng));
-        } else {
+        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        //    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocLatLng));
+        //} else {
             animateTo(myLocLatLng);
-        }
-
-        if (loadLayers && !isVisible) {
-            markerCluster.clearMarkers();
-            intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), 
-            		myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
-        }
+        //}
     }
     
     private void pickPositionAction(LatLng newCenter, boolean loadLayers, boolean clearMap) {
@@ -1204,7 +1206,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager);	
 	    markerCluster.loadAllMarkers();
 	    
-	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager);
+	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager, this.getResources().getDisplayMetrics().density);
 	    routesCluster.loadAllRoutes();
 	    
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
