@@ -81,7 +81,6 @@
                 <category android:name="android.intent.category.PREFERENCE"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.google.ads.AdActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
         <activity android:name="com.amazon.device.ads.AdActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name="LoginActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name="AddLandmarkActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:windowSoftInputMode="adjustResize"></activity>

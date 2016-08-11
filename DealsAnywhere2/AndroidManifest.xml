@@ -68,7 +68,6 @@
                 <category android:name="android.intent.category.PREFERENCE"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.google.ads.AdActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
         <activity android:name="com.amazon.device.ads.AdActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY" android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name="com.jstakun.gms.android.ui.CalendarActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
         <activity android:name="com.jstakun.gms.android.ui.HelpActivity" android:permission="com.jstakun.gms.android.permission.ACTIVITY"></activity>
