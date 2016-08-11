@@ -682,8 +682,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 break;
             case R.id.refreshLayers:
                 intents.loadLayersAction(true, null, false, true, layerLoader,
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                        mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(),
                         mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
                 break;
             case R.id.addLayer:
@@ -963,8 +962,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         mapController.setCenter(new org.osmdroid.google.wrapper.GeoPoint(newCenter));
         if (loadLayers) {
             intents.loadLayersAction(true, null, clearMap, true, layerLoader,
-                    MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                    MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                    mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(),
                     mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
         }
     }
@@ -1212,8 +1210,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             		activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
             		if (activity.mapProvider == ConfigurationManager.OSM_MAPS || activity.googleMapsView.canCoverCenter()) {
-                		activity.asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
+                		activity.asyncTaskManager.executeImageUploadTask(activity.mapView.getMapCenter().getLatitude(),
+                            activity.mapView.getMapCenter().getLongitude(), false);
             		}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));

@@ -658,8 +658,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 break;
             case R.id.refreshLayers:
                 intents.loadLayersAction(true, null, false, true, layerLoader,
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                        mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(),
                         mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
                 break;
             case R.id.addLayer:
@@ -933,8 +932,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         mapController.setCenter(newCenter);
         if (loadLayers) {
             intents.loadLayersAction(true, null, clearMap, true, layerLoader,
-                    MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                    MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                    mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(),
                     mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
         }
     }
@@ -1136,8 +1134,8 @@ private void syncRoutesOverlays() {
         		} else if (msg.what == LayerLoader.LAYER_LOADED) {
         			activity.postInvalidate();
         		} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-        			activity.asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
+        			activity.asyncTaskManager.executeImageUploadTask(activity.mapView.getMapCenter().getLatitude(),
+                            activity.mapView.getMapCenter().getLongitude(), false);
         		} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
         			activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
         		} else if (msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
