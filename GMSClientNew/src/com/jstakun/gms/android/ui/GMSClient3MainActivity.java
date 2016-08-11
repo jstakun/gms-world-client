@@ -23,7 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.Commons; 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
@@ -1258,6 +1258,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 	screenshot.compress(Bitmap.CompressFormat.JPEG, 50, out);
                 
 					asyncTaskManager.executeImageUploadTask(out.toByteArray(), filename, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+				    //TODO open dialog to share image
 				}        	
         	};
         
@@ -1325,10 +1326,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             			activity.markerCluster.addMarkers((String)msg.obj); 
             		}
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-            		//TODO uncomment after tests 
-            		//if (activity.mMap != null) {
-            		//	activity.takeScreenshot();
-            		//}	
+            		if (activity.mMap != null) {
+            			activity.takeScreenshot();
+            		}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
             	} else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {

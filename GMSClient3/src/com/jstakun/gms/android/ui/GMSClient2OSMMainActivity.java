@@ -741,8 +741,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		break;
 		    	case R.id.refreshLayers:
 		    		intents.loadLayersAction(true, null, false, true, layerLoader,
-		                MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-		                MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+		                mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(),
 		                mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
 		    		break;
 		    	case R.id.addLayer:
@@ -1016,7 +1015,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 }
             }
         } else {
-            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader, new OsmLandmarkProjection(mapView));
+            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), new double[]{mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude()}, loadingHandler, mapView.getZoomLevel(), layerLoader, new OsmLandmarkProjection(mapView));
         }
     }
 
@@ -1027,8 +1026,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         mapController.setCenter(newCenter);
         if (loadLayers) {
         	intents.loadLayersAction(true, null, clearMap, true, layerLoader,
-                    MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                    MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()),
+                    mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(),
                     mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
         }
     }
@@ -1272,8 +1270,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             		//TODO check if mapView has loaded map tiles activity.mapView.getTileProvider()
             		//activity.mapView.getOverlayManager().getTilesOverlay()
             		//activity.mapView.getTileProvider().getMapTile(arg0)
-            		activity.asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
-                            MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
+            		activity.asyncTaskManager.executeImageUploadTask(activity.mapView.getMapCenter().getLatitude(),
+                            activity.mapView.getMapCenter().getLongitude(), false);
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
             	} else if (msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {
