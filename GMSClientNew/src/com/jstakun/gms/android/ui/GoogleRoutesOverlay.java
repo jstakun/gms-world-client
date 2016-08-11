@@ -27,47 +27,49 @@ public class GoogleRoutesOverlay {
 	private LandmarkManager mLm;
 	private GoogleMap mMap;
 	private RoutesManager routesManager;
+	private float mDensity;
 	
-	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, RoutesManager rm) {
+	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, RoutesManager rm, float density) {
 		this.mMap = map;
 		this.mLm = lm;
 		this.routesManager = rm;      
+		this.mDensity = density;
 	}
 	
 	public void showRouteAction(String routeKey, boolean animateTo) {
     	LoggerUtils.debug("Adding route to map view: " + routeKey);
-        if (routesManager.containsRoute(routeKey) && mLm.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
-            if (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
-                Context c = ConfigurationManager.getInstance().getContext();
-                float density = c.getResources().getDisplayMetrics().density;
+        if (routesManager.containsRoute(routeKey)) {
+            if (routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) || (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) && mLm.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER))) {
             	List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
-                List<LatLng> pointsLatLng = new ArrayList<LatLng>();
-                for (ExtendedLandmark l : points) {
-                	LatLng p = new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
-                	pointsLatLng.add(p);
-                }
+                if (points.size() > 1) {
+                	List<LatLng> pointsLatLng = new ArrayList<LatLng>();
+                	for (ExtendedLandmark l : points) {
+                		LatLng p = new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
+                		pointsLatLng.add(p);
+                	}
                 
-                mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
-                mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
-                for (int i=0;i<pointsLatLng.size()-1;i++) {
-                	mMap.addPolyline(new PolylineOptions()
-                		.add(pointsLatLng.get(i), pointsLatLng.get(i+1))
-                        .width(5f * density)
-                        .color(Color.RED)
-                        .geodesic(true));
-                }
+                	mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
+                	mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
+                	for (int i=0;i<pointsLatLng.size()-1;i++) {
+                		mMap.addPolyline(new PolylineOptions()
+                				.add(pointsLatLng.get(i), pointsLatLng.get(i+1))
+                				.width(5f * mDensity)
+                				.color(Color.RED)
+                				.geodesic(true));
+                	}
                 
-                if (animateTo) {
-                	LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                    for (LatLng p : pointsLatLng) {
-                    	builder.include(p);
-                    }
-                	LatLngBounds bounds = builder.build();
-                	int padding = (int)(8 * density); // offset from edges of the map in pixels
-                	CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-                	mMap.animateCamera(cu);
+                	if (animateTo) {
+                		LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    	for (LatLng p : pointsLatLng) {
+                    		builder.include(p);
+                    	}
+                		LatLngBounds bounds = builder.build();
+                		int padding = (int)(8 * mDensity); // offset from edges of the map in pixels
+                		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                		mMap.animateCamera(cu);
+                	}
                 }
-            }           
+            } 
         }
     }
 	
