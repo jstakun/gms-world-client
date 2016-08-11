@@ -756,8 +756,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 	    		}
 	    		break;    
             case R.id.shareScreenshot:
-            	asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
-                        MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), true);
+            	asyncTaskManager.executeImageUploadTask(mapView.getMapCenter().getLatitude(),mapView.getMapCenter().getLongitude(), true);
             	break;    
             case R.id.reset:
             	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
@@ -924,7 +923,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 }
             }
         } else {
-            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), new double[]{MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6())}, loadingHandler, mapView.getZoomLevel(), layerLoader, new OsmLandmarkProjection(mapView));
+            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), new double[]{mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude()}, loadingHandler, mapView.getZoomLevel(), layerLoader, new OsmLandmarkProjection(mapView));
         }
     }
    
