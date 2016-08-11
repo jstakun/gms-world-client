@@ -797,7 +797,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
             		activity.showRecommendedDeal(false);
             		if (activity.mapView.canCoverCenter()) {          			
-            			activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
+            			activity.asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
                             MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
             		}
             	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS) {

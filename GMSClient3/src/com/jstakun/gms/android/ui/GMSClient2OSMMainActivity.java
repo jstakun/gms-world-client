@@ -843,7 +843,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		}
 		    		break;
 		    	case R.id.shareScreenshot:
-		    		asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+		    		asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
 		                MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), true);
 		    		break;    
 		    	case R.id.reset:
@@ -1272,7 +1272,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             		//TODO check if mapView has loaded map tiles activity.mapView.getTileProvider()
             		//activity.mapView.getOverlayManager().getTilesOverlay()
             		//activity.mapView.getTileProvider().getMapTile(arg0)
-            		activity.asyncTaskManager.executeUploadImageTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
+            		activity.asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
                             MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
