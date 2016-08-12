@@ -6,6 +6,7 @@
 package com.jstakun.gms.android.data;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.maps.TilesCache;
@@ -70,7 +71,8 @@ public class MemoryPersistenceManager implements PersistenceManager {
         return null;
     }
 
-    public void saveImageFile(Bitmap map, String filename) {
+    public Uri saveImageFile(Bitmap map, String filename) {
+    	return null;
     }
 
 }

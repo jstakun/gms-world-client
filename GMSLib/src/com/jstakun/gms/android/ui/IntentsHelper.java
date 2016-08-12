@@ -16,32 +16,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
-import android.os.Vibrator;
-import android.provider.Settings;
-import android.text.Html;
-import android.text.Html.ImageGetter;
-import android.text.method.LinkMovementMethod;
-import android.view.Display;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.jstakun.gms.android.ads.AdsUtils;
@@ -77,10 +55,32 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 import com.squareup.picasso.Picasso;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
+import android.os.Vibrator;
+import android.provider.Settings;
+import android.text.Html;
+import android.text.Html.ImageGetter;
+import android.text.method.LinkMovementMethod;
+import android.view.Display;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  *
@@ -653,6 +653,14 @@ public final class IntentsHelper {
         }
     }
 
+    public void shareImageAction(Uri uri) {
+    	final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+    	shareIntent.setType("image/jpg");
+    	shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+    	shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.shareScreenshot));
+    	activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.shareScreenshot)));
+    }
+    
     public void setupShortcut() {
         Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
         shortcutIntent.setClassName(activity, activity.getClass().getName());

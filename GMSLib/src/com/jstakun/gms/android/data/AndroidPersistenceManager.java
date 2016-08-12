@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -61,12 +62,11 @@ public class AndroidPersistenceManager implements PersistenceManager {
         saveImageFile(map, MAP_FILE);
     }
 
-    public void saveImageFile(Bitmap map, String filename) {
+    public Uri saveImageFile(Bitmap map, String filename) {
         OutputStream out = null;
         Context ctx = ConfigurationManager.getInstance().getContext();
 
         try {
-
             out = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
             map.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
@@ -81,6 +81,7 @@ public class AndroidPersistenceManager implements PersistenceManager {
                 }
             }
         }
+        return null;
     }
 
     public void saveLandmarkStore(List<ExtendedLandmark> landmarkdb) {
