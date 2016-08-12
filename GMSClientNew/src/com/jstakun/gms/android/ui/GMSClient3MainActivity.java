@@ -1271,8 +1271,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         	mMap.snapshot(callback);
     	} else {
-    		//TODO translate
-    		intents.showInfoToast("Screenshot for current location has already been sent!");
+    		intents.showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
     	}
     }
     

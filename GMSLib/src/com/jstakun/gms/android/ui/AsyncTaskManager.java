@@ -955,8 +955,7 @@ public class AsyncTaskManager {
     		String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
     		new TakeScreenshotTask(filename, notify).execute(lat, lng);
     	} else if (notify) {
-    		//TODO translate
-    		intents.showInfoToast("Screenshot for current location has already been sent!");
+    		intents.showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
     	} else {
     		LoggerUtils.debug("Screenshot for current location has already been sent!");
     	}
