@@ -299,11 +299,13 @@ public class LayerManager {
     	
     	if (StringUtils.isNotEmpty(layerName)) {
         	Layer layer = layers.get(layerName);
-        	if (type == LAYER_ICON_LARGE) {
-    			icon = layer.getLargeIconResource();
-    		} else {
-    			icon = layer.getSmallIconResource();
-    		}	
+        	if (layer != null) {
+        		if (type == LAYER_ICON_LARGE) {
+    				icon = layer.getLargeIconResource();
+    			} else {
+    				icon = layer.getSmallIconResource();
+    			}	
+        	}
     	}
     	
     	if (icon == -1) {

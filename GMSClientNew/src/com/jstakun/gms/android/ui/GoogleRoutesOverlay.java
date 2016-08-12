@@ -58,7 +58,7 @@ public class GoogleRoutesOverlay {
                 				.geodesic(true));
                 	}
                 
-                	if (animateTo) {
+                	if (animateTo && !routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
                 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
                     	for (LatLng p : pointsLatLng) {
                     		builder.include(p);
