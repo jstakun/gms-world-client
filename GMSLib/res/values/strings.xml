@@ -207,6 +207,7 @@
     <string name="OAuth.service.missing">Missing OAuth service. Please try again!</string>
     <string name="Share.no.share.apps">No share apps available!</string>
     <string name="Share.no.matching.apps">Can\'t find matching application!</string>
+    <string name="Share.screenshot.exists">Screenshot with this location has already been sent!</string>
     <string name="Call.not.supported.error">Can\'t make a call from your device!</string>
     <string name="Unexpected.error">Oops! Something went wrong. Please try again!</string>
     <string name="Forbidden.connection.error">Connection limit exceeded!</string>
