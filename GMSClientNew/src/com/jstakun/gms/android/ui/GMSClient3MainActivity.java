@@ -511,9 +511,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	}
             //
 
-        	if (menu.findItem(R.id.shareScreenshot) != null) {
-        		menu.findItem(R.id.shareScreenshot).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
-        	}
+        	//if (menu.findItem(R.id.shareScreenshot) != null) {
+        	//	menu.findItem(R.id.shareScreenshot).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	//}
+        	
         	if (menu.findItem(R.id.dataPacket) != null) {
         		menu.findItem(R.id.dataPacket).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
         	}
