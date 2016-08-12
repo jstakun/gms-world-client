@@ -450,7 +450,7 @@ public class IconCache {
                         String[] pathTokens = imageURL.getFile().split("/");
                         PersistenceManagerFactory.getFileManager().saveIconFile(b, pathTokens[pathTokens.length - 1]);
                     } else {
-                        PersistenceManagerFactory.getFileManager().saveImageFileToCache(b, layer);
+                        PersistenceManagerFactory.getFileManager().saveImageFileToCache(b, layer, true);
                     }
                     //
                     if (b != null && !b.isRecycled()) {

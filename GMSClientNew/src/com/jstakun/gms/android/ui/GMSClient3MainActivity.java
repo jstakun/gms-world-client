@@ -55,6 +55,7 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -763,15 +764,16 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE) && routeRecorder != null) {
 					routeRecorder.addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
 					if (routesCluster != null) {
-					   routesCluster.showRouteAction(routeRecorder.getRouteLabel(), false);
+					   routesCluster.showRecordedRouteStep(routeRecorder.getRouteLabel());
 					}
 				}
 				showMyPositionAction(false);
 			} 
 	        
-			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-				checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
-			}
+			//TODO only one checkin action should run
+			//if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+			//	checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
+			//}
 		}
 	}
 
@@ -1223,23 +1225,17 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         }
 	}
 	
-    private void takeScreenshot(boolean notify)
+    private void takeScreenshot(final boolean notify)
     {
-    	if (!ConfigurationManager.getInstance().containsObject("screenshot_gms_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), String.class) &&
+    	if (!ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), String.class) &&
     			!isFinishing()) {
     		
     		if (notify) {
-    			intents.showInfoToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
+    			intents.showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
     		}
     		
-    		try {
-    			SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
-                int shutterSound = soundPool.load(this, R.raw.camera_click, 0);
-                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
-                LoggerUtils.debug("Shutter sound played with id " + id);
-    		} catch (Exception e) {
-    			LoggerUtils.error("GMSClient3MainActivity.takeScreenshot exception", e);
-    		}
+    		final SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+            final int shutterSound = soundPool.load(this, R.raw.camera_click, 0);
     		
         	SnapshotReadyCallback callback = new SnapshotReadyCallback() {
 
@@ -1260,12 +1256,23 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     				ByteArrayOutputStream out = new ByteArrayOutputStream();
                 	screenshot.compress(Bitmap.CompressFormat.JPEG, 50, out);
                 
+                	Uri uri = PersistenceManagerFactory.getFileManager().saveImageFile(screenshot, "screenshot.jpg");
+                	
+                	int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
+                    LoggerUtils.debug("Shutter sound played with id " + id);
+                	
 					asyncTaskManager.executeImageUploadTask(out.toByteArray(), filename, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
-				    //TODO open dialog to share image
+				    
+					if (notify) {
+						intents.shareImageAction(uri);
+					}
 				}        	
         	};
         
         	mMap.snapshot(callback);
+    	} else {
+    		//TODO translate
+    		intents.showInfoToast("Screenshot for current location has already been sent!");
     	}
     }
     

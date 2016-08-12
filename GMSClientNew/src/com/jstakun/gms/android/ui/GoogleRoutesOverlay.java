@@ -73,6 +73,21 @@ public class GoogleRoutesOverlay {
         }
     }
 	
+	public void showRecordedRouteStep(String routeKey) {
+		List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
+        if (points.size() > 1) {
+        	ExtendedLandmark penultimate = points.get(points.size()-2);
+        	ExtendedLandmark last = points.get(points.size()-1);
+        	LatLng lastPoint = new LatLng(last.getQualifiedCoordinates().getLatitude(), last.getQualifiedCoordinates().getLongitude());
+        	LatLng penultimatePoint = new LatLng(penultimate.getQualifiedCoordinates().getLatitude(), penultimate.getQualifiedCoordinates().getLongitude());
+        	mMap.addPolyline(new PolylineOptions()
+    				.add(penultimatePoint, lastPoint)
+    				.width(5f * mDensity)
+    				.color(Color.RED)
+    				.geodesic(true));          		
+        }
+	}
+	
 	public void loadAllRoutes() {
 		if (mLm.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
 			LoggerUtils.debug("Loading all routes to map view");

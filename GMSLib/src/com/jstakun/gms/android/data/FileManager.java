@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
@@ -171,21 +172,23 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    public void saveImageFile(Bitmap map, String filename) {
-        saveImageFile(map, getImagesFolder(), filename);
+    public Uri saveImageFile(Bitmap image, String filename) {
+        return saveImageFile(image, getImagesFolder(), filename);
     }
 
-    public void saveIconFile(Bitmap map, String filename) {
-        saveImageFile(map, getIconsFolderPath(), filename);
+    public Uri saveIconFile(Bitmap map, String filename) {
+        return saveImageFile(map, getIconsFolderPath(), filename);
     }
 
-    protected void saveImageFileToCache(Bitmap map, String filename) {
+    public void saveImageFileToCache(Bitmap map, String filename, boolean compress) {
         if (map != null) {
         	OutputStream out = null;
         	try {
         		File fc = new File(cacheDir, filename);
         		out = new FileOutputStream(fc);
-        		map.compress(Bitmap.CompressFormat.PNG, 100, out);
+        		if (compress) {
+        			map.compress(Bitmap.CompressFormat.PNG, 100, out);
+        		}
         		out.flush();
         	} catch (Exception ioe) {
         		LoggerUtils.error("FileManager.saveFile exception", ioe);
@@ -203,8 +206,8 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    private void saveImageFile(Bitmap map, String folder, String filename) {
-        File fc;
+    private Uri saveImageFile(Bitmap map, String folder, String filename) {
+        File fc = null;
         OutputStream out = null;
         try {
             fc = getExternalDirectory(folder, filename);
@@ -222,6 +225,11 @@ public class FileManager implements PersistenceManager {
                     LoggerUtils.debug("FileManager.saveFile exception", ex);
                 }
             }
+        }
+        if (fc != null) {
+        	return Uri.fromFile(fc);
+        } else {
+        	return null;
         }
     }
 
