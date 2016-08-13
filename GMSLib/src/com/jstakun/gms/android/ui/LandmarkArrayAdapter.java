@@ -86,13 +86,10 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
 			int targetWidth = (int)(16f * parentListActivity.getResources().getDisplayMetrics().density);
             int targetHeight = (int)(16f * parentListActivity.getResources().getDisplayMetrics().density);
             if (landmark.getCategoryid() != -1) {
-                //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
-				int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryid(), LayerManager.LAYER_ICON_SMALL);
+                int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryid(), LayerManager.LAYER_ICON_SMALL);
 				Picasso.with(parentListActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));	           
             } else {
-                //BitmapDrawable image = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL, parentListActivity.getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentListActivity, landmark.getLayer()));
-                //holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-            	int iconId = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
+                int iconId = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
     			if (iconId != R.drawable.image_missing16) {
     				Picasso.with(parentListActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
     			} else {
@@ -106,6 +103,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     			}
             }
         } else {
+        	//FilesActivity
             String filename = landmark.getName();
             final String layerName = filename.substring(0, filename.lastIndexOf('.'));
             final String iconPath = layerName + ".png";
@@ -126,16 +124,6 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
                     + "<br/>" + desc;
         }
         if (StringUtils.isNotEmpty(landmark.getThunbnail())) {
-            /*Bitmap image = IconCache.getInstance().getThumbnailResource(landmark.getThunbnail(), landmark.getLayer(), parentListActivity.getResources().getDisplayMetrics(), new LandmarkThumbnailLoadingHandler(rowView, parentListActivity, landmark));
-            int width = parentListActivity.getWindowManager().getDefaultDisplay().getWidth();            
-            if (image != null && (width == 0 || image.getWidth() < width * 0.9)) {
-                //System.out.println(image.getWidth() + " " + rowView.getWidth() + " " + parentListActivity.getWindowManager().getDefaultDisplay().getWidth());
-            	holder.thumbnailImage.setImageBitmap(image);
-            	//holder.landmarkDescText.setCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
-            } else {
-                holder.thumbnailImage.setImageResource(R.drawable.download48);
-            }
-            holder.thumbnailImage.setVisibility(View.VISIBLE);*/
             holder.thumbnailImage.setVisibility(View.VISIBLE);      
             int targetWidth = (int)(128f * parentListActivity.getResources().getDisplayMetrics().density);
             int targetHeight = (int)(128f * parentListActivity.getResources().getDisplayMetrics().density);
