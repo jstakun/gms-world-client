@@ -70,6 +70,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		//LoggerUtils.debug("Loading " + landmarks.size() + " markers from layer " + layerKey);
 		readWriteLock.writeLock().lock();
 		int size = getItems().size();
+		DisplayMetrics displayMetrics = mapView.getResources().getDisplayMetrics();
 		for (final ExtendedLandmark landmark : landmarks) {		
 			Marker marker = null; 
 			if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof Marker) {
@@ -86,8 +87,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 				marker.setTitle(landmark.getName());
 			
 				boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-				DisplayMetrics displayMetrics = mapView.getResources().getDisplayMetrics();
-			
+				
 				int color = COLOR_WHITE;
 				if (landmark.isCheckinsOrPhotos()) {
 					color = COLOR_LIGHT_SALMON;

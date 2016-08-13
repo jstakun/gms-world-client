@@ -11,19 +11,21 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
-import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
-import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.widget.ImageView;
 
 public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClickListener<GoogleMarker>, ClusterManager.OnClusterInfoWindowClickListener<GoogleMarker>, ClusterManager.OnClusterItemClickListener<GoogleMarker>, ClusterManager.OnClusterItemInfoWindowClickListener<GoogleMarker> {
@@ -85,6 +87,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	public void addMarkers(String layerKey) {
 		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
 		int count = 0;
+		DisplayMetrics displayMetrics = ConfigurationManager.getInstance().getContext().getResources().getDisplayMetrics();
 		for (final ExtendedLandmark landmark : landmarks) {
 			readWriteLock.writeLock().lock();
 			
@@ -94,17 +97,12 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 				marker = (GoogleMarker)landmark.getRelatedUIObject();
 			}
 			if (marker == null) {
-				int icon = -1;
+				Drawable icon = null;
 				if (landmark.getCategoryId() != -1) {
-					icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-					if (icon == R.drawable.image_missing32) {
-						icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
-					}
+					int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
+					icon = IconCache.getInstance().getCategoryBitmap(iconId, Integer.toString(landmark.getCategoryId()), -1, false, displayMetrics);
 				} else {
-					icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE);
-					if (icon == R.drawable.image_missing32 || landmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
-						icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
-					}
+					icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
 				}
 				marker = new GoogleMarker(landmark, icon);
 				landmark.setRelatedUIObject(marker);
@@ -168,8 +166,8 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	    protected void onBeforeClusterItemRendered(GoogleMarker marker, MarkerOptions markerOptions) {
 	            // Draw a single person.
 	            // Set the info window to show their name.
-			mImageView.setImageResource(marker.getIcon());
-	        Bitmap icon = mIconGenerator.makeIcon();
+			mImageView.setImageDrawable(marker.getIcon());
+			Bitmap icon = mIconGenerator.makeIcon();
 	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));//.title("title");
 	    }
 		
