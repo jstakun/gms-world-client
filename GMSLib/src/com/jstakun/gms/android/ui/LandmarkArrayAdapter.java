@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Html.ImageGetter;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LayerManager;
@@ -103,13 +105,13 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     				}
     			}
             }
-        } /*else {
+        } else {
             String filename = landmark.getName();
             final String layerName = filename.substring(0, filename.lastIndexOf('.'));
             final String iconPath = layerName + ".png";
             BitmapDrawable image = IconCache.getInstance().getLayerImageResource(layerName, "_small", iconPath, -1, null, LayerManager.LAYER_FILESYSTEM, parentListActivity.getResources().getDisplayMetrics(), null);
             holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-        }*/
+        }
 
         holder.landmarkNameText.setText(landmark.getName());
 

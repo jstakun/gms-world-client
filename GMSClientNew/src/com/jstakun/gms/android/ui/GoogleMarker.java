@@ -4,13 +4,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 
+import android.graphics.drawable.Drawable;
+
 public class GoogleMarker implements ClusterItem {
 
 	private final LatLng mPosition;
-    private int mIcon;
+    private Drawable mIcon;
     private ExtendedLandmark mRelatedObject;
 	
-    public GoogleMarker(ExtendedLandmark landmark, int icon) {
+    public GoogleMarker(ExtendedLandmark landmark, Drawable icon) {
     	this.mRelatedObject = landmark;
     	this.mIcon = icon;
         mPosition = new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude());
@@ -21,7 +23,7 @@ public class GoogleMarker implements ClusterItem {
 		return mPosition;
 	}
 	
-	public int getIcon() {
+	public Drawable getIcon() {
 		return mIcon;
 	}
 	

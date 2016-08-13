@@ -394,7 +394,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
         	intents.hardClose(layerLoader, routeRecorder, loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
-        } else {
+        } else if (mMap != null) {
             intents.softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
             //ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
         }
@@ -772,9 +772,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			} 
 	        
 			//TODO only one checkin action should run
-			//if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-			//	checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
-			//}
+			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
+				checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
+			}
 		}
 	}
 
