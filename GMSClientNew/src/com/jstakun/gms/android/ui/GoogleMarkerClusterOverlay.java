@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -11,11 +13,13 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.osm.maps.R;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 
@@ -101,9 +105,12 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 				if (landmark.getCategoryId() != -1) {
 					int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
 					icon = IconCache.getInstance().getCategoryBitmap(iconId, Integer.toString(landmark.getCategoryId()), -1, false, displayMetrics);
-				} else {
+				} else if (!StringUtils.equals(layerKey, Commons.LOCAL_LAYER)) { 
+					//doesn't work with local layer
 					icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-				}
+				} else if (StringUtils.equals(layerKey, Commons.LOCAL_LAYER)) {
+            		icon = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
+            	}
 				marker = new GoogleMarker(landmark, icon);
 				landmark.setRelatedUIObject(marker);
 				mClusterManager.addItem(marker);
