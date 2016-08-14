@@ -14,7 +14,6 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -42,12 +41,14 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	private ClusterManager<GoogleMarker> mClusterManager;
 	private Handler landmarkDetailsHandler;
 	private LandmarkManager lm;
+	private DisplayMetrics mDisplayMetrics; 
 	
-	public GoogleMarkerClusterOverlay(Activity activity, GoogleMap map, Handler landmarkDetailsHandler, LandmarkManager lm) {
+	public GoogleMarkerClusterOverlay(Activity activity, GoogleMap map, Handler landmarkDetailsHandler, LandmarkManager lm, DisplayMetrics displayMetrics) {
 		mClusterManager = new ClusterManager<GoogleMarker>(activity, map);
 		mClusterManager.setRenderer(new MarkerRenderer(activity, map));
 		this.landmarkDetailsHandler =landmarkDetailsHandler;
 		this.lm = lm;
+		this.mDisplayMetrics = displayMetrics;
 		map.setOnMarkerClickListener(mClusterManager);
         map.setOnInfoWindowClickListener(mClusterManager);
         mClusterManager.setOnClusterClickListener(this);
@@ -91,41 +92,47 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	public void addMarkers(String layerKey) {
 		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
 		int count = 0;
-		DisplayMetrics displayMetrics = ConfigurationManager.getInstance().getContext().getResources().getDisplayMetrics();
 		for (final ExtendedLandmark landmark : landmarks) {
-			readWriteLock.writeLock().lock();
-			
-			GoogleMarker marker = null;
-			
-			if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof GoogleMarker) {
-				marker = (GoogleMarker)landmark.getRelatedUIObject();
-			}
-			if (marker == null) {
-				Drawable icon = null;
-				if (landmark.getCategoryId() != -1) {
-					int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-					icon = IconCache.getInstance().getCategoryBitmap(iconId, Integer.toString(landmark.getCategoryId()), -1, false, displayMetrics);
-				} else if (!StringUtils.equals(layerKey, Commons.LOCAL_LAYER)) { 
-					//doesn't work with local layer
-					icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-				} else if (StringUtils.equals(layerKey, Commons.LOCAL_LAYER)) {
-            		icon = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
-            	}
-				marker = new GoogleMarker(landmark, icon);
-				landmark.setRelatedUIObject(marker);
-				mClusterManager.addItem(marker);
-				count++;
-			} else if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
-				mClusterManager.addItem(marker);
+			if (addMarker(landmark)) {
 				count++;
 			}
-			readWriteLock.writeLock().unlock();	
 		}
 		
 		if (count > 0) {
 			mClusterManager.cluster();
 		}
 		//LoggerUtils.debug(count + " markers from layer " + layerKey + " stored in cluster.");
+	}
+	
+	public boolean addMarker(ExtendedLandmark landmark) {
+		boolean added = false;
+		readWriteLock.writeLock().lock();
+		GoogleMarker marker = null;
+		
+		if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof GoogleMarker) {
+			marker = (GoogleMarker)landmark.getRelatedUIObject();
+		}
+		if (marker == null) {
+			Drawable icon = null;
+			if (landmark.getCategoryId() != -1) {
+				int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
+				icon = IconCache.getInstance().getCategoryBitmap(iconId, Integer.toString(landmark.getCategoryId()), -1, false, mDisplayMetrics);
+			} else if (!StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) { 
+				//doesn't work with local layer
+				icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, mDisplayMetrics, null);
+			} else if (StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
+        		icon = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
+        	}
+			marker = new GoogleMarker(landmark, icon);
+			landmark.setRelatedUIObject(marker);
+			mClusterManager.addItem(marker);
+			added = true;
+		} else if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
+			mClusterManager.addItem(marker);
+			added = true;
+		}
+		readWriteLock.writeLock().unlock();
+		return added;
 	}
 	
 	public void clearMarkers() {
