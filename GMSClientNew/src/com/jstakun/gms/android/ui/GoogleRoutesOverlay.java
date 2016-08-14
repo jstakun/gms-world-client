@@ -12,14 +12,12 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
-import android.content.Context;
 import android.graphics.Color;
 
 public class GoogleRoutesOverlay {
@@ -28,12 +26,14 @@ public class GoogleRoutesOverlay {
 	private GoogleMap mMap;
 	private RoutesManager routesManager;
 	private float mDensity;
+	private GoogleMarkerClusterOverlay mMarkerCluster;
 	
-	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, RoutesManager rm, float density) {
+	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, RoutesManager rm, GoogleMarkerClusterOverlay markerCluster, float density) {
 		this.mMap = map;
 		this.mLm = lm;
 		this.routesManager = rm;      
 		this.mDensity = density;
+		this.mMarkerCluster = markerCluster;
 	}
 	
 	public void showRouteAction(String routeKey, boolean animateTo) {
@@ -42,6 +42,7 @@ public class GoogleRoutesOverlay {
             if (routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) || (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) && mLm.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER))) {
             	List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
                 if (points.size() > 1) {
+                	
                 	List<LatLng> pointsLatLng = new ArrayList<LatLng>();
                 	for (ExtendedLandmark l : points) {
                 		LatLng p = new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
@@ -49,7 +50,11 @@ public class GoogleRoutesOverlay {
                 	}
                 
                 	mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
+                	mMarkerCluster.addMarker(points.get(0));
+                	
                 	mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
+                	mMarkerCluster.addMarker(points.get(points.size()-1));
+                	
                 	for (int i=0;i<pointsLatLng.size()-1;i++) {
                 		mMap.addPolyline(new PolylineOptions()
                 				.add(pointsLatLng.get(i), pointsLatLng.get(i+1))
@@ -96,6 +101,4 @@ public class GoogleRoutesOverlay {
 			}
 		}
 	}
-	
-
 }

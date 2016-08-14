@@ -1139,7 +1139,17 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
 	
 	private double[] getMyPosition() {
-		return landmarkManager.getMyLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+		if (mMap != null) {
+			return landmarkManager.getMyLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+		} else {
+			LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
+            if (mapCenter != null) {
+            	return landmarkManager.getMyLocation(mapCenter.latitude, mapCenter.longitude);
+            } else {
+            	ExtendedLandmark l = ConfigurationManager.getInstance().getDefaultCoordinate();
+            	return landmarkManager.getMyLocation(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
+            }
+		}  
     }
 
     private void clearMapAction() {
@@ -1206,10 +1216,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     		getSupportActionBar().show();
     	}
     	
-	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager);	
+	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager, this.getResources().getDisplayMetrics());	
 	    markerCluster.loadAllMarkers();
 	    
-	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager, this.getResources().getDisplayMetrics().density);
+	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager, markerCluster, this.getResources().getDisplayMetrics().density);
 	    routesCluster.loadAllRoutes();
 	    
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
