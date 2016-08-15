@@ -70,68 +70,8 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		//LoggerUtils.debug("Loading " + landmarks.size() + " markers from layer " + layerKey);
 		readWriteLock.writeLock().lock();
 		int size = getItems().size();
-		DisplayMetrics displayMetrics = mapView.getResources().getDisplayMetrics();
 		for (final ExtendedLandmark landmark : landmarks) {		
-			Marker marker = null; 
-			if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof Marker) {
-				marker = (Marker)landmark.getRelatedUIObject();
-			}
-			if (marker == null) {
-				//LoggerUtils.debug("Creating new marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
-				marker = new Marker(mapView);
-					
-				marker.setRelatedObject(landmark);
-				landmark.setRelatedUIObject(marker);
-            		
-				marker.setPosition(new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6())); 
-				marker.setTitle(landmark.getName());
-			
-				boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-				
-				int color = COLOR_WHITE;
-				if (landmark.isCheckinsOrPhotos()) {
-					color = COLOR_LIGHT_SALMON;
-				} else if (landmark.getRating() >= 0.85) {
-					color = COLOR_PALE_GREEN;
-				}
-
-            	Drawable frame = null;
-            
-            	if (landmark.getCategoryId() != -1) {
-                	int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-                	frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
-            	} else if (!StringUtils.equals(layerKey, Commons.LOCAL_LAYER)) {
-               		//doesn't work with local layer
-            		BitmapDrawable icon = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-               		frame = IconCache.getInstance().getLayerBitmap(icon, layerKey, color, !isMyPosLayer, displayMetrics);
-            	} else if (StringUtils.equals(layerKey, Commons.LOCAL_LAYER)) {
-            		frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
-            	}
-            		
-            	if (frame != null) {
-            		marker.setIcon(frame); 
-            	}
-					
-				marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-				
-					@Override
-					public boolean onMarkerClick(Marker m, MapView arg1) {
-							lm.setSelectedLandmark((ExtendedLandmark)m.getRelatedObject());
-							lm.clearLandmarkOnFocusQueue();
-							landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
-							return true;
-					}
-				});
-            
-				//LoggerUtils.debug("Adding marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
-				add(marker);
-			} else if (!getItems().contains(marker)) {
-				//LoggerUtils.debug("Adding marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
-				add(marker);
-			} else {
-				//LoggerUtils.debug("Marker exists " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
-			}
-			
+			addMarker(landmark, mapView);			
 		}
 		readWriteLock.writeLock().unlock();
 		//LoggerUtils.debug(getItems().size() + " markers stored in cluster.");
@@ -165,31 +105,68 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		return m;
 	}
 	
-	/*public void deleteLayerMarkers(String layer) {
-		List<Marker> toRemove = new ArrayList<Marker>();
-		for (Marker m : getItems()) {
-			ExtendedLandmark l = (ExtendedLandmark)m.getRelatedObject();
-			if (l.getLayer().equals(layer)) {
-				LoggerUtils.debug("Removing marker for landmark " + l.getName());
-				l.setRelatedUIObject(null);
-				toRemove.add(m);
-			}
-		}		
-		deleteMarkers(toRemove);
-	}
-	
-	private void deleteMarkers(List<Marker> toRemove) {
-		if (!toRemove.isEmpty()) {
-			try {
-				readWriteLock.writeLock().lock();
-				getItems().removeAll(toRemove);
-				readWriteLock.writeLock().unlock();
-				invalidate();
-			} catch (Exception e) {
-				LoggerUtils.error(e.getMessage(), e);
-			}
+	public void addMarker(ExtendedLandmark landmark, MapView mapView) {
+		Marker marker = null; 
+		if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof Marker) {
+			marker = (Marker)landmark.getRelatedUIObject();
 		}
-	}*/
+		if (marker == null) {
+			//LoggerUtils.debug("Creating new marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
+			marker = new Marker(mapView);
+				
+			marker.setRelatedObject(landmark);
+			landmark.setRelatedUIObject(marker);
+        		
+			marker.setPosition(new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6())); 
+			marker.setTitle(landmark.getName());
+		
+			boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
+			
+			int color = COLOR_WHITE;
+			if (landmark.isCheckinsOrPhotos()) {
+				color = COLOR_LIGHT_SALMON;
+			} else if (landmark.getRating() >= 0.85) {
+				color = COLOR_PALE_GREEN;
+			}
+
+			DisplayMetrics displayMetrics = mapView.getResources().getDisplayMetrics();
+			Drawable frame = null;
+        
+        	if (landmark.getCategoryId() != -1) {
+            	int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
+            	frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
+        	} else if (!StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
+           		//doesn't work with local layer
+        		BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
+           		frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, displayMetrics);
+        	} else if (StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
+        		frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
+        	}
+        		
+        	if (frame != null) {
+        		marker.setIcon(frame); 
+        	}
+				
+			marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+			
+				@Override
+				public boolean onMarkerClick(Marker m, MapView arg1) {
+						lm.setSelectedLandmark((ExtendedLandmark)m.getRelatedObject());
+						lm.clearLandmarkOnFocusQueue();
+						landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
+						return true;
+				}
+			});
+        
+			//LoggerUtils.debug("Adding marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
+			add(marker);
+		} else if (!getItems().contains(marker)) {
+			//LoggerUtils.debug("Adding marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
+			add(marker);
+		} else {
+			//LoggerUtils.debug("Marker exists " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
+		}
+	}
 	
 	public void clearMarkers() {
 		if (!getItems().isEmpty()) {

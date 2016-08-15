@@ -18,6 +18,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -32,11 +34,10 @@ public class KMLParser {
     private static final String KML2_2NS = "http://earth.google.com/kml/2.2";
     private static final String KML2_1NS = "http://earth.google.com/kml/2.1";
     private static final String KML2_0NS = "http://earth.google.com/kml/2.0";
-    private static final String ROUTE_NAME = "Your route";
     private HttpUtils utils = new HttpUtils();
     private String errorMessage = null;
     private List<ExtendedLandmark> origLandmarks = new ArrayList<ExtendedLandmark>();
-    private String layer, description;
+    private String layer, description, routeName = "Your route";
     private int counter;
     private long creationDate;
 
@@ -53,7 +54,7 @@ public class KMLParser {
         } else {
             File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(source, filename);
             if (!fc.exists()) {
-                throw new Exception("File " + source + " doesn't exists");
+                throw new Exception("File " + source + "/" + filename + " doesn't exists");
             } else {
                 is = new FileInputStream(fc);
                 creationDate = fc.lastModified();
@@ -67,7 +68,13 @@ public class KMLParser {
         InputStream input = null;
         this.layer = layer;
         counter = 0;
-
+       
+        if (StringUtils.endsWith(filename, ".kml")) {
+        	this.routeName = StringUtils.split(filename, ".")[0];
+        } else {
+        	this.routeName = filename;
+        }
+        
         if (!landmarks.isEmpty()) {
             origLandmarks.addAll(landmarks);
         }
@@ -143,7 +150,6 @@ public class KMLParser {
                 
                 if (l == XmlPullParser.TEXT) {
                     description = parser.getText();
-                    //TODO save desc to routemanager
                 }
             }
             // else ignore it
@@ -215,7 +221,7 @@ public class KMLParser {
      */
     private List<ExtendedLandmark> parsePlacemark(XmlPullParser parser)
             throws XmlPullParserException, IOException {
-        String lmname = ROUTE_NAME;
+        String lmname = routeName;
         String lmdescription = null;
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         List<?> qc = null;
@@ -246,7 +252,10 @@ public class KMLParser {
                         return null;
                     } else {
                         if (lmname == null) {
-                            lmname = ROUTE_NAME;
+                            lmname = routeName;
+                        }
+                        if (lmdescription == null) {
+                        	lmdescription = description;
                         }
                         for (int i = 0; i < qc.size(); i++) {
                             //System.out.println(i);
