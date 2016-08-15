@@ -32,6 +32,7 @@ public class KMLParser {
     private static final String KML2_2NS = "http://earth.google.com/kml/2.2";
     private static final String KML2_1NS = "http://earth.google.com/kml/2.1";
     private static final String KML2_0NS = "http://earth.google.com/kml/2.0";
+    private static final String ROUTE_NAME = "Your route";
     private HttpUtils utils = new HttpUtils();
     private String errorMessage = null;
     private List<ExtendedLandmark> origLandmarks = new ArrayList<ExtendedLandmark>();
@@ -214,7 +215,7 @@ public class KMLParser {
      */
     private List<ExtendedLandmark> parsePlacemark(XmlPullParser parser)
             throws XmlPullParserException, IOException {
-        String lmname = "Noname";
+        String lmname = ROUTE_NAME;
         String lmdescription = null;
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         List<?> qc = null;
@@ -245,7 +246,7 @@ public class KMLParser {
                         return null;
                     } else {
                         if (lmname == null) {
-                            lmname = "Noname";
+                            lmname = ROUTE_NAME;
                         }
                         for (int i = 0; i < qc.size(); i++) {
                             //System.out.println(i);

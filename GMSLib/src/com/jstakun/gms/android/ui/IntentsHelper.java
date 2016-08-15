@@ -1334,7 +1334,7 @@ public final class IntentsHelper {
                     if (selectedLandmark != null) {
                         String key = StringUtil.getKeyFromUrl(selectedLandmark.getUrl());
                         if (key != null) {
-                            asyncTaskManager.executeLocationCheckInTask(-1, key, activity.getString(R.string.searchcheckin), name, false);
+                            asyncTaskManager.executeLocationCheckInTask(-1, key, activity.getString(R.string.searchcheckin), name, false, null);
                         } else {
                             showInfoToast(Locale.getMessage(R.string.Social_checkin_failure, "landmark key is empty"));
                         }

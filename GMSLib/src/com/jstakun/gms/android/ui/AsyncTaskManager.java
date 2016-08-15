@@ -445,25 +445,34 @@ public class AsyncTaskManager {
     }
 
     //CheckIn tasks
-    public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name, Double lat, Double lng) {
+    public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name, Double lat, Double lng, List<String> checkinInProgress) {
     	String notificationId = "-1";
     	if (!silent) {
             intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
             notificationId = createNotification(icon, message, message, true);
         }
-        SocialCheckInTask checkInTask = new SocialCheckInTask();
+        SocialCheckinTask checkInTask = new SocialCheckinTask(checkinInProgress);
         checkInTask.execute("", notificationId, Boolean.toString(silent), layer, venueid, name, Double.toString(lat), Double.toString(lng));
     }
 
-    private class SocialCheckInTask extends GenericTask {
+    private class SocialCheckinTask extends GenericTask {
 
         private boolean silent = false;
+        private List<String> checkinInProgress;
+        
+        public SocialCheckinTask(List<String> checkinInProgress) {
+        	this.checkinInProgress = checkinInProgress;
+        }
                 
         @Override
         protected String doInBackground(String... fileData) {
         	super.doInBackground(fileData);
             silent = Boolean.parseBoolean(fileData[2]);
-            return socialCheckin(fileData[3], fileData[4], fileData[5], Double.valueOf(fileData[6]), Double.valueOf(fileData[7]));
+            String res = socialCheckin(fileData[3], fileData[4], fileData[5], Double.valueOf(fileData[6]), Double.valueOf(fileData[7]));
+            if (checkinInProgress != null) {
+            	checkinInProgress.remove(fileData[4]);
+            }
+            return res;
         }
 
         @Override
@@ -474,7 +483,6 @@ public class AsyncTaskManager {
             } else {
             	LoggerUtils.debug(res);
             }
-            //TODO
         }
     }
     
@@ -535,19 +543,24 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeLocationCheckInTask(int icon, String checkinLandmarkCode, String message, String name, boolean silent) {
+    public void executeLocationCheckInTask(int icon, String checkinLandmarkCode, String message, String name, boolean silent, List<String> checkinInProgress) {
         String notificationId = "-1";
         if (!silent) {
                intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
                notificationId = createNotification(icon, message, message, true);
            }
-           LocationCheckInTask checkInTask = new LocationCheckInTask();
+           LocationCheckinTask checkInTask = new LocationCheckinTask(checkinInProgress);
            checkInTask.execute("", notificationId, checkinLandmarkCode, name, Boolean.toString(silent));
      }
 
-     private class LocationCheckInTask extends GenericTask {
+     private class LocationCheckinTask extends GenericTask {
 
            private boolean silent = false;
+           private List<String> checkinInProgress;
+           
+           public LocationCheckinTask(List<String> checkinInProgress) {
+           		this.checkinInProgress = checkinInProgress;
+           }
            
            @Override
            protected void onPostExecute(String res) {
@@ -557,7 +570,6 @@ public class AsyncTaskManager {
                } else {
             	   LoggerUtils.debug(res);
                }
-               //TODO
            }
 
            @Override
@@ -566,7 +578,11 @@ public class AsyncTaskManager {
                String checkinLandmarkCode = checkinData[2];
                String name = checkinData[3];
                silent = Boolean.parseBoolean(checkinData[4]);
-               return GMSUtils.checkin(GMSUtils.LOCATION_CHECKIN, checkinLandmarkCode, name);
+               String res = GMSUtils.checkin(GMSUtils.LOCATION_CHECKIN, checkinLandmarkCode, name);
+               if (checkinInProgress != null) {
+            	   checkinInProgress.remove(checkinLandmarkCode);
+               }
+               return res;
            }
     }
 
