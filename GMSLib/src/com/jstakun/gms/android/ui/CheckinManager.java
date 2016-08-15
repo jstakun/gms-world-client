@@ -1,5 +1,6 @@
 package com.jstakun.gms.android.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -27,6 +28,8 @@ public class CheckinManager {
 
     private AsyncTaskManager asyncTaskManager;  
 
+    private static final List<String> checkinInProgress = new ArrayList<String>();
+    
     public CheckinManager(AsyncTaskManager asyncTaskManager, Context context) {
         this.asyncTaskManager = asyncTaskManager;
 
@@ -52,18 +55,17 @@ public class CheckinManager {
 
     private boolean checkinAction(String selectedLayer, String name, String venueid, Double lat, Double lng, boolean silent) {
         boolean result = false;
-        //TODO 
         UserTracker.getInstance().trackEvent("AutoCheckin", "CheckinManager.AutoCheckinAction", selectedLayer, 0);
         String checkinat = Locale.getMessage(R.string.Social_checkin_prompt, name);
         if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) && ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
-            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng);
+            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng, checkinInProgress);
             result = true;
         } else if (selectedLayer.equals(Commons.FACEBOOK_LAYER) && ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
-            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng);
+            asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng, checkinInProgress);
             result = true;
         } else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER) && ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
             if (venueid != null) {
-            	asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng);
+            	asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng, checkinInProgress);
             	result = true;
             }
         } else if (selectedLayer.equals(Commons.MY_POSITION_LAYER)) {
@@ -72,7 +74,7 @@ public class CheckinManager {
         } else if (ConfigurationManager.getUserManager().isUserLoggedIn() && 
         		!(selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER) ||
         		selectedLayer.equals(Commons.FACEBOOK_LAYER) || selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER))) {
-            asyncTaskManager.executeLocationCheckInTask(R.drawable.checkin_24, venueid, Locale.getMessage(R.string.searchcheckin), name, silent);
+            asyncTaskManager.executeLocationCheckInTask(R.drawable.checkin_24, venueid, Locale.getMessage(R.string.searchcheckin), name, silent, checkinInProgress);
             result = true;
         }
 
@@ -87,19 +89,21 @@ public class CheckinManager {
         	for (FavouritesDAO favourite : favourites) {
             	long distInMeter = (long) DistanceUtils.distanceInMeter(lat, lon, favourite.getLatitude(), favourite.getLongitude());
             	//System.out.println("Checking landmark " + favourite.getName() + " in distance " + distInMeter + " meter.");
-            	CheckinCandidatePredicate candidatePredicate = new CheckinCandidatePredicate(distInMeter, favourites);
-            	CheckinDeletePredicate deletePredicate = new CheckinDeletePredicate();
-            			
-            	if (candidatePredicate.apply(favourite)) {
-                	if (checkinAction(favourite.getLayer(), favourite.getName(), favourite.getKey(), favourite.getLatitude(), favourite.getLongitude(), silent)) {
-                    	checkinCount++;
-                    	LoggerUtils.debug("CheckinManager.autoCheckin() initialized check-in at " + favourite.getName());
-                	} 
-            	} else if (deletePredicate.apply(favourite)) {
-            		LoggerUtils.debug("CheckinManager.autoCheckin() deleting check-in " + favourite.getName());
-            	    fdb.deleteLandmark(favourite.getId());
-            	} else if (distInMeter > favourite.getMaxDistance()) {
-                	fdb.updateMaxDist(distInMeter, favourite.getId());
+            	if (!checkinInProgress.contains(favourite.getKey())) {
+            		CheckinCandidatePredicate candidatePredicate = new CheckinCandidatePredicate(distInMeter, favourites);
+            		CheckinDeletePredicate deletePredicate = new CheckinDeletePredicate();	
+            		if (candidatePredicate.apply(favourite)) {
+            			checkinInProgress.add(favourite.getKey());
+            			if (checkinAction(favourite.getLayer(), favourite.getName(), favourite.getKey(), favourite.getLatitude(), favourite.getLongitude(), silent)) {
+                    		checkinCount++;
+                    		LoggerUtils.debug("CheckinManager.autoCheckin() initialized check-in at " + favourite.getName());
+                		} 
+            		} else if (deletePredicate.apply(favourite)) {
+            			LoggerUtils.debug("CheckinManager.autoCheckin() deleting check-in " + favourite.getName());
+            	    	fdb.deleteLandmark(favourite.getId());
+            		} else if (distInMeter > favourite.getMaxDistance()) {
+                		fdb.updateMaxDist(distInMeter, favourite.getId());
+            		}
             	}
         	}
         }

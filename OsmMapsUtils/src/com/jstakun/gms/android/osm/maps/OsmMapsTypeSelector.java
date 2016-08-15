@@ -50,12 +50,12 @@ public class OsmMapsTypeSelector {
             //    CloudmadeUtil.retrieveCloudmadeKey(context);
             //    osmMapsView.setTileSource(TileSourceFactory.CLOUDMADESMALLTILES);
             //    break;
-            case 3:
-                osmMapsView.setTileSource(TileSourceFactory.MAPQUESTOSM);
-                break;
-            case 4:
-                osmMapsView.setTileSource(TileSourceFactory.MAPQUESTAERIAL);
-                break;
+            //case 3:
+            //    osmMapsView.setTileSource(TileSourceFactory.MAPQUESTOSM);
+            //    break;
+            //case 4:
+            //    osmMapsView.setTileSource(TileSourceFactory.MAPQUESTAERIAL);
+            //    break;
             default:
                 osmMapsView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
                 break;
