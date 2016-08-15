@@ -444,31 +444,6 @@ public class AsyncTaskManager {
         }
     }
 
-    /*public void executeClearCacheTask(String message) {
-        intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
-        ClearCacheTask clearCache = new ClearCacheTask();
-        String notificationId = createNotification(-1, message, message, true);
-        clearCache.execute("", notificationId);
-        //if (!AsyncTaskExecutor.execute(clearCache, activity, "", Integer.toString(notificationId))) {
-        //    clearCache.clear();
-        //}
-    }
-
-    private class ClearCacheTask extends GenericTask {
-
-        @Override
-        protected void onPostExecute(String res) {
-            super.onPostExecute(res);
-            intents.showInfoToast(Locale.getMessage(R.string.Maps_CacheCleared, res));
-        }
-
-        @Override
-        protected String doInBackground(String... fileData) {
-            super.doInBackground(fileData);
-            return Integer.toString(PersistenceManagerFactory.getPersistenceManagerInstance().deleteTilesCache());
-        }
-    }*/
-
     //CheckIn tasks
     public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name, Double lat, Double lng) {
     	String notificationId = "-1";
@@ -495,10 +470,11 @@ public class AsyncTaskManager {
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
             if (! silent) {
-             intents.showInfoToast(res);
+            	intents.showInfoToast(res);
             } else {
-             LoggerUtils.debug(res);
+            	LoggerUtils.debug(res);
             }
+            //TODO
         }
     }
     
@@ -578,7 +554,10 @@ public class AsyncTaskManager {
                super.onPostExecute(res);
                if (! silent) {
                    intents.showInfoToast(res);
+               } else {
+            	   LoggerUtils.debug(res);
                }
+               //TODO
            }
 
            @Override
