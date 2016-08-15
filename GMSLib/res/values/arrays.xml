@@ -36,8 +36,8 @@
         <item>Hills</item>
         <item>CloudMade Standard Tiles</item>
         <item>CloudMade Small Tiles</item-->
-        <item>MapQuest OSM</item>
-        <item>MapQuest Aerial</item>
+        <!--item>MapQuest OSM</item>
+        <item>MapQuest Aerial</item-->
     </string-array>
     <string-array name="landmarksPerLayer">
         <item>30</item>

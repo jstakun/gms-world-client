@@ -1239,12 +1239,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	
     private void takeScreenshot(final boolean notify)
     {
-    	if (!ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), String.class) && !isFinishing()) {
-    		
+    	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), String.class)) && !isFinishing()) {   		
     		//if (notify) {
     		//	intents.showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
-    		//}
-    		
+    		//}   		
     		final SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
             final int shutterSound = soundPool.load(this, R.raw.camera_click, 0);
     		
@@ -1281,8 +1279,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	};
         
         	mMap.snapshot(callback);
-    	} else {
+    	} else if (notify) {
     		intents.showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
+    	} else {
+    		LoggerUtils.debug("Screenshot for current location has already been sent!");
     	}
     }
     
