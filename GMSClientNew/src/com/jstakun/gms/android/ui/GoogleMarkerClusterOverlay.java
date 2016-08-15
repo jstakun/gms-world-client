@@ -173,8 +173,8 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 			mIconGenerator = new IconGenerator(context);
             //mDimension = (int) getResources().getDimension(R.dimen.custom_profile_image);
             //mImageView.setLayoutParams(new ViewGroup.LayoutParams(mDimension, mDimension));
-            //int padding = (int) getResources().getDimension(R.dimen.custom_profile_padding);
-            //mImageView.setPadding(padding, padding, padding, padding);
+            int padding = 2; //(int) getResources().getDimension(R.dimen.custom_profile_padding);
+            mImageView.setPadding(padding, padding, padding, padding);
             mIconGenerator.setContentView(mImageView);
 		}
 		
