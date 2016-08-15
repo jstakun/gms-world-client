@@ -81,10 +81,6 @@ public class OsmRoutesOverlay extends Overlay {
                 for (int i = 1; i < routeSize; i++) {
                     projection.toPixelsFromProjected(projectedPoints.get(i), point2);
                     
-                    //if (MathUtils.abs(point2.x - point1.x) + MathUtils.abs(point2.y - point1.y) <= 1) {
-                    //    continue;
-                    //}
-
                     path.lineTo(point2.x, point2.y);
                     point1.x = point2.x;
                     point1.y = point2.y;
@@ -104,8 +100,6 @@ public class OsmRoutesOverlay extends Overlay {
                     projection.toProjectedPixels(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(), gp1);
                     projection.toPixelsFromProjected(gp1, point1);
 
-                    //canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
-
                     int i = routeSize - 2;
                     path.moveTo(point1.x, point1.y);
 
@@ -114,10 +108,6 @@ public class OsmRoutesOverlay extends Overlay {
 
                         projection.toProjectedPixels(secondPoint.getLatitudeE6(), secondPoint.getLongitudeE6(), gp2);
                         projection.toPixelsFromProjected(gp2, point2);
-
-                        //if (MathUtils.abs(point2.x - point1.x) + MathUtils.abs(point2.y - point1.y) <= 1) {
-                        //    continue;
-                        //}
 
                         path.lineTo(point2.x, point2.y);
                         if (!viewportRect.contains(point1.x, point1.y)) {
