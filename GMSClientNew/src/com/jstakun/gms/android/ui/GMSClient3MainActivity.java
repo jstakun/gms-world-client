@@ -1154,6 +1154,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
     private void clearMapAction() {
     	mMap.clear();
+    	markerCluster.clearMarkers();
     	landmarkManager.clearLandmarkStore();
         routesManager.clearRoutesStore();
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
