@@ -52,7 +52,7 @@ public class CheckinManager {
 
     private boolean checkinAction(String selectedLayer, String name, String venueid, Double lat, Double lng, boolean silent) {
         boolean result = false;
-        
+        //TODO 
         UserTracker.getInstance().trackEvent("AutoCheckin", "CheckinManager.AutoCheckinAction", selectedLayer, 0);
         String checkinat = Locale.getMessage(R.string.Social_checkin_prompt, name);
         if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) && ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
@@ -166,10 +166,10 @@ public class CheckinManager {
         	return (distInMeter < ConfigurationManager.getInstance().getInt(ConfigurationManager.MAX_CURRENT_DISTANCE) &&
         		   ((System.currentTimeMillis() - favourite.getLastCheckinDate()) > (ConfigurationManager.getInstance().getLong(ConfigurationManager.CHECKIN_TIME_INTERVAL) * DateTimeUtils.ONE_HOUR)
                    || favourite.getMaxDistance() >= ConfigurationManager.getInstance().getInt(ConfigurationManager.MIN_CHECKIN_DISTANCE)
-                   || checkinToLayer(favourite, favourites)));
+                   || checkinToLayer(favourite)));
         }
         
-        private boolean checkinToLayer(FavouritesDAO favourite, List<FavouritesDAO> favourites) {
+        private boolean checkinToLayer(FavouritesDAO favourite) {
         	//String layer = favourite.getLayer();
         	long lastCheckin = favourite.getLastCheckinDate() + (ConfigurationManager.DEFAULT_REPEAT_TIME * 1000);
         	

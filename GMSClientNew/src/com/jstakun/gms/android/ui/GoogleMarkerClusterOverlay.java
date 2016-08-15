@@ -117,11 +117,13 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 			if (landmark.getCategoryId() != -1) {
 				int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
 				icon = IconCache.getInstance().getCategoryBitmap(iconId, Integer.toString(landmark.getCategoryId()), -1, false, mDisplayMetrics);
-			} else if (!StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) { 
+			} else if (!StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER) && !StringUtils.equals(landmark.getLayer(), Commons.MY_POSITION_LAYER)) { 
 				//doesn't work with local layer
 				icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, mDisplayMetrics, null);
 			} else if (StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
-        		icon = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
+        		icon = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, null, -1, false, null);
+        	} else if (StringUtils.equals(landmark.getLayer(), Commons.MY_POSITION_LAYER)) {
+        		icon = IconCache.getInstance().getCategoryBitmap(R.drawable.mypos16, null, -1, false, null);
         	}
 			marker = new GoogleMarker(landmark, icon);
 			landmark.setRelatedUIObject(marker);
@@ -178,9 +180,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		
 		@Override
 	    protected void onBeforeClusterItemRendered(GoogleMarker marker, MarkerOptions markerOptions) {
-	            // Draw a single person.
-	            // Set the info window to show their name.
-			mImageView.setImageDrawable(marker.getIcon());
+	        mImageView.setImageDrawable(marker.getIcon());
 			Bitmap icon = mIconGenerator.makeIcon();
 	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));//.title("title");
 	    }
