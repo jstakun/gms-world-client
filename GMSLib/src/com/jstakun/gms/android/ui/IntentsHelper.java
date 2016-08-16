@@ -657,7 +657,9 @@ public final class IntentsHelper {
     	final Intent shareIntent = new Intent(Intent.ACTION_SEND);
     	shareIntent.setType("image/jpg");
     	shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-    	shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.shareScreenshot));
+    	//TODO translate
+    	shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Landmark Manager screenshot");
+    	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please find attached Landmark Manager screenshot."); //Locale.getMessage(R.string.shareScreenshot));
     	activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.shareScreenshot)));
     }
     
