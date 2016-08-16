@@ -371,6 +371,8 @@
     <string name="Zoom.info">Zoom %1$d/%2$d</string>
     <string name="keywordDesc">Discover nearby %1$s</string>
     <string name="mailMessageSuffix">\nLink: %1$s\n——\nSent from %2$s for Android</string>
+    <string name="Screenshot.subject">Landmark Manager screenshot</string>
+    <string name="Screenshot.text">Please find attached Landmark Manager screenshot.</string>
     <!-- English only LayerManager layer descs -->
     <string name="Layer.Facebook.desc">Places around your current location</string>
     <string name="Layer.Foursquare.desc">Venues around your current location</string>
