@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -27,6 +28,7 @@ public class GoogleRoutesOverlay {
 	private RoutesManager routesManager;
 	private float mDensity;
 	private GoogleMarkerClusterOverlay mMarkerCluster;
+	private Polyline mLastRoutePolyline;
 	
 	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, RoutesManager rm, GoogleMarkerClusterOverlay markerCluster, float density) {
 		this.mMap = map;
@@ -78,18 +80,23 @@ public class GoogleRoutesOverlay {
         }
     }
 	
-	public void showRecordedRouteStep(String routeKey) {
+	public void showRecordedRouteStep(String routeKey, int mode) {
+		//0 - replace, 1 - add
 		List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
         if (points.size() > 1) {
         	ExtendedLandmark penultimate = points.get(points.size()-2);
         	ExtendedLandmark last = points.get(points.size()-1);
         	LatLng lastPoint = new LatLng(last.getQualifiedCoordinates().getLatitude(), last.getQualifiedCoordinates().getLongitude());
         	LatLng penultimatePoint = new LatLng(penultimate.getQualifiedCoordinates().getLatitude(), penultimate.getQualifiedCoordinates().getLongitude());
-        	mMap.addPolyline(new PolylineOptions()
+        	if (mode == 0 && mLastRoutePolyline != null) {
+        		mLastRoutePolyline.remove();
+        	}
+        	mLastRoutePolyline = mMap.addPolyline(new PolylineOptions()
     				.add(penultimatePoint, lastPoint)
     				.width(5f * mDensity)
     				.color(Color.RED)
-    				.geodesic(true));          		
+    				.clickable(false)
+    				.geodesic(true));    		
         }
 	}
 	

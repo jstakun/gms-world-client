@@ -110,9 +110,9 @@ public class RouteRecorder {
         return details;
     }
 
-    public void addCoordinate(double lat, double lng, float altitude, float accuracy, float speed, float bearing) {
-        //System.out.println("Adding coordinate...");
-        if (!paused) {
+    public int addCoordinate(double lat, double lng, float altitude, float accuracy, float speed, float bearing) {
+        int mode = -1; //-1 - nithing, 0 - replaced, 1 - added
+    	if (!paused) {
             QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, accuracy, accuracy, Float.NaN); 
             String l = DateTimeUtils.getCurrentDateStamp();
             ExtendedLandmark lm = LandmarkFactory.getLandmark(l, "", qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
@@ -120,6 +120,7 @@ public class RouteRecorder {
             if (routePoints.isEmpty()) {
                 routePoints.add(lm);
                 saveNextPoint = true;
+                mode = 1;
             } else {
                 ExtendedLandmark current = routePoints.get(routePoints.size()-1);
 
@@ -133,15 +134,18 @@ public class RouteRecorder {
                 		routePoints.add(lm);
                 		LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + " meters and bearing: " + bearing + ".");
                 		saveNextPoint = true;
+                		mode = 1;
                 	} else if (saveNextPoint) {
                 		currentBearing = bearing;
                 		routePoints.add(lm);
                 		LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + " meters and bearing: " + bearing + ".");
                 		saveNextPoint = false;
+                		mode = 1;
                 	} else {
                 		//replace last point
                 		routePoints.add(lm);
                 		routePoints.remove(routePoints.size()-2);
+                		mode = 0;
                 	}
                 }
             }
@@ -150,6 +154,7 @@ public class RouteRecorder {
                 routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);
             }
         }
+    	return mode;
     }
 
     public String getRouteLabel() {

@@ -763,15 +763,14 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    	
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE) && routeRecorder != null) {
-					routeRecorder.addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
-					if (routesCluster != null) {
-					   routesCluster.showRecordedRouteStep(routeRecorder.getRouteLabel());
+					int mode = routeRecorder.addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+					if (routesCluster != null && mode >= 0) {
+					   routesCluster.showRecordedRouteStep(routeRecorder.getRouteLabel(), mode);
 					}
 				}
 				showMyPositionAction(false);
 			} 
 	        
-			//TODO only one checkin action should run
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
 				checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
 			}
