@@ -168,7 +168,8 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         if (id == ID_DIALOG_PROGRESS) {
             ProgressDialog progressDialog = new ProgressDialog(this);
             if (name != null) {
-                progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Searching_dialog_message, name)));
+                //progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Searching_dialog_message, name)));
+            	progressDialog.setMessage(Locale.getMessage(R.string.Searching_dialog_message_plain, name));
             } else {
                 progressDialog.setMessage(Locale.getMessage(R.string.Please_Wait));
             }
@@ -193,7 +194,8 @@ public class PickLocationActivity extends Activity implements OnClickListener {
             if (dialog instanceof ProgressDialog) {
                 ProgressDialog progressDialog = (ProgressDialog) dialog;
                 if (name != null) {
-                    progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Searching_dialog_message, name)));
+                    //progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Searching_dialog_message, name)));
+                	progressDialog.setMessage(Locale.getMessage(R.string.Searching_dialog_message_plain, name));
                 }
             }
         }

@@ -194,8 +194,10 @@
     <string name="Location.sent">Lokalizacja przes\u0142ana</string>
     <string name="Close.app.prompt">Zamkn\u0105\u0107 aplikacj\u0119?</string>
     <string name="Searching.dialog.message">Wyszukiwanie: &amp;lt;br/&amp;gt;&amp;lt;b&amp;gt;%1$s&amp;lt;/b&amp;gt;...</string>
+    <string name="Searching.dialog.message.plain">Wyszukiwanie:\n%1$s...</string>
     <string name="Searching.calendar.message">Wyszukiwanie miejsc z dnia %1$s</string>
     <string name="Oauth.progress.message">Logowanie do &amp;lt;b&amp;gt;%1$s&amp;lt;/b&amp;gt;...</string>
+    <string name="Oauth.progress.message.plain">Logowanie do %1$s...</string>
     <string name="rate.us.message">U\u017cywa\u0142e(a)\u015b ten program %1$d razy. Czy chcesz go teraz oceni\u0107?</string>
     <string name="New.version.short.message">Nowa wersja</string>
     <string name="New.version.long.message">Nowa wersja aplikacji jest dost\u0119pna. Czy chcesz teraz zaktualizowa\u0107?</string>
@@ -327,7 +329,7 @@
     <string name="Layer.exists">Warstwa ju\u017c istnieje!</string>
     <string name="Layer.deleted">Warstwa %1$s skasowana!</string>
     <string name="Layer.add.message.short">Wyszukiwanie %1$s…</string>
-    <string name="Layer.add.message.long">Czy chcesz zapisa\u0107 zapytanie &amp;lt;b&amp;gt;%1$s&amp;lt;/b&amp;gt; jako warstw\u0119?</string>
+    <string name="Layer.add.message.long">Czy chcesz zapisa\u0107 zapytanie %1$s jako warstw\u0119?</string>
     <string name="Layer.delete.prompt">Skasowa\u0107 warstw\u0119 %1$s?</string>
     <string name="Layer.enableLayers.prompt">W\u0142\u0105czy\u0107 wszystkie warstwy?</string>
     <string name="Layer.disableLayers.prompt">Wy\u0142\u0105czy\u0107 wszystkie warstwy?</string>
