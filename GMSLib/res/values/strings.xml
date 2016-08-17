@@ -222,8 +222,10 @@
     <string name="Location.sent">Location uploaded</string>
     <string name="Close.app.prompt">Exit Landmark Manager?</string>
     <string name="Searching.dialog.message">Searching for: &amp;lt;br/&amp;gt;&amp;lt;b&amp;gt;%1$s&amp;lt;/b&amp;gt;...</string>
+    <string name="Searching.dialog.message.plain">Searching for:\n%1$s...</string>
     <string name="Searching.calendar.message">Searching for landmarks on %1$s</string>
     <string name="Oauth.progress.message">Authenticating to &amp;lt;b&amp;gt;%1$s&amp;lt;/b&amp;gt;...</string>
+    <string name="Oauth.progress.message.plain">Authenticating to %1$s...</string>
     <string name="rate.us.message">You\'ve been using our app for %1$d times. Do you want to rate our app?</string>
     <string name="Reset.short.message">Reset to default settings</string>
     <string name="Reset.long.message">Do you want to reset application to default settings?</string>
@@ -358,6 +360,7 @@
     <string name="Layer.delete.prompt">Delete layer %1$s?</string>
     <string name="Layer.add.message.short">Searching for %1$s…</string>
     <string name="Layer.add.message.long">Do you want to save your query &amp;lt;b&amp;gt;%1$s&amp;lt;/b&amp;gt; as layer?</string>
+    <string name="Layer.add.message.long.plain">Do you want to save your query %1$s as layer?</string>
     <string name="Layer.enableLayers.prompt">Enable all layers?</string>
     <string name="Layer.disableLayers.prompt">Disable all layers?</string>
     <!-- DealCategoryListActivity -->

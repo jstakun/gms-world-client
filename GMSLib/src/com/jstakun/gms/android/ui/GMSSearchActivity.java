@@ -174,7 +174,8 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				if (StringUtils.endsWith(query, "/l") && query.length() > 2) {
 					AlertDialog addLayerDialog = alertBuilder.getAlertDialog(AlertDialogBuilder.ADD_LAYER_DIALOG, null, addLayerListener, cancelAddLayerListener);
 					addLayerDialog.setTitle(Locale.getMessage(R.string.Layer_add_message_short, query.substring(0, query.length()-2)));
-					addLayerDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Layer_add_message_long, query.substring(0, query.length()-2))));
+					//addLayerDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Layer_add_message_long, query.substring(0, query.length()-2))));
+					addLayerDialog.setMessage(Locale.getMessage(R.string.Layer_add_message_long_plain, query.substring(0, query.length()-2)));	
 					addLayerDialog.show();
 				} else {
 					callSearchTask();
@@ -204,7 +205,8 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					} else {
 						q = query;
 					}
-					progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Searching_dialog_message, q)));
+					//progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Searching_dialog_message, q)));
+					progressDialog.setMessage(Locale.getMessage(R.string.Searching_dialog_message_plain, q));
 				}
 			}
 			return dialog;
@@ -226,8 +228,8 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					} else {
 						q = query;
 					}
-					progressDialog.setMessage(Html.fromHtml(Locale.getMessage(
-							R.string.Searching_dialog_message, q)));
+					//progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Searching_dialog_message, q)));
+					progressDialog.setMessage(Locale.getMessage(R.string.Searching_dialog_message_plain, q));
 				}
 			}
 		} // else {

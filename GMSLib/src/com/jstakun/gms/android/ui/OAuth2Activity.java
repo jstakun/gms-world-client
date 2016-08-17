@@ -137,7 +137,8 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 				if (serviceName != null) {
 					String serviceStr = OAuthServiceFactory.getServiceName(serviceName);
 					if (serviceStr != null) {
-						progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Oauth_progress_message,serviceStr)));
+						//progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Oauth_progress_message, serviceStr)));
+						progressDialog.setMessage(Locale.getMessage(R.string.Oauth_progress_message_plain, serviceStr));
 					}
 				}
 			}
