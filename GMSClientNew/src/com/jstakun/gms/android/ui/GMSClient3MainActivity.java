@@ -1241,7 +1241,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	
     private void takeScreenshot(final boolean notify)
     {
-    	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), String.class)) && !isFinishing()) {   		
+    	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), Object.class)) && !isFinishing()) {   		
     		//if (notify) {
     		//	intents.showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
     		//}   		
@@ -1265,7 +1265,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     				String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
     			
     				ByteArrayOutputStream out = new ByteArrayOutputStream();
-                	screenshot.compress(Bitmap.CompressFormat.JPEG, 50, out);
+                	screenshot.compress(Bitmap.CompressFormat.JPEG, 80, out);
                 
                 	Uri uri = PersistenceManagerFactory.getFileManager().saveImageFile(screenshot, "screenshot.jpg");
                 	

@@ -25,6 +25,8 @@ import com.jstakun.gms.android.utils.MathUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +38,10 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	public static final int SHOW_LANDMARK_DETAILS = 22;
 	public static final int SHOW_LANDMARK_LIST = 23;
 	
+	private static final int COLOR_WHITE = Color.argb(128, 255, 255, 255); //white
+    private static final int COLOR_LIGHT_SALMON = Color.argb(128, 255, 160, 122); //red Light Salmon
+    private static final int COLOR_PALE_GREEN = Color.argb(128, 152, 251, 152); //Pale Green
+   
 	private static final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 	
 	private ClusterManager<GoogleMarker> mClusterManager;
@@ -113,19 +119,28 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 			marker = (GoogleMarker)landmark.getRelatedUIObject();
 		}
 		if (marker == null) {
-			Drawable icon = null;
-			if (landmark.getCategoryId() != -1) {
-				int iconId = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-				icon = IconCache.getInstance().getCategoryBitmap(iconId, Integer.toString(landmark.getCategoryId()), -1, false, mDisplayMetrics);
-			} else if (!StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER) && !StringUtils.equals(landmark.getLayer(), Commons.MY_POSITION_LAYER)) { 
-				//doesn't work with local layer
-				icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, mDisplayMetrics, null);
-			} else if (StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
-        		icon = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, null, -1, false, null);
-        	} else if (StringUtils.equals(landmark.getLayer(), Commons.MY_POSITION_LAYER)) {
-        		icon = IconCache.getInstance().getCategoryBitmap(R.drawable.mypos16, null, -1, false, null);
+			boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
+			
+			int color = COLOR_WHITE;
+			if (landmark.isCheckinsOrPhotos()) {
+				color = COLOR_LIGHT_SALMON;
+			} else if (landmark.getRating() >= 0.85) {
+				color = COLOR_PALE_GREEN;
+			}
+
+			Drawable frame = null;
+        
+        	if (landmark.getCategoryId() != -1) {
+            	int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
+            	frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, mDisplayMetrics);
+        	} else if (!StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
+           		//doesn't work with local layer
+        		BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, mDisplayMetrics, null);
+           		frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, mDisplayMetrics);
+        	} else if (StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
+        		frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
         	}
-			marker = new GoogleMarker(landmark, icon);
+			marker = new GoogleMarker(landmark, frame);
 			landmark.setRelatedUIObject(marker);
 			mClusterManager.addItem(marker);
 			added = true;
@@ -163,24 +178,13 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	
 	private class MarkerRenderer extends DefaultClusterRenderer<GoogleMarker> {
 
-		private final IconGenerator mIconGenerator;
-		private final ImageView mImageView;
-		
 		public MarkerRenderer(Context context, GoogleMap map) {
-			super(context, map, mClusterManager);
-			
-			mImageView = new ImageView(context);
-			mIconGenerator = new IconGenerator(context);
-            int padding = (int) (2f * context.getResources().getDisplayMetrics().density);
-            mImageView.setPadding(padding, padding, padding, padding);
-            mIconGenerator.setContentView(mImageView);
+			super(context, map, mClusterManager);		
 		}
 		
 		@Override
 	    protected void onBeforeClusterItemRendered(GoogleMarker marker, MarkerOptions markerOptions) {
-	        mImageView.setImageDrawable(marker.getIcon());
-			Bitmap icon = mIconGenerator.makeIcon();
-	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));//.title("title");
+	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable)marker.getIcon()).getBitmap()));
 	    }
 		
 		@Override
