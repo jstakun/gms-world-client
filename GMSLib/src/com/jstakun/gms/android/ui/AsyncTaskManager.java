@@ -934,7 +934,7 @@ public class AsyncTaskManager {
     }
 
     public void executeImageUploadTask(double lat, double lng, boolean notify) {
-    	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), String.class)) && !activity.isFinishing()) {
+    	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), Object.class)) && !activity.isFinishing()) {
     	    //if (notify) {
     		//	intents.showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
     		//}   		
@@ -987,7 +987,7 @@ public class AsyncTaskManager {
             	screenshot = v.getDrawingCache();
                 if (screenshot != null) {
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    screenshot.compress(Bitmap.CompressFormat.JPEG, 50, out);
+                    screenshot.compress(Bitmap.CompressFormat.JPEG, 80, out);
                     
                     if (screenshot != null) {  
                     	uri = PersistenceManagerFactory.getFileManager().saveImageFile(screenshot, "screenshot.jpg");
@@ -1042,7 +1042,7 @@ public class AsyncTaskManager {
         			String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
         			utils.uploadScreenshot(url, true, coords[0], coords[1], image, filename);
         			if (utils.getResponseCode() == 200) {
-        				ConfigurationManager.getInstance().putObject("screenshot_" + StringUtil.formatCoordE2(coords[0]) + "_" + StringUtil.formatCoordE2(coords[1]), "1");
+        				ConfigurationManager.getInstance().putObject("screenshot_" + StringUtil.formatCoordE2(coords[0]) + "_" + StringUtil.formatCoordE2(coords[1]), new Object());
         			}
         		} else {
         			LoggerUtils.debug("Screenshot is empty!");
