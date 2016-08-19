@@ -10,19 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.os.Bundle;
-import android.text.Html;
-import android.view.Menu;
-import android.view.View;
-import android.widget.ListView;
-
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -40,6 +27,18 @@ import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.SuggestionProviderUtil;
 import com.jstakun.gms.android.utils.UserTracker;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.widget.ListView;
 
 /**
  * 
