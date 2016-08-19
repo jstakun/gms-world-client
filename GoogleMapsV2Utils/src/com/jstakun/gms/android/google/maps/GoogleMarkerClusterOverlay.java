@@ -1,4 +1,4 @@
-package com.jstakun.gms.android.ui;
+package com.jstakun.gms.android.google.maps;
 
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -17,7 +17,6 @@ import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
-import com.jstakun.gms.android.osm.maps.R;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 

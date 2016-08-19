@@ -31,6 +31,10 @@ import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
+import com.jstakun.gms.android.google.maps.GoogleLandmarkProjectionV2;
+import com.jstakun.gms.android.google.maps.GoogleMapsV2TypeSelector;
+import com.jstakun.gms.android.google.maps.GoogleMarkerClusterOverlay;
+import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
@@ -419,20 +423,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         } 
         
         if (mMap != null) {
-        	int googleMapsType = ConfigurationManager.getInstance().getInt(ConfigurationManager.GOOGLE_MAPS_TYPE);
-
-    	    LoggerUtils.debug("Google Maps type is " + googleMapsType);
-    	    
-    	    if (googleMapsType == 1) {
-            	mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-            	mMap.setTrafficEnabled(false);
-            } else if (googleMapsType == 2) {
-            	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            	mMap.setTrafficEnabled(true);
-            } else {
-            	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            	mMap.setTrafficEnabled(false);
-            }
+        	GoogleMapsV2TypeSelector.selectMapType(mMap);
         }
     }
     
@@ -711,20 +702,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		this.mMap = map;
 		this.projection = new GoogleLandmarkProjectionV2(mMap);
 		
-	    int googleMapsType = ConfigurationManager.getInstance().getInt(ConfigurationManager.GOOGLE_MAPS_TYPE);
-
-	    LoggerUtils.debug("Google Maps type is " + googleMapsType);
-	    
-	    if (googleMapsType == 1) {
-        	mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        	mMap.setTrafficEnabled(false);
-        } else if (googleMapsType == 2) {
-        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        	mMap.setTrafficEnabled(true);
-        } else {
-        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        	mMap.setTrafficEnabled(false);
-        }
+	    GoogleMapsV2TypeSelector.selectMapType(mMap);
 	    
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
 	    mMap.setMyLocationEnabled(true);

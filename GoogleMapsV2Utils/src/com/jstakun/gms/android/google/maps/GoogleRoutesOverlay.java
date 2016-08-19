@@ -1,4 +1,4 @@
-package com.jstakun.gms.android.ui;
+package com.jstakun.gms.android.google.maps;
 
 import java.util.ArrayList;
 import java.util.List;

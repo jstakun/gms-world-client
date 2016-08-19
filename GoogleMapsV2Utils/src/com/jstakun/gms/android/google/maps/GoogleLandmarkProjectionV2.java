@@ -1,4 +1,4 @@
-package com.jstakun.gms.android.ui;
+package com.jstakun.gms.android.google.maps;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
