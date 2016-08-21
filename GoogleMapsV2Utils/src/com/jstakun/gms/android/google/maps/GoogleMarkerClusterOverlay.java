@@ -22,7 +22,10 @@ import com.jstakun.gms.android.utils.MathUtils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -173,9 +176,21 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	}
 	
 	private class MarkerRenderer extends DefaultClusterRenderer<GoogleMarker> {
+		
+		protected Paint mTextPaint;
+		protected Bitmap mClusterIcon;
 
 		public MarkerRenderer(Context context, GoogleMap map) {
-			super(context, map, mClusterManager);		
+			super(context, map, mClusterManager);
+			
+			mTextPaint = new Paint();
+	        mTextPaint.setColor(Color.WHITE);
+	        mTextPaint.setTextSize(15 * context.getResources().getDisplayMetrics().density);
+	        mTextPaint.setFakeBoldText(true);
+	        mTextPaint.setTextAlign(Paint.Align.CENTER);
+	        mTextPaint.setAntiAlias(true);
+	        Drawable clusterIconD = context.getResources().getDrawable(R.drawable.marker_cluster);
+	        mClusterIcon = ((BitmapDrawable) clusterIconD).getBitmap();
 		}
 		
 		@Override
@@ -188,5 +203,22 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	        return cluster.getSize() > 1;
 	    }
 		
+		@Override
+		protected String getClusterText(int bucket) {
+			return Integer.toString(bucket);
+		}
+		
+		@Override
+		protected void onBeforeClusterRendered(Cluster<GoogleMarker> cluster, MarkerOptions markerOptions) {
+			Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
+	        Canvas iconCanvas = new Canvas(finalIcon);
+	        iconCanvas.drawBitmap(mClusterIcon, 0, 0, null);
+	        int textHeight = (int) (mTextPaint.descent() + mTextPaint.ascent());
+	        iconCanvas.drawText(getClusterText(cluster.getSize()),
+	        		0.5f * finalIcon.getWidth(),
+	        		0.5f * finalIcon.getHeight() - textHeight / 2,
+	                mTextPaint);	        
+	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(finalIcon));
+		}
 	}
 }
