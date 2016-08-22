@@ -172,8 +172,11 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		if (!getItems().isEmpty()) {
 			LoggerUtils.debug("Removing all markers from OSM maps!");
 			readWriteLock.writeLock().lock();
-			getItems().clear();
-			readWriteLock.writeLock().unlock();
+			try {
+				getItems().clear();
+			} finally {
+				readWriteLock.writeLock().unlock();
+			}
 			invalidate();
 		}
 	}

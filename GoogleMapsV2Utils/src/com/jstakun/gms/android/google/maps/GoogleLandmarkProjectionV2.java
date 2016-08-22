@@ -20,7 +20,8 @@ public class GoogleLandmarkProjectionV2 implements ProjectionInterface {
 	
 	@Override
 	public void toPixels(int latE6, int lngE6, Point point) {
-		point = mMap.getProjection().toScreenLocation(new LatLng(MathUtils.coordIntToDouble(latE6), MathUtils.coordIntToDouble(lngE6)));
+		Point p = mMap.getProjection().toScreenLocation(new LatLng(MathUtils.coordIntToDouble(latE6), MathUtils.coordIntToDouble(lngE6)));
+	    point.set(p.x, p.y);
 	}
 
 	@Override

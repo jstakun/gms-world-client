@@ -1155,7 +1155,9 @@ public class FileManager implements PersistenceManager {
         			count++;
         		}
         	}
-        	LoggerUtils.debug("Deleted " + count + " files from "  + dir.getAbsolutePath());
+        	if (dir != null) {
+        		LoggerUtils.debug("Deleted " + count + " files from "  + dir.getAbsolutePath());
+        	}
         	return count;
         }
     }

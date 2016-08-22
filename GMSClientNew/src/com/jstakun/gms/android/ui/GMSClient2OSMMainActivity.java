@@ -954,11 +954,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 intents.showInfoToast(message);
-            } else if (resultCode != RESULT_CANCELED) {
-                intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             	Status status = PlaceAutocomplete.getStatus(this, intent);
                 intents.showInfoToast(status.getStatusMessage());
+            } else if (resultCode != RESULT_CANCELED) {
+                intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } 
         } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
@@ -1294,8 +1294,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
             	} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
-            		Location location = (Location) msg.obj;
-                	activity.updateLocation(location);
+            		activity.updateLocation((Location) msg.obj);
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}

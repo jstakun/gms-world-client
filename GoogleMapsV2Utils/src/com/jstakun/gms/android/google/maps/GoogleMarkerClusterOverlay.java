@@ -155,8 +155,11 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		if (!mClusterManager.getMarkerCollection().getMarkers().isEmpty()) {
 			LoggerUtils.debug("Removing all markers from Google Map!");
 			readWriteLock.writeLock().lock();
-			mClusterManager.clearItems();
-			readWriteLock.writeLock().unlock();
+			try {
+				mClusterManager.clearItems();
+			} finally {
+				readWriteLock.writeLock().unlock();
+			}
 			mClusterManager.cluster();
 		}
 	}

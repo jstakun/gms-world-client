@@ -628,8 +628,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 intents.showInfoToast(message);
-            } else if (resultCode != RESULT_CANCELED) {
-                intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             	Status status = PlaceAutocomplete.getStatus(this, intent);
                 intents.showInfoToast(status.getStatusMessage());
@@ -637,7 +635,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                     initOnLocationChanged(new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()), 6);
             	}
-            }
+            } else if (resultCode != RESULT_CANCELED) {
+                intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+            } 
         } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
