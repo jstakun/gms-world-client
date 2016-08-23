@@ -1,18 +1,23 @@
 package com.jstakun.gms.android.ui;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Message;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  *
@@ -43,9 +48,11 @@ public class AlertDialogBuilder {
             shareIntentsDialog, autoCheckinDialog, locationErrorDialog, addLayerDialog,
             rateUsDialog, newVersionDialog, resetDialog, routeDialog;
     private Activity activity;
+    private Handler saveRouteHandler;
 
-    public AlertDialogBuilder(Activity activity) {
+    public AlertDialogBuilder(Activity activity, Handler saveRouteHandler) {
         this.activity = activity;
+        this.saveRouteHandler = saveRouteHandler;
     }
     private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 
@@ -130,11 +137,29 @@ public class AlertDialogBuilder {
         loginDialog = builder.create();
     }
 
-    private void createSaveRouteDialog(DialogInterface.OnClickListener saveRouteListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        String message = Locale.getMessage(R.string.Routes_Recording_Question, "kml");
-        builder.setMessage(message).setCancelable(true).
-                setPositiveButton(Locale.getMessage(R.string.okButton), saveRouteListener).
+    private void createSaveRouteDialog() {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        View promptView = LayoutInflater.from(activity).inflate(R.layout.routename, null);
+        final EditText input =  (EditText) promptView.findViewById(R.id.dialogRouteName);
+        input.setHint("my_route");
+        String message = "Enter route file name or leave default value:";
+        String title = "Save route to file?";
+        builder.setTitle(title).setMessage(message).setView(promptView).setCancelable(true).
+                setPositiveButton(Locale.getMessage(R.string.okButton), //saveRouteListener).
+                		new DialogInterface.OnClickListener() {
+                    		@Override
+                    		public void onClick(DialogInterface dialog, int whichButton) {
+                    			ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
+                                if (saveRouteHandler != null) {
+                    				String filename = input.getText().toString();
+                    				Message msg = new Message();
+                    				msg.what = SAVE_ROUTE_DIALOG;
+                    				msg.obj = filename;
+                    				saveRouteHandler.sendMessage(msg);
+                    			}
+                            	dialog.cancel();
+                    		}
+                }).
                 setNegativeButton(Locale.getMessage(R.string.cancelButton), dialogClickListener).
                 setOnCancelListener(dialogCancelListener);
         saveRouteDialog = builder.create();
@@ -286,9 +311,9 @@ public class AlertDialogBuilder {
         return infoDialog;
     }
 
-    private AlertDialog getSaveRouteDialog(DialogInterface.OnClickListener saveRouteListener) {
+    private AlertDialog getSaveRouteDialog() {
         if (saveRouteDialog == null) {
-            createSaveRouteDialog(saveRouteListener);
+            createSaveRouteDialog();
         }
         return saveRouteDialog;
     }
@@ -377,7 +402,7 @@ public class AlertDialogBuilder {
                 alertDialog = getTrackMyPosDialog(listeners[0]);
                 break;
             case SAVE_ROUTE_DIALOG:
-                alertDialog = getSaveRouteDialog(listeners[0]);
+                alertDialog = getSaveRouteDialog();
                 break;
             case PACKET_DATA_DIALOG:
                 alertDialog = getPacketDataAlertDialog(listeners[0]);

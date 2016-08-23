@@ -107,7 +107,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 		setTitle(R.string.listSelection);
 		searchButton.setVisibility(View.GONE);
 
-		alertBuilder = new AlertDialogBuilder(this);
+		alertBuilder = new AlertDialogBuilder(this, null);
 
 		landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
 

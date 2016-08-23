@@ -23,7 +23,7 @@
     </string-array>
     <string-array name="googleMaps">
         <item>Street</item>
-        <item>Sattelite</item>
+        <item>Satellite</item>
         <item>Traffic</item>
     </string-array>
     <string-array name="osmMaps">

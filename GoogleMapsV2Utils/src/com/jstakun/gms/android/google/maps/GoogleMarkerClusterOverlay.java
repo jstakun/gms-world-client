@@ -213,7 +213,8 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		
 		@Override
 		protected void onBeforeClusterRendered(Cluster<GoogleMarker> cluster, MarkerOptions markerOptions) {
-			Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
+			//TODO change to use different icons depending on cluster size
+	        Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
 	        Canvas iconCanvas = new Canvas(finalIcon);
 	        iconCanvas.drawBitmap(mClusterIcon, 0, 0, null);
 	        int textHeight = (int) (mTextPaint.descent() + mTextPaint.ascent());

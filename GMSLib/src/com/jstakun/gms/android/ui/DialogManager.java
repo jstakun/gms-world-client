@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Spannable;
 import android.widget.ArrayAdapter;
+
+import java.lang.ref.WeakReference;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -47,14 +50,14 @@ public class DialogManager {
             dialog.cancel();
         }
     };
-    private DialogInterface.OnClickListener saveRouteListener = new DialogInterface.OnClickListener() {
+    /*private DialogInterface.OnClickListener saveRouteListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int id) {
-            ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
+        	ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
             asyncTaskManager.executeSaveRouteTask(activity.getString(R.string.saveRoute));
         }
-    };
+    };*/
     private DialogInterface.OnClickListener packetDataListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int id) {
@@ -92,7 +95,7 @@ public class DialogManager {
     private DialogInterface.OnClickListener checkinAutoListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int id) {
-            //add to favourites database
+            //add to favorites database
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             checkinManager.checkinAction(true, false, landmarkManager.getSeletedLandmarkUI());
         }
@@ -100,7 +103,7 @@ public class DialogManager {
     private DialogInterface.OnClickListener checkinManualListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int id) {
-            //don't add to favourites database
+            //don't add to favorites database
         	ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             checkinManager.checkinAction(false, false, landmarkManager.getSeletedLandmarkUI());
         }
@@ -140,7 +143,7 @@ public class DialogManager {
         this.landmarkManager = landmarkManager;
         this.checkinManager = checkinManager;
         this.trackMyPosListener = trackMyPosListener;
-        dialogBuilder = new AlertDialogBuilder(activity);
+        dialogBuilder = new AlertDialogBuilder(activity, new DialogHandler(asyncTaskManager));
     }
     
     public DialogManager(Activity activity, IntentsHelper intents, AsyncTaskManager asyncTaskManager,
@@ -164,7 +167,7 @@ public class DialogManager {
                     alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.TRACK_MYPOS_DIALOG, null, trackMyPosListener);
                     break;
                 case AlertDialogBuilder.SAVE_ROUTE_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, saveRouteListener);
+                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, null);
                     break;
                 case AlertDialogBuilder.PACKET_DATA_DIALOG:
                     alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, packetDataListener);
@@ -175,9 +178,6 @@ public class DialogManager {
                 case AlertDialogBuilder.LOGIN_DIALOG:
                     alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.LOGIN_DIALOG, arrayAdapter, loginListener);
                     break;
-                //case AlertDialogBuilder.CHECKIN_DIALOG:
-                //    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.CHECKIN_DIALOG, null, checkinListener);
-                //    break;
                 case AlertDialogBuilder.SHARE_INTENTS_DIALOG:
                     alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.SHARE_INTENTS_DIALOG, arrayAdapter, sendIntentListener);
                     break;
@@ -218,9 +218,9 @@ public class DialogManager {
         }
 
         if (alertDialog != null) {
-            if (message != null) {
-                alertDialog.setMessage(message);
-            }
+            //if (message != null) {
+            //   alertDialog.setMessage(message);
+            //}
             alertDialog.show();
         }
     }
@@ -231,5 +231,21 @@ public class DialogManager {
         } else {
             return -1;
         }
+    }
+    
+    private static class DialogHandler extends Handler {
+    	
+    	private WeakReference<AsyncTaskManager> asyncTaskManager;
+    	
+    	public DialogHandler(AsyncTaskManager asyncTaskManager) {
+    		this.asyncTaskManager = new WeakReference<AsyncTaskManager>(asyncTaskManager);
+    	}
+    	
+    	@Override
+        public void handleMessage(Message msg) {
+    		if (msg.what == AlertDialogBuilder.SAVE_ROUTE_DIALOG) {
+    			asyncTaskManager.get().executeSaveRouteTask();
+    		}
+    	}
     }
 }

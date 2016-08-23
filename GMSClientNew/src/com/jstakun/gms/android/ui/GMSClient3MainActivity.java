@@ -911,7 +911,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 					dialogManager.showAlertDialog(AlertDialogBuilder.TRACK_MYPOS_DIALOG, null, null);
 					break;
 				case R.id.saveRoute:
-		    		intents.saveRouteAction();
+					if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+			        	dialogManager.showAlertDialog(AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, null);
+			        } else if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
+			            intents.showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosStopped));
+			        }
 		    		break;
 				case R.id.loadRoute:
 		    		if (intents.startRouteFileLoadingActivity()) {

@@ -406,7 +406,9 @@ public class AsyncTaskManager {
         return landmarks.size();
     }
 
-    public void executeSaveRouteTask(String message) {
+    public void executeSaveRouteTask() { 	
+    	//TODO add take parameter file name
+    	String message = Locale.getMessage(R.string.saveRoute);
         //intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
         intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
         SaveRouteTask saveRoute = new SaveRouteTask();

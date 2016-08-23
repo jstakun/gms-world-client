@@ -13,6 +13,7 @@ import org.osmdroid.views.MapView;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -65,24 +66,24 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		//this.mTextAnchorV = 0.27f;
 	}
 	
-	public void addMarkers(String layerKey, MapView mapView) {
-		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
-		//LoggerUtils.debug("Loading " + landmarks.size() + " markers from layer " + layerKey);
-		readWriteLock.writeLock().lock();
-		int size = getItems().size();
-		for (final ExtendedLandmark landmark : landmarks) {		
-			addMarker(landmark, mapView);			
-		}
-		readWriteLock.writeLock().unlock();
-		//LoggerUtils.debug(getItems().size() + " markers stored in cluster.");
-		if (getItems().size() > size) {
-			invalidate();
-		}
-	}
-	
 	@Override
 	public Marker buildClusterMarker(final StaticCluster cluster, MapView mapView) {
-		Marker m = super.buildClusterMarker(cluster, mapView);
+		Marker m = new Marker(mapView);
+        m.setPosition(cluster.getPosition());
+        m.setInfoWindow(null);
+        m.setAnchor(mAnchorU, mAnchorV);
+
+        //TODO change to use different icons depending on cluster size
+        Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
+        Canvas iconCanvas = new Canvas(finalIcon);
+        iconCanvas.drawBitmap(mClusterIcon, 0, 0, null);
+        int textHeight = (int) (mTextPaint.descent() + mTextPaint.ascent());
+        iconCanvas.drawText(Integer.toString(cluster.getSize()),
+                mTextAnchorU * finalIcon.getWidth(),
+                mTextAnchorV * finalIcon.getHeight() - textHeight / 2,
+                mTextPaint);
+        m.setIcon(new BitmapDrawable(mapView.getContext().getResources(), finalIcon));
+		
 		m.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 			@Override
 			public boolean onMarkerClick(Marker selected, MapView arg1) {
@@ -103,6 +104,21 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 			}
 		});
 		return m;
+	}
+	
+	public void addMarkers(String layerKey, MapView mapView) {
+		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
+		//LoggerUtils.debug("Loading " + landmarks.size() + " markers from layer " + layerKey);
+		readWriteLock.writeLock().lock();
+		int size = getItems().size();
+		for (final ExtendedLandmark landmark : landmarks) {		
+			addMarker(landmark, mapView);			
+		}
+		readWriteLock.writeLock().unlock();
+		//LoggerUtils.debug(getItems().size() + " markers stored in cluster.");
+		if (getItems().size() > size) {
+			invalidate();
+		}
 	}
 	
 	public void addMarker(ExtendedLandmark landmark, MapView mapView) {

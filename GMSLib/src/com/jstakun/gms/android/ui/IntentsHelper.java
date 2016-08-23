@@ -548,13 +548,13 @@ public final class IntentsHelper {
         }
     }
 
-    public void saveRouteAction() {
+    /*public void saveRouteAction() {
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            asyncTaskManager.executeSaveRouteTask(activity.getString(R.string.saveRoute));
+            asyncTaskManager.executeSaveRouteTask();
         } else if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
             showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosStopped));
         }
-    }
+    }*/
 
     public List<ResolveInfo> getSendIntentsList() {
         final Intent sendIntent = new Intent(android.content.Intent.ACTION_SEND, null);

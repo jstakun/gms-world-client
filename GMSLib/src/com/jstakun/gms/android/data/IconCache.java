@@ -4,10 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.jstakun.gms.android.config.BCTools;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.GMSAsyncTask;
+import com.jstakun.gms.android.utils.HttpUtils;
+import com.jstakun.gms.android.utils.LoggerUtils;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -24,15 +30,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.util.SimpleArrayMap;
 import android.util.DisplayMetrics;
-
-import com.jstakun.gms.android.config.BCTools;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.landmarks.LayerManager;
-import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.GMSAsyncTask;
-import com.jstakun.gms.android.utils.HttpUtils;
-import com.jstakun.gms.android.utils.LoggerUtils;
 
 /**
  *
@@ -50,8 +49,9 @@ public class IconCache {
     public static final String IMAGE_LOADING_TILE = "image-loading-tile";
     public static final String IMAGE_LOADING_MAP = "image-loading-map";
     public static final String IMAGE_MISSING = "image-missing";
-    private static Map<String, Bitmap> images = new HashMap<String, Bitmap>();
-    private static Map<String, GMSAsyncTask<?,?,?>> loadingTasks = new HashMap<String, GMSAsyncTask<?,?,?>>();
+    //TODO testing
+    private static SimpleArrayMap<String, Bitmap> images = new SimpleArrayMap<String, Bitmap>();
+    private static SimpleArrayMap<String, GMSAsyncTask<?,?,?>> loadingTasks = new SimpleArrayMap<String, GMSAsyncTask<?,?,?>>();
     private static IconCache instance;
     private static Paint paint;
     
@@ -399,15 +399,26 @@ public class IconCache {
     }
 
     public synchronized void clearAll() {
-    	for (Map.Entry<String, Bitmap> entry : images.entrySet()) {
-    		LoggerUtils.debug("Recycling " + entry.getKey());
-    		entry.getValue().recycle();
-    	}
-    	images.clear();
-    	for (Map.Entry<String, GMSAsyncTask<?,?,?>> entry : loadingTasks.entrySet()) {
-    		entry.getValue().cancel(true);
+    	//TODO testing
+    	//for (Map.Entry<String, GMSAsyncTask<?,?,?>> entry : loadingTasks.entrySet()) {
+    	//	entry.getValue().cancel(true);
+    	//}
+    	for (int i=0;i<loadingTasks.size();i++) {
+    		loadingTasks.get(images.keyAt(i)).cancel(true);
     	}
     	loadingTasks.clear();
+    	
+    	//TODO testing
+    	//for (Map.Entry<String, Bitmap> entry : images.entrySet()) {
+    	//	LoggerUtils.debug("Recycling " + entry.getKey());
+    	//	entry.getValue().recycle();
+    	//}
+    	for (int i=0;i<images.size();i++) {
+    		LoggerUtils.debug("Recycling bitmap " + images.keyAt(i));
+    		images.get(images.keyAt(i)).recycle();
+    	}
+    	images.clear();
+    	
     	instance = null;
     }
 
