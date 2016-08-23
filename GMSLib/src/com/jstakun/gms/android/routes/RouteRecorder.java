@@ -25,17 +25,19 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class RouteRecorder {
 
+	public static final String CURRENTLY_RECORDED = "Current";
+    public static final String ROUTE_PREFIX = "my_route";
+    //TODO MAX_BEARING_RANGE should be based on zoom level
+    private static final float MAX_BEARING_RANGE = 9f;
+
     private RoutesManager routesManager;
     private List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
     private String label = null;
-    public static final String CURRENTLY_RECORDED = "Current";
     private long startTime;
     private int notificationId;
     private boolean paused = false, saveNextPoint = false;
     private float currentBearing = 0f;
-    //TODO MAX_BEARING_RANGE should be based on zoom level
-    private static final float MAX_BEARING_RANGE = 9f;
-
+    
     public RouteRecorder(RoutesManager rm) {
         //System.out.println("RouteRecorder.constructor");
         routesManager = rm;
@@ -103,7 +105,9 @@ public class RouteRecorder {
 
             String filename = label + ".kml";
             if (StringUtils.isNotEmpty(prefix)) {
-            	filename = prefix + filename;
+            	filename = prefix + "_" + filename;
+            } else {
+            	filename = ROUTE_PREFIX + "_" + filename;
             }
             
             details = saveRoute(routePoints, filename, avg, timeInterval, dist);
