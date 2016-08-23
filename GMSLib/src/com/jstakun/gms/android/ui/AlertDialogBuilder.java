@@ -142,10 +142,11 @@ public class AlertDialogBuilder {
         View promptView = LayoutInflater.from(activity).inflate(R.layout.routename, null);
         final EditText input =  (EditText) promptView.findViewById(R.id.dialogRouteName);
         input.setHint("my_route");
+        //TODO translate
         String message = "Enter route file name or leave default value:";
-        String title = "Save route to file?";
+        String title = "Save route to file";
         builder.setTitle(title).setMessage(message).setView(promptView).setCancelable(true).
-                setPositiveButton(Locale.getMessage(R.string.okButton), //saveRouteListener).
+                setPositiveButton(Locale.getMessage(R.string.okButton),
                 		new DialogInterface.OnClickListener() {
                     		@Override
                     		public void onClick(DialogInterface dialog, int whichButton) {

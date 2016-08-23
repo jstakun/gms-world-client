@@ -27,7 +27,6 @@ public class DialogManager {
     private Activity activity;
     private AlertDialogBuilder dialogBuilder;
     private IntentsHelper intents;
-    private AsyncTaskManager asyncTaskManager;
     private LandmarkManager landmarkManager;
     private CheckinManager checkinManager;
     private Handler loadingHandler;
@@ -139,7 +138,6 @@ public class DialogManager {
             LandmarkManager landmarkManager, CheckinManager checkinManager, DialogInterface.OnClickListener trackMyPosListener) {
         this.activity = activity;
         this.intents = intents;
-        this.asyncTaskManager = asyncTaskManager;
         this.landmarkManager = landmarkManager;
         this.checkinManager = checkinManager;
         this.trackMyPosListener = trackMyPosListener;
@@ -244,7 +242,7 @@ public class DialogManager {
     	@Override
         public void handleMessage(Message msg) {
     		if (msg.what == AlertDialogBuilder.SAVE_ROUTE_DIALOG) {
-    			asyncTaskManager.get().executeSaveRouteTask();
+    			asyncTaskManager.get().executeSaveRouteTask((String)msg.obj);
     		}
     	}
     }

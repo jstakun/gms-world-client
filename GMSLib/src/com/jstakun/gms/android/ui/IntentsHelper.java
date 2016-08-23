@@ -1402,7 +1402,7 @@ public final class IntentsHelper {
         asyncTaskManager.cancelAll();
 
         if (routeRecorder != null && ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            String[] details = routeRecorder.saveRoute();
+            String[] details = routeRecorder.saveRoute(null);
             if (details != null) {
                 LoggerUtils.debug("Saving route: " + details[0]);
             }

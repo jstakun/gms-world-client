@@ -406,14 +406,13 @@ public class AsyncTaskManager {
         return landmarks.size();
     }
 
-    public void executeSaveRouteTask() { 	
-    	//TODO add take parameter file name
+    public void executeSaveRouteTask(String filename) { 	
     	String message = Locale.getMessage(R.string.saveRoute);
         //intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
         intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
         SaveRouteTask saveRoute = new SaveRouteTask();
         String notificationId = createNotification(R.drawable.route_24, message, message, true);
-        saveRoute.execute("", notificationId);
+        saveRoute.execute(filename, notificationId);
         //if (!AsyncTaskExecutor.execute(saveRoute, activity, "", Integer.toString(notificationId))) {
         //    saveRoute.clear();
         //}
@@ -440,7 +439,7 @@ public class AsyncTaskManager {
             super.doInBackground(fileData);
             RouteRecorder routeRecorder = ConfigurationManager.getInstance().getRouteRecorder();
             if (routeRecorder != null) {
-                details = routeRecorder.saveRoute();
+                details = routeRecorder.saveRoute(filename);
             }
             return null;
         }
