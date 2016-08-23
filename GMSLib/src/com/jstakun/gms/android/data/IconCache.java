@@ -82,9 +82,6 @@ public class IconCache {
         		if (!images.containsKey(LOADING)) {
         			images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
         		}
-        		//if (!images.containsKey(COMPASS)) {
-        		//	images.put(COMPASS, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.compass_new));
-        		//}
         		if (!images.containsKey(DOWNLOAD)) {
         			images.put(DOWNLOAD, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.download));
         		}

@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.ui;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
@@ -141,7 +142,7 @@ public class AlertDialogBuilder {
     	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         View promptView = LayoutInflater.from(activity).inflate(R.layout.routename, null);
         final EditText input =  (EditText) promptView.findViewById(R.id.dialogRouteName);
-        input.setHint("my_route");
+        input.setHint(RouteRecorder.ROUTE_PREFIX);
         //TODO translate
         String message = "Enter route file name or leave default value:";
         String title = "Save route to file";

@@ -103,7 +103,8 @@ public class FilesActivity extends AbstractLandmarkList {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         if (v.getId() == android.R.id.list) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            //TODO add share and rename menu items
+        	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             currentPos = info.position;
             menu.setHeaderTitle(files.get(info.position).getName());
             menu.setHeaderIcon(R.drawable.ic_dialog_menu_generic);
