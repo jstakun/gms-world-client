@@ -702,11 +702,14 @@ public final class IntentsHelper {
     	} catch (VerifyError e) {   			
     	}
     	
+    	boolean silent = true;
+    	
     	if (mapIntent != null && mapIntent.resolveActivity(activity.getPackageManager()) != null) {
     		activity.startActivity(mapIntent);
     	} else {
-    		asyncTaskManager.executeRouteServerLoadingTask(showRouteHandler, true, selectedLandmark);
+    		silent = false;
     	}
+    	asyncTaskManager.executeRouteServerLoadingTask(showRouteHandler, silent, selectedLandmark);
     }
     
     public boolean startStreetViewActivity(ExtendedLandmark selectedLandmark) {

@@ -830,7 +830,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
       	  			} else if (v == lvRouteButton) {
       	  				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
       	  				if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-      	  					asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, true, selectedLandmark);
+      	  					asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, false, selectedLandmark);
       	  				} else {
       	  					intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
       	  				}

@@ -271,7 +271,7 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeRouteServerLoadingTask(Handler showRouteHandler, boolean saveRoute, ExtendedLandmark end) {
+    public void executeRouteServerLoadingTask(Handler showRouteHandler, boolean silent, ExtendedLandmark end) {
         List<ExtendedLandmark> myPosV = landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER);
 
         if (!myPosV.isEmpty()) {
@@ -288,16 +288,13 @@ public class AsyncTaskManager {
             ExtendedLandmark start = myPosV.get(0);
             String route_loading_msg = Locale.getMessage(R.string.Routes_Background_task_loading);
             intents.showInfoToast(Locale.getMessage(R.string.Task_started, route_loading_msg));
-            LoadServerRouteTask routeLoading = new LoadServerRouteTask(showRouteHandler, saveRoute);
+            LoadServerRouteTask routeLoading = new LoadServerRouteTask(showRouteHandler, silent);
             String notificationId = createNotification(R.drawable.route_24, route_loading_msg, route_loading_msg, true);
             double[] start_coords = MercatorUtils.normalizeE6(new double[]{start.getQualifiedCoordinates().getLatitude(), start.getQualifiedCoordinates().getLongitude()});
             double[] end_coords = MercatorUtils.normalizeE6(new double[]{end.getQualifiedCoordinates().getLatitude(), end.getQualifiedCoordinates().getLongitude()});
             String routeName = StringUtils.replace(end.getName(), " ", "_") + "-My_Location-" + DateTimeUtils.getCurrentDateStamp();
             routeLoading.execute(routeName, notificationId, Double.toString(start_coords[0]), Double.toString(start_coords[1]), Double.toString(end_coords[0]), Double.toString(end_coords[1]), type);
-            //if (!AsyncTaskExecutor.execute(routeLoading, activity, routeName, Integer.toString(notificationId), Double.toString(start_coords[0]), Double.toString(start_coords[1]), Double.toString(end_coords[0]), Double.toString(end_coords[1]), type)) {
-            //    routeLoading.clear();
-            //}
-        } else {
+        } else if (!silent) {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
         }
     }
@@ -305,12 +302,12 @@ public class AsyncTaskManager {
     private class LoadServerRouteTask extends GenericTask {
 
         private Handler showRouteHandler = null;
-        private boolean saveRoute;
+        private boolean silent;
 
-        public LoadServerRouteTask(Handler showRouteHandler, boolean saveRoute) {
+        public LoadServerRouteTask(Handler showRouteHandler, boolean silent) {
             super();
             this.showRouteHandler = showRouteHandler;
-            this.saveRoute = saveRoute;
+            this.silent = silent;
         }
 
         @Override
@@ -318,7 +315,9 @@ public class AsyncTaskManager {
             super.onPostExecute(res);
             Message msg = showRouteHandler.obtainMessage(SHOW_ROUTE_MESSAGE, filename);
             showRouteHandler.handleMessage(msg);
-            intents.showInfoToast(res);
+            if (!silent) {
+            	intents.showInfoToast(res);
+            }
         }
 
         @Override
@@ -331,7 +330,7 @@ public class AsyncTaskManager {
             String type = loadingData[6];
             RoutesManager routesManager = ConfigurationManager.getInstance().getRoutesManager();
             if (routesManager != null) {
-                return routesManager.loadRouteFromServer(lat_start, lng_start, lat_end, lng_end, type, filename, saveRoute);
+                return routesManager.loadRouteFromServer(lat_start, lng_start, lat_end, lng_end, type, filename, true);
             } else {
                 return null;
             }
