@@ -3,6 +3,8 @@ package com.jstakun.gms.android.routes;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
@@ -75,7 +77,7 @@ public class RouteRecorder {
         return filename;
     }
 
-    public String[] saveRoute() {
+    public String[] saveRoute(String prefix) {
         //System.out.println("RouteRecorder.saveRoute");
 
         String[] details = null;
@@ -99,7 +101,12 @@ public class RouteRecorder {
                 timeInterval = DateTimeUtils.getTimeInterval(diff);
             }
 
-            details = saveRoute(routePoints, label + ".kml", avg, timeInterval, dist);
+            String filename = label + ".kml";
+            if (StringUtils.isNotEmpty(prefix)) {
+            	filename = prefix + filename;
+            }
+            
+            details = saveRoute(routePoints, filename, avg, timeInterval, dist);
 
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
                 label = null;
