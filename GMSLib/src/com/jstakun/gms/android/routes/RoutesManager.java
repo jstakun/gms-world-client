@@ -138,7 +138,7 @@ public class RoutesManager {
         return routes.containsKey(key);
     }
 
-    public String loadRouteFromServer(String lat_start, String lng_start, String lat_end, String lng_end, String type, String routeName, boolean saveToFile) {
+    public String loadRouteFromServer(String lat_start, String lng_start, String lat_end, String lng_end, String type, String routeName, String endName, boolean saveToFile) {
         List<ExtendedLandmark> routePoints = new ArrayList<ExtendedLandmark>();
         String message = null;
         HttpUtils utils = new HttpUtils();
@@ -168,6 +168,10 @@ public class RoutesManager {
         	if (responseCode == HttpStatus.SC_OK && StringUtils.startsWith(jsonResp, "{")) {
         		JSONObject json = new JSONObject(jsonResp);
         		desc = parse(json, routePoints);
+        		if (routePoints.size() > 1) {
+        			routePoints.get(0).setName("My location");
+        			routePoints.get(routePoints.size()-1).setName(endName);
+        		}
         		message = desc[0];
         	} else if (message != null) {
         		message = Locale.getMessage(R.string.Routes_loading_error_1, message);

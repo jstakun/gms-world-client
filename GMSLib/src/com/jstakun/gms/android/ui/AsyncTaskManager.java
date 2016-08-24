@@ -222,9 +222,6 @@ public class AsyncTaskManager {
         LoadRouteTask routeLoading = new LoadRouteTask(showRouteHandler);
         String notificationId = createNotification(R.drawable.route_24, route_loading_msg, route_loading_msg, true);
         routeLoading.execute(filename, notificationId);
-        //if (!AsyncTaskExecutor.execute(routeLoading, activity, filename, Integer.toString(notificationId))) {
-        //    routeLoading.clear();
-        //}
     }
 
     private class LoadRouteTask extends GenericTask {
@@ -293,7 +290,7 @@ public class AsyncTaskManager {
             double[] start_coords = MercatorUtils.normalizeE6(new double[]{start.getQualifiedCoordinates().getLatitude(), start.getQualifiedCoordinates().getLongitude()});
             double[] end_coords = MercatorUtils.normalizeE6(new double[]{end.getQualifiedCoordinates().getLatitude(), end.getQualifiedCoordinates().getLongitude()});
             String routeName = StringUtils.replace(end.getName(), " ", "_") + "-My_Location-" + DateTimeUtils.getCurrentDateStamp();
-            routeLoading.execute(routeName, notificationId, Double.toString(start_coords[0]), Double.toString(start_coords[1]), Double.toString(end_coords[0]), Double.toString(end_coords[1]), type);
+            routeLoading.execute(routeName, notificationId, Double.toString(start_coords[0]), Double.toString(start_coords[1]), Double.toString(end_coords[0]), Double.toString(end_coords[1]), type, end.getName());
         } else if (!silent) {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
         }
@@ -328,9 +325,10 @@ public class AsyncTaskManager {
             String lat_end = loadingData[4];
             String lng_end = loadingData[5];
             String type = loadingData[6];
+            String endName = loadingData[7];
             RoutesManager routesManager = ConfigurationManager.getInstance().getRoutesManager();
             if (routesManager != null) {
-                return routesManager.loadRouteFromServer(lat_start, lng_start, lat_end, lng_end, type, filename, true);
+                return routesManager.loadRouteFromServer(lat_start, lng_start, lat_end, lng_end, type, filename, endName, true);
             } else {
                 return null;
             }

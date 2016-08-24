@@ -3,7 +3,6 @@ package com.jstakun.gms.android.data;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -20,14 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Environment;
-import android.text.format.Formatter;
-import android.util.DisplayMetrics;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -46,6 +37,14 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MercatorUtils;
 import com.openlapi.QualifiedCoordinates;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.text.format.Formatter;
+import android.util.DisplayMetrics;
 
 /**
  *
@@ -867,10 +866,10 @@ public class FileManager implements PersistenceManager {
             out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
             out.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\">\r\n");
             out.write(" <Document>\r\n");
-            out.write("  <name>Landmark Manager Trail</name>\r\n");
+            out.write("  <name>Landmark Manager Route</name>\r\n");
             out.write("  <description>" + description + "</description>\r\n");
             out.write("  <Folder>\r\n");
-            out.write("   <name>Trails</name>\r\n");
+            out.write("   <name>Route</name>\r\n");
             out.flush();
 
             if (!landmarkList.isEmpty()) {
@@ -954,7 +953,7 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    public static void copyDatabaseToSdCard(String packageName, String dbName) {
+    /*public static void copyDatabaseToSdCard(String packageName, String dbName) {
         LoggerUtils.debug("FileManager.copyDatabaseToSdCard() started with params: " + packageName + "," + dbName + ".");
         try {
             File f1 = new File("/data/data/" + packageName + "/databases/" + dbName);
@@ -977,32 +976,6 @@ public class FileManager implements PersistenceManager {
             LoggerUtils.error("FileManager.copyDatabaseToSdCard() exception: ", e);
         }
         LoggerUtils.debug("FileManager.copyDatabaseToSdCard() finished.");
-    }
-
-    /*private class DeletingTilesTask extends GMSAsyncTask<List<String>, Void, Void> {
-
-        public DeletingTilesTask() {
-            super(10);
-        }
-
-        @Override
-        protected Void doInBackground(List<String>... filesList) {
-
-            List<String> files = filesList[0];
-            int size = files.size();
-            for (int i = 0; i < size; i += 2) {
-                String file = files.get(i);
-                if (file.endsWith(FORMAT_PNG)) {
-                    LoggerUtils.debug("Deleting image file (" + i + "/" + size + "): " + file);
-                    deleteFile(getImagesFolder(), file);
-                } else if (file.endsWith(FORMAT_LOG)) {
-                	LoggerUtils.debug("Deleting log file (" + i + "/" + size + "): " + file);
-                    deleteFile(getLogsFolder(), file);
-                }
-            }
-            
-            return null;
-        }
     }*/
 
     private class ClearCacheTask extends GMSAsyncTask<Void, Void, Void> {

@@ -691,6 +691,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 }
             }
         } else {
+        	//TODO handle mMap is null
             intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), new double[]{mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude}, loadingHandler, (int)mMap.getCameraPosition().zoom, layerLoader, projection);
         }
 

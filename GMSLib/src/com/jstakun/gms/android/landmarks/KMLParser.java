@@ -1,20 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
-import com.jstakun.gms.android.utils.GMSAsyncTask;
-import com.jstakun.gms.android.utils.HttpUtils;
-import com.jstakun.gms.android.utils.LoggerUtils;
-import com.openlapi.QualifiedCoordinates;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +14,13 @@ import org.apache.commons.lang.StringUtils;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.utils.GMSAsyncTask;
+import com.jstakun.gms.android.utils.HttpUtils;
+import com.jstakun.gms.android.utils.LoggerUtils;
+import com.openlapi.QualifiedCoordinates;
 
 /**
  *
@@ -82,7 +80,7 @@ public class KMLParser {
         try {
             input = getInputStream(source, filename, authn);
             if (input != null) {
-                XmlPullParser parser = new KXmlParser();
+            	XmlPullParser parser = new KXmlParser();
                 parser.setFeature("http://xmlpull.org/v1/doc/features.html#relaxed", true);
                 parser.setInput(input, null);//"UTF-8");
                 parser.next();
@@ -149,7 +147,7 @@ public class KMLParser {
                 int l = parser.next();
                 
                 if (l == XmlPullParser.TEXT) {
-                    description = parser.getText();
+                    description = getUtf8(parser);
                 }
             }
             // else ignore it
@@ -270,12 +268,11 @@ public class KMLParser {
                 String name = tags.get(tags.size()-1);
                 //System.out.println(name);
                 if ("name".equals(name)) {
-                    // name, append this info to the plain text extra info
-                    lmname = parser.getText();
+                    lmname = getUtf8(parser);
                     tags.remove("name");
                 } else if ("description".equals(name)) {
                     // description
-                    lmdescription = parser.getText();
+                    lmdescription = getUtf8(parser);
                     tags.remove("decription");
                 } else if ("LookAt".equals(name)) {
                     // LookAt tag holds course info
@@ -412,5 +409,16 @@ public class KMLParser {
 
     public String getDescription() {
         return description;
+    }
+    
+    private String getUtf8(XmlPullParser parser) throws UnsupportedEncodingException {
+    	String enc = parser.getInputEncoding(); 
+    	String text = parser.getText();
+    	if (text != null && enc != null && !enc.equals("UTF-8")) {
+    		byte[] inp = text.getBytes(enc);
+    		return new String(inp, "UTF-8");
+    	} else {
+    		return text;
+    	}
     }
 }

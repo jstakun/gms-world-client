@@ -41,14 +41,14 @@ public class IconCache {
 
     public static final String ICON_MISSING32 = "icon-missing32";
     public static final String ICON_MISSING16 = "icon-missing16";
-    private static final String LOADING = "loading";
-    private static final String DOWNLOAD = "download";
     public static final String CURSOR = "cursor";
     public static final String MAGNIFIER = "magnifier";
-    private static final String GRID = "grid";
     public static final String IMAGE_LOADING_TILE = "image-loading-tile";
     public static final String IMAGE_LOADING_MAP = "image-loading-map";
     public static final String IMAGE_MISSING = "image-missing";
+    private static final String GRID = "grid";
+    private static final String LOADING = "loading";
+    private static final String DOWNLOAD = "download";
     private static SimpleArrayMap<String, Bitmap> images = new SimpleArrayMap<String, Bitmap>();
     private static SimpleArrayMap<String, GMSAsyncTask<?,?,?>> loadingTasks = new SimpleArrayMap<String, GMSAsyncTask<?,?,?>>();
     private static IconCache instance;
@@ -98,7 +98,7 @@ public class IconCache {
                 c.drawColor(Color.WHITE);
                 paint.setColor(Color.WHITE);
                 c.drawRect(new Rect(0, 0, ConfigurationManager.TILE_SIZE, ConfigurationManager.TILE_SIZE), paint);
-                c.drawBitmap(getImageResource(IconCache.LOADING), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paint);
+                c.drawBitmap(getImage(IconCache.LOADING), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paint);
                 images.put(IMAGE_LOADING_TILE, loading);
             }
 
@@ -108,7 +108,7 @@ public class IconCache {
                 cm.drawColor(Color.WHITE);
                 Paint paintm = new Paint();
                 paintm.setColor(Color.WHITE);
-                cm.drawBitmap(getImageResource(IconCache.ICON_MISSING32), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paintm);
+                cm.drawBitmap(getImage(IconCache.ICON_MISSING32), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paintm);
                 images.put(IMAGE_MISSING, missing);
             }
 
@@ -127,7 +127,7 @@ public class IconCache {
         return instance;
     }
 
-    private Bitmap getImageResource(String resourceName) {
+    public Bitmap getImage(String resourceName) {
         Bitmap img;
 
         if (resourceName != null && isImageLoaded(resourceName)) {
@@ -140,7 +140,7 @@ public class IconCache {
     }
     
     public final BitmapDrawable getImageDrawable(String resourceName) {
-    	return getBitmapDrawable(getImageResource(resourceName));
+    	return getBitmapDrawable(getImage(resourceName));
     }
 
     private boolean isImageLoaded(String resourceName) {
