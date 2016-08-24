@@ -41,9 +41,6 @@ import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
 import com.jstakun.gms.android.landmarks.LayerManager;
-import com.jstakun.gms.android.maps.Tile;
-import com.jstakun.gms.android.maps.TileFactory;
-import com.jstakun.gms.android.maps.TilesCache;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -580,115 +577,6 @@ public class FileManager implements PersistenceManager {
         return json.trim();
     }
 
-    public void saveTilesCache(TilesCache tilesCache) {
-        File fc;
-        OutputStream ops = null;
-        try {
-            fc = getExternalDirectory(getImagesFolder(), TILES_FILE);
-            ops = new FileOutputStream(fc);
-            for (int i = 0; i < ConfigurationManager.getInstance().getInt(ConfigurationManager.SCREEN_SIZE); i++) {
-                Tile tile = tilesCache.getTile(i);
-                //save image
-                saveImageFile(tile.getImage(), i + FORMAT_PNG);
-
-                String line = Double.toString(tile.getLatitude()) + PersistenceManager.SEPARATOR_CHAR + Double.toString(tile.getLongtude()) + PersistenceManager.SEPARATOR_CHAR
-                        + Integer.toString(tile.getXTile()) + PersistenceManager.SEPARATOR_CHAR + Integer.toString(tile.getYTile())
-                        + PersistenceManager.SEPARATOR_CHAR + Integer.toString(tile.getZoom()) + "\n";
-
-                //save tile data
-                ops.write(line.getBytes());
-            }
-            ops.close();
-
-        } catch (Exception ioe) {
-            LoggerUtils.error("FileManager.saveTilesCache exception", ioe);
-        } finally {
-            if (ops != null) {
-                try {
-                    ops.close();
-                } catch (IOException ex) {
-                    LoggerUtils.debug("FileManager.saveTilesCache exception", ex);
-                }
-
-            }
-
-        }
-    }
-
-    public int readTilesCache(TilesCache tilesCache) {
-        File fc;
-        Bitmap image;
-        int result = 10;
-        int i = 0;
-        InputStream is = null;
-        InputStreamReader isr = null;
-
-        try {
-            fc = getExternalDirectory(getImagesFolder(), TILES_FILE);
-            if (fc.exists()) {
-                is = new FileInputStream(fc);
-                String line;
-                isr = new InputStreamReader(is, "UTF8");
-
-                while ((line = readLine(isr)) != null) {
-
-                    int separatorPos = line.indexOf(SEPARATOR_CHAR);
-
-                    //System.out.println("Record " + (i + 1) + ": " + line);
-
-                    if (separatorPos == -1) {
-                        throw new Exception("Separator character not found.");
-                    }
-
-                    //double latitude = Double.parseDouble(line.substring(0, separatorPos).trim());
-                    int oldSeparatorPos = separatorPos;
-                    separatorPos = line.indexOf(SEPARATOR_CHAR, oldSeparatorPos + 1);
-                    //double longitude = Double.parseDouble(line.substring(oldSeparatorPos + 1, separatorPos).trim());
-                    oldSeparatorPos = separatorPos;
-                    separatorPos = line.indexOf(SEPARATOR_CHAR, oldSeparatorPos + 1);
-                    int xtile = Integer.parseInt(line.substring(oldSeparatorPos + 1, separatorPos).trim());
-                    oldSeparatorPos = separatorPos;
-                    separatorPos = line.indexOf(SEPARATOR_CHAR, oldSeparatorPos + 1);
-                    int ytile = Integer.parseInt(line.substring(oldSeparatorPos + 1, separatorPos).trim());
-                    int zoom = Integer.parseInt(line.substring(separatorPos + 1).trim());
-
-                    image = readImageFile(getImagesFolder(), i + FORMAT_PNG, null);
-
-                    if (image == null) {
-                        return -1;
-                    }
-
-                    //Tile tile = new Tile(image, latitude, longitude, xtile, ytile, zoom, true);
-                    Tile tile = TileFactory.getTile(xtile, ytile, zoom, image);
-
-                    tilesCache.setTile(i, tile);
-                    i++;
-                }
-
-                result += i;
-            }
-        } catch (Exception e) {
-            LoggerUtils.error("FileManager.readTilesCache exception", e);
-        } finally {
-            if (isr != null) {
-                try {
-                    isr.close();
-                } catch (Exception ex) {
-                    LoggerUtils.debug("FileManager.readTilesCache exception", ex);
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (Exception ex) {
-                    LoggerUtils.debug("FileManager.readTilesCache exception", ex);
-                }
-            }
-        }
-
-        return result;
-    }
-
     public static String getRoutesFolderPath() {
         return ROUTES_FOLDER;
     }
@@ -937,6 +825,10 @@ public class FileManager implements PersistenceManager {
 
     public File getRouteFile(String filename) {
         return getExternalDirectory(getRoutesFolderPath(), filename);
+    }
+    
+    public File getPoiFile(String filename) {
+        return getExternalDirectory(getFileFolderPath(), filename);
     }
 
     public static Writer openKmlRouteFile(File fc) throws IOException {

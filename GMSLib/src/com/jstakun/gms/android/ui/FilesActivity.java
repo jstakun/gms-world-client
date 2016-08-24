@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import java.util.List;
@@ -9,6 +5,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -103,8 +100,7 @@ public class FilesActivity extends AbstractLandmarkList {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         if (v.getId() == android.R.id.list) {
-            //TODO add share and rename menu items
-        	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             currentPos = info.position;
             menu.setHeaderTitle(files.get(info.position).getName());
             menu.setHeaderIcon(R.drawable.ic_dialog_menu_generic);
@@ -119,9 +115,24 @@ public class FilesActivity extends AbstractLandmarkList {
     public boolean onContextItemSelected(MenuItem item) {
         int menuItemIndex = item.getItemId();
 
-        if (menuItemIndex == 0) {
+        if (menuItemIndex == 0) { //open
             close(currentPos, "load");
-        } else if (menuItemIndex == 1) {
+        } else if (menuItemIndex == 1) { //share
+        	Uri uri = null;
+        	if (type == ROUTES) {
+        		uri = Uri.fromFile(PersistenceManagerFactory.getFileManager().getRouteFile(files.get(currentPos).getName()));
+        	} else if (type == FILES) {
+        		uri = Uri.fromFile(PersistenceManagerFactory.getFileManager().getPoiFile(files.get(currentPos).getName()));
+        	}
+        	if (uri != null) {
+        		intents.shareFileAction(uri, type);
+        	} else {
+        		intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
+        	}
+        } else if (menuItemIndex == 2) { //rename
+        	//TODO implement rename file action
+            intents.showInfoToast("Not yet implemented!");
+        } else if (menuItemIndex == 3) { //delete
             deleteFileDialog.setTitle(Locale.getMessage(R.string.Files_delete_prompt, files.get(currentPos).getName()));
             deleteFileDialog.show();
         }

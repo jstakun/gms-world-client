@@ -662,6 +662,22 @@ public final class IntentsHelper {
     	activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.shareScreenshot)));
     }
     
+    public void shareFileAction(Uri uri, int type) {
+    	final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+    	shareIntent.setType("plain/text");
+    	shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+    	//TODO translate
+    	if (type == FilesActivity.ROUTES) {	
+    		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Landmark Manager route");
+    		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please find attached Landmark Manager route");
+    		activity.startActivity(Intent.createChooser(shareIntent, "Share route"));
+    	} else {
+    		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Landmark Manager poi file");
+        	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please find attached Landmark Manager poi file");
+        	activity.startActivity(Intent.createChooser(shareIntent, "Share poi file"));	
+    	}
+    }
+    
     public void setupShortcut() {
         Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
         shortcutIntent.setClassName(activity, activity.getClass().getName());

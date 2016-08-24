@@ -1,11 +1,11 @@
 package com.jstakun.gms.android.data;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
+import java.util.List;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.maps.TilesCache;
-import java.util.List;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
 
 /**
  *
@@ -24,8 +24,6 @@ public interface PersistenceManager {
     void saveConfigurationFile();
     int readLandmarkStore(List<ExtendedLandmark> landmarkdb);
     int readConfigurationFile();
-    void saveTilesCache(TilesCache tilesCache);
-    int readTilesCache(TilesCache tilesCache);
     void deleteFile();
     void deleteTile();
     boolean tileExists(String filename);

@@ -14,9 +14,6 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import com.jstakun.gms.android.maps.Tile;
-import com.jstakun.gms.android.maps.TileFactory;
-import com.jstakun.gms.android.maps.TilesCache;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MercatorUtils;
 import com.openlapi.QualifiedCoordinates;
@@ -210,129 +207,6 @@ public class AndroidPersistenceManager implements PersistenceManager {
             ConfigurationManager.getInstance().putString(key, value);
         }
         return 0;
-    }
-
-    public void saveTilesCache(TilesCache tilesCache) {
-        OutputStream ops = null;
-        Context ctx = ConfigurationManager.getInstance().getContext();
-
-        try {
-            ops = ctx.openFileOutput(TILES_FILE, Context.MODE_PRIVATE);
-
-            for (int i = 0; i < ConfigurationManager.getInstance().getInt(ConfigurationManager.SCREEN_SIZE); i++) {
-                Tile tile = tilesCache.getTile(i);
-                //save image
-                saveImageFile(tile.getImage(), i + FORMAT_PNG);
-
-                String line = Double.toString(tile.getLatitude()) + PersistenceManager.SEPARATOR_CHAR + Double.toString(tile.getLongtude()) + PersistenceManager.SEPARATOR_CHAR
-                        + Integer.toString(tile.getXTile()) + PersistenceManager.SEPARATOR_CHAR + Integer.toString(tile.getYTile())
-                        + PersistenceManager.SEPARATOR_CHAR + Integer.toString(tile.getZoom()) + "\n";
-
-                //save tile data
-                ops.write(line.getBytes());
-            }
-            ops.close();
-
-        } catch (Exception ioe) {
-            LoggerUtils.error("FileManager.saveTilesCache exception", ioe);
-        } finally {
-            if (ops != null) {
-                try {
-                    ops.close();
-                } catch (IOException ex) {
-                    LoggerUtils.debug("FileManager.saveTilesCache exception", ex);
-                }
-
-            }
-
-        }
-    }
-
-    public int readTilesCache(TilesCache tilesCache) {
-        Bitmap image = null;
-        int result = 10;
-        int i = 0;
-        InputStream is = null;
-        InputStreamReader isr = null;
-        Context ctx = ConfigurationManager.getInstance().getContext();
-
-        try {
-
-            is = ctx.openFileInput(TILES_FILE);
-            isr = new InputStreamReader(is, "UTF8");
-            String line = null;
-
-            while ((line = readLine(isr)) != null) {
-
-                int separatorPos = line.indexOf(SEPARATOR_CHAR);
-
-                //System.out.println("Record " + (i + 1) + ": " + line);
-
-                if (separatorPos == -1) {
-                	if (isr != null) {
-                        try {
-                            isr.close();
-                        } catch (Exception ex) {
-                            LoggerUtils.debug("FileManager.readTilesCache exception", ex);
-                        }
-                    }
-                    if (is != null) {
-                        try {
-                            is.close();
-                        } catch (Exception ex) {
-                            LoggerUtils.debug("FileManager.readTilesCache exception", ex);
-                        }
-                    }
-                    throw new Exception("Separator character not found.");
-                }
-
-                //double latitude = Double.parseDouble(line.substring(0, separatorPos).trim());
-                int oldSeparatorPos = separatorPos;
-                separatorPos = line.indexOf(SEPARATOR_CHAR, oldSeparatorPos + 1);
-                //double longitude = Double.parseDouble(line.substring(oldSeparatorPos + 1, separatorPos).trim());
-                oldSeparatorPos = separatorPos;
-                separatorPos = line.indexOf(SEPARATOR_CHAR, oldSeparatorPos + 1);
-                int xtile = Integer.parseInt(line.substring(oldSeparatorPos + 1, separatorPos).trim());
-                oldSeparatorPos = separatorPos;
-                separatorPos = line.indexOf(SEPARATOR_CHAR, oldSeparatorPos + 1);
-                int ytile = Integer.parseInt(line.substring(oldSeparatorPos + 1, separatorPos).trim());
-                int zoom = Integer.parseInt(line.substring(separatorPos + 1).trim());
-
-                image = readImageFile(i + FORMAT_PNG);
-
-                if (image == null) {
-                    return -1;
-                }
-
-                //Tile tile = new Tile(image, latitude, longitude, xtile, ytile, zoom, false);
-                Tile tile = TileFactory.getTile(xtile, ytile, zoom, image);
-
-                tilesCache.setTile(i, tile);
-                i++;
-            }
-
-            result += i;
-
-        } catch (Exception e) {
-            LoggerUtils.error("FileManager.readTilesCache exception", e);
-        } finally {
-            if (isr != null) {
-                try {
-                    isr.close();
-                } catch (Exception ex) {
-                    LoggerUtils.debug("FileManager.readTilesCache exception", ex);
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (Exception ex) {
-                    LoggerUtils.debug("FileManager.readTilesCache exception", ex);
-                }
-            }
-        }
-
-        return result;
     }
 
     public void deleteFile() {

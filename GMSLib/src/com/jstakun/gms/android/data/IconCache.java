@@ -49,7 +49,6 @@ public class IconCache {
     public static final String IMAGE_LOADING_TILE = "image-loading-tile";
     public static final String IMAGE_LOADING_MAP = "image-loading-map";
     public static final String IMAGE_MISSING = "image-missing";
-    //TODO testing
     private static SimpleArrayMap<String, Bitmap> images = new SimpleArrayMap<String, Bitmap>();
     private static SimpleArrayMap<String, GMSAsyncTask<?,?,?>> loadingTasks = new SimpleArrayMap<String, GMSAsyncTask<?,?,?>>();
     private static IconCache instance;
@@ -396,20 +395,11 @@ public class IconCache {
     }
 
     public synchronized void clearAll() {
-    	//TODO testing
-    	//for (Map.Entry<String, GMSAsyncTask<?,?,?>> entry : loadingTasks.entrySet()) {
-    	//	entry.getValue().cancel(true);
-    	//}
     	for (int i=0;i<loadingTasks.size();i++) {
     		loadingTasks.get(images.keyAt(i)).cancel(true);
     	}
     	loadingTasks.clear();
     	
-    	//TODO testing
-    	//for (Map.Entry<String, Bitmap> entry : images.entrySet()) {
-    	//	LoggerUtils.debug("Recycling " + entry.getKey());
-    	//	entry.getValue().recycle();
-    	//}
     	for (int i=0;i<images.size();i++) {
     		LoggerUtils.debug("Recycling bitmap " + images.keyAt(i));
     		images.get(images.keyAt(i)).recycle();

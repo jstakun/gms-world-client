@@ -1,15 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.gms.android.data;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.maps.TilesCache;
 import java.util.List;
 
 /**
@@ -40,14 +34,6 @@ public class MemoryPersistenceManager implements PersistenceManager {
 
     public int readConfigurationFile() {
         //ConfigurationManager.getInstance().setDefaultConfiguration();
-        return 0;
-    }
-
-    public void saveTilesCache(TilesCache tilesCache) {
-         //can't persist anything
-    }
-
-    public int readTilesCache(TilesCache tilesCache) {
         return 0;
     }
 
