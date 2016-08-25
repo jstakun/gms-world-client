@@ -47,7 +47,7 @@ public class LandmarkParcelable implements Parcelable {
 
     public LandmarkParcelable(Parcel source) {
         hashCode = source.readInt();
-        name = source.readString();
+        setName(source.readString());
         key = source.readString();
         layer = source.readString();
         desc = source.readString();
@@ -63,7 +63,7 @@ public class LandmarkParcelable implements Parcelable {
 
     protected LandmarkParcelable(int hashCode, String name, String key, String layer, String desc, float distance, long creationDate, int categoryid, int subcategoryid, double rating, int numOfRev, String thunbnail, int revelance) {
         this.hashCode = hashCode;
-        this.name = name;
+        this.setName(name);
         this.key = key;
         this.layer = layer;
         this.desc = desc;
@@ -184,4 +184,8 @@ public class LandmarkParcelable implements Parcelable {
     	}
     	return stars;
     }
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

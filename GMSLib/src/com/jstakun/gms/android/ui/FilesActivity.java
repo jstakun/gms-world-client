@@ -2,15 +2,23 @@ package com.jstakun.gms.android.ui;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.landmarks.LandmarkParcelable;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Message;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,15 +27,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
-import com.jstakun.gms.android.landmarks.LandmarkParcelable;
-import com.jstakun.gms.android.routes.RouteRecorder;
-import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *
@@ -136,7 +135,7 @@ public class FilesActivity extends AbstractLandmarkList {
         	}
         } else if (menuItemIndex == 2) { //rename
         	String currentName = files.get(currentPos).getName();
-        	showRenameRouteDialog(currentName.substring(0, currentName.length()-4));
+        	showRenameRouteDialog(currentName.substring(0, currentName.length()-4), currentPos);
         } else if (menuItemIndex == 3) { //delete
             deleteFileDialog.setTitle(Locale.getMessage(R.string.Files_delete_prompt, files.get(currentPos).getName()));
             deleteFileDialog.show();
@@ -162,20 +161,36 @@ public class FilesActivity extends AbstractLandmarkList {
         deleteFileDialog = builder.create();
     }
     
-    private void showRenameRouteDialog(String routeName) {
+    private void showRenameRouteDialog(String routeName, final int filePos) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View promptView = LayoutInflater.from(this).inflate(R.layout.routename, null);
         final EditText input =  (EditText) promptView.findViewById(R.id.dialogRouteName);
         input.setText(routeName);
         //TODO translate
-        String message = "Enter new route file name:";
-        String title = "Rename route";
+        String message = "Enter new file name:";
+        String title = "Rename file";
         builder.setTitle(title).setMessage(message).setView(promptView).setCancelable(true).
                 setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                     	dialog.cancel();
-                    	//TODO implement file rename 
+                    	String newName = input.getText().toString();
+                    	if (StringUtils.isNotEmpty(newName)) { 
+                    		newName += ".kml";
+                    		//TODO implement file rename
+                    		if (type == ROUTES) {
+                    			
+                    		} else if (type == FILES) {
+                    			
+                    		}
+                    		//refresh files list
+                    		((ArrayAdapter<LandmarkParcelable>) getListAdapter()).getItem(filePos).setName(newName);
+                    		//TODO translate
+                    		intents.showInfoToast("File renamed");
+                    	} else {
+                    		//TODO translate
+                    		intents.showInfoToast("File name can't be empty!");
+                    	}
                     }
                 }).
                 setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
@@ -207,6 +222,7 @@ public class FilesActivity extends AbstractLandmarkList {
             //delete poi file
             fm.deletePoiFile(filename);
         }
+        
         intents.showInfoToast(Locale.getMessage(R.string.Files_deleted));
     }
 
