@@ -135,7 +135,7 @@ public class FilesActivity extends AbstractLandmarkList {
         	}
         } else if (menuItemIndex == 2) { //rename
         	String currentName = files.get(currentPos).getName();
-        	showRenameRouteDialog(currentName.substring(0, currentName.length()-4), currentPos);
+        	showRenameFileDialog(currentName.substring(0, currentName.length()-4), currentPos);
         } else if (menuItemIndex == 3) { //delete
             deleteFileDialog.setTitle(Locale.getMessage(R.string.Files_delete_prompt, files.get(currentPos).getName()));
             deleteFileDialog.show();
@@ -161,11 +161,11 @@ public class FilesActivity extends AbstractLandmarkList {
         deleteFileDialog = builder.create();
     }
     
-    private void showRenameRouteDialog(String routeName, final int filePos) {
+    private void showRenameFileDialog(final String oldName, final int filePos) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View promptView = LayoutInflater.from(this).inflate(R.layout.routename, null);
         final EditText input =  (EditText) promptView.findViewById(R.id.dialogRouteName);
-        input.setText(routeName);
+        input.setText(oldName);
         //TODO translate
         String message = "Enter new file name:";
         String title = "Rename file";
@@ -179,9 +179,9 @@ public class FilesActivity extends AbstractLandmarkList {
                     		newName += ".kml";
                     		//TODO implement file rename
                     		if (type == ROUTES) {
-                    			
+                    			PersistenceManagerFactory.getFileManager().renameRouteFile(oldName + ".kml", newName);
                     		} else if (type == FILES) {
-                    			
+                    			PersistenceManagerFactory.getFileManager().renamePoiFile(oldName + ".kml", newName);
                     		}
                     		//refresh files list
                     		((ArrayAdapter<LandmarkParcelable>) getListAdapter()).getItem(filePos).setName(newName);

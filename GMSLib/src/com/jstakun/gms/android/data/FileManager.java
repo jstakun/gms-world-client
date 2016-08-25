@@ -661,14 +661,31 @@ public class FileManager implements PersistenceManager {
     }
 
     public void deleteFile(String folder, String filename) {
-        File fc;
         try {
-            fc = getExternalDirectory(folder, filename);
+            File fc = getExternalDirectory(folder, filename);
             if (fc != null) {
                 fc.delete();
             }
         } catch (Exception ex) {
-            LoggerUtils.error("FileManager.deleteFile exception", ex);
+            LoggerUtils.error("FileManager.deleteFile() exception", ex);
+        }
+    }
+    
+    public void renameRouteFile(String oldName, String newName) {
+        renameFile(getRoutesFolderPath(), oldName, newName);
+    }
+
+    public void renamePoiFile(String oldName, String newName) {
+        renameFile(getFileFolderPath(), oldName, newName);
+    }
+    
+    private void renameFile(String folder, String oldName, String newName) {
+    	try {
+            File oldFile = getExternalDirectory(folder, oldName);
+            File newFile = getExternalDirectory(folder, newName);
+            oldFile.renameTo(newFile);
+        } catch (Exception ex) {
+            LoggerUtils.error("FileManager.renameFile() exception", ex);
         }
     }
 
