@@ -167,9 +167,8 @@ public class FilesActivity extends AbstractLandmarkList {
         final EditText input =  (EditText) promptView.findViewById(R.id.dialogRouteName);
         final String oldName = files.get(filePos).getName();
         input.setText(oldName.substring(0, oldName.length()-4));
-        //TODO translate
-        String message = "Enter new file name:";
-        String title = "Rename file";
+        String message = Locale.getMessage(R.string.Files_rename_message);
+        String title = Locale.getMessage(R.string.Files_rename_title);
         builder.setTitle(title).setMessage(message).setView(promptView).setCancelable(true).
                 setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
                     @Override
@@ -186,11 +185,9 @@ public class FilesActivity extends AbstractLandmarkList {
                     		}
                     		//refresh files list
                     		((ArrayAdapter<LandmarkParcelable>) getListAdapter()).getItem(filePos).setName(newName);
-                    		//TODO translate
-                    		intents.showInfoToast("File renamed");
+                    		intents.showInfoToast(Locale.getMessage(R.string.Files_rename_confirm));
                     	} else {
-                    		//TODO translate
-                    		intents.showInfoToast("File name can't be empty!");
+                    		intents.showInfoToast(Locale.getMessage(R.string.Files_rename_empty));
                     	}
                     }
                 }).

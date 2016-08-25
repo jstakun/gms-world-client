@@ -235,6 +235,10 @@
     <string name="search_hint">Find a place nearby</string>
     <string name="Migation.1086.message">You have been logged out from all social networks. This is one time operation due to changes in our application. Please login once again and enjoy the application!</string>
     <string name="Close.app.bye">See you soon!</string>
+    <string name="Poi.share.title">Share poi file</string>
+    <!-- english only -->
+    <string name="Poi.share.subject">Landmark Manager poi file</string>
+    <string name="Poi.share.text">Please find attached Landmark Manager poi file</string>
     <!-- Auto Check-In alert -->
     <string name="yesButton">Yes</string>
     <string name="noButton">No</string>
@@ -304,6 +308,8 @@
     <string name="Routes.Background.task.loading">Route loading</string>
     <string name="Routes.Recording.Saved">Route saved to file %1$s\n%2$s</string>
     <string name="Routes.Recording.Question">Save route to file %1$s?</string>
+    <string name="Routes.Recording.Save.Title">Save route to file</string>
+    <string name="Routes.Recording.Save.Message">Enter route file name or leave default value:</string>
     <string name="Routes.Recording.description">Route distance: %1$s, Average speed: %2$s, Time elapsed: %3$s</string>
     <string name="Routes.Loaded">Route loaded</string>
     <string name="Routes.Failed">Failed to load route</string>
@@ -314,6 +320,10 @@
     <string name="Routes.loading.error.1">Failed to load route due to %1$s</string>
     <string name="Routes.starting.point">Starting point</string>
     <string name="Routes.end.point">End point</string>
+    <string name="Routes.share.title">Share route file</string>
+    <!-- english only -->
+    <string name="Routes.share.subject">Landmark Manager route file</string>
+    <string name="Routes.share.text">Please find attached Landmark Manager route file</string>
     <!-- Files -->
     <string name="Files.title">Select file</string>
     <string name="Files.Background.task.loading">Poi file loading</string>
@@ -322,6 +332,10 @@
     <string name="Files.NoFiles">No files in folder.</string>
     <string name="Files.Loaded">Loaded %1$s places from KML file</string>
     <string name="Files.Failed">Failed to load KML file</string>
+    <string name="Files.rename.message">Enter new file name:</string>
+    <string name="Files.rename.title">Rename file</string>
+    <string name="Files.rename.confirm">File renamed</string>
+    <string name="Files.rename.empty">File name can\'t be empty!</string>
     <!-- Social -->
     <string name="Social.comment.sent">Comment sent successfully</string>
     <string name="Social.comment.failed">Comment sending failed due to %1$s</string>

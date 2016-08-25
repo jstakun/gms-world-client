@@ -207,6 +207,7 @@
     <string name="search_hint">Szukaj miejsca w okolicy</string>
     <string name="Migation.1086.message">Wylogowano ze wszystkich sieci spo\u0142eczno\u015bciowych. To by\u0142a jednorazowa operacja spowodowana aktualizacj\u0105 aplikacji. Prosz\u0119 si\u0119 zalogowa\u0107 ponownie!</string>
     <string name="Close.app.bye">Do zobaczenia wkr\u00f3tce!</string>
+    <string name="Poi.share.title">Udost\u0119pnij plik z miejscami</string>
     <!-- Auto Check-In alert -->
     <string name="yesButton">Tak</string>
     <string name="noButton">Nie</string>
@@ -275,6 +276,8 @@
     <string name="Routes.Background.task.loading">Wczytywanie trasy</string>
     <string name="Routes.Recording.Saved">Trasa zapisana do pliku %1$s\n%2$s</string>
     <string name="Routes.Recording.Question">Zapisa\u0107 tras\u0119 do pliku %1$s?</string>
+    <string name="Routes.Recording.Save.Title">Zapisz tras\u0119 do pliku</string>
+    <string name="Routes.Recording.Save.Message">Wpisz nazw\u0119 pliku lub zostaw domy\u015bln\u0105:</string>
     <string name="Routes.Recording.description">D\u0142ugo\u015b\u0107 trasy: %1$s, \u015arednia szybko\u015b\u0107: %2$s, Oczekiwany czas: %3$s</string>
     <string name="Routes.Loaded">Trasa za\u0142adowana</string>
     <string name="Routes.Failed">Nie uda\u0142o si\u0119 za\u0142adowa\u0107 trasy</string>
@@ -285,6 +288,7 @@
     <string name="Routes.loading.error.1">Nie uda\u0142o si\u0119 za\u0142adowa\u0107 trasy: %1$s</string>
     <string name="Routes.starting.point">Pocz\u0105tek trasy</string>
     <string name="Routes.end.point">Koniec trasy</string>
+    <string name="Routes.share.title">Udost\u0119pnij tras\u0119</string>
     <!-- Files -->
     <string name="Files.title">Wybierz plik</string>
     <string name="Files.Background.task.loading">Wczytywanie pliku z miejscami</string>
@@ -293,6 +297,10 @@
     <string name="Files.NoFiles">Brak plik\u00f3w w folderze.</string>
     <string name="Files.Loaded">Za\u0142adowano %1$s miejsc z pliku</string>
     <string name="Files.Failed">Nie uda\u0142o si\u0119 za\u0142adowa\u0107 pliku z miejscami</string>
+    <string name="Files.rename.message">Podaj now\u0105 nazw\u0119 pliku:</string>
+    <string name="Files.rename.title">Zmiana nazwy pliku</string>
+    <string name="Files.rename.confirm">Nazwa pliku zmieniona</string>
+    <string name="Files.rename.empty">Nazwa pliku nie mo\u017ce by\u0107 pusta!</string>
     <!-- Social -->
     <string name="Social.comment.sent">Komentarz przes\u0142any</string>
     <string name="Social.comment.failed">Nie uda\u0142o si\u0119 wys\u0142a\u0107 komentarza z powodu: %1$s</string>

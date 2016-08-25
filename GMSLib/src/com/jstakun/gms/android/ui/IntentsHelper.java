@@ -666,15 +666,14 @@ public final class IntentsHelper {
     	final Intent shareIntent = new Intent(Intent.ACTION_SEND);
     	shareIntent.setType("plain/text");
     	shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-    	//TODO translate
     	if (type == FilesActivity.ROUTES) {	
-    		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Landmark Manager route file");
-    		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please find attached Landmark Manager route file");
-    		activity.startActivity(Intent.createChooser(shareIntent, "Share route file"));
+    		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.Routes_share_subject));
+    		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Routes_share_text));
+    		activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.Routes_share_title)));
     	} else {
-    		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Landmark Manager poi file");
-        	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please find attached Landmark Manager poi file");
-        	activity.startActivity(Intent.createChooser(shareIntent, "Share poi file"));	
+    		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.Poi_share_subject));
+        	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Poi_share_text));
+        	activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.Poi_share_title)));	
     	}
     }
     
