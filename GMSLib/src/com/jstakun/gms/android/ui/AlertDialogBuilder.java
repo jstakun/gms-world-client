@@ -147,20 +147,19 @@ public class AlertDialogBuilder {
         String message = "Enter route file name or leave default value:";
         String title = "Save route to file";
         builder.setTitle(title).setMessage(message).setView(promptView).setCancelable(true).
-                setPositiveButton(Locale.getMessage(R.string.okButton),
-                		new DialogInterface.OnClickListener() {
-                    		@Override
-                    		public void onClick(DialogInterface dialog, int whichButton) {
-                    			ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-                                if (saveRouteHandler != null) {
-                    				String filename = input.getText().toString();
-                    				Message msg = new Message();
-                    				msg.what = SAVE_ROUTE_DIALOG;
-                    				msg.obj = filename;
-                    				saveRouteHandler.sendMessage(msg);
-                    			}
-                            	dialog.cancel();
-                    		}
+                setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
+                        if (saveRouteHandler != null) {
+                    		String filename = input.getText().toString();
+                    		Message msg = new Message();
+                    		msg.what = SAVE_ROUTE_DIALOG;
+                    		msg.obj = filename;
+                    		saveRouteHandler.sendMessage(msg);
+                    	}
+                        dialog.cancel();
+                    }
                 }).
                 setNegativeButton(Locale.getMessage(R.string.cancelButton), dialogClickListener).
                 setOnCancelListener(dialogCancelListener);

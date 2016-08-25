@@ -7,19 +7,24 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
+import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.UserTracker;
@@ -130,8 +135,8 @@ public class FilesActivity extends AbstractLandmarkList {
         		intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
         	}
         } else if (menuItemIndex == 2) { //rename
-        	//TODO implement rename file action
-            intents.showInfoToast("Not yet implemented!");
+        	String currentName = files.get(currentPos).getName();
+        	showRenameRouteDialog(currentName.substring(0, currentName.length()-4));
         } else if (menuItemIndex == 3) { //delete
             deleteFileDialog.setTitle(Locale.getMessage(R.string.Files_delete_prompt, files.get(currentPos).getName()));
             deleteFileDialog.show();
@@ -155,6 +160,30 @@ public class FilesActivity extends AbstractLandmarkList {
             }
         });
         deleteFileDialog = builder.create();
+    }
+    
+    private void showRenameRouteDialog(String routeName) {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View promptView = LayoutInflater.from(this).inflate(R.layout.routename, null);
+        final EditText input =  (EditText) promptView.findViewById(R.id.dialogRouteName);
+        input.setText(routeName);
+        //TODO translate
+        String message = "Enter new route file name:";
+        String title = "Rename route";
+        builder.setTitle(title).setMessage(message).setView(promptView).setCancelable(true).
+                setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	dialog.cancel();
+                    	//TODO implement file rename 
+                    }
+                }).
+                setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        builder.create().show();
     }
 
     private void close(int position, String action) {

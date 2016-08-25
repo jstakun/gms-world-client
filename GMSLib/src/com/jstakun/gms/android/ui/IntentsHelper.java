@@ -668,9 +668,9 @@ public final class IntentsHelper {
     	shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
     	//TODO translate
     	if (type == FilesActivity.ROUTES) {	
-    		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Landmark Manager route");
-    		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please find attached Landmark Manager route");
-    		activity.startActivity(Intent.createChooser(shareIntent, "Share route"));
+    		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Landmark Manager route file");
+    		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please find attached Landmark Manager route file");
+    		activity.startActivity(Intent.createChooser(shareIntent, "Share route file"));
     	} else {
     		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Landmark Manager poi file");
         	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please find attached Landmark Manager poi file");
