@@ -135,7 +135,7 @@ public class FilesActivity extends AbstractLandmarkList {
         	}
         } else if (menuItemIndex == 2) { //rename
         	String currentName = files.get(currentPos).getName();
-        	showRenameFileDialog(currentName.substring(0, currentName.length()-4), currentPos);
+        	showRenameFileDialog(currentPos);
         } else if (menuItemIndex == 3) { //delete
             deleteFileDialog.setTitle(Locale.getMessage(R.string.Files_delete_prompt, files.get(currentPos).getName()));
             deleteFileDialog.show();
@@ -161,11 +161,12 @@ public class FilesActivity extends AbstractLandmarkList {
         deleteFileDialog = builder.create();
     }
     
-    private void showRenameFileDialog(final String oldName, final int filePos) {
+    private void showRenameFileDialog(final int filePos) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View promptView = LayoutInflater.from(this).inflate(R.layout.routename, null);
         final EditText input =  (EditText) promptView.findViewById(R.id.dialogRouteName);
-        input.setText(oldName);
+        final String oldName = files.get(filePos).getName();
+        input.setText(oldName.substring(0, oldName.length()-4));
         //TODO translate
         String message = "Enter new file name:";
         String title = "Rename file";
@@ -177,11 +178,11 @@ public class FilesActivity extends AbstractLandmarkList {
                     	String newName = input.getText().toString();
                     	if (StringUtils.isNotEmpty(newName)) { 
                     		newName += ".kml";
-                    		//TODO implement file rename
+                    		//rename file
                     		if (type == ROUTES) {
-                    			PersistenceManagerFactory.getFileManager().renameRouteFile(oldName + ".kml", newName);
+                    			PersistenceManagerFactory.getFileManager().renameRouteFile(oldName, newName);
                     		} else if (type == FILES) {
-                    			PersistenceManagerFactory.getFileManager().renamePoiFile(oldName + ".kml", newName);
+                    			PersistenceManagerFactory.getFileManager().renamePoiFile(oldName, newName);
                     		}
                     		//refresh files list
                     		((ArrayAdapter<LandmarkParcelable>) getListAdapter()).getItem(filePos).setName(newName);
