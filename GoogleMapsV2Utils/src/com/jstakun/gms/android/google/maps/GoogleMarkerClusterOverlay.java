@@ -181,20 +181,19 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	private class MarkerRenderer extends DefaultClusterRenderer<GoogleMarker> {
 		
 		protected Paint mTextPaint;
-		protected Bitmap mClusterIcon;
-
+		private float mDensity;
+		
 		public MarkerRenderer(Context context, GoogleMap map) {
 			super(context, map, mClusterManager);
 			
 			mTextPaint = new Paint();
 	        mTextPaint.setColor(Color.WHITE);
-	        mTextPaint.setTextSize(15 * context.getResources().getDisplayMetrics().density);
 	        mTextPaint.setFakeBoldText(true);
 	        mTextPaint.setTextAlign(Paint.Align.CENTER);
 	        mTextPaint.setAntiAlias(true);
-	        Drawable clusterIconD = context.getResources().getDrawable(R.drawable.marker_cluster);
-	        mClusterIcon = ((BitmapDrawable) clusterIconD).getBitmap();
-		}
+	        
+	        mDensity = context.getResources().getDisplayMetrics().density;
+	    }
 		
 		@Override
 	    protected void onBeforeClusterItemRendered(GoogleMarker marker, MarkerOptions markerOptions) {
@@ -213,15 +212,30 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		
 		@Override
 		protected void onBeforeClusterRendered(Cluster<GoogleMarker> cluster, MarkerOptions markerOptions) {
-			//TODO change to use different icons depending on cluster size
-	        Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
+			int clusterSize = cluster.getSize();
+	        Bitmap mClusterIcon = null;
+	        if (clusterSize < 10) {
+	        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M1);
+	        	mTextPaint.setTextSize(15f * mDensity);
+	        } else if (clusterSize < 100) {
+	        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M2);
+	        	mTextPaint.setTextSize(15f * mDensity);
+	        } else if (clusterSize < 1000) {
+	        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M3);
+	        	mTextPaint.setTextSize(16f * mDensity);
+	        } else if (clusterSize < 10000) {
+	        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M4);
+	        	mTextPaint.setTextSize(17f * mDensity);
+	        } else {
+	        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M5);
+	        	mTextPaint.setTextSize(18f * mDensity);
+	        } 
+			Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
 	        Canvas iconCanvas = new Canvas(finalIcon);
 	        iconCanvas.drawBitmap(mClusterIcon, 0, 0, null);
 	        int textHeight = (int) (mTextPaint.descent() + mTextPaint.ascent());
-	        iconCanvas.drawText(getClusterText(cluster.getSize()),
-	        		0.5f * finalIcon.getWidth(),
-	        		0.5f * finalIcon.getHeight() - textHeight / 2,
-	                mTextPaint);	        
+	        iconCanvas.drawText(getClusterText(clusterSize), 0.5f * finalIcon.getWidth(),
+	        		0.5f * finalIcon.getHeight() - textHeight / 2, mTextPaint);	        
 	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(finalIcon));
 		}
 	}

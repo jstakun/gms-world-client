@@ -400,7 +400,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	intents.hardClose(layerLoader, routeRecorder, loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else if (mMap != null) {
             intents.softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
-            //ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
         }
         AdsUtils.destroyAdView(this);
         System.gc();
@@ -691,8 +690,17 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 }
             }
         } else {
-        	//TODO handle mMap is null
-            intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), new double[]{mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude}, loadingHandler, (int)mMap.getCameraPosition().zoom, layerLoader, projection);
+        	if (mMap != null) {
+        		intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), 
+        				new double[]{mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude}, 
+        				loadingHandler, (int)mMap.getCameraPosition().zoom, layerLoader, projection);
+        	} else {
+        		intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), 
+        				new double[]{ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE), ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE)}, 
+        				loadingHandler, ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM), layerLoader, projection);
+                
+        	}
+        	
         }
 
     }

@@ -42,24 +42,20 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
     
     private LandmarkManager lm;
 	private Handler landmarkDetailsHandler;
+	private float mDensity;
 	
 	public OsmMarkerClusterOverlay(Context ctx, LandmarkManager lm, Handler landmarkDetailsHandler) {
 		super(ctx);
 		this.lm = lm;
 		this.landmarkDetailsHandler = landmarkDetailsHandler;
     
-		//custom icon 
-		Drawable clusterIconD = ctx.getResources().getDrawable(R.drawable.marker_cluster); //marker_poi_cluster
-		Bitmap clusterIcon = ((BitmapDrawable) clusterIconD).getBitmap();
-		setIcon(clusterIcon);
-		
 		//custom radius
 		setRadius((int)(48f * ctx.getResources().getDisplayMetrics().density));
 		
 		setMaxClusteringZoomLevel(18);
 		
 		//and text
-		getTextPaint().setTextSize(15 * ctx.getResources().getDisplayMetrics().density);
+		mDensity = ctx.getResources().getDisplayMetrics().density;
 		getTextPaint().setTypeface(Typeface.DEFAULT_BOLD);
 		//this.mAnchorV = Marker.ANCHOR_BOTTOM;
 		//this.mTextAnchorU = 0.70f;
@@ -73,15 +69,30 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
         m.setInfoWindow(null);
         m.setAnchor(mAnchorU, mAnchorV);
 
-        //TODO change to use different icons depending on cluster size
+        int clusterSize = cluster.getSize();
+        if (clusterSize < 10) {
+        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M1);
+        	mTextPaint.setTextSize(15f * mDensity);
+        } else if (clusterSize < 100) {
+        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M2);
+        	mTextPaint.setTextSize(15f * mDensity);
+        } else if (clusterSize < 1000) {
+        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M3);
+        	mTextPaint.setTextSize(16f * mDensity);
+        } else if (clusterSize < 10000) {
+        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M4);
+        	mTextPaint.setTextSize(17f * mDensity);
+        } else {
+        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M5);
+        	mTextPaint.setTextSize(18f * mDensity);
+        } 
+        
         Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
         Canvas iconCanvas = new Canvas(finalIcon);
         iconCanvas.drawBitmap(mClusterIcon, 0, 0, null);
         int textHeight = (int) (mTextPaint.descent() + mTextPaint.ascent());
-        iconCanvas.drawText(Integer.toString(cluster.getSize()),
-                mTextAnchorU * finalIcon.getWidth(),
-                mTextAnchorV * finalIcon.getHeight() - textHeight / 2,
-                mTextPaint);
+        iconCanvas.drawText(Integer.toString(clusterSize), mTextAnchorU * finalIcon.getWidth(),
+                mTextAnchorV * finalIcon.getHeight() - textHeight / 2, mTextPaint);
         m.setIcon(new BitmapDrawable(mapView.getContext().getResources(), finalIcon));
 		
 		m.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {

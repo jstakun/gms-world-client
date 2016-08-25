@@ -46,6 +46,11 @@ public class IconCache {
     public static final String IMAGE_LOADING_TILE = "image-loading-tile";
     public static final String IMAGE_LOADING_MAP = "image-loading-map";
     public static final String IMAGE_MISSING = "image-missing";
+    public static final String MARKER_CLUSTER_M1 = "marker-cluster-m1";
+    public static final String MARKER_CLUSTER_M2 = "marker-cluster-m2";
+    public static final String MARKER_CLUSTER_M3 = "marker-cluster-m3";
+    public static final String MARKER_CLUSTER_M4 = "marker-cluster-m4";
+    public static final String MARKER_CLUSTER_M5 = "marker-cluster-m5";
     private static final String GRID = "grid";
     private static final String LOADING = "loading";
     private static final String DOWNLOAD = "download";
@@ -86,6 +91,21 @@ public class IconCache {
         		}
         		if (!images.containsKey(GRID)) {
         			images.put(GRID, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.grid));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M1)) {
+        			images.put(MARKER_CLUSTER_M1, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m1));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M2)) {
+        			images.put(MARKER_CLUSTER_M2, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m2));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M3)) {
+        			images.put(MARKER_CLUSTER_M3, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m3));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M4)) {
+        			images.put(MARKER_CLUSTER_M4, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m4));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M5)) {
+        			images.put(MARKER_CLUSTER_M5, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m5));
         		}
         	}
 
