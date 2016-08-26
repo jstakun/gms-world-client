@@ -227,6 +227,14 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
         
+        routesManager = ConfigurationManager.getInstance().getRoutesManager();
+
+        if (routesManager == null) {
+            LoggerUtils.debug("Creating RoutesManager...");
+            routesManager = new RoutesManager();
+            ConfigurationManager.getInstance().putObject("routesManager", routesManager);
+        } 
+        
         LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
         
         if (mapCenter != null) {
