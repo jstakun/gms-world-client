@@ -658,7 +658,7 @@ public final class IntentsHelper {
     	shareIntent.setType("image/jpg");
     	shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
     	shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.Screenshot_subject));
-    	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Screenshot_text));
+    	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Screenshot_text) + Locale.getMessage(R.string.mailMessageSuffix, ConfigurationManager.SERVER_URL, Locale.getMessage(R.string.app_name)));
     	activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.shareScreenshot)));
     }
     
@@ -668,11 +668,11 @@ public final class IntentsHelper {
     	shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
     	if (type == FilesActivity.ROUTES) {	
     		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.Routes_share_subject));
-    		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Routes_share_text));
+    		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Routes_share_text) + Locale.getMessage(R.string.mailMessageSuffix, ConfigurationManager.SERVER_URL, Locale.getMessage(R.string.app_name)));
     		activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.Routes_share_title)));
     	} else {
     		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.Poi_share_subject));
-        	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Poi_share_text));
+        	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Poi_share_text) + Locale.getMessage(R.string.mailMessageSuffix, ConfigurationManager.SERVER_URL, Locale.getMessage(R.string.app_name)));
         	activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.Poi_share_title)));	
     	}
     }
