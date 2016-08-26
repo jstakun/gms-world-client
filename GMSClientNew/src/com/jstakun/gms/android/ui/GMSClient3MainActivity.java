@@ -104,14 +104,15 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     private CategoriesManager cm;
     private IntentsHelper intents;
     private DialogManager dialogManager;
+    
     private GoogleLandmarkProjectionV2 projection;
-	
-	private Handler loadingHandler;
 	private GoogleMarkerClusterOverlay markerCluster;
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
 	private GoogleMap mMap;
 	private GoogleRoutesOverlay routesCluster;
+	
+	private Handler loadingHandler;
 	
 	private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton, 
@@ -197,11 +198,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         buildGoogleApiClient();
         
-        initComponents(savedInstanceState);      
-    }
-
-    private void initComponents(Bundle savedInstanceState) {
-    	loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
+        loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
     	loadingProgressBar.setProgress(25);
     	
     	statusBar = (TextView) findViewById(R.id.statusBar);
@@ -362,7 +359,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         Object rateDialogStatus = ConfigurationManager.getInstance().getObject("rateDialogStatus", Object.class);
         if (rateDialogStatus == null && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && networkActive) {
             int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
-            //show rate us dialog
             if (useCount > 0 && (useCount % 10) == 0) {
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
@@ -469,7 +465,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	//if routes layer doesn't exists don't show routes menu
         	MenuItem routes = menu.findItem(R.id.routes);
         	if (routes != null) {
-        	if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
+        	 if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
         		routes.setVisible(true);	
         		MenuItem routeRecording = menu.findItem(R.id.trackPos);
         		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
@@ -700,14 +696,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         				loadingHandler, ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM), layerLoader, projection);
                 
         	}
-        	
         }
-
     }
     
 	@Override
 	public void onMapReady(GoogleMap map) {
-		Log.d(this.getClass().getName(), "Google Map is ready!");
+		LoggerUtils.debug("Google Map is ready!");
 		this.mMap = map;
 		this.projection = new GoogleLandmarkProjectionV2(mMap);
 		
@@ -834,9 +828,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 				case R.id.exit:
 					dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
 					break;
-				//case android.R.id.home:
-					//	dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
-					//	break;
 				case R.id.about:
 					dialogManager.showAlertDialog(AlertDialogBuilder.INFO_DIALOG, null, null);
 					break;
@@ -1005,12 +996,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
 
 	private synchronized void initOnLocationChanged(LatLng location, int source) {
-    	//remove
-    	//try {
-    	//	intents.showInfoToast("Setting map center to " + location.getLatitudeE6() + "," + location.getLongitudeE6() + ", source: " + source + ", lm initialized: " + landmarkManager.isInitialized());
-    	//} catch (Exception e) {
-    	//}
-    	//
     	//System.out.println("4 --------------------------------");
     	if (!appInitialized && location != null) {
     		//System.out.println("4.1 --------------------------------");

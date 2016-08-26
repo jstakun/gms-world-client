@@ -3,7 +3,7 @@
       package="com.jstakun.gms.android.ui.deals"
       android:versionCode="138"
       android:versionName="0.8">
-    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="21"/>
+    <uses-sdk android:minSdkVersion="3" android:maxSdkVersion="10" android:targetSdkVersion="10"/>
     <supports-screens android:smallScreens="true"
                   android:normalScreens="true"
                   android:largeScreens="true"

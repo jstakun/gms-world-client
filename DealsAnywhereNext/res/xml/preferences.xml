@@ -1,0 +1,102 @@
+
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:seekbar="http://schemas.android.com/apk/res/com.jstakun.gms.android.ui.deals">
+    <PreferenceCategory android:title="@string/preferencesDealCategories"
+                            android:key="categories">
+        <com.jstakun.gms.android.ui.ListPreferenceMultiSelect
+			android:key="dealCategories"
+			android:title="@string/titleDealCategories"
+			android:summary="@string/summary"
+            android:dialogTitle="@string/enableDealCategories" />
+        <CheckBoxPreference
+                        android:title="@string/titleDod"
+                        android:defaultValue="true"
+                        android:summaryOn="@string/summaryOnDod"
+                        android:summaryOff="@string/summaryOffDod"
+                        android:key="showDealOfTheDay" />
+        <com.jstakun.gms.android.ui.deals.DealsDialogPreference
+			android:key="resetCategories"
+                        android:summary="@string/summaryDealPreferences"
+			android:title="@string/titleDealPreferences"
+			android:dialogTitle="@string/titleDealPreferences"
+                        android:dialogMessage="@string/messageDealPreferences"
+                        android:positiveButtonText="@string/resetButton"
+                        android:negativeButtonText="@string/cancelButton"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/Settings.general"
+                            android:key="settings">
+        <ListPreference
+			android:key="googleMapsType"
+			android:title="@string/googleMaps"
+			android:entries="@array/googleMaps"
+			android:entryValues="@array/codes3"
+			android:dialogTitle="@string/select" />
+        <com.jstakun.gms.android.ui.ListPreferenceMultiSelect
+			android:key="layers"
+			android:title="@string/layers"
+			android:summary="@string/summary"
+                        android:dialogTitle="@string/enable" />
+        <ListPreference
+            android:key="networkMode"
+            android:title="@string/imageLoading"
+            android:entries="@array/imageLoading"
+            android:entryValues="@array/codes3"
+            android:dialogTitle="@string/select" />
+        <ListPreference
+			android:key="routeType"
+			android:title="@string/routeType"
+			android:entries="@array/routeType"
+			android:entryValues="@array/codes3"
+			android:dialogTitle="@string/select" />
+        <!--ListPreference
+			android:key="dealLimit"
+			android:title="@string/dealLimit"
+			android:entries="@array/dealLimit"
+			android:entryValues="@array/codes4"
+			android:dialogTitle="@string/select" /-->
+        <com.mnm.seekbarpreference.SeekBarPreference
+            android:key="dealLimit"
+            android:title="@string/dealLimit"
+            android:dialogTitle="@string/select.value"
+            android:summary="@string/Settings.Summary.1"
+            android:persistent="true"
+            android:defaultValue="300"
+            seekbar:minValue="300"
+            seekbar:maxValue="600" />                 
+        <!--ListPreference
+			android:key="radius"
+			android:title="@string/radius"
+			android:entries="@array/radius"
+			android:entryValues="@array/codes6"
+			android:dialogTitle="@string/select" /-->
+        <com.mnm.seekbarpreference.SeekBarPreference
+            android:key="radius"
+            android:title="@string/radius"
+            android:dialogTitle="@string/select.value"
+            android:summary="@string/Settings.Summary.1"
+            android:persistent="true"
+            android:defaultValue="10"
+            seekbar:minValue="3"
+            seekbar:maxValue="100"
+            seekbar:unit="km" />                  
+        <ListPreference
+			android:key="unitOfLength"
+			android:title="@string/unitOfLength"
+			android:entries="@array/unitOfLength"
+			android:entryValues="@array/codes4"
+			android:dialogTitle="@string/select" />
+        <ListPreference
+			android:key="logLevel"
+			android:title="@string/logLevel"
+			android:entries="@array/logLevel"
+			android:entryValues="@array/codes6"
+			android:dialogTitle="@string/select" />
+        <CheckBoxPreference
+            android:title="@string/trackUserTitle"
+            android:defaultValue="true"
+            android:summaryOn="@string/trackUserSummaryOn"
+            android:summaryOff="@string/trackUserSummaryOff"
+            android:key="sendMyPos" />
+    </PreferenceCategory>
+</PreferenceScreen>

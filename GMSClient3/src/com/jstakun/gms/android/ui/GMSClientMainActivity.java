@@ -627,7 +627,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     public boolean onOptionsItemSelected(MenuItem item) {
         UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
         int itemId = item.getItemId();
-    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == android.R.id.home || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
     	  switch (itemId) {
             case R.id.settings:
                 intents.startSettingsActivity(SettingsActivity.class);
@@ -722,7 +722,11 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 dialogManager.showAlertDialog(AlertDialogBuilder.TRACK_MYPOS_DIALOG, null, null);
                 break;
             case R.id.saveRoute:
-                intents.saveRouteAction();
+            	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+		        	dialogManager.showAlertDialog(AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, null);
+		        } else if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
+		            intents.showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosStopped));
+		        }
                 break;
             case R.id.loadRoute:
                 if (intents.startRouteFileLoadingActivity()) {

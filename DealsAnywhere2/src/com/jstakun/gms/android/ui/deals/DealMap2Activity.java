@@ -74,9 +74,11 @@ import com.jstakun.gms.android.utils.UserTracker;
 public class DealMap2Activity extends MapActivity implements OnClickListener {
 
     private static final int SHOW_MAP_VIEW = 0;
+    
     private MapView mapView;
     private MapController mapController;
     private GoogleMyLocationOverlay myLocation;
+    
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
     private MessageStack messageStack;
@@ -86,6 +88,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private IntentsHelper intents;
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
+    
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvOpenButton, mapButtons,
             lvView, lvShareButton, lvRouteButton, myLocationButton, nearbyLandmarksButton,
@@ -94,6 +97,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
     private ProgressBar loadingProgressBar;
+    
     private boolean isStopped = false, appInitialized = false, isRouteDisplayed = false;
     //Handlers
     private Handler loadingHandler;
@@ -638,8 +642,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     public void onStart() {
         super.onStart();
         
-        //
-        
+        //show network status dialog
         Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
         boolean networkActive = ServicesUtils.isNetworkActive(this);
         if (networkStatus == null && !networkActive) {
@@ -647,10 +650,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
         }
 
+        //show rate us dialog
         Object rateDialogStatus = ConfigurationManager.getInstance().getObject("rateDialogStatus", Object.class);
         if (rateDialogStatus == null && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && networkActive) {
             int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
-            //show rate us dialog
             if (useCount > 0 && (useCount % 10) == 0) {
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);

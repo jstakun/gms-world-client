@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="navigation">
+        <item>Deals list</item>
+        <item>Hot deals</item>
+        <item>Newest deals</item>
+        <item>Nearby deals</item>
+        <item>Find location</item>
+        <item>Saved locations</item>
+        <item>Recently viewed deals</item>
+        <item>Show deal of the day</item>
+        <item>Deals calendar</item>
+    </string-array>
+</resources>

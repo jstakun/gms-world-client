@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+			android:id="@+id/left_drawer_view"
+			android:layout_width="@dimen/navigation_drawer_width"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:layout_gravity="start">
+    		<ImageView
+				android:id="@+id/drawer_header_image"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/lm_banner"
+				android:scaleType="centerCrop"/>
+    		<ListView android:id="@+id/left_drawer"
+        		android:layout_width="match_parent"
+        		android:layout_height="match_parent"
+        		android:layout_gravity="start"
+        		android:choiceMode="singleChoice"
+        		android:dividerHeight="1dip"
+        		android:background="#FFFFFF"
+        		android:divider="@color/trans_dim_gray"
+        		tools:context="com.jstakun.gms.android.ui.deals.NavigationDrawerFragment"/> 
+</LinearLayout>

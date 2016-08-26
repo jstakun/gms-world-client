@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <plurals name="foundLandmarks">
+        <item quantity="zero">Nie znaleziono pasuj\u0105cych okazji</item>
+        <item quantity="one">Znaleziono 1 pasuj\u0105c\u0105 okazj\u0119</item>
+        <item quantity="few">Znaleziono %1$d pasuj\u0105ce okazje</item>
+        <item quantity="many">Znaleziono %1$d pasuj\u0105cych okazji</item>
+        <item quantity="other">Znaleziono %1$d pasuj\u0105cych okazji</item>
+    </plurals>
+    <plurals name="LayerLoaded">
+        <item quantity="zero">Warstwy za\u0142adowane. Nie znaleziono \u017cadnej okazji!</item>
+        <item quantity="one">Warstwy za\u0142adowane. Znaleziono 1 okazj\u0119!</item>
+        <item quantity="few">Warstwy za\u0142adowane. Znaleziono %1$d okazje!</item>
+        <item quantity="many">Warstwy za\u0142adowane. Znaleziono %1$d okazji!</item>
+        <item quantity="other">Warstwy za\u0142adowane. Znaleziono %1$d okazji!</item>
+    </plurals>    
+</resources>

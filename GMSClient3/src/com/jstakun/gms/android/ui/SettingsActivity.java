@@ -1,5 +1,10 @@
 package com.jstakun.gms.android.ui;
 
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.OsUtil;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -9,11 +14,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.view.KeyEvent;
-import android.view.MenuItem;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.OsUtil;
-import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *
@@ -129,7 +129,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         //UserTracker.getInstance().stopSession(this);
     }
 
-    @Override
+    //use only in API version > 10
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -142,7 +143,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
                 return super.onOptionsItemSelected(item);
         }
         return true;
-    }
+    }*/
     
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

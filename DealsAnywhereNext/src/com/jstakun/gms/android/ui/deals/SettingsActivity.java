@@ -107,8 +107,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         //UserTracker.getInstance().stopSession(this);
     }
 
-    //use only in target API version > 10
-    /*@Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -118,7 +117,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
                 return super.onOptionsItemSelected(item);
         }
         return true;
-    }*/
+    }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         //System.out.println("Preference " + key + " has changed");

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- main_menu -->
+    <string name="app_name">Deals Anywhere</string>
+    <string name="refreshLayers">Od\u015bwie\u017c okazje</string>
+    <string name="events">Kalendarz okazji</string>
+    <string name="hotDeals">Gor\u0105ce okazje</string>
+    <string name="newestDeals">Nowe okazje</string>
+    <string name="landmarksNearby">Okazje wok\u00f3\u0142</string>
+    
+    <!-- deal preferences -->
+    <string name="enableDealCategories">W\u0142\u0105cz lub wy\u0142\u0105cz kategorie okazji</string>
+    <string name="titleDealCategories">Kategorie okazji</string>
+    <string name="preferencesDealCategories">Ustawienia kategorii okazji</string>
+
+    <string name="resetButton">Wyczy\u015b\u0107</string>
+    <string name="titleDealPreferences">Wyczy\u015b\u0107 rekomendacje</string>
+    <string name="summaryDealPreferences">Kliknij \u017ceby wyczy\u015bci\u0107 rekomendacje okazji</string>
+    <string name="messageDealPreferences">Rekomendacje okazji s\u0105 u\u017cywane do
+                        sortowania i filtrowania list okazji. Czy chcesz wyczy\u015b\u0107 rekomendacje okazji?</string>
+     
+    <string name="titleDod">Poka\u017c okazj\u0119 dnia</string>
+    <string name="summaryOnDod">Kliknij aby ukry\u0107 okno z okazj\u0105 dnia przy starcie</string>
+    <string name="summaryOffDod">Kliknij aby pokaza\u0107 okno okazji dnia przy starcie</string>
+    <string name="noDodAvailable">W tej chwili nie mamy dla Ciebie specjalnej oferty. Sprawdz ponownie za jaki\u015b czas!</string>
+
+    <!-- dodDialog -->
+    <string name="titleDodDialog">Okazja dnia</string>
+    <string name="checkboxDodDialog">Poka\u017c okazj\u0119 dnia przy starcie</string>
+
+     <!-- closing -->
+     <string name="closingText">Zamykanie Deals Anywhere&#8230;</string>
+
+     <!-- loading -->
+     <string name="loadingText">\u0141adowanie Deals Anywhere&#8230;</string>
+
+     <!-- LandmarkList -->
+     <string name="listSelection">Wybierz okazj\u0119</string>
+     
+     <!-- Deals list -->
+     <string name="searchDeals">Dost\u0119pne okazje</string>
+
+     <!-- Misc -->
+     <string name="Close.app.prompt">Zamkn\u0105\u0107 aplikacj\u0119?</string>
+     <string name="search_hint">Szukaj okazji w okolicy</string>
+     <string name="Searching.calendar.message">Wyszukiwanie okazji z dnia %1$s</string>
+
+     <!-- Landmark -->
+     <string name="Landmark.search.empty.result">Brak okazji spe\u0142niaj\u0105cych kryteria wyboru!</string>
+     <string name="Landmark.deals.in.category">Ilo\u015b\u0107 okazji w kategorii: %1$d</string>
+     <string name="Landmark.share">Udost\u0119pnij okazj\u0119</string>
+     <string name="Landmarks.day.empty">Brak okazji w tym dniu</string>
+     <string name="Landmark.Loading">\u0141adowanie okazji&#8230;</string>
+     
+</resources>

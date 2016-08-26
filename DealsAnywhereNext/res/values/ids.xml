@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="hotDeals" />
+    <item type="id" name="newestDeals" />
+    <item type="id" name="nearbyDeals" />
+    <item type="id" name="events" />
+    <item type="id" name="pickMyPos" />
+    <item type="id" name="showMyLandmarks" />
+    <item type="id" name="recentLandmarks" />
+    <item type="id" name="showDoD" />
+</resources>

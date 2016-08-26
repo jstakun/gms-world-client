@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="navigation">
+        <item>Lista okazji</item>
+        <item>Gor\u0105ce okazje</item>
+        <item>Nowe okazje</item>
+        <item>Okazje wok\u00f3\u0142</item>
+        <item>Szukaj miejsca</item>
+        <item>Zapisane miejsca</item>
+        <item>Ostatnio ogl\u0105dane okazje</item>
+        <item>Poka\u017c okazj\u0119 dnia</item>
+        <item>Kalendarz okazji</item>
+    </string-array>
+</resources>
