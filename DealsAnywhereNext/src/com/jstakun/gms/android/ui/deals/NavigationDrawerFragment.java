@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -58,11 +57,10 @@ public class NavigationDrawerFragment extends Fragment {
 
 	private DrawerLayout mDrawerLayout;
 	private LinearLayout mDrawerLinearLayout;
-	private ExpandableListView mDrawerListView;
+	private ListView mDrawerListView;
 	private View mFragmentContainerView;
 
 	private int mCurrentSelectedPosition = 0;
-	private boolean mFromSavedInstanceState;
 	private boolean mUserLearnedDrawer;
 
 	public NavigationDrawerFragment() {
@@ -80,7 +78,6 @@ public class NavigationDrawerFragment extends Fragment {
 
 		if (savedInstanceState != null) {
 			mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
-			mFromSavedInstanceState = true;
 		}
 
 		// Select either the default item (0) or the last selected item.
@@ -127,7 +124,7 @@ public class NavigationDrawerFragment extends Fragment {
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
 		
-		mDrawerListView = (ExpandableListView) getActivity().findViewById(R.id.left_drawer);
+		mDrawerListView = (ListView) getActivity().findViewById(R.id.left_drawer);
     	mDrawerListView.setAdapter(new NavigationDrawerListAdapter(getActivity(), R.layout.drawerrow_parent));
     	mDrawerListView.setOnItemClickListener(new DrawerItemClickListener());
     	
@@ -279,7 +276,7 @@ public class NavigationDrawerFragment extends Fragment {
 	}
 	
 	public void refreshDrawer(ProjectionInterface projection) {
-    	NavigationDrawerListAdapter adapter = (NavigationDrawerListAdapter) mDrawerListView.getExpandableListAdapter();
+    	NavigationDrawerListAdapter adapter = (NavigationDrawerListAdapter) mDrawerListView.getAdapter();
         adapter.rebuild(projection);
     }
 

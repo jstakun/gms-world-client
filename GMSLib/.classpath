@@ -16,9 +16,9 @@
 	<classpathentry kind="lib" path="/home/jstakun/toolkit/git/gms-world-client/GMSLib/libs/wpsapi-4.9.3_03.jar"/>
 	<classpathentry kind="lib" path="/home/jstakun/toolkit/git/gms-world-client/GMSLib/libs/httpmime-4.1.2.jar"/>
 	<classpathentry kind="lib" path="/home/jstakun/toolkit/git/gms-world-client/GMSLib/libs/acra-4.5.0.jar"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/osm-bonuspack-5.1.jar"/>
 	<classpathentry kind="lib" path="libs/picasso-2.5.2.jar"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

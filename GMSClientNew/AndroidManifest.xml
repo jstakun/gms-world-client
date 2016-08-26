@@ -109,6 +109,7 @@
             </intent-filter>
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
         </activity>
+        
         <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider"/>
         <service android:name="com.jstakun.gms.android.service.AutoCheckinService"></service>
         <receiver android:name="com.jstakun.gms.android.service.GMSScheduleReceiver">

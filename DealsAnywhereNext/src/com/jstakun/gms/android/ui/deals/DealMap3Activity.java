@@ -102,8 +102,8 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvOpenButton,
-            lvView, lvShareButton, lvRouteButton, myLocationButton, nearbyLandmarksButton,
-            thumbnailButton, loadingImage;
+                 lvView, lvShareButton, lvRouteButton,
+                 thumbnailButton, loadingImage;
     private ProgressBar loadingProgressBar;
     private NavigationDrawerFragment mNavigationDrawerFragment;
     
@@ -140,10 +140,10 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_deal_map);
-
+		//requestFeature() must be called before adding content
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        setContentView(R.layout.activity_deal_map);
         
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -190,8 +190,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         lvCallButton = findViewById(R.id.lvCallButton);
         lvRouteButton = findViewById(R.id.lvRouteButton);
         thumbnailButton = findViewById(R.id.thumbnailButton);
-        myLocationButton = findViewById(R.id.myLocationButton);
-        nearbyLandmarksButton = findViewById(R.id.nearbyLandmarksButton);
         
         lvCloseButton.setOnClickListener(this);
         lvOpenButton.setOnClickListener(this);
@@ -199,8 +197,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         lvCallButton.setOnClickListener(this);
         lvRouteButton.setOnClickListener(this);
         thumbnailButton.setOnClickListener(this);
-        myLocationButton.setOnClickListener(this);
-        nearbyLandmarksButton.setOnClickListener(this);
         
         appInitialized = false;
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
@@ -905,12 +901,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
 	@Override
 	public void onClick(View v) {
-		if (v == myLocationButton) {
-    		showMyPositionAction(true);
-    	} else if (v == nearbyLandmarksButton) {	
-    		intents.showNearbyLandmarks(getMyPosition(), projection);
-    	} else {
-    		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+			ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
     		if (selectedLandmark != null) {
     			if (v == lvCloseButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
@@ -937,9 +928,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     			}
     		} else {
     			intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-    		}
-    	}	
-		
+    		}	
 	}
 
 	@Override
