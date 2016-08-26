@@ -466,35 +466,35 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	//if routes layer doesn't exists don't show routes menu
         	MenuItem routes = menu.findItem(R.id.routes);
         	if (routes != null) {
-        	 if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
-        		routes.setVisible(true);	
-        		MenuItem routeRecording = menu.findItem(R.id.trackPos);
-        		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
-        		MenuItem saveRoute = menu.findItem(R.id.saveRoute);
-        		MenuItem loadRoute = menu.findItem(R.id.loadRoute);
+        		if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
+        			routes.setVisible(true);	
+        			MenuItem routeRecording = menu.findItem(R.id.trackPos);
+        			MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
+        			MenuItem saveRoute = menu.findItem(R.id.saveRoute);
+        			MenuItem loadRoute = menu.findItem(R.id.loadRoute);
             
-        		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        			routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
-        			saveRoute.setVisible(false);
-        			pauseRecording.setVisible(false);
-        		} else {
-        			saveRoute.setVisible(true);
-        			pauseRecording.setVisible(true);
-        			routeRecording.setTitle(R.string.Routes_TrackMyPosStop);
-        			if (routeRecorder != null && routeRecorder.isPaused()) {
-        				pauseRecording.setTitle(R.string.Routes_ResumeRecording);
+        			if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        				routeRecording.setTitle(R.string.Routes_TrackMyPosStart);
+        				saveRoute.setVisible(false);
+        				pauseRecording.setVisible(false);
         			} else {
-        				pauseRecording.setTitle(R.string.Routes_PauseRecording);
+        				saveRoute.setVisible(true);
+        				pauseRecording.setVisible(true);
+        				routeRecording.setTitle(R.string.Routes_TrackMyPosStop);
+        				if (routeRecorder != null && routeRecorder.isPaused()) {
+        					pauseRecording.setTitle(R.string.Routes_ResumeRecording);
+        				} else {
+        					pauseRecording.setTitle(R.string.Routes_PauseRecording);
+        				}
         			}
-        		}
-        		if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
-        			loadRoute.setVisible(false);
+        			if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
+        				loadRoute.setVisible(false);
+        			} else {
+        				loadRoute.setVisible(true);
+        			}
         		} else {
-        			loadRoute.setVisible(true);
+        			routes.setVisible(false);	
         		}
-        	} else {
-        		routes.setVisible(false);	
-        	}
         	}
             //
 

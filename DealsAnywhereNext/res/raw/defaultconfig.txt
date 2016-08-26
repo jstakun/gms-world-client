@@ -53,4 +53,5 @@ networkMode;0
 defaultSort;CD
 devMode;0
 appUrl;http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui.deals
+lmUrl;http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui
 # End of file.

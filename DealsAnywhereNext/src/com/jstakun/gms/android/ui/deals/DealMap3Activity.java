@@ -26,6 +26,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkProjectionV2;
+import com.jstakun.gms.android.google.maps.GoogleMapsV2TypeSelector;
 import com.jstakun.gms.android.google.maps.GoogleMarkerClusterOverlay;
 import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -317,6 +318,15 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     }
 	
 	@Override
+    public void onRestart() {
+        super.onRestart();
+        LoggerUtils.debug("onRestart");
+        if (mMap != null) {
+        	GoogleMapsV2TypeSelector.selectMapType(mMap);
+        }
+    }
+	
+	@Override
     public void onStart() {
         super.onStart();
         
@@ -582,7 +592,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 showRecommendedDeal(true);
                 break;
             case R.id.discoverPlaces:
-                intents.startActionViewIntent(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL));
+                intents.startActionViewIntent(ConfigurationManager.getInstance().getString("lmUrl"));
                 break;
             case R.id.events:
                 intents.startCalendarActivity(getMyPosition());
@@ -982,6 +992,8 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 		LoggerUtils.debug("Google Map is ready!");
 		this.mMap = map;
 		this.projection = new GoogleLandmarkProjectionV2(mMap);
+		
+		GoogleMapsV2TypeSelector.selectMapType(mMap);
 		
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
 	    mMap.setMyLocationEnabled(true);
