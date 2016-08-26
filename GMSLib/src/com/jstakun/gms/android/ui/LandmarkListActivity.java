@@ -45,7 +45,6 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     private SOURCE source;
 
     public enum SOURCE {
-
         CATEGORY, LAYER, FRIENDS_CHECKINS, NEWEST, RECENT, DOD, CHECKIN, DAY_LANDMARKS, MY_LANDMARKS, MULTI_LANDMARK
     };
 
@@ -247,6 +246,8 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             	sort(ORDER_TYPE.ORDER_BY_CAT_STATS, ORDER.DESC, false);	
             } else if (source == SOURCE.FRIENDS_CHECKINS || source == SOURCE.NEWEST) {
             	sort(ORDER_TYPE.ORDER_BY_DATE, ORDER.DESC, false);	
+            } else if (source == SOURCE.MY_LANDMARKS) {
+            	sort(ORDER_TYPE.ORDER_BY_DIST, ORDER.ASC, false);
             } else if (StringUtils.equalsIgnoreCase(ConfigurationManager.getInstance().getString(ConfigurationManager.DEFAULT_SORT), "CD")) {
             	sort(ORDER_TYPE.ORDER_BY_CAT_STATS, ORDER.DESC, false);	
             } else {
