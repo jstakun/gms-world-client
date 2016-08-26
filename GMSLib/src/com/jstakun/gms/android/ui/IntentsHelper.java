@@ -657,8 +657,8 @@ public final class IntentsHelper {
     	final Intent shareIntent = new Intent(Intent.ACTION_SEND);
     	shareIntent.setType("image/jpg");
     	shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-    	shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.Screenshot_subject));
-    	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Screenshot_text) + "\n" + Locale.getMessage(R.string.mailMessageSuffix, ConfigurationManager.SERVER_URL, Locale.getMessage(R.string.app_name)));
+    	shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.Screenshot_subject, Locale.getMessage(R.string.app_name)));
+    	shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Screenshot_text, Locale.getMessage(R.string.app_name)) + "\n" + Locale.getMessage(R.string.mailMessageSuffix, ConfigurationManager.SERVER_URL, Locale.getMessage(R.string.app_name)));
     	activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.shareScreenshot)));
     }
     
