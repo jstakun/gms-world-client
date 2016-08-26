@@ -40,7 +40,7 @@
         android:allowBackup="true"
         android:icon="@drawable/discover"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/GMSTheme.Light"
         android:name=".DealMapApp">
         <activity android:name=".DealMapDispatchActivity"
                   android:label="@string/app_name">
@@ -56,7 +56,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".DealMap3Activity" android:label="@string/app_name" android:screenOrientation="sensor"
+        <activity android:name=".DealMap3Activity" android:label="@string/app_name" android:screenOrientation="sensor" android:theme="@style/AppTheme" 
                   android:launchMode="singleTop" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
                 <meta-data android:name="android.app.default_searchable" android:value="com.jstakun.gms.android.ui.GMSSearchActivity"/>
         </activity>

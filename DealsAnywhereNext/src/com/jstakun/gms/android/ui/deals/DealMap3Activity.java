@@ -69,6 +69,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -407,9 +408,20 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     	if (ConfigurationManager.getInstance().isClosing()) {
             return false;
         } else {         
-        	MenuItem config = menu.findItem(R.id.config);
-         	config.setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
-             
+        	//if (menu.findItem(R.id.shareScreenshot) != null) {
+        	//	menu.findItem(R.id.shareScreenshot).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	//}
+        	
+        	if (menu.findItem(R.id.reset) != null) {
+        		menu.findItem(R.id.reset).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	}
+        	if (menu.findItem(R.id.releaseNotes) != null) {
+        		menu.findItem(R.id.releaseNotes).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	}
+        	if (menu.findItem(R.id.config) != null) {
+        		menu.findItem(R.id.config).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        	}
+        	
          	mNavigationDrawerFragment.refreshDrawer(projection);
          	
          	return super.onPrepareOptionsMenu(menu);
@@ -420,6 +432,29 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	public boolean onOptionsItemSelected(MenuItem item) {
 		//don't implement
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	UserTracker.getInstance().trackEvent("onKeyDown", "", "", 0);
+    	//System.out.println("Key pressed in activity: " + keyCode);
+    	if (keyCode == KeyEvent.KEYCODE_BACK) {
+    		if (lvView.isShown()) {
+    			hideLandmarkView();
+    		} else {
+    			dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+    		} 
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, null, projection);
+            if (coordsE6 != null) {
+                getSupportActionBar().hide();
+                animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
+            }
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    	
 	}
 	
 	protected synchronized void buildGoogleApiClient() {
@@ -462,7 +497,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                     if (mMap != null) {
                     	zoom = (int)mMap.getCameraPosition().zoom;
                     }
-                    intents.loadLayersAction(true, null, false, true, layerLoader, location.latitude, location.longitude, zoom, projection);
+                    intents.loadLayersAction(true, null, false, false, layerLoader, location.latitude, location.longitude, zoom, projection);
                 }
             } else {
                 //load existing layers
@@ -555,9 +590,12 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             case R.id.rateUs:
                 dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
-            case R.id.reset:
+            case R.id.shareScreenshot:
+				takeScreenshot(true);
+				break;
+			case R.id.reset:
             	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
-            	break;    
+            	break;              	
             default:
                 return true;
         }
@@ -607,7 +645,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         	
         	if (loadLayers && !isVisible) {
                 markerCluster.clearMarkers();
-                intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
+                intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
             }
         
         }
@@ -677,7 +715,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	    	mMap.moveCamera(cameraUpdate);
 	    } 
         if (loadLayers) {     	
-            intents.loadLayersAction(true, null, clearMap, true, layerLoader,
+            intents.loadLayersAction(true, null, clearMap, false, layerLoader,
                     mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude,
                     (int)mMap.getCameraPosition().zoom, projection);
         }
@@ -996,7 +1034,13 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         			if (activity.mMap != null) {
             			activity.takeScreenshot(false);
             		}	
-        		} else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_LIST) {
+        		} else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {
+            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, (int)activity.mMap.getCameraPosition().zoom, null, activity.projection);
+                    if (coordsE6 != null) {
+                    	activity.getSupportActionBar().hide();
+                    	activity.animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
+                    }
+            	} else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_LIST) {
             		activity.intents.startMultiLandmarkIntent(activity.getMyPosition());
             		activity.animateTo(new LatLng(MathUtils.coordIntToDouble(msg.arg1), MathUtils.coordIntToDouble(msg.arg2)));
             	} else if (msg.what == SHOW_MAP_VIEW) {

@@ -120,6 +120,8 @@ public class NavigationDrawerFragment extends Fragment {
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		// set up the drawer's list view with items and click listener
 
+		mDrawerLinearLayout = (LinearLayout) getActivity().findViewById(R.id.left_drawer_view);
+		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
@@ -297,7 +299,7 @@ public class NavigationDrawerFragment extends Fragment {
         	NavigationDrawerListItem listItem = (NavigationDrawerListItem) mDrawerListView.getAdapter().getItem(position);
         	UserTracker.getInstance().trackEvent("NavigationDrawerClicks", listItem.getName(), "", 0);
         	mDrawerListView.setItemChecked(position, true);
-            mDrawerLayout.closeDrawer(mDrawerListView);
+            mDrawerLayout.closeDrawer(mFragmentContainerView);
             ((DealMap3Activity)getActivity()).onMenuItemSelected((int)id);
         }
     }
