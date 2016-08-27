@@ -503,14 +503,12 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 LoggerUtils.debug("Creating LayerLoader...");
                 layerLoader = new LayerLoader(landmarkManager, messageStack);
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
-                if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                    LoggerUtils.debug("Loading Layers in " + location.latitude + "," +  location.longitude);
-                    int zoom = ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
-                    if (mMap != null) {
-                    	zoom = (int)mMap.getCameraPosition().zoom;
-                    }
-                    intents.loadLayersAction(true, null, false, false, layerLoader, location.latitude, location.longitude, zoom, projection);
+                LoggerUtils.debug("Loading Layers in " + location.latitude + "," +  location.longitude);
+                int zoom = ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
+                if (mMap != null) {
+                    zoom = (int)mMap.getCameraPosition().zoom;
                 }
+                intents.loadLayersAction(true, null, false, false, layerLoader, location.latitude, location.longitude, zoom, projection);               
             } else {
                 //load existing layers
                 if (layerLoader.isLoading()) {
@@ -525,9 +523,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             loadingProgressBar.setProgress(100);
             
             layerLoader.setRepaintHandler(loadingHandler);
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                loadingImage.setVisibility(View.GONE);
-            }
             
             if (mMap != null) {
     	    	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
@@ -654,7 +649,9 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         }
         	
         if (loadLayers && !isVisible) {
-            markerCluster.clearMarkers();
+        	if (clearLandmarks) {
+        		markerCluster.clearMarkers();
+        	}
             intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
         }
         
@@ -1060,8 +1057,12 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         		} else if (msg.what == DealOfTheDayDialog.SEND_MAIL) {
         			activity.sendMessageAction();
         		} else if (msg.what == LayerLoader.LAYER_LOADED) {
-        			if (activity.markerCluster != null) {
-            			activity.markerCluster.addMarkers((String)msg.obj); 
+        			String layerKey = (String)msg.obj;
+        			if (activity.markerCluster != null) {	
+        				int count = activity.markerCluster.addMarkers(layerKey);
+            			LoggerUtils.debug(count + " markers from layer " + layerKey + " stored in cluster.");
+            		} else {
+            			LoggerUtils.debug("Layer " + layerKey + " but marker cluster not yet initialized!");
             		}
         		} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
         			activity.showRecommendedDeal(false);

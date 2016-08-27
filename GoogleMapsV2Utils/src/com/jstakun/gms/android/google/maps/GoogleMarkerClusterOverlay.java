@@ -94,7 +94,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		return true;
 	}
 
-	public void addMarkers(String layerKey) {
+	public int addMarkers(String layerKey) {
 		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
 		int count = 0;
 		for (final ExtendedLandmark landmark : landmarks) {
@@ -106,7 +106,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		if (count > 0) {
 			mClusterManager.cluster();
 		}
-		//LoggerUtils.debug(count + " markers from layer " + layerKey + " stored in cluster.");
+		return count;
 	}
 	
 	public boolean addMarker(ExtendedLandmark landmark) {

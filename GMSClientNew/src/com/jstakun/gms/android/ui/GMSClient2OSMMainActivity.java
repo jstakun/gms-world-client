@@ -1057,10 +1057,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
 
             if (loadLayers && !isVisible) {
-            	if (clearLandmarks && mapProvider == ConfigurationManager.OSM_MAPS && markerCluster != null) {
+            	if (clearLandmarks) {
             		markerCluster.clearMarkers();
             	}
-                intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
+            	intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));

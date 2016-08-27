@@ -1159,7 +1159,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	}
         	
         	if (loadLayers && !isVisible) {
-                markerCluster.clearMarkers();
+        		if (clearLandmarks) {
+            		markerCluster.clearMarkers();
+            	}
                 intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
             }     
         }     
