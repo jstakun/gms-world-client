@@ -111,7 +111,8 @@
         </activity>
         
         <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider"/>
-        <service android:name="com.jstakun.gms.android.service.AutoCheckinService"></service>
+        <service android:name="com.jstakun.gms.android.service.AutoCheckinService"/>
+        <service android:name="com.jstakun.gms.android.service.RouteTracingService"/>
         <receiver android:name="com.jstakun.gms.android.service.GMSScheduleReceiver">
             <intent-filter>
                 <action android:name="com.jstakun.gms.android.autocheckinbroadcast" />

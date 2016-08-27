@@ -41,6 +41,7 @@ import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.service.RouteTracingService;
 import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -99,7 +100,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
     private RoutesManager routesManager;
-    //private RouteRecorder routeRecorder;
     private CheckinManager checkinManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
@@ -1074,9 +1074,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	}
 	
 	private String followMyPositionAction() {
+		Intent routeTracingService = new Intent(this, RouteTracingService.class);	
 		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
             String route = RouteRecorder.getInstance().startRecording(routesManager);
+            startService(routeTracingService);
             routesCluster.showRouteAction(route, true);
             if (layerLoader.isLoading()) {
                 layerLoader.stopLoading();
@@ -1095,7 +1097,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                String filename = RouteRecorder.getInstance().stopRecording(routesManager);
+            	stopService(routeTracingService);
+            	String filename = RouteRecorder.getInstance().stopRecording(routesManager);
                 if (filename != null) {
                     return filename;
                 } else {
