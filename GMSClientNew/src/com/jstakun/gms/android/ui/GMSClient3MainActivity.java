@@ -1194,6 +1194,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             String route = RouteRecorder.getInstance().startRecording(routesManager);
+            Intent routeTracingService = new Intent(this, RouteTracingService.class);	
+            startService(routeTracingService);
             if (route != null) {
             	routesCluster.showRouteAction(route, true);
             }

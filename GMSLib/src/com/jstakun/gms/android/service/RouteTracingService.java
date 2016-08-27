@@ -5,6 +5,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
 import android.app.Service;
@@ -63,8 +64,9 @@ public class RouteTracingService extends Service {
 
 		@Override
 		public void onLocationChanged(Location location) {
-			// TODO add location to route point
-			LoggerUtils.error("RouteTracingService received new location");
+			// add location to route points
+			LoggerUtils.debug("RouteTracingService received new location");
+			RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
 		}
 
 		@Override
@@ -75,8 +77,9 @@ public class RouteTracingService extends Service {
 		public void onConnected(Bundle arg0) {
 			Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 			if (location != null) {
-				// TODO add location to route point
-				LoggerUtils.error("RouteTracingService received last known location");
+				// add location to route points
+				LoggerUtils.debug("RouteTracingService received last known location");
+				RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
 			}
 			LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 		}

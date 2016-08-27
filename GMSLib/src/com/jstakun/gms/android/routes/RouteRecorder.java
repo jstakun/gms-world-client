@@ -127,10 +127,11 @@ public class RouteRecorder {
     }
 
     public int addCoordinate(double lat, double lng, float altitude, float accuracy, float speed, float bearing) {
-        int mode = -1; //-1 - nithing, 0 - replaced, 1 - added
+        int mode = -1; //-1 - nothing, 0 - replaced, 1 - added
     	if (!paused) {
             QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, accuracy, accuracy, Float.NaN); 
             String l = DateTimeUtils.getCurrentDateStamp();
+            //TODO add desc from above
             ExtendedLandmark lm = LandmarkFactory.getLandmark(l, "", qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
 
             if (routePoints.isEmpty()) {
