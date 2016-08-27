@@ -46,7 +46,7 @@ public class RouteRecorder {
     }
         
     public String startRecording(RoutesManager routesManager) {
-        //System.out.println("RouteRecorder.startRecording");
+    	ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);
     	if (label == null) {
     		if (!routePoints.isEmpty()) {
     			routePoints.clear();
@@ -54,9 +54,7 @@ public class RouteRecorder {
     		label = DateTimeUtils.getCurrentDateStamp();
     		startTime = System.currentTimeMillis();
     		currentBearing = 0f;
-    		routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);
-    		ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);
-
+    		routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);    		
     		AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
     		if (asyncTaskManager != null) {
     			String msg = Locale.getMessage(R.string.Routes_Label);
@@ -182,6 +180,15 @@ public class RouteRecorder {
     public boolean isPaused() {
         return paused;
     }
+    
+    public String getRouteLabel() {
+    	if (label != null) {
+    		return CURRENTLY_RECORDED + label;
+    	} else {
+    		return null;
+    	}
+    }	
+    	
 
     private static float routeDistanceInKilometer(List<ExtendedLandmark> points) {
         float distanceInKilometer = 0.0f;
