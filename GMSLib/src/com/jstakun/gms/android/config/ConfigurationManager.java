@@ -14,15 +14,6 @@ import org.acra.ACRA;
 import org.apache.commons.lang.StringUtils;
 import org.spongycastle.util.encoders.Base64;
 
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
-import android.graphics.Bitmap.Config;
-import android.location.Location;
-
 import com.jstakun.gms.android.data.ConfigDbDataSource;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.FileManager;
@@ -32,7 +23,6 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
-import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
@@ -46,6 +36,15 @@ import com.jstakun.gms.android.utils.MessageStack;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.openlapi.QualifiedCoordinates;
+
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
+import android.graphics.Bitmap.Config;
+import android.location.Location;
 
 /**
  *
@@ -329,13 +328,6 @@ public final class ConfigurationManager {
     public RoutesManager getRoutesManager() {
         if (containsObject("routesManager", RoutesManager.class)) {
             return (RoutesManager) objectCache.get("routesManager");
-        }
-        return null;
-    }
-
-    public RouteRecorder getRouteRecorder() {
-        if (containsObject("routeRecorder", RouteRecorder.class)) {
-            return (RouteRecorder) objectCache.get("routeRecorder");
         }
         return null;
     }

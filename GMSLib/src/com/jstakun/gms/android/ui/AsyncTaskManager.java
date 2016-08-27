@@ -436,10 +436,7 @@ public class AsyncTaskManager {
         @Override
         protected String doInBackground(String... fileData) {
             super.doInBackground(fileData);
-            RouteRecorder routeRecorder = ConfigurationManager.getInstance().getRouteRecorder();
-            if (routeRecorder != null) {
-                details = routeRecorder.saveRoute(filename);
-            }
+            details = RouteRecorder.getInstance().saveRoute(filename);           
             return null;
         }
     }

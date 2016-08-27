@@ -99,7 +99,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
     private RoutesManager routesManager;
-    private RouteRecorder routeRecorder;
+    //private RouteRecorder routeRecorder;
     private CheckinManager checkinManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
@@ -144,8 +144,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private DialogInterface.OnClickListener trackMyPosListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int id) {
             String filename = followMyPositionAction();
-
-            LocationServicesManager.enableCompass();
 
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             if (filename != null) {
@@ -394,7 +392,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	LoggerUtils.debug("onDestroy");
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
-        	intents.hardClose(layerLoader, routeRecorder, loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
+        	intents.hardClose(layerLoader, loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else if (mMap != null) {
             intents.softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         }
@@ -481,7 +479,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         				saveRoute.setVisible(true);
         				pauseRecording.setVisible(true);
         				routeRecording.setTitle(R.string.Routes_TrackMyPosStop);
-        				if (routeRecorder != null && routeRecorder.isPaused()) {
+        				if (RouteRecorder.getInstance().isPaused()) {
         					pauseRecording.setTitle(R.string.Routes_ResumeRecording);
         				} else {
         					pauseRecording.setTitle(R.string.Routes_PauseRecording);
@@ -744,10 +742,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			UserTracker.getInstance().sendMyLocation();
 	    	
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE) && routeRecorder != null) {
-					int mode = routeRecorder.addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+					int mode = RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
 					if (routesCluster != null && mode >= 0) {
-					   routesCluster.showRecordedRouteStep(routeRecorder.getRouteLabel(), mode);
+					   routesCluster.showRecordedRouteStep(RouteRecorder.getInstance().getRouteLabel(), mode);
 					}
 				}
 				showMyPositionAction(false);
@@ -924,8 +922,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		    		}
 		    		break;
 				case R.id.pauseRoute:
-		    		routeRecorder.pause();
-		    		if (routeRecorder.isPaused()) {
+					RouteRecorder.getInstance().pause();
+		    		if (RouteRecorder.getInstance().isPaused()) {
 		        		intents.showInfoToast(Locale.getMessage(R.string.Routes_PauseRecordingOn));
 		    		} else {
 		        		intents.showInfoToast(Locale.getMessage(R.string.Routes_PauseRecordingOff));
@@ -1014,14 +1012,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 ConfigurationManager.getInstance().putObject("messageStack", messageStack);
             }
             messageStack.setHandler(loadingHandler);
-            routeRecorder = ConfigurationManager.getInstance().getRouteRecorder();
-
-            if (routeRecorder == null) {
-                LoggerUtils.debug("Creating RouteRecorder...");
-                routeRecorder = new RouteRecorder(routesManager);
-                ConfigurationManager.getInstance().putObject("routeRecorder", routeRecorder);
-            }
-
+            
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
 
             if (layerLoader == null || landmarkManager.getLayerManager().isEmpty()) {
@@ -1085,7 +1076,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private String followMyPositionAction() {
 		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
-            String route = routeRecorder.startRecording();
+            String route = RouteRecorder.getInstance().startRecording(routesManager);
             routesCluster.showRouteAction(route, true);
             if (layerLoader.isLoading()) {
                 layerLoader.stopLoading();
@@ -1104,7 +1095,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                String filename = routeRecorder.stopRecording();
+                String filename = RouteRecorder.getInstance().stopRecording(routesManager);
                 if (filename != null) {
                     return filename;
                 } else {
@@ -1199,11 +1190,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    routesCluster.loadAllRoutes();
 	    
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-            String route = routeRecorder.getRouteLabel();
-            if (route == null) {
-                route = routeRecorder.startRecording();
-            }
-
+            String route = RouteRecorder.getInstance().startRecording(routesManager);
             if (route != null) {
             	routesCluster.showRouteAction(route, true);
             }

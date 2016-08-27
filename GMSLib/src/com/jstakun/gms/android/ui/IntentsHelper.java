@@ -1394,7 +1394,7 @@ public final class IntentsHelper {
         ConfigurationManager.getDatabaseManager().saveConfiguration(false);
     }
     
-    public void hardClose(LayerLoader layerLoader, RouteRecorder routeRecorder, Handler loadingHandler, Runnable gpsRunnable, int zoomLevel, int latitudeE6, int longitudeE6) {
+    public void hardClose(LayerLoader layerLoader, Handler loadingHandler, Runnable gpsRunnable, int zoomLevel, int latitudeE6, int longitudeE6) {
     	LoggerUtils.debug("hardClose");
     	if (layerLoader != null && layerLoader.isLoading()) {
             layerLoader.stopLoading();
@@ -1419,10 +1419,10 @@ public final class IntentsHelper {
         landmarkManager.clearLandmarkStore();
         asyncTaskManager.cancelAll();
 
-        if (routeRecorder != null && ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            String[] details = routeRecorder.saveRoute(null);
+        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+            String[] details = RouteRecorder.getInstance().saveRoute(null);
             if (details != null) {
-                LoggerUtils.debug("Saving route: " + details[0]);
+                LoggerUtils.debug("Saved route: " + details[0]);
             }
         }
 

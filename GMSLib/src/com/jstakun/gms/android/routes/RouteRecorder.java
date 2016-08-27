@@ -30,41 +30,47 @@ public class RouteRecorder {
     //TODO MAX_BEARING_RANGE should be based on zoom level
     private static final float MAX_BEARING_RANGE = 9f;
 
-    private RoutesManager routesManager;
-    private List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
+    private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
+    private static final RouteRecorder instance = new RouteRecorder();
     private String label = null;
     private long startTime;
     private int notificationId;
     private boolean paused = false, saveNextPoint = false;
     private float currentBearing = 0f;
     
-    public RouteRecorder(RoutesManager rm) {
-        //System.out.println("RouteRecorder.constructor");
-        routesManager = rm;
+    private RouteRecorder() {
     }
-
-    public String startRecording() {
+    
+    public static RouteRecorder getInstance() {
+    	return instance;
+    }
+        
+    public String startRecording(RoutesManager routesManager) {
         //System.out.println("RouteRecorder.startRecording");
-        if (!routePoints.isEmpty()) {
-            routePoints.clear();
-        }
-        label = DateTimeUtils.getCurrentDateStamp();
-        startTime = System.currentTimeMillis();
-        currentBearing = 0f;
-        routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);
-        ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);
+    	if (label == null) {
+    		if (!routePoints.isEmpty()) {
+    			routePoints.clear();
+    		}
+    		label = DateTimeUtils.getCurrentDateStamp();
+    		startTime = System.currentTimeMillis();
+    		currentBearing = 0f;
+    		routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);
+    		ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);
 
-        AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-        if (asyncTaskManager != null) {
-            String msg = Locale.getMessage(R.string.Routes_Label);
-            notificationId = Integer.parseInt(asyncTaskManager.createNotification(R.drawable.route_24, msg, msg, false));
-            return CURRENTLY_RECORDED + label;
-        } else {
-            return null;
-        }
+    		AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
+    		if (asyncTaskManager != null) {
+    			String msg = Locale.getMessage(R.string.Routes_Label);
+    			notificationId = Integer.parseInt(asyncTaskManager.createNotification(R.drawable.route_24, msg, msg, false));
+    			return CURRENTLY_RECORDED + label;
+    		} else {
+    			return null;
+    		}
+    	} else {
+    		return CURRENTLY_RECORDED + label;
+    	}
     }
 
-    public String stopRecording() {
+    public String stopRecording(RoutesManager routesManager) {
         //System.out.println("RouteRecorder.stopRecording");
         String filename = null;
         if (routePoints.size() > 1) {
@@ -115,6 +121,7 @@ public class RouteRecorder {
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
                 label = null;
                 paused = false;
+                routePoints.clear();
             }
         }
 
@@ -161,19 +168,11 @@ public class RouteRecorder {
                 }
             }
 
-            if (!routesManager.containsRoute(CURRENTLY_RECORDED + label)) {
-                routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);
-            }
+            //if (!routesManager.containsRoute(CURRENTLY_RECORDED + label)) {
+            //    routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);
+            //}
         }
     	return mode;
-    }
-
-    public String getRouteLabel() {
-        //System.out.println("RouteRecorder.getRouteLabel " + label);
-        if (label != null) {
-            return CURRENTLY_RECORDED + label;
-        }
-        return null;
     }
 
     public void pause() {
