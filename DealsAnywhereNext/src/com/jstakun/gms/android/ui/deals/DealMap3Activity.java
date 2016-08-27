@@ -229,6 +229,8 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
         
+        ((LoadingHandler) loadingHandler).setDialogManager(dialogManager);
+        
         routesManager = ConfigurationManager.getInstance().getRoutesManager();
 
         if (routesManager == null) {
@@ -641,23 +643,19 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         Location myLoc = ConfigurationManager.getInstance().getLocation();
         LatLng myLocLatLng = new LatLng(myLoc.getLatitude(), myLoc.getLongitude());
         
-        if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
+        if (mMap.getProjection().getVisibleRegion().latLngBounds.contains(myLocLatLng)) {
+        	isVisible = true;
+        }
         
-        	if (mMap.getProjection().getVisibleRegion().latLngBounds.contains(myLocLatLng)) {
-        		isVisible = true;
-        	}
-        
-        	if (!isVisible) {
-        		hideLandmarkView();
-        		clearLandmarks = intents.isClearLandmarksRequired(projection, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
+        if (!isVisible) {
+        	hideLandmarkView();
+        	clearLandmarks = intents.isClearLandmarksRequired(projection, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
             		 MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), MathUtils.coordDoubleToInt(myLoc.getLatitude()), MathUtils.coordDoubleToInt(myLoc.getLongitude()));
-        	}
+        }
         	
-        	if (loadLayers && !isVisible) {
-                markerCluster.clearMarkers();
-                intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
-            }
-        
+        if (loadLayers && !isVisible) {
+            markerCluster.clearMarkers();
+            intents.loadLayersAction(true, null, clearLandmarks, false, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
         }
         
         animateTo(myLocLatLng);
@@ -915,15 +913,11 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 		}
 		
 		if (appInitialized && !isFinishing()) {
-		
-			ConfigurationManager.getInstance().setLocation(location);
-		
+			ConfigurationManager.getInstance().setLocation(location);		
 			intents.addMyLocationLandmark(location);     
 			intents.vibrateOnLocationUpdate();
-			UserTracker.getInstance().sendMyLocation();
-	   
-		}
-		
+			UserTracker.getInstance().sendMyLocation();	   
+		}		
 	}
 
 	@Override
@@ -957,34 +951,34 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
 	@Override
 	public void onClick(View v) {
-			ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
-    		if (selectedLandmark != null) {
-    			if (v == lvCloseButton) {
-    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
-    				hideLandmarkView();
-    			} else if (v == lvOpenButton) {
-    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
-    				intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
-    			} else if (v == thumbnailButton) {
-    				if (intents.startStreetViewActivity(selectedLandmark)) {
-    					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenStreetView", selectedLandmark.getLayer(), 0);
-    				} else {
-    					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				intents.openButtonPressedAction(selectedLandmark);
-    				}
-    			} else if (v == lvCallButton) {
-    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
-    				callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
-    			} else if (v == lvRouteButton) {
-    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
-    				dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
-    			} else if (v == lvShareButton) {
-    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
-    				sendMessageAction();
+		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+    	if (selectedLandmark != null) {
+    		if (v == lvCloseButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
+    			hideLandmarkView();
+    		} else if (v == lvOpenButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
+    			intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+    		} else if (v == thumbnailButton) {
+    			if (intents.startStreetViewActivity(selectedLandmark)) {
+    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenStreetView", selectedLandmark.getLayer(), 0);
+    			} else {
+    				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
+        			intents.openButtonPressedAction(selectedLandmark);
     			}
-    		} else {
-    			intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-    		}	
+    		} else if (v == lvCallButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
+    			callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+    		} else if (v == lvRouteButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
+    			dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
+    		} else if (v == lvShareButton) {
+    			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
+    			sendMessageAction();
+    		}
+    	} else {
+    		intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+    	}	
 	}
 
 	@Override
@@ -1005,6 +999,33 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	    }
 	}
 	
+	//auto generated placeholder
+	public static class PlaceholderFragment extends Fragment {
+		private static final String ARG_SECTION_NUMBER = "section_number";
+
+		public static PlaceholderFragment newInstance(int sectionNumber) {
+			PlaceholderFragment fragment = new PlaceholderFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+			fragment.setArguments(args);
+			return fragment;
+		}
+
+		public PlaceholderFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_deal_map, container, false);
+			return rootView;
+		}
+
+		@Override
+		public void onAttach(Activity activity) {
+			super.onAttach(activity);
+		}
+	}
+	
 	private static class LoadingHandler extends Handler {
 		
 		 private WeakReference<DealMap3Activity> parentActivity;
@@ -1015,10 +1036,11 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	     }
 	    	
 	     public void setDialogManager(DialogManager dialogManager) {
-	    	this.dialogManager = new WeakReference<DialogManager>(dialogManager); 
+	     	this.dialogManager = new WeakReference<DialogManager>(dialogManager); 
 	     }
-		@Override
-        public void handleMessage(Message msg) {
+	     
+		 @Override
+         public void handleMessage(Message msg) {
 			DealMap3Activity activity = parentActivity.get();
         	if (activity != null && !activity.isFinishing()) {
         		if (msg.what == MessageStack.STATUS_MESSAGE) {
@@ -1063,42 +1085,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}
         	}
-		}
-	}
-	
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		private static final String ARG_SECTION_NUMBER = "section_number";
-
-		/**
-		 * Returns a new instance of this fragment for the given section number.
-		 */
-		public static PlaceholderFragment newInstance(int sectionNumber) {
-			PlaceholderFragment fragment = new PlaceholderFragment();
-			Bundle args = new Bundle();
-			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-			fragment.setArguments(args);
-			return fragment;
-		}
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_deal_map, container, false);
-			return rootView;
-		}
-
-		@Override
-		public void onAttach(Activity activity) {
-			super.onAttach(activity);
 		}
 	}
 }

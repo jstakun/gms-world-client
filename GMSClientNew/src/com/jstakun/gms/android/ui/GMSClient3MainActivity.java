@@ -1161,15 +1161,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	if (loadLayers && !isVisible) {
                 markerCluster.clearMarkers();
                 intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
-            }
-        
-        }
-        
-        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-        //    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocLatLng));
-        //} else {
-            animateTo(myLocLatLng);
-        //}
+            }     
+        }     
+        animateTo(myLocLatLng);
     }
     
     private void pickPositionAction(LatLng newCenter, boolean loadLayers, boolean clearMap) {
@@ -1291,8 +1285,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            //((GMSClient3MainActivity) activity).onSectionAttached(
-            //        getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }  
 	    

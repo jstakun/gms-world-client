@@ -111,43 +111,46 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	
 	public boolean addMarker(ExtendedLandmark landmark) {
 		boolean added = false;
-		readWriteLock.writeLock().lock();
 		GoogleMarker marker = null;
+		readWriteLock.writeLock().lock();
 		
-		if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof GoogleMarker) {
-			marker = (GoogleMarker)landmark.getRelatedUIObject();
-		}
-		if (marker == null) {
-			boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-			
-			int color = COLOR_WHITE;
-			if (landmark.isCheckinsOrPhotos()) {
-				color = COLOR_LIGHT_SALMON;
-			} else if (landmark.getRating() >= 0.85) {
-				color = COLOR_PALE_GREEN;
+		try {
+			if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof GoogleMarker) {
+				marker = (GoogleMarker)landmark.getRelatedUIObject();
 			}
+			if (marker == null) {
+				boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
+			
+				int color = COLOR_WHITE;
+				if (landmark.isCheckinsOrPhotos()) {
+					color = COLOR_LIGHT_SALMON;
+				} else if (landmark.getRating() >= 0.85) {
+					color = COLOR_PALE_GREEN;
+				}
 
-			Drawable frame = null;
+				Drawable frame = null;
         
-        	if (landmark.getCategoryId() != -1) {
-            	int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-            	frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, mDisplayMetrics);
-        	} else if (!StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
-           		//doesn't work with local layer
-        		BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, mDisplayMetrics, null);
-           		frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, mDisplayMetrics);
-        	} else if (StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
-        		frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
-        	}
-			marker = new GoogleMarker(landmark, frame);
-			landmark.setRelatedUIObject(marker);
-			mClusterManager.addItem(marker);
-			added = true;
-		} else if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
-			mClusterManager.addItem(marker);
-			added = true;
+				if (landmark.getCategoryId() != -1) {
+            		int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
+            		frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, mDisplayMetrics);
+        		} else if (!StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
+           			//doesn't work with local layer
+        			BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, mDisplayMetrics, null);
+           			frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, mDisplayMetrics);
+        		} else if (StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
+        			frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
+        		}
+				marker = new GoogleMarker(landmark, frame);
+				landmark.setRelatedUIObject(marker);
+				mClusterManager.addItem(marker);
+				added = true;
+			} else if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
+				mClusterManager.addItem(marker);
+				added = true;
+			}	
+		} finally {
+			readWriteLock.writeLock().unlock();
 		}
-		readWriteLock.writeLock().unlock();
 		return added;
 	}
 	
@@ -230,13 +233,15 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	        	mClusterIcon = IconCache.getInstance().getImage(IconCache.MARKER_CLUSTER_M5);
 	        	mTextPaint.setTextSize(18f * mDensity);
 	        } 
-			Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
-	        Canvas iconCanvas = new Canvas(finalIcon);
-	        iconCanvas.drawBitmap(mClusterIcon, 0, 0, null);
-	        int textHeight = (int) (mTextPaint.descent() + mTextPaint.ascent());
-	        iconCanvas.drawText(getClusterText(clusterSize), 0.5f * finalIcon.getWidth(),
+	        if (mClusterIcon != null) {
+	        	Bitmap finalIcon = Bitmap.createBitmap(mClusterIcon.getWidth(), mClusterIcon.getHeight(), mClusterIcon.getConfig());
+	        	Canvas iconCanvas = new Canvas(finalIcon);
+	        	iconCanvas.drawBitmap(mClusterIcon, 0, 0, null);
+	        	int textHeight = (int) (mTextPaint.descent() + mTextPaint.ascent());
+	        	iconCanvas.drawText(getClusterText(clusterSize), 0.5f * finalIcon.getWidth(),
 	        		0.5f * finalIcon.getHeight() - textHeight / 2, mTextPaint);	        
-	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(finalIcon));
+	        	markerOptions.icon(BitmapDescriptorFactory.fromBitmap(finalIcon));
+	        }
 		}
 	}
 }

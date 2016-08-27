@@ -310,8 +310,10 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
-            Message msg = showRouteHandler.obtainMessage(SHOW_ROUTE_MESSAGE, filename);
-            showRouteHandler.handleMessage(msg);
+            if (showRouteHandler != null) {
+            	Message msg = showRouteHandler.obtainMessage(SHOW_ROUTE_MESSAGE, filename);
+            	showRouteHandler.handleMessage(msg);
+            }
             if (!silent) {
             	intents.showInfoToast(res);
             }
