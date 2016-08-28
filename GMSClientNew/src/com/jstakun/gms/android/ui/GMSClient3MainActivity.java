@@ -381,6 +381,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     
     @Override
     protected void onStop() {
+    	LoggerUtils.debug("onStop");
         super.onStop();
         if (mMap != null) {
         	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
@@ -610,7 +611,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 }
                 
                 if (!appInitialized) {
-                	initOnLocationChanged(new LatLng(lat, lng), 4);
+                	LatLng mapCenter = new LatLng(lat, lng);
+                	initOnLocationChanged(mapCenter, 4);
                 } else {
                 	pickPositionAction(new LatLng(lat, lng), true, true);
                 }
@@ -618,7 +620,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
-                initOnLocationChanged(new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()), 5);
+                LatLng mapCenter = new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude());
+                initOnLocationChanged(mapCenter, 5);
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 intents.showInfoToast(message);
@@ -627,7 +630,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 intents.showInfoToast(status.getStatusMessage());
             	if (! appInitialized) {
             		ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
-                    initOnLocationChanged(new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()), 6);
+            		LatLng mapCenter = new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude());
+            		initOnLocationChanged(mapCenter, 6);
             	}
             } else if (resultCode != RESULT_CANCELED) {
                 intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -714,6 +718,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 	    	mMap.getUiSettings().setCompassEnabled(true);
 	    }
+	    
+	    if (appInitialized) {
+	    	LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
+	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mapCenter, ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
+	    	mMap.moveCamera(cameraUpdate);
+	    	loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
+	    }
 	}  
 
 	@Override
@@ -745,7 +756,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
 					int mode = RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
 					if (routesCluster != null && mode >= 0) {
-					   routesCluster.showRecordedRouteStep(RouteRecorder.getInstance().getRouteLabel(), mode);
+					   routesCluster.showRecordedRouteStep(RouteRecorder.CURRENTLY_RECORDED, mode);
 					}
 				}
 				showMyPositionAction(false);
@@ -777,7 +788,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		if (location != null && !appInitialized) {
 			//Toast.makeText(this, "Last known location received: " + location.getLatitude() + "," + location.getLongitude() + " from " + location.getProvider(), Toast.LENGTH_SHORT).show();
 			ConfigurationManager.getInstance().setLocation(location);
-			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 0);
+			LatLng mapCenter = new LatLng(location.getLatitude(), location.getLongitude());
+			initOnLocationChanged(mapCenter, 0);
 		}
 		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
@@ -1045,14 +1057,14 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 loadingImage.setVisibility(View.GONE);
             }
             
+            appInitialized = true;
+            
             if (mMap != null) {
     	    	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
     	    	mMap.moveCamera(cameraUpdate);
     	    	loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
-    	    	appInitialized = true;
     	    } else {
-    	    	//might need to show toast that something went wrong
-    	    	//intents.showInfoToast("Map initialization has failed. Please restart application!");
+    	    	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, location);
     	    }
         } 
     }

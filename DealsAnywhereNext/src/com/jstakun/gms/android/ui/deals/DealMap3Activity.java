@@ -524,14 +524,14 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             
             layerLoader.setRepaintHandler(loadingHandler);
             
+            appInitialized = true;
+            
             if (mMap != null) {
     	    	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
     	    	mMap.moveCamera(cameraUpdate);
     	    	loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
-    	    	appInitialized = true;
     	    } else {
-    	    	//might need to show toast that something went wrong
-    	    	//intents.showInfoToast("Map initialization has failed. Please restart application!");
+    	    	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, location);
     	    }
         } 
     }
@@ -991,8 +991,11 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	    mMap.setOnMyLocationButtonClickListener(this);
 	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
 	    
-	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-	    	mMap.getUiSettings().setCompassEnabled(true);
+	    if (appInitialized) {
+	    	LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
+	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mapCenter, ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
+	    	mMap.moveCamera(cameraUpdate);
+	    	loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
 	    }
 	}
 	

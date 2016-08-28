@@ -32,9 +32,9 @@ public class RouteRecorder {
 
     private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
     private static final RouteRecorder instance = new RouteRecorder();
-    private String label = null;
+    //private String label = null;
     private long startTime;
-    private int notificationId;
+    private int notificationId = -1;
     private boolean paused = false, saveNextPoint = false;
     private float currentBearing = 0f;
     
@@ -46,40 +46,31 @@ public class RouteRecorder {
     }
         
     public String startRecording(RoutesManager routesManager) {
-    	ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);
-    	if (label == null) {
-    		if (!routePoints.isEmpty()) {
-    			routePoints.clear();
-    		}
-    		label = DateTimeUtils.getCurrentDateStamp();
-    		startTime = System.currentTimeMillis();
-    		currentBearing = 0f;
-    		routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);    		
-    		AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-    		if (asyncTaskManager != null) {
-    			String msg = Locale.getMessage(R.string.Routes_Label);
-    			notificationId = Integer.parseInt(asyncTaskManager.createNotification(R.drawable.route_24, msg, msg, false));
-    			return CURRENTLY_RECORDED + label;
-    		} else {
-    			return null;
-    		}
-    	} else {
-    		return CURRENTLY_RECORDED + label;
-    	}
+    	ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);  	
+    	startTime = System.currentTimeMillis();
+    	currentBearing = 0f;
+    	routesManager.addRoute(CURRENTLY_RECORDED, routePoints, null);    		
+    	AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
+    	if (asyncTaskManager != null && notificationId == -1) {
+    		String msg = Locale.getMessage(R.string.Routes_Label);
+    		notificationId = Integer.parseInt(asyncTaskManager.createNotification(R.drawable.route_24, msg, msg, false));  		
+    	} 
+    	return CURRENTLY_RECORDED;
     }
 
     public String stopRecording(RoutesManager routesManager) {
         //System.out.println("RouteRecorder.stopRecording");
         String filename = null;
         if (routePoints.size() > 1) {
-            filename = label + ".kml";
+            filename = DateTimeUtils.getCurrentDateStamp() + ".kml";
         }
-        routesManager.removeRoute(CURRENTLY_RECORDED + label);
+        routesManager.removeRoute(CURRENTLY_RECORDED);
         ConfigurationManager.getInstance().setOff(ConfigurationManager.RECORDING_ROUTE);
 
         AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         asyncTaskManager.cancelNotification(notificationId);
-
+        notificationId = -1;
+        
         return filename;
     }
 
@@ -90,34 +81,18 @@ public class RouteRecorder {
 
         if (routePoints.size() > 1) {
 
-            String avg = "n/a";
-            String timeInterval = "n/a";
-            String dist;
-
-            float distanceInKilometer = routeDistanceInKilometer(routePoints);
-
-            dist = DistanceUtils.formatDistance(distanceInKilometer);
-
-            long endTime = System.currentTimeMillis();
-
-            if (startTime < endTime) {
-                long diff = (endTime - startTime);
-                double avgSpeed = (distanceInKilometer * 1000.0 * 3600.0) / (double) diff;
-                avg = DistanceUtils.formatSpeed(avgSpeed);
-                timeInterval = DateTimeUtils.getTimeInterval(diff);
-            }
-
-            String filename = label + ".kml";
+            String filename = DateTimeUtils.getCurrentDateStamp() + ".kml";
             if (StringUtils.isNotEmpty(prefix)) {
             	filename = prefix + "_" + filename;
             } else {
             	filename = ROUTE_PREFIX + "_" + filename;
             }
             
-            details = saveRoute(routePoints, filename, avg, timeInterval, dist);
+            String[] desc = getRouteDetails();
+
+            details = saveRoute(routePoints, filename, desc[1], desc[2], desc[0]);
 
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
-                label = null;
                 paused = false;
                 routePoints.clear();
             }
@@ -131,8 +106,9 @@ public class RouteRecorder {
     	if (!paused) {
             QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, accuracy, accuracy, Float.NaN); 
             String l = DateTimeUtils.getCurrentDateStamp();
-            //TODO add desc from above
-            ExtendedLandmark lm = LandmarkFactory.getLandmark(l, "", qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
+            String[] details = getRouteDetails();
+            String description = Locale.getMessage(R.string.Routes_Recording_description, details[0], details[1], details[2]);
+            ExtendedLandmark lm = LandmarkFactory.getLandmark(l, description, qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
 
             if (routePoints.isEmpty()) {
                 routePoints.add(lm);
@@ -182,15 +158,6 @@ public class RouteRecorder {
         return paused;
     }
     
-    public String getRouteLabel() {
-    	if (label != null) {
-    		return CURRENTLY_RECORDED + label;
-    	} else {
-    		return null;
-    	}
-    }	
-    	
-
     private static float routeDistanceInKilometer(List<ExtendedLandmark> points) {
         float distanceInKilometer = 0.0f;
 
@@ -218,5 +185,26 @@ public class RouteRecorder {
         PersistenceManagerFactory.getFileManager().saveKmlRoute(points, description, filename);
 
         return new String[]{filename, description};
+    }
+    
+    private String[] getRouteDetails() {
+    	String avg = "n/a";
+        String timeInterval = "n/a";
+        String dist;
+
+        float distanceInKilometer = routeDistanceInKilometer(routePoints);
+
+        dist = DistanceUtils.formatDistance(distanceInKilometer);
+
+        long endTime = System.currentTimeMillis();
+
+        if (startTime < endTime) {
+            long diff = (endTime - startTime);
+            double avgSpeed = (distanceInKilometer * 1000.0 * 3600.0) / (double) diff;
+            avg = DistanceUtils.formatSpeed(avgSpeed);
+            timeInterval = DateTimeUtils.getTimeInterval(diff);
+        }
+        
+        return new String[] {dist, avg, timeInterval};
     }
 }

@@ -319,6 +319,17 @@ public class LayerManager {
     	return icon;
     }
     
+    public static int getLayerImage(String layerName) {
+    	int imageId = 0;
+    	if (StringUtils.isNotEmpty(layerName)) {
+        	Layer layer = layers.get(layerName);
+            if (layer != null) {
+            	imageId = layer.getImage();
+            } 
+    	}    
+    	return imageId;
+    }
+    
     public static String getLayerIconUri(String layerName, int type) {
     	String icon = null;
     	if (StringUtils.isNotEmpty(layerName)) {

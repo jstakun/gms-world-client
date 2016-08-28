@@ -5,6 +5,17 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.IconCache;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.landmarks.LandmarkParcelable;
+import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.DistanceUtils;
+import com.jstakun.gms.android.utils.Locale;
+import com.squareup.picasso.Picasso;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,17 +28,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.IconCache;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
-import com.jstakun.gms.android.landmarks.LandmarkParcelable;
-import com.jstakun.gms.android.landmarks.LayerManager;
-import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.DistanceUtils;
-import com.jstakun.gms.android.utils.Locale;
-import com.squareup.picasso.Picasso;
 
 /**
  *
@@ -111,7 +111,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             holder.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
         }
 
-        holder.landmarkNameText.setText(landmark.getName());
+		holder.landmarkNameText.setText(landmark.getName());
 
         String desc = landmark.getDesc();
         if (landmark.getDistance() >= 0.001) {
@@ -127,7 +127,11 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
             holder.thumbnailImage.setVisibility(View.VISIBLE);      
             int targetWidth = (int)(128f * parentListActivity.getResources().getDisplayMetrics().density);
             int targetHeight = (int)(128f * parentListActivity.getResources().getDisplayMetrics().density);
-            Picasso.with(parentListActivity).load(landmark.getThunbnail()).resize(targetWidth, targetHeight).centerInside().placeholder(R.drawable.download48).error(R.drawable.image_missing48).into(holder.thumbnailImage);
+            int missingIconPlaceholder = LayerManager.getLayerImage(landmark.getLayer());
+            if (missingIconPlaceholder <= 0) {
+            	missingIconPlaceholder = R.drawable.image_missing48;
+            }
+            Picasso.with(parentListActivity).load(landmark.getThunbnail()).resize(targetWidth, targetHeight).centerInside().placeholder(R.drawable.download48).error(missingIconPlaceholder).into(holder.thumbnailImage);
         	holder.landmarkDescText.setText(Html.fromHtml(desc, imgGetter, null));
         } else {
         	holder.thumbnailImage.setVisibility(View.GONE);
@@ -140,80 +144,4 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
         protected TextView landmarkDescText;
         protected ImageView thumbnailImage;
     }
-    
-    /*private static class LandmarkThumbnailLoadingHandler extends Handler {
-    	
-    	private WeakReference<View> view;
-    	private WeakReference<Activity> parentActivity;
-    	private WeakReference<LandmarkParcelable> landmark;
-    	
-    	public LandmarkThumbnailLoadingHandler(View view, Activity parentActivity, LandmarkParcelable landmark) {
-    	    this.view = new WeakReference<View>(view);
-    	    this.parentActivity = new WeakReference<Activity>(parentActivity);  	    
-    	    this.landmark = new WeakReference<LandmarkParcelable>(landmark);
-    	}
-    	
-    	@Override
-        public void handleMessage(Message message) {
-    		Activity a = null;
-    		if (parentActivity != null) {
-    			a = parentActivity.get();
-    		}
-    		LandmarkParcelable l = null;
-    		if (landmark != null) {
-    			l = landmark.get();
-    		}
-    		if (a != null && !a.isFinishing() && l != null) {
-    			Bitmap image = IconCache.getInstance().getThumbnailResource(l.getThunbnail(), l.getLayer(), a.getResources().getDisplayMetrics(), null);
-                int width = a.getWindowManager().getDefaultDisplay().getWidth();            
-                View v = view.get();
-                if (image != null && v != null  && (width == 0 || image.getWidth() < width * 0.5)) {
-                	ViewHolder holder = (ViewHolder) v.getTag();
-                	buildView(l, holder, v, a);
-                } else {
-                	LoggerUtils.debug(l.getThunbnail() + " size is too big or image is empty!");
-                }
-    		}
-        }
-    }*/
-    
-    /*private static class LayerImageLoadingHandler extends Handler {
-    	
-    	private WeakReference<ViewHolder> viewHolder;
-    	private WeakReference<Activity> parentActivity;
-    	private WeakReference<String> layerName;
-    	
-    	public LayerImageLoadingHandler(ViewHolder viewHolder, Activity parentActivity, String layerName) {
-    	    this.viewHolder = new WeakReference<ViewHolder>(viewHolder);
-    	    this.parentActivity = new WeakReference<Activity>(parentActivity);  	    
-    	    this.layerName = new WeakReference<String>(layerName);
-    	}
-    	
-    	@Override
-        public void handleMessage(Message message) {
-    		Activity a = null;
-    		if (parentActivity != null) {
-    			a = parentActivity.get();
-    		}
-    		if (a != null && !a.isFinishing()) {
-    			BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, a.getResources().getDisplayMetrics(), null);
-    			if (image != null && viewHolder != null) {
-    				ViewHolder v = viewHolder.get();
-    				if (v != null) {
-    					v.landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-    				}
-    			}
-    		}
-        }
-    	
-    	//@Override
-        //public void handleMessage(Message message) {
-    	//	if (parentActivity != null && parentActivity.get() != null && !parentActivity.get().isFinishing()) {
-    	//		BitmapDrawable image = LayerManager.getLayerIcon(layerName.get(), LayerManager.LAYER_ICON_SMALL, parentActivity.get().getResources().getDisplayMetrics(), null);
-    	//		if (image != null) {
-    	//			viewHolder.get().landmarkNameText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-    	//		}
-    	//	}
-        //}
-    }*/
 }

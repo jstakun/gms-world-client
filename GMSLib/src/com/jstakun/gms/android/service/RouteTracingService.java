@@ -27,12 +27,14 @@ public class RouteTracingService extends Service {
 	
 	@Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+		LoggerUtils.debug("RouteTracingService onStartCommand");
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
 
     @Override
     public void onCreate() {
+    	LoggerUtils.debug("RouteTracingService onCreate");
     	mRouteLocationListener = new RouteLocationListener();
     	
     	mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -51,6 +53,7 @@ public class RouteTracingService extends Service {
     
     @Override
     public void onDestroy() {
+    	LoggerUtils.debug("RouteTracingService onDestroy");
     	if (mGoogleApiClient.isConnected()) {
         	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mRouteLocationListener);
             mGoogleApiClient.disconnect();
