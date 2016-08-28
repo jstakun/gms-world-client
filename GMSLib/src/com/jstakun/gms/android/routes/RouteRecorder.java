@@ -142,10 +142,6 @@ public class RouteRecorder {
                 	}
                 }
             }
-
-            //if (!routesManager.containsRoute(CURRENTLY_RECORDED + label)) {
-            //    routesManager.addRoute(CURRENTLY_RECORDED + label, routePoints, null);
-            //}
         }
     	return mode;
     }
@@ -156,6 +152,10 @@ public class RouteRecorder {
 
     public boolean isPaused() {
         return paused;
+    }
+    
+    public void onAppClose() {
+    	notificationId = -1;
     }
     
     private static float routeDistanceInKilometer(List<ExtendedLandmark> points) {

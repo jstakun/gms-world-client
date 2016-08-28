@@ -14,12 +14,13 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 
-public class RouteTracingService extends Service {
-	
+public class RouteTracingService extends Service implements LocationListener,
+															GoogleApiClient.ConnectionCallbacks,
+															GoogleApiClient.OnConnectionFailedListener{
+
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
-    private RouteLocationListener mRouteLocationListener;
-	
+    
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
@@ -27,21 +28,24 @@ public class RouteTracingService extends Service {
 	
 	@Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-		LoggerUtils.debug("RouteTracingService onStartCommand");
+		LoggerUtils.debug("RouteTracingService onStartCommand()");
         super.onStartCommand(intent, flags, startId);
+        
+        buildGoogleApiClient();
+        
+        if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
+        	mGoogleApiClient.connect();
+        }
+        
         return START_STICKY;
     }
 
     @Override
     public void onCreate() {
-    	LoggerUtils.debug("RouteTracingService onCreate");
-    	mRouteLocationListener = new RouteLocationListener();
+    	super.onCreate();
+    	LoggerUtils.debug("RouteTracingService onCreate()");
     	
-    	mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(mRouteLocationListener)
-                .addOnConnectionFailedListener(mRouteLocationListener)
-                .addApi(LocationServices.API)
-                .build();
+    	buildGoogleApiClient();
     	
     	mGoogleApiClient.connect();
     	
@@ -53,42 +57,46 @@ public class RouteTracingService extends Service {
     
     @Override
     public void onDestroy() {
-    	LoggerUtils.debug("RouteTracingService onDestroy");
+    	LoggerUtils.debug("RouteTracingService onDestroy()");
     	if (mGoogleApiClient.isConnected()) {
-        	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mRouteLocationListener);
+        	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
     }
 	
-	private class RouteLocationListener implements LocationListener,
-												   GoogleApiClient.ConnectionCallbacks,
-												   GoogleApiClient.OnConnectionFailedListener
-    {
+    protected synchronized void buildGoogleApiClient() {
+    	if (mGoogleApiClient == null) {
+    		mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    	}
+    }	
+    
+	@Override
+	public void onLocationChanged(Location location) {
+		// add location to route points
+		LoggerUtils.debug("RouteTracingService received new location");
+		RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+	}
 
-		@Override
-		public void onLocationChanged(Location location) {
+	@Override
+	public void onConnectionFailed(ConnectionResult arg0) {
+	}
+
+	@Override
+	public void onConnected(Bundle arg0) {
+		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+		if (location != null) {
 			// add location to route points
-			LoggerUtils.debug("RouteTracingService received new location");
+			LoggerUtils.debug("RouteTracingService received last known location");
 			RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
 		}
-
-		@Override
-		public void onConnectionFailed(ConnectionResult arg0) {
-		}
-
-		@Override
-		public void onConnected(Bundle arg0) {
-			Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-			if (location != null) {
-				// add location to route points
-				LoggerUtils.debug("RouteTracingService received last known location");
-				RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
-			}
-			LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-		}
-
-		@Override
-		public void onConnectionSuspended(int reasonCode) {
-		}	
+		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 	}
+
+	@Override
+	public void onConnectionSuspended(int reasonCode) {
+	}	
 }

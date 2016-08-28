@@ -1418,12 +1418,13 @@ public final class IntentsHelper {
         IconCache.getInstance().clearAll();
         landmarkManager.clearLandmarkStore();
         asyncTaskManager.cancelAll();
-
+        
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
             String[] details = RouteRecorder.getInstance().saveRoute(null);
             if (details != null) {
                 LoggerUtils.debug("Saved route: " + details[0]);
             }
+            RouteRecorder.getInstance().onAppClose();
         }
 
         PersistenceManagerFactory.getFileManager().clearImageCache();

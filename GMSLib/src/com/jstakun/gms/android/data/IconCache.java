@@ -118,7 +118,7 @@ public class IconCache {
                 c.drawColor(Color.WHITE);
                 paint.setColor(Color.WHITE);
                 c.drawRect(new Rect(0, 0, ConfigurationManager.TILE_SIZE, ConfigurationManager.TILE_SIZE), paint);
-                c.drawBitmap(getImage(IconCache.LOADING), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paint);
+                c.drawBitmap(getImage(LOADING), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paint);
                 images.put(IMAGE_LOADING_TILE, loading);
             }
 
@@ -128,7 +128,7 @@ public class IconCache {
                 cm.drawColor(Color.WHITE);
                 Paint paintm = new Paint();
                 paintm.setColor(Color.WHITE);
-                cm.drawBitmap(getImage(IconCache.ICON_MISSING32), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paintm);
+                cm.drawBitmap(getImage(ICON_MISSING32), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paintm);
                 images.put(IMAGE_MISSING, missing);
             }
 
