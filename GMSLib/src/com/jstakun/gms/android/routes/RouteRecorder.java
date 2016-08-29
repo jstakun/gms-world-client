@@ -111,7 +111,8 @@ public class RouteRecorder {
 
             if (routePoints.isEmpty()) {
                 routePoints.add(lm);
-                saveNextPoint = true;
+                LoggerUtils.debug("1. Adding first route point: " + lat + "," + lng + " with speed: " + speed + ", meters and bearing: " + bearing + ".");
+        		saveNextPoint = true;
                 mode = 1;
             } else {
                 ExtendedLandmark current = routePoints.get(routePoints.size()-1);
@@ -124,21 +125,24 @@ public class RouteRecorder {
                 	if (MathUtils.abs(bearing - currentBearing) > MAX_BEARING_RANGE) { //|| bearing == 0f
                 		currentBearing = bearing;
                 		routePoints.add(lm);
-                		LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + " meters and bearing: " + bearing + ".");
+                		LoggerUtils.debug(routePoints.size() + ". Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + ", meters and bearing: " + bearing + ".");
                 		saveNextPoint = true;
                 		mode = 1;
                 	} else if (saveNextPoint) {
                 		currentBearing = bearing;
                 		routePoints.add(lm);
-                		LoggerUtils.debug("Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + " meters and bearing: " + bearing + ".");
+                		LoggerUtils.debug("2. Adding second route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + ", meters and bearing: " + bearing + ".");
                 		saveNextPoint = false;
                 		mode = 1;
                 	} else {
                 		//replace last point
+                		LoggerUtils.debug(routePoints.size() + ". Replacing route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + ", meters and bearing: " + bearing + ".");
                 		routePoints.add(lm);
                 		routePoints.remove(routePoints.size()-2);
                 		mode = 0;
                 	}
+                } else {
+                	LoggerUtils.debug(routePoints.size() + ". Skipping point due to small distance");
                 }
             }
         }
@@ -194,14 +198,16 @@ public class RouteRecorder {
         float distanceInKilometer = routeDistanceInKilometer(routePoints);
 
         dist = DistanceUtils.formatDistance(distanceInKilometer);
-
+        
         long endTime = System.currentTimeMillis();
 
         if (startTime < endTime) {
             long diff = (endTime - startTime);
-            double avgSpeed = (distanceInKilometer * 1000.0 * 3600.0) / (double) diff;
-            avg = DistanceUtils.formatSpeed(avgSpeed);
             timeInterval = DateTimeUtils.getTimeInterval(diff);
+            if (distanceInKilometer > 0.0f) {
+            	double avgSpeed = (distanceInKilometer * 1000.0 * 3600.0) / (double) diff;
+            	avg = DistanceUtils.formatSpeed(avgSpeed);
+            }
         }
         
         return new String[] {dist, avg, timeInterval};

@@ -1,5 +1,11 @@
 package com.jstakun.gms.android.ui;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -10,10 +16,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.OsUtil;
-import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *
@@ -55,16 +57,16 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             mapProvider = findPreference("mapProvider");
             settings = (PreferenceCategory) findPreference("settings");
 
-            if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS) {
-                settings.addPreference(osmMapsType);
-                settings.removePreference(googleMapsType);
-            } else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.GOOGLE_MAPS) {
-                settings.addPreference(googleMapsType);
-                settings.removePreference(osmMapsType);
-            }
-            
-            if (!OsUtil.hasSystemSharedLibraryInstalled(this, "com.google.android.maps") || !OsUtil.isDonutOrHigher()) {
-                settings.removePreference(mapProvider);
+            if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {    
+            	if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS) {
+            		settings.addPreference(osmMapsType);
+            		settings.removePreference(googleMapsType);
+            	} else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.GOOGLE_MAPS) {
+            		settings.addPreference(googleMapsType);
+            		settings.removePreference(osmMapsType);
+            	}
+            } else {
+            	settings.removePreference(mapProvider);
             }
         } else {
             finish();

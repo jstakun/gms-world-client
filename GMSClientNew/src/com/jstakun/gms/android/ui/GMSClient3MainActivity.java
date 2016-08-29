@@ -23,7 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.Commons; 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
@@ -38,7 +38,6 @@ import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
-import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.service.RouteTracingService;
@@ -71,7 +70,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -1109,7 +1107,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            	stopService(routeTracingService);
+            	//stopService(routeTracingService);
             	String filename = RouteRecorder.getInstance().stopRecording(routesManager);
                 if (filename != null) {
                     return filename;
@@ -1206,11 +1204,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             String route = RouteRecorder.getInstance().startRecording(routesManager);
-            Intent routeTracingService = new Intent(this, RouteTracingService.class);	
-            startService(routeTracingService);
-            if (route != null) {
-            	routesCluster.showRouteAction(route, true);
-            }
+            //Intent routeTracingService = new Intent(this, RouteTracingService.class);	
+            //startService(routeTracingService);
+            routesCluster.showRouteAction(route, true);
 
             messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
         }

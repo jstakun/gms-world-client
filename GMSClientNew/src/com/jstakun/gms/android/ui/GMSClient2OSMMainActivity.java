@@ -86,7 +86,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
     private RoutesManager routesManager;
-    //private RouteRecorder routeRecorder;
     private CheckinManager checkinManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
@@ -526,10 +525,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             	String route = RouteRecorder.getInstance().startRecording(routesManager);
-                if (route != null) {
-                    showRouteAction(route);
-                }
-
+                showRouteAction(route);
                 messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
             } 
             
