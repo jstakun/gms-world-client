@@ -78,7 +78,8 @@ public class RouteTracingService extends Service implements LocationListener,
 	public void onLocationChanged(Location location) {
 		// add location to route points
 		LoggerUtils.debug("RouteTracingService received new location");
-		RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+		int mode = RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+		//TODO notify ui to repaint route
 	}
 
 	@Override

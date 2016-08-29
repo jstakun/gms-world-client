@@ -158,6 +158,11 @@ public class RouteRecorder {
     }
     
     public void onAppClose() {
+    	String[] details = saveRoute(null);
+        if (details != null) {
+            LoggerUtils.debug("Saved route: " + details[0]);
+        }
+        
     	notificationId = -1;
     }
     
