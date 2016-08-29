@@ -94,6 +94,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
         editor.putBoolean(ConfigurationManager.TRACK_USER, ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER));
 
+        editor.putBoolean(ConfigurationManager.DEV_MODE, ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+        
         editor.putString(ConfigurationManager.NETWORK_MODE, ConfigurationManager.getInstance().getString(ConfigurationManager.NETWORK_MODE));
         setListPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
         
@@ -182,7 +184,14 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             tmp = getPreferenceAsInt(sharedPreferences, ConfigurationManager.NETWORK_MODE, 0);
             ConfigurationManager.getInstance().putInteger(ConfigurationManager.NETWORK_MODE, tmp);
             setListPreference(ConfigurationManager.NETWORK_MODE, R.array.imageLoading);
-        }
+        } else if (key.equals(ConfigurationManager.DEV_MODE)) {
+            boolean value = sharedPreferences.getBoolean(ConfigurationManager.DEV_MODE, false);
+            if (value) {
+                ConfigurationManager.getInstance().setOn(ConfigurationManager.DEV_MODE);
+            } else {
+                ConfigurationManager.getInstance().setOff(ConfigurationManager.DEV_MODE);
+            }
+        } 
     }
 
     private void setListPreference(String preferenceName, int arrayId) {

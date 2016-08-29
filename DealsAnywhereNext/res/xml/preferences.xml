@@ -98,5 +98,11 @@
             android:summaryOn="@string/trackUserSummaryOn"
             android:summaryOff="@string/trackUserSummaryOff"
             android:key="sendMyPos" />
+        <CheckBoxPreference
+            android:title="@string/devModeTitle"
+            android:defaultValue="false"
+            android:summaryOn="@string/devModeSummaryOn"
+            android:summaryOff="@string/devModeSummaryOff"
+            android:key="devMode" />
     </PreferenceCategory>
 </PreferenceScreen>

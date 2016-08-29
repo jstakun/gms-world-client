@@ -279,11 +279,4 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
         }
         return result;
     }
-
-    //private void clear() {
-    //    SharedPreferences prefs = getPreferenceScreen().getSharedPreferences();
-    //    SharedPreferences.Editor editor = prefs.edit();
-    //    editor.clear();
-    //    editor.commit();
-    //}
 }

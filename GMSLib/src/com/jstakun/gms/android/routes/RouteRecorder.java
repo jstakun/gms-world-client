@@ -32,7 +32,6 @@ public class RouteRecorder {
 
     private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
     private static final RouteRecorder instance = new RouteRecorder();
-    //private String label = null;
     private long startTime;
     private int notificationId = -1;
     private boolean paused = false, saveNextPoint = false;
