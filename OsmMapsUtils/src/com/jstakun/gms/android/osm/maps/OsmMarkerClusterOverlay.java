@@ -64,7 +64,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 	
 	@Override
 	public Marker buildClusterMarker(final StaticCluster cluster, MapView mapView) {
-		Marker m = new Marker(mapView);
+		Marker m = new OsmMarker(mapView);
         m.setPosition(cluster.getPosition());
         m.setInfoWindow(null);
         m.setAnchor(mAnchorU, mAnchorV);
@@ -139,7 +139,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		}
 		if (marker == null) {
 			//LoggerUtils.debug("Creating new marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
-			marker = new Marker(mapView);
+			marker = new OsmMarker(mapView);
 				
 			marker.setRelatedObject(landmark);
 			landmark.setRelatedUIObject(marker);

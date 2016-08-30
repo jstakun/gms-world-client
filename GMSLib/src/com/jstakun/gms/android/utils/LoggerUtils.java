@@ -72,7 +72,7 @@ public class LoggerUtils {
     	if (isDebug()) {
         	try {
             	LoggerUtils.debug("Saving logcat to file " + filePath);
-            	Runtime.getRuntime().exec(new String[]{"logcat", "-d", "-f", filePath, "-v", "time"}); //, LoggerUtils.getTag() + ":V", "*:S"});
+            	Runtime.getRuntime().exec(new String[]{"logcat", "-d", "-f", filePath, "-v", "time", LoggerUtils.getTag() + ":V"}); //, "*:S"});
             	Runtime.getRuntime().exec(new String[]{"logcat", "-c"}); //clear logcat
         	} catch (IOException e) {
 				error("LoggerUtils.saveLogcat() exception:", e);

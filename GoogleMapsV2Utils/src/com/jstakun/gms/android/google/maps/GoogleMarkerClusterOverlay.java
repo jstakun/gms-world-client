@@ -200,7 +200,11 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		
 		@Override
 	    protected void onBeforeClusterItemRendered(GoogleMarker marker, MarkerOptions markerOptions) {
-	        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable)marker.getIcon()).getBitmap()));
+			try {
+				markerOptions.icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable)marker.getIcon()).getBitmap()));
+			} catch (Exception e) {
+				LoggerUtils.error("Unable to load bitmap for layer " + marker.getRelatedObject().getLayer(), e);
+			}
 	    }
 		
 		@Override

@@ -32,10 +32,11 @@ public class RouteRecorder {
 
     private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
     private static final RouteRecorder instance = new RouteRecorder();
-    private long startTime;
-    private int notificationId = -1;
-    private boolean paused = false, saveNextPoint = false;
-    private float currentBearing = 0f;
+    private static long startTime;
+    private static int notificationId = -1;
+    private static boolean paused = false;
+    private static boolean saveNextPoint = false;
+    private static float currentBearing = 0f;
     
     private RouteRecorder() {
     }
@@ -46,9 +47,11 @@ public class RouteRecorder {
         
     public String startRecording(RoutesManager routesManager) {
     	ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);  	
-    	startTime = System.currentTimeMillis();
-    	currentBearing = 0f;
-    	routesManager.addRoute(CURRENTLY_RECORDED, routePoints, null);    		
+    	if (!routesManager.containsRoute(CURRENTLY_RECORDED)) {
+    		startTime = System.currentTimeMillis();
+    		currentBearing = 0f;
+    		routesManager.addRoute(CURRENTLY_RECORDED, routePoints, null);
+    	}
     	AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
     	if (asyncTaskManager != null && notificationId == -1) {
     		String msg = Locale.getMessage(R.string.Routes_Label);
@@ -169,7 +172,7 @@ public class RouteRecorder {
     private static float routeDistanceInKilometer(List<ExtendedLandmark> points) {
         float distanceInKilometer = 0.0f;
 
-        if (points.size() > 2) {
+        if (points.size() > 1) {
             for (int i = 0; i < points.size() - 1; i++) {
                 ExtendedLandmark current = points.get(i);
                 ExtendedLandmark next = points.get(i + 1);
@@ -187,11 +190,8 @@ public class RouteRecorder {
     protected static String[] saveRoute(List<ExtendedLandmark> points, String filename, String avg, String timeInterval, String dist) {
         //System.out.println("RouteRecorder.saveRoute");
         String description = Locale.getMessage(R.string.Routes_Recording_description, dist, avg, timeInterval);
-
         LoggerUtils.debug("Saving route - " + description);
-
         PersistenceManagerFactory.getFileManager().saveKmlRoute(points, description, filename);
-
         return new String[]{filename, description};
     }
     
@@ -201,9 +201,7 @@ public class RouteRecorder {
         String dist;
 
         float distanceInKilometer = routeDistanceInKilometer(routePoints);
-
-        dist = DistanceUtils.formatDistance(distanceInKilometer);
-        
+        dist = DistanceUtils.formatDistance(distanceInKilometer);      
         long endTime = System.currentTimeMillis();
 
         if (startTime < endTime) {

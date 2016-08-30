@@ -46,7 +46,7 @@ public class RoutesManager {
     }
 
     public void addRoute(String key, List<ExtendedLandmark> routePoints, String description) {
-        routes.put(key, routePoints);
+    	routes.put(key, routePoints);
         if (description != null) {
             descs.put(key, description);
         }
@@ -120,7 +120,7 @@ public class RoutesManager {
             }
         }
 
-        return zoom + 2;
+        return zoom + 3; 
     }
 
     public void clearRoutesStore() {
