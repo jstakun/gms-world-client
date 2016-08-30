@@ -73,7 +73,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
     private RoutesManager routesManager;
-    private RouteRecorder routeRecorder;
     private CheckinManager checkinManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
@@ -368,7 +367,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         //if (!appAbort) {
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
-            intents.hardClose(layerLoader, routeRecorder, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
+            intents.hardClose(layerLoader, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
         	intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
@@ -454,27 +453,12 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 ConfigurationManager.getInstance().putObject("messageStack", messageStack);
             }
             messageStack.setHandler(loadingHandler);
-            routeRecorder = ConfigurationManager.getInstance().getRouteRecorder();
-            if (routeRecorder == null) {
-                LoggerUtils.debug("Creating RouteRecorder...");
-                routeRecorder = new RouteRecorder(routesManager);
-                ConfigurationManager.getInstance().putObject("routeRecorder", routeRecorder);
-            }
-
+            
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                String route = routeRecorder.getRouteLabel();
-                if (route == null) {
-                    route = routeRecorder.startRecording();
-                }
-
-                if (route != null) {
-                    showRouteAction(route);
-                }
-
+                String route = RouteRecorder.getInstance().startRecording(routesManager);
+                showRouteAction(route);
                 messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
-            } //else {
-            //    messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOff), 10, -1, -1);
-            //}
+            } 
 
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
             
@@ -571,7 +555,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         			saveRoute.setVisible(true);
         			pauseRecording.setVisible(true);
         			routeRecording.setTitle(R.string.Routes_TrackMyPosStop);
-        			if (routeRecorder != null && routeRecorder.isPaused()) {
+        			if (RouteRecorder.getInstance().isPaused()) {
         				pauseRecording.setTitle(R.string.Routes_ResumeRecording);
         			} else {
         				pauseRecording.setTitle(R.string.Routes_PauseRecording);
@@ -710,8 +694,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 }
                 break;
             case R.id.pauseRoute:
-                routeRecorder.pause();
-                if (routeRecorder.isPaused()) {
+            	RouteRecorder.getInstance().pause();
+                if (RouteRecorder.getInstance().isPaused()) {
                     intents.showInfoToast(Locale.getMessage(R.string.Routes_PauseRecordingOn));
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Routes_PauseRecordingOff));
@@ -979,9 +963,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         	mapButtons.setVisibility(View.GONE);
         	showMyPositionAction(false);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                if (routeRecorder != null) {
-                	routeRecorder.addCoordinate(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), l.getAccuracy(), l.getSpeed(), l.getBearing());
-                }
+            	RouteRecorder.getInstance().addCoordinate(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), l.getAccuracy(), l.getSpeed(), l.getBearing());
             }
         } else {
         	mapButtons.setVisibility(View.VISIBLE);
@@ -1070,7 +1052,7 @@ private void syncRoutesOverlays() {
     private String followMyPositionAction() {
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
-            String route = routeRecorder.startRecording();
+            String route = RouteRecorder.getInstance().startRecording(routesManager);
             showRouteAction(route);
             if (layerLoader.isLoading()) {
                 layerLoader.stopLoading();
@@ -1090,7 +1072,7 @@ private void syncRoutesOverlays() {
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                String filename = routeRecorder.stopRecording();
+                String filename = RouteRecorder.getInstance().stopRecording(routesManager);
                 if (filename != null) {
                     return filename;
                 } else {
