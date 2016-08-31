@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import android.app.AlertDialog;
@@ -33,7 +29,9 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
     private List<LandmarkParcelable> favourites;
     private int currentPos = -1;
+    
     private AlertDialog deleteFileDialog;
+    
     private IntentsHelper intents = null;
 
     @Override
@@ -83,6 +81,8 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
             for (int i = 0; i < menuItems.length; i++) {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
             }
+            menu.getItem(ACTION_SHARE).setVisible(false);
+            menu.getItem(ACTION_RENAME).setVisible(false);
         }
     }
 
@@ -90,9 +90,9 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
     public boolean onContextItemSelected(MenuItem item) {
         int menuItemIndex = item.getItemId();
 
-        if (menuItemIndex == 0) {
+        if (menuItemIndex == ACTION_OPEN) {
             close(currentPos);
-        } else if (menuItemIndex == 1) {
+        } else if (menuItemIndex == ACTION_DELETE) {
             deleteFileDialog.setTitle(Locale.getMessage(R.string.Landmark_delete_prompt, favourites.get(currentPos).getName()));
             deleteFileDialog.show();
         }

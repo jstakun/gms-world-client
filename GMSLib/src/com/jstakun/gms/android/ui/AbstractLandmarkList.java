@@ -44,15 +44,23 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
     protected enum ORDER {ASC, DESC};
     protected enum ORDER_TYPE {ORDER_BY_NAME, ORDER_BY_DIST, ORDER_BY_DATE,
     	ORDER_BY_CAT_STATS, ORDER_BY_RATING, ORDER_BY_REV};
+    
     protected static final int ID_DIALOG_PROGRESS = 0;
+    protected static final int ACTION_OPEN = 0;
+	protected static final int ACTION_SHARE = 1;
+	protected static final int ACTION_RENAME = 2;
+    protected static final int ACTION_DELETE = 3;
+    
     private View sortButton, distanceButton, dateButton, selectedView;
     protected View list, loading, searchButton, ratingButton;
     private TextView sortingText;
     private ImageView sortingImage;
+    
     private ORDER order_name = ORDER.ASC;
     private ORDER order_dist = ORDER.ASC;
     private ORDER order_date = ORDER.ASC;
     private ORDER order_rating = ORDER.DESC;
+    
     private CategoriesManager cm;
     private Comparator<LandmarkParcelable> distanceComparator = new DistanceComparator();
     private Comparator<LandmarkParcelable> dateComparator = new CreationDateComparator();

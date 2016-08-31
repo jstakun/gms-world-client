@@ -39,13 +39,15 @@ import org.apache.commons.lang.StringUtils;
 public class DealCategoryListActivity extends ListActivity implements View.OnClickListener {
 
     private List<Category> categories = null;
+    private List<String> names = null;
     private int parent = -1, radius = 3, currentPos = -1, lat, lng;
+    
     private LandmarkManager landmarkManager = null;
     private CategoriesManager cm = null;
-    private View searchButton, mapViewButton, addLayerButton;
     private IntentsHelper intents;
+    
+    private View searchButton, mapViewButton, addLayerButton;
     private AlertDialog deleteLayerDialog;
-    private List<String> names = null;
     
     @Override
     public void onCreate(Bundle icicle) {
@@ -231,6 +233,9 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             for (int i = 0; i < menuItems.length; i++) {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
             }
+            
+            menu.getItem(AbstractLandmarkList.ACTION_SHARE).setVisible(false);
+            menu.getItem(AbstractLandmarkList.ACTION_RENAME).setVisible(false);
         }
     }
 
@@ -238,9 +243,9 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     public boolean onContextItemSelected(MenuItem item) {
         int menuItemIndex = item.getItemId();
 
-        if (menuItemIndex == 0) {
+        if (menuItemIndex == AbstractLandmarkList.ACTION_OPEN) {
             onClickAction(currentPos, "show");
-        } else if (menuItemIndex == 1) {
+        } else if (menuItemIndex == AbstractLandmarkList.ACTION_DELETE) {
             deleteLayerDialog.setTitle(Locale.getMessage(R.string.Layer_delete_prompt, getCategory(currentPos).getCategory()));
             deleteLayerDialog.show();
         }

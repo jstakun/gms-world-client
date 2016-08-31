@@ -34,14 +34,17 @@ import android.widget.TextView;
  */
 public class FilesActivity extends AbstractLandmarkList {
 
-    private List<LandmarkParcelable> files;
-    private int type = -1;
-    private AlertDialog deleteFileDialog;
-    private int currentPos = -1;
-    private IntentsHelper intents;
-    public static final int FILES = 0;
+	public static final int FILES = 0;
     public static final int ROUTES = 1;
 
+    private List<LandmarkParcelable> files;
+    private int type = -1;
+    private int currentPos = -1;
+    
+    private AlertDialog deleteFileDialog;
+    
+    private IntentsHelper intents;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,9 +122,9 @@ public class FilesActivity extends AbstractLandmarkList {
     public boolean onContextItemSelected(MenuItem item) {
         int menuItemIndex = item.getItemId();
 
-        if (menuItemIndex == 0) { //open
+        if (menuItemIndex == ACTION_OPEN) { 
             close(currentPos, "load");
-        } else if (menuItemIndex == 1) { //share
+        } else if (menuItemIndex == ACTION_SHARE) { 
         	Uri uri = null;
         	if (type == ROUTES) {
         		uri = Uri.fromFile(PersistenceManagerFactory.getFileManager().getRouteFile(files.get(currentPos).getName()));
@@ -133,10 +136,9 @@ public class FilesActivity extends AbstractLandmarkList {
         	} else {
         		intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
         	}
-        } else if (menuItemIndex == 2) { //rename
-        	String currentName = files.get(currentPos).getName();
+        } else if (menuItemIndex == ACTION_RENAME) { 
         	showRenameFileDialog(currentPos);
-        } else if (menuItemIndex == 3) { //delete
+        } else if (menuItemIndex == ACTION_DELETE) { 
             deleteFileDialog.setTitle(Locale.getMessage(R.string.Files_delete_prompt, files.get(currentPos).getName()));
             deleteFileDialog.show();
         }

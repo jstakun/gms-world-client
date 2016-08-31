@@ -35,15 +35,15 @@ import com.jstakun.gms.android.utils.UserTracker;
 
 public class GridCategoryListActivity extends Activity {
 
-	private static final int ACTION_OPEN = 0;
-    private static final int ACTION_DELETE = 1;
     private int parent = -1, radius = 3, currentPos = -1, lat, lng;
+    private List<String> names = null;
+    private List<Category> categories = null;
+    
     private LandmarkManager landmarkManager = null;
     private CategoriesManager cm = null;
     private IntentsHelper intents;
+    
     private GridView gridView;
-    private List<String> names = null;
-    private List<Category> categories = null;
     private AlertDialog deleteLayerDialog;
     
 	
@@ -195,8 +195,10 @@ public class GridCategoryListActivity extends Activity {
             }
             Category c = categories.get(currentPos);
             if (!c.isCustom()) {
-            	menu.getItem(ACTION_DELETE).setVisible(false);
+            	menu.getItem(AbstractLandmarkList.ACTION_DELETE).setVisible(false);
             }
+            menu.getItem(AbstractLandmarkList.ACTION_SHARE).setVisible(false);
+            menu.getItem(AbstractLandmarkList.ACTION_RENAME).setVisible(false);
         }
     }
 
@@ -204,9 +206,9 @@ public class GridCategoryListActivity extends Activity {
     public boolean onContextItemSelected(MenuItem item) {
         int menuItemIndex = item.getItemId();
 
-        if (menuItemIndex == ACTION_OPEN) {
+        if (menuItemIndex == AbstractLandmarkList.ACTION_OPEN) {
             onClickAction(currentPos, "show");
-        } else if (menuItemIndex == ACTION_DELETE) {
+        } else if (menuItemIndex == AbstractLandmarkList.ACTION_DELETE) {
             deleteLayerDialog.setTitle(Locale.getMessage(R.string.Layer_delete_prompt, categories.get(currentPos).getCategory()));
             deleteLayerDialog.show();
         }
