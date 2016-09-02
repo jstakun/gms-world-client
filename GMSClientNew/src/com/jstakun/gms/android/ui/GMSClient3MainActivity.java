@@ -6,12 +6,7 @@ import java.util.List;
 
 import org.osmdroid.util.GeoPoint;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
@@ -38,6 +33,7 @@ import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.location.GmsLocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.service.RouteTracingService;
@@ -63,7 +59,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -85,10 +80,7 @@ import android.widget.TextView;
 
 public class GMSClient3MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, 
                                                                          OnMapReadyCallback, OnClickListener, 
-                                                                         GoogleMap.OnMyLocationButtonClickListener,
-                                                                         GoogleApiClient.ConnectionCallbacks,
-                                                                         GoogleApiClient.OnConnectionFailedListener,
-                                                                         LocationListener {
+                                                                         GoogleMap.OnMyLocationButtonClickListener {
 
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
@@ -105,8 +97,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     
     private GoogleLandmarkProjectionV2 projection;
 	private GoogleMarkerClusterOverlay markerCluster;
-	private GoogleApiClient mGoogleApiClient;
-	private LocationRequest mLocationRequest;
 	private GoogleMap mMap;
 	private GoogleRoutesOverlay routesCluster;
 	
@@ -192,8 +182,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             actionBar.setTitle(getTitle());
             actionBar.hide();
         }
-        
-        buildGoogleApiClient();
         
         loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
     	loadingProgressBar.setProgress(25);
@@ -284,11 +272,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public void onResume() {
     	super.onResume();
         LoggerUtils.debug("onResume");
-    	mGoogleApiClient.connect();
-    	mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        GmsLocationServicesManager.getInstance().enable(loadingHandler);
         
         asyncTaskManager.setActivity(this);
         
@@ -367,11 +351,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     @Override
     public void onPause() {
         super.onPause();
-        if (mGoogleApiClient.isConnected()) {
-        	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-        }
-        
+        GmsLocationServicesManager.getInstance().disable();
         if (dialogManager != null) {
             dialogManager.dismissDialog();
         }
@@ -391,6 +371,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	LoggerUtils.debug("onDestroy");
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
+        	GmsLocationServicesManager.getInstance().disable();
         	intents.hardClose(layerLoader, loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else if (mMap != null) {
             intents.softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
@@ -735,8 +716,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		return true;
 	}
 	
-	@Override
-	public void onLocationChanged(Location location) {
+	
+	private void onLocationChanged() {
+		Location location = ConfigurationManager.getInstance().getLocation();
 		//user location has changed	
 		if (!appInitialized && !isFinishing()) {
 			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 3);
@@ -766,36 +748,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		}
 	}
 
-	@Override
-	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-		/*if (connectionResult.hasResolution()) {
-			try {
-	            // Start an Activity that tries to resolve the error
-	            connectionResult.startResolutionForResult(this, 0);
-	        } catch (IntentSender.SendIntentException e) {
-	            //e.printStackTrace();
-	        }
-	    } else {
-	        Log.i(getClass().getName(), "Location services connection failed with code " + connectionResult.getErrorCode());
-	    }*/
-	}
-
-	@Override
-    public void onConnected(Bundle bundle) {
-		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+	private void onConnected() {
+		Location location = ConfigurationManager.getInstance().getLocation();
 		if (location != null && !appInitialized) {
-			//Toast.makeText(this, "Last known location received: " + location.getLatitude() + "," + location.getLongitude() + " from " + location.getProvider(), Toast.LENGTH_SHORT).show();
-			ConfigurationManager.getInstance().setLocation(location);
 			LatLng mapCenter = new LatLng(location.getLatitude(), location.getLongitude());
 			initOnLocationChanged(mapCenter, 0);
 		}
-		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
-
-	@Override
-	public void onConnectionSuspended(int reason) {
-		//call logger
-	}
 	
 	@Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -994,14 +953,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
 		}
 		return true;
-    }
-	
-	protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
     }
 
 	private synchronized void initOnLocationChanged(LatLng location, int source) {
@@ -1335,6 +1286,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		activity.animateTo(new LatLng(MathUtils.coordIntToDouble(msg.arg1), MathUtils.coordIntToDouble(msg.arg2)));
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.routesCluster.showRouteAction((String) msg.obj, true);
+            	} else if (msg.what == GmsLocationServicesManager.GMS_CONNECTED) {
+            		activity.onConnected();
+            	} else if (msg.what == GmsLocationServicesManager.UPDATE_LOCATION) {
+            		activity.onLocationChanged();
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}

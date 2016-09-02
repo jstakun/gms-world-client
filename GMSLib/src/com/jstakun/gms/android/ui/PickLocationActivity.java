@@ -300,10 +300,9 @@ public class PickLocationActivity extends Activity implements OnClickListener {
 
             String url = ConfigurationManager.getInstance().getServerUrl() + "geocode";
 
-            utils.sendPostRequest(url, params, true);
+            String response = utils.sendPostRequest(url, params, true);
             
-            String response = utils.getPostResponse();
-			if (StringUtils.startsWith(response, "{")) {
+            if (StringUtils.startsWith(response, "{")) {
                JSONObject json = new JSONObject(response);
                LoggerUtils.debug("Geocode response: " + response);
 

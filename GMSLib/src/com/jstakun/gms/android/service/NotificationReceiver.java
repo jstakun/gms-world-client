@@ -69,9 +69,8 @@ public class NotificationReceiver extends BroadcastReceiver {
 	            	postParams.add(new BasicNameValuePair("username", Commons.MY_POS_USER));
 	            }
 	            
-	            utils.sendPostRequest(url, postParams, true);
+	            String response = utils.sendPostRequest(url, postParams, true);
 	            
-	            String response = utils.getPostResponse();
 	            if (StringUtils.isNotEmpty(response)) {
 	                LoggerUtils.debug("Received response: " + response);
 	            }              

@@ -32,6 +32,8 @@ import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.location.AndroidDevice;
+import com.jstakun.gms.android.location.GmsLocationServicesManager;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.AlertDialogBuilder;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
@@ -84,10 +86,7 @@ import android.widget.TextView;
 
 public class DealMap3Activity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks,
                                                                    OnMapReadyCallback, OnClickListener, 
-																   GoogleMap.OnMyLocationButtonClickListener,
-																   GoogleApiClient.ConnectionCallbacks,
-																   GoogleApiClient.OnConnectionFailedListener,
-																   LocationListener {
+																   GoogleMap.OnMyLocationButtonClickListener {
 
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
@@ -111,8 +110,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     
     private GoogleLandmarkProjectionV2 projection;
 	private GoogleMarkerClusterOverlay markerCluster;
-	private GoogleApiClient mGoogleApiClient;
-	private LocationRequest mLocationRequest;
 	private GoogleMap mMap;
 	private GoogleRoutesOverlay routesCluster;
 	
@@ -176,8 +173,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             actionBar.setTitle(getTitle());
             actionBar.hide();
         }
-        
-        buildGoogleApiClient();
         
         loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
     	loadingProgressBar.setProgress(25);
@@ -262,11 +257,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     public void onResume() {
     	super.onResume();
         LoggerUtils.debug("onResume");
-    	mGoogleApiClient.connect();
-    	mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        GmsLocationServicesManager.getInstance().enable(loadingHandler);
         
         asyncTaskManager.setActivity(this);
         
@@ -355,10 +346,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	@Override
     public void onPause() {
         super.onPause();
-        if (mGoogleApiClient.isConnected()) {
-        	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-        }
+        GmsLocationServicesManager.getInstance().disable();
         
         if (dialogManager != null) {
             dialogManager.dismissDialog();
@@ -469,14 +457,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     	
 	}
 	
-	protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
 	private synchronized void initOnLocationChanged(LatLng location, int source) {
     	//System.out.println("4 --------------------------------");
     	if (!appInitialized && location != null) {
@@ -903,37 +883,25 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         }
     }
 
-	@Override
-	public void onLocationChanged(Location location) {
+	private void onLocationChanged() {
+		Location location = ConfigurationManager.getInstance().getLocation();
+		
 		if (!appInitialized && !isFinishing()) {
 			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 3);
 		}
 		
-		if (appInitialized && !isFinishing()) {
-			ConfigurationManager.getInstance().setLocation(location);		
+		if (appInitialized && !isFinishing() && AndroidDevice.isBetterLocation(location, ConfigurationManager.getInstance().getLocation())) {
 			intents.addMyLocationLandmark(location);     
 			intents.vibrateOnLocationUpdate();
 			UserTracker.getInstance().sendMyLocation();	   
 		}		
 	}
 
-	@Override
-	public void onConnectionFailed(ConnectionResult connectionResult) {		
-	}
-
-	@Override
-	public void onConnected(Bundle bundle) {
-		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+	private void onConnected() {
+		Location location = ConfigurationManager.getInstance().getLocation();
 		if (location != null && !appInitialized) {
-			//Toast.makeText(this, "Last known location received: " + location.getLatitude() + "," + location.getLongitude() + " from " + location.getProvider(), Toast.LENGTH_SHORT).show();
-			ConfigurationManager.getInstance().setLocation(location);
 			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 0);
-		}
-		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);		
-	}
-
-	@Override
-	public void onConnectionSuspended(int reasonCode) {
+		}	
 	}
 
 	@Override
@@ -1087,7 +1055,11 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         			activity.routesCluster.showRouteAction((String) msg.obj, true);
         		} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
-            	}
+            	} else if (msg.what == GmsLocationServicesManager.GMS_CONNECTED) {
+            		activity.onConnected();
+            	} else if (msg.what == GmsLocationServicesManager.UPDATE_LOCATION) {
+            		activity.onLocationChanged();
+            	} 
         	}
 		}
 	}

@@ -90,7 +90,7 @@ public class HttpUtils {
     private HttpPost postRequest;
     private HttpGet getRequest;
     private Map<String, String> headers = new HashMap<String, String>();
-    private String postResponse = null;
+    //private String postResponse = null;
     private int responseCode;
     
     private static HttpClient getHttpClient() {
@@ -135,9 +135,10 @@ public class HttpUtils {
         return httpClient;
     }
 
-    public void sendPostRequest(String url, List<NameValuePair> params, boolean auth) {
+    public String sendPostRequest(String url, List<NameValuePair> params, boolean auth) {
         getThreadSafeClientConnManagerStats();
         InputStream is = null;
+        String postResponse = null;
         
         if (locale == null) {
             locale = ConfigurationManager.getInstance().getCurrentLocale();
@@ -210,11 +211,13 @@ public class HttpUtils {
             } catch (IOException e) {
             }
         }
+        return postResponse;
     }
 
-    public void uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
+    public String uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
         getThreadSafeClientConnManagerStats();
         InputStream is = null;
+        String postResponse = null;
         
         try {
         	URI uri = new URI(url);
@@ -287,6 +290,7 @@ public class HttpUtils {
             } catch (IOException e) {
             }
         }
+        return postResponse;
     }
 
     public byte[] loadHttpFile(String url, boolean auth, String format) {
@@ -564,44 +568,6 @@ public class HttpUtils {
     }
 
     private static void setAuthHeader(HttpRequest request, boolean throwIfEmpty) {
-    	/*String username = null, password = null;
-    	boolean decodePassword = true, decodeUsername = true;
-    	
-    	if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_USERNAME, String.class) && //OK
-    			ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_PASSWORD, String.class)) {
-        	//user is in process of login to gms world
-    		username = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_USERNAME, String.class);
-    		password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
-    		decodeUsername = false;
-    		decodePassword = false;
-        } else if (ConfigurationManager.getUserManager().isUserLoggedIn()) { //OK
-    		//user is logged in
-        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
-        		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);
-        		password = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_PASSWORD);
-        		decodeUsername = false;
-        	} else {
-        		username = Commons.GMS_APP_USER;
-                password = Commons.APP_USER_PWD;
-        	}
-    	} else if (ConfigurationManager.getInstance().containsObject(Commons.MY_POS_CODE, String.class)) { //OK
-    		//my pos request
-    		username = Commons.MY_POS_USER;
-            password = Commons.APP_USER_PWD;
-            ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
-        } else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) == 1) { //OK
-    		//da app request
-    		username = Commons.DA_APP_USER;
-            password = Commons.APP_USER_PWD;
-    	}
-        
-    	if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
-    		request.addHeader("Authorization", getAuthHeader(username, decodeUsername, password, decodePassword));
-    	} else if (throwIfEmpty) {
-    		LoggerUtils.error("Authorization header is empty for user " + username);
-    		throw new SecurityException("Authorization header is empty for user " + username);
-    	}*/
-    	
     	if (ConfigurationManager.getUserManager().isTokenPresent()) {
     		request.addHeader(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
     		request.addHeader(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
@@ -610,26 +576,6 @@ public class HttpUtils {
     		throw new SecurityException("Missing authorization token");
     	}
     }
-    
-    /*public static String getAuthHeader(String username, boolean decodeUsername, String password, boolean decodePassword) {
-    	byte[] usr, pwd;
-    	
-    	if (decodeUsername) {
-    	   usr = Base64.decode(username);
-    	} else {
-    	   usr = username.getBytes();	
-    	}
-    	
-    	if (decodePassword) {
-    		pwd = Base64.decode(password);
-    	} else {
-    		pwd = password.getBytes();
-    	}
-    		
-    	byte[] userpassword = StringUtil.concat(StringUtil.concat(usr, ":".getBytes()), pwd);
-		String encodedAuthorization = new String(Base64.encode(userpassword));
-		return "Basic " + encodedAuthorization;
-    }*/
 
     public static void closeConnManager() {
     	closeConnManager = true;
@@ -644,10 +590,6 @@ public class HttpUtils {
         }
     }
 
-    public String getPostResponse() {
-        return postResponse;
-    }
-
     public String getResponseCodeErrorMessage() {
         return errorMessage;
     }
@@ -656,7 +598,7 @@ public class HttpUtils {
     	return responseCode;
     }
 
-    public static String handleHttpException(Throwable e) {
+    private static String handleHttpException(Throwable e) {
         if (e instanceof java.net.UnknownHostException) {
             //unknown host exception
             return Locale.getMessage(R.string.Internet_connection_error);
@@ -708,14 +650,6 @@ public class HttpUtils {
     }
 
     private static SSLSocketFactory getSSLSocketFactory() {
-    	/*SSLSocketFactory sslSocketFactory = null;
-    	if (OsUtil.isGingerbreadOrHigher()) {
-    		sslSocketFactory = SSLSocketFactoryHelper.getSSLSocketFactory();
-        } else {
-        	sslSocketFactory = SSLSocketFactory.getSocketFactory();
-        }
-    	sslSocketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);*/
-        //SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER); 
     	try {
     		KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
     		trustStore.load(null, null);
@@ -727,71 +661,8 @@ public class HttpUtils {
     		LoggerUtils.error("HttpUtils.getSSLSocketFactory() exception", e);
     		return null;
     	}
-    }
-    
-    /*private static void setUserCredentials(URI uri) throws UnsupportedEncodingException { 
-    	String username = null, password = null;
-    	boolean decodePassword = true, decodeUsername = true;
-    	
-    	if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_USERNAME, String.class) && 
-    			ConfigurationManager.getInstance().containsObject(ConfigurationManager.GMS_PASSWORD, String.class)) {
-        	//user in process of login to gms world
-    		username = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_USERNAME, String.class);
-    		password = (String) ConfigurationManager.getInstance().removeObject(ConfigurationManager.GMS_PASSWORD, String.class);
-    		decodeUsername = false;
-    		decodePassword = false;
-        } else if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-    		//user is logged in
-        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
-        		username = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_USERNAME);
-        		password = ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_PASSWORD);
-        		decodeUsername = false;
-        	} else {
-        		username = Commons.GMS_APP_USER;
-                password = Commons.APP_USER_PWD;
-        	}
-    	} else if (ConfigurationManager.getInstance().containsObject(Commons.MY_POS_CODE, String.class)) {
-    		//mypos request
-    		username = Commons.MY_POS_USER;
-            password = Commons.APP_USER_PWD;
-            ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
-        } else if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) == 1) {
-    		//da app request
-    		username = Commons.DA_APP_USER;
-            password = Commons.APP_USER_PWD;
-    	}
-    	
-        byte[] usr, pwd;
-    	
-    	if (decodeUsername) {
-    	   usr = Base64.decode(username);
-    	} else {
-    	   usr = username.getBytes();	
-    	}
-    	
-    	if (decodePassword) {
-    		pwd = Base64.decode(password);
-    	} else {
-    		pwd = password.getBytes();
-    	}
-    	
-    	Credentials creds = new UsernamePasswordCredentials(new String(usr, "US-ASCII"), new String(pwd, "US-ASCII"));
-    	
-    	httpClient.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort(), AuthScope.ANY_REALM), creds);
-    }*/
-
-    /*private static class SSLSocketFactoryHelper {
-
-        private static SSLSocketFactory getSSLSocketFactory() {
-            try {
-                SSLSessionCache sessionCache = new SSLSessionCache(ConfigurationManager.getInstance().getContext());
-                return SSLCertificateSocketFactory.getHttpSocketFactory(SOCKET_TIMEOUT, sessionCache);
-            } catch (Throwable e) {
-            }
-            return SSLSocketFactory.getSocketFactory();
-        }
-    }*/
-    
+    }    
+  
     private static class HttpClientClosingTask extends GMSAsyncTask<Void, Void, Void> {
 
 		public HttpClientClosingTask(int priority) {

@@ -159,9 +159,8 @@ public class RoutesManager {
         	}
         	params.add(new BasicNameValuePair("username", username));
         
-        	utils.sendPostRequest(url, params, true);
+        	String jsonResp = utils.sendPostRequest(url, params, true);
         
-        	String jsonResp = utils.getPostResponse();
         	int responseCode = utils.getResponseCode();
         	message = utils.getResponseCodeErrorMessage();
         

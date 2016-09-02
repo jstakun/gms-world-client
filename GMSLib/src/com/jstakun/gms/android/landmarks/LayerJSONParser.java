@@ -43,9 +43,8 @@ public class LayerJSONParser {
 			params.add(new BasicNameValuePair("version","2"));
 			params.add(new BasicNameValuePair("radius",Integer.toString(radius)));
             
-            utils.sendPostRequest(url, params, true);
+			String jsonResp = utils.sendPostRequest(url, params, true);
             
-            String jsonResp = utils.getPostResponse();
             int responseCode = utils.getResponseCode();
             
             if (responseCode == HttpStatus.SC_OK && StringUtils.startsWith(jsonResp, "{")) {

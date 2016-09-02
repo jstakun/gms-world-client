@@ -1084,9 +1084,8 @@ public final class IntentsHelper {
             	params.add(new BasicNameValuePair("username", Commons.MY_POS_USER));
             }
 
-            utils.sendPostRequest(url, params, true);
+            String resp = utils.sendPostRequest(url, params, true);
             if (utils.getResponseCode() == HttpStatus.SC_OK) {
-                String resp = utils.getPostResponse();
                 if (StringUtils.startsWith(resp, "{")) {
                     JSONObject json = new JSONObject(resp);
                     int version = Integer.valueOf(json.optString("value", "0"));

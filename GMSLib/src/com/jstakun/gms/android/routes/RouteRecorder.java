@@ -161,7 +161,10 @@ public class RouteRecorder {
     }
     
     public void onAppClose() {
+    	//stop recording and save current route
+    	//ConfigurationManager.getInstance().setOff(ConfigurationManager.RECORDING_ROUTE);
     	String[] details = saveRoute(null);
+    	//routesManager.removeRoute(CURRENTLY_RECORDED);
         if (details != null) {
             LoggerUtils.debug("Saved route: " + details[0]);
         }
