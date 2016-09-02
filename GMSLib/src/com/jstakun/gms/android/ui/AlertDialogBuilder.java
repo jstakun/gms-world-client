@@ -167,7 +167,7 @@ public class AlertDialogBuilder {
 
     private void createPacketDataAlertDialog(DialogInterface.OnClickListener packetDataListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        String[] dd = HttpUtils.formatCounter();
+        String[] dd = ConfigurationManager.getAppUtils().formatCounter();
         String message = Locale.getMessage(R.string.Packet_data, dd[0], dd[1], dd[2]);
         builder.setMessage(message).
                 setCancelable(true).

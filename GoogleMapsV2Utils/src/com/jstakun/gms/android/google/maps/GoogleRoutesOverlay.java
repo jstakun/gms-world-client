@@ -28,7 +28,7 @@ public class GoogleRoutesOverlay {
 	private RoutesManager routesManager;
 	private float mDensity;
 	private GoogleMarkerClusterOverlay mMarkerCluster;
-	private Polyline mLastRoutePolyline;
+	private List<Polyline> mRoutePolylines = new ArrayList<Polyline>();
 	
 	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, RoutesManager rm, GoogleMarkerClusterOverlay markerCluster, float density) {
 		this.mMap = map;
@@ -80,23 +80,28 @@ public class GoogleRoutesOverlay {
         }
     }
 	
-	public void showRecordedRouteStep(String routeKey, int mode) {
-		//0 - replace, 1 - add
-		List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
+	public void showRecordedRoute() {
+		List<ExtendedLandmark> points = routesManager.getRoute(RouteRecorder.CURRENTLY_RECORDED);
         if (points.size() > 1) {
-        	ExtendedLandmark penultimate = points.get(points.size()-2);
-        	ExtendedLandmark last = points.get(points.size()-1);
-        	LatLng lastPoint = new LatLng(last.getQualifiedCoordinates().getLatitude(), last.getQualifiedCoordinates().getLongitude());
-        	LatLng penultimatePoint = new LatLng(penultimate.getQualifiedCoordinates().getLatitude(), penultimate.getQualifiedCoordinates().getLongitude());
-        	if (mode == 0 && mLastRoutePolyline != null) {
-        		mLastRoutePolyline.remove();
+        	if (!mRoutePolylines.isEmpty()) {
+        		for (Polyline p : mRoutePolylines) {
+        			p.remove();
+        		}
+        		mRoutePolylines.clear();
         	}
-        	mLastRoutePolyline = mMap.addPolyline(new PolylineOptions()
-    				.add(penultimatePoint, lastPoint)
+        	for (int i=0;i<points.size()-1;i++) {
+        		ExtendedLandmark p1 = points.get(i);
+            	ExtendedLandmark p2 = points.get(i+1);
+            	LatLng l1 = new LatLng(p1.getQualifiedCoordinates().getLatitude(), p1.getQualifiedCoordinates().getLongitude());
+            	LatLng l2 = new LatLng(p2.getQualifiedCoordinates().getLatitude(), p2.getQualifiedCoordinates().getLongitude());            	
+        		Polyline p = mMap.addPolyline(new PolylineOptions()
+    				.add(l1, l2)
     				.width(5f * mDensity)
     				.color(Color.RED)
     				.clickable(false)
-    				.geodesic(true));    		
+    				.geodesic(true));  
+        		mRoutePolylines.add(p);
+        	}
         }
 	}
 	

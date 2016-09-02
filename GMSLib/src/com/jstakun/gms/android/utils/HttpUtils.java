@@ -191,7 +191,7 @@ public class HttpUtils {
             	//LoggerUtils.debug(postResponse);
 
             	if (params != null && byteBuffer != null) {
-            		increaseCounter(1024, byteBuffer.length);
+            		ConfigurationManager.getAppUtils().increaseCounter(1024, byteBuffer.length);
             	}
             	if (responseCode == HttpStatus.SC_OK) {
             		readHeaders(httpResponse, "key", "name", "hash");
@@ -272,7 +272,7 @@ public class HttpUtils {
             LoggerUtils.debug(postResponse);
 
             if (byteBuffer != null) {
-                increaseCounter(1024 + file.length, byteBuffer.length);
+            	ConfigurationManager.getAppUtils().increaseCounter(1024 + file.length, byteBuffer.length);
             }
             if (responseCode == HttpStatus.SC_OK) {
             } else {
@@ -360,7 +360,7 @@ public class HttpUtils {
                         	}
 
                         	byteBuffer = bos.toByteArray();
-                        	increaseCounter(0, byteBuffer.length);
+                        	ConfigurationManager.getAppUtils().increaseCounter(0, byteBuffer.length);
                         	LoggerUtils.debug("File " + url + " size: " + byteBuffer.length + " bytes");//, Compressed = " + compressed);
                     	} finally {
                         	if (is != null) {
@@ -445,7 +445,7 @@ public class HttpUtils {
         					LoggerUtils.debug("File " + uri.toString() + " size: " + bufferSize + " bytes");
             		
         					if (bufferSize > 0 && !postRequest.isAborted()) {
-        						increaseCounter(0, bufferSize);
+        						ConfigurationManager.getAppUtils().increaseCounter(0, bufferSize);
         						ObjectInputStream ois = null;
         						ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
         						try {
@@ -531,40 +531,6 @@ public class HttpUtils {
                 headers.put(headerName, URLDecoder.decode(header.getValue(), "UTF-8"));
             }
         }
-    }
-
-    private static void increaseCounter(int sent, int received) {
-        long allDataReceivedCounter = Long.parseLong(ConfigurationManager.getInstance().getString(ConfigurationManager.PACKET_DATA_RECEIVED));
-        long allDataSentCounter = Long.parseLong(ConfigurationManager.getInstance().getString(ConfigurationManager.PACKET_DATA_SENT));
-        allDataReceivedCounter += received;
-        allDataSentCounter += sent;
-        ConfigurationManager.getInstance().putString(ConfigurationManager.PACKET_DATA_RECEIVED, Long.toString(allDataReceivedCounter));
-        ConfigurationManager.getInstance().putString(ConfigurationManager.PACKET_DATA_SENT, Long.toString(allDataSentCounter));
-    }
-
-    public static void clearCounter() {
-        ConfigurationManager.getInstance().putString(ConfigurationManager.PACKET_DATA_RECEIVED, "0");
-        ConfigurationManager.getInstance().putString(ConfigurationManager.PACKET_DATA_SENT, "0");
-        ConfigurationManager.getInstance().putString(ConfigurationManager.PACKET_DATA_DATE, Long.toString(System.currentTimeMillis()));
-    }
-
-    public static String[] formatCounter() {
-        double mb = 1024.0 * 1024.0 * 8.0;
-
-        long allDataReceivedCounter = ConfigurationManager.getInstance().getLong(ConfigurationManager.PACKET_DATA_RECEIVED);
-        long allDataSentCounter = ConfigurationManager.getInstance().getLong(ConfigurationManager.PACKET_DATA_SENT);
-        long packetDateDate = ConfigurationManager.getInstance().getLong(ConfigurationManager.PACKET_DATA_DATE);
-        String sd = null;
-        if (packetDateDate == -1) {
-        	sd = "unknown";
-        } else {
-        	sd = DateTimeUtils.getDefaultDateTimeString(packetDateDate, ConfigurationManager.getInstance().getCurrentLocale());
-        }
-        
-        String ds = StringUtil.formatDouble((allDataSentCounter / mb), 2);
-        String dr = StringUtil.formatDouble((allDataReceivedCounter / mb), 2);
-        
-        return new String[]{ds, dr, sd};
     }
 
     private static void setAuthHeader(HttpRequest request, boolean throwIfEmpty) {

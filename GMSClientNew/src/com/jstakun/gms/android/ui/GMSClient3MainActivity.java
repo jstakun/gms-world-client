@@ -736,7 +736,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
 					int mode = RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
 					if (routesCluster != null && mode >= 0) {
-					   routesCluster.showRecordedRouteStep(RouteRecorder.CURRENTLY_RECORDED, mode);
+					   routesCluster.showRecordedRoute();
 					}
 				}
 				showMyPositionAction(false);

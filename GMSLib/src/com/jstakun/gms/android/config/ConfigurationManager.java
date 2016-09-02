@@ -29,7 +29,6 @@ import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.DateTimeUtils;
-import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MessageStack;
@@ -758,8 +757,42 @@ public final class ConfigurationManager {
     		remove(ConfigurationManager.GMS_TOKEN);
     		setDefaultConfiguration();
     		getDatabaseManager().readConfiguration();
-    		HttpUtils.clearCounter();
+    		clearCounter();
     	}
+    	
+    	public void increaseCounter(int sent, int received) {
+            long allDataReceivedCounter = getLong(PACKET_DATA_RECEIVED);
+            long allDataSentCounter = getLong(PACKET_DATA_SENT);
+            allDataReceivedCounter += received;
+            allDataSentCounter += sent;
+            putString(ConfigurationManager.PACKET_DATA_RECEIVED, Long.toString(allDataReceivedCounter));
+            putString(ConfigurationManager.PACKET_DATA_SENT, Long.toString(allDataSentCounter));
+        }
+
+        public void clearCounter() {
+            putString(ConfigurationManager.PACKET_DATA_RECEIVED, "0");
+            putString(ConfigurationManager.PACKET_DATA_SENT, "0");
+            putString(ConfigurationManager.PACKET_DATA_DATE, Long.toString(System.currentTimeMillis()));
+        }
+
+        public String[] formatCounter() {
+            double mb = 1024.0 * 1024.0 * 8.0;
+
+            long allDataReceivedCounter = getLong(PACKET_DATA_RECEIVED);
+            long allDataSentCounter = getLong(PACKET_DATA_SENT);
+            long packetDateDate = getLong(PACKET_DATA_DATE);
+            String sd = null;
+            if (packetDateDate == -1) {
+            	sd = "unknown";
+            } else {
+            	sd = DateTimeUtils.getDefaultDateTimeString(packetDateDate, getCurrentLocale());
+            }
+            
+            String ds = StringUtil.formatDouble((allDataSentCounter / mb), 2);
+            String dr = StringUtil.formatDouble((allDataReceivedCounter / mb), 2);
+            
+            return new String[]{ds, dr, sd};
+        }
     }
     
     public static DatabaseManager getDatabaseManager() {

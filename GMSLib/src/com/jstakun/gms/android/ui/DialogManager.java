@@ -60,7 +60,7 @@ public class DialogManager {
     private DialogInterface.OnClickListener packetDataListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int id) {
-            HttpUtils.clearCounter();
+        	ConfigurationManager.getAppUtils().clearCounter();
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
             intents.showInfoToast(Locale.getMessage(R.string.Counter_cleared));
