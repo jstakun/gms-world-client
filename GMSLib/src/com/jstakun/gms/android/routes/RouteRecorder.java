@@ -32,7 +32,7 @@ public class RouteRecorder {
 
     private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
     private static final RouteRecorder instance = new RouteRecorder();
-    private static long startTime;
+    private static long startTime = -1;
     private static int notificationId = -1;
     private static boolean paused = false;
     private static boolean saveNextPoint = false;
@@ -72,6 +72,7 @@ public class RouteRecorder {
         AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         asyncTaskManager.cancelNotification(notificationId);
         notificationId = -1;
+        startTime = -1;
         
         return filename;
     }
@@ -207,7 +208,7 @@ public class RouteRecorder {
         dist = DistanceUtils.formatDistance(distanceInKilometer);      
         long endTime = System.currentTimeMillis();
 
-        if (startTime < endTime) {
+        if (startTime > 0 && startTime < endTime) {
             long diff = (endTime - startTime);
             timeInterval = DateTimeUtils.getTimeInterval(diff);
             if (distanceInKilometer > 0.0f) {

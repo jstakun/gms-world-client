@@ -28,7 +28,7 @@ public class GoogleRoutesOverlay {
 	private RoutesManager routesManager;
 	private float mDensity;
 	private GoogleMarkerClusterOverlay mMarkerCluster;
-	private List<Polyline> mRoutePolylines = new ArrayList<Polyline>();
+	private Polyline mRoutePolyline = null;
 	
 	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, RoutesManager rm, GoogleMarkerClusterOverlay markerCluster, float density) {
 		this.mMap = map;
@@ -57,14 +57,12 @@ public class GoogleRoutesOverlay {
                 	mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
                 	mMarkerCluster.addMarker(points.get(points.size()-1));
                 	
-                	for (int i=0;i<pointsLatLng.size()-1;i++) {
-                		mMap.addPolyline(new PolylineOptions()
-                				.add(pointsLatLng.get(i), pointsLatLng.get(i+1))
-                				.width(5f * mDensity)
-                				.color(Color.RED)
-                				.geodesic(true));
-                	}
-                
+                	mMap.addPolyline(new PolylineOptions()
+                			.addAll(pointsLatLng)
+                			.width(5f * mDensity)
+                			.color(Color.RED)
+                			.geodesic(true));
+                	            
                 	if (animateTo && !routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
                 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
                     	for (LatLng p : pointsLatLng) {
@@ -82,27 +80,22 @@ public class GoogleRoutesOverlay {
 	
 	public void showRecordedRoute() {
 		List<ExtendedLandmark> points = routesManager.getRoute(RouteRecorder.CURRENTLY_RECORDED);
-        if (points.size() > 1) {
-        	if (!mRoutePolylines.isEmpty()) {
-        		for (Polyline p : mRoutePolylines) {
-        			p.remove();
-        		}
-        		mRoutePolylines.clear();
+		LoggerUtils.debug("Drawing currently recorded route containing " + points.size() + " points");
+    	if (points.size() > 1) {
+        	if (mRoutePolyline != null) {
+        		mRoutePolyline.remove();
         	}
-        	for (int i=0;i<points.size()-1;i++) {
-        		ExtendedLandmark p1 = points.get(i);
-            	ExtendedLandmark p2 = points.get(i+1);
-            	LatLng l1 = new LatLng(p1.getQualifiedCoordinates().getLatitude(), p1.getQualifiedCoordinates().getLongitude());
-            	LatLng l2 = new LatLng(p2.getQualifiedCoordinates().getLatitude(), p2.getQualifiedCoordinates().getLongitude());            	
-        		Polyline p = mMap.addPolyline(new PolylineOptions()
-    				.add(l1, l2)
-    				.width(5f * mDensity)
-    				.color(Color.RED)
-    				.clickable(false)
-    				.geodesic(true));  
-        		mRoutePolylines.add(p);
+        	PolylineOptions po = new PolylineOptions(); 
+        	for (ExtendedLandmark l : points) {
+        		po.add(new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude()));  
+        		
         	}
-        }
+        	po.width(5f * mDensity)
+				.color(Color.RED)
+				.clickable(false)
+				.geodesic(true);
+        	mRoutePolyline = mMap.addPolyline(po);
+        } 
 	}
 	
 	public void loadAllRoutes() {
