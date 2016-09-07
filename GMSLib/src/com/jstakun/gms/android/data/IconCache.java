@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -43,9 +42,6 @@ public class IconCache {
     public static final String ICON_MISSING16 = "icon-missing16";
     public static final String CURSOR = "cursor";
     public static final String MAGNIFIER = "magnifier";
-    public static final String IMAGE_LOADING_TILE = "image-loading-tile";
-    public static final String IMAGE_LOADING_MAP = "image-loading-map";
-    public static final String IMAGE_MISSING = "image-missing";
     public static final String MARKER_CLUSTER_M1 = "marker-cluster-m1";
     public static final String MARKER_CLUSTER_M2 = "marker-cluster-m2";
     public static final String MARKER_CLUSTER_M3 = "marker-cluster-m3";
@@ -57,80 +53,47 @@ public class IconCache {
     private static SimpleArrayMap<String, Bitmap> images = new SimpleArrayMap<String, Bitmap>();
     private static SimpleArrayMap<String, GMSAsyncTask<?,?,?>> loadingTasks = new SimpleArrayMap<String, GMSAsyncTask<?,?,?>>();
     private static IconCache instance;
-    private static Paint paint;
-    
-    //private static BitmapFactory.Options bitmapOptions = new BitmapFactory.Options(); 
-
-    //static {
-    //    bitmapOptions.inScaled = false;
-    //}
-    
-
+     
     private IconCache() {
         try {
             Context ctx = ConfigurationManager.getInstance().getContext();
 
-        	if (ctx != null) {
-        		if (!images.containsKey(CURSOR)) {
-        			images.put(CURSOR, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.pointer16));
-        		}
-        		if (!images.containsKey(MAGNIFIER)) {
-        			images.put(MAGNIFIER, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.magnifier));
-        		}
-        		if (!images.containsKey(ICON_MISSING32)) {
-        			images.put(ICON_MISSING32, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing32));
-        		}
-        		if (!images.containsKey(ICON_MISSING16)) {
-        			images.put(ICON_MISSING16, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing16));
-        		}
-        		if (!images.containsKey(LOADING)) {
-        			images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
-        		}
-        		if (!images.containsKey(DOWNLOAD)) {
-        			images.put(DOWNLOAD, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.download));
-        		}
-        		if (!images.containsKey(GRID)) {
-        			images.put(GRID, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.grid));
-        		}
-        		if (!images.containsKey(MARKER_CLUSTER_M1)) {
-        			images.put(MARKER_CLUSTER_M1, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m1));
-        		}
-        		if (!images.containsKey(MARKER_CLUSTER_M2)) {
-        			images.put(MARKER_CLUSTER_M2, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m2));
-        		}
-        		if (!images.containsKey(MARKER_CLUSTER_M3)) {
-        			images.put(MARKER_CLUSTER_M3, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m3));
-        		}
-        		if (!images.containsKey(MARKER_CLUSTER_M4)) {
-        			images.put(MARKER_CLUSTER_M4, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m4));
-        		}
-        		if (!images.containsKey(MARKER_CLUSTER_M5)) {
-        			images.put(MARKER_CLUSTER_M5, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m5));
-        		}
+        	if (!images.containsKey(CURSOR)) {
+        		images.put(CURSOR, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.pointer16));
         	}
-
-            paint = new Paint();
-            paint.setAntiAlias(true);
-
-            if (!images.containsKey(IMAGE_LOADING_TILE)) {
-                Bitmap loading = Bitmap.createBitmap(ConfigurationManager.TILE_SIZE, ConfigurationManager.TILE_SIZE, ConfigurationManager.getInstance().getBitmapConfig());
-                Canvas c = new Canvas(loading);
-                c.drawColor(Color.WHITE);
-                paint.setColor(Color.WHITE);
-                c.drawRect(new Rect(0, 0, ConfigurationManager.TILE_SIZE, ConfigurationManager.TILE_SIZE), paint);
-                c.drawBitmap(getImage(LOADING), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paint);
-                images.put(IMAGE_LOADING_TILE, loading);
-            }
-
-            if (!images.containsKey(IMAGE_MISSING)) {
-                Bitmap missing = Bitmap.createBitmap(ConfigurationManager.TILE_SIZE, ConfigurationManager.TILE_SIZE, ConfigurationManager.getInstance().getBitmapConfig());
-                Canvas cm = new Canvas(missing);
-                cm.drawColor(Color.WHITE);
-                Paint paintm = new Paint();
-                paintm.setColor(Color.WHITE);
-                cm.drawBitmap(getImage(ICON_MISSING32), (ConfigurationManager.TILE_SIZE - 32) / 2, (ConfigurationManager.TILE_SIZE - 32) / 2, paintm);
-                images.put(IMAGE_MISSING, missing);
-            }
+        	if (!images.containsKey(MAGNIFIER)) {
+        		images.put(MAGNIFIER, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.magnifier));
+        	}
+        	if (!images.containsKey(ICON_MISSING32)) {
+        		images.put(ICON_MISSING32, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing32));
+        	}
+        	if (!images.containsKey(ICON_MISSING16)) {
+        		images.put(ICON_MISSING16, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing16));
+        	}
+        	if (!images.containsKey(LOADING)) {
+        		images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
+        	}
+        	if (!images.containsKey(DOWNLOAD)) {
+        		images.put(DOWNLOAD, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.download));
+        	}
+        	if (!images.containsKey(GRID)) {
+        		images.put(GRID, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.grid));
+        	}
+        	if (!images.containsKey(MARKER_CLUSTER_M1)) {
+        		images.put(MARKER_CLUSTER_M1, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m1));
+        	}
+        	if (!images.containsKey(MARKER_CLUSTER_M2)) {
+        		images.put(MARKER_CLUSTER_M2, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m2));
+        	}
+        	if (!images.containsKey(MARKER_CLUSTER_M3)) {
+        		images.put(MARKER_CLUSTER_M3, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m3));
+        	}
+        	if (!images.containsKey(MARKER_CLUSTER_M4)) {
+        		images.put(MARKER_CLUSTER_M4, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m4));
+        	}
+        	if (!images.containsKey(MARKER_CLUSTER_M5)) {
+        		images.put(MARKER_CLUSTER_M5, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m5));
+        	}
 
         } catch (Exception ex) {
             LoggerUtils.error("IconCache.IconCache() exception", ex);
@@ -335,6 +298,9 @@ public class IconCache {
     public Drawable createLayerBitmap(Context ctx, Bitmap b, int color, String resourceName) {
         
     	    LoggerUtils.debug("Creating new bitmap: " + resourceName);
+    	    
+    	    Paint paint = new Paint();
+            paint.setAntiAlias(true);
     	
     		Bitmap bottom = images.get(GRID);
     		final int bottomSpace = (bottom.getHeight() / 2) + 5;
