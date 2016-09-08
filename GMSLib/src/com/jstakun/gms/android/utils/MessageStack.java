@@ -42,7 +42,7 @@ public class MessageStack {
     }
     
     public void addMessage(String message, int validity, int condition, int setLoadingImage) {
-         if (setLoadingImage == MAP_LOADED || setLoadingImage == LOADING || setLoadingImage == LAYER_LOADED) {
+        if (setLoadingImage == MAP_LOADED || setLoadingImage == LOADING || setLoadingImage == LAYER_LOADED) {
             if ((setLoadingImage == MAP_LOADED && !messageCondition.isLoading(MessageCondition.LAYER_LOADING)) ||
                     (setLoadingImage == LAYER_LOADED && !messageCondition.isLoading(MessageCondition.MAP_LOADING)))
             {
@@ -51,7 +51,7 @@ public class MessageStack {
                 uiHandler.sendEmptyMessage(STATUS_VISIBLE);
             }
         }
-        messageStack.push(new MessageTimerTask(message, validity, this, condition));
+        messageStack.push(new MessageTimerTask(message, validity, condition));
         updateStatusBar();
     }
 
@@ -74,12 +74,10 @@ public class MessageStack {
     public String getMessage() {
         //System.out.println("Calling getMessage");
 
-        //String msg = null;
         while (!messageStack.empty()) {
             MessageTimerTask message = messageStack.peek();
             if (message.isActive()) {
-                return message.getMessage();
-                //break;
+            	return message.getMessage();
             } else {
                 messageStack.pop();
             }
@@ -93,13 +91,10 @@ public class MessageStack {
 
         private boolean status = true;
         private String message;
-        private MessageStack messageStack;
         private int condition = -1;
 
-        public MessageTimerTask(String message, int sec, MessageStack messageStack, int condition) {
+        public MessageTimerTask(String message, int sec, int condition) {
             this.message = message;
-            this.messageStack = messageStack;
-
             if (condition != -1) {
                 this.condition = condition;
             } else if (sec > 0) {
@@ -114,7 +109,7 @@ public class MessageStack {
 
         public void run() {
             status = false;
-            messageStack.updateStatusBar();
+            updateStatusBar();
         }
 
         private boolean isActive() {
