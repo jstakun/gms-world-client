@@ -35,14 +35,12 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
 
     private final Activity parentActivity;
     private final LandmarkManager landmarkManager;
-    private final RoutesManager routesManager;
     private final View.OnClickListener positionClickListener;
 
     public LayerArrayAdapter(Activity context, List<String> names, View.OnClickListener positionClickListener) {
         super(context, R.layout.layerrow, names);
         this.parentActivity = context;
         this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        this.routesManager = ConfigurationManager.getInstance().getRoutesManager();
         this.positionClickListener = positionClickListener;
     }
 
@@ -130,7 +128,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
             message += desc + ".\n";
         }
         if (layerKey.equals(Commons.ROUTES_LAYER)) {
-            message += Locale.getMessage(R.string.Routes_in_layer_count, routesManager.getCount());
+            message += Locale.getMessage(R.string.Routes_in_layer_count, RoutesManager.getInstance().getCount());
         } else {
             message += Locale.getMessage(R.string.Landmark_in_layer_count, landmarkManager.getLayerSize(layerKey));
         }

@@ -95,7 +95,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     private LandmarkManager landmarkManager;
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
-    private RoutesManager routesManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
     private DialogManager dialogManager;
@@ -225,14 +224,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
         
         ((LoadingHandler) loadingHandler).setDialogManager(dialogManager);
-        
-        routesManager = ConfigurationManager.getInstance().getRoutesManager();
-
-        if (routesManager == null) {
-            LoggerUtils.debug("Creating RoutesManager...");
-            routesManager = new RoutesManager();
-            ConfigurationManager.getInstance().putObject("routesManager", routesManager);
-        } 
         
         LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
         
@@ -472,9 +463,10 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
             if (messageStack == null) {
                 LoggerUtils.debug("Creating MessageStack...");
-                messageStack = new MessageStack(new LayersMessageCondition());
+                messageStack = new MessageStack();
                 ConfigurationManager.getInstance().putObject("messageStack", messageStack);
             }
+            messageStack.setMessageCondition(new LayersMessageCondition());            
             messageStack.setHandler(loadingHandler);
 
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
@@ -726,7 +718,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager, this.getResources().getDisplayMetrics());	
 	    markerCluster.loadAllMarkers();
 	    
-	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager, markerCluster, this.getResources().getDisplayMetrics().density);
+	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, markerCluster, this.getResources().getDisplayMetrics().density);
 	    routesCluster.loadAllRoutes();
 	}
     

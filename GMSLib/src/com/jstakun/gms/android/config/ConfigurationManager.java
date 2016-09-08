@@ -317,16 +317,11 @@ public final class ConfigurationManager {
         putObject(CONTEXT, c);
     }
 
+    //TODO remove them all
+    
     public LandmarkManager getLandmarkManager() {
         if (containsObject("landmarkManager", LandmarkManager.class)) {
             return (LandmarkManager) objectCache.get("landmarkManager");
-        }
-        return null;
-    }
-
-    public RoutesManager getRoutesManager() {
-        if (containsObject("routesManager", RoutesManager.class)) {
-            return (RoutesManager) objectCache.get("routesManager");
         }
         return null;
     }

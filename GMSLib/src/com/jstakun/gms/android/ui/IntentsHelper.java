@@ -40,6 +40,7 @@ import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
+import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
 import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
@@ -1421,6 +1422,7 @@ public final class IntentsHelper {
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
             RouteRecorder.getInstance().onAppClose();
         }
+        RoutesManager.getInstance().clearRoutesStore();
 
         PersistenceManagerFactory.getFileManager().clearImageCache();
         ConfigurationManager.getDatabaseManager().closeAllDatabases();

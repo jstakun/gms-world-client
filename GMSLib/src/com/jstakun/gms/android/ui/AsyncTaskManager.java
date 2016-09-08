@@ -254,11 +254,8 @@ public class AsyncTaskManager {
             try {
                 parser.parse(FileManager.getRoutesFolderPath(), filename, routePoints, false, Commons.ROUTES_LAYER, this);
                 if (!isCancelled()) {
-                    RoutesManager routesManager = ConfigurationManager.getInstance().getRoutesManager();
-                    if (routesManager != null) {
-                        String description = parser.getDescription();
-                        routesManager.addRoute(filename, routePoints, description);
-                    }
+                    String description = parser.getDescription();
+                    RoutesManager.getInstance().addRoute(filename, routePoints, description);
                 }
             } catch (Exception ex) {
                 LoggerUtils.error("LoadRouteTask.callDoInBackground exception", ex);
@@ -328,12 +325,7 @@ public class AsyncTaskManager {
             String lng_end = loadingData[5];
             String type = loadingData[6];
             String endName = loadingData[7];
-            RoutesManager routesManager = ConfigurationManager.getInstance().getRoutesManager();
-            if (routesManager != null) {
-                return routesManager.loadRouteFromServer(lat_start, lng_start, lat_end, lng_end, type, filename, endName, true);
-            } else {
-                return null;
-            }
+            return RoutesManager.getInstance().loadRouteFromServer(lat_start, lng_start, lat_end, lng_end, type, filename, endName, true);
         }
     }
 

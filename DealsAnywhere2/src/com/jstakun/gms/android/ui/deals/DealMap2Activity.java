@@ -83,7 +83,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private LandmarkManager landmarkManager;
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
-    private RoutesManager routesManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
     private DialogManager dialogManager;
@@ -385,19 +384,13 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             //mapView.getOverlays().add(infoOverlay);
             mapView.getOverlays().add(myLocation);
             
-            routesManager = ConfigurationManager.getInstance().getRoutesManager();
-            if (routesManager == null) {
-                LoggerUtils.debug("Creating RoutesManager...");
-                routesManager = new RoutesManager();
-                ConfigurationManager.getInstance().putObject("routesManager", routesManager);
-            }
-
             messageStack = ConfigurationManager.getInstance().getMessageStack();
             if (messageStack == null) {
                 LoggerUtils.debug("Creating MessageStack...");
-                messageStack = new MessageStack(new LayersMessageCondition());
+                messageStack = new MessageStack();               
                 ConfigurationManager.getInstance().putObject("messageStack", messageStack);
             }
+            messageStack.setMessageCondition(new LayersMessageCondition());
             messageStack.setHandler(loadingHandler);
 
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
@@ -777,8 +770,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     }
 
     private void showRouteAction(String routeKey) {
-        if (routesManager.containsRoute(routeKey)) {
-            GoogleRoutesOverlay routeOverlay = new GoogleRoutesOverlay(this, routesManager, routeKey);
+        if (RoutesManager.getInstance().containsRoute(routeKey)) {
+            GoogleRoutesOverlay routeOverlay = new GoogleRoutesOverlay(this, routeKey);
             mapView.getOverlays().add(routeOverlay);
             isRouteDisplayed = true;
             mapView.postInvalidate();

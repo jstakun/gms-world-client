@@ -68,7 +68,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private LandmarkManager landmarkManager;
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
-    private RoutesManager routesManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
     private DialogManager dialogManager;
@@ -320,13 +319,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             //must be on top of other overlays
             //mapView.getOverlays().add(infoOverlay);
             mapView.getOverlays().add(myLocation);
-
-            routesManager = ConfigurationManager.getInstance().getRoutesManager();
-            if (routesManager == null) {
-                LoggerUtils.debug("Creating RoutesManager...");
-                routesManager = new RoutesManager();
-                ConfigurationManager.getInstance().putObject("routesManager", routesManager);
-            }
 
             messageStack = ConfigurationManager.getInstance().getMessageStack();
             if (messageStack == null) {
@@ -673,8 +665,8 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     }
 
     private void showRouteAction(String routeKey) {
-        if (routesManager.containsRoute(routeKey)) {
-            GoogleRoutesOverlay routeOverlay = new GoogleRoutesOverlay(this, routesManager, routeKey);
+        if (RoutesManager.getInstance().containsRoute(routeKey)) {
+            GoogleRoutesOverlay routeOverlay = new GoogleRoutesOverlay(this, routeKey);
             mapView.getOverlays().add(routeOverlay);
             isRouteDisplayed = true;
             mapView.postInvalidate();

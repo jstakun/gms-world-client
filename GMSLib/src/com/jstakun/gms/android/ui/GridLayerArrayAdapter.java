@@ -29,14 +29,12 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 
 	    private final Activity parentActivity;
 	    private final LandmarkManager landmarkManager;
-	    private final RoutesManager routesManager;
 	    private final View.OnClickListener positionClickListener;
 
 	    public GridLayerArrayAdapter(Activity context, List<String> names, View.OnClickListener positionClickListener) {
 	        super(context, R.layout.layerrow, names);
 	        this.parentActivity = context;
 	        this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-	        this.routesManager = ConfigurationManager.getInstance().getRoutesManager();
 	        this.positionClickListener = positionClickListener;
 	    }
 
@@ -95,7 +93,7 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        
 	        int count = 0;
 	        if (layerKey.equals(Commons.ROUTES_LAYER)) {
-	            count = routesManager.getCount();	
+	            count = RoutesManager.getInstance().getCount();	
 	        } else {
 	        	count = landmarkManager.getLayerSize(layerKey);
 	        }

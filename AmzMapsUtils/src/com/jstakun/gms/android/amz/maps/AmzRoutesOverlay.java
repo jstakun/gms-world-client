@@ -30,7 +30,6 @@ import org.apache.commons.lang.StringUtils;
  */
 public class AmzRoutesOverlay extends Overlay {
 
-    private RoutesManager routesManager;
     private String routeName;
     private final Path path = new Path();
     private final Paint lmpaint = new Paint();
@@ -43,12 +42,11 @@ public class AmzRoutesOverlay extends Overlay {
     private final Rect viewportRect = new Rect();
     private Bitmap routesLayerBitmap;
 
-    public AmzRoutesOverlay(Context context, RoutesManager routesManager, String routeName) {
-        this.routesManager = routesManager;
+    public AmzRoutesOverlay(Context context, String routeName) {
         this.routeName = routeName;
         isCurrentlyRecording = StringUtils.startsWith(routeName, RouteRecorder.CURRENTLY_RECORDED);
-        if (!isCurrentlyRecording && routesManager.containsRoute(routeName)) {
-            routePoints = routesManager.getRoute(routeName);
+        if (!isCurrentlyRecording && RoutesManager.getInstance().containsRoute(routeName)) {
+            routePoints = RoutesManager.getInstance().getRoute(routeName);
             routeSize = routePoints.size();
         }
         
@@ -90,7 +88,7 @@ public class AmzRoutesOverlay extends Overlay {
                 canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
             } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point
-                routePoints = routesManager.getRoute(routeName);
+                routePoints = RoutesManager.getInstance().getRoute(routeName);
                 routeSize = routePoints.size();
 
                 if (routeSize > 1) {

@@ -703,10 +703,7 @@ public class LandmarkManager {
             newFocusQueue.addAll(Collections2.filter(getLandmarkStoreLayer(key), landmarkInRadiusPredicate));
         }
 
-        RoutesManager routesManager = ConfigurationManager.getInstance().getRoutesManager();
-        if (routesManager != null) {
-            newFocusQueue.addAll(Collections2.filter(routesManager.getBoundingRouteLandmarks(), landmarkInRadiusPredicate));
-        }
+        newFocusQueue.addAll(Collections2.filter(RoutesManager.getInstance().getBoundingRouteLandmarks(), landmarkInRadiusPredicate));
 
         if (!newFocusQueue.isEmpty()) {
             landmarkPaintManager.setLandmarkOnFocusQueue(newFocusQueue);

@@ -89,7 +89,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     private LandmarkManager landmarkManager;
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
-    private RoutesManager routesManager;
     private CheckinManager checkinManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
@@ -240,14 +239,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, loadingHandler, trackMyPosListener);
 
-        routesManager = ConfigurationManager.getInstance().getRoutesManager();
-
-        if (routesManager == null) {
-            LoggerUtils.debug("Creating RoutesManager...");
-            routesManager = new RoutesManager();
-            ConfigurationManager.getInstance().putObject("routesManager", routesManager);
-        } 
-        
         LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
             
         if (mapCenter != null) {
@@ -734,8 +725,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    	
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-					int mode = RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
-					if (routesCluster != null && mode >= 0) {
+					RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
+					if (routesCluster != null) {
 					   routesCluster.showRecordedRoute();
 					}
 				}
@@ -969,9 +960,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
             if (messageStack == null) {
                 LoggerUtils.debug("Creating MessageStack...");
-                messageStack = new MessageStack(new LayersMessageCondition());
+                messageStack = new MessageStack();
                 ConfigurationManager.getInstance().putObject("messageStack", messageStack);
             }
+            messageStack.setMessageCondition(new LayersMessageCondition());
             messageStack.setHandler(loadingHandler);
             
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
@@ -1038,7 +1030,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		Intent routeTracingService = new Intent(this, RouteTracingService.class);	
 		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
-            String route = RouteRecorder.getInstance().startRecording(routesManager);
+            String route = RouteRecorder.getInstance().startRecording();
             startService(routeTracingService);
             routesCluster.showRouteAction(route, true);
             if (layerLoader.isLoading()) {
@@ -1059,7 +1051,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
             	//stopService(routeTracingService);
-            	String filename = RouteRecorder.getInstance().stopRecording(routesManager);
+            	String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
                 } else {
@@ -1090,7 +1082,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	mMap.clear();
     	markerCluster.clearMarkers();
     	landmarkManager.clearLandmarkStore();
-        routesManager.clearRoutesStore();
+    	RoutesManager.getInstance().clearRoutesStore();
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
     }
     
@@ -1150,11 +1142,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager, this.getResources().getDisplayMetrics());	
 	    markerCluster.loadAllMarkers();
 	    
-	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, routesManager, markerCluster, this.getResources().getDisplayMetrics().density);
+	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, markerCluster, this.getResources().getDisplayMetrics().density);
 	    routesCluster.loadAllRoutes();
 	    
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-            String route = RouteRecorder.getInstance().startRecording(routesManager);
+            String route = RouteRecorder.getInstance().startRecording();
             //Intent routeTracingService = new Intent(this, RouteTracingService.class);	
             //startService(routeTracingService);
             routesCluster.showRouteAction(route, true);

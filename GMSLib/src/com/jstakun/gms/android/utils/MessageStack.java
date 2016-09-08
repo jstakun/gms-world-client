@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.utils;
 
 import android.os.Handler;
@@ -28,7 +24,7 @@ public class MessageStack {
     private Handler uiHandler;
     private MessageCondition messageCondition;
 
-    public MessageStack(MessageCondition messageCondition) {
+    public void setMessageCondition(MessageCondition messageCondition) {
        this.messageCondition = messageCondition;
     }
 

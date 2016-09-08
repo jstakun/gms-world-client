@@ -28,7 +28,6 @@ import com.jstakun.gms.android.routes.RoutesManager;
  */
 public class OsmRoutesOverlay extends Overlay {
 
-    private RoutesManager routesManager = null;
     private String routeName = null;
     private final Paint lmpaint = new Paint();
     private final Paint paint = new Paint();
@@ -43,13 +42,12 @@ public class OsmRoutesOverlay extends Overlay {
     private boolean isCurrentlyRecording = false;
     private Bitmap routesLayerBitmap;
     
-    public OsmRoutesOverlay(MapView mapView, Context context, RoutesManager routesManager, String routeName) {
+    public OsmRoutesOverlay(MapView mapView, Context context, String routeName) {
         super(context);
-        this.routesManager = routesManager;
         this.routeName = routeName;
         isCurrentlyRecording = StringUtils.startsWith(routeName, RouteRecorder.CURRENTLY_RECORDED);
-        if (!isCurrentlyRecording && routesManager.containsRoute(routeName)) {
-            List<ExtendedLandmark> routePoints = routesManager.getRoute(routeName);
+        if (!isCurrentlyRecording && RoutesManager.getInstance().containsRoute(routeName)) {
+            List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
             routeSize = routePoints.size();
             for (ExtendedLandmark l : routePoints) {
             	Point p = mapView.getProjection().toProjectedPixels(l.getLatitudeE6(), l.getLongitudeE6(), null);
@@ -90,7 +88,7 @@ public class OsmRoutesOverlay extends Overlay {
                 canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
             } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point only
-                List<ExtendedLandmark> routePoints = routesManager.getRoute(routeName);
+                List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
                 routeSize = routePoints.size();
 
                 if (routeSize > 1) {

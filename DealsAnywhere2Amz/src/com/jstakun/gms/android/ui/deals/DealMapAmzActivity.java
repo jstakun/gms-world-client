@@ -77,7 +77,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private LandmarkManager landmarkManager;
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
-    private RoutesManager routesManager;
     private CategoriesManager cm;
     protected IntentsHelper intents;
     private DialogManager dialogManager;
@@ -385,13 +384,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             
             //must be on top of other overlays
             //mapView.getOverlays().add(infoOverlay);
-
-            routesManager = ConfigurationManager.getInstance().getRoutesManager();
-            if (routesManager == null) {
-                LoggerUtils.debug("Creating RoutesManager...");
-                routesManager = new RoutesManager();
-                ConfigurationManager.getInstance().putObject("routesManager", routesManager);
-            }
 
             messageStack = ConfigurationManager.getInstance().getMessageStack();
             if (messageStack == null) {
@@ -763,9 +755,9 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     }
 
     private void showRouteAction(String routeKey) {
-        if (routesManager.containsRoute(routeKey)) {
+        if (RoutesManager.getInstance().containsRoute(routeKey)) {
             List<Overlay> mapOverlays = mapView.getOverlays();
-            AmzRoutesOverlay routeOverlay = new AmzRoutesOverlay(this, routesManager, routeKey);
+            AmzRoutesOverlay routeOverlay = new AmzRoutesOverlay(this, routeKey);
             mapOverlays.add(routeOverlay);
             isRouteDisplayed = true;
             mapView.postInvalidate();

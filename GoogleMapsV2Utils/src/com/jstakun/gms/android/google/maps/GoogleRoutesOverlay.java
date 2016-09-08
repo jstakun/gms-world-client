@@ -25,15 +25,13 @@ public class GoogleRoutesOverlay {
 	
 	private LandmarkManager mLm;
 	private GoogleMap mMap;
-	private RoutesManager routesManager;
 	private float mDensity;
 	private GoogleMarkerClusterOverlay mMarkerCluster;
 	private Polyline mRoutePolyline = null;
 	
-	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, RoutesManager rm, GoogleMarkerClusterOverlay markerCluster, float density) {
+	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, GoogleMarkerClusterOverlay markerCluster, float density) {
 		this.mMap = map;
 		this.mLm = lm;
-		this.routesManager = rm;      
 		this.mDensity = density;
 		this.mMarkerCluster = markerCluster;
 	}
@@ -50,49 +48,47 @@ public class GoogleRoutesOverlay {
 	}
 	
 	private void drawRoute(String routeKey, boolean animateTo) {
-		if (routesManager.containsRoute(routeKey)) {
-            List<ExtendedLandmark> points = routesManager.getRoute(routeKey);
-            LoggerUtils.debug("Drawing route " + routeKey + " containing " + points.size() + " points");
+		List<ExtendedLandmark> points = RoutesManager.getInstance().getRoute(routeKey);
+        LoggerUtils.debug("Drawing route " + routeKey + " containing " + points.size() + " points");
+        if (points.size() > 1) {            	
         	boolean isCurrentlyRecorded = routeKey.equals(RouteRecorder.CURRENTLY_RECORDED);
-            if (points.size() > 1) {
-                	
-            	List<LatLng> pointsLatLng = new ArrayList<LatLng>();
-            	for (ExtendedLandmark l : points) {
-                	LatLng p = new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
-                	pointsLatLng.add(p);
-            	}
+            List<LatLng> pointsLatLng = new ArrayList<LatLng>();
+        	for (ExtendedLandmark l : points) {
+                LatLng p = new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
+                pointsLatLng.add(p);
+           	}
                 
-            	mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
-            	mMarkerCluster.addMarker(points.get(0));
+           	mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
+           	mMarkerCluster.addMarker(points.get(0));
                 
-            	if (!isCurrentlyRecorded) {
-            		mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
-            		mMarkerCluster.addMarker(points.get(points.size()-1));
-            	}
+           	if (!isCurrentlyRecorded) {
+        	   mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker)));
+               mMarkerCluster.addMarker(points.get(points.size()-1));
+           	}
             
-            	Polyline po = mMap.addPolyline(new PolylineOptions()
+           	if (isCurrentlyRecorded && mRoutePolyline != null) {
+            	mRoutePolyline.remove();
+            }
+            	
+            Polyline po = mMap.addPolyline(new PolylineOptions()
             			.addAll(pointsLatLng)
             			.width(5f * mDensity)
             			.color(Color.RED)
             			.geodesic(true));
             	
-            	if (isCurrentlyRecorded) {
-            		if (mRoutePolyline != null) {
-                		mRoutePolyline.remove();
-                	}
-            		mRoutePolyline = po;
-            	}
+            if (isCurrentlyRecorded) {           		
+            	mRoutePolyline = po;
+            }
             	
-            	if (animateTo && !isCurrentlyRecorded) {
-            		LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                	for (LatLng p : pointsLatLng) {
-                		builder.include(p);
-                	}
-            		LatLngBounds bounds = builder.build();
-            		int padding = (int)(8 * mDensity); // offset from edges of the map in pixels
-            		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            		mMap.animateCamera(cu);
-            	}
+            if (animateTo && !isCurrentlyRecorded) {
+            	LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for (LatLng p : pointsLatLng) {
+                	builder.include(p);
+                }
+            	LatLngBounds bounds = builder.build();
+            	int padding = (int)(8 * mDensity); // offset from edges of the map in pixels
+            	CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            	mMap.animateCamera(cu);
             }
         }
 	}
@@ -100,7 +96,7 @@ public class GoogleRoutesOverlay {
 	public void loadAllRoutes() {
 		if (mLm.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
 			LoggerUtils.debug("Loading all routes to map view");
-			for(String routeKey : routesManager.getRoutes()) {
+			for(String routeKey : RoutesManager.getInstance().getRoutes()) {
 				showRouteAction(routeKey, false);
 			}
 		}

@@ -38,11 +38,17 @@ public class RoutesManager {
 
     private static Map<String, List<ExtendedLandmark>> routes = new HashMap<String, List<ExtendedLandmark>>();
     private static Map<String, String> descs = new HashMap<String, String>();
-    private double minLat, maxLat, minLon, maxLon;
+    private static RoutesManager instance = null; 
 
-    public RoutesManager() {
-        routes.clear();
-        descs.clear();
+    public static RoutesManager getInstance() {
+    	if (instance == null) {
+    		instance = new RoutesManager();
+    	}
+    	return instance;
+    }
+    
+    private RoutesManager() {
+        clearRoutesStore();
     }
 
     public void addRoute(String key, List<ExtendedLandmark> routePoints, String description) {
@@ -74,14 +80,14 @@ public class RoutesManager {
         return routes.keySet();
     }
 
-    public double[] calculateRouteCenter(String routeKey) {
-        double coords[] = new double[2];
+    public double[] calculateRouteCenterAndZoom(String routeKey) {
+        double coords[] = new double[3];
         List<ExtendedLandmark> routePoints = routes.get(routeKey);
         ExtendedLandmark start = routePoints.get(0);
-        minLat = start.getQualifiedCoordinates().getLatitude();
-        maxLat = minLat;
-        minLon = start.getQualifiedCoordinates().getLongitude();
-        maxLon = minLon;
+        double minLat = start.getQualifiedCoordinates().getLatitude();
+        double maxLat = minLat;
+        double minLon = start.getQualifiedCoordinates().getLongitude();
+        double maxLon = minLon;
 
         for (int i = 0; i < routePoints.size(); i++) {
             ExtendedLandmark l = routePoints.get(i);
@@ -102,10 +108,7 @@ public class RoutesManager {
         coords[0] = (maxLat + minLat) * 0.5;
         coords[1] = (maxLon + minLon) * 0.5;
 
-        return coords;
-    }
-
-    public int calculateRouteZoom(Object routeKey) {
+        //zoom
         double latDiff = Math.abs(maxLat - minLat);
         double lonDiff = Math.abs(maxLon - minLon);
 
@@ -120,18 +123,14 @@ public class RoutesManager {
             }
         }
 
-        return zoom + 3; 
+        coords[2] = zoom + 3;
+        
+        return coords;
     }
 
     public void clearRoutesStore() {
-        //Set<Entry<String, List<ExtendedLandmark>>> entries = routes.entrySet();
-        //Iterator<Entry<String, List<ExtendedLandmark>>> iter = entries.iterator();
-
-        //while (iter.hasNext()) {
-        //    iter.next();
-        //    iter.remove();
-        //}
         routes.clear();
+        descs.clear();
     }
 
     public boolean containsRoute(String key) {

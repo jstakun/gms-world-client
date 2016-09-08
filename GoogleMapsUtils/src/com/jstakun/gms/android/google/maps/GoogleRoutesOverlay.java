@@ -34,17 +34,15 @@ public class GoogleRoutesOverlay extends Overlay {
     private List<ExtendedLandmark> routePoints = new ArrayList<ExtendedLandmark>();
     private int routeSize = 0, w = 0, h = 0;
     private boolean isCurrentlyRecording = false;
-    private RoutesManager routesManager = null;
     private String routeName = null;
     private final Rect viewportRect = new Rect();
     private Bitmap routesLayerBitmap = null;
 
-    public GoogleRoutesOverlay(Context context, RoutesManager routesManager, String routeName) {
+    public GoogleRoutesOverlay(Context context, String routeName) {
         this.routeName = routeName;
-        this.routesManager = routesManager;
         isCurrentlyRecording = StringUtils.startsWith(routeName, RouteRecorder.CURRENTLY_RECORDED);
-        if (!isCurrentlyRecording && routesManager.containsRoute(routeName)) {
-            routePoints = routesManager.getRoute(routeName);
+        if (!isCurrentlyRecording && RoutesManager.getInstance().containsRoute(routeName)) {
+            routePoints = RoutesManager.getInstance().getRoute(routeName);
             routeSize = routePoints.size();
         }
         
@@ -94,7 +92,7 @@ public class GoogleRoutesOverlay extends Overlay {
                 }
             } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point only
-                routePoints = routesManager.getRoute(routeName);
+                routePoints = RoutesManager.getInstance().getRoute(routeName);
                 routeSize = routePoints.size();
 
                 if (routeSize > 1) {

@@ -32,7 +32,7 @@ public class RouteRecorder {
 
     private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
     private static final RouteRecorder instance = new RouteRecorder();
-    private static long startTime = -1;
+    private static long startTime = -1, endTime = -1;
     private static int notificationId = -1;
     private static boolean paused = false;
     private static boolean saveNextPoint = false;
@@ -45,12 +45,12 @@ public class RouteRecorder {
     	return instance;
     }
         
-    public String startRecording(RoutesManager routesManager) {
+    public String startRecording() {
     	ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);  	
-    	if (!routesManager.containsRoute(CURRENTLY_RECORDED)) {
+    	if (!RoutesManager.getInstance().containsRoute(CURRENTLY_RECORDED)) {
     		startTime = System.currentTimeMillis();
     		currentBearing = 0f;
-    		routesManager.addRoute(CURRENTLY_RECORDED, routePoints, null);
+    		RoutesManager.getInstance().addRoute(CURRENTLY_RECORDED, routePoints, null);
     	}
     	AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
     	if (asyncTaskManager != null && notificationId == -1) {
@@ -60,13 +60,13 @@ public class RouteRecorder {
     	return CURRENTLY_RECORDED;
     }
 
-    public String stopRecording(RoutesManager routesManager) {
+    public String stopRecording() {
         //System.out.println("RouteRecorder.stopRecording");
         String filename = null;
         if (routePoints.size() > 1) {
             filename = DateTimeUtils.getCurrentDateStamp() + ".kml";
         }
-        routesManager.removeRoute(CURRENTLY_RECORDED);
+        RoutesManager.getInstance().removeRoute(CURRENTLY_RECORDED);
         ConfigurationManager.getInstance().setOff(ConfigurationManager.RECORDING_ROUTE);
 
         AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
@@ -112,7 +112,8 @@ public class RouteRecorder {
             String[] details = getRouteDetails();
             String description = Locale.getMessage(R.string.Routes_Recording_description, details[0], details[1], details[2]);
             ExtendedLandmark lm = LandmarkFactory.getLandmark(l, description, qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
-
+            endTime = System.currentTimeMillis();
+            
             if (routePoints.isEmpty()) {
                 routePoints.add(lm);
                 LoggerUtils.debug("1. Adding first route point: " + lat + "," + lng + " with speed: " + speed + ", meters and bearing: " + bearing + ".");
@@ -165,8 +166,7 @@ public class RouteRecorder {
     	//stop recording and save current route
     	//ConfigurationManager.getInstance().setOff(ConfigurationManager.RECORDING_ROUTE);
     	String[] details = saveRoute(null);
-    	//routesManager.removeRoute(CURRENTLY_RECORDED);
-        if (details != null) {
+    	if (details != null) {
             LoggerUtils.debug("Saved route: " + details[0]);
         }
         
@@ -206,7 +206,6 @@ public class RouteRecorder {
 
         float distanceInKilometer = routeDistanceInKilometer(routePoints);
         dist = DistanceUtils.formatDistance(distanceInKilometer);      
-        long endTime = System.currentTimeMillis();
 
         if (startTime > 0 && startTime < endTime) {
             long diff = (endTime - startTime);

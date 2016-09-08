@@ -41,7 +41,6 @@ public class GridLayerListActivity extends Activity {
     private static final int ACTION_DELETE = 5;
     private List<String> names = null;
     private LandmarkManager landmarkManager;
-    private RoutesManager routesManager;
     private IntentsHelper intents;
     private GridView gridView;
     private int mode = ConfigurationManager.ALL_LAYERS_MODE, currentPos = -1;
@@ -60,7 +59,6 @@ public class GridLayerListActivity extends Activity {
         UserTracker.getInstance().trackActivity(getClass().getName());
         
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        routesManager = ConfigurationManager.getInstance().getRoutesManager();
         
         intents = new IntentsHelper(this, landmarkManager, null);
         
@@ -260,7 +258,7 @@ public class GridLayerListActivity extends Activity {
         } else if (type == ACTION_CLEAR) {
             //CLEAR
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
-                routesManager.clearRoutesStore();
+            	RoutesManager.getInstance().clearRoutesStore();
                 ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
             } else if (landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
@@ -276,7 +274,7 @@ public class GridLayerListActivity extends Activity {
             ((ArrayAdapter<String>) gridView.getAdapter()).remove(names.remove(position));
 
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
-                routesManager.clearRoutesStore();
+            	RoutesManager.getInstance().clearRoutesStore();
                 ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             }    
             
@@ -358,18 +356,14 @@ public class GridLayerListActivity extends Activity {
         public int compare(String lhs, String rhs) {
             int lhsCount = 0;
             if (lhs.equals(Commons.ROUTES_LAYER)) {
-            	if (routesManager != null) {
-            		lhsCount = routesManager.getCount();
-            	}
+            	lhsCount = RoutesManager.getInstance().getCount();
             } else {
                 lhsCount = landmarkManager.getLayerSize(lhs);
             }
 
             int rhsCount = 0;
             if (rhs.equals(Commons.ROUTES_LAYER)) {
-            	if (routesManager != null) {
-                	rhsCount = routesManager.getCount();
-            	}	
+            	rhsCount = RoutesManager.getInstance().getCount();
             } else {
                 rhsCount = landmarkManager.getLayerSize(rhs);
             }

@@ -75,7 +75,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private LandmarkManager landmarkManager;
     private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
-    private RoutesManager routesManager;
     private CheckinManager checkinManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
@@ -459,16 +458,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             //addOverlay(infoOverlay);
             addOverlay(myLocation);
             
-            routesManager = ConfigurationManager.getInstance().getRoutesManager();
-
-            if (routesManager == null) {
-                LoggerUtils.debug("Creating RoutesManager...");
-                routesManager = new RoutesManager();
-                ConfigurationManager.getInstance().putObject("routesManager", routesManager);
-            } else {
-            	syncRoutesOverlays();
-            }
-
+            syncRoutesOverlays();
+            
             messageStack = ConfigurationManager.getInstance().getMessageStack();
 
             if (messageStack == null) {
@@ -478,7 +469,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             }
             messageStack.setHandler(loadingHandler);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                String route = RouteRecorder.getInstance().startRecording(routesManager);
+                String route = RouteRecorder.getInstance().startRecording();
                 showRouteAction(route);
                 messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
             } 
@@ -1041,22 +1032,18 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     private void addRoutesOverlay(String routeName) {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routesManager, routeName);
+            OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routeName);
             addOverlay(routesOverlay);
         } else {
-            GoogleRoutesOverlay routesOverlay = new GoogleRoutesOverlay(this, routesManager, routeName);
+            GoogleRoutesOverlay routesOverlay = new GoogleRoutesOverlay(this, routeName);
             addOverlay(routesOverlay);
         }
     }
     
     private void syncRoutesOverlays() {
-    	
-    	int routesCount = 0;
-    	if (routesManager != null) {
-    	   routesCount = routesManager.getCount();
-    	}
-    	
+    	int routesCount = RoutesManager.getInstance().getCount();
     	int routesOverlaysCount = 0;
+    	
     	if (mapProvider == ConfigurationManager.OSM_MAPS) {
             for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
             	if (iter.next() instanceof OsmRoutesOverlay) {
@@ -1088,8 +1075,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     			}
     		}
     	} else if (routesCount > 0 && isRoutesEnabled && routesOverlaysCount == 0) {
-    		for (Iterator<String> i = routesManager.getRoutes().iterator(); i.hasNext();) {
-                addRoutesOverlay(i.next());
+    		for (String routeKey: RoutesManager.getInstance().getRoutes()) {
+                addRoutesOverlay(routeKey);
             }
     		isRouteDisplayed = true;
     	}
@@ -1109,14 +1096,14 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     private void showRouteAction(String routeKey) {
         LoggerUtils.debug("Adding route to view: " + routeKey);
-        if (routesManager.containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
+        if (RoutesManager.getInstance().containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
             addRoutesOverlay(routeKey);
             isRouteDisplayed = true;
             if (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
-                double[] locationCoords = routesManager.calculateRouteCenter(routeKey);
-                IGeoPoint newCenter = new org.osmdroid.google.wrapper.GeoPoint(new GeoPoint(MathUtils.coordDoubleToInt(locationCoords[0]), MathUtils.coordDoubleToInt(locationCoords[1])));
+                double[] locationAndZoom = RoutesManager.getInstance().calculateRouteCenterAndZoom(routeKey);
+                IGeoPoint newCenter = new org.osmdroid.google.wrapper.GeoPoint(new GeoPoint(MathUtils.coordDoubleToInt(locationAndZoom[0]), MathUtils.coordDoubleToInt(locationAndZoom[1])));
                 mapController.setCenter(newCenter);
-                mapController.setZoom(routesManager.calculateRouteZoom(routeKey));
+                mapController.setZoom((int)locationAndZoom[2]);
             }
             postInvalidate();
         }
@@ -1125,7 +1112,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private String followMyPositionAction() {
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
-            String route = RouteRecorder.getInstance().startRecording(routesManager);
+            String route = RouteRecorder.getInstance().startRecording();
             showRouteAction(route);
             if (layerLoader.isLoading()) {
                 layerLoader.stopLoading();
@@ -1145,7 +1132,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                String filename = RouteRecorder.getInstance().stopRecording(routesManager);
+                String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
                 } else {
@@ -1160,7 +1147,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     private void clearMapAction() {
         landmarkManager.clearLandmarkStore();
-        routesManager.clearRoutesStore();
+        RoutesManager.getInstance().clearRoutesStore();
         syncRoutesOverlays();
         postInvalidate();
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));

@@ -45,12 +45,8 @@ public class LayerListActivity extends ListActivity {
     private List<String> names = null;
     private IntentsHelper intents;
     private LandmarkManager landmarkManager;
-    private RoutesManager routesManager;
     private int currentPos = -1, mode = ConfigurationManager.ALL_LAYERS_MODE;
-    //private String layerName;
-    //private static final String NAME = "layerName";
     
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +61,7 @@ public class LayerListActivity extends ListActivity {
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        routesManager = ConfigurationManager.getInstance().getRoutesManager();
-
+        
         intents = new IntentsHelper(this, landmarkManager, null);
 
         Intent intent = getIntent();
@@ -336,7 +331,7 @@ public class LayerListActivity extends ListActivity {
         } else if (type == ACTION_CLEAR) {
             //CLEAR
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
-                routesManager.clearRoutesStore();
+                RoutesManager.getInstance().clearRoutesStore();
                 ((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
             } else if (landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
@@ -352,7 +347,7 @@ public class LayerListActivity extends ListActivity {
             ((ArrayAdapter<String>) getListAdapter()).remove(names.remove(position));
 
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
-                routesManager.clearRoutesStore();
+            	RoutesManager.getInstance().clearRoutesStore();
                 ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             }    
             
@@ -379,14 +374,14 @@ public class LayerListActivity extends ListActivity {
         public int compare(String lhs, String rhs) {
             int lhsCount;
             if (lhs.equals(Commons.ROUTES_LAYER)) {
-                lhsCount = routesManager.getCount();
+                lhsCount = RoutesManager.getInstance().getCount();
             } else {
                 lhsCount = landmarkManager.getLayerSize(lhs);
             }
 
             int rhsCount;
             if (rhs.equals(Commons.ROUTES_LAYER)) {
-                rhsCount = routesManager.getCount();
+                rhsCount = RoutesManager.getInstance().getCount();
             } else {
                 rhsCount = landmarkManager.getLayerSize(rhs);
             }
