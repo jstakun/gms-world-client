@@ -35,19 +35,26 @@ import com.jstakun.gms.android.utils.LoggerUtils;
  */
 public class LayerManager {
 
-    private static final Map<String, Layer> layers = new LinkedHashMap<String, Layer>();
-    private static final Map<String, Layer> allLayers = new LinkedHashMap<String, Layer>();
-    private static final List<String> dynamicLayers = new ArrayList<String>();
-    
-    public static final int LAYER_LOCAL = 1;
+	public static final int LAYER_LOCAL = 1;
     public static final int LAYER_EXTERNAL = 2;
     public static final int LAYER_DYNAMIC = 0;
     public static final int LAYER_FILESYSTEM = 3;
     public static final int LAYER_ICON_SMALL = 0;
     public static final int LAYER_ICON_LARGE = 1;
-    private boolean initialized = false;
+    
+    private static final Map<String, Layer> layers = new LinkedHashMap<String, Layer>();
+    private static final Map<String, Layer> allLayers = new LinkedHashMap<String, Layer>();
+    private static final List<String> dynamicLayers = new ArrayList<String>();
+    
+    private static boolean initialized = false;
+    
+    private static LayerManager instance = new LayerManager();
 
-    public LayerManager() {
+    public static LayerManager getInstance() {
+    	return instance;
+    }
+    
+    private LayerManager() {
     	allLayers.put(Commons.LOCAL_LAYER, LayerFactory.getLayer(Commons.LOCAL_LAYER, false, true, isLayerEnabledConf(Commons.LOCAL_LAYER), false, false, Arrays.asList(new LayerReader[]{new LandmarkDBReader()}), null, R.drawable.ok16, null, R.drawable.ok, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Phone_Landmarks_desc), Commons.LOCAL_LAYER, FileManager.ClearPolicy.ONE_MONTH, -1)); 
         allLayers.put(Commons.FACEBOOK_LAYER, LayerFactory.getLayer(Commons.FACEBOOK_LAYER, false, true, isLayerEnabledConf(Commons.FACEBOOK_LAYER), true, true, Arrays.asList(new LayerReader[]{new FbTaggedReader(), /*new FbCheckinsReader(),*/ new FbPhotosReader(), new FbPlacesReader()}), null, R.drawable.facebook_icon, null, R.drawable.facebook_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Facebook_desc), Commons.FACEBOOK_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.facebook_128));  
         allLayers.put(Commons.FOURSQUARE_LAYER, LayerFactory.getLayer(Commons.FOURSQUARE_LAYER, false, true, isLayerEnabledConf(Commons.FOURSQUARE_LAYER), true, true, Arrays.asList(new LayerReader[]{new FsCheckinsReader(), new FsRecommendsReader(), new FoursquareReader()}), null, R.drawable.foursquare, null, R.drawable.foursquare_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Foursquare_desc), Commons.FOURSQUARE_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.foursquare_128)); 
@@ -202,7 +209,7 @@ public class LayerManager {
         return enabled;
     }
 
-    public void initialize(String... layerNames) {
+    protected void initialize(String... layerNames) {
         synchronized (layers) {
             layers.clear();
             dynamicLayers.clear();

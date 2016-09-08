@@ -22,6 +22,7 @@ import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.osm.maps.ObservableMapView;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
@@ -508,7 +509,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             return false;
         } else {
         	MenuItem routes = menu.findItem(R.id.routes);
-        	if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
+        	if (LayerManager.getInstance().containsLayer(Commons.ROUTES_LAYER)) {
         		routes.setVisible(true);
         		MenuItem routeRecording = menu.findItem(R.id.trackPos);
         		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
@@ -974,9 +975,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             		routesOverlaysCount++;
             	}
         }         
-        
-    	
-    	boolean isRoutesEnabled = landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER);
+           	
+    	boolean isRoutesEnabled = LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER);
     		
     	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
     		for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
@@ -1001,7 +1001,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
     private void showRouteAction(String routeKey) {
         LoggerUtils.debug("Adding route to view: " + routeKey);
-        if (RoutesManager.getInstance().containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
+        if (RoutesManager.getInstance().containsRoute(routeKey) && LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER)) {
             addRoutesOverlay(routeKey);
             if (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {
                 double[] locationAndZoom = RoutesManager.getInstance().calculateRouteCenterAndZoom(routeKey);

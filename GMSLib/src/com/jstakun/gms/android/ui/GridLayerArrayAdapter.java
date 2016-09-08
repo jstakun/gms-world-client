@@ -62,7 +62,7 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        final String layerKey = layerStr[0];
 	        final String layerName = layerStr[1];
 
-	        Layer layer = landmarkManager.getLayerManager().getLayer(layerKey);
+	        Layer layer = LayerManager.getInstance().getLayer(layerKey);
 
 	        holder.headerText.setText(layerName);
 	        

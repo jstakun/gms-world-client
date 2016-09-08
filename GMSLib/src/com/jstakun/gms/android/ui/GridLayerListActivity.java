@@ -89,15 +89,15 @@ public class GridLayerListActivity extends Activity {
             List<String> layers = null; 
             
             if (mode == ConfigurationManager.DYNAMIC_LAYERS_MODE) {
-            	layers = landmarkManager.getLayerManager().getDynamicLayers();
+            	layers = LayerManager.getInstance().getDynamicLayers();
             } else {
-            	layers = landmarkManager.getLayerManager().getLayers();
+            	layers = LayerManager.getInstance().getLayers();
             }
             
             Collections.sort(layers, new LayerSizeComparator());
             for (String key : layers) {
                 if (!key.equals(Commons.MY_POSITION_LAYER)) {
-                	Layer layer = landmarkManager.getLayerManager().getLayer(key);
+                	Layer layer = LayerManager.getInstance().getLayer(key);
                 	if (layer.getType() == LayerManager.LAYER_DYNAMIC || layer.getCount() > 0 || layer.getImage() > 0 || landmarkManager.getLayerSize(key) > 0) {
                 		String formatted = layer.getFormatted();
                 		if (formatted == null) {
@@ -120,7 +120,7 @@ public class GridLayerListActivity extends Activity {
     	if (mode == ConfigurationManager.ALL_LAYERS_MODE) {
     		enableLayers.setVisible(true);
     		refreshLayers.setVisible(true);
-    		if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
+    		if (LayerManager.getInstance().isAllLayersEnabled()) {
     			enableLayers.setTitle(R.string.disableLayers);
     		} else {
     			enableLayers.setTitle(R.string.enableLayers);
@@ -154,7 +154,7 @@ public class GridLayerListActivity extends Activity {
             finish();
             return true;
         } else if (itemId == R.id.enableLayers) {
-        	if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
+        	if (LayerManager.getInstance().isAllLayersEnabled()) {
         		disableAllLayersDialog.show();
         	} else {
         		enableAllLayersDialog.show();
@@ -184,7 +184,7 @@ public class GridLayerListActivity extends Activity {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
             }
           
-            if (landmarkManager.getLayerManager().isLayerEnabled(layerKey)) {
+            if (LayerManager.getInstance().isLayerEnabled(layerKey)) {
             	menu.getItem(ACTION_ENABLE).setVisible(false);
             } else {
             	menu.getItem(ACTION_DISABLE).setVisible(false);
@@ -280,11 +280,11 @@ public class GridLayerListActivity extends Activity {
             
             intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, layerName));
         } else if (type == ACTION_ENABLE) {
-        	landmarkManager.getLayerManager().setLayerEnabled(layerKey, true);
+        	LayerManager.getInstance().setLayerEnabled(layerKey, true);
         	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
         	intents.showInfoToast(Locale.getMessage(R.string.Layer_enabled));
         } else if (type == ACTION_DISABLE) {
-        	landmarkManager.getLayerManager().setLayerEnabled(layerKey, false);
+        	LayerManager.getInstance().setLayerEnabled(layerKey, false);
         	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
         	intents.showInfoToast(Locale.getMessage(R.string.Layer_disabled));      	
         }
@@ -315,11 +315,9 @@ public class GridLayerListActivity extends Activity {
                 setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                if (landmarkManager != null) {
-                	landmarkManager.getLayerManager().enableAllLayers();
-                	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
-                	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_enabled));
-                }
+                LayerManager.getInstance().enableAllLayers();
+                ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
+                intents.showInfoToast(Locale.getMessage(R.string.Layer_all_enabled));
             }
         }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -338,7 +336,7 @@ public class GridLayerListActivity extends Activity {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
                 if (landmarkManager != null) {
-                	landmarkManager.getLayerManager().disableAllLayers();
+                	LayerManager.getInstance().disableAllLayers();
                 	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
                 	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
                 }

@@ -28,7 +28,6 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LandmarkParcelableFactory;
 import com.jstakun.gms.android.landmarks.LayerManager;
@@ -997,22 +996,16 @@ public class FileManager implements PersistenceManager {
 
     private class ClearCacheTask extends GMSAsyncTask<Void, Void, Void> {
 
-    	private LayerManager lm = null;
-    	
-        public ClearCacheTask() {
+    	public ClearCacheTask() {
         	super(10, ClearCacheTask.class.getName());
-        	LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        	if (landmarkManager != null) {
-        		lm = landmarkManager.getLayerManager();
-        	}
         }
 
         @Override
         protected Void doInBackground(Void... params) {
         	//delete old images
-        	deleteFiles(cacheDir, new FileDeletePredicate(lm));
+        	deleteFiles(cacheDir, new FileDeletePredicate());
         	//delete old logs
-        	deleteFiles(getExternalDirectory(getLogsFolder(), null), new FileDeletePredicate(null));
+        	deleteFiles(getExternalDirectory(getLogsFolder(), null), new FileDeletePredicate());
         	//save log file in debug mode
         	LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/files/" + LOGS_FOLDER + "/logcat" + System.currentTimeMillis() + ".txt");       	
         	return null;
@@ -1046,22 +1039,16 @@ public class FileManager implements PersistenceManager {
     
     private class FileDeletePredicate implements Predicate<File> {
 
-    	private LayerManager lm = null;
-    	
-    	public FileDeletePredicate(LayerManager lm) {
-    		this.lm = lm;
-    	}
-    	
     	@Override
 		public boolean apply(File file) {
 			String name = file.getName();
 			String[] tokens = StringUtils.split(name, "_");
 			ClearPolicy policy = null;
 			
-			if (tokens.length > 1 && lm != null) {
+			if (tokens.length > 1) {
 				String layerName = tokens[tokens.length-1];
 				//LoggerUtils.debug("Checking clear policy for " + file.getName());
-				policy = lm.getClearPolicy(layerName);
+				policy = LayerManager.getInstance().getClearPolicy(layerName);
 			} else {
 				//LoggerUtils.debug("Applying default clear policy for " + file.getName());
 			}

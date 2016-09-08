@@ -21,7 +21,6 @@ import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
-import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
@@ -426,7 +425,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	//if routes layer doesn't exists don't show routes menu
         	MenuItem routes = menu.findItem(R.id.routes);
         	if (routes != null) {
-        		if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
+        		if (LayerManager.getInstance().containsLayer(Commons.ROUTES_LAYER)) {
         			routes.setVisible(true);	
         			MenuItem routeRecording = menu.findItem(R.id.trackPos);
         			MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
@@ -1118,7 +1117,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager, this.getResources().getDisplayMetrics());	
 	    markerCluster.loadAllMarkers();
 	    
-	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, markerCluster, this.getResources().getDisplayMetrics().density);
+	    routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
 	    routesCluster.loadAllRoutes();
 	    
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {

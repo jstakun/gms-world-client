@@ -206,7 +206,7 @@ public class CategoriesManager {
         return false;
     }
 
-    public List<Category> getEnabledCategories(LayerManager layerManager) {
+    public List<Category> getEnabledCategories() {
         List<Category> enabled = new ArrayList<Category>();
         for (Category c : categories) {
             if (c.isEnabled()) {
@@ -215,8 +215,8 @@ public class CategoriesManager {
         }
         //only in da
         if (ConfigurationManager.getInstance().getInt(ConfigurationManager.APP_ID) == ConfigurationManager.DA) {
-        	for (String key : layerManager.getDynamicLayers()) {
-        		Layer layer = layerManager.getLayer(key);
+        	for (String key : LayerManager.getInstance().getDynamicLayers()) {
+        		Layer layer = LayerManager.getInstance().getLayer(key);
         		Category category = new Category(-1, layer.getName(), -1, null, layer.getSmallIconResource(), -1);
         		category.setCustom(true);
         		enabled.add(category);

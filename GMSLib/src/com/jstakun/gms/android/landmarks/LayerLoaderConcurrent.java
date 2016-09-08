@@ -90,7 +90,7 @@ public class LayerLoaderConcurrent {
         
         if (selectedLayer != null) {
             currentLayerIndex = -1;
-            Layer layer = landmarkManager.getLayerManager().getLayer(selectedLayer);
+            Layer layer = LayerManager.getInstance().getLayer(selectedLayer);
             for (int i = 0; i < layer.getLayerReader().size(); i++) {
                 LayerLoaderTask currentTask = new LayerLoaderTask();
                 currentTask.execute(selectedLayer, Integer.toString(i));
@@ -114,10 +114,10 @@ public class LayerLoaderConcurrent {
         String key = null;
         
         if (currentLayerIndex != -1) {
-            List<String> layers = landmarkManager.getLayerManager().getLayers();
+            List<String> layers = LayerManager.getInstance().getLayers();
             while (currentLayerIndex < layers.size()) {
                 key = layers.get(currentLayerIndex);
-                Layer layer = landmarkManager.getLayerManager().getLayer(key);
+                Layer layer = LayerManager.getInstance().getLayer(key);
                 List<LayerReader> layerReader = layer.getLayerReader();
                 nextReader(key, layerReader);
                 if (!layerReader.isEmpty() && layerReader.size() > currentLayerReaderIndex.get(key)) {
@@ -131,7 +131,7 @@ public class LayerLoaderConcurrent {
             
             if (hasLayerLoader) {
                 counter++;
-                int size = landmarkManager.getLayerManager().getLoadableLayersCount();
+                int size = LayerManager.getInstance().getLoadableLayersCount();
                 //System.out.println("Loading layer " + key + " (" + counter + "/" + size + ")...");
                 messageStack.addMessage(Locale.getMessage(R.string.Layer_Loading_counter, counter, size), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
                 
@@ -172,7 +172,7 @@ public class LayerLoaderConcurrent {
     public boolean isLoading() {
         if (!concurrentLayerLoader.isEmpty() || !initialized
                 || (currentLayerIndex != -1 && !concurrentLayerLoader.isCancelled()
-                && currentLayerIndex < landmarkManager.getLayerManager().getLayers().size())) {
+                && currentLayerIndex < LayerManager.getInstance().getLayers().size())) {
             //System.out.println("Layer loader isLoading true");
             return true;
         } else {
@@ -257,7 +257,7 @@ public class LayerLoaderConcurrent {
         
         private void loadLayer(String key, boolean loadIfDisabled, boolean repaintIfNoError) {
             //System.out.println("LayerLoaderTask.loadLayer " + key);
-            Layer layer = landmarkManager.getLayerManager().getLayer(key);
+            Layer layer = LayerManager.getInstance().getLayer(key);
             if (layer != null && (loadIfDisabled || layer.isEnabled() || ConfigurationManager.getInstance().isOn(ConfigurationManager.LOAD_DISABLED_LAYERS))) {
                 if (!layer.getLayerReader().isEmpty() && layer.getLayerReader().size() > index) {
                     if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
@@ -319,12 +319,11 @@ public class LayerLoaderConcurrent {
             counter = 0;
             initialized = true;
             int i = 0;
-            LayerManager layerManager = landmarkManager.getLayerManager();
             
-            while (i < MAX_CONCURRENT_TASKS && currentLayerIndex < layerManager.getLayers().size()) {
+            while (i < MAX_CONCURRENT_TASKS && currentLayerIndex < LayerManager.getInstance().getLayers().size()) {
                 try {
-                    String key = layerManager.getLayers().get(currentLayerIndex);
-                    Layer layer = layerManager.getLayer(key);
+                    String key = LayerManager.getInstance().getLayers().get(currentLayerIndex);
+                    Layer layer = LayerManager.getInstance().getLayer(key);
                     List<LayerReader> layerReader = layer.getLayerReader();
                     
                     nextReader(key, layerReader);
@@ -334,7 +333,7 @@ public class LayerLoaderConcurrent {
                         if (!excludedExternal.contains(key)) {
                             i++;
                             //System.out.println("Loading layer " + key + " " + counter + "...");
-                            int size = layerManager.getLoadableLayersCount();
+                            int size = LayerManager.getInstance().getLoadableLayersCount();
                             messageStack.addMessage(Locale.getMessage(R.string.Layer_Loading_counter, counter, size), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
                             LayerLoaderTask currentTask = new LayerLoaderTask();
                             int index = currentLayerReaderIndex.get(key);
@@ -365,7 +364,7 @@ public class LayerLoaderConcurrent {
         @Override
         protected String doInBackground(String... arg0) {
             excludedExternal.clear();
-            return landmarkManager.getLayerManager().initializeExternalLayers(excludedExternal, latitude, longitude, zoom, width, height);
+            return LayerManager.getInstance().initializeExternalLayers(excludedExternal, latitude, longitude, zoom, width, height);
         }
         
         @Override

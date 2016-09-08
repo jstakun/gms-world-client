@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import java.util.ArrayList;
@@ -9,19 +5,19 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.landmarks.LandmarkManager;
-import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *
@@ -33,8 +29,6 @@ public class AddLayerActivity extends Activity implements OnClickListener {
     private EditText nameText, keywordsText;
     private IntentsHelper intents = null;
     private String name;
-    //private static final int ID_DIALOG_PROGRESS = 0;
-    private LandmarkManager landmarkManager;
     private static final String NAME = "name";
     private AsyncTaskManager asyncTaskManager;
     
@@ -50,7 +44,6 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
 
         //Object retained = getLastNonConfigurationInstance();
@@ -175,9 +168,7 @@ public class AddLayerActivity extends Activity implements OnClickListener {
             String keywordsJoin = StringUtils.join(keywordsList, ",");
 
             boolean containsLayer = false;
-            if (landmarkManager != null) {
-            	containsLayer = landmarkManager.getLayerManager().addDynamicLayer(keywordsJoin);
-            }
+            containsLayer = LayerManager.getInstance().addDynamicLayer(keywordsJoin);
           
             if (containsLayer) {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_exists_error));

@@ -14,7 +14,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -23,22 +23,20 @@ import android.graphics.Color;
 
 public class GoogleRoutesOverlay {
 	
-	private LandmarkManager mLm;
 	private GoogleMap mMap;
 	private float mDensity;
 	private GoogleMarkerClusterOverlay mMarkerCluster;
 	private Polyline mRoutePolyline = null;
 	
-	public GoogleRoutesOverlay(GoogleMap map, LandmarkManager lm, GoogleMarkerClusterOverlay markerCluster, float density) {
+	public GoogleRoutesOverlay(GoogleMap map, GoogleMarkerClusterOverlay markerCluster, float density) {
 		this.mMap = map;
-		this.mLm = lm;
 		this.mDensity = density;
 		this.mMarkerCluster = markerCluster;
 	}
 	
 	public void showRouteAction(String routeKey, boolean animateTo) {
     	LoggerUtils.debug("Adding route to map view: " + routeKey);
-    	if (routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) || (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) && mLm.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER))) {
+    	if (routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) || (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) && LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER))) {
     		drawRoute(routeKey, animateTo);
         } 
     }
@@ -94,7 +92,7 @@ public class GoogleRoutesOverlay {
 	}
 	
 	public void loadAllRoutes() {
-		if (mLm.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
+		if (LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER)) {
 			LoggerUtils.debug("Loading all routes to map view");
 			for(String routeKey : RoutesManager.getInstance().getRoutes()) {
 				showRouteAction(routeKey, false);

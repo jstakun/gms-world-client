@@ -94,14 +94,14 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //System.out.println("Setting " + names[position] + " checked " + buttonView.isChecked());
-                landmarkManager.getLayerManager().setLayerEnabled(getItem(position).split(";")[0], buttonView.isChecked());
+            	LayerManager.getInstance().setLayerEnabled(getItem(position).split(";")[0], buttonView.isChecked());
                 notifyDataSetChanged();
             }
         });
 
         if (landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
             holder.layerCheckbox.setVisibility(View.GONE);
-        } else if (landmarkManager.getLayerManager().isLayerEnabled(layerKey)) {
+        } else if (LayerManager.getInstance().isLayerEnabled(layerKey)) {
             holder.layerCheckbox.setVisibility(View.VISIBLE);
             holder.layerCheckbox.setChecked(true);
             holder.layerCheckbox.setText(Locale.getMessage(R.string.Layer_enabled));
@@ -113,7 +113,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
 
         String message = "";
         String desc = null;
-        Layer layer = landmarkManager.getLayerManager().getLayer(layerKey);
+        Layer layer = LayerManager.getInstance().getLayer(layerKey);
 
         if (layer.getType() == LayerManager.LAYER_DYNAMIC) {
             String[] keywords = layer.getKeywords();

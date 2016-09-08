@@ -15,6 +15,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
+import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
@@ -75,7 +76,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 			dialog.cancel();
 			if (query != null && landmarkManager != null) {
 				String name = query.substring(0, query.length()-2);
-				boolean containsLayer = landmarkManager.getLayerManager().addDynamicLayer(name);
+				boolean containsLayer = LayerManager.getInstance().addDynamicLayer(name);
 				if (containsLayer) {
 	                intents.showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
 	            } else {

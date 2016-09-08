@@ -46,6 +46,7 @@ import com.jstakun.gms.android.google.maps.ObservableMapView;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
 import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
@@ -530,7 +531,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             return false;
         } else {
         	MenuItem routes = menu.findItem(R.id.routes);
-        	if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
+        	if (LayerManager.getInstance().containsLayer(Commons.ROUTES_LAYER)) {
         		routes.setVisible(true);
             	MenuItem routeRecording = menu.findItem(R.id.trackPos);
         		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
@@ -1036,7 +1037,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             }
         }
     	
-    	boolean isRoutesEnabled = landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER);
+    	boolean isRoutesEnabled = LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER);
     		
     	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
     		if (mapProvider == ConfigurationManager.OSM_MAPS) {
@@ -1074,7 +1075,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     private void showRouteAction(String routeKey) {
         LoggerUtils.debug("Adding route to view: " + routeKey);
-        if (RoutesManager.getInstance().containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
+        if (RoutesManager.getInstance().containsRoute(routeKey) && LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER)) {
             addRoutesOverlay(routeKey);
             isRouteDisplayed = true;
             if (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {

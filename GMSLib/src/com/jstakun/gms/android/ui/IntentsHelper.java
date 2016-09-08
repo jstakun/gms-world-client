@@ -159,7 +159,7 @@ public final class IntentsHelper {
 
     public void startSettingsActivity(Class<?> settingsActivityClass) {
         Intent intent = new Intent(activity, settingsActivityClass);
-        Bundle extras = landmarkManager.getLayerManager().loadLayersGroup();
+        Bundle extras = LayerManager.getInstance().loadLayersGroup();
         intent.putExtras(extras);
         activity.startActivityForResult(intent, INTENT_PREFS);
     }
@@ -292,7 +292,7 @@ public final class IntentsHelper {
                 && ConfigurationManager.getInstance().isOff(ConfigurationManager.GL_AUTH_STATUS)) {
             startOAuthActivity(Commons.GOOGLE);
             return false;
-        } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)
+        } else if (LayerManager.getInstance().isLayerCheckinable(selectedLayer)
                 && !ConfigurationManager.getUserManager().isUserLoggedIn()) {
             startLoginActivity();
             return false;
@@ -313,7 +313,7 @@ public final class IntentsHelper {
         } else if (selectedLayer.equals(Commons.GOOGLE_PLACES_LAYER)
                 && ConfigurationManager.getInstance().isOn(ConfigurationManager.GL_AUTH_STATUS)) {
             return true;
-        } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLayer)
+        } else if (LayerManager.getInstance().isLayerCheckinable(selectedLayer)
                 && ConfigurationManager.getUserManager().isUserLoggedIn()) {
             return true;
         } else {
@@ -932,7 +932,7 @@ public final class IntentsHelper {
         //try {
         lvCheckinButton.setImageResource(R.drawable.checkin);
         if (selectedLandmark.getLayer().equals(Commons.FOURSQUARE_LAYER)) {
-            header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
+            header.setText(LayerManager.getInstance().getLayerFormatted(selectedLandmark.getLayer()));
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
                 lvCheckinButton.setImageResource(R.drawable.login);
                 lvCommentButton.setVisibility(View.GONE);
@@ -940,7 +940,7 @@ public final class IntentsHelper {
                 visibleButtons--;
             }
         } else if (selectedLandmark.getLayer().equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {
-            header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
+            header.setText(LayerManager.getInstance().getLayerFormatted(selectedLandmark.getLayer()));
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
                 //lvActionButton.setImageResource(R.drawable.login);
                 lvCheckinButton.setVisibility(View.GONE);
@@ -950,7 +950,7 @@ public final class IntentsHelper {
                 visibleButtons -= 2;
             }
         } else if (selectedLandmark.getLayer().equals(Commons.FACEBOOK_LAYER)) {
-            header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
+            header.setText(LayerManager.getInstance().getLayerFormatted(selectedLandmark.getLayer()));
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FB_AUTH_STATUS)) {
                 lvCheckinButton.setImageResource(R.drawable.login);
                 lvCommentButton.setVisibility(View.GONE);
@@ -958,7 +958,7 @@ public final class IntentsHelper {
                 visibleButtons--;
             }
         } else if (selectedLandmark.getLayer().equals(Commons.GOOGLE_PLACES_LAYER)) {
-            header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
+            header.setText(LayerManager.getInstance().getLayerFormatted(selectedLandmark.getLayer()));
             lvCommentButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
             visibleButtons--;
@@ -966,7 +966,7 @@ public final class IntentsHelper {
                 lvCheckinButton.setImageResource(R.drawable.login);
             }
         } else if (selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER)) {
-            header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
+            header.setText(LayerManager.getInstance().getLayerFormatted(selectedLandmark.getLayer()));
             if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
                 lvCheckinButton.setVisibility(View.GONE);
                 lvView.findViewById(R.id.lvCheckinSeparator).setVisibility(View.GONE);
@@ -981,14 +981,14 @@ public final class IntentsHelper {
             desc.setText(selectedLandmark.getDescription());
             lvRouteButton.setVisibility(View.GONE);
         } else if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-            header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
+            header.setText(LayerManager.getInstance().getLayerFormatted(selectedLandmark.getLayer()));
             lvCheckinButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCheckinSeparator).setVisibility(View.GONE);
             lvCommentButton.setVisibility(View.GONE);
             lvView.findViewById(R.id.lvCommentSeparator).setVisibility(View.GONE);
             visibleButtons -= 2;
-        } else if (landmarkManager.getLayerManager().isLayerCheckinable(selectedLandmark.getLayer())) { //GMS World checkinable layers
-            header.setText(landmarkManager.getLayerManager().getLayerFormatted(selectedLandmark.getLayer()));
+        } else if (LayerManager.getInstance().isLayerCheckinable(selectedLandmark.getLayer())) { //GMS World checkinable layers
+            header.setText(LayerManager.getInstance().getLayerFormatted(selectedLandmark.getLayer()));
             if (!ConfigurationManager.getUserManager().isUserLoggedIn()) {
                 lvCheckinButton.setImageResource(R.drawable.login);
                 lvCommentButton.setVisibility(View.GONE);
@@ -1285,7 +1285,7 @@ public final class IntentsHelper {
                     	CategoriesManager.getInstance().saveCategoriesAction(names, codes);
                     }
                 } else {
-                    landmarkManager.getLayerManager().saveLayersAction(names, codes);
+                	LayerManager.getInstance().saveLayersAction(names, codes);
                 }
                 
                 if (intent.getBooleanExtra("reindex", false)) {

@@ -23,6 +23,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.Locale;
@@ -109,7 +110,7 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
 
         LandmarkManager lm = ConfigurationManager.getInstance().getLandmarkManager();
         if (lm != null) {
-            extLayersMap = lm.getLayerManager().getExternalLayers();
+            extLayersMap = LayerManager.getInstance().getExternalLayers();
             if (extLayersMap != null) {
                 extLayers.addAll(extLayersMap.values());
             }

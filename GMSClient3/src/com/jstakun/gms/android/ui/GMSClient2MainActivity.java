@@ -9,6 +9,46 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
 import org.osmdroid.api.IMyLocationOverlay;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapView;
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FavouritesDAO;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.FilenameFilterFactory;
+import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.deals.CategoriesManager;
+import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
+import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
+import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
+import com.jstakun.gms.android.google.maps.ObservableMapView;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.location.LocationServicesManager;
+import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
+import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
+import com.jstakun.gms.android.osm.maps.OsmMarkerClusterOverlay;
+import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
+import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
+import com.jstakun.gms.android.routes.RouteRecorder;
+import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.MathUtils;
+import com.jstakun.gms.android.utils.MessageStack;
+import com.jstakun.gms.android.utils.OsUtil;
+import com.jstakun.gms.android.utils.ProjectionInterface;
+import com.jstakun.gms.android.utils.ServicesUtils;
+import com.jstakun.gms.android.utils.StringUtil;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -34,46 +74,6 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapView;
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FavouritesDAO;
-import com.jstakun.gms.android.data.FavouritesDbDataSource;
-import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.FilenameFilterFactory;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
-import com.jstakun.gms.android.deals.CategoriesManager;
-import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
-import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
-import com.jstakun.gms.android.google.maps.GoogleRoutesOverlay;
-import com.jstakun.gms.android.google.maps.ObservableMapView;
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkManager;
-import com.jstakun.gms.android.landmarks.LayerLoader;
-import com.jstakun.gms.android.location.LocationServicesManager;
-import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
-import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
-import com.jstakun.gms.android.osm.maps.OsmMarkerClusterOverlay;
-import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
-import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
-import com.jstakun.gms.android.routes.RouteRecorder;
-import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.MathUtils;
-import com.jstakun.gms.android.utils.MessageStack;
-import com.jstakun.gms.android.utils.OsUtil;
-import com.jstakun.gms.android.utils.ProjectionInterface;
-import com.jstakun.gms.android.utils.ServicesUtils;
-import com.jstakun.gms.android.utils.StringUtil;
-import com.jstakun.gms.android.utils.UserTracker;
 
 public class GMSClient2MainActivity extends MapActivity implements OnClickListener {
 
@@ -609,7 +609,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         } else {         
         	//if routes layer doesn't exists don't show routes menu
         	MenuItem routes = menu.findItem(R.id.routes);
-        	if (landmarkManager.getLayerManager().containsLayer(Commons.ROUTES_LAYER)) {
+        	if (LayerManager.getInstance().containsLayer(Commons.ROUTES_LAYER)) {
         		routes.setVisible(true);	
         		MenuItem routeRecording = menu.findItem(R.id.trackPos);
         		MenuItem pauseRecording = menu.findItem(R.id.pauseRoute);
@@ -1137,7 +1137,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
         }
     	
-    	boolean isRoutesEnabled = landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER);
+    	boolean isRoutesEnabled = LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER);
     		
     	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
     		if (mapProvider == ConfigurationManager.OSM_MAPS) {
@@ -1175,7 +1175,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     private void showRouteAction(String routeKey) {
         LoggerUtils.debug("Adding route to view: " + routeKey);
-        if (RoutesManager.getInstance().containsRoute(routeKey) && landmarkManager.getLayerManager().isLayerEnabled(Commons.ROUTES_LAYER)) {
+        if (RoutesManager.getInstance().containsRoute(routeKey) && LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER)) {
             addRoutesOverlay(routeKey);
             isRouteDisplayed = true;
             if (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED)) {

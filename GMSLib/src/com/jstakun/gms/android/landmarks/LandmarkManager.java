@@ -60,21 +60,20 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class LandmarkManager {
 
-    private Map<String, List<ExtendedLandmark>> landmarkStore = new ConcurrentHashMap<String, List<ExtendedLandmark>>();
-    private LayerManager layerManager = null;
-    private LandmarkPaintManager landmarkPaintManager = null;
-    private ExtendedLandmark selectedLandmarkUI = null; //landmark selected by user in UI
-    private int LAYER_LIMIT, TOTAL_LIMIT;
-    private static final int COLOR_WHITE = Color.argb(128, 255, 255, 255); //white
+	private static final int COLOR_WHITE = Color.argb(128, 255, 255, 255); //white
     private static final int COLOR_LIGHT_SALMON = Color.argb(128, 255, 160, 122); //red Light Salmon
     private static final int COLOR_PALE_GREEN = Color.argb(128, 152, 251, 152); //Pale Green
     private static final int COLOR_DODGER_BLUE = Color.argb(128, 30, 144, 255); //Dodger Blue
     private static final int COLOR_YELLOW = Color.argb(128, 255, 215, 0); //yellow
+    
+    private Map<String, List<ExtendedLandmark>> landmarkStore = new ConcurrentHashMap<String, List<ExtendedLandmark>>();
+    private LandmarkPaintManager landmarkPaintManager = null;
+    private ExtendedLandmark selectedLandmarkUI = null; //landmark selected by user in UI
+    private int LAYER_LIMIT, TOTAL_LIMIT;
     private ObjectPool pointsPool;
     private boolean initialized = false;
 
     public LandmarkManager() {
-        layerManager = new LayerManager();
         landmarkPaintManager = new LandmarkPaintManager();
         LAYER_LIMIT = ConfigurationManager.getInstance().getInt(ConfigurationManager.LAYER_PAINT_LIMIT, 30);
         if (OsUtil.isIceCreamSandwichOrHigher()) {
@@ -93,7 +92,7 @@ public class LandmarkManager {
         initialized = true;
         int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0);
         ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
-        layerManager.initialize(layers);
+        LayerManager.getInstance().initialize(layers);
     }
     
     public boolean isInitialized() {
@@ -162,12 +161,12 @@ public class LandmarkManager {
     }
 
     public void addLayer(String name, boolean extensible, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, String smallIconPath, String largeIconPath, String desc, String formatted, List<ExtendedLandmark> layerLandmarks) {
-        layerManager.addLayer(name, extensible, manageable, enabled, checkinable, searchable, smallIconPath, largeIconPath, desc, formatted);
+    	LayerManager.getInstance().addLayer(name, extensible, manageable, enabled, checkinable, searchable, smallIconPath, largeIconPath, desc, formatted);
         getLandmarkStoreLayer(name).addAll(layerLandmarks);
     }
 
     public int getLayerSize(String layerName) {
-        Layer layer = layerManager.getLayer(layerName);
+        Layer layer = LayerManager.getInstance().getLayer(layerName);
         if (layer != null && layer.getType() == LayerManager.LAYER_DYNAMIC) {
             return searchDynamicLayerCount(layerName);
         } else {
@@ -184,7 +183,7 @@ public class LandmarkManager {
     }
 
     public int getLayerType(String layerName) {
-        Layer layer = layerManager.getLayer(layerName);
+        Layer layer = LayerManager.getInstance().getLayer(layerName);
         if (layer != null) {
             return layer.getType();
         }
@@ -193,7 +192,7 @@ public class LandmarkManager {
     }
 
     public String[] getLayerUrlPrefix(String layerName) {
-        Layer layer = layerManager.getLayer(layerName);
+        Layer layer = LayerManager.getInstance().getLayer(layerName);
         if (layer != null && !layer.getLayerReader().isEmpty()) {
             return layer.getLayerReader().get(0).getUrlPrefix();
         }
@@ -263,7 +262,7 @@ public class LandmarkManager {
         }
 
         //iterate over layers
-        for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedAndEnabledPredicate(excluded))) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerNotExcludedAndEnabledPredicate(excluded))) {
             List<ExtendedLandmark> layer = getLandmarkStoreLayer(key);
             boolean isMyPosLayer = key.equals(Commons.MY_POSITION_LAYER);
             int layer_counter = 0;
@@ -362,7 +361,7 @@ public class LandmarkManager {
     	final String[] excluded = new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER,
                 Commons.FOURSQUARE_MERCHANT_LAYER, Commons.GOOGLE_PLACES_LAYER};
 
-    	for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedAndCheckinablePredicate(excluded))) {
+    	for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerNotExcludedAndCheckinablePredicate(excluded))) {
             if (!getLandmarkStoreLayer(key).isEmpty()) {
             	return true;
             }
@@ -376,7 +375,7 @@ public class LandmarkManager {
             Commons.FOURSQUARE_MERCHANT_LAYER, Commons.GOOGLE_PLACES_LAYER};
 
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-        for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedAndCheckinablePredicate(excluded))) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerNotExcludedAndCheckinablePredicate(excluded))) {
             landmarks.addAll(getLandmarkStoreLayer(key));
         }
 
@@ -390,7 +389,7 @@ public class LandmarkManager {
     }
 
     public void searchLandmarks(List<LandmarkParcelable> results, String searchTerm, String[] searchTermTokens, double lat, double lng, int searchType) {
-        searchLandmarks(results, searchTerm, searchTermTokens, layerManager.getLayers()/*.getEnabledLayers()*/, lat, lng, searchType);
+        searchLandmarks(results, searchTerm, searchTermTokens, LayerManager.getInstance().getLayers()/*.getEnabledLayers()*/, lat, lng, searchType);
     }
 
     public void searchDeals(List<LandmarkParcelable> results, String searchTerm, String[] searchTermTokens, double lat, double lng, int searchType) {
@@ -450,7 +449,7 @@ public class LandmarkManager {
     }
 
     public int searchDynamicLayerCount(String layerName) {
-        return layerManager.getLayer(layerName).getCount();
+        return LayerManager.getInstance().getLayer(layerName).getCount();
     }
     
     private String persistLandmark(ExtendedLandmark landmark) {
@@ -491,26 +490,22 @@ public class LandmarkManager {
         return errorMessage;
     }
 
-    public LayerManager getLayerManager() {
-        return layerManager;
-    }
-
     public void clearLayer(String layer) {
     	landmarkStore.remove(layer);
     }
 
     public void deleteLayer(String layerName) {
-    	Layer layer = layerManager.getLayer(layerName);
+    	Layer layer = LayerManager.getInstance().getLayer(layerName);
 
         if (layer != null) {
         	for (ExtendedLandmark l : landmarkStore.get(layerName)) {
         		l.setRelatedUIObject(null);
         	}
             landmarkStore.remove(layerName);
-            layerManager.removeLayer(layerName);
+            LayerManager.getInstance().removeLayer(layerName);
 
             if (layer.getType() == LayerManager.LAYER_DYNAMIC) {
-                layerManager.removeDynamicLayer(layerName);
+            	LayerManager.getInstance().removeDynamicLayer(layerName);
             }
         }
     }
@@ -548,8 +543,8 @@ public class LandmarkManager {
             }
         }
 
-        for (String key : getLayerManager().getLayers()) {
-            getLayerManager().getLayer(key).setCount(0);
+        for (String key : LayerManager.getInstance().getLayers()) {
+        	LayerManager.getInstance().getLayer(key).setCount(0);
         }
         
         landmarkPaintManager.clearRecentlyOpenedLandmarks();
@@ -629,7 +624,7 @@ public class LandmarkManager {
     }
 
     public ExtendedLandmark findLandmarkById(int hashCode) {
-    	for (String key : layerManager.getLayers()) {
+    	for (String key : LayerManager.getInstance().getLayers()) {
     		for (ExtendedLandmark landmark : getLandmarkStoreLayer(key)) {
     			if (landmark.hashCode()==hashCode) {
     				return landmark;
@@ -644,9 +639,9 @@ public class LandmarkManager {
         List<String> i;
 
         if (includeDisabled) {
-            i = layerManager.getLayers();
+            i = LayerManager.getInstance().getLayers();
         } else {
-            i = layerManager.getEnabledLayers();
+            i = LayerManager.getInstance().getEnabledLayers();
         }
 
         for (String key : i) {
@@ -666,9 +661,9 @@ public class LandmarkManager {
         List<String> i;
 
         if (includeDisabled) {
-            i = layerManager.getLayers();
+            i = LayerManager.getInstance().getLayers();
         } else {
-            i = layerManager.getEnabledLayers();
+            i = LayerManager.getInstance().getEnabledLayers();
         }
 
         for (String key : i) {
@@ -692,9 +687,9 @@ public class LandmarkManager {
         List<String> keys;
 
         if (includeDisabled) {
-            keys = layerManager.getLayers();
+            keys = LayerManager.getInstance().getLayers();
         } else {
-            keys = layerManager.getEnabledLayers();
+            keys = LayerManager.getInstance().getEnabledLayers();
         }
 
         LandmarkInRadiusPredicate landmarkInRadiusPredicate = new LandmarkInRadiusPredicate(projection, x, y, LEFT, RIGHT, TOP, BOTTOM);
@@ -722,7 +717,7 @@ public class LandmarkManager {
         if (recommendedDealShown != null) {
             lastShownDeals = StringUtil.stringToLongArray(recommendedDealShown, ",");
         }
-        for (String key : Iterables.filter(layerManager.getLayers(), new LayerExistsPredicate())) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate())) {
             for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
                 Deal deal = landmark.getDeal();
 
@@ -755,7 +750,7 @@ public class LandmarkManager {
         if (recommendedDealShown != null) {
             lastShownDeals = StringUtil.stringToLongArray(recommendedDealShown, ",");
         }
-        for (String key : Iterables.filter(layerManager.getLayers(), new LayerExistsPredicate())) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate())) {
             for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
                 Deal deal = landmark.getDeal();
 
@@ -810,7 +805,7 @@ public class LandmarkManager {
             
          NewerThanDatePredicate newerThanDatePredicate = new NewerThanDatePredicate(lastStartTime);
  
-         for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedPredicate(excluded))) {
+         for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerNotExcludedPredicate(excluded))) {
         	 for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
         		  if (newerThanDatePredicate.apply(landmark)) {
         			  return true;
@@ -836,7 +831,7 @@ public class LandmarkManager {
 
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 
-        for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedPredicate(excluded))) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerNotExcludedPredicate(excluded))) {
             landmarks.addAll(Collections2.filter(getUnmodifableLayer(key), newerThanDatePredicate));
         }
 
@@ -883,7 +878,7 @@ public class LandmarkManager {
 
     public boolean hasDealsOfTheDay(String[] excluded) {
     	DealsOfTheDayPredicate dealsOfTheDayPredicate = new DealsOfTheDayPredicate();
-    	for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedPredicate(excluded))) {
+    	for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerNotExcludedPredicate(excluded))) {
             for (ExtendedLandmark deal : getLandmarkStoreLayer(key)) {
             	if (dealsOfTheDayPredicate.apply(deal)) {
             		return true;
@@ -897,7 +892,7 @@ public class LandmarkManager {
         DealsOfTheDayPredicate dealsOfTheDayPredicate = new DealsOfTheDayPredicate();
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 
-        for (String key : Iterables.filter(layerManager.getLayers(), new LayerNotExcludedPredicate(excluded))) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerNotExcludedPredicate(excluded))) {
             landmarks.addAll(Collections2.filter(getLandmarkStoreLayer(key), dealsOfTheDayPredicate));
         }
 
@@ -1023,7 +1018,7 @@ public class LandmarkManager {
     }
 
     public void setLayerOnFocus(List<LandmarkParcelable> results, String layerName, boolean isDeal, double lat, double lng) {
-        Layer layer = layerManager.getLayer(layerName);
+        Layer layer = LayerManager.getInstance().getLayer(layerName);
         if (layer != null && layer.getType() == LayerManager.LAYER_DYNAMIC && !isDeal) {
             searchLandmarks(results, null, layer.getKeywords(), lat, lng, ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE));
         } else if (layer != null && layer.getType() == LayerManager.LAYER_DYNAMIC && isDeal) {
@@ -1146,7 +1141,7 @@ public class LandmarkManager {
     public void findLandmarksInMonth(int year, int month, int[] daysWithLandmarks) {
         Calendar cal = Calendar.getInstance();
 
-        for (String key : Iterables.filter(layerManager.getLayers(), new LayerExistsPredicate())) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate())) {
             for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
                 if (landmark.isDeal()) {
                     cal.setTimeInMillis(landmark.getDeal().getEndDate());
@@ -1167,7 +1162,7 @@ public class LandmarkManager {
         	Calendar selectedDay = Calendar.getInstance();
             selectedDay.set(year, month, day);
             Calendar landmarkDate = Calendar.getInstance();
-            for (String key : Iterables.filter(layerManager.getLayers(), new LayerExistsPredicate())) {
+            for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate())) {
                 for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
                     if (landmark.isDeal()) {
                         landmarkDate.setTimeInMillis(landmark.getDeal().getEndDate());
@@ -1191,9 +1186,9 @@ public class LandmarkManager {
     }
 
     public void addLandmarkToDynamicLayer(ExtendedLandmark landmark) {
-        List<String> dynamicLayers = layerManager.getDynamicLayers();
+        List<String> dynamicLayers = LayerManager.getInstance().getDynamicLayers();
         for (String key : dynamicLayers) {
-            Layer layer = layerManager.getLayer(key);
+            Layer layer = LayerManager.getInstance().getLayer(key);
             Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
             if (searchPredicate.apply(landmark)) {
                 layer.increaseCount();
@@ -1202,9 +1197,9 @@ public class LandmarkManager {
     }
     
     public void removeLandmarkFromDynamicLayer(ExtendedLandmark landmark) {
-        List<String> dynamicLayers = layerManager.getDynamicLayers();
+        List<String> dynamicLayers = LayerManager.getInstance().getDynamicLayers();
         for (String key : dynamicLayers) {
-            Layer layer = layerManager.getLayer(key);
+            Layer layer = LayerManager.getInstance().getLayer(key);
             Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
             if (searchPredicate.apply(landmark)) {
                 layer.decreaseCount();
@@ -1214,7 +1209,7 @@ public class LandmarkManager {
     
     protected void addLandmarkListToDynamicLayer(Collection<ExtendedLandmark> landmarks) {
         if (!landmarks.isEmpty()) {
-        	List<String> dynamicLayers = layerManager.getDynamicLayers();
+        	List<String> dynamicLayers = LayerManager.getInstance().getDynamicLayers();
         	String[] layers = dynamicLayers.toArray(new String[dynamicLayers.size()]);
         	addLandmarkListToDynamicLayer(landmarks, layers);
         }
@@ -1222,7 +1217,7 @@ public class LandmarkManager {
     
     public void addLandmarkListToDynamicLayer(Collection<ExtendedLandmark> landmarks, String[] dynamicLayers) {
     	for (int i=0;i<dynamicLayers.length;i++) {
-    		Layer layer = layerManager.getLayer(dynamicLayers[i]);
+    		Layer layer = LayerManager.getInstance().getLayer(dynamicLayers[i]);
     		Predicate<ExtendedLandmark> searchPredicate = SearchPredicateFactory.getInstance().getSearchPredicate(-1, layer.getKeywords(), null);
     		int count = 0;
     		for (ExtendedLandmark landmark : landmarks) {
@@ -1288,7 +1283,7 @@ public class LandmarkManager {
         }
 
         public boolean apply(String layer) {
-            return (landmarkStore.containsKey(layer) && layerManager.isLayerEnabled(layer) && StringUtils.indexOfAny(layer, excluded) < 0);
+            return (landmarkStore.containsKey(layer) && LayerManager.getInstance().isLayerEnabled(layer) && StringUtils.indexOfAny(layer, excluded) < 0);
         }
     }
 
@@ -1314,7 +1309,7 @@ public class LandmarkManager {
         }
 
         public boolean apply(String key) {
-            return (landmarkStore.containsKey(key) && layerManager.isLayerCheckinable(key) && StringUtils.indexOfAny(key, excluded) < 0);
+            return (landmarkStore.containsKey(key) && LayerManager.getInstance().isLayerCheckinable(key) && StringUtils.indexOfAny(key, excluded) < 0);
         }
     }
 

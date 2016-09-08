@@ -690,7 +690,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager, this.getResources().getDisplayMetrics());	
 	    markerCluster.loadAllMarkers();
 	    
-	    routesCluster = new GoogleRoutesOverlay(mMap, landmarkManager, markerCluster, this.getResources().getDisplayMetrics().density);
+	    routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
 	    routesCluster.loadAllRoutes();
 	}
     

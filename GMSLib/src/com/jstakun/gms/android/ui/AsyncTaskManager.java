@@ -30,6 +30,7 @@ import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.social.GMSUtils;
@@ -330,7 +331,7 @@ public class AsyncTaskManager {
     }
 
     public void executePoiFileLoadingTask(String filename, Handler handler) {
-        if (!landmarkManager.getLayerManager().layerExists(filename)) {
+        if (!LayerManager.getInstance().layerExists(filename)) {
             String files_loading_msg = Locale.getMessage(R.string.Files_Background_task_loading);
             intents.showInfoToast(Locale.getMessage(R.string.Task_started, files_loading_msg));
             LoadPoiFileTask poiLoading = new LoadPoiFileTask(handler);
@@ -1064,7 +1065,7 @@ public class AsyncTaskManager {
         protected Void doInBackground(Void... arg0) {
             List<LandmarkParcelable> results = new ArrayList<LandmarkParcelable>();
             landmarkManager.searchLandmarks(results, null, keywords, 0.0, 0.0, ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE));
-            Layer l = landmarkManager.getLayerManager().getLayer(name);
+            Layer l = LayerManager.getInstance().getLayer(name);
             if (l != null) {
                 l.setCount(results.size());
             }
@@ -1085,14 +1086,14 @@ public class AsyncTaskManager {
 		@Override
 		protected Void doInBackground(Void... params) {
 			//System.out.println("Clearing layers count -----------------------------");
-        	List<String> dynamicLayers = landmarkManager.getLayerManager().getDynamicLayers();
+        	List<String> dynamicLayers = LayerManager.getInstance().getDynamicLayers();
         	for (String key : dynamicLayers) {
-        		Layer layer = landmarkManager.getLayerManager().getLayer(key);
+        		Layer layer = LayerManager.getInstance().getLayer(key);
         		layer.setCount(0);
         	}	
         	
         	//System.out.println("Processing layers -----------------------------");
-        	List<String> layers = landmarkManager.getLayerManager().getLayers();
+        	List<String> layers = LayerManager.getInstance().getLayers();
         	String[] dynamicLayersArr = dynamicLayers.toArray(new String[dynamicLayers.size()]);
         	for (String layer : layers) {
         		//System.out.println("Processing layer " + layer + " -----------------------------");

@@ -170,8 +170,8 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	public void loadAllMarkers() {
 		LoggerUtils.debug("Loading all markers to Google Map!");
 		clearMarkers();
-		for (String layer : lm.getLayerManager().getLayers()) {
-    		if (lm.getLayerManager().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && lm.getLayerManager().getLayer(layer).isEnabled() && lm.getLayerSize(layer) > 0) {
+		for (String layer : LayerManager.getInstance().getLayers()) {
+    		if (LayerManager.getInstance().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && LayerManager.getInstance().getLayer(layer).isEnabled() && lm.getLayerSize(layer) > 0) {
     			addMarkers(layer);
     		}      		
     	}

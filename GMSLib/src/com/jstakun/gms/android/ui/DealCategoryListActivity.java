@@ -110,7 +110,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         if (parent != -1) {
         	categories = CategoriesManager.getInstance().getSubCategories(parent);
         } else if (landmarkManager != null) {
-            categories = CategoriesManager.getInstance().getEnabledCategories(landmarkManager.getLayerManager());
+            categories = CategoriesManager.getInstance().getEnabledCategories();
         }
 
         int size = 0;

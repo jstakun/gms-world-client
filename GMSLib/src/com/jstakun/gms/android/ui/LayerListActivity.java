@@ -101,15 +101,15 @@ public class LayerListActivity extends ListActivity {
             List<String> layers = null; 
             
             if (mode == ConfigurationManager.DYNAMIC_LAYERS_MODE) {
-            	layers = landmarkManager.getLayerManager().getDynamicLayers();
+            	layers = LayerManager.getInstance().getDynamicLayers();
             } else {
-            	layers = landmarkManager.getLayerManager().getLayers();
+            	layers = LayerManager.getInstance().getLayers();
             }
             
             Collections.sort(layers, new LayerSizeComparator());
             for (String key : layers) {
                 if (!key.equals(Commons.MY_POSITION_LAYER)) {
-                    String formatted = landmarkManager.getLayerManager().getLayerFormatted(key);
+                    String formatted = LayerManager.getInstance().getLayerFormatted(key);
                     if (formatted == null) {
                         formatted = key;
                     }
@@ -141,7 +141,7 @@ public class LayerListActivity extends ListActivity {
     	if (mode == ConfigurationManager.ALL_LAYERS_MODE) {
     		enableLayers.setVisible(true);
     		refreshLayers.setVisible(true);
-    		if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
+    		if (LayerManager.getInstance().isAllLayersEnabled()) {
     			enableLayers.setTitle(R.string.disableLayers);
     		} else {
     			enableLayers.setTitle(R.string.enableLayers);
@@ -175,7 +175,7 @@ public class LayerListActivity extends ListActivity {
             finish();
             return true;
         } else if (itemId == R.id.enableLayers) {
-        	if (landmarkManager != null && landmarkManager.getLayerManager().isAllLayersEnabled()) {
+        	if (LayerManager.getInstance().isAllLayersEnabled()) {
         		disableAllLayersDialog.show();
         	} else {
         		enableAllLayersDialog.show();
@@ -205,7 +205,7 @@ public class LayerListActivity extends ListActivity {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
             }
 
-            if (landmarkManager.getLayerManager().isLayerEnabled(layerKey)) {
+            if (LayerManager.getInstance().isLayerEnabled(layerKey)) {
             	menu.getItem(ACTION_ENABLE).setVisible(false);
             } else {
             	menu.getItem(ACTION_DISABLE).setVisible(false);
@@ -267,11 +267,9 @@ public class LayerListActivity extends ListActivity {
                 setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                if (landmarkManager != null) {
-                	landmarkManager.getLayerManager().enableAllLayers();
-                	((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
-                	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_enabled));
-                }
+                LayerManager.getInstance().enableAllLayers();
+                ((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
+                intents.showInfoToast(Locale.getMessage(R.string.Layer_all_enabled));
             }
         }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -289,11 +287,9 @@ public class LayerListActivity extends ListActivity {
                 setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                if (landmarkManager != null) {
-                	landmarkManager.getLayerManager().disableAllLayers();
-                	((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
-                	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
-                }
+                LayerManager.getInstance().disableAllLayers();
+                ((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
+                intents.showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
             }
         }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -353,10 +349,10 @@ public class LayerListActivity extends ListActivity {
             
             intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, layerName));
         } else if (type == ACTION_ENABLE) {
-        	landmarkManager.getLayerManager().setLayerEnabled(layerKey, true);
+        	LayerManager.getInstance().setLayerEnabled(layerKey, true);
         	intents.showInfoToast(Locale.getMessage(R.string.Layer_enabled));
         } else if (type == ACTION_DISABLE) {
-        	landmarkManager.getLayerManager().setLayerEnabled(layerKey, false);
+        	LayerManager.getInstance().setLayerEnabled(layerKey, false);
         	intents.showInfoToast(Locale.getMessage(R.string.Layer_disabled));
         }
     }
