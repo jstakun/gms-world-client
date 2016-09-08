@@ -185,7 +185,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        intents.processActivityResult(requestCode, resultCode, intent, new double[]{lat, lng}, null, null, -1, null, null);
+        intents.processActivityResult(requestCode, resultCode, intent, new double[]{lat, lng}, null, null, -1, null);
     }
 
     public void onClick(View v) {

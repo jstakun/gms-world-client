@@ -11,31 +11,10 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
 
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ResolveInfo;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.SpannableString;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
-import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
@@ -61,13 +40,32 @@ import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.SpannableString;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 public class GMSClientOSMMainActivity extends Activity implements OnClickListener {
 
     private static final int SHOW_MAP_VIEW = 0;
     private MapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
-    private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
     private IntentsHelper intents;
@@ -271,7 +269,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-            int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
+            int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
@@ -357,7 +355,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         //if (!appAbort) {
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
-            intents.hardClose(layerLoader, loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
+            intents.hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
         	intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
@@ -387,7 +385,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     			} //System.out.println("key back pressed in activity");
     			return true;
     		} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
+    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
     			if (coordsE6 != null) {
     				animateTo(coordsE6);
     			}
@@ -435,20 +433,17 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
             } 
 
-            layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
+            LayerLoader.getInstance().setRepaintHandler(loadingHandler);
             
-            if (layerLoader == null || landmarkManager.getLayerManager().isEmpty()) {
-                LoggerUtils.debug("Creating LayerLoader...");
-                layerLoader = new LayerLoader(landmarkManager);
-                ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
+            if (!LayerLoader.getInstance().isInitialized() || !LayerLoader.getInstance().isLoading()) {
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 	LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());
-                    intents.loadLayersAction(true, null, false, true, layerLoader, location.getLatitude(),
+                    intents.loadLayersAction(true, null, false, true, location.getLatitude(),
                     		location.getLongitude(), mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
                 }
             } else {
                 //load existing layers
-                if (layerLoader.isLoading()) {
+                if (LayerLoader.getInstance().isLoading()) {
                     loadingHandler.sendEmptyMessage(MessageStack.STATUS_VISIBLE);
                 } else {
                     loadingHandler.sendEmptyMessage(MessageStack.STATUS_GONE);
@@ -459,7 +454,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
             loadingProgressBar.setProgress(100);
             
-            layerLoader.setRepaintHandler(loadingHandler);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 loadingImage.setVisibility(View.GONE);
             }
@@ -616,7 +610,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 }
                 break;
             case R.id.refreshLayers:
-                intents.loadLayersAction(true, null, false, true, layerLoader,
+                intents.loadLayersAction(true, null, false, true,
                         mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(),
                         mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
                 break;
@@ -837,7 +831,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -878,21 +872,21 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
                 }
             }
         } else {
-            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), new double[]{mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude()}, loadingHandler, mapView.getZoomLevel(), layerLoader, new OsmLandmarkProjection(mapView));
+            intents.processActivityResult(requestCode, resultCode, intent, getMyLocation(), new double[]{mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude()}, loadingHandler, mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
         }
     }
    
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean clearMap) {
         mapController.setCenter(newCenter);
         if (loadLayers) {
-            intents.loadLayersAction(true, null, clearMap, true, layerLoader,
+            intents.loadLayersAction(true, null, clearMap, true,
                     mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(),
                     mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
         }
@@ -921,7 +915,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             }
 
             if (loadLayers && !isVisible) {
-                intents.loadLayersAction(true, null, clearLandmarks, true, layerLoader, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
+                intents.loadLayersAction(true, null, clearLandmarks, true, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
             }
         } else {
             intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -1024,8 +1018,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
             String route = RouteRecorder.getInstance().startRecording();
             showRouteAction(route);
-            if (layerLoader.isLoading()) {
-                layerLoader.stopLoading();
+            if (LayerLoader.getInstance().isLoading()) {
+            	LayerLoader.getInstance().stopLoading();
             }
             List<ExtendedLandmark> myPosV = landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER);
             if (!myPosV.isEmpty()) {
@@ -1094,7 +1088,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         		} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
         			activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
         		} else if (msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-        			int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), new OsmLandmarkProjection(activity.mapView));
+        			int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.mapView.getZoomLevel(), new OsmLandmarkProjection(activity.mapView));
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }

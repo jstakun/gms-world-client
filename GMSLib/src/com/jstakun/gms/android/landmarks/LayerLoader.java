@@ -29,24 +29,24 @@ public class LayerLoader {
     public static final int LAYER_LOADED = 100;
     public static final int ALL_LAYERS_LOADED = 101;
     public static final int FB_TOKEN_EXPIRED = 102;
+    
+    private static final ConcurrentLayerLoader concurrentLayerLoader = new ConcurrentLayerLoader();
+    private static final List<String> excludedExternal = new ArrayList<String>();
+    private static final LayerLoader instance = new LayerLoader();
+    
     private double latitude, longitude;
     private int zoom, width, height, counter;
     private boolean loadExternal = true, initialized = false;
-    private LandmarkManager landmarkManager;
     private Handler repaintHandler;
-    private final ConcurrentLayerLoader concurrentLayerLoader;
     private InitLayerLoadingTask initLayerLoadingTask;
-    private static int MAX_CONCURRENT_TASKS;
-    private List<String> excludedExternal;
-    private int currentLayerIndex = 0;
+    private int currentLayerIndex = -1;
     private long loadingStartTime;
     
-    public LayerLoader(LandmarkManager landmarkManager) {
-        //System.out.println("LayerLoader()..");
-        MAX_CONCURRENT_TASKS = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_CONCURRENT_COUNT, 3);
-        this.landmarkManager = landmarkManager;
-        concurrentLayerLoader = new ConcurrentLayerLoader();
-        excludedExternal = new ArrayList<String>();
+    private LayerLoader() {
+    }
+    
+    public static LayerLoader getInstance() {
+    	return instance;
     }
     
     public void setRepaintHandler(Handler repaintHandler) {
@@ -64,7 +64,6 @@ public class LayerLoader {
     
     private void sendFinishedMessage() {
         if (repaintHandler != null) {
-            //System.out.println("LayerLoader.sendFinishedMessage()");
             repaintHandler.sendEmptyMessage(ALL_LAYERS_LOADED);
         }
     }
@@ -88,13 +87,13 @@ public class LayerLoader {
         }
         
         if (selectedLayer != null) {
-            currentLayerIndex = -1;
+            //currentLayerIndex = -1;
             LayerLoaderTask currentTask = new LayerLoaderTask();
             currentTask.execute(selectedLayer);
             concurrentLayerLoader.addTask(selectedLayer, currentTask);           
             initialized = true;
         } else {
-            initLayerLoadingTask = new InitLayerLoadingTask();
+        	initLayerLoadingTask = new InitLayerLoadingTask();
             initLayerLoadingTask.execute(loadServerLayers);
         }
     }
@@ -107,24 +106,21 @@ public class LayerLoader {
         String key = null;
         
         if (currentLayerIndex != -1) {
-            List<String> layers = landmarkManager.getLayerManager().getLayers();
+            List<String> layers = ConfigurationManager.getInstance().getLandmarkManager().getLayerManager().getLayers();
             while (currentLayerIndex < layers.size()) {
                 key = layers.get(currentLayerIndex);
-                Layer layer = landmarkManager.getLayerManager().getLayer(key);
+                Layer layer = ConfigurationManager.getInstance().getLandmarkManager().getLayerManager().getLayer(key);
                 List<LayerReader> layerReader = layer.getLayerReader();
                 currentLayerIndex++;
                 if (!layerReader.isEmpty()) {
                     hasLayerLoader = true;
                     break;
-                } else {
-                    //System.out.println("Skipping layer " + key);
-                //counter++;
-                }
+                } 
             }
             
             if (hasLayerLoader) {
                 counter++;
-                int size = landmarkManager.getLayerManager().getLoadableLayersCount();
+                int size = ConfigurationManager.getInstance().getLandmarkManager().getLayerManager().getLoadableLayersCount();
                 //System.out.println("Loading layer " + key + " (" + counter + "/" + size + ")...");
                 MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Layer_Loading_counter, counter, size), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
                 
@@ -146,7 +142,7 @@ public class LayerLoader {
                 if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
                         || (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION))) {
                     //System.out.println("Updating view...");
-                	MessageStack.getInstance().addMessage(Locale.getQuantityMessage(R.plurals.LayerLoaded, landmarkManager.getAllLayersSize()), 3, -1, MessageStack.LAYER_LOADED);
+                	MessageStack.getInstance().addMessage(Locale.getQuantityMessage(R.plurals.LayerLoaded, ConfigurationManager.getInstance().getLandmarkManager().getAllLayersSize()), 3, -1, MessageStack.LAYER_LOADED);
                     long loadingTime = (System.currentTimeMillis() - loadingStartTime) / 1000;
                     ConfigurationManager.getInstance().putObject("LAYERS_LOADING_TIME_SEC", loadingTime);
                     sendFinishedMessage();
@@ -160,13 +156,13 @@ public class LayerLoader {
     }
     
     public boolean isLoading() {
-        if (!concurrentLayerLoader.isEmpty() || !initialized
+        if (!concurrentLayerLoader.isEmpty() //|| !initialized
                 || (currentLayerIndex != -1 && !concurrentLayerLoader.isCancelled()
-                && currentLayerIndex < landmarkManager.getLayerManager().getLayers().size())) {
-            //System.out.println("LayerLoader.isLoading() true");
+                && currentLayerIndex < ConfigurationManager.getInstance().getLandmarkManager().getLayerManager().getLayers().size())) {
+            //LoggerUtils.debug("LayerLoader.isLoading() true");
             return true;
         } else {
-            //System.out.println("LayerLoader.isLoading() false");
+        	//LoggerUtils.debug("LayerLoader.isLoading() false");
             return false;
         }
     }
@@ -191,8 +187,19 @@ public class LayerLoader {
         MessageStack.getInstance().removeConditionalMessage(true, MessageStack.LAYER_LOADED);
         
         excludedExternal.clear();
-        currentLayerIndex = 0;
+        currentLayerIndex = -1;
         counter = 0;
+    }
+    
+    public boolean isInitialized() {
+    	//LoggerUtils.debug("LayerLoader.isInitialized() " + initialized);
+    	return initialized;
+    }
+    
+    public void onAppClose() {
+    	initialized = false;
+    	currentLayerIndex = -1;
+    	loadExternal = true;
     }
         
     private class LayerLoaderTask extends GMSAsyncTask<String, Void, String> {
@@ -226,7 +233,7 @@ public class LayerLoader {
         
         private void loadLayer(String key, boolean loadIfDisabled, boolean repaintIfNoError) {
             //System.out.println("LayerLoaderTask.loadLayer() " + key);
-            Layer layer = landmarkManager.getLayerManager().getLayer(key);
+            Layer layer = ConfigurationManager.getInstance().getLandmarkManager().getLayerManager().getLayer(key);
             if (layer != null && (loadIfDisabled || layer.isEnabled() || ConfigurationManager.getInstance().isOn(ConfigurationManager.LOAD_DISABLED_LAYERS))) {
                 List<LayerReader> readers = layer.getLayerReader();
             	if (!readers.isEmpty()) {
@@ -235,7 +242,7 @@ public class LayerLoader {
                         for (LayerReader reader : readers) {
                         	currentReader = reader;
                         	if (!concurrentLayerLoader.isCancelled() && !isCancelled()) {
-                        		List<ExtendedLandmark> items = landmarkManager.getLandmarkStoreLayer(key);
+                        		List<ExtendedLandmark> items = ConfigurationManager.getInstance().getLandmarkManager().getLandmarkStoreLayer(key);
                         		int initialSize = items.size();
                         		String errorMessage = reader.readRemoteLayer(items, latitude, longitude, zoom, width, height, key, this);
                             	if (errorMessage != null) {
@@ -289,9 +296,10 @@ public class LayerLoader {
             counter = 0;
             initialized = true;
             int i = 0;
-            LayerManager layerManager = landmarkManager.getLayerManager();
+            LayerManager layerManager = ConfigurationManager.getInstance().getLandmarkManager().getLayerManager();
+            final int maxConcurrentTasks = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_CONCURRENT_COUNT, 3);
             
-            while (i < MAX_CONCURRENT_TASKS && currentLayerIndex < layerManager.getLayers().size()) {
+            while (i < maxConcurrentTasks && currentLayerIndex < layerManager.getLayers().size()) {
                 try {
                     String key = layerManager.getLayers().get(currentLayerIndex);
                     Layer layer = layerManager.getLayer(key);
@@ -331,7 +339,7 @@ public class LayerLoader {
         @Override
         protected String doInBackground(String... arg0) {
             excludedExternal.clear();
-            return landmarkManager.getLayerManager().initializeExternalLayers(excludedExternal, latitude, longitude, zoom, width, height);
+            return ConfigurationManager.getInstance().getLandmarkManager().getLayerManager().initializeExternalLayers(excludedExternal, latitude, longitude, zoom, width, height);
         }
         
         @Override
@@ -342,9 +350,9 @@ public class LayerLoader {
         }
     }
     
-    private class ConcurrentLayerLoader {
+    private static class ConcurrentLayerLoader {
         
-        private Map<String, LayerLoaderTask> tasksInProgress = new HashMap<String, LayerLoaderTask>(MAX_CONCURRENT_TASKS);
+        private Map<String, LayerLoaderTask> tasksInProgress = new HashMap<String, LayerLoaderTask>();
         private boolean isCancelled = false;
         
         protected void addTask(String layer, LayerLoaderTask task) {

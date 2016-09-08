@@ -745,31 +745,29 @@ public final class IntentsHelper {
     	}
     }
 
-    public void loadLayersAction(boolean loadExternal, String selectedLayer, boolean clear, boolean loadServerLayers, LayerLoader layerLoader, double latitude, double longitude, int zoomLevel, ProjectionInterface projection) {
-    	if (layerLoader != null) {
-            if (layerLoader.isLoading()) {
-                layerLoader.stopLoading();
-            }
-            if (clear) {
-                landmarkManager.clearLandmarkStore();
-                ConfigurationManager.getInstance().removeObject("dod", ExtendedLandmark.class);
-            }
-            if (projection != null) {
-            	ConfigurationManager.getInstance().putObject("bbox", projection.getBoundingBox());
-            }
-            Display display = activity.getWindowManager().getDefaultDisplay();
-            layerLoader.loadLayers(latitude, longitude, zoomLevel, display.getWidth(), display.getHeight(), loadExternal, selectedLayer, loadServerLayers);
+    public void loadLayersAction(boolean loadExternal, String selectedLayer, boolean clear, boolean loadServerLayers, double latitude, double longitude, int zoomLevel, ProjectionInterface projection) {
+        if (LayerLoader.getInstance().isLoading()) {
+        	LayerLoader.getInstance().stopLoading();
         }
+        if (clear) {
+           landmarkManager.clearLandmarkStore();
+            ConfigurationManager.getInstance().removeObject("dod", ExtendedLandmark.class);
+        }
+        if (projection != null) {
+           ConfigurationManager.getInstance().putObject("bbox", projection.getBoundingBox());
+        }
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        LayerLoader.getInstance().loadLayers(latitude, longitude, zoomLevel, display.getWidth(), display.getHeight(), loadExternal, selectedLayer, loadServerLayers);
     }
     
-    public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, ProjectionInterface projection) {
+    public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, int zoomLevel, ProjectionInterface projection) {
     	int[] coordsE6 = null;
     	if (id >= 0) {
             ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
             if (selectedLandmark != null) {
                 landmarkManager.setSelectedLandmark(selectedLandmark);
                 landmarkManager.clearLandmarkOnFocusQueue();
-                coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, layerLoader, zoomLevel, projection);
+                coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, zoomLevel, projection);
             } else {
             	showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
             }
@@ -779,7 +777,7 @@ public final class IntentsHelper {
     	return coordsE6;
     }
     
-    public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, ProjectionInterface projection) {
+    public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, int zoomLevel, ProjectionInterface projection) {
         int[] animateTo = null;
     	ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
         if (selectedLandmark != null) {
@@ -797,7 +795,7 @@ public final class IntentsHelper {
                 CategoriesManager.getInstance().addSubCategoryStats(selectedLandmark.getCategoryId(), selectedLandmark.getSubCategoryId());
                 
                 if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-                    loadLayersAction(true, null, false, true, layerLoader,
+                    loadLayersAction(true, null, false, true, 
                     		selectedLandmark.getQualifiedCoordinates().getLatitude(), 
                     		selectedLandmark.getQualifiedCoordinates().getLongitude(),
                             zoomLevel, projection);
@@ -1253,7 +1251,7 @@ public final class IntentsHelper {
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public void processActivityResult(int requestCode, int resultCode, Intent intent, double[] myLocation, double[] mapCenter, Handler uiHandler, int zoomLevel, LayerLoader layerLoader, ProjectionInterface projection) {
+    public void processActivityResult(int requestCode, int resultCode, Intent intent, double[] myLocation, double[] mapCenter, Handler uiHandler, int zoomLevel, ProjectionInterface projection) {
         if (requestCode == INTENT_CATEGORIES) {
             if (resultCode == Activity.RESULT_OK) {
                 String action = intent.getStringExtra("action");
@@ -1364,9 +1362,9 @@ public final class IntentsHelper {
                 String action = intent.getStringExtra("action");
                 if (StringUtils.equals(action, "load")) {
                     String layer = intent.getStringExtra("layer");
-                    loadLayersAction(true, layer, false, false, layerLoader, mapCenter[0], mapCenter[1], zoomLevel, projection);
+                    loadLayersAction(true, layer, false, false, mapCenter[0], mapCenter[1], zoomLevel, projection);
                 } else if (StringUtils.equals(action, "refresh")) {
-                    loadLayersAction(true, null, false, true, layerLoader, mapCenter[0], mapCenter[1], zoomLevel, projection);
+                    loadLayersAction(true, null, false, true, mapCenter[0], mapCenter[1], zoomLevel, projection);
                 } else if (StringUtils.equals(action, "show")) {
                     Intent src = new Intent();
                     src.putExtras(intent);
@@ -1391,11 +1389,12 @@ public final class IntentsHelper {
         ConfigurationManager.getDatabaseManager().saveConfiguration(false);
     }
     
-    public void hardClose(LayerLoader layerLoader, Handler loadingHandler, Runnable gpsRunnable, int zoomLevel, int latitudeE6, int longitudeE6) {
+    public void hardClose(Handler loadingHandler, Runnable gpsRunnable, int zoomLevel, int latitudeE6, int longitudeE6) {
     	LoggerUtils.debug("hardClose");
-    	if (layerLoader != null && layerLoader.isLoading()) {
-            layerLoader.stopLoading();
+    	if (LayerLoader.getInstance().isLoading()) {
+    		LayerLoader.getInstance().stopLoading();
         }
+    	LayerLoader.getInstance().onAppClose();
     	
     	showShortToast(Locale.getMessage(R.string.closingText));
     	
