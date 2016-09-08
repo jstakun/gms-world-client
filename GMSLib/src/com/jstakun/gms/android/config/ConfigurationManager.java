@@ -792,6 +792,10 @@ public final class ConfigurationManager {
     
     public class DatabaseManager {
     
+    	private static final String FAVOURITESDB = "FAVOURITESDB";
+    	private static final String CONFIGDB = "CONFIGDB";
+    	private static final String LANDMARKDB = "LANDMARKDB";
+    	
     	private DatabaseManager() {}
     	
     	public boolean saveConfiguration(boolean force) {
@@ -829,12 +833,21 @@ public final class ConfigurationManager {
     	}
 
     	private ConfigDbDataSource getConfigDatabase() {
-        	ConfigDbDataSource cdb = (ConfigDbDataSource) getObject("CONFIGDB", ConfigDbDataSource.class);
+        	ConfigDbDataSource cdb = (ConfigDbDataSource) getObject(CONFIGDB, ConfigDbDataSource.class);
         	if (cdb == null) {
             	cdb = new ConfigDbDataSource(getContext());
-            	putObject("CONFIGDB", cdb);
+            	putObject(CONFIGDB, cdb);
         	}
         	return cdb;
+    	}
+    	
+    	public FavouritesDbDataSource getFavouritesDatabase() {
+    		FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject(FAVOURITESDB, FavouritesDbDataSource.class);
+            if (fdb == null) {
+                fdb = new FavouritesDbDataSource(getContext());
+                ConfigurationManager.getInstance().putObject(FAVOURITESDB, fdb);
+            }
+            return fdb;
     	}
 
     	public List<ExtendedLandmark> getLandmarkDatabase() {
@@ -852,28 +865,28 @@ public final class ConfigurationManager {
             	lmdb = db.fetchAllLandmarks();
         	}
         	lmdb.addAll(default_locations.values());
-        	putObject("LANDMARKDB", db);
+        	putObject(LANDMARKDB, db);
 
         	return lmdb;
     	}
 
     	public void closeAllDatabases() {
-        	ConfigDbDataSource cdb = (ConfigDbDataSource) getObject("CONFIGDB", ConfigDbDataSource.class);
+        	ConfigDbDataSource cdb = (ConfigDbDataSource) getObject(CONFIGDB, ConfigDbDataSource.class);
         	if (cdb != null) {
             	cdb.close();
-            	objectCache.remove("CONFIGDB");
+            	objectCache.remove(CONFIGDB);
         	}
 
-        	LandmarkDbDataSource db = (LandmarkDbDataSource) getObject("LANDMARKDB", LandmarkDbDataSource.class);
+        	LandmarkDbDataSource db = (LandmarkDbDataSource) getObject(LANDMARKDB, LandmarkDbDataSource.class);
         	if (db != null) {
             	db.close();
-            	objectCache.remove("LANDMARKDB");
+            	objectCache.remove(LANDMARKDB);
         	}
 
-        	FavouritesDbDataSource fdb = (FavouritesDbDataSource) getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+        	FavouritesDbDataSource fdb = (FavouritesDbDataSource) getObject(FAVOURITESDB, FavouritesDbDataSource.class);
         	if (fdb != null) {
             	fdb.close();
-            	objectCache.remove("FAVOURITESDB");
+            	objectCache.remove(FAVOURITESDB);
         	}
     	}
     }

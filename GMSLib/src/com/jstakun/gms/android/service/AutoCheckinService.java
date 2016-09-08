@@ -35,8 +35,7 @@ public class AutoCheckinService extends Service {
             	asyncTaskManager = new AsyncTaskManager(null, null);
             	silent = true; 
             }
-        	CheckinManager checkinManager = new CheckinManager(asyncTaskManager, getApplicationContext());
-        	int checkinCount = checkinManager.autoCheckin(lat, lng, silent); //set silent to true if running in background
+        	int checkinCount = CheckinManager.getInstance().autoCheckin(lat, lng, silent); //set silent to true if running in background
         	//lastExecutedLat = lat;
         	//lastExecutedLng = lng;
         	LoggerUtils.debug("AutoCheckinService.doReceive() Initiated " + checkinCount + " checkins");

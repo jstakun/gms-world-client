@@ -87,7 +87,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
-    private CheckinManager checkinManager;
     private IntentsHelper intents;
     private DialogManager dialogManager;
     
@@ -224,14 +223,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
         intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
 
-        checkinManager = new CheckinManager(asyncTaskManager, this);
-
         if (!CategoriesManager.getInstance().isInitialized()) {
         	LoggerUtils.debug("Loading deal categories...");
             asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, loadingHandler, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, loadingHandler, trackMyPosListener);
 
         LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
             
@@ -514,7 +511,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         				boolean authStatus = intents.checkAuthStatus(selectedLandmark);
         				if (authStatus) {
         					boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-        					checkinManager.checkinAction(addToFavourites, false, selectedLandmark);
+        					CheckinManager.getInstance().checkinAction(addToFavourites, false, selectedLandmark);
         				}
         		} else if (v == lvOpenButton) { 
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
@@ -631,8 +628,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         } else if (requestCode == IntentsHelper.INTENT_AUTO_CHECKIN) {
             if (resultCode == RESULT_OK) {
                 int favouriteId = intent.getIntExtra("favourite", 0);
-                FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-                FavouritesDAO fav = fdb.getLandmark(favouriteId);
+                FavouritesDAO fav = ConfigurationManager.getDatabaseManager().getFavouritesDatabase().getLandmark(favouriteId);
                 if (fav != null) {
                     pickPositionAction(new LatLng(fav.getLatitude(), fav.getLongitude()), true, false);
                 } else {
@@ -728,7 +724,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			} 
 	        
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-				checkinManager.autoCheckin(location.getLatitude(), location.getLongitude(), false);
+				CheckinManager.getInstance().autoCheckin(location.getLatitude(), location.getLongitude(), false);
 			}
 		}
 	}

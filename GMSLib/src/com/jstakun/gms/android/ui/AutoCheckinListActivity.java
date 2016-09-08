@@ -127,7 +127,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
     private void remove(int position) {
         //delete from db
         int id = favourites.get(position).hashCode();
-        FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+        FavouritesDbDataSource fdb = ConfigurationManager.getDatabaseManager().getFavouritesDatabase();
         int response = fdb.deleteLandmark(id);
 
         if (response > 0) {

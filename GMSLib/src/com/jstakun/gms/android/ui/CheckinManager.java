@@ -3,8 +3,6 @@ package com.jstakun.gms.android.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
-
 import com.google.common.base.Predicate;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -26,24 +24,25 @@ import com.openlapi.AddressInfo;
  */
 public class CheckinManager {
 
-    private AsyncTaskManager asyncTaskManager;  
-
+    private static CheckinManager instance = null;
+    
     private static final List<String> checkinInProgress = new ArrayList<String>();
     
-    public CheckinManager(AsyncTaskManager asyncTaskManager, Context context) {
-        this.asyncTaskManager = asyncTaskManager;
-
-        FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-        if (fdb == null) {
-            fdb = new FavouritesDbDataSource(context);
-            ConfigurationManager.getInstance().putObject("FAVOURITESDB", fdb);
-        }
+    private CheckinManager() {
     }
-
+    
+    public static CheckinManager getInstance() {
+    	if (instance == null) {
+    		instance = new CheckinManager();
+    	}
+    	return instance;
+    }
+   
+    
     public boolean checkinAction(boolean addToFavourites, boolean silent, ExtendedLandmark selectedLandmark) {
     	String key = getLandmarkKey(selectedLandmark);
         if (addToFavourites) {
-            FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+            FavouritesDbDataSource fdb = ConfigurationManager.getDatabaseManager().getFavouritesDatabase();
             if (fdb != null && !fdb.hasLandmark(key)) {
             	FavouritesDAO favouritesDAO = new FavouritesDAO(selectedLandmark.hashCode(), selectedLandmark.getName(), selectedLandmark.getQualifiedCoordinates().getLatitude(), 
             			selectedLandmark.getQualifiedCoordinates().getLongitude(), selectedLandmark.getLayer(), 0, System.currentTimeMillis(), key);
@@ -57,6 +56,7 @@ public class CheckinManager {
         boolean result = false;
         UserTracker.getInstance().trackEvent("AutoCheckin", "CheckinManager.AutoCheckinAction", selectedLayer, 0);
         String checkinat = Locale.getMessage(R.string.Social_checkin_prompt, name);
+        AsyncTaskManager asyncTaskManager = ConfigurationManager.getInstance().getTaskManager();
         if ((selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) && ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
             asyncTaskManager.executeSocialCheckInTask(checkinat, R.drawable.checkin_24, silent, selectedLayer, venueid, name, lat, lng, checkinInProgress);
             result = true;
@@ -83,7 +83,7 @@ public class CheckinManager {
 
     public synchronized int autoCheckin(double lat, double lon, boolean silent) {
         int checkinCount = 0;
-    	FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+        FavouritesDbDataSource fdb = ConfigurationManager.getDatabaseManager().getFavouritesDatabase();
         if (fdb != null) {
         	List<FavouritesDAO> favourites = fdb.fetchAllLandmarks();
         	for (FavouritesDAO favourite : favourites) {

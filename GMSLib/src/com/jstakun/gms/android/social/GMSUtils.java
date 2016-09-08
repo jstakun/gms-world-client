@@ -177,8 +177,8 @@ public final class GMSUtils {
  				   nameP = "Landmark";
  			   }
  		   }
- 		   FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
- 		   LoggerUtils.debug("Updating check-in with key " + checkinLandmarkCode);
+ 		  FavouritesDbDataSource fdb = ConfigurationManager.getDatabaseManager().getFavouritesDatabase();
+          LoggerUtils.debug("Updating check-in with key " + checkinLandmarkCode);
  	       if (fdb != null) {
             	  fdb.updateOnCheckin(checkinLandmarkCode);
             } else {

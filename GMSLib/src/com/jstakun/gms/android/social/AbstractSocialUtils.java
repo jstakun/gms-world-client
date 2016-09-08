@@ -70,7 +70,7 @@ public abstract class AbstractSocialUtils implements ISocialUtils {
 	
     protected void onCheckin(String key) {
     	LoggerUtils.debug("Updating check-in with key " + key);
-        FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+    	FavouritesDbDataSource fdb = ConfigurationManager.getDatabaseManager().getFavouritesDatabase();
         if (fdb != null) {
         	fdb.updateOnCheckin(key);
         } else {

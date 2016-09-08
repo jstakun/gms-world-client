@@ -373,7 +373,7 @@ public final class IntentsHelper {
     }
 
     public void startAutoCheckinListActivity(double[] currentLocation) {
-        FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
+    	FavouritesDbDataSource fdb = ConfigurationManager.getDatabaseManager().getFavouritesDatabase();
         if (fdb != null) {
             List<FavouritesDAO> favourites = fdb.fetchAllLandmarks();
             ArrayList<LandmarkParcelable> dataList = new ArrayList<LandmarkParcelable>();

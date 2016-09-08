@@ -1,5 +1,13 @@
 package com.jstakun.gms.android.ui;
 
+import java.lang.ref.WeakReference;
+
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.Locale;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,15 +15,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
 import android.widget.ArrayAdapter;
-
-import java.lang.ref.WeakReference;
-
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkManager;
-import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.HttpUtils;
-import com.jstakun.gms.android.utils.Locale;
 
 
 /**
@@ -28,7 +27,6 @@ public class DialogManager {
     private AlertDialogBuilder dialogBuilder;
     private IntentsHelper intents;
     private LandmarkManager landmarkManager;
-    private CheckinManager checkinManager;
     private Handler loadingHandler;
 
     private DialogInterface.OnClickListener exitListener = new DialogInterface.OnClickListener() {
@@ -96,7 +94,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             //add to favorites database
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            checkinManager.checkinAction(true, false, landmarkManager.getSeletedLandmarkUI());
+            CheckinManager.getInstance().checkinAction(true, false, landmarkManager.getSeletedLandmarkUI());
         }
     };
     private DialogInterface.OnClickListener checkinManualListener = new DialogInterface.OnClickListener() {
@@ -104,7 +102,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             //don't add to favorites database
         	ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            checkinManager.checkinAction(false, false, landmarkManager.getSeletedLandmarkUI());
+        	CheckinManager.getInstance().checkinAction(false, false, landmarkManager.getSeletedLandmarkUI());
         }
     };
     private DialogInterface.OnClickListener rateUsListener = new DialogInterface.OnClickListener() {
@@ -135,18 +133,17 @@ public class DialogManager {
     };
    
     public DialogManager(Activity activity, IntentsHelper intents, AsyncTaskManager asyncTaskManager,
-            LandmarkManager landmarkManager, CheckinManager checkinManager, DialogInterface.OnClickListener trackMyPosListener) {
+            LandmarkManager landmarkManager, DialogInterface.OnClickListener trackMyPosListener) {
         this.activity = activity;
         this.intents = intents;
         this.landmarkManager = landmarkManager;
-        this.checkinManager = checkinManager;
         this.trackMyPosListener = trackMyPosListener;
         dialogBuilder = new AlertDialogBuilder(activity, new DialogHandler(asyncTaskManager));
     }
     
     public DialogManager(Activity activity, IntentsHelper intents, AsyncTaskManager asyncTaskManager,
-            LandmarkManager landmarkManager, CheckinManager checkinManager, Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
-        this(activity, intents, asyncTaskManager, landmarkManager, checkinManager, trackMyPosListener);
+            LandmarkManager landmarkManager, Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
+        this(activity, intents, asyncTaskManager, landmarkManager, trackMyPosListener);
         this.loadingHandler = loadingHandler;
     }
 

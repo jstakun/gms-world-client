@@ -156,9 +156,8 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         	ExtendedLandmark selectedLandmark = landmarkManager.findLandmarkById(hashCode);
         	if (selectedLandmark != null) {
         		AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-        		CheckinManager checkinManager = new CheckinManager(asyncTaskManager, this);
         		boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-        		checkinManager.checkinAction(addToFavourites, false, selectedLandmark);
+        		CheckinManager.getInstance().checkinAction(addToFavourites, false, selectedLandmark);
         	} else {
         		intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
         	}

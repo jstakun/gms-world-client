@@ -73,7 +73,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
-    private CheckinManager checkinManager;
     private IntentsHelper intents;
     private DialogManager dialogManager;
     private TextView statusBar;
@@ -238,14 +237,12 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
         intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
 
-        checkinManager = new CheckinManager(asyncTaskManager, this);
-
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
             asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, trackMyPosListener);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
@@ -783,7 +780,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
       	  				boolean authStatus = intents.checkAuthStatus(selectedLandmark);
       	  				if (authStatus) {
       	  					boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-      	  					checkinManager.checkinAction(addToFavourites, false, selectedLandmark);
+      	  					CheckinManager.getInstance().checkinAction(addToFavourites, false, selectedLandmark);
       	  				} 
       	  			} else if (v == lvOpenButton || v == thumbnailButton) {
       	  				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
@@ -893,8 +890,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         } else if (requestCode == IntentsHelper.INTENT_AUTO_CHECKIN) {
             if (resultCode == RESULT_OK) {
                 int favouriteId = intent.getIntExtra("favourite", 0);
-                FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject("FAVOURITESDB", FavouritesDbDataSource.class);
-                FavouritesDAO fav = fdb.getLandmark(favouriteId);
+                FavouritesDAO fav = ConfigurationManager.getDatabaseManager().getFavouritesDatabase().getLandmark(favouriteId);
                 if (fav != null) {
                     GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(fav.getLatitude()),
                             MathUtils.coordDoubleToInt(fav.getLongitude()));
@@ -977,7 +973,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         }
 
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
-            checkinManager.autoCheckin(l.getLatitude(), l.getLongitude(), false);
+        	CheckinManager.getInstance().autoCheckin(l.getLatitude(), l.getLongitude(), false);
         }
     }
 
