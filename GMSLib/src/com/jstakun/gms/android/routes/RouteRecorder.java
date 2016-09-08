@@ -31,7 +31,7 @@ public class RouteRecorder {
     private static final float MAX_BEARING_RANGE = 9f;
 
     private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
-    private static final RouteRecorder instance = new RouteRecorder();
+    private static RouteRecorder instance = null;
     private static long startTime = -1, endTime = -1;
     private static int notificationId = -1;
     private static boolean paused = false;
@@ -42,6 +42,9 @@ public class RouteRecorder {
     }
     
     public static RouteRecorder getInstance() {
+    	if (instance == null) {
+    		instance = new RouteRecorder();
+    	}
     	return instance;
     }
         

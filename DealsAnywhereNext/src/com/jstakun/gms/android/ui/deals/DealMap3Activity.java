@@ -4,12 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
@@ -34,7 +29,6 @@ import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerLoader;
 import com.jstakun.gms.android.location.AndroidDevice;
 import com.jstakun.gms.android.location.GmsLocationServicesManager;
-import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.AlertDialogBuilder;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.DialogManager;
@@ -43,7 +37,6 @@ import com.jstakun.gms.android.ui.IntentArrayAdapter;
 import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.ui.LandmarkListActivity;
 import com.jstakun.gms.android.ui.MapInfoView;
-import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
@@ -93,7 +86,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	
 	private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
-    private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
@@ -459,21 +451,13 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
             
-            messageStack = ConfigurationManager.getInstance().getMessageStack();
-
-            if (messageStack == null) {
-                LoggerUtils.debug("Creating MessageStack...");
-                messageStack = new MessageStack();
-                ConfigurationManager.getInstance().putObject("messageStack", messageStack);
-            }
-            messageStack.setMessageCondition(new LayersMessageCondition());            
-            messageStack.setHandler(loadingHandler);
+        	MessageStack.getInstance().setHandler(loadingHandler);
 
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
 
             if (layerLoader == null || landmarkManager.getLayerManager().isEmpty()) {
                 LoggerUtils.debug("Creating LayerLoader...");
-                layerLoader = new LayerLoader(landmarkManager, messageStack);
+                layerLoader = new LayerLoader(landmarkManager);
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
                 LoggerUtils.debug("Loading Layers in " + location.latitude + "," +  location.longitude);
                 int zoom = ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
@@ -1004,7 +988,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 			DealMap3Activity activity = parentActivity.get();
         	if (activity != null && !activity.isFinishing()) {
         		if (msg.what == MessageStack.STATUS_MESSAGE) {
-        			activity.statusBar.setText(activity.messageStack.getMessage());
+        			activity.statusBar.setText(MessageStack.getInstance().getMessage());
         		} else if (msg.what == MessageStack.STATUS_VISIBLE) {
         			activity.loadingImage.setVisibility(View.VISIBLE);
         		} else if (msg.what == MessageStack.STATUS_GONE) {

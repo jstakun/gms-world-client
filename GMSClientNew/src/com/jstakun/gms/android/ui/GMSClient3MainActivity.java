@@ -37,7 +37,6 @@ import com.jstakun.gms.android.location.GmsLocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.service.RouteTracingService;
-import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
@@ -87,7 +86,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	
 	private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
-    private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
     private CheckinManager checkinManager;
     private CategoriesManager cm;
@@ -956,21 +954,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         		landmarkManager.initialize();
             }
             
-            messageStack = ConfigurationManager.getInstance().getMessageStack();
-
-            if (messageStack == null) {
-                LoggerUtils.debug("Creating MessageStack...");
-                messageStack = new MessageStack();
-                ConfigurationManager.getInstance().putObject("messageStack", messageStack);
-            }
-            messageStack.setMessageCondition(new LayersMessageCondition());
-            messageStack.setHandler(loadingHandler);
+        	MessageStack.getInstance().setHandler(loadingHandler);
             
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
 
             if (layerLoader == null || landmarkManager.getLayerManager().isEmpty()) {
                 LoggerUtils.debug("Creating LayerLoader...");
-                layerLoader = new LayerLoader(landmarkManager, messageStack);
+                layerLoader = new LayerLoader(landmarkManager);
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                     LoggerUtils.debug("Loading Layers in " + location.latitude + "," +  location.longitude);
@@ -1151,7 +1141,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             //startService(routeTracingService);
             routesCluster.showRouteAction(route, true);
 
-            messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
+            MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
         }
 	}
 	
@@ -1252,7 +1242,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             			activity.intents.startPickLocationActivity();
             		}
             	} else if (msg.what == MessageStack.STATUS_MESSAGE) {
-        			activity.statusBar.setText(activity.messageStack.getMessage());
+        			activity.statusBar.setText(MessageStack.getInstance().getMessage());
             	} else if (msg.what == MessageStack.STATUS_VISIBLE && !ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             		activity.loadingImage.setVisibility(View.VISIBLE);
             	} else if (msg.what == MessageStack.STATUS_GONE) {

@@ -20,12 +20,21 @@ public class MessageStack {
     public static final int STATUS_GONE = 201;
     public static final int STATUS_VISIBLE = 202;
     
-    private Stack<MessageTimerTask> messageStack = new Stack<MessageTimerTask>();
+    private static Stack<MessageTimerTask> messageStack = new Stack<MessageTimerTask>();
+    private static final MessageStack instance = new MessageStack();
+    
     private Handler uiHandler;
-    private MessageCondition messageCondition;
+    private MessageCondition messageCondition = new LayersMessageCondition();
 
+    private MessageStack() {
+    }
+    
+    public static MessageStack getInstance() {
+    	return instance;
+    }
+    
     public void setMessageCondition(MessageCondition messageCondition) {
-       this.messageCondition = messageCondition;
+        this.messageCondition = messageCondition;
     }
 
     public void setHandler(Handler uiHandler) {

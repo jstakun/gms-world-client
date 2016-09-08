@@ -3,32 +3,6 @@ package com.jstakun.gms.android.ui.deals;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ResolveInfo;
-import android.content.res.Configuration;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.Vibrator;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.text.SpannableString;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
@@ -61,7 +35,6 @@ import com.jstakun.gms.android.ui.LandmarkListActivity;
 import com.jstakun.gms.android.ui.MapInfoView;
 import com.jstakun.gms.android.ui.NavigationDrawerListItem;
 import com.jstakun.gms.android.ui.ZoomChangeListener;
-import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
@@ -70,6 +43,32 @@ import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Vibrator;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.text.SpannableString;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class DealMap2Activity extends MapActivity implements OnClickListener {
 
@@ -81,7 +80,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
-    private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
     private CategoriesManager cm;
     private IntentsHelper intents;
@@ -384,19 +382,12 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             //mapView.getOverlays().add(infoOverlay);
             mapView.getOverlays().add(myLocation);
             
-            messageStack = ConfigurationManager.getInstance().getMessageStack();
-            if (messageStack == null) {
-                LoggerUtils.debug("Creating MessageStack...");
-                messageStack = new MessageStack();               
-                ConfigurationManager.getInstance().putObject("messageStack", messageStack);
-            }
-            messageStack.setMessageCondition(new LayersMessageCondition());
-            messageStack.setHandler(loadingHandler);
+            MessageStack.getInstance().setHandler(loadingHandler);
 
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
             if (layerLoader == null || landmarkManager.getLayerManager().isEmpty()) {
                 LoggerUtils.debug("Creating LayerLoader...");
-                layerLoader = new LayerLoader(landmarkManager, messageStack);
+                layerLoader = new LayerLoader(landmarkManager);
                 LoggerUtils.debug("Loading Layers...");
                 intents.loadLayersAction(true, null, false, false, layerLoader,
                         MathUtils.coordIntToDouble(location.getLatitudeE6()),
@@ -886,7 +877,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         	DealMap2Activity activity = parentActivity.get();
         	if (activity != null && !activity.isFinishing()) {
         		if (msg.what == MessageStack.STATUS_MESSAGE) {
-        			activity.statusBar.setText(activity.messageStack.getMessage());
+        			activity.statusBar.setText(MessageStack.getInstance().getMessage());
         		} else if (msg.what == MessageStack.STATUS_VISIBLE) {
         			activity.loadingImage.setVisibility(View.VISIBLE);
         		} else if (msg.what == MessageStack.STATUS_GONE) {

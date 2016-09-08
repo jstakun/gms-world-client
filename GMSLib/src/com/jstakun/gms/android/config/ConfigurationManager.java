@@ -332,13 +332,6 @@ public final class ConfigurationManager {
         }
         return null;
     }
-
-    public MessageStack getMessageStack() {
-        if (containsObject("messageStack", MessageStack.class)) {
-            return (MessageStack) objectCache.get("messageStack");
-        }
-        return null;
-    }
     
     //server urls
 

@@ -33,7 +33,6 @@ public class LayerLoader {
     private int zoom, width, height, counter;
     private boolean loadExternal = true, initialized = false;
     private LandmarkManager landmarkManager;
-    private MessageStack messageStack;
     private Handler repaintHandler;
     private final ConcurrentLayerLoader concurrentLayerLoader;
     private InitLayerLoadingTask initLayerLoadingTask;
@@ -42,10 +41,9 @@ public class LayerLoader {
     private int currentLayerIndex = 0;
     private long loadingStartTime;
     
-    public LayerLoader(LandmarkManager landmarkManager, MessageStack messageStack) {
+    public LayerLoader(LandmarkManager landmarkManager) {
         //System.out.println("LayerLoader()..");
         MAX_CONCURRENT_TASKS = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_CONCURRENT_COUNT, 3);
-        this.messageStack = messageStack;
         this.landmarkManager = landmarkManager;
         concurrentLayerLoader = new ConcurrentLayerLoader();
         excludedExternal = new ArrayList<String>();
@@ -86,7 +84,7 @@ public class LayerLoader {
 
         if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
                 || ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-            messageStack.addMessage(Locale.getMessage(R.string.Layer_Loading), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
+        	MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Layer_Loading), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
         }
         
         if (selectedLayer != null) {
@@ -128,7 +126,7 @@ public class LayerLoader {
                 counter++;
                 int size = landmarkManager.getLayerManager().getLoadableLayersCount();
                 //System.out.println("Loading layer " + key + " (" + counter + "/" + size + ")...");
-                messageStack.addMessage(Locale.getMessage(R.string.Layer_Loading_counter, counter, size), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
+                MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Layer_Loading_counter, counter, size), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
                 
                 try {
                     LayerLoaderTask currentTask = new LayerLoaderTask();
@@ -148,7 +146,7 @@ public class LayerLoader {
                 if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
                         || (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION))) {
                     //System.out.println("Updating view...");
-                    messageStack.addMessage(Locale.getQuantityMessage(R.plurals.LayerLoaded, landmarkManager.getAllLayersSize()), 3, -1, MessageStack.LAYER_LOADED);
+                	MessageStack.getInstance().addMessage(Locale.getQuantityMessage(R.plurals.LayerLoaded, landmarkManager.getAllLayersSize()), 3, -1, MessageStack.LAYER_LOADED);
                     long loadingTime = (System.currentTimeMillis() - loadingStartTime) / 1000;
                     ConfigurationManager.getInstance().putObject("LAYERS_LOADING_TIME_SEC", loadingTime);
                     sendFinishedMessage();
@@ -156,7 +154,7 @@ public class LayerLoader {
                 }
             } else if (!hasLayerLoaderTask) {
                 //System.out.println("Finishing layer loading ...");
-                messageStack.addMessage(Locale.getMessage(R.string.Layer_Loading_processing), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
+            	MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Layer_Loading_processing), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
             }
         }
     }
@@ -190,7 +188,7 @@ public class LayerLoader {
             }
         }
         
-        messageStack.removeConditionalMessage(true, MessageStack.LAYER_LOADED);
+        MessageStack.getInstance().removeConditionalMessage(true, MessageStack.LAYER_LOADED);
         
         excludedExternal.clear();
         currentLayerIndex = 0;
@@ -241,7 +239,7 @@ public class LayerLoader {
                         		int initialSize = items.size();
                         		String errorMessage = reader.readRemoteLayer(items, latitude, longitude, zoom, width, height, key, this);
                             	if (errorMessage != null) {
-                        			messageStack.addMessage(errorMessage, 10, -1, -1);
+                            		MessageStack.getInstance().addMessage(errorMessage, 10, -1, -1);
                         			if (repaintHandler != null && errorMessage.equals(FacebookUtils.FB_OAUTH_ERROR)) {
                         				repaintHandler.sendEmptyMessage(FB_TOKEN_EXPIRED);
                         			}
@@ -307,7 +305,7 @@ public class LayerLoader {
                             i++;
                             //System.out.println("Loading layer " + key + " " + counter + "...");
                             int size = layerManager.getLoadableLayersCount();
-                            messageStack.addMessage(Locale.getMessage(R.string.Layer_Loading_counter, counter, size), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
+                            MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Layer_Loading_counter, counter, size), -1, MessageCondition.LAYER_LOADING, MessageStack.LOADING);
                             LayerLoaderTask currentTask = new LayerLoaderTask();
                             currentTask.execute(key);
                             concurrentLayerLoader.addTask(key, currentTask);
@@ -339,7 +337,7 @@ public class LayerLoader {
         @Override
         protected void onPostExecute(String errorMessage) {
             if (errorMessage != null) {
-                messageStack.addMessage(errorMessage, 10, -1, -1);
+            	MessageStack.getInstance().addMessage(errorMessage, 10, -1, -1);
             }
         }
     }

@@ -10,33 +10,6 @@ import org.osmdroid.api.IMyLocationOverlay;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ResolveInfo;
-import android.content.res.Configuration;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.text.SpannableString;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
@@ -63,7 +36,6 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
@@ -73,6 +45,33 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
+
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.text.SpannableString;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class GMSClient2OSMMainActivity extends Activity implements OnClickListener {
 
@@ -505,14 +504,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
             syncRoutesOverlays();
             
-            messageStack = ConfigurationManager.getInstance().getMessageStack();
-
-            if (messageStack == null) {
-                LoggerUtils.debug("Creating MessageStack...");
-                messageStack = new MessageStack();
-                ConfigurationManager.getInstance().putObject("messageStack", messageStack);
-            }
-            messageStack.setMessageCondition(new LayersMessageCondition());
             messageStack.setHandler(loadingHandler);
             
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
@@ -525,7 +516,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
             if (layerLoader == null || landmarkManager.getLayerManager().isEmpty()) {
                 LoggerUtils.debug("Creating LayerLoader...");
-                layerLoader = new LayerLoader(landmarkManager, messageStack);
+                layerLoader = new LayerLoader(landmarkManager);
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 	LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());

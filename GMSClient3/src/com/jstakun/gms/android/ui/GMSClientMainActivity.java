@@ -54,7 +54,6 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.utils.LayersMessageCondition;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
@@ -73,7 +72,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private MapView googleMapsView;
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
-    private MessageStack messageStack;
     private AsyncTaskManager asyncTaskManager;
     private CheckinManager checkinManager;
     private CategoriesManager cm;
@@ -460,25 +458,18 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             
             syncRoutesOverlays();
             
-            messageStack = ConfigurationManager.getInstance().getMessageStack();
-
-            if (messageStack == null) {
-                LoggerUtils.debug("Creating MessageStack...");
-                messageStack = new MessageStack(new LayersMessageCondition());
-                ConfigurationManager.getInstance().putObject("messageStack", messageStack);
-            }
-            messageStack.setHandler(loadingHandler);
+            MessageStack.getInstance().setHandler(loadingHandler);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 String route = RouteRecorder.getInstance().startRecording();
                 showRouteAction(route);
-                messageStack.addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
+                MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
             } 
 
             layerLoader = (LayerLoader) ConfigurationManager.getInstance().getObject("layerLoader", LayerLoader.class);
 
             if (layerLoader == null || landmarkManager.getLayerManager().isEmpty()) {
                 LoggerUtils.debug("Creating LayerLoader...");
-                layerLoader = new LayerLoader(landmarkManager, messageStack);
+                layerLoader = new LayerLoader(landmarkManager);
                 ConfigurationManager.getInstance().putObject("layerLoader", layerLoader);
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 	LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());
@@ -1171,7 +1162,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         	GMSClientMainActivity activity = parentActivity.get();
         	if (activity != null && !activity.isFinishing()) {
         		if (msg.what == MessageStack.STATUS_MESSAGE) {
-        			activity.statusBar.setText(activity.messageStack.getMessage());
+        			activity.statusBar.setText(MessageStack.getInstance().getMessage());
             	} else if (msg.what == MessageStack.STATUS_VISIBLE && !ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             		activity.loadingImage.setVisibility(View.VISIBLE);
             	} else if (msg.what == MessageStack.STATUS_GONE) {
