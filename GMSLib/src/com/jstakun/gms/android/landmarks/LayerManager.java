@@ -270,17 +270,14 @@ public class LayerManager {
     public static int getDealCategoryIcon(int categoryId, int type) {
         int icon = -1;
         try {
-            CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-            if (cm != null) {
-            	Category c = cm.getCategory(categoryId);
-            	if (c != null) {
-            		if (type == LAYER_ICON_LARGE) {
-            			icon = c.getLargeIcon();
-            		} else {
-            			icon = c.getIcon();
-            		}
-            	}	
-            }
+        	Category c = CategoriesManager.getInstance().getCategory(categoryId);
+            if (c != null) {
+            	if (type == LAYER_ICON_LARGE) {
+            		icon = c.getLargeIcon();
+            	} else {
+            		icon = c.getIcon();
+            	}
+           }	
         } catch (Exception e) {
             LoggerUtils.error("LayerManager.getDealCategoryIcon() exception:", e);
         }

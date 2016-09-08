@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
 
 import java.util.Locale;
@@ -26,12 +22,9 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
 		super.init(latitude, longitude, zoom, width, height);
 		params.add(new BasicNameValuePair("lang", Locale.getDefault().getLanguage()));
 		
-		CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-        if (cm != null) {
-            String categoryid = cm.getEnabledCategoriesString();
-            if (StringUtils.isNotEmpty(categoryid)) {
-            	params.add(new BasicNameValuePair("&categoryid", categoryid));
-            }
+		String categoryid = CategoriesManager.getInstance().getEnabledCategoriesString();
+        if (StringUtils.isNotEmpty(categoryid)) {
+            params.add(new BasicNameValuePair("&categoryid", categoryid));
         }
         
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {

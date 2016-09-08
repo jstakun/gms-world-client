@@ -87,7 +87,6 @@ public class SearchPredicateFactory {
 	private class PhraseWordsSearchPredicate implements Predicate<ExtendedLandmark> {
 
         private String[] query_tokens;
-        private CategoriesManager cm;
         private boolean searchCategories;
         private String searchTerm, layerId;
          
@@ -95,7 +94,6 @@ public class SearchPredicateFactory {
             this.query_tokens = query_tokens;
             this.searchCategories = searchCategories;
             this.searchTerm = searchTerm;
-            this.cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
             this.layerId = query_tokens[0] + "_" + ConfigurationManager.WORDS_SEARCH;
         }
 
@@ -132,11 +130,11 @@ public class SearchPredicateFactory {
                             if (searchCategories) {
                                 int catId = landmark.getCategoryId();
                                 int subCatId = landmark.getSubCategoryId();
-                                Category cat = cm.getCategory(catId);
+                                Category cat = CategoriesManager.getInstance().getCategory(catId);
                                 if (catId != -1 && cat != null && StringUtils.containsIgnoreCase(cat.getCategory(), query_token)) {
                                     revelance = REVELANCE_LIMIT;
                                 }
-                                Category subCat = cm.getSubCategory(catId, subCatId);
+                                Category subCat = CategoriesManager.getInstance().getSubCategory(catId, subCatId);
                                 if (catId != -1 && subCatId != -1 && subCat != null && StringUtils.containsIgnoreCase(subCat.getSubcategory(), query_token)) {
                                     revelance = 80;
                                 }
@@ -197,7 +195,6 @@ public class SearchPredicateFactory {
 	private class FuzzySearchPredicate implements Predicate<ExtendedLandmark> {
 
         private String[] query_tokens;
-        private CategoriesManager cm;
         private boolean searchCategories;
         private String searchTerm, layerId;
         
@@ -205,7 +202,6 @@ public class SearchPredicateFactory {
             this.query_tokens = query_tokens;
             this.searchCategories = searchCategories;
             this.searchTerm = searchTerm;
-            this.cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
             this.layerId = query_tokens[0] + "_" + ConfigurationManager.FUZZY_SEARCH;
         }
 
@@ -235,11 +231,11 @@ public class SearchPredicateFactory {
                             	if (searchCategories) {
                                 	int catId = landmark.getCategoryId();
                                 	int subCatId = landmark.getSubCategoryId();
-                                	Category cat = cm.getCategory(catId);
+                                	Category cat = CategoriesManager.getInstance().getCategory(catId);
                                 	if (catId != -1 && cat != null && StringUtils.containsIgnoreCase(cat.getCategory(), query_token)) {
                                 		landmark.setLayerRevelance(layerId, REVELANCE_LIMIT);
                                 	}
-                                	Category subCat = cm.getSubCategory(catId, subCatId);
+                                	Category subCat = CategoriesManager.getInstance().getSubCategory(catId, subCatId);
                                 	if (catId != -1 && subCatId != -1 && subCat != null && StringUtils.containsIgnoreCase(subCat.getSubcategory(), query_token)) {
                                 		landmark.setLayerRevelance(layerId, 80);
                                 	}

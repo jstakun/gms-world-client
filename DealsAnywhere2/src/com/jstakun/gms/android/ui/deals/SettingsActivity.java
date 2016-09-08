@@ -1,5 +1,12 @@
 package com.jstakun.gms.android.ui.deals;
 
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.deals.CategoriesManager;
+import com.jstakun.gms.android.ui.ActionBarHelper;
+import com.jstakun.gms.android.ui.ListPreferenceMultiSelect;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -7,13 +14,6 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
-import android.view.MenuItem;
-import com.jstakun.gms.android.deals.CategoriesManager;
-import com.jstakun.gms.android.ui.ActionBarHelper;
-import com.jstakun.gms.android.ui.ListPreferenceMultiSelect;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *
@@ -47,17 +47,14 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             layers.setSelectedEntries(extras.getBooleanArray("enabled"));
             layers.setEntryValues(extras.getStringArray("codes"));
 
-            CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-            if (cm != null) {
-            	Bundle categoriesBundle = cm.loadCategoriesGroup();
+            Bundle categoriesBundle = CategoriesManager.getInstance().loadCategoriesGroup();
 
-            	categoryNames = categoriesBundle.getStringArray("names");
+            categoryNames = categoriesBundle.getStringArray("names");
 
-            	ListPreferenceMultiSelect categories = (ListPreferenceMultiSelect) findPreference(ConfigurationManager.DEAL_CATEGORIES);
-            	categories.setEntries(categoryNames);
-            	categories.setSelectedEntries(categoriesBundle.getBooleanArray("enabled"));
-            	categories.setEntryValues(categoriesBundle.getStringArray("codes"));
-            }
+            ListPreferenceMultiSelect categories = (ListPreferenceMultiSelect) findPreference(ConfigurationManager.DEAL_CATEGORIES);
+            categories.setEntries(categoryNames);
+            categories.setSelectedEntries(categoriesBundle.getBooleanArray("enabled"));
+            categories.setEntryValues(categoriesBundle.getStringArray("codes"));
         } else {
             finish();
         }

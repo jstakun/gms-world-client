@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.deals;
 
 import android.os.Bundle;
@@ -21,17 +17,27 @@ import org.apache.commons.lang.StringUtils;
  */
 public class CategoriesManager {
 
+	public static final int CATEGORY_TRAVEL = 7;
+    public static final int SUBCATEGORY_HOTEL = 129;
+    
+    private static final String KEY_FORMAT = "c_%d_%d_s";
+    
     private List<Category> categories = new ArrayList<Category>();
     private List<Category> subcategories;
-    private boolean initialized = false;
-    public static final int CATEGORY_TRAVEL = 7;
-    public static final int SUBCATEGORY_HOTEL = 129;
-    private static final String KEY_FORMAT = "c_%d_%d_s";
-    private int topSubCategoryStats = 0;
-    private int topSubCategory = -1;
-    private int topCategory = -1;
+    
+    private static boolean initialized = false;
+    private static int topSubCategoryStats = 0;
+    private static int topSubCategory = -1;
+    private static int topCategory = -1;
 
-    public CategoriesManager() {
+    private static final CategoriesManager instance = new CategoriesManager();
+    
+    private CategoriesManager() {
+    	initialized = false;
+    }
+    
+    public static CategoriesManager getInstance() {
+    	return instance;
     }
 
     /**
@@ -87,8 +93,8 @@ public class CategoriesManager {
     /**
      * @param initialized the initialized to set
      */
-    public void setInitialized(boolean initialized) {
-        this.initialized = initialized;
+    public void setInitialized() {
+        initialized = true;
     }
 
     public Category getCategory(String name) {

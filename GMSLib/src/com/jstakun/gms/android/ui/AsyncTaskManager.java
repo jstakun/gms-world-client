@@ -825,26 +825,21 @@ public class AsyncTaskManager {
         @Override
         protected String doInBackground(String... checkinData) {
             super.doInBackground(checkinData);
-            CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-            if (cm != null) {
-                cm.clearAllStats();
-            }
+            CategoriesManager.getInstance().clearAllStats();
             return Locale.getMessage(R.string.confirmDealPreferences);
         }
     }
 
-    public void executeDealCategoryLoaderTask(CategoriesManager cm, boolean initStats) {
-        new DealCategoryLoaderTask(cm, initStats).execute();
+    public void executeDealCategoryLoaderTask(boolean initStats) {
+        new DealCategoryLoaderTask(initStats).execute();
     }
 
     private class DealCategoryLoaderTask extends GMSAsyncTask<Void, Void, Void> {
 
-        private CategoriesManager cm;
         private boolean initStats;
 
-        public DealCategoryLoaderTask(CategoriesManager cm, boolean initStats) {
+        public DealCategoryLoaderTask(boolean initStats) {
             super(1, DealCategoryLoaderTask.class.getName());
-            this.cm = cm;
             this.initStats = initStats;
         }
 
@@ -859,16 +854,16 @@ public class AsyncTaskManager {
 
             if (!isCancelled()) {
                 String catjson = fm.readJsonFile(R.raw.category, ConfigurationManager.getInstance().getContext());
-                cm.setCategories(CategoryJsonParser.parserCategoryJson(catjson, -1, this));
+                CategoriesManager.getInstance().setCategories(CategoryJsonParser.parserCategoryJson(catjson, -1, this));
             }
 
             if (!isCancelled()) {
                 String subcatjson = fm.readJsonFile(R.raw.subcategory, ConfigurationManager.getInstance().getContext());
-                cm.setSubcategories(CategoryJsonParser.parserCategoryJson(subcatjson, -1, this), initStats);
+                CategoriesManager.getInstance().setSubcategories(CategoryJsonParser.parserCategoryJson(subcatjson, -1, this), initStats);
             }
-
+            
             if (!isCancelled()) {
-                cm.setInitialized(true);
+            	CategoriesManager.getInstance().setInitialized();
             }
 
             return null;

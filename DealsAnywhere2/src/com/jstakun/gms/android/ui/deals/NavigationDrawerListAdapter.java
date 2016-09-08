@@ -63,8 +63,7 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<NavigationDrawerLi
 		    add(new NavigationDrawerListItem(names[6], R.id.recentLandmarks));
 		}
 		
-		CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-		if (landmarkManager != null && cm != null && landmarkManager.hasRecommendedCategory(cm.getTopCategory(), cm.getTopSubCategory())) {
+		if (landmarkManager != null && landmarkManager.hasRecommendedCategory(CategoriesManager.getInstance().getTopCategory(), CategoriesManager.getInstance().getTopSubCategory())) {
 			add(new NavigationDrawerListItem(names[7], R.id.showDoD));
 		}
 		add(new NavigationDrawerListItem(names[8], R.id.events));

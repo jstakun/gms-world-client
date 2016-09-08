@@ -26,15 +26,13 @@ public class GridCategoryArrayAdapter extends ArrayAdapter<String> {
     private final LandmarkManager landmarkManager;
     private final View.OnClickListener positionClickListener;
     private final List<Category> categories;
-    private final CategoriesManager cm;
-	
+    
 	public GridCategoryArrayAdapter(Activity context, List<String> names, List<Category> categories, View.OnClickListener positionClickListener) {
 		super(context, R.layout.layerrow, names);
         this.parentActivity = context;
         this.categories = categories;
         this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         this.positionClickListener = positionClickListener;
-        this.cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
 	}
 	
 	@Override
@@ -68,7 +66,7 @@ public class GridCategoryArrayAdapter extends ArrayAdapter<String> {
         
         if (c != null) {
             if (c.getSubcategoryID() != -1) {
-                c = cm.getCategory(c.getCategoryID());
+                c = CategoriesManager.getInstance().getCategory(c.getCategoryID());
             }
             holder.headerText.setCompoundDrawablesWithIntrinsicBounds(c.getIcon(), 0, 0, 0);
         }

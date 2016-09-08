@@ -762,14 +762,14 @@ public final class IntentsHelper {
         }
     }
     
-    public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, CategoriesManager cm, ProjectionInterface projection) {
+    public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, ProjectionInterface projection) {
     	int[] coordsE6 = null;
     	if (id >= 0) {
             ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
             if (selectedLandmark != null) {
                 landmarkManager.setSelectedLandmark(selectedLandmark);
                 landmarkManager.clearLandmarkOnFocusQueue();
-                coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, layerLoader, zoomLevel, cm, projection);
+                coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, layerLoader, zoomLevel, projection);
             } else {
             	showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
             }
@@ -779,7 +779,7 @@ public final class IntentsHelper {
     	return coordsE6;
     }
     
-    public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, CategoriesManager cm, ProjectionInterface projection) {
+    public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, LayerLoader layerLoader, int zoomLevel, ProjectionInterface projection) {
         int[] animateTo = null;
     	ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
         if (selectedLandmark != null) {
@@ -794,9 +794,7 @@ public final class IntentsHelper {
                 ActionBarHelper.hide(activity);
                 showLandmarkDetailsView(selectedLandmark, lvView, currentLocation, true);
                 
-                if (cm != null) {
-                	cm.addSubCategoryStats(selectedLandmark.getCategoryId(), selectedLandmark.getSubCategoryId());
-                }
+                CategoriesManager.getInstance().addSubCategoryStats(selectedLandmark.getCategoryId(), selectedLandmark.getSubCategoryId());
                 
                 if (selectedLandmark.getLayer().equals(Commons.LOCAL_LAYER)) {
                     loadLayersAction(true, null, false, true, layerLoader,
@@ -1285,9 +1283,8 @@ public final class IntentsHelper {
                 String[] codes = intent.getStringArrayExtra("codes");
                 String isDeal = intent.getStringExtra("deals");
                 if (StringUtils.isNotEmpty(isDeal)) {
-                    CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-                    if (cm != null && names != null && codes != null) {
-                        cm.saveCategoriesAction(names, codes);
+                    if (names != null && codes != null) {
+                    	CategoriesManager.getInstance().saveCategoriesAction(names, codes);
                     }
                 } else {
                     landmarkManager.getLayerManager().saveLayersAction(names, codes);

@@ -66,7 +66,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
-    private CategoriesManager cm;
     private IntentsHelper intents;
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
@@ -198,12 +197,9 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         
         intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
 
-        cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-        if (cm == null || !cm.isInitialized()) {
+        if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
-            cm = new CategoriesManager();
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.DEAL_CATEGORIES, cm);
-            asyncTaskManager.executeDealCategoryLoaderTask(cm, true);
+            asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
@@ -360,7 +356,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm, new GoogleLandmarkProjection(mapView));
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -419,7 +415,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm, new GoogleLandmarkProjection(mapView));
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -499,7 +495,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm, new GoogleLandmarkProjection(mapView));
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
@@ -608,7 +604,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             //System.out.println("key back pressed in activity");
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), cm, new GoogleLandmarkProjection(mapView));
+        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }return true;
@@ -700,10 +696,10 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
         if (recommended == null) {
             //System.out.println("Top subcategory stats: " + cm.getTopCategory() + " " + cm.getTopSubCategory() + " " + cm.getTopSubCategoryStats());
-            if (cm.getTopSubCategoryStats() > ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_RECOMMEND_CAT_STATS)
+            if (CategoriesManager.getInstance().getTopSubCategoryStats() > ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_RECOMMEND_CAT_STATS)
                     && (ConfigurationManager.getInstance().isOn(ConfigurationManager.SHOW_DEAL_OF_THE_DAY) || forceToShow)) {
                 //System.out.println(cm.getTopCategory() + " " + cm.getTopSubCategory());
-                recommended = landmarkManager.findRecommendedLandmark(cm.getTopCategory(), cm.getTopSubCategory());
+                recommended = landmarkManager.findRecommendedLandmark();
                 if (recommended != null) {
                     ConfigurationManager.getInstance().putObject("dod", recommended);
                 }
@@ -785,7 +781,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                             MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
             		}
             	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), activity.cm, new GoogleLandmarkProjection(activity.mapView));
+            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), new GoogleLandmarkProjection(activity.mapView));
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }

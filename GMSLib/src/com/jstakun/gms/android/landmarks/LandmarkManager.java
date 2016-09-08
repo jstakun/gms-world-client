@@ -745,7 +745,7 @@ public class LandmarkManager {
     	return false;
     }
     
-    public ExtendedLandmark findRecommendedLandmark(int category, int subcategory) {
+    public ExtendedLandmark findRecommendedLandmark() {
         ExtendedLandmark recommendedBySubcat = null, recommendedByCat = null;
         double highestDiscountSubcat = 0.0, highestDiscountCat = 0.0,
                 highestSaveSubcat = 0.0, highestSaveCat = 0.0;
@@ -760,7 +760,7 @@ public class LandmarkManager {
                 Deal deal = landmark.getDeal();
 
                 if (deal != null) {
-                    RecommendedDealPredicate predicateSubcat = new RecommendedDealPredicate(lastShownDeals, highestDiscountSubcat, highestSaveSubcat, category, subcategory);
+                    RecommendedDealPredicate predicateSubcat = new RecommendedDealPredicate(lastShownDeals, highestDiscountSubcat, highestSaveSubcat, CategoriesManager.getInstance().getTopCategory(), CategoriesManager.getInstance().getTopSubCategory());
 
                     if (predicateSubcat.apply(landmark)) {
                         recommendedBySubcat = landmark;
@@ -769,7 +769,7 @@ public class LandmarkManager {
                     }
 
                     if (recommendedBySubcat == null) {
-                        RecommendedDealPredicate predicateCat = new RecommendedDealPredicate(lastShownDeals, highestDiscountCat, highestSaveCat, category, -1);
+                        RecommendedDealPredicate predicateCat = new RecommendedDealPredicate(lastShownDeals, highestDiscountCat, highestSaveCat, CategoriesManager.getInstance().getTopCategory(), -1);
 
                         if (predicateCat.apply(landmark)) {
                             recommendedByCat = landmark;

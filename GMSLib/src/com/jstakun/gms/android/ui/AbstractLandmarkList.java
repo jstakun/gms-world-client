@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import java.util.Comparator;
@@ -27,7 +23,6 @@ import android.widget.TextView;
 
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.ui.lib.R;
@@ -61,7 +56,6 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
     private ORDER order_date = ORDER.ASC;
     private ORDER order_rating = ORDER.DESC;
     
-    private CategoriesManager cm;
     private Comparator<LandmarkParcelable> distanceComparator = new DistanceComparator();
     private Comparator<LandmarkParcelable> dateComparator = new CreationDateComparator();
     
@@ -94,8 +88,6 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
 
         sortingText = (TextView) findViewById(R.id.sortingText);
         sortingImage = (ImageView) findViewById(R.id.sortingImage);
-
-        cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
 
         if (OsUtil.isHoneycomb2OrHigher()) {
             findViewById(R.id.topPanel).setVisibility(View.GONE);
@@ -404,7 +396,7 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
                     value = statsCache.get(key);
                     //System.out.println("Subcat from cache: " + cat + " " + subcat + " " + value);
                 } else {
-                    int stats = cm.getSubCategoryStats(cat, subcat);
+                    int stats = CategoriesManager.getInstance().getSubCategoryStats(cat, subcat);
                     statsCache.put(key, stats);
                     value = stats;
                     //System.out.println("Subcat from cm: " + cat + " " + subcat + " " + value);
@@ -422,7 +414,7 @@ public abstract class AbstractLandmarkList extends ListActivity implements View.
                     value = statsCache.get(key);
                     //System.out.println("Cat from cache: " + cat + " " + value);
                 } else {
-                    int stats = cm.getCategoryStats(cat);
+                    int stats = CategoriesManager.getInstance().getCategoryStats(cat);
                     statsCache.put(key, stats);
                     value = stats;
                     //System.out.println("Cat from cm: " + cat + " " + value);

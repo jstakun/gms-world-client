@@ -52,8 +52,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
             //Bundle categoriesBundle = extras.getBundle("categories");
 
-            CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-            Bundle categoriesBundle = cm.loadCategoriesGroup();
+            Bundle categoriesBundle = CategoriesManager.getInstance().loadCategoriesGroup();
 
             categoryNames = categoriesBundle.getStringArray("names");
 

@@ -1,13 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.deals.CategoriesManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.message.BasicNameValuePair;
+
+import com.jstakun.gms.android.deals.CategoriesManager;
 
 /**
  *
@@ -21,12 +17,9 @@ public class GrouponReader extends AbstractSerialReader {
    		int dist = radius * 4;
 		params.remove(0); //remove default radius parameter
 		params.add(new BasicNameValuePair("radius", Integer.toString(dist)));
-	    CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-        if (cm != null) {
-            String categoryid = cm.getEnabledCategoriesString();
-            if (StringUtils.isNotEmpty(categoryid)) {
-            	params.add(new BasicNameValuePair("categoryid", categoryid));
-            }
+	    String categoryid = CategoriesManager.getInstance().getEnabledCategoriesString();
+        if (StringUtils.isNotEmpty(categoryid)) {
+           params.add(new BasicNameValuePair("categoryid", categoryid));
         }
     }
 

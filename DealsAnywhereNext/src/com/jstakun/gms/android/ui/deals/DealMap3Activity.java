@@ -87,7 +87,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	private LayerLoader layerLoader;
     private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
-    private CategoriesManager cm;
     private IntentsHelper intents;
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
@@ -205,12 +204,9 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         
         intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
 
-        cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-        if (cm == null || !cm.isInitialized()) {
-            LoggerUtils.debug("Loading deal categories...");
-            cm = new CategoriesManager();
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.DEAL_CATEGORIES, cm);
-            asyncTaskManager.executeDealCategoryLoaderTask(cm, true);
+        if (!CategoriesManager.getInstance().isInitialized()) {
+        	LoggerUtils.debug("Loading deal categories...");
+            asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
@@ -249,7 +245,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, null, projection);
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, projection);
             if (coordsE6 != null) {
             	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
             }
@@ -428,7 +424,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     		} 
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, null, projection);
+        	int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, projection);
             if (coordsE6 != null) {
                 getSupportActionBar().hide();
                 animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
@@ -627,10 +623,10 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
         if (recommended == null) {
             //System.out.println("Top subcategory stats: " + cm.getTopCategory() + " " + cm.getTopSubCategory() + " " + cm.getTopSubCategoryStats());
-            if (cm.getTopSubCategoryStats() > ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_RECOMMEND_CAT_STATS)
+            if (CategoriesManager.getInstance().getTopSubCategoryStats() > ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_RECOMMEND_CAT_STATS)
                     && (ConfigurationManager.getInstance().isOn(ConfigurationManager.SHOW_DEAL_OF_THE_DAY) || forceToShow)) {
                 //System.out.println(cm.getTopCategory() + " " + cm.getTopSubCategory());
-                recommended = landmarkManager.findRecommendedLandmark(cm.getTopCategory(), cm.getTopSubCategory());
+                recommended = landmarkManager.findRecommendedLandmark();
                 if (recommended != null) {
                     ConfigurationManager.getInstance().putObject("dod", recommended);
                 }
@@ -763,7 +759,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 if (action.equals("load")) {
                     String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, null, projection);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, projection);
                     if (coordsE6 != null) {
                     	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));;
                     }
@@ -839,7 +835,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, null, projection);
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, layerLoader, (int)mMap.getCameraPosition().zoom, projection);
                     if (coordsE6 != null) {
                     	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
                     }
@@ -1017,7 +1013,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             			activity.takeScreenshot(false);
             		}	
         		} else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, (int)activity.mMap.getCameraPosition().zoom, null, activity.projection);
+            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.layerLoader, (int)activity.mMap.getCameraPosition().zoom, activity.projection);
                     if (coordsE6 != null) {
                     	activity.getSupportActionBar().hide();
                     	activity.animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));

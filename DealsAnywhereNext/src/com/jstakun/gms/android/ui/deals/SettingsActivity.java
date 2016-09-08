@@ -47,17 +47,14 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             layers.setSelectedEntries(extras.getBooleanArray("enabled"));
             layers.setEntryValues(extras.getStringArray("codes"));
 
-            CategoriesManager cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-            if (cm != null) {
-            	Bundle categoriesBundle = cm.loadCategoriesGroup();
+            Bundle categoriesBundle = CategoriesManager.getInstance().loadCategoriesGroup();
 
-            	categoryNames = categoriesBundle.getStringArray("names");
+            categoryNames = categoriesBundle.getStringArray("names");
 
-            	ListPreferenceMultiSelect categories = (ListPreferenceMultiSelect) findPreference(ConfigurationManager.DEAL_CATEGORIES);
-            	categories.setEntries(categoryNames);
-            	categories.setSelectedEntries(categoriesBundle.getBooleanArray("enabled"));
-            	categories.setEntryValues(categoriesBundle.getStringArray("codes"));
-            }
+            ListPreferenceMultiSelect categories = (ListPreferenceMultiSelect) findPreference(ConfigurationManager.DEAL_CATEGORIES);
+            categories.setEntries(categoryNames);
+            categories.setSelectedEntries(categoriesBundle.getBooleanArray("enabled"));
+            categories.setEntryValues(categoriesBundle.getStringArray("codes"));
         } else {
             finish();
         }

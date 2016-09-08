@@ -40,7 +40,6 @@ public class GridCategoryListActivity extends Activity {
     private List<Category> categories = null;
     
     private LandmarkManager landmarkManager = null;
-    private CategoriesManager cm = null;
     private IntentsHelper intents;
     
     private GridView gridView;
@@ -75,8 +74,6 @@ public class GridCategoryListActivity extends Activity {
             lng = extras.getInt("lng");
         }
 
-        cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-        
         createDeleteLayerAlertDialog();
 
         registerForContextMenu(gridView);
@@ -91,12 +88,10 @@ public class GridCategoryListActivity extends Activity {
             finish();
         }
         
-        if (cm != null) {
-            if (parent != -1) {
-                categories = cm.getSubCategories(parent);
-            } else if (landmarkManager != null) {
-                categories = cm.getEnabledCategories(landmarkManager.getLayerManager());
-            }
+        if (parent != -1) {
+            categories = CategoriesManager.getInstance().getSubCategories(parent);
+        } else if (landmarkManager != null) {
+            categories = CategoriesManager.getInstance().getEnabledCategories(landmarkManager.getLayerManager());
         }
 
         int size = 0;
@@ -115,8 +110,8 @@ public class GridCategoryListActivity extends Activity {
             }
         }
 
-        if (parent != -1 && cm != null) {
-            Category parentCat = cm.getCategory(parent);
+        if (parent != -1) {
+            Category parentCat = CategoriesManager.getInstance().getCategory(parent);
             if (parentCat != null) {
             	setTitle(Locale.getMessage(R.string.dealsString, parentCat.getCategory()));
             }
@@ -284,7 +279,7 @@ public class GridCategoryListActivity extends Activity {
     private boolean hasSubcategory(int position) {
         if (parent == -1) {
             int categoryId = categories.get(position).getCategoryID();
-            return cm.hasSubcategory(categoryId);
+            return CategoriesManager.getInstance().hasSubcategory(categoryId);
         }
         return false;
     }

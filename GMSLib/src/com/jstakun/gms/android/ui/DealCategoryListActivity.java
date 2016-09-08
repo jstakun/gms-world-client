@@ -43,7 +43,6 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     private int parent = -1, radius = 3, currentPos = -1, lat, lng;
     
     private LandmarkManager landmarkManager = null;
-    private CategoriesManager cm = null;
     private IntentsHelper intents;
     
     private View searchButton, mapViewButton, addLayerButton;
@@ -74,8 +73,6 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             lat = extras.getInt("lat");
             lng = extras.getInt("lng");
         }
-
-        cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
 
         AdsUtils.loadAd(this);
 
@@ -110,12 +107,10 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             finish();
         }
 
-        if (cm != null) {
-            if (parent != -1) {
-                categories = cm.getSubCategories(parent);
-            } else if (landmarkManager != null) {
-                categories = cm.getEnabledCategories(landmarkManager.getLayerManager());
-            }
+        if (parent != -1) {
+        	categories = CategoriesManager.getInstance().getSubCategories(parent);
+        } else if (landmarkManager != null) {
+            categories = CategoriesManager.getInstance().getEnabledCategories(landmarkManager.getLayerManager());
         }
 
         int size = 0;
@@ -134,8 +129,8 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             }
         }
 
-        if (parent != -1 && cm != null) {
-            Category parentCat = cm.getCategory(parent);
+        if (parent != -1) {
+            Category parentCat = CategoriesManager.getInstance().getCategory(parent);
             setTitle(Locale.getMessage(R.string.dealsString, parentCat.getCategory()));
         }
 
@@ -256,7 +251,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     protected boolean hasSubcategory(int position) {
         if (parent == -1) {
             int categoryId = categories.get(position).getCategoryID();
-            return cm.hasSubcategory(categoryId);
+            return CategoriesManager.getInstance().hasSubcategory(categoryId);
         }
         return false;
     }
@@ -266,7 +261,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     }
 
     protected Category getParentCategory(int categoryId) {
-        return cm.getCategory(categoryId);
+        return CategoriesManager.getInstance().getCategory(categoryId);
     }
 
     protected int countLandmarks(int position) {

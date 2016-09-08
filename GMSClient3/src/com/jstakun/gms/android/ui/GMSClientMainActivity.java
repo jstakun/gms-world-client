@@ -74,7 +74,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
     private CheckinManager checkinManager;
-    private CategoriesManager cm;
     private IntentsHelper intents;
     private DialogManager dialogManager;
     private TextView statusBar;
@@ -241,12 +240,9 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
         checkinManager = new CheckinManager(asyncTaskManager, this);
 
-        cm = (CategoriesManager) ConfigurationManager.getInstance().getObject(ConfigurationManager.DEAL_CATEGORIES, CategoriesManager.class);
-        if (cm == null || !cm.isInitialized()) {
+        if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
-            cm = new CategoriesManager();
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.DEAL_CATEGORIES, cm);
-            asyncTaskManager.executeDealCategoryLoaderTask(cm, false);
+            asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
         dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, checkinManager, trackMyPosListener);
@@ -291,7 +287,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null, ProjectionFactory.getProjection(mapView, googleMapsView));
+        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
@@ -421,7 +417,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     			} //System.out.println("key back pressed in activity");
     			return true;
     		} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null, ProjectionFactory.getProjection(mapView, googleMapsView));
+    			int[] coordsE6 = intents.showLandmarkDetailsAction(getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
     			if (coordsE6 != null) {
     				animateTo(coordsE6);
     			}
@@ -871,7 +867,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null, ProjectionFactory.getProjection(mapView, googleMapsView));
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -914,7 +910,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), null, ProjectionFactory.getProjection(mapView, googleMapsView));
+                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyLocation(), lvView, layerLoader, mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
                     if (coordsE6 != null) {
                     	animateTo(coordsE6);
                     }
@@ -1177,7 +1173,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
             	} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), null, ProjectionFactory.getProjection(activity.mapView, activity.googleMapsView));
+            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyLocation(), activity.lvView, activity.layerLoader, activity.mapView.getZoomLevel(), ProjectionFactory.getProjection(activity.mapView, activity.googleMapsView));
                     if (coordsE6 != null) {
                     	activity.animateTo(coordsE6);
                     }
