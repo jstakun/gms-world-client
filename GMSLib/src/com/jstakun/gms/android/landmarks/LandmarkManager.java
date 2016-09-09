@@ -68,14 +68,14 @@ public class LandmarkManager {
     
     private static Map<String, List<ExtendedLandmark>> landmarkStore = new ConcurrentHashMap<String, List<ExtendedLandmark>>();
     private static LandmarkPaintManager landmarkPaintManager = new LandmarkPaintManager();
-    private static ExtendedLandmark selectedLandmarkUI = null; //landmark selected by user in UI
+    private ExtendedLandmark selectedLandmarkUI = null; //landmark selected by user in UI
     private static int LAYER_LIMIT, TOTAL_LIMIT;
     private static ObjectPool pointsPool;
-    private static boolean initialized = false;
+    private boolean initialized = false;
 
     private static LandmarkManager instance = null;
     
-    public static LandmarkManager getInstance() {
+    public synchronized static LandmarkManager getInstance() {
     	if (instance == null) {
     		instance = new LandmarkManager();
     	}

@@ -31,7 +31,7 @@ public class CheckinManager {
     private CheckinManager() {
     }
     
-    public static CheckinManager getInstance() {
+    public synchronized static CheckinManager getInstance() {
     	if (instance == null) {
     		instance = new CheckinManager();
     	}

@@ -32,16 +32,16 @@ public class RouteRecorder {
 
     private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
     private static RouteRecorder instance = null;
-    private static long startTime = -1, endTime = -1;
-    private static int notificationId = -1;
-    private static boolean paused = false;
-    private static boolean saveNextPoint = false;
-    private static float currentBearing = 0f;
+    private long startTime = -1, endTime = -1;
+    private int notificationId = -1;
+    private boolean paused = false;
+    private boolean saveNextPoint = false;
+    private float currentBearing = 0f;
     
     private RouteRecorder() {
     }
     
-    public static RouteRecorder getInstance() {
+    public synchronized static RouteRecorder getInstance() {
     	if (instance == null) {
     		instance = new RouteRecorder();
     	}

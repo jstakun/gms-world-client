@@ -25,10 +25,10 @@ public class CategoriesManager {
     private List<Category> categories = new ArrayList<Category>();
     private List<Category> subcategories;
     
-    private static boolean initialized = false;
-    private static int topSubCategoryStats = 0;
-    private static int topSubCategory = -1;
-    private static int topCategory = -1;
+    private boolean initialized = false;
+    private int topSubCategoryStats = 0;
+    private int topSubCategory = -1;
+    private int topCategory = -1;
 
     private static final CategoriesManager instance = new CategoriesManager();
     
