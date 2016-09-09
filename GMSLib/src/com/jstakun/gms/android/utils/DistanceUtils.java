@@ -7,8 +7,8 @@ import javax.measure.MeasureFormat;
 import javax.measure.converter.UnitConverter;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
+import static javax.measure.unit.NonSI.*;
+import static javax.measure.unit.SI.*;
 import javax.measure.unit.UnitFormat;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -17,13 +17,13 @@ import com.jstakun.gms.android.config.ConfigurationManager;
  *
  * @author jstakun
  */
-public class DistanceUtils {
+public final class DistanceUtils {
 
-    private static UnitConverter kilometerToMeter = SI.KILOMETRE.getConverterTo(SI.METRE);
-    private static UnitConverter kilometerToMile = SI.KILOMETRE.getConverterTo(NonSI.MILE);
-    private static UnitConverter kilometerToFoot = SI.KILOMETRE.getConverterTo(NonSI.FOOT);
-    private static UnitConverter kilometerToNMile = SI.KILOMETRE.getConverterTo(NonSI.NAUTICAL_MILE);
-    private static UnitConverter kmPerHourToMile = NonSI.KILOMETRES_PER_HOUR.getConverterTo(NonSI.MILES_PER_HOUR);
+    private static UnitConverter kilometerToMeter = KILOMETRE.getConverterTo(METRE);
+    private static UnitConverter kilometerToMile = KILOMETRE.getConverterTo(MILE);
+    private static UnitConverter kilometerToFoot = KILOMETRE.getConverterTo(FOOT);
+    private static UnitConverter kilometerToNMile = KILOMETRE.getConverterTo(NAUTICAL_MILE);
+    private static UnitConverter kmPerHourToMile = KILOMETRES_PER_HOUR.getConverterTo(MILES_PER_HOUR);
     private static MeasureFormat formatterLong;
     private static MeasureFormat formatterShort;
     private static boolean initialized = false;
@@ -70,13 +70,13 @@ public class DistanceUtils {
         int uol = getUoL();
 
         if (uol == 1) {
-            speed = Measure.valueOf(speedInKilometer, NonSI.KILOMETRES_PER_HOUR);
+            speed = Measure.valueOf(speedInKilometer, KILOMETRES_PER_HOUR);
         } else if (uol == 2) {
             double speedInMiles = kmPerHourToMile.convert(speedInKilometer);
-            speed = Measure.valueOf(speedInMiles, NonSI.MILES_PER_HOUR);
+            speed = Measure.valueOf(speedInMiles, MILES_PER_HOUR);
         } else if (uol == 3) {
             double speedInMiles = kmPerHourToMile.convert(speedInKilometer);
-            speed = Measure.valueOf(speedInMiles, NonSI.MILES_PER_HOUR);
+            speed = Measure.valueOf(speedInMiles, MILES_PER_HOUR);
         }
 
         return formatterLong.format(speed);
@@ -100,30 +100,30 @@ public class DistanceUtils {
             if (uol == 1) {
                 if (distanceInKilometer < 1.0) {
                     double distanceInMeter = kilometerToMeter.convert(distanceInKilometer);
-                    dist = Measure.valueOf(distanceInMeter, SI.METRE);
+                    dist = Measure.valueOf(distanceInMeter, METRE);
                     formatter = formatterShort;
                 } else {
-                    dist = Measure.valueOf(distanceInKilometer, SI.KILOMETRE);
+                    dist = Measure.valueOf(distanceInKilometer, KILOMETRE);
                     formatter = formatterShort; //formatterLong;
                 }
             } else if (uol == 2) {
                 double distanceInMiles = kilometerToMile.convert(distanceInKilometer);
                 if (distanceInMiles < 1.0) {
                     double distanceInFoot = kilometerToFoot.convert(distanceInKilometer);
-                    dist = Measure.valueOf(distanceInFoot, NonSI.FOOT);
+                    dist = Measure.valueOf(distanceInFoot, FOOT);
                     formatter = formatterShort;
                 } else {
-                    dist = Measure.valueOf(distanceInMiles, NonSI.MILE);
+                    dist = Measure.valueOf(distanceInMiles, MILE);
                     formatter = formatterShort; //formatterLong;
                 }
             } else if (uol == 3) {
                 double distanceInMiles = kilometerToNMile.convert(distanceInKilometer);
                 if (distanceInMiles < 1.0) {
                     double distanceInFoot = kilometerToFoot.convert(distanceInKilometer);
-                    dist = Measure.valueOf(distanceInFoot, NonSI.FOOT);
+                    dist = Measure.valueOf(distanceInFoot, FOOT);
                     formatter = formatterShort;
                 } else {
-                    dist = Measure.valueOf(distanceInMiles, NonSI.NAUTICAL_MILE);
+                    dist = Measure.valueOf(distanceInMiles, NAUTICAL_MILE);
                     formatter = formatterShort; //formatterLong;
                 }
             }

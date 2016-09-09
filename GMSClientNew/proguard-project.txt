@@ -54,3 +54,15 @@
 }
 
 -dontwarn android.security.NetworkSecurityPolicy
+
+# my addons
+
+-keep public class com.jstakun.gms.android.** {
+	*;
+}
+
+-dontobfuscate
+-dontoptimize
+-keepdirectories
+-dontskipnonpubliclibraryclassmembers
+-ignorewarnings
