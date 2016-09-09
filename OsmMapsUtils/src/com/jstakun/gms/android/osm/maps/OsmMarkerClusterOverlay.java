@@ -39,13 +39,11 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
     
     private static final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     
-    private LandmarkManager lm;
-	private Handler landmarkDetailsHandler;
+    private Handler landmarkDetailsHandler;
 	private float mDensity;
 	
-	public OsmMarkerClusterOverlay(Context ctx, LandmarkManager lm, Handler landmarkDetailsHandler) {
+	public OsmMarkerClusterOverlay(Context ctx, Handler landmarkDetailsHandler) {
 		super(ctx);
-		this.lm = lm;
 		this.landmarkDetailsHandler = landmarkDetailsHandler;
     
 		//custom radius
@@ -97,12 +95,12 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		m.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 			@Override
 			public boolean onMarkerClick(Marker selected, MapView arg1) {
-				lm.clearLandmarkOnFocusQueue();
+				LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
 				for (int i=0;i<cluster.getSize();i++) {
 					Marker m = cluster.getItem(i);
 					Object o = m.getRelatedObject();
 					if (o instanceof ExtendedLandmark) {
-						lm.addLandmarkToFocusQueue((ExtendedLandmark)o);
+						LandmarkManager.getInstance().addLandmarkToFocusQueue((ExtendedLandmark)o);
 					}
 				}
 				Message msg = new Message();
@@ -117,7 +115,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 	}
 	
 	public void addMarkers(String layerKey, MapView mapView) {
-		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
+		List<ExtendedLandmark> landmarks = LandmarkManager.getInstance().getLandmarkStoreLayer(layerKey);
 		//LoggerUtils.debug("Loading " + landmarks.size() + " markers from layer " + layerKey);
 		readWriteLock.writeLock().lock();
 		int size = getItems().size();
@@ -177,10 +175,10 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 			
 				@Override
 				public boolean onMarkerClick(Marker m, MapView arg1) {
-						lm.setSelectedLandmark((ExtendedLandmark)m.getRelatedObject());
-						lm.clearLandmarkOnFocusQueue();
-						landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
-						return true;
+					LandmarkManager.getInstance().setSelectedLandmark((ExtendedLandmark)m.getRelatedObject());
+					LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
+					landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
+					return true;
 				}
 			});
         
@@ -211,7 +209,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		LoggerUtils.debug("Loading all markers to OSM maps!");
 		clearMarkers();
 		for (String layer : LayerManager.getInstance().getLayers()) {
-    		if (LayerManager.getInstance().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && LayerManager.getInstance().getLayer(layer).isEnabled() && lm.getLayerSize(layer) > 0) {
+    		if (LayerManager.getInstance().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && LayerManager.getInstance().getLayer(layer).isEnabled() && LandmarkManager.getInstance().getLayerSize(layer) > 0) {
     			addMarkers(layer, mapView);
     		}      		
     	}

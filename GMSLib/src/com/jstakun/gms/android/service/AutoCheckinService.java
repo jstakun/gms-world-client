@@ -32,7 +32,7 @@ public class AutoCheckinService extends Service {
             boolean silent = false;
             AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class); 		
             if (asyncTaskManager == null) {
-            	asyncTaskManager = new AsyncTaskManager(null, null);
+            	asyncTaskManager = new AsyncTaskManager(null);
             	silent = true; 
             }
         	int checkinCount = CheckinManager.getInstance().autoCheckin(lat, lng, silent); //set silent to true if running in background

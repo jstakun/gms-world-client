@@ -23,7 +23,6 @@ import android.widget.TextView;
 public class GridCategoryArrayAdapter extends ArrayAdapter<String> {
 
 	private final Activity parentActivity;
-    private final LandmarkManager landmarkManager;
     private final View.OnClickListener positionClickListener;
     private final List<Category> categories;
     
@@ -31,7 +30,6 @@ public class GridCategoryArrayAdapter extends ArrayAdapter<String> {
 		super(context, R.layout.layerrow, names);
         this.parentActivity = context;
         this.categories = categories;
-        this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         this.positionClickListener = positionClickListener;
 	}
 	
@@ -60,7 +58,7 @@ public class GridCategoryArrayAdapter extends ArrayAdapter<String> {
         holder.headerText.setText(category);
         
         Category c = categories.get(position);
-        int count = landmarkManager.countLandmarks(c);
+        int count = LandmarkManager.getInstance().countLandmarks(c);
         
         holder.detailText.setText(Locale.getMessage(R.string.Landmark_deals_in_category, count));
         

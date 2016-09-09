@@ -107,7 +107,6 @@ public final class IntentsHelper {
     public static final String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
     
     private Activity activity;
-    private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
     private List<ResolveInfo> activities;
     private static Toast longToast, shortToast;
@@ -130,9 +129,8 @@ public final class IntentsHelper {
         }
     };
 
-    public IntentsHelper(Activity activity, LandmarkManager landmarkManager, AsyncTaskManager asyncTaskManager) {
+    public IntentsHelper(Activity activity, AsyncTaskManager asyncTaskManager) {
         this.activity = activity;
-        this.landmarkManager = landmarkManager;
         this.asyncTaskManager = asyncTaskManager;
     }
 
@@ -360,7 +358,7 @@ public final class IntentsHelper {
     }
 
     public void showNearbyLandmarks(double[] currentLocation, ProjectionInterface projection) {
-        landmarkManager.findVisibleLandmarks(projection, true);
+    	LandmarkManager.getInstance().findVisibleLandmarks(projection, true);
         startMultiLandmarkIntent(currentLocation);
     }
 
@@ -535,7 +533,7 @@ public final class IntentsHelper {
 
     public void commentButtonPressedAction() {
         //FS, FB and GMS World only
-        ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+        ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
         String selectedLayer = selectedLandmark.getLayer();
         if (selectedLayer.equals(Commons.FOURSQUARE_LAYER) || selectedLayer.equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {
             String venueid = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE).getKey(selectedLandmark.getUrl()); 
@@ -750,7 +748,7 @@ public final class IntentsHelper {
         	LayerLoader.getInstance().stopLoading();
         }
         if (clear) {
-           landmarkManager.clearLandmarkStore();
+        	LandmarkManager.getInstance().clearLandmarkStore();
             ConfigurationManager.getInstance().removeObject("dod", ExtendedLandmark.class);
         }
         if (projection != null) {
@@ -763,10 +761,10 @@ public final class IntentsHelper {
     public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, int zoomLevel, ProjectionInterface projection) {
     	int[] coordsE6 = null;
     	if (id >= 0) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
+            ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getLandmarkToFocusQueueSelectedLandmark(id);
             if (selectedLandmark != null) {
-                landmarkManager.setSelectedLandmark(selectedLandmark);
-                landmarkManager.clearLandmarkOnFocusQueue();
+            	LandmarkManager.getInstance().setSelectedLandmark(selectedLandmark);
+            	LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
                 coordsE6 = showLandmarkDetailsAction(currentLocation, lvView, zoomLevel, projection);
             } else {
             	showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
@@ -779,10 +777,10 @@ public final class IntentsHelper {
     
     public int[] showLandmarkDetailsAction(double[] currentLocation, View lvView, int zoomLevel, ProjectionInterface projection) {
         int[] animateTo = null;
-    	ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkOnFocus();
+    	ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getLandmarkOnFocus();
         if (selectedLandmark != null) {
             if (!selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
-                landmarkManager.setSeletedLandmarkUI();
+            	LandmarkManager.getInstance().setSeletedLandmarkUI();
             }
 
             if (selectedLandmark.getLayer().equals(Commons.MULTI_LANDMARK)) {
@@ -837,15 +835,9 @@ public final class IntentsHelper {
         lvView.findViewById(R.id.lvOpenSeparator).setVisibility(View.VISIBLE);
         
         //show only if location is available
-        if (landmarkManager.hasMyLocation()) {
+        if (LandmarkManager.getInstance().hasMyLocation()) {
         	lvRouteButton.setVisibility(View.VISIBLE);
         	lvView.findViewById(R.id.lvRouteSeparator).setVisibility(View.VISIBLE);  
-        	//int routeType = ConfigurationManager.getInstance().getInt(ConfigurationManager.ROUTE_TYPE);
-        	//if (routeType == ConfigurationManager.ROUTE_WALK) {
-        	//	lvRouteButton.setImageResource(R.drawable.walk48);
-        	//} else {
-        	//lvRouteButton.setImageResource(R.drawable.route48);
-        	//}
         } else {
         	lvRouteButton.setVisibility(View.GONE);
         	lvView.findViewById(R.id.lvRouteSeparator).setVisibility(View.GONE);
@@ -1011,7 +1003,7 @@ public final class IntentsHelper {
         }
         lvView.setVisibility(View.VISIBLE);
         
-        landmarkManager.addRecentlyOpenedLandmark(selectedLandmark);
+        LandmarkManager.getInstance().addRecentlyOpenedLandmark(selectedLandmark);
     }
 
     public void showInfoToast(String msg) {
@@ -1344,7 +1336,7 @@ public final class IntentsHelper {
                 if (action.equals("load")) {
                     String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                     int id = Integer.parseInt(ids);
-                    ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
+                    ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getLandmarkToFocusQueueSelectedLandmark(id);
                     if (selectedLandmark != null) {
                         String key = StringUtil.getKeyFromUrl(selectedLandmark.getUrl());
                         if (key != null) {
@@ -1412,7 +1404,7 @@ public final class IntentsHelper {
         //SuggestionProviderUtil.clearHistory();
 
         IconCache.getInstance().clearAll();
-        landmarkManager.clearLandmarkStore();
+        LandmarkManager.getInstance().clearLandmarkStore();
         asyncTaskManager.cancelAll();
         
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
@@ -1431,13 +1423,13 @@ public final class IntentsHelper {
     }
     
     public void addMyLocationLandmark(Location l) {
-    	if (landmarkManager != null && l != null) {
+    	if (l != null) {
     		String provider = l.getProvider();
     		if (StringUtils.isEmpty(provider)) {
     			provider = "unknown";
     		}
     		String date = DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale());
-            landmarkManager.addLandmark(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), Locale.getMessage(R.string.Your_Location), Locale.getMessage(R.string.Your_Location_Desc, provider, l.getAccuracy(), date), Commons.MY_POSITION_LAYER, false);
+    		LandmarkManager.getInstance().addLandmark(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), Locale.getMessage(R.string.Your_Location), Locale.getMessage(R.string.Your_Location_Desc, provider, l.getAccuracy(), date), Commons.MY_POSITION_LAYER, false);
         }
     }
     

@@ -201,28 +201,16 @@ public class AndroidDevice implements LocationListener {
     }
 
     private void updatePositionUi(Location l) {
-        //double lat = MercatorUtils.normalizeE6(currentLocation.getLatitude());
-        //double lon = MercatorUtils.normalizeE6(currentLocation.getLongitude());
-        //float altitude = (float) currentLocation.getAltitude();
-        //float accuracy = currentLocation.getAccuracy();
-
         if (positionHandler != null) {
             Message msg = positionHandler.obtainMessage();
             Bundle b = new Bundle();
-            //b.putDouble("lat", lat);
-            //b.putDouble("lng", lon);
-            //b.putFloat("alt", altitude);
-            //b.putFloat("acc", accuracy);
             b.putParcelable("l", l);
             msg.setData(b);
             positionHandler.handleMessage(msg);
         } else {
-            LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
             //the same code as in IntentsHelper.addMyLocationLandmark
-            if (landmarkManager != null) {
-        		String date = DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale());
-                landmarkManager.addLandmark(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), Locale.getMessage(R.string.Your_Location), Locale.getMessage(R.string.Your_Location_Desc, l.getProvider(), l.getAccuracy(), date), Commons.MY_POSITION_LAYER, false);
-            }
+            String date = DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale());
+            LandmarkManager.getInstance().addLandmark(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), Locale.getMessage(R.string.Your_Location), Locale.getMessage(R.string.Your_Location_Desc, l.getProvider(), l.getAccuracy(), date), Commons.MY_POSITION_LAYER, false);
         }
     }
 

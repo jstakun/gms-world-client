@@ -75,7 +75,6 @@ public class RouteRecorder {
         AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         asyncTaskManager.cancelNotification(notificationId);
         notificationId = -1;
-        startTime = -1;
         
         return filename;
     }
@@ -112,8 +111,11 @@ public class RouteRecorder {
     	if (!paused) {
             QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, accuracy, accuracy, Float.NaN); 
             String l = DateTimeUtils.getCurrentDateStamp();
-            String[] details = getRouteDetails();
-            String description = Locale.getMessage(R.string.Routes_Recording_description, details[0], details[1], details[2]);
+            String description = null;
+            if (!routePoints.isEmpty()) {
+            	String[] details = getRouteDetails();
+            	description = Locale.getMessage(R.string.Routes_Recording_description, details[0], details[1], details[2]);
+            } 
             ExtendedLandmark lm = LandmarkFactory.getLandmark(l, description, qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
             endTime = System.currentTimeMillis();
             

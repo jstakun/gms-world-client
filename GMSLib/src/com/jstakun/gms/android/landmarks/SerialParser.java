@@ -10,7 +10,6 @@ import org.apache.http.NameValuePair;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
@@ -37,7 +36,6 @@ public class SerialParser {
 	
     protected String parse(String[] urls, int urlIndex, List<NameValuePair> params, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService, boolean removeIfExists) { 	
         String errorMessage = null;
-        LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         
         try {
         	URI uri = new URI(urls[urlIndex]);
@@ -45,18 +43,13 @@ public class SerialParser {
         		List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, new String[]{"deflate", "application/x-java-serialized-object"});
         		if (!received.isEmpty()) {
         			if (landmarks.isEmpty()) {
-        				if (landmarkManager != null) {
-        					//System.out.println("1. Indexing " + urls[0] + " " + received.size());
-            				landmarkManager.addLandmarkListToDynamicLayer(received);
-        				}
+        				LandmarkManager.getInstance().addLandmarkListToDynamicLayer(received);
         				landmarks.addAll(received);
         			} else {
         				synchronized (landmarks) {
-        					Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks, removeIfExists, landmarkManager)); 
+        					Collection<ExtendedLandmark> filtered = Collections2.filter(received, new ExistsPredicate(landmarks, removeIfExists)); 
         					//System.out.println("2. Indexing " + urls[0] + " " + filtered.size());         				
-        					if (landmarkManager != null) {
-        						landmarkManager.addLandmarkListToDynamicLayer(filtered);
-        					}
+        					LandmarkManager.getInstance().addLandmarkListToDynamicLayer(filtered);
         					landmarks.addAll(filtered);
         				}
         			}
@@ -87,12 +80,10 @@ public class SerialParser {
 
     	private List<ExtendedLandmark> source;
     	private boolean removeIfExists = false;
-    	private LandmarkManager landmarkManager;
     	
-    	public ExistsPredicate(List<ExtendedLandmark> source, boolean removeIfExists, LandmarkManager landmarkManager) {
+    	public ExistsPredicate(List<ExtendedLandmark> source, boolean removeIfExists) {
     		this.source = source;
     		this.removeIfExists = removeIfExists;
-    		this.landmarkManager = landmarkManager;
     	}
     	
         public boolean apply(ExtendedLandmark landmark) {
@@ -100,8 +91,8 @@ public class SerialParser {
         	if (landmark != null) {
         		if (removeIfExists) {
         			decision = true;
-        			if (source.remove(landmark) && landmarkManager != null) {
-        				landmarkManager.removeLandmarkFromDynamicLayer(landmark);
+        			if (source.remove(landmark)) {
+        				LandmarkManager.getInstance().removeLandmarkFromDynamicLayer(landmark);
         			}
         		} else {
         			decision = !source.contains(landmark);

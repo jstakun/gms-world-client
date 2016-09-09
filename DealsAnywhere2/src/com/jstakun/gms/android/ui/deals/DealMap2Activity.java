@@ -78,7 +78,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private MapController mapController;
     private GoogleMyLocationOverlay myLocation;
     
-    private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
     private IntentsHelper intents;
     private DialogManager dialogManager;
@@ -213,13 +212,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
         appInitialized = false;
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        if (landmarkManager == null) {
-            LoggerUtils.debug("Creating LandmarkManager...");
-            landmarkManager = new LandmarkManager();
-            ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-        }
-
+        
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Initializing AsyncTaskManager...");
@@ -909,10 +902,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			activity.showRouteAction((String)msg.obj);
         		} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
         			Location location = (Location) msg.obj;
-        			if (activity.landmarkManager != null) {
-        				activity.intents.addMyLocationLandmark(location);
-        				activity.mapButtons.setVisibility(View.VISIBLE);
-        			}
+        			activity.intents.addMyLocationLandmark(location);
+        			activity.mapButtons.setVisibility(View.VISIBLE);
         			activity.intents.vibrateOnLocationUpdate();
         			UserTracker.getInstance().sendMyLocation();
         		} else if (msg.obj != null) {

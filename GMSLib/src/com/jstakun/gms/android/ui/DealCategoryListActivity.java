@@ -42,7 +42,6 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     private List<String> names = null;
     private int parent = -1, radius = 3, currentPos = -1, lat, lng;
     
-    private LandmarkManager landmarkManager = null;
     private IntentsHelper intents;
     
     private View searchButton, mapViewButton, addLayerButton;
@@ -62,9 +61,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-
-        intents = new IntentsHelper(this, landmarkManager, null);
+        intents = new IntentsHelper(this, null);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -109,7 +106,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
         if (parent != -1) {
         	categories = CategoriesManager.getInstance().getSubCategories(parent);
-        } else if (landmarkManager != null) {
+        } else  {
             categories = CategoriesManager.getInstance().getEnabledCategories();
         }
 
@@ -266,7 +263,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
     protected int countLandmarks(int position) {
         Category c = categories.get(position);
-        return landmarkManager.countLandmarks(c);
+        return LandmarkManager.getInstance().countLandmarks(c);
     }
 
     protected void onClickAction(int position, String action) {
@@ -276,7 +273,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             cancelActivity(false);
         } else {
             Category c = categories.get(position);
-            if (!landmarkManager.isLayerEmpty(c)) {
+            if (!LandmarkManager.getInstance().isLayerEmpty(c)) {
                 Intent result = new Intent();
                 result.putExtra("action", "show");
                 if (c.isCustom()) {
@@ -318,7 +315,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         if (!c.isCustom()) {
             intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
         } else {
-            landmarkManager.deleteLayer(c.getCategory());
+        	LandmarkManager.getInstance().deleteLayer(c.getCategory());
             ((ArrayAdapter<String>) getListAdapter()).remove(names.remove(currentPos));
             categories.remove(c);
             intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, c.getCategory()));
@@ -345,7 +342,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             if (categoryStats.containsKey(key)) {
                 count1 = categoryStats.get(key);
             } else {
-                count1 = landmarkManager.selectCategoryLandmarksCount(cat1.getCategoryID(), cat1.getSubcategoryID());
+                count1 = LandmarkManager.getInstance().selectCategoryLandmarksCount(cat1.getCategoryID(), cat1.getSubcategoryID());
                 categoryStats.put(key, count1);
             }
 
@@ -354,7 +351,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             if (categoryStats.containsKey(key)) {
                 count0 = categoryStats.get(key);
             } else {
-                count0 = landmarkManager.selectCategoryLandmarksCount(cat0.getCategoryID(), cat0.getSubcategoryID());
+                count0 = LandmarkManager.getInstance().selectCategoryLandmarksCount(cat0.getCategoryID(), cat0.getSubcategoryID());
                 categoryStats.put(key, count0);
             }
 

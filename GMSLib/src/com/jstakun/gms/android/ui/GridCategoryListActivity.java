@@ -39,7 +39,6 @@ public class GridCategoryListActivity extends Activity {
     private List<String> names = null;
     private List<Category> categories = null;
     
-    private LandmarkManager landmarkManager = null;
     private IntentsHelper intents;
     
     private GridView gridView;
@@ -60,9 +59,7 @@ public class GridCategoryListActivity extends Activity {
         
         UserTracker.getInstance().trackActivity(getClass().getName());
         
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        
-        intents = new IntentsHelper(this, landmarkManager, null);
+        intents = new IntentsHelper(this, null);
         
         gridView = (GridView) findViewById(R.id.layers_grid_view);
         
@@ -90,7 +87,7 @@ public class GridCategoryListActivity extends Activity {
         
         if (parent != -1) {
             categories = CategoriesManager.getInstance().getSubCategories(parent);
-        } else if (landmarkManager != null) {
+        } else {
             categories = CategoriesManager.getInstance().getEnabledCategories();
         }
 
@@ -218,7 +215,7 @@ public class GridCategoryListActivity extends Activity {
             cancelActivity(false);
         } else {
             Category c = categories.get(position);
-            if (!landmarkManager.isLayerEmpty(c)) {
+            if (!LandmarkManager.getInstance().isLayerEmpty(c)) {
                 Intent result = new Intent();
                 result.putExtra("action", "show");
                 if (c.isCustom()) {
@@ -260,7 +257,7 @@ public class GridCategoryListActivity extends Activity {
         if (!c.isCustom()) {
             intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
         } else {
-            landmarkManager.deleteLayer(c.getCategory());
+        	LandmarkManager.getInstance().deleteLayer(c.getCategory());
             ((ArrayAdapter<String>) gridView.getAdapter()).remove(names.remove(currentPos));
             categories.remove(c);
             intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, c.getCategory()));
@@ -307,7 +304,7 @@ public class GridCategoryListActivity extends Activity {
             if (categoryStats.containsKey(key)) {
                 count1 = categoryStats.get(key);
             } else {
-                count1 = landmarkManager.selectCategoryLandmarksCount(cat1.getCategoryID(), cat1.getSubcategoryID());
+                count1 = LandmarkManager.getInstance().selectCategoryLandmarksCount(cat1.getCategoryID(), cat1.getSubcategoryID());
                 categoryStats.put(key, count1);
             }
 
@@ -316,7 +313,7 @@ public class GridCategoryListActivity extends Activity {
             if (categoryStats.containsKey(key)) {
                 count0 = categoryStats.get(key);
             } else {
-                count0 = landmarkManager.selectCategoryLandmarksCount(cat0.getCategoryID(), cat0.getSubcategoryID());
+                count0 = LandmarkManager.getInstance().selectCategoryLandmarksCount(cat0.getCategoryID(), cat0.getSubcategoryID());
                 categoryStats.put(key, count0);
             }
 

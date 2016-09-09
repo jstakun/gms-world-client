@@ -56,17 +56,15 @@ public class AsyncTaskManager {
     //private static final double BLACK_FACTOR = 0.75;
     private Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress;
     private GMSNotificationManager notificationManager;
-    private LandmarkManager landmarkManager;
     private IntentsHelper intents;
     private Activity activity;
 
-    public AsyncTaskManager(Activity context, LandmarkManager lm) {
+    public AsyncTaskManager(Activity context) {
         tasksInProgress = new ConcurrentHashMap<Integer, GMSAsyncTask<?,?,?>>();
-        landmarkManager = lm;
         if (context != null) {
             notificationManager = new GMSNotificationManager(context);
             setActivity(context);
-            intents = new IntentsHelper(context, landmarkManager, null);
+            intents = new IntentsHelper(context, null);
         }
     }
 
@@ -154,8 +152,8 @@ public class AsyncTaskManager {
         ExtendedLandmark myPos = null;
 
         if (location != null) {
-        	myPos = landmarkManager.createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), Commons.MY_POSITION_LAYER, null, Commons.MY_POS_CODE);
-        	msg = landmarkManager.persistToServer(myPos, null);
+        	myPos = LandmarkManager.getInstance().createLandmark(location.getLatitude(), location.getLongitude(), (float) location.getAltitude(), Commons.MY_POSITION_LAYER, null, Commons.MY_POS_CODE);
+        	msg = LandmarkManager.getInstance().persistToServer(myPos, null);
         } else {
         	LoggerUtils.debug("Can't send my location !!!");
         }
@@ -267,7 +265,7 @@ public class AsyncTaskManager {
     }
 
     public void executeRouteServerLoadingTask(Handler showRouteHandler, boolean silent, ExtendedLandmark end) {
-        List<ExtendedLandmark> myPosV = landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER);
+        List<ExtendedLandmark> myPosV = LandmarkManager.getInstance().getUnmodifableLayer(Commons.MY_POSITION_LAYER);
 
         if (!myPosV.isEmpty()) {
 
@@ -387,7 +385,7 @@ public class AsyncTaskManager {
                 iconPath = null;
             }
 
-            landmarkManager.addLayer(filename, false, true, true, false, true, iconPath, null, null, filename, landmarks);
+            LandmarkManager.getInstance().addLayer(filename, false, true, true, false, true, iconPath, null, null, filename, landmarks);
             
             Message msg = new Message();
         	msg.what = LayerLoader.LAYER_LOADED;
@@ -626,8 +624,8 @@ public class AsyncTaskManager {
             String desc = landmarkData[3];
             String validityDate = landmarkData[4];
             Location lastPosition = ConfigurationManager.getInstance().getLocation();
-            ExtendedLandmark landmark = landmarkManager.createLandmark(lastPosition.getLatitude(), lastPosition.getLongitude(), (float) lastPosition.getAltitude(), name, desc, Commons.BLOGEO_LAYER);
-            String msg = landmarkManager.persistToServer(landmark, validityDate);
+            ExtendedLandmark landmark = LandmarkManager.getInstance().createLandmark(lastPosition.getLatitude(), lastPosition.getLongitude(), (float) lastPosition.getAltitude(), name, desc, Commons.BLOGEO_LAYER);
+            String msg = LandmarkManager.getInstance().persistToServer(landmark, validityDate);
 
             if (msg == null) {
                 String tmp = sendSocialNotification(landmark, Commons.BLOGEO);
@@ -690,8 +688,8 @@ public class AsyncTaskManager {
                 layer = Commons.LOCAL_LAYER;
             }
 
-            ExtendedLandmark landmark = landmarkManager.createLandmark(lat, lng, 0.0f, name, desc, layer);
-            String msg = landmarkManager.addLandmark(landmark);
+            ExtendedLandmark landmark = LandmarkManager.getInstance().createLandmark(lat, lng, 0.0f, name, desc, layer);
+            String msg = LandmarkManager.getInstance().addLandmark(landmark);
 
             if (msg == null) {
             	String tmp = null;
@@ -903,8 +901,7 @@ public class AsyncTaskManager {
         protected void onPostExecute(Boolean status) {
             if (status) {
                 try {
-                    DialogManager dialogManager = new DialogManager((Activity)activity, intents, null,
-                            landmarkManager, null, null);
+                    DialogManager dialogManager = new DialogManager((Activity)activity, intents, null, null, null);
                     dialogManager.showAlertDialog(AlertDialogBuilder.NEW_VERSION_DIALOG, null, null);
                 } catch (Throwable e) {
                     LoggerUtils.error("NewVersionCheckTask.onPostExceute() exception:", e);
@@ -929,7 +926,7 @@ public class AsyncTaskManager {
     			loadingTime = l.longValue();
     		}
     		int version = OsUtil.getSdkVersion();
-    		int numOfLandmarks = landmarkManager.getAllLayersSize();
+    		int numOfLandmarks = LandmarkManager.getInstance().getAllLayersSize();
     		int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
     		String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
     		new TakeScreenshotTask(filename, notify).execute(lat, lng);
@@ -1064,7 +1061,7 @@ public class AsyncTaskManager {
         @Override
         protected Void doInBackground(Void... arg0) {
             List<LandmarkParcelable> results = new ArrayList<LandmarkParcelable>();
-            landmarkManager.searchLandmarks(results, null, keywords, 0.0, 0.0, ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE));
+            LandmarkManager.getInstance().searchLandmarks(results, null, keywords, 0.0, 0.0, ConfigurationManager.getInstance().getInt(ConfigurationManager.SEARCH_TYPE));
             Layer l = LayerManager.getInstance().getLayer(name);
             if (l != null) {
                 l.setCount(results.size());
@@ -1097,7 +1094,7 @@ public class AsyncTaskManager {
         	String[] dynamicLayersArr = dynamicLayers.toArray(new String[dynamicLayers.size()]);
         	for (String layer : layers) {
         		//System.out.println("Processing layer " + layer + " -----------------------------");
-        		landmarkManager.addLandmarkListToDynamicLayer(landmarkManager.getLandmarkStoreLayer(layer), dynamicLayersArr);
+        		LandmarkManager.getInstance().addLandmarkListToDynamicLayer(LandmarkManager.getInstance().getLandmarkStoreLayer(layer), dynamicLayersArr);
         	}
         	//System.out.println("Done -----------------------------");           	
 			return null;

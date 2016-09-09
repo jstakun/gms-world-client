@@ -43,14 +43,12 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	
 	private ClusterManager<GoogleMarker> mClusterManager;
 	private Handler landmarkDetailsHandler;
-	private LandmarkManager lm;
 	private DisplayMetrics mDisplayMetrics; 
 	
-	public GoogleMarkerClusterOverlay(Activity activity, GoogleMap map, Handler landmarkDetailsHandler, LandmarkManager lm, DisplayMetrics displayMetrics) {
+	public GoogleMarkerClusterOverlay(Activity activity, GoogleMap map, Handler landmarkDetailsHandler, DisplayMetrics displayMetrics) {
 		mClusterManager = new ClusterManager<GoogleMarker>(activity, map);
 		mClusterManager.setRenderer(new MarkerRenderer(activity, map));
 		this.landmarkDetailsHandler =landmarkDetailsHandler;
-		this.lm = lm;
 		this.mDisplayMetrics = displayMetrics;
 		map.setOnMarkerClickListener(mClusterManager);
         map.setOnInfoWindowClickListener(mClusterManager);
@@ -67,8 +65,8 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 
 	@Override
 	public boolean onClusterItemClick(GoogleMarker item) {
-		lm.setSelectedLandmark(item.getRelatedObject());
-		lm.clearLandmarkOnFocusQueue();
+		LandmarkManager.getInstance().setSelectedLandmark(item.getRelatedObject());
+		LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
 		landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
 		return true;
 	}
@@ -80,9 +78,9 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 
 	@Override
 	public boolean onClusterClick(Cluster<GoogleMarker> cluster) {
-		lm.clearLandmarkOnFocusQueue();
+		LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
 		for (GoogleMarker item : cluster.getItems()) {
-			lm.addLandmarkToFocusQueue(item.getRelatedObject());
+			LandmarkManager.getInstance().addLandmarkToFocusQueue(item.getRelatedObject());
 		}
 		Message msg = new Message();
 		msg.what = SHOW_LANDMARK_LIST;
@@ -93,7 +91,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 	}
 
 	public int addMarkers(String layerKey) {
-		List<ExtendedLandmark> landmarks = lm.getLandmarkStoreLayer(layerKey);
+		List<ExtendedLandmark> landmarks = LandmarkManager.getInstance().getLandmarkStoreLayer(layerKey);
 		int count = 0;
 		for (final ExtendedLandmark landmark : landmarks) {
 			if (addMarker(landmark)) {
@@ -169,7 +167,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		LoggerUtils.debug("Loading all markers to Google Map!");
 		clearMarkers();
 		for (String layer : LayerManager.getInstance().getLayers()) {
-    		if (LayerManager.getInstance().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && LayerManager.getInstance().getLayer(layer).isEnabled() && lm.getLayerSize(layer) > 0) {
+    		if (LayerManager.getInstance().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && LayerManager.getInstance().getLayer(layer).isEnabled() && LandmarkManager.getInstance().getLayerSize(layer) > 0) {
     			addMarkers(layer);
     		}      		
     	}

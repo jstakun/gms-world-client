@@ -142,7 +142,7 @@ public class LayerLoader {
                 if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
                         || (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION))) {
                     //System.out.println("Updating view...");
-                	MessageStack.getInstance().addMessage(Locale.getQuantityMessage(R.plurals.LayerLoaded, ConfigurationManager.getInstance().getLandmarkManager().getAllLayersSize()), 3, -1, MessageStack.LAYER_LOADED);
+                	MessageStack.getInstance().addMessage(Locale.getQuantityMessage(R.plurals.LayerLoaded, LandmarkManager.getInstance().getAllLayersSize()), 3, -1, MessageStack.LAYER_LOADED);
                     long loadingTime = (System.currentTimeMillis() - loadingStartTime) / 1000;
                     ConfigurationManager.getInstance().putObject("LAYERS_LOADING_TIME_SEC", loadingTime);
                     sendFinishedMessage();
@@ -242,7 +242,7 @@ public class LayerLoader {
                         for (LayerReader reader : readers) {
                         	currentReader = reader;
                         	if (!concurrentLayerLoader.isCancelled() && !isCancelled()) {
-                        		List<ExtendedLandmark> items = ConfigurationManager.getInstance().getLandmarkManager().getLandmarkStoreLayer(key);
+                        		List<ExtendedLandmark> items = LandmarkManager.getInstance().getLandmarkStoreLayer(key);
                         		int initialSize = items.size();
                         		String errorMessage = reader.readRemoteLayer(items, latitude, longitude, zoom, width, height, key, this);
                             	if (errorMessage != null) {

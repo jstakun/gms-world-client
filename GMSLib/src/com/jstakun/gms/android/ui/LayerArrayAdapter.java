@@ -34,13 +34,11 @@ import com.squareup.picasso.Picasso;
 public class LayerArrayAdapter extends ArrayAdapter<String> {
 
     private final Activity parentActivity;
-    private final LandmarkManager landmarkManager;
     private final View.OnClickListener positionClickListener;
 
     public LayerArrayAdapter(Activity context, List<String> names, View.OnClickListener positionClickListener) {
         super(context, R.layout.layerrow, names);
         this.parentActivity = context;
-        this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
         this.positionClickListener = positionClickListener;
     }
 
@@ -99,7 +97,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
             }
         });
 
-        if (landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
+        if (LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
             holder.layerCheckbox.setVisibility(View.GONE);
         } else if (LayerManager.getInstance().isLayerEnabled(layerKey)) {
             holder.layerCheckbox.setVisibility(View.VISIBLE);
@@ -130,7 +128,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         if (layerKey.equals(Commons.ROUTES_LAYER)) {
             message += Locale.getMessage(R.string.Routes_in_layer_count, RoutesManager.getInstance().getCount());
         } else {
-            message += Locale.getMessage(R.string.Landmark_in_layer_count, landmarkManager.getLayerSize(layerKey));
+            message += Locale.getMessage(R.string.Landmark_in_layer_count, LandmarkManager.getInstance().getLayerSize(layerKey));
         }
         holder.detailText.setText(message);
         

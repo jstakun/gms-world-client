@@ -68,13 +68,12 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 	private AlertDialogBuilder alertBuilder;
 	private ProgressDialog progressDialog;
 	private IntentsHelper intents;
-	private LandmarkManager landmarkManager = null;
 	private DialogInterface.OnClickListener addLayerListener = new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int item) {
 			ConfigurationManager.getInstance().removeObject(
 					AlertDialogBuilder.OPEN_DIALOG, Integer.class);
 			dialog.cancel();
-			if (query != null && landmarkManager != null) {
+			if (query != null) {
 				String name = query.substring(0, query.length()-2);
 				boolean containsLayer = LayerManager.getInstance().addDynamicLayer(name);
 				if (containsLayer) {
@@ -110,9 +109,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 		alertBuilder = new AlertDialogBuilder(this, null);
 
-		landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-
-		intents = new IntentsHelper(this, landmarkManager, null);
+		intents = new IntentsHelper(this, null);
 
 		local = false;
 
@@ -381,7 +378,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 			}
 
 			if (!isCancelled()) {
-				if (landmarkManager != null && query != null) {
+				if (query != null) {
 					
 					int searchType = -1;
 					if (StringUtils.endsWith(query, "/p")) {
@@ -400,10 +397,10 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 					//} 
 					
 					if (type == TYPE.DEALS) {
-						landmarkManager.searchDeals(landmarkList, query, null, MathUtils.coordIntToDouble(lat),
+						LandmarkManager.getInstance().searchDeals(landmarkList, query, null, MathUtils.coordIntToDouble(lat),
 								MathUtils.coordIntToDouble(lng), searchType);
 					} else if (type == TYPE.LANDMARKS) {
-						landmarkManager.searchLandmarks(landmarkList, query, null, MathUtils.coordIntToDouble(lat),
+						LandmarkManager.getInstance().searchLandmarks(landmarkList, query, null, MathUtils.coordIntToDouble(lat),
 								MathUtils.coordIntToDouble(lng), searchType);
 					}
 				}
@@ -515,8 +512,8 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 						publishProgress(i, landmarkCount); 
 						String layer = landmark.getLayer();
 						landmark.setSearchTerm(query);
-						landmarkManager.getLandmarkStoreLayer(layer).add(landmark);
-						landmarkManager.addLandmarkToDynamicLayer(landmark);
+						LandmarkManager.getInstance().getLandmarkStoreLayer(layer).add(landmark);
+						LandmarkManager.getInstance().addLandmarkToDynamicLayer(landmark);
 					}	 
 				}
 				//

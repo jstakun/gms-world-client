@@ -38,7 +38,6 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     private int currentPos = -1, requestCode = -1;
     public static final String LANDMARK = "landmark";
     private IntentsHelper intents;
-    private LandmarkManager landmarkManager;
     private double lat, lng;
     private GetLandmarksTask getLandmarksTask;
     private View progress;
@@ -55,11 +54,9 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-
         progress = findViewById(R.id.listLoadingProgress);
 
-        intents = new IntentsHelper(this, landmarkManager, null);
+        intents = new IntentsHelper(this, null);
 
         Intent intent = getIntent();
         requestCode = intent.getIntExtra("requestCode", -1);
@@ -153,7 +150,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             close(currentPos, "load");
         } else if (menuItemIndex == 1) {
         	int hashCode = getLandmarksTask.getLandmarks().get(currentPos).hashCode();
-        	ExtendedLandmark selectedLandmark = landmarkManager.findLandmarkById(hashCode);
+        	ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().findLandmarkById(hashCode);
         	if (selectedLandmark != null) {
         		AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         		boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
@@ -204,17 +201,15 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     	String ids = getLandmarksTask.getLandmarks().get(position).getKey();
         int id = Integer.parseInt(ids);
         String message = Locale.getMessage(R.string.Landmark_opening_error);
-        if (landmarkManager != null) {
-            ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
-            if (selectedLandmark != null) {
-                //System.out.println("Deleting landmark: " + selectedLandmark.getName());
-                int count = landmarkManager.removeLandmark(selectedLandmark);
-                if (count >= 1 || count == -1) {
-                    ((ArrayAdapter<LandmarkParcelable>) getListAdapter()).remove(getLandmarksTask.getLandmarks().remove(position));
-                    message = Locale.getMessage(R.string.Landmark_deleted);
-                } else {
-                    message = Locale.getMessage(R.string.Landmark_deleted_error);
-                }
+        ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getLandmarkToFocusQueueSelectedLandmark(id);
+        if (selectedLandmark != null) {
+            //System.out.println("Deleting landmark: " + selectedLandmark.getName());
+        	int count = LandmarkManager.getInstance().removeLandmark(selectedLandmark);
+            if (count >= 1 || count == -1) {
+               ((ArrayAdapter<LandmarkParcelable>) getListAdapter()).remove(getLandmarksTask.getLandmarks().remove(position));
+               message = Locale.getMessage(R.string.Landmark_deleted);
+            } else {
+               message = Locale.getMessage(R.string.Landmark_deleted_error);
             }
         }
         intents.showInfoToast(message);
@@ -301,49 +296,47 @@ public class LandmarkListActivity extends AbstractLandmarkList {
 
         @Override
         protected Void doInBackground(Void... params) {
-             if (landmarkManager != null) {
-                                
-                Intent intent = getIntent();
-                SOURCE source = (SOURCE) intent.getSerializableExtra("source");
+            Intent intent = getIntent();
+            SOURCE source = (SOURCE) intent.getSerializableExtra("source");
 
-                if (source == SOURCE.LAYER) {
+            if (source == SOURCE.LAYER) {
                     String layer = intent.getStringExtra("layer");
-                    landmarkManager.setLayerOnFocus(landmarks, layer, false, lat, lng);
-                } else if (source == SOURCE.CATEGORY) {
+                    LandmarkManager.getInstance().setLayerOnFocus(landmarks, layer, false, lat, lng);
+            } else if (source == SOURCE.CATEGORY) {
                     String layer = intent.getStringExtra("layer");
                     if (layer != null) {
-                        landmarkManager.setLayerOnFocus(landmarks, layer, false, lat, lng);
+                    	LandmarkManager.getInstance().setLayerOnFocus(landmarks, layer, false, lat, lng);
                     } else {
                         int cat = intent.getIntExtra("category", -1);
                         if (cat != -1) {
                             int subCat = intent.getIntExtra("subcategory", -1);
-                            landmarkManager.selectCategoryLandmarks(landmarks, cat, subCat, lat, lng);
+                            LandmarkManager.getInstance().selectCategoryLandmarks(landmarks, cat, subCat, lat, lng);
                         }
                     }
-                } else if (source == SOURCE.FRIENDS_CHECKINS) {
-                    landmarkManager.findFriendsCheckinLandmarks(landmarks, lat, lng);
-                } else if (source == SOURCE.NEWEST) {
+            } else if (source == SOURCE.FRIENDS_CHECKINS) {
+                	LandmarkManager.getInstance().findFriendsCheckinLandmarks(landmarks, lat, lng);
+            } else if (source == SOURCE.NEWEST) {
                     String[] excluded = intent.getStringArrayExtra("excluded");
                     int maxDays = intent.getIntExtra("maxDays", 31);
-                    landmarkManager.findNewLandmarks(landmarks, maxDays, excluded, lat, lng);
-                } else if (source == SOURCE.RECENT) {
-                    landmarkManager.getRecentlyOpenedLandmarks(landmarks, lat, lng);
-                } else if (source == SOURCE.DOD) {
+                    LandmarkManager.getInstance().findNewLandmarks(landmarks, maxDays, excluded, lat, lng);
+            } else if (source == SOURCE.RECENT) {
+                	LandmarkManager.getInstance().getRecentlyOpenedLandmarks(landmarks, lat, lng);
+            } else if (source == SOURCE.DOD) {
                     String[] excluded = intent.getStringArrayExtra("excluded");
-                    landmarkManager.findDealsOfTheDay(landmarks, excluded, lat, lng);
-                } else if (source == SOURCE.CHECKIN) {
-                    landmarkManager.getCheckinableLandmarks(landmarks, lat, lng);
-                } else if (source == SOURCE.DAY_LANDMARKS) {
+                    LandmarkManager.getInstance().findDealsOfTheDay(landmarks, excluded, lat, lng);
+            } else if (source == SOURCE.CHECKIN) {
+                	LandmarkManager.getInstance().getCheckinableLandmarks(landmarks, lat, lng);
+            } else if (source == SOURCE.DAY_LANDMARKS) {
                     int year = intent.getIntExtra("year", 0);
                     int month = intent.getIntExtra("month", 0);
                     int day = intent.getIntExtra("day", 0);
-                    landmarkManager.findLandmarksInDay(landmarks, year, month, day, lat, lng);
-                } else if (source == SOURCE.MY_LANDMARKS) {
-                    landmarkManager.getMyLandmarks(landmarks, lat, lng);
+                    LandmarkManager.getInstance().findLandmarksInDay(landmarks, year, month, day, lat, lng);
+            } else if (source == SOURCE.MY_LANDMARKS) {
+                    LandmarkManager.getInstance().getMyLandmarks(landmarks, lat, lng);
                 } else if (source == SOURCE.MULTI_LANDMARK) {
-                    landmarkManager.getMultiLandmarks(landmarks, lat, lng);
-                }
+                	LandmarkManager.getInstance().getMultiLandmarks(landmarks, lat, lng);
             }
+            
             return null;
         }
 

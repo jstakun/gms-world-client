@@ -23,7 +23,7 @@ public class DealMapDispatchActivity extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
 
-        IntentsHelper intents = new IntentsHelper(this, null, null);
+        IntentsHelper intents = new IntentsHelper(this, null);
         boolean abort = false;
 
 

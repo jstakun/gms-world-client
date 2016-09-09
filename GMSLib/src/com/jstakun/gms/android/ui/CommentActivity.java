@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import android.app.Activity;
@@ -42,7 +38,7 @@ public class CommentActivity extends Activity implements OnClickListener {
             //UserTracker.getInstance().startSession(this);
             UserTracker.getInstance().trackActivity(getClass().getName());
 
-            intents = new IntentsHelper(this, null, null);
+            intents = new IntentsHelper(this, null);
 
             service = extras.getString("service");
             placeId = extras.getString("placeId");

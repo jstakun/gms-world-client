@@ -62,7 +62,7 @@ public class WebViewActivity extends Activity {
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
-        intents = new IntentsHelper(this, null, null);
+        intents = new IntentsHelper(this, null);
 
         setProgressBarIndeterminateVisibility(true);
         setProgressBarVisibility(true);

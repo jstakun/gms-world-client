@@ -21,7 +21,6 @@ import com.jstakun.gms.android.data.LandmarkDbDataSource;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
@@ -317,13 +316,6 @@ public final class ConfigurationManager {
 
     //TODO remove them all
     
-    public LandmarkManager getLandmarkManager() {
-        if (containsObject("landmarkManager", LandmarkManager.class)) {
-            return (LandmarkManager) objectCache.get("landmarkManager");
-        }
-        return null;
-    }
-
     public AsyncTaskManager getTaskManager() {
         if (containsObject("asyncTaskManager", AsyncTaskManager.class)) {
             return (AsyncTaskManager) objectCache.get("asyncTaskManager");

@@ -20,9 +20,7 @@ public class CalendarActivity extends Activity {
 	
 	CalendarView calendarView;
     private IntentsHelper intents;
-    private LandmarkManager landmarkManager = null;
     private double lat = 0.0d, lng = 0.0d;
-    //private BaseAdapter adapter;
     private static boolean isSearching = false;
     
 	@Override
@@ -49,9 +47,7 @@ public class CalendarActivity extends Activity {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
         
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        
-        intents = new IntentsHelper(this, landmarkManager, null);
+        intents = new IntentsHelper(this, null);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -133,7 +129,7 @@ public class CalendarActivity extends Activity {
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    ExtendedLandmark selectedLandmark = landmarkManager.getLandmarkToFocusQueueSelectedLandmark(id);
+                    ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getLandmarkToFocusQueueSelectedLandmark(id);
                     if (selectedLandmark != null) {
                         Intent result = new Intent();
                         result.putExtra(LandmarkListActivity.LANDMARK, ids);

@@ -28,13 +28,11 @@ import com.squareup.picasso.Picasso;
 public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 
 	    private final Activity parentActivity;
-	    private final LandmarkManager landmarkManager;
 	    private final View.OnClickListener positionClickListener;
 
 	    public GridLayerArrayAdapter(Activity context, List<String> names, View.OnClickListener positionClickListener) {
 	        super(context, R.layout.layerrow, names);
 	        this.parentActivity = context;
-	        this.landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
 	        this.positionClickListener = positionClickListener;
 	    }
 
@@ -66,7 +64,7 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 
 	        holder.headerText.setText(layerName);
 	        
-	        if (landmarkManager.getLayerType(layerKey) != LayerManager.LAYER_DYNAMIC && !layer.isEnabled()) {
+	        if (LandmarkManager.getInstance().getLayerType(layerKey) != LayerManager.LAYER_DYNAMIC && !layer.isEnabled()) {
 	        	holder.headerText.setTextColor(Color.RED);
 	        } else {
 	        	holder.headerText.setTextColor(Color.BLACK);
@@ -95,7 +93,7 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        if (layerKey.equals(Commons.ROUTES_LAYER)) {
 	            count = RoutesManager.getInstance().getCount();	
 	        } else {
-	        	count = landmarkManager.getLayerSize(layerKey);
+	        	count = LandmarkManager.getInstance().getLayerSize(layerKey);
 	        }
 	        
 	        int layerThumbnail = layer.getImage();

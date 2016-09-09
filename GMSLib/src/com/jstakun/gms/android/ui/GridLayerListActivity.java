@@ -40,7 +40,6 @@ public class GridLayerListActivity extends Activity {
     private static final int ACTION_DISABLE = 4;
     private static final int ACTION_DELETE = 5;
     private List<String> names = null;
-    private LandmarkManager landmarkManager;
     private IntentsHelper intents;
     private GridView gridView;
     private int mode = ConfigurationManager.ALL_LAYERS_MODE, currentPos = -1;
@@ -58,9 +57,7 @@ public class GridLayerListActivity extends Activity {
         
         UserTracker.getInstance().trackActivity(getClass().getName());
         
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        
-        intents = new IntentsHelper(this, landmarkManager, null);
+        intents = new IntentsHelper(this, null);
         
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("mode")) {
@@ -85,26 +82,24 @@ public class GridLayerListActivity extends Activity {
 
         names = new ArrayList<String>();
 
-        if (landmarkManager != null) {
-            List<String> layers = null; 
+        List<String> layers = null; 
             
-            if (mode == ConfigurationManager.DYNAMIC_LAYERS_MODE) {
-            	layers = LayerManager.getInstance().getDynamicLayers();
-            } else {
-            	layers = LayerManager.getInstance().getLayers();
-            }
+        if (mode == ConfigurationManager.DYNAMIC_LAYERS_MODE) {
+            layers = LayerManager.getInstance().getDynamicLayers();
+        } else {
+            layers = LayerManager.getInstance().getLayers();
+        }
             
-            Collections.sort(layers, new LayerSizeComparator());
-            for (String key : layers) {
-                if (!key.equals(Commons.MY_POSITION_LAYER)) {
-                	Layer layer = LayerManager.getInstance().getLayer(key);
-                	if (layer.getType() == LayerManager.LAYER_DYNAMIC || layer.getCount() > 0 || layer.getImage() > 0 || landmarkManager.getLayerSize(key) > 0) {
-                		String formatted = layer.getFormatted();
-                		if (formatted == null) {
-                			formatted = key;
-                		}
-                		names.add(key + ";" + formatted);
+        Collections.sort(layers, new LayerSizeComparator());
+        for (String key : layers) {
+            if (!key.equals(Commons.MY_POSITION_LAYER)) {
+                Layer layer = LayerManager.getInstance().getLayer(key);
+                if (layer.getType() == LayerManager.LAYER_DYNAMIC || layer.getCount() > 0 || layer.getImage() > 0 || LandmarkManager.getInstance().getLayerSize(key) > 0) {
+                	String formatted = layer.getFormatted();
+                	if (formatted == null) {
+                		formatted = key;
                 	}
+                	names.add(key + ";" + formatted);
                 }
             }
         }
@@ -190,7 +185,7 @@ public class GridLayerListActivity extends Activity {
             	menu.getItem(ACTION_DISABLE).setVisible(false);
             }
             
-            int layerType = landmarkManager.getLayerType(layerKey);
+            int layerType = LandmarkManager.getInstance().getLayerType(layerKey);
 
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
                 menu.getItem(ACTION_OPEN).setVisible(false);
@@ -241,7 +236,7 @@ public class GridLayerListActivity extends Activity {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
             } else {
                 UserTracker.getInstance().trackEvent("Clicks", "LayersListActivity.ShowLayerAction", layerKey, 0);
-                if (landmarkManager.getLayerSize(layerKey) > 0) {
+                if (LandmarkManager.getInstance().getLayerSize(layerKey) > 0) {
                     layerAction("show", layerKey);
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
@@ -249,8 +244,8 @@ public class GridLayerListActivity extends Activity {
             }
         } else if (type == ACTION_REFRESH) {
             //REFRESH
-            if (layerKey.equals(Commons.ROUTES_LAYER) || landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC
-                    || landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_FILESYSTEM) {
+            if (layerKey.equals(Commons.ROUTES_LAYER) || LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC
+                    || LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_FILESYSTEM) {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
             } else {
                 layerAction("load", layerKey);
@@ -261,16 +256,16 @@ public class GridLayerListActivity extends Activity {
             	RoutesManager.getInstance().clearRoutesStore();
                 ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
-            } else if (landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
+            } else if (LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
             } else {
-                landmarkManager.clearLayer(layerKey);
+            	LandmarkManager.getInstance().clearLayer(layerKey);
                 ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
             }
         } else if (type == ACTION_DELETE) {
             //DELETE
-            landmarkManager.deleteLayer(layerKey);
+        	LandmarkManager.getInstance().deleteLayer(layerKey);
             ((ArrayAdapter<String>) gridView.getAdapter()).remove(names.remove(position));
 
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
@@ -335,11 +330,9 @@ public class GridLayerListActivity extends Activity {
                 setPositiveButton(Locale.getMessage(R.string.okButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                if (landmarkManager != null) {
-                	LayerManager.getInstance().disableAllLayers();
-                	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
-                	intents.showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
-                }
+                LayerManager.getInstance().disableAllLayers();
+                ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
+                intents.showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
             }
         }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -356,14 +349,14 @@ public class GridLayerListActivity extends Activity {
             if (lhs.equals(Commons.ROUTES_LAYER)) {
             	lhsCount = RoutesManager.getInstance().getCount();
             } else {
-                lhsCount = landmarkManager.getLayerSize(lhs);
+                lhsCount = LandmarkManager.getInstance().getLayerSize(lhs);
             }
 
             int rhsCount = 0;
             if (rhs.equals(Commons.ROUTES_LAYER)) {
             	rhsCount = RoutesManager.getInstance().getCount();
             } else {
-                rhsCount = landmarkManager.getLayerSize(rhs);
+                rhsCount = LandmarkManager.getInstance().getLayerSize(rhs);
             }
 
             if (lhsCount > rhsCount) {
@@ -371,8 +364,8 @@ public class GridLayerListActivity extends Activity {
             } else if (lhsCount < rhsCount) {
                 return 1;
             } else {
-            	int lhsType = landmarkManager.getLayerType(lhs);
-            	int rhsType = landmarkManager.getLayerType(rhs);
+            	int lhsType = LandmarkManager.getInstance().getLayerType(lhs);
+            	int rhsType = LandmarkManager.getInstance().getLayerType(rhs);
             	if (lhsType > rhsType) {
                     return 1;
                 } else if (lhsType < rhsType) {

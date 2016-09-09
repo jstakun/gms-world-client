@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui;
 
 import android.app.Activity;
@@ -22,7 +18,6 @@ import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
-import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
@@ -81,7 +76,7 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
         categories = (Spinner) findViewById(R.id.categorySpinner);
         addVenueCheckbox = (CheckBox) findViewById(R.id.fsAddVenueCheckbox);
 
-        intents = new IntentsHelper(this, null, null);
+        intents = new IntentsHelper(this, null);
 
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
             addVenueCheckbox.setVisibility(View.GONE);
@@ -108,12 +103,9 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
         List<String> extLayers = new ArrayList<String>();
         extLayers.add("Public");
 
-        LandmarkManager lm = ConfigurationManager.getInstance().getLandmarkManager();
-        if (lm != null) {
-            extLayersMap = LayerManager.getInstance().getExternalLayers();
-            if (extLayersMap != null) {
-                extLayers.addAll(extLayersMap.values());
-            }
+        extLayersMap = LayerManager.getInstance().getExternalLayers();
+        if (extLayersMap != null) {
+        	extLayers.addAll(extLayersMap.values());
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,

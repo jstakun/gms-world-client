@@ -84,8 +84,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
 	
-	private LandmarkManager landmarkManager;
-    private AsyncTaskManager asyncTaskManager;
+	private AsyncTaskManager asyncTaskManager;
     private IntentsHelper intents;
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
@@ -185,30 +184,24 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         thumbnailButton.setOnClickListener(this);
         
         appInitialized = false;
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        if (landmarkManager == null) {
-            LoggerUtils.debug("Creating LandmarkManager...");
-            landmarkManager = new LandmarkManager();
-            ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-        }
-
+                
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Initializing AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
+            asyncTaskManager = new AsyncTaskManager(this);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();           
         }
         
-        intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
+        intents = new IntentsHelper(this, asyncTaskManager);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
         	LoggerUtils.debug("Loading deal categories...");
             asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager, null, null);
         
         ((LoadingHandler) loadingHandler).setDialogManager(dialogManager);
         
@@ -248,9 +241,9 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             if (coordsE6 != null) {
             	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
             }
-        } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
+        } else if (LandmarkManager.getInstance().getSeletedLandmarkUI() != null) {
             getSupportActionBar().hide();
-            ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
+            ExtendedLandmark landmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
             intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
@@ -441,8 +434,8 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     		//System.out.println("4.1 --------------------------------");
         	loadingProgressBar.setProgress(75);
         	    	
-        	if (!landmarkManager.isInitialized()) {
-        		landmarkManager.initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
+        	if (!LandmarkManager.getInstance().isInitialized()) {
+        		LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
             
@@ -555,14 +548,14 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	
 	private double[] getMyPosition() {
 		if (mMap != null) {
-			return landmarkManager.getMyLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+			return LandmarkManager.getInstance().getMyLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
 		} else {
 			LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
             if (mapCenter != null) {
-            	return landmarkManager.getMyLocation(mapCenter.latitude, mapCenter.longitude);
+            	return LandmarkManager.getInstance().getMyLocation(mapCenter.latitude, mapCenter.longitude);
             } else {
             	ExtendedLandmark l = ConfigurationManager.getInstance().getDefaultCoordinate();
-            	return landmarkManager.getMyLocation(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
+            	return LandmarkManager.getInstance().getMyLocation(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
             }
 		}  
     }
@@ -605,9 +598,9 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	private void hideLandmarkView() {
     	lvView.setVisibility(View.GONE);
 		getSupportActionBar().show();
-		landmarkManager.clearLandmarkOnFocusQueue();
-		landmarkManager.setSelectedLandmark(null);
-		landmarkManager.setSeletedLandmarkUI();
+		LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
+		LandmarkManager.getInstance().setSelectedLandmark(null);
+		LandmarkManager.getInstance().setSeletedLandmarkUI();
     }
 	
     private void showRecommendedDeal(boolean forceToShow) {
@@ -618,7 +611,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             if (CategoriesManager.getInstance().getTopSubCategoryStats() > ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_RECOMMEND_CAT_STATS)
                     && (ConfigurationManager.getInstance().isOn(ConfigurationManager.SHOW_DEAL_OF_THE_DAY) || forceToShow)) {
                 //System.out.println(cm.getTopCategory() + " " + cm.getTopSubCategory());
-                recommended = landmarkManager.findRecommendedLandmark();
+                recommended = LandmarkManager.getInstance().findRecommendedLandmark();
                 if (recommended != null) {
                     ConfigurationManager.getInstance().putObject("dod", recommended);
                 }
@@ -626,7 +619,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         }
 
         if (recommended != null) {
-            landmarkManager.setSelectedLandmark(recommended);
+        	LandmarkManager.getInstance().setSelectedLandmark(recommended);
             dealOfTheDayDialog = new DealOfTheDayDialog(this, recommended, getMyPosition(), loadingHandler, intents);
             ConfigurationManager.getInstance().putObject(AlertDialogBuilder.OPEN_DIALOG, AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG);
             if (appInitialized) {
@@ -687,7 +680,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     		getSupportActionBar().show();
     	}
     	
-	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager, this.getResources().getDisplayMetrics());	
+	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, this.getResources().getDisplayMetrics());	
 	    markerCluster.loadAllMarkers();
 	    
 	    routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
@@ -715,7 +708,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     					loadingTime = l.longValue();
     				}
     				int version = OsUtil.getSdkVersion();
-    				int numOfLandmarks = landmarkManager.getAllLayersSize();
+    				int numOfLandmarks = LandmarkManager.getInstance().getAllLayersSize();
     				int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
     				String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
     			
@@ -786,7 +779,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 } else {
                 	pickPositionAction(new LatLng(lat, lng), true, true);
                 }
-                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
+                LandmarkManager.getInstance().addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
@@ -810,13 +803,13 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 int id = Integer.parseInt(ids);
                 if (action.equals("load")) {
-                    ExtendedLandmark l = landmarkManager.getPhoneLandmark(id);
+                    ExtendedLandmark l = LandmarkManager.getInstance().getPhoneLandmark(id);
                     if (l != null) {
                         pickPositionAction(new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude()), true, true);
                     }
                 } else if (action.equals("delete")) {
                     //delete landmark
-                    landmarkManager.deletePhoneLandmark(id);
+                	LandmarkManager.getInstance().deletePhoneLandmark(id);
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
@@ -880,14 +873,14 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
 	@Override
 	public void onClick(View v) {
-		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+		ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
     	if (selectedLandmark != null) {
     		if (v == lvCloseButton) {
     			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
     			hideLandmarkView();
     		} else if (v == lvOpenButton) {
     			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
-    			intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+    			intents.openButtonPressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
     		} else if (v == thumbnailButton) {
     			if (intents.startStreetViewActivity(selectedLandmark)) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenStreetView", selectedLandmark.getLayer(), 0);
@@ -897,7 +890,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     			}
     		} else if (v == lvCallButton) {
     			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
-    			callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+    			callButtonPressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
     		} else if (v == lvRouteButton) {
     			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
     			dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);

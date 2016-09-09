@@ -44,7 +44,6 @@ public class LayerListActivity extends ListActivity {
     private AlertDialog deleteLayerDialog, enableAllLayersDialog, disableAllLayersDialog;
     private List<String> names = null;
     private IntentsHelper intents;
-    private LandmarkManager landmarkManager;
     private int currentPos = -1, mode = ConfigurationManager.ALL_LAYERS_MODE;
     
     @Override
@@ -60,9 +59,7 @@ public class LayerListActivity extends ListActivity {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        
-        intents = new IntentsHelper(this, landmarkManager, null);
+        intents = new IntentsHelper(this, null);
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("mode")) {
@@ -97,17 +94,16 @@ public class LayerListActivity extends ListActivity {
 
         names = new ArrayList<String>();
 
-        if (landmarkManager != null) {
-            List<String> layers = null; 
+        List<String> layers = null; 
             
-            if (mode == ConfigurationManager.DYNAMIC_LAYERS_MODE) {
+        if (mode == ConfigurationManager.DYNAMIC_LAYERS_MODE) {
             	layers = LayerManager.getInstance().getDynamicLayers();
-            } else {
+        } else {
             	layers = LayerManager.getInstance().getLayers();
-            }
+        }
             
-            Collections.sort(layers, new LayerSizeComparator());
-            for (String key : layers) {
+        Collections.sort(layers, new LayerSizeComparator());
+        for (String key : layers) {
                 if (!key.equals(Commons.MY_POSITION_LAYER)) {
                     String formatted = LayerManager.getInstance().getLayerFormatted(key);
                     if (formatted == null) {
@@ -115,8 +111,8 @@ public class LayerListActivity extends ListActivity {
                     }
                     names.add(key + ";" + formatted);
                 }
-            }
         }
+        
 
         setListAdapter(new LayerArrayAdapter(this, names, new PositionClickListener()));
     }
@@ -211,7 +207,7 @@ public class LayerListActivity extends ListActivity {
             	menu.getItem(ACTION_DISABLE).setVisible(false);
             }
             
-            int layerType = landmarkManager.getLayerType(layerKey);
+            int layerType = LandmarkManager.getInstance().getLayerType(layerKey);
             
 
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
@@ -310,7 +306,7 @@ public class LayerListActivity extends ListActivity {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
             } else {
                 UserTracker.getInstance().trackEvent("Clicks", "LayersListActivity.ShowLayerAction", layerKey, 0);
-                if (landmarkManager.getLayerSize(layerKey) > 0) {
+                if (LandmarkManager.getInstance().getLayerSize(layerKey) > 0) {
                     layerAction("show", layerKey);
                 } else {
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
@@ -318,8 +314,8 @@ public class LayerListActivity extends ListActivity {
             }
         } else if (type == ACTION_REFRESH) {
             //REFRESH
-            if (layerKey.equals(Commons.ROUTES_LAYER) || landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC
-                    || landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_FILESYSTEM) {
+            if (layerKey.equals(Commons.ROUTES_LAYER) || LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC
+                    || LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_FILESYSTEM) {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
             } else {
                 layerAction("load", layerKey);
@@ -330,16 +326,16 @@ public class LayerListActivity extends ListActivity {
                 RoutesManager.getInstance().clearRoutesStore();
                 ((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
-            } else if (landmarkManager.getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
+            } else if (LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
             } else {
-                landmarkManager.clearLayer(layerKey);
+            	LandmarkManager.getInstance().clearLayer(layerKey);
                 ((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
             }
         } else if (type == ACTION_DELETE) {
             //DELETE
-            landmarkManager.deleteLayer(layerKey);
+        	LandmarkManager.getInstance().deleteLayer(layerKey);
             ((ArrayAdapter<String>) getListAdapter()).remove(names.remove(position));
 
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
@@ -372,14 +368,14 @@ public class LayerListActivity extends ListActivity {
             if (lhs.equals(Commons.ROUTES_LAYER)) {
                 lhsCount = RoutesManager.getInstance().getCount();
             } else {
-                lhsCount = landmarkManager.getLayerSize(lhs);
+                lhsCount = LandmarkManager.getInstance().getLayerSize(lhs);
             }
 
             int rhsCount;
             if (rhs.equals(Commons.ROUTES_LAYER)) {
                 rhsCount = RoutesManager.getInstance().getCount();
             } else {
-                rhsCount = landmarkManager.getLayerSize(rhs);
+                rhsCount = LandmarkManager.getInstance().getLayerSize(rhs);
             }
 
             if (lhsCount > rhsCount) {

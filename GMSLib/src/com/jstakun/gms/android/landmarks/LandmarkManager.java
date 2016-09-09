@@ -73,9 +73,18 @@ public class LandmarkManager {
     private static ObjectPool pointsPool;
     private static boolean initialized = false;
 
-    public LandmarkManager() {
+    private static LandmarkManager instance = null;
+    
+    public static LandmarkManager getInstance() {
+    	if (instance == null) {
+    		instance = new LandmarkManager();
+    	}
+    	return instance;
+    }
+    
+    private LandmarkManager() {
         
-        LAYER_LIMIT = ConfigurationManager.getInstance().getInt(ConfigurationManager.LAYER_PAINT_LIMIT, 30);
+        LAYER_LIMIT = ConfigurationManager.getInstance().getInt(ConfigurationManager.LAYER_PAINT_LIMIT, 15);
         if (OsUtil.isIceCreamSandwichOrHigher()) {
             LAYER_LIMIT = 2 * LAYER_LIMIT;
         }

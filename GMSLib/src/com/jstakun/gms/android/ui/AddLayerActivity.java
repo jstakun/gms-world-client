@@ -94,7 +94,7 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         keywordsText = (EditText) findViewById(R.id.keywordsText);
         nameText = (EditText) findViewById(R.id.nameText);
 
-        intents = new IntentsHelper(this, null, null);
+        intents = new IntentsHelper(this, null);
 
         AdsUtils.loadAd(this);
 

@@ -51,7 +51,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     OAuthServiceFactory.getServiceName(Commons.LINKEDIN)});
         this.context = context;
         this.footer = footer;
-        intents = new IntentsHelper(context, null, null);
+        intents = new IntentsHelper(context, null);
     }
     
     @Override

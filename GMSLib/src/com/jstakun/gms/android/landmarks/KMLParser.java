@@ -131,7 +131,7 @@ public class KMLParser {
                             counter++;
                             LoggerUtils.debug("KMLParser: Adding landmark " + landmark.getName() + "\nLandmark count: " + counter);
                             landmarks.add(landmark);
-                            ConfigurationManager.getInstance().getLandmarkManager().addLandmarkToDynamicLayer(landmark);
+                            LandmarkManager.getInstance().addLandmarkToDynamicLayer(landmark);
                         }
                     }
                 } else if (lms != null) {
@@ -140,7 +140,7 @@ public class KMLParser {
                     for (Iterator<ExtendedLandmark> iter = lms.iterator(); iter.hasNext();) {
                         ExtendedLandmark landmark = iter.next();
                         landmarks.add(landmark);
-                        ConfigurationManager.getInstance().getLandmarkManager().addLandmarkToDynamicLayer(landmark);
+                        LandmarkManager.getInstance().addLandmarkToDynamicLayer(landmark);
                     }
                 }
             } else if ("description".equals(name)) {

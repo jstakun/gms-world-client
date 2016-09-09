@@ -1,7 +1,6 @@
 package com.jstakun.gms.android.ui.deals;
 
 import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.ui.NavigationDrawerListItem;
@@ -39,31 +38,29 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<NavigationDrawerLi
 	public void rebuild(ProjectionInterface projection) {
 		clear();
 		
-		LandmarkManager landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-		
 		add(new NavigationDrawerListItem(names[0], R.id.listMode));
 		
 		final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER, Commons.LOCAL_LAYER};
-        if (landmarkManager != null && landmarkManager.hasDealsOfTheDay(excluded)) {
+        if (LandmarkManager.getInstance().hasDealsOfTheDay(excluded)) {
         	add(new NavigationDrawerListItem(names[1], R.id.hotDeals));
         }
         
-        if (landmarkManager != null && landmarkManager.hasNewLandmarks(2, excluded)) {
+        if (LandmarkManager.getInstance().hasNewLandmarks(2, excluded)) {
         	add(new NavigationDrawerListItem(names[2], R.id.newestDeals));
         }
 		
-        if (landmarkManager != null && projection != null && landmarkManager.hasVisibleLandmarks(projection, true)) {
+        if (projection != null && LandmarkManager.getInstance().hasVisibleLandmarks(projection, true)) {
         	add(new NavigationDrawerListItem(names[3], R.id.nearbyDeals));
         }
 		
         add(new NavigationDrawerListItem(names[4], R.id.pickMyPos));
 		add(new NavigationDrawerListItem(names[5], R.id.showMyLandmarks));
 		
-		if (landmarkManager != null && landmarkManager.hasRecentlyOpenedLandmarks()) {
+		if (LandmarkManager.getInstance().hasRecentlyOpenedLandmarks()) {
 		    add(new NavigationDrawerListItem(names[6], R.id.recentLandmarks));
 		}
 		
-		if (landmarkManager != null && landmarkManager.hasRecommendedCategory(CategoriesManager.getInstance().getTopCategory(), CategoriesManager.getInstance().getTopSubCategory())) {
+		if (LandmarkManager.getInstance().hasRecommendedCategory(CategoriesManager.getInstance().getTopCategory(), CategoriesManager.getInstance().getTopSubCategory())) {
 			add(new NavigationDrawerListItem(names[7], R.id.showDoD));
 		}
 		add(new NavigationDrawerListItem(names[8], R.id.events));

@@ -26,7 +26,6 @@ public class DialogManager {
     private Activity activity;
     private AlertDialogBuilder dialogBuilder;
     private IntentsHelper intents;
-    private LandmarkManager landmarkManager;
     private Handler loadingHandler;
 
     private DialogInterface.OnClickListener exitListener = new DialogInterface.OnClickListener() {
@@ -85,7 +84,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
-            ExtendedLandmark selectedLandmark = landmarkManager.getSelectedLandmark();
+            ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getSelectedLandmark();
             intents.startSendMessageIntent(id, selectedLandmark);
         }
     };
@@ -94,7 +93,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             //add to favorites database
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            CheckinManager.getInstance().checkinAction(true, false, landmarkManager.getSeletedLandmarkUI());
+            CheckinManager.getInstance().checkinAction(true, false, LandmarkManager.getInstance().getSeletedLandmarkUI());
         }
     };
     private DialogInterface.OnClickListener checkinManualListener = new DialogInterface.OnClickListener() {
@@ -102,7 +101,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             //don't add to favorites database
         	ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-        	CheckinManager.getInstance().checkinAction(false, false, landmarkManager.getSeletedLandmarkUI());
+        	CheckinManager.getInstance().checkinAction(false, false, LandmarkManager.getInstance().getSeletedLandmarkUI());
         }
     };
     private DialogInterface.OnClickListener rateUsListener = new DialogInterface.OnClickListener() {
@@ -133,17 +132,16 @@ public class DialogManager {
     };
    
     public DialogManager(Activity activity, IntentsHelper intents, AsyncTaskManager asyncTaskManager,
-            LandmarkManager landmarkManager, DialogInterface.OnClickListener trackMyPosListener) {
+            DialogInterface.OnClickListener trackMyPosListener) {
         this.activity = activity;
         this.intents = intents;
-        this.landmarkManager = landmarkManager;
         this.trackMyPosListener = trackMyPosListener;
         dialogBuilder = new AlertDialogBuilder(activity, new DialogHandler(asyncTaskManager));
     }
     
     public DialogManager(Activity activity, IntentsHelper intents, AsyncTaskManager asyncTaskManager,
-            LandmarkManager landmarkManager, Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
-        this(activity, intents, asyncTaskManager, landmarkManager, trackMyPosListener);
+            Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
+        this(activity, intents, asyncTaskManager, trackMyPosListener);
         this.loadingHandler = loadingHandler;
     }
 
@@ -196,7 +194,7 @@ public class DialogManager {
                 	if (message != null && message.toString().equals("dod") && ConfigurationManager.getInstance().containsObject("dod", ExtendedLandmark.class)) {
                 		l = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class); 
                 	} else {
-                		l = landmarkManager.getSeletedLandmarkUI();
+                		l = LandmarkManager.getInstance().getSeletedLandmarkUI();
                 	}
                 	final ExtendedLandmark landmark = l;
                 	alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, new DialogInterface.OnClickListener() {

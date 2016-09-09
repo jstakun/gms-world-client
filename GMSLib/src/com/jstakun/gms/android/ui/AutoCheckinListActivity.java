@@ -40,7 +40,7 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
         favourites = getIntent().getParcelableArrayListExtra("favourites");
 
-        intents = new IntentsHelper(this, null, null);
+        intents = new IntentsHelper(this, null);
 
         if (favourites != null) {
 

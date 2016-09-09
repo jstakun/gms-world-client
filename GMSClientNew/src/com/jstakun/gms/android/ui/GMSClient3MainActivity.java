@@ -84,8 +84,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
 	
-	private LandmarkManager landmarkManager;
-    private AsyncTaskManager asyncTaskManager;
+	private AsyncTaskManager asyncTaskManager;
     private IntentsHelper intents;
     private DialogManager dialogManager;
     
@@ -204,30 +203,23 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	
         appInitialized = false;
         
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        if (landmarkManager == null) {
-            LoggerUtils.debug("Creating LandmarkManager...");
-            landmarkManager = new LandmarkManager();
-            ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-        } 
-        
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Creating AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
+            asyncTaskManager = new AsyncTaskManager(this);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }
 
-        intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
+        intents = new IntentsHelper(this, asyncTaskManager);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
         	LoggerUtils.debug("Loading deal categories...");
             asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, loadingHandler, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager, loadingHandler, trackMyPosListener);
 
         LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
             
@@ -266,9 +258,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             if (coordsE6 != null) {
             	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
             }
-        } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
+        } else if (LandmarkManager.getInstance().getSeletedLandmarkUI() != null) {
             getSupportActionBar().hide();
-            ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
+            ExtendedLandmark landmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
             intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
@@ -497,7 +489,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     @Override
 	public void onClick(View v) {		
     	if (ConfigurationManager.getUserManager().isUserAllowedAction() || v == lvCloseButton) {
-    		final ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+    		final ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
         	if (selectedLandmark != null) {
         		if (v == lvCloseButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", selectedLandmark.getLayer(), 0);
@@ -576,7 +568,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 } else {
                 	pickPositionAction(new LatLng(lat, lng), true, true);
                 }
-                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
+                LandmarkManager.getInstance().addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
@@ -614,13 +606,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 int id = Integer.parseInt(ids);
                 if (action.equals("load")) {
-                    ExtendedLandmark l = landmarkManager.getPhoneLandmark(id);
+                    ExtendedLandmark l = LandmarkManager.getInstance().getPhoneLandmark(id);
                     if (l != null) {
                         pickPositionAction(new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude()), true, true);
                     }
                 } else if (action.equals("delete")) {
                     //delete landmark
-                    landmarkManager.deletePhoneLandmark(id);
+                	LandmarkManager.getInstance().deletePhoneLandmark(id);
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
@@ -839,7 +831,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		    		break;
 				case R.id.blogeo:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-		        		if (landmarkManager.hasMyLocation()) {
+		        		if (LandmarkManager.getInstance().hasMyLocation()) {
 		        			intents.startBlogeoActivity();
 		        		} else {
 		            		intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -941,8 +933,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     		//System.out.println("4.1 --------------------------------");
         	loadingProgressBar.setProgress(75);
         	    	
-        	if (!landmarkManager.isInitialized()) {
-        		landmarkManager.initialize();
+        	if (!LandmarkManager.getInstance().isInitialized()) {
+        		LandmarkManager.getInstance().initialize();
             }
             
         	MessageStack.getInstance().setHandler(loadingHandler);
@@ -988,9 +980,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private void hideLandmarkView() {
     	lvView.setVisibility(View.GONE);
 		getSupportActionBar().show();
-		landmarkManager.clearLandmarkOnFocusQueue();
-		landmarkManager.setSelectedLandmark(null);
-		landmarkManager.setSeletedLandmarkUI();
+		LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
+		LandmarkManager.getInstance().setSelectedLandmark(null);
+		LandmarkManager.getInstance().setSeletedLandmarkUI();
     }
 	
 	private void animateTo(LatLng newLocation) {
@@ -1011,7 +1003,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             if (LayerLoader.getInstance().isLoading()) {
             	LayerLoader.getInstance().stopLoading();
             }
-            List<ExtendedLandmark> myPosV = landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER);
+            List<ExtendedLandmark> myPosV = LandmarkManager.getInstance().getUnmodifableLayer(Commons.MY_POSITION_LAYER);
             if (!myPosV.isEmpty()) {
                 ExtendedLandmark landmark = myPosV.get(0);
                 if (projection.isVisible(landmark.getLatitudeE6(), landmark.getLongitudeE6())) {
@@ -1041,14 +1033,14 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	
 	private double[] getMyPosition() {
 		if (mMap != null) {
-			return landmarkManager.getMyLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+			return LandmarkManager.getInstance().getMyLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
 		} else {
 			LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
             if (mapCenter != null) {
-            	return landmarkManager.getMyLocation(mapCenter.latitude, mapCenter.longitude);
+            	return LandmarkManager.getInstance().getMyLocation(mapCenter.latitude, mapCenter.longitude);
             } else {
             	ExtendedLandmark l = ConfigurationManager.getInstance().getDefaultCoordinate();
-            	return landmarkManager.getMyLocation(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
+            	return LandmarkManager.getInstance().getMyLocation(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
             }
 		}  
     }
@@ -1056,7 +1048,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     private void clearMapAction() {
     	mMap.clear();
     	markerCluster.clearMarkers();
-    	landmarkManager.clearLandmarkStore();
+    	LandmarkManager.getInstance().clearLandmarkStore();
     	RoutesManager.getInstance().clearRoutesStore();
         intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
     }
@@ -1114,7 +1106,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     		getSupportActionBar().show();
     	}
     	
-	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, landmarkManager, this.getResources().getDisplayMetrics());	
+	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, this.getResources().getDisplayMetrics());	
 	    markerCluster.loadAllMarkers();
 	    
 	    routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
@@ -1151,7 +1143,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     					loadingTime = l.longValue();
     				}
     				int version = OsUtil.getSdkVersion();
-    				int numOfLandmarks = landmarkManager.getAllLayersSize();
+    				int numOfLandmarks = LandmarkManager.getInstance().getAllLayersSize();
     				int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
     				String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
     			
