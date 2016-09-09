@@ -3,7 +3,6 @@ package com.jstakun.gms.android.osm.maps;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.Overlay;
@@ -45,7 +44,7 @@ public class OsmRoutesOverlay extends Overlay {
     public OsmRoutesOverlay(MapView mapView, Context context, String routeName) {
         super(context);
         this.routeName = routeName;
-        isCurrentlyRecording = StringUtils.startsWith(routeName, RouteRecorder.CURRENTLY_RECORDED);
+        isCurrentlyRecording = routeName.equals(RouteRecorder.CURRENTLY_RECORDED);
         if (!isCurrentlyRecording && RoutesManager.getInstance().containsRoute(routeName)) {
             List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
             routeSize = routePoints.size();

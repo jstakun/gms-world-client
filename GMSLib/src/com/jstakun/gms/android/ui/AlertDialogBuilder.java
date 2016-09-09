@@ -3,7 +3,6 @@ package com.jstakun.gms.android.ui;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 
 import android.app.Activity;

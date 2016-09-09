@@ -66,15 +66,15 @@ public class LandmarkManager {
     private static final int COLOR_DODGER_BLUE = Color.argb(128, 30, 144, 255); //Dodger Blue
     private static final int COLOR_YELLOW = Color.argb(128, 255, 215, 0); //yellow
     
-    private Map<String, List<ExtendedLandmark>> landmarkStore = new ConcurrentHashMap<String, List<ExtendedLandmark>>();
-    private LandmarkPaintManager landmarkPaintManager = null;
-    private ExtendedLandmark selectedLandmarkUI = null; //landmark selected by user in UI
-    private int LAYER_LIMIT, TOTAL_LIMIT;
-    private ObjectPool pointsPool;
-    private boolean initialized = false;
+    private static Map<String, List<ExtendedLandmark>> landmarkStore = new ConcurrentHashMap<String, List<ExtendedLandmark>>();
+    private static LandmarkPaintManager landmarkPaintManager = new LandmarkPaintManager();
+    private static ExtendedLandmark selectedLandmarkUI = null; //landmark selected by user in UI
+    private static int LAYER_LIMIT, TOTAL_LIMIT;
+    private static ObjectPool pointsPool;
+    private static boolean initialized = false;
 
     public LandmarkManager() {
-        landmarkPaintManager = new LandmarkPaintManager();
+        
         LAYER_LIMIT = ConfigurationManager.getInstance().getInt(ConfigurationManager.LAYER_PAINT_LIMIT, 30);
         if (OsUtil.isIceCreamSandwichOrHigher()) {
             LAYER_LIMIT = 2 * LAYER_LIMIT;

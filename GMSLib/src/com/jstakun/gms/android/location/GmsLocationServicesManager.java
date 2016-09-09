@@ -6,12 +6,10 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.routes.RouteRecorder;
 
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 
 public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCallbacks,
 												   GoogleApiClient.OnConnectionFailedListener,

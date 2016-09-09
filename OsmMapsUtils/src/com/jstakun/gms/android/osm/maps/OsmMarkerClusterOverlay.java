@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.lang.StringUtils;
 import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer;
 import org.osmdroid.bonuspack.clustering.StaticCluster;
 import org.osmdroid.bonuspack.overlays.Marker;
@@ -162,11 +161,11 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
         	if (landmark.getCategoryId() != -1) {
             	int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
             	frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
-        	} else if (!StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
+        	} else if (!landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
            		//doesn't work with local layer
         		BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
            		frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, displayMetrics);
-        	} else if (StringUtils.equals(landmark.getLayer(), Commons.LOCAL_LAYER)) {
+        	} else if (landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
         		frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
         	}
         		

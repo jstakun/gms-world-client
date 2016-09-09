@@ -22,7 +22,6 @@ import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -44,7 +43,7 @@ public class AmzRoutesOverlay extends Overlay {
 
     public AmzRoutesOverlay(Context context, String routeName) {
         this.routeName = routeName;
-        isCurrentlyRecording = StringUtils.startsWith(routeName, RouteRecorder.CURRENTLY_RECORDED);
+        isCurrentlyRecording = routeName.startsWith(RouteRecorder.CURRENTLY_RECORDED);
         if (!isCurrentlyRecording && RoutesManager.getInstance().containsRoute(routeName)) {
             routePoints = RoutesManager.getInstance().getRoute(routeName);
             routeSize = routePoints.size();
