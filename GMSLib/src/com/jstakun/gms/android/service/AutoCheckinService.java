@@ -1,14 +1,12 @@
 package com.jstakun.gms.android.service;
 
+import com.jstakun.gms.android.ui.CheckinManager;
+import com.jstakun.gms.android.utils.LoggerUtils;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.ui.AsyncTaskManager;
-import com.jstakun.gms.android.ui.CheckinManager;
-import com.jstakun.gms.android.utils.LoggerUtils;
 
 public class AutoCheckinService extends Service {
 
@@ -24,17 +22,12 @@ public class AutoCheckinService extends Service {
 		
         LoggerUtils.debug("AutoCheckinService.doReceive() Running at " + lat + "," + lng);
         
-        //if (!Double.isNaN(lat) && !Double.isNaN(lng) && 
-        //		(Double.isNaN(lastExecutedLat) || MathUtils.abs(lat-lastExecutedLat) > 0.01 ||
-        //		Double.isNaN(lastExecutedLng) || MathUtils.abs(lng-lastExecutedLng) > 0.01)) {
-        
         if (!Double.isNaN(lat) && !Double.isNaN(lng)) {               
             boolean silent = false;
-            AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class); 		
-            if (asyncTaskManager == null) {
-            	asyncTaskManager = new AsyncTaskManager(null);
-            	silent = true; 
-            }
+            //TODO verify this
+            //if (AsyncTaskManager == null) {
+            //	silent = true; 
+            //}
         	int checkinCount = CheckinManager.getInstance().autoCheckin(lat, lng, silent); //set silent to true if running in background
         	//lastExecutedLat = lat;
         	//lastExecutedLng = lng;

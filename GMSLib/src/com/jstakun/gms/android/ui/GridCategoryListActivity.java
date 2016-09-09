@@ -59,7 +59,7 @@ public class GridCategoryListActivity extends Activity {
         
         UserTracker.getInstance().trackActivity(getClass().getName());
         
-        intents = new IntentsHelper(this, null);
+        intents = new IntentsHelper(this);
         
         gridView = (GridView) findViewById(R.id.layers_grid_view);
         

@@ -38,7 +38,7 @@ public class SendBlogeoPostActivity extends Activity implements OnClickListener 
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        intents = new IntentsHelper(this, null);
+        intents = new IntentsHelper(this);
 
         initComponents();
     }

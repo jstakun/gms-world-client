@@ -116,10 +116,7 @@ public class UserTracker {
             if (ConfigurationManager.getInstance().getLocation() != null) {
                 if (!dryRun) {
                     try {
-                    	AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-                 		if (asyncTaskManager != null) {
-                 			errorMessage = asyncTaskManager.sendMyPos();
-                 		}
+                    	errorMessage = AsyncTaskManager.getInstance().sendMyPos();
                     } catch (Exception e) {
                         LoggerUtils.error("UserTracker.sendMyPos() exception: ", e);
                     }

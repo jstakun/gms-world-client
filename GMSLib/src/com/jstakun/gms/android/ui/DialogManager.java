@@ -1,7 +1,5 @@
 package com.jstakun.gms.android.ui;
 
-import java.lang.ref.WeakReference;
-
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -46,14 +44,7 @@ public class DialogManager {
             dialog.cancel();
         }
     };
-    /*private DialogInterface.OnClickListener saveRouteListener = new DialogInterface.OnClickListener() {
-
-        public void onClick(DialogInterface dialog, int id) {
-        	ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            dialog.cancel();
-            asyncTaskManager.executeSaveRouteTask(activity.getString(R.string.saveRoute));
-        }
-    };*/
+    
     private DialogInterface.OnClickListener packetDataListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int id) {
@@ -131,17 +122,16 @@ public class DialogManager {
         }
     };
    
-    public DialogManager(Activity activity, IntentsHelper intents, AsyncTaskManager asyncTaskManager,
-            DialogInterface.OnClickListener trackMyPosListener) {
+    public DialogManager(Activity activity, IntentsHelper intents, DialogInterface.OnClickListener trackMyPosListener) {
         this.activity = activity;
         this.intents = intents;
         this.trackMyPosListener = trackMyPosListener;
-        dialogBuilder = new AlertDialogBuilder(activity, new DialogHandler(asyncTaskManager));
+        dialogBuilder = new AlertDialogBuilder(activity, new DialogHandler());
     }
     
-    public DialogManager(Activity activity, IntentsHelper intents, AsyncTaskManager asyncTaskManager,
+    public DialogManager(Activity activity, IntentsHelper intents, 
             Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
-        this(activity, intents, asyncTaskManager, trackMyPosListener);
+        this(activity, intents, trackMyPosListener);
         this.loadingHandler = loadingHandler;
     }
 
@@ -228,16 +218,10 @@ public class DialogManager {
     
     private static class DialogHandler extends Handler {
     	
-    	private WeakReference<AsyncTaskManager> asyncTaskManager;
-    	
-    	public DialogHandler(AsyncTaskManager asyncTaskManager) {
-    		this.asyncTaskManager = new WeakReference<AsyncTaskManager>(asyncTaskManager);
-    	}
-    	
     	@Override
         public void handleMessage(Message msg) {
     		if (msg.what == AlertDialogBuilder.SAVE_ROUTE_DIALOG) {
-    			asyncTaskManager.get().executeSaveRouteTask((String)msg.obj);
+    			AsyncTaskManager.getInstance().executeSaveRouteTask((String)msg.obj);
     		}
     	}
     }

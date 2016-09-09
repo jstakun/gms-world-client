@@ -1,17 +1,16 @@
 package com.jstakun.gms.android.ui;
 
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *
@@ -34,7 +33,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        intents = new IntentsHelper(this, null);
+        intents = new IntentsHelper(this);
 
         initComponents();
     }
@@ -60,13 +59,8 @@ public class LoginActivity extends Activity implements OnClickListener {
         if (v == loginButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".LoginAction", "", 0);
             if (loginText.getText().length() > 0 && passwordText.getText().length() > 0) {
-                AsyncTaskManager asyncTaskManager = ConfigurationManager.getInstance().getTaskManager();
-                if (asyncTaskManager != null) {
-                	asyncTaskManager.executeLoginTask(loginText.getText().toString(), passwordText.getText().toString());
-                	finish();
-                } else {
-                	intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
-                }
+            	AsyncTaskManager.getInstance().executeLoginTask(loginText.getText().toString(), passwordText.getText().toString());
+                finish();            
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Empty_credentials_error));
             }

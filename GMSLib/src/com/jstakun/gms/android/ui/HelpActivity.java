@@ -66,7 +66,7 @@ public final class HelpActivity extends Activity {
         
         webviewHolder = (LinearLayout) findViewById(R.id.webviewHolder);
 
-        intents = new IntentsHelper(this, null);
+        intents = new IntentsHelper(this);
         // Froyo has a bug with calling onCreate() twice in a row, which causes the What's New page
         // that's auto-loaded on first run to appear blank. As a workaround we only call restoreState()
         // if a valid URL was loaded at the time the previous activity was torn down.

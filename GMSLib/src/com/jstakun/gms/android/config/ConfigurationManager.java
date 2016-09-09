@@ -24,7 +24,6 @@ import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
-import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.Locale;
@@ -314,15 +313,6 @@ public final class ConfigurationManager {
         putObject(CONTEXT, c);
     }
 
-    //TODO remove them all
-    
-    public AsyncTaskManager getTaskManager() {
-        if (containsObject("asyncTaskManager", AsyncTaskManager.class)) {
-            return (AsyncTaskManager) objectCache.get("asyncTaskManager");
-        }
-        return null;
-    }
-    
     //server urls
 
     public String getSecuredRHCloudUrl() {

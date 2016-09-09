@@ -63,7 +63,7 @@ public class FilesActivity extends AbstractLandmarkList {
             files = extras.getParcelableArrayList("files");
             type = extras.getInt("type");
 
-            intents = new IntentsHelper(this, null);
+            intents = new IntentsHelper(this);
 
             String directory = PersistenceManagerFactory.getFileManager().getExternalDirectory(null, null).getAbsolutePath();
             if (directory != null) {

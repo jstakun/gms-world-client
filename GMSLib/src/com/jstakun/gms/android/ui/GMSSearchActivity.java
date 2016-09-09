@@ -79,11 +79,8 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				if (containsLayer) {
 	                intents.showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
 	            } else {
-	            	AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-	            	if (asyncTaskManager != null) {
-	                	asyncTaskManager.executeIndexDynamicLayer(name, new String[]{name});
-	                }         
-	            	intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
+	            	AsyncTaskManager.getInstance().executeIndexDynamicLayer(name, new String[]{name});
+	                intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
 	            }	
 			}
 			callSearchTask();
@@ -109,7 +106,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 		alertBuilder = new AlertDialogBuilder(this, null);
 
-		intents = new IntentsHelper(this, null);
+		intents = new IntentsHelper(this);
 
 		local = false;
 

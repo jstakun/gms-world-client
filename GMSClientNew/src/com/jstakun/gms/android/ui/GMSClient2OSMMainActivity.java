@@ -77,7 +77,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     private static final int SHOW_MAP_VIEW = 0;
     
-    private AsyncTaskManager asyncTaskManager;
     private IntentsHelper intents;
     private DialogManager dialogManager;
     
@@ -252,23 +251,16 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         appInitialized = false;
         
-        asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-        if (asyncTaskManager == null) {
-            LoggerUtils.debug("Creating AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this);
-            ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
-            //check if newer version available
-            asyncTaskManager.executeNewVersionCheckTask();
-        }
-
-        intents = new IntentsHelper(this, asyncTaskManager);
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
+        
+        intents = new IntentsHelper(this);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
         	LoggerUtils.debug("Loading deal categories...");
-            asyncTaskManager.executeDealCategoryLoaderTask(true);
+        	AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, loadingHandler, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, loadingHandler, trackMyPosListener);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
@@ -296,7 +288,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         OsmMapsTypeSelector.selectMapType(mapView, this);
 
-        asyncTaskManager.setActivity(this);
+        AsyncTaskManager.getInstance().setActivity(this);
         
         //check if myloc is available
         if (LandmarkManager.getInstance().hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
@@ -304,7 +296,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
         
         //verify access token
-        asyncTaskManager.executeGetTokenTask();
+        AsyncTaskManager.getInstance().executeGetTokenTask();
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
@@ -539,7 +531,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             if (delete) {
                 Integer taskId = extras.getInt("notification");
                 //System.out.println("onNewIntent " + taskId + "----------------------------------");
-                asyncTaskManager.cancelTask(taskId, true);
+                AsyncTaskManager.getInstance().cancelTask(taskId, true);
             }
         }
     }
@@ -795,7 +787,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		}
 		    		break;
 		    	case R.id.shareScreenshot:
-		    		asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+		    		AsyncTaskManager.getInstance().executeImageUploadTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
 		                MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), true);
 		    		break;    
 		    	case R.id.reset:
@@ -1218,7 +1210,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             		} 
             		activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-            		activity.asyncTaskManager.executeImageUploadTask(activity.mapView.getMapCenter().getLatitude(), activity.mapView.getMapCenter().getLongitude(), false);
+            		AsyncTaskManager.getInstance().executeImageUploadTask(activity.mapView.getMapCenter().getLatitude(), activity.mapView.getMapCenter().getLongitude(), false);
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
             	} else if (msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {

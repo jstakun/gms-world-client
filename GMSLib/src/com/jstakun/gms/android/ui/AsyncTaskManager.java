@@ -53,23 +53,23 @@ import com.jstakun.gms.android.utils.StringUtil;
 public class AsyncTaskManager {
 
     public static final int SHOW_ROUTE_MESSAGE = 30;
-    //private static final double BLACK_FACTOR = 0.75;
-    private Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress;
+    private static Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress = new ConcurrentHashMap<Integer, GMSAsyncTask<?,?,?>>();
     private GMSNotificationManager notificationManager;
     private IntentsHelper intents;
     private Activity activity;
-
-    public AsyncTaskManager(Activity context) {
-        tasksInProgress = new ConcurrentHashMap<Integer, GMSAsyncTask<?,?,?>>();
-        if (context != null) {
-            notificationManager = new GMSNotificationManager(context);
-            setActivity(context);
-            intents = new IntentsHelper(context, null);
-        }
+    private static final AsyncTaskManager instance = new AsyncTaskManager();
+    
+    private AsyncTaskManager() {
     }
-
+    
+    public static AsyncTaskManager getInstance() {
+    	return instance;
+    }
+    
     public final void setActivity(Activity context) {
         this.activity = context;
+        this.notificationManager = new GMSNotificationManager(context);
+        intents = new IntentsHelper(context);
     }
 
     public void cancelTask(Integer taskId, boolean notify) {
@@ -901,7 +901,7 @@ public class AsyncTaskManager {
         protected void onPostExecute(Boolean status) {
             if (status) {
                 try {
-                    DialogManager dialogManager = new DialogManager((Activity)activity, intents, null, null, null);
+                    DialogManager dialogManager = new DialogManager((Activity)activity, intents, null, null);
                     dialogManager.showAlertDialog(AlertDialogBuilder.NEW_VERSION_DIALOG, null, null);
                 } catch (Throwable e) {
                     LoggerUtils.error("NewVersionCheckTask.onPostExceute() exception:", e);

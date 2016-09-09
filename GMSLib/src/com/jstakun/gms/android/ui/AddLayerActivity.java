@@ -30,7 +30,6 @@ public class AddLayerActivity extends Activity implements OnClickListener {
     private IntentsHelper intents = null;
     private String name;
     private static final String NAME = "name";
-    private AsyncTaskManager asyncTaskManager;
     
 
     @Override
@@ -43,8 +42,6 @@ public class AddLayerActivity extends Activity implements OnClickListener {
 
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
-
-        asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
 
         //Object retained = getLastNonConfigurationInstance();
         //if (retained instanceof String) {
@@ -94,7 +91,7 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         keywordsText = (EditText) findViewById(R.id.keywordsText);
         nameText = (EditText) findViewById(R.id.nameText);
 
-        intents = new IntentsHelper(this, null);
+        intents = new IntentsHelper(this);
 
         AdsUtils.loadAd(this);
 
@@ -173,9 +170,7 @@ public class AddLayerActivity extends Activity implements OnClickListener {
             if (containsLayer) {
                 intents.showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
             } else {
-            	if (asyncTaskManager != null) {
-                	asyncTaskManager.executeIndexDynamicLayer(name, keywordsList.toArray(new String[keywordsList.size()]));
-                }         
+            	AsyncTaskManager.getInstance().executeIndexDynamicLayer(name, keywordsList.toArray(new String[keywordsList.size()]));
                 intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
                 //new AddLayerTask(this, name, keywordsList.toArray(new String[keywordsList.size()])).execute();
             	finish();

@@ -107,7 +107,6 @@ public final class IntentsHelper {
     public static final String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
     
     private Activity activity;
-    private AsyncTaskManager asyncTaskManager;
     private List<ResolveInfo> activities;
     private static Toast longToast, shortToast;
     private static final Object shortMutex = new Object();
@@ -129,9 +128,8 @@ public final class IntentsHelper {
         }
     };
 
-    public IntentsHelper(Activity activity, AsyncTaskManager asyncTaskManager) {
+    public IntentsHelper(Activity activity) {
         this.activity = activity;
-        this.asyncTaskManager = asyncTaskManager;
     }
 
     public void startPickLocationActivity() {
@@ -547,14 +545,6 @@ public final class IntentsHelper {
         }
     }
 
-    /*public void saveRouteAction() {
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            asyncTaskManager.executeSaveRouteTask();
-        } else if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
-            showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosStopped));
-        }
-    }*/
-
     public List<ResolveInfo> getSendIntentsList() {
         final Intent sendIntent = new Intent(android.content.Intent.ACTION_SEND, null);
 
@@ -723,7 +713,7 @@ public final class IntentsHelper {
     	} else {
     		silent = false;
     	}
-    	asyncTaskManager.executeRouteServerLoadingTask(showRouteHandler, silent, selectedLandmark);
+    	AsyncTaskManager.getInstance().executeRouteServerLoadingTask(showRouteHandler, silent, selectedLandmark);
     }
     
     public boolean startStreetViewActivity(ExtendedLandmark selectedLandmark) {
@@ -1282,7 +1272,7 @@ public final class IntentsHelper {
                 
                 if (intent.getBooleanExtra("reindex", false)) {
                 	//reindex dynamic layers
-                	asyncTaskManager.executeReIndexDynamicLayersTask();                	
+                	AsyncTaskManager.getInstance().executeReIndexDynamicLayersTask();                	
                 }
             }
             
@@ -1293,7 +1283,7 @@ public final class IntentsHelper {
                 String layer = intent.getStringExtra("layer");
                 String fsCategory = intent.getStringExtra("fsCategory"); 
                 boolean addVenue = intent.getBooleanExtra("addVenue", false);
-                asyncTaskManager.executeAddLandmarkTask(name, desc, layer, activity.getString(R.string.addLandmark), mapCenter[0], mapCenter[1], addVenue, fsCategory);
+                AsyncTaskManager.getInstance().executeAddLandmarkTask(name, desc, layer, activity.getString(R.string.addLandmark), mapCenter[0], mapCenter[1], addVenue, fsCategory);
             }
         } else if (requestCode == INTENT_BLOGEO_POST) {
             if (resultCode == Activity.RESULT_OK) {
@@ -1307,7 +1297,7 @@ public final class IntentsHelper {
                     if (validityDate < DateTimeUtils.FIVE_MINUTES) {
                         validityDate = DateTimeUtils.FIVE_MINUTES;
                     }
-                    asyncTaskManager.executeSendBlogeoPostTask(name, desc, Long.toString(validityDate), activity.getString(R.string.blogeo));
+                    AsyncTaskManager.getInstance().executeSendBlogeoPostTask(name, desc, Long.toString(validityDate), activity.getString(R.string.blogeo));
                 }
             }
         } else if (requestCode == IntentsHelper.INTENT_FILES) {
@@ -1317,9 +1307,9 @@ public final class IntentsHelper {
                 String filename = intent.getStringExtra("filename");
                 if (action.equals("load")) {
                     if (type == FilesActivity.ROUTES) {
-                        asyncTaskManager.executeRouteLoadingTask(filename, uiHandler);
+                    	AsyncTaskManager.getInstance().executeRouteLoadingTask(filename, uiHandler);
                     } else if (type == FilesActivity.FILES) {
-                        asyncTaskManager.executePoiFileLoadingTask(filename, uiHandler);
+                    	AsyncTaskManager.getInstance().executePoiFileLoadingTask(filename, uiHandler);
                     }
                 }
             }
@@ -1327,7 +1317,7 @@ public final class IntentsHelper {
             if (resultCode == Activity.RESULT_OK) {
                 String checkinLandmarkCode = intent.getStringExtra("SCAN_RESULT");
                 String qrformat = intent.getStringExtra("SCAN_RESULT_FORMAT");
-                asyncTaskManager.executeQrCodeCheckInTask(checkinLandmarkCode, qrformat, activity.getString(R.string.qrcheckin));
+                AsyncTaskManager.getInstance().executeQrCodeCheckInTask(checkinLandmarkCode, qrformat, activity.getString(R.string.qrcheckin));
             }
         } else if (requestCode == IntentsHelper.INTENT_CHECKIN) {
             if (resultCode == Activity.RESULT_OK) {
@@ -1340,7 +1330,7 @@ public final class IntentsHelper {
                     if (selectedLandmark != null) {
                         String key = StringUtil.getKeyFromUrl(selectedLandmark.getUrl());
                         if (key != null) {
-                            asyncTaskManager.executeLocationCheckInTask(-1, key, activity.getString(R.string.searchcheckin), name, false, null);
+                        	AsyncTaskManager.getInstance().executeLocationCheckInTask(-1, key, activity.getString(R.string.searchcheckin), name, false, null);
                         } else {
                             showInfoToast(Locale.getMessage(R.string.Social_checkin_failure, "landmark key is empty"));
                         }
@@ -1405,7 +1395,7 @@ public final class IntentsHelper {
 
         IconCache.getInstance().clearAll();
         LandmarkManager.getInstance().clearLandmarkStore();
-        asyncTaskManager.cancelAll();
+        AsyncTaskManager.getInstance().cancelAll();
         
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
             RouteRecorder.getInstance().onAppClose();

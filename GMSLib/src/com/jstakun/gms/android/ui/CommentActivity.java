@@ -1,17 +1,16 @@
 package com.jstakun.gms.android.ui;
 
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.UserTracker;
 
 /**
  *
@@ -38,7 +37,7 @@ public class CommentActivity extends Activity implements OnClickListener {
             //UserTracker.getInstance().startSession(this);
             UserTracker.getInstance().trackActivity(getClass().getName());
 
-            intents = new IntentsHelper(this, null);
+            intents = new IntentsHelper(this);
 
             service = extras.getString("service");
             placeId = extras.getString("placeId");
@@ -65,8 +64,7 @@ public class CommentActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
         if (v == commentButton) {
             if (commentText.getText().length() >= 10) {
-                AsyncTaskManager asyncTaskManager = ConfigurationManager.getInstance().getTaskManager();
-                asyncTaskManager.executeSendCommentTask(service, placeId, commentText.getText().toString(), name);
+            	AsyncTaskManager.getInstance().executeSendCommentTask(service, placeId, commentText.getText().toString(), name);
                 finish();
             } else {
                 intents.showInfoToast(Locale.getMessage(R.string.Comment_empty_error));

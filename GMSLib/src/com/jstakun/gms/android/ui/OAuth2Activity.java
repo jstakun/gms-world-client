@@ -66,7 +66,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 
 		UserTracker.getInstance().trackActivity(getClass().getName());
 
-		intents = new IntentsHelper(this, null);
+		intents = new IntentsHelper(this);
 
 		webView = (WebView) findViewById(R.id.webview);
 		rl = findViewById(R.id.loadingWebView);

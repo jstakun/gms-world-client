@@ -84,8 +84,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
 	
-	private AsyncTaskManager asyncTaskManager;
-    private IntentsHelper intents;
+	private IntentsHelper intents;
     private DialogManager dialogManager;
     
     private GoogleLandmarkProjectionV2 projection;
@@ -203,23 +202,16 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	
         appInitialized = false;
         
-        asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-        if (asyncTaskManager == null) {
-            LoggerUtils.debug("Creating AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this);
-            ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
-            //check if newer version available
-            asyncTaskManager.executeNewVersionCheckTask();
-        }
-
-        intents = new IntentsHelper(this, asyncTaskManager);
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
+        
+        intents = new IntentsHelper(this);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
         	LoggerUtils.debug("Loading deal categories...");
-            asyncTaskManager.executeDealCategoryLoaderTask(true);
+            AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, loadingHandler, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, loadingHandler, trackMyPosListener);
 
         LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
             
@@ -247,10 +239,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         LoggerUtils.debug("onResume");
         GmsLocationServicesManager.getInstance().enable(loadingHandler);
         
-        asyncTaskManager.setActivity(this);
+        AsyncTaskManager.getInstance().setActivity(this);
         
         //verify access token
-        asyncTaskManager.executeGetTokenTask();
+        AsyncTaskManager.getInstance().executeGetTokenTask();
 
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
@@ -383,7 +375,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             if (delete) {
                 Integer taskId = extras.getInt("notification");
                 //System.out.println("onNewIntent " + taskId + "----------------------------------");
-                asyncTaskManager.cancelTask(taskId, true);
+                AsyncTaskManager.getInstance().cancelTask(taskId, true);
             }
         }
     }
@@ -1155,7 +1147,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 	int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
                     LoggerUtils.debug("Shutter sound played with id " + id);
                 	
-					asyncTaskManager.executeImageUploadTask(out.toByteArray(), filename, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+                    AsyncTaskManager.getInstance().executeImageUploadTask(out.toByteArray(), filename, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
 				    
 					if (notify) {
 						intents.shareImageAction(uri);

@@ -57,7 +57,7 @@ public class GridLayerListActivity extends Activity {
         
         UserTracker.getInstance().trackActivity(getClass().getName());
         
-        intents = new IntentsHelper(this, null);
+        intents = new IntentsHelper(this);
         
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("mode")) {

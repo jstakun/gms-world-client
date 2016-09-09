@@ -55,10 +55,9 @@ public class RouteRecorder {
     		currentBearing = 0f;
     		RoutesManager.getInstance().addRoute(CURRENTLY_RECORDED, routePoints, null);
     	}
-    	AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-    	if (asyncTaskManager != null && notificationId == -1) {
+    	if (notificationId == -1) {
     		String msg = Locale.getMessage(R.string.Routes_Label);
-    		notificationId = Integer.parseInt(asyncTaskManager.createNotification(R.drawable.route_24, msg, msg, false));  		
+    		notificationId = Integer.parseInt(AsyncTaskManager.getInstance().createNotification(R.drawable.route_24, msg, msg, false));  		
     	} 
     	return CURRENTLY_RECORDED;
     }
@@ -72,8 +71,7 @@ public class RouteRecorder {
         RoutesManager.getInstance().removeRoute(CURRENTLY_RECORDED);
         ConfigurationManager.getInstance().setOff(ConfigurationManager.RECORDING_ROUTE);
 
-        AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-        asyncTaskManager.cancelNotification(notificationId);
+        AsyncTaskManager.getInstance().cancelNotification(notificationId);
         notificationId = -1;
         
         return filename;

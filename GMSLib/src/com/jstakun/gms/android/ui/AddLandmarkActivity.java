@@ -76,7 +76,7 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
         categories = (Spinner) findViewById(R.id.categorySpinner);
         addVenueCheckbox = (CheckBox) findViewById(R.id.fsAddVenueCheckbox);
 
-        intents = new IntentsHelper(this, null);
+        intents = new IntentsHelper(this);
 
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
             addVenueCheckbox.setVisibility(View.GONE);

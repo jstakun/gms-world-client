@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
@@ -30,7 +29,7 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	
 	public NavigationDrawerExpandableListAdapter(Activity parent) {
 		this.parentActivity = parent;
-		intents = new IntentsHelper(parent, null);
+		intents = new IntentsHelper(parent);
 		rebuild(null);
 	}
 	

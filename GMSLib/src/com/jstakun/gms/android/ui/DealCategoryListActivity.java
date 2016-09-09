@@ -61,7 +61,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        intents = new IntentsHelper(this, null);
+        intents = new IntentsHelper(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

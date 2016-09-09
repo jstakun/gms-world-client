@@ -56,7 +56,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
 
         progress = findViewById(R.id.listLoadingProgress);
 
-        intents = new IntentsHelper(this, null);
+        intents = new IntentsHelper(this);
 
         Intent intent = getIntent();
         requestCode = intent.getIntExtra("requestCode", -1);
@@ -152,7 +152,6 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         	int hashCode = getLandmarksTask.getLandmarks().get(currentPos).hashCode();
         	ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().findLandmarkById(hashCode);
         	if (selectedLandmark != null) {
-        		AsyncTaskManager asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         		boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
         		CheckinManager.getInstance().checkinAction(addToFavourites, false, selectedLandmark);
         	} else {
