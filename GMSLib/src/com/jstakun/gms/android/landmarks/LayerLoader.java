@@ -159,7 +159,7 @@ public class LayerLoader {
         if (!concurrentLayerLoader.isEmpty() //|| !initialized
                 || (currentLayerIndex != -1 && !concurrentLayerLoader.isCancelled()
                 && currentLayerIndex < LayerManager.getInstance().getLayers().size())) {
-            //LoggerUtils.debug("LayerLoader.isLoading() true");
+            //LoggerUtils.debug("LayerLoader.isLoading() true " + currentLayerIndex);
             return true;
         } else {
         	//LoggerUtils.debug("LayerLoader.isLoading() false");

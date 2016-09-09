@@ -940,7 +940,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	MessageStack.getInstance().setHandler(loadingHandler);
         	LayerLoader.getInstance().setRepaintHandler(loadingHandler);
         	
-        	if (!LayerLoader.getInstance().isInitialized() || !LayerLoader.getInstance().isLoading()) {
+        	if (!LayerLoader.getInstance().isInitialized() && !LayerLoader.getInstance().isLoading()) {
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                     LoggerUtils.debug("Loading Layers in " + location.latitude + "," +  location.longitude);
                     int zoom = ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);

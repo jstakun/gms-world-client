@@ -85,7 +85,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private OsmMarkerClusterOverlay markerCluster;
     private MapView googleMapsView;
     
-    private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
     private IntentsHelper intents;
     private DialogManager dialogManager;
@@ -273,30 +272,24 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
         appInitialized = false;
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        if (landmarkManager == null) {
-            LoggerUtils.debug("Creating LandmarkManager...");
-            landmarkManager = new LandmarkManager();
-            ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-        } 
         
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Creating AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
+            asyncTaskManager = new AsyncTaskManager(this);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }
 
-        intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
+        intents = new IntentsHelper(this, asyncTaskManager);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
             asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, loadingHandler, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager, loadingHandler, trackMyPosListener);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
         	initOnLocationChanged(mapCenter, 2);
@@ -329,7 +322,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
         asyncTaskManager.setActivity(this);
        
-        if (landmarkManager != null && landmarkManager.hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        if (LandmarkManager.getInstance().hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
@@ -342,9 +335,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
-        } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
+        } else if (LandmarkManager.getInstance().getSeletedLandmarkUI() != null) {
             getActionBar().hide();
-            ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
+            ExtendedLandmark landmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
             intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
@@ -500,15 +493,15 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private void hideLandmarkView() {
     	lvView.setVisibility(View.GONE);
 		getActionBar().show();
-		landmarkManager.clearLandmarkOnFocusQueue();
-		landmarkManager.setSelectedLandmark(null);
-		landmarkManager.setSeletedLandmarkUI();
+		LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
+		LandmarkManager.getInstance().setSelectedLandmark(null);
+		LandmarkManager.getInstance().setSeletedLandmarkUI();
     }
    
     private synchronized void initOnLocationChanged(final IGeoPoint location, int source) {
     	//remove
     	//try {
-    	//	intents.showInfoToast("Setting map center to " + location.getLatitudeE6() + "," + location.getLongitudeE6() + ", source: " + source + ", lm initialized: " + landmarkManager.isInitialized());
+    	//	intents.showInfoToast("Setting map center to " + location.getLatitudeE6() + "," + location.getLongitudeE6() + ", source: " + source + ", lm initialized: " + LandmarkManager.getInstance().isInitialized());
     	//} catch (Exception e) {
     	//}
     	//
@@ -519,8 +512,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	    	
         	mapController.setCenter(location);
         	
-        	if (!landmarkManager.isInitialized()) {
-        		landmarkManager.initialize();
+        	if (!LandmarkManager.getInstance().isInitialized()) {
+        		LandmarkManager.getInstance().initialize();
             }
             
             addLandmarkOverlay();
@@ -541,7 +534,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
             LayerLoader.getInstance().setRepaintHandler(loadingHandler);
             
-            if (!LayerLoader.getInstance().isInitialized() || !LayerLoader.getInstance().isLoading()) {
+            if (!LayerLoader.getInstance().isInitialized() && !LayerLoader.getInstance().isLoading()) {
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                     LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());
                     intents.loadLayersAction(true, null, false, true, location.getLatitude(), location.getLongitude(),
@@ -751,7 +744,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		    		break;
 				case R.id.blogeo:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-		        		if (landmarkManager.hasMyLocation()) {
+		        		if (LandmarkManager.getInstance().hasMyLocation()) {
 		        			intents.startBlogeoActivity();
 		        		} else {
 		            		intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -860,7 +853,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	} else if (v == nearbyLandmarksButton) {
         		intents.startLayersListActivity(true);
         	} else {
-        		final ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+        		final ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
         		if (selectedLandmark != null) {
         			if (v == lvCloseButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", selectedLandmark.getLayer(), 0);
@@ -940,7 +933,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 } else {
                 	pickPositionAction(location, true, true);
                 }
-                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
+                LandmarkManager.getInstance().addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
@@ -973,14 +966,14 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 int id = Integer.parseInt(ids);
                 if (action.equals("load")) {
-                    ExtendedLandmark l = landmarkManager.getPhoneLandmark(id);
+                    ExtendedLandmark l = LandmarkManager.getInstance().getPhoneLandmark(id);
                     if (l != null) {
                         GeoPoint location = new GeoPoint(l.getLatitudeE6(), l.getLongitudeE6());
                         pickPositionAction(location, true, true);
                     }
                 } else if (action.equals("delete")) {
                     //delete landmark
-                    landmarkManager.deletePhoneLandmark(id);
+                    LandmarkManager.getInstance().deletePhoneLandmark(id);
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
@@ -1097,14 +1090,14 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     
     private void addLandmarkOverlay() {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-        	markerCluster = new OsmMarkerClusterOverlay(this, landmarkManager, loadingHandler);
+        	markerCluster = new OsmMarkerClusterOverlay(this, loadingHandler);
         	addOverlay(markerCluster);
         } else {
             GoogleLandmarkOverlay landmarkOverlay = null;
             if (LocationServicesManager.isGpsHardwarePresent()) {
-            	landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);
+            	landmarkOverlay = new GoogleLandmarkOverlay(loadingHandler);
             } else {
-            	landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
+            	landmarkOverlay = new GoogleLandmarkOverlay(loadingHandler, new String[]{Commons.ROUTES_LAYER});
             }
             addOverlay(landmarkOverlay);
         }
@@ -1170,7 +1163,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     private double[] getMyPosition() {
-        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude());
+        return LandmarkManager.getInstance().getMyLocation(mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude());
     }
 
     private void showRouteAction(String routeKey) {
@@ -1196,7 +1189,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             if (LayerLoader.getInstance().isLoading()) {
                 LayerLoader.getInstance().stopLoading();
             }
-            List<ExtendedLandmark> myPosV = landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER);
+            List<ExtendedLandmark> myPosV = LandmarkManager.getInstance().getUnmodifableLayer(Commons.MY_POSITION_LAYER);
             if (!myPosV.isEmpty()) {
                 ExtendedLandmark landmark = myPosV.get(0);
                 ProjectionInterface projection = ProjectionFactory.getProjection(mapView, googleMapsView);
@@ -1225,7 +1218,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     private void clearMapAction() {
-        landmarkManager.clearLandmarkStore();
+        LandmarkManager.getInstance().clearLandmarkStore();
         if (mapProvider == ConfigurationManager.OSM_MAPS && markerCluster != null) {
     		markerCluster.clearMarkers();
     	}

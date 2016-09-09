@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.ui.deals;
 
 import android.app.Dialog;
@@ -35,7 +31,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
         this.activity = activity;
         this.recommended = recommended;
 
-        intents = new IntentsHelper(activity, ConfigurationManager.getInstance().getLandmarkManager(), null);
+        intents = new IntentsHelper(activity, null);
 
         //UserTracker.getInstance().startSession(getContext());
         UserTracker.getInstance().trackActivity(getClass().getName());

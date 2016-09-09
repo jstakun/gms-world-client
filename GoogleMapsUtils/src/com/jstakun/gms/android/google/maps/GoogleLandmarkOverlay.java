@@ -22,21 +22,18 @@ public class GoogleLandmarkOverlay extends Overlay {
 
     public static final int SHOW_LANDMARK_DETAILS = 20;
     
-    private LandmarkManager lm;
     private Handler landmarkDetailsHandler;
     private int xmove, ymove;
     private boolean tapEventHandled;
     private String[] excluded;
     
-    public GoogleLandmarkOverlay(LandmarkManager lm, Handler landmarkDetailsHandler) {
+    public GoogleLandmarkOverlay(Handler landmarkDetailsHandler) {
         this.landmarkDetailsHandler = landmarkDetailsHandler;
-        this.lm = lm;
         this.excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
     }
 
-    public GoogleLandmarkOverlay(LandmarkManager lm, Handler landmarkDetailsHandler, String[] excluded) {
+    public GoogleLandmarkOverlay(Handler landmarkDetailsHandler, String[] excluded) {
         this.landmarkDetailsHandler = landmarkDetailsHandler;
-        this.lm = lm;
         this.excluded = excluded;
     }
 
@@ -44,16 +41,16 @@ public class GoogleLandmarkOverlay extends Overlay {
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
         try {
             super.draw(canvas, mapView, shadow);
-            if (shadow == false && lm != null) {
+            if (shadow == false) {
 
-                lm.paintLandmarks(canvas, new GoogleLandmarkProjection(mapView), mapView.getWidth(), mapView.getHeight(), excluded, mapView.getResources().getDisplayMetrics());
+            	LandmarkManager.getInstance().paintLandmarks(canvas, new GoogleLandmarkProjection(mapView), mapView.getWidth(), mapView.getHeight(), excluded, mapView.getResources().getDisplayMetrics());
                 
-                List<Drawable> landmarkDrawables = lm.getLandmarkDrawables();
+                List<Drawable> landmarkDrawables = LandmarkManager.getInstance().getLandmarkDrawables();
                 for (Drawable d : landmarkDrawables) {
                     d.draw(canvas);
                 }
 
-                Drawable selectedLandmark = lm.getSelectedLandmarkDrawable();
+                Drawable selectedLandmark = LandmarkManager.getInstance().getSelectedLandmarkDrawable();
                 if (selectedLandmark != null) {
                     selectedLandmark.draw(canvas);
                 }
@@ -88,7 +85,7 @@ public class GoogleLandmarkOverlay extends Overlay {
             if (movex == 0 && movey == 0) {
                 tapEventHandled = true;
                 ProjectionInterface projection = new GoogleLandmarkProjection(mapView);
-                if (lm.findLandmarksInRadius(x, y, projection, true, mapView.getResources().getDisplayMetrics())) {
+                if (LandmarkManager.getInstance().findLandmarksInRadius(x, y, projection, true, mapView.getResources().getDisplayMetrics())) {
                     landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
                 }
             }
@@ -104,7 +101,7 @@ public class GoogleLandmarkOverlay extends Overlay {
             ProjectionInterface projection = new GoogleLandmarkProjection(mapView);
             Point point = new Point();
             projection.toPixels(p.getLatitudeE6(), p.getLongitudeE6(), point);
-            if (lm.findLandmarksInRadius(point.x, point.y, projection, true, mapView.getResources().getDisplayMetrics())) {
+            if (LandmarkManager.getInstance().findLandmarksInRadius(point.x, point.y, projection, true, mapView.getResources().getDisplayMetrics())) {
                 landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
             }
             return true;

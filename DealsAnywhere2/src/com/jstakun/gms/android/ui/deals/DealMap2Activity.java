@@ -216,20 +216,20 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Initializing AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
+            asyncTaskManager = new AsyncTaskManager(this);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();           
         }
         
-        intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
+        intents = new IntentsHelper(this, asyncTaskManager);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
             asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager, null, null);
         
         ((LoadingHandler) loadingHandler).setDialogManager(dialogManager);
 
@@ -358,13 +358,13 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
             
-            if (!landmarkManager.isInitialized()) {
+            if (!LandmarkManager.getInstance().isInitialized()) {
                 //UserTracker.getInstance().sendMyLocation();
-                landmarkManager.initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
+            	LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
 
-            GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(landmarkManager, loadingHandler);//, new String[]{LayerManager.ROUTES_LAYER});
+            GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(loadingHandler);//, new String[]{LayerManager.ROUTES_LAYER});
             mapView.getOverlays().add(landmarkOverlay);
             //must be on top of other overlays
             //mapView.getOverlays().add(infoOverlay);
@@ -373,7 +373,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             MessageStack.getInstance().setHandler(loadingHandler);
             LayerLoader.getInstance().setRepaintHandler(loadingHandler);
 
-            if (!LayerLoader.getInstance().isInitialized() || !LayerLoader.getInstance().isLoading()) {
+            if (!LayerLoader.getInstance().isInitialized() && !LayerLoader.getInstance().isLoading()) {
                 LoggerUtils.debug("Loading Layers...");
                 intents.loadLayersAction(true, null, false, false,
                         MathUtils.coordIntToDouble(location.getLatitudeE6()),
@@ -434,7 +434,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 	} else {
                 		pickPositionAction(location, true, false, true);
                 	}
-                	landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
+                	LandmarkManager.getInstance().addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
                 } else {
                 	intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
                 }
@@ -460,14 +460,14 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 int id = Integer.parseInt(ids);
 
                 if (action.equals("load")) {
-                    ExtendedLandmark l = landmarkManager.getPhoneLandmark(id);
+                    ExtendedLandmark l = LandmarkManager.getInstance().getPhoneLandmark(id);
                     if (l != null) {
                         GeoPoint location = new GeoPoint(l.getLatitudeE6(), l.getLongitudeE6());
                         pickPositionAction(location, true, true, true);
                     }
                 } else if (action.equals("delete")) {
                     //delete landmark
-                    landmarkManager.deletePhoneLandmark(id);
+                	LandmarkManager.getInstance().deletePhoneLandmark(id);
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
@@ -495,14 +495,14 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     	} else if (v == nearbyLandmarksButton) {	
     		intents.showNearbyLandmarks(getMyPosition(), new GoogleLandmarkProjection(mapView));
     	} else {
-    		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+    		ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
     		if (selectedLandmark != null) {
     			if (v == lvCloseButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
     				hideLandmarkView();
     			} else if (v == lvOpenButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
-    				intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+    				intents.openButtonPressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
     			} else if (v == thumbnailButton) {
     				if (intents.startStreetViewActivity(selectedLandmark)) {
     					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenStreetView", selectedLandmark.getLayer(), 0);
@@ -512,7 +512,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     				}
     			} else if (v == lvCallButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
-    				callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+    				callButtonPressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
     			} else if (v == lvRouteButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
     				dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
@@ -550,7 +550,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         asyncTaskManager.setActivity(this);
         
-        if (landmarkManager.hasMyLocation()){
+        if (LandmarkManager.getInstance().hasMyLocation()){
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
@@ -563,9 +563,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
-        } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
+        } else if (LandmarkManager.getInstance().getSeletedLandmarkUI() != null) {
             getActionBar().hide();
-            ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
+            ExtendedLandmark landmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
             intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
@@ -704,9 +704,9 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private void hideLandmarkView() {
     	lvView.setVisibility(View.GONE);
         getActionBar().show();
-        landmarkManager.clearLandmarkOnFocusQueue();
-        landmarkManager.setSelectedLandmark(null);
-        landmarkManager.setSeletedLandmarkUI();
+        LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
+        LandmarkManager.getInstance().setSelectedLandmark(null);
+        LandmarkManager.getInstance().setSeletedLandmarkUI();
 
     }
 
@@ -722,7 +722,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     }
 
     private double[] getMyPosition() {
-    	return landmarkManager.getMyLocation(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()));
+    	return LandmarkManager.getInstance().getMyLocation(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()));
     }
 
     private void callButtonPressedAction(ExtendedLandmark landmark) {
@@ -789,7 +789,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             if (CategoriesManager.getInstance().getTopSubCategoryStats() > ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_RECOMMEND_CAT_STATS)
                     && (ConfigurationManager.getInstance().isOn(ConfigurationManager.SHOW_DEAL_OF_THE_DAY) || forceToShow)) {
                 //System.out.println(cm.getTopCategory() + " " + cm.getTopSubCategory());
-                recommended = landmarkManager.findRecommendedLandmark();
+                recommended = LandmarkManager.getInstance().findRecommendedLandmark();
                 if (recommended != null) {
                     ConfigurationManager.getInstance().putObject("dod", recommended);
                 }
@@ -797,7 +797,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         }
 
         if (recommended != null) {
-            landmarkManager.setSelectedLandmark(recommended);
+        	LandmarkManager.getInstance().setSelectedLandmark(recommended);
             dealOfTheDayDialog = new DealOfTheDayDialog(this, recommended, getMyPosition(), loadingHandler, intents);
             ConfigurationManager.getInstance().putObject(AlertDialogBuilder.OPEN_DIALOG, AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG);
             if (!isStopped) {

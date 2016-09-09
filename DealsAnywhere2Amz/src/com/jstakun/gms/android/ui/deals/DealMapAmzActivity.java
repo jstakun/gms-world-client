@@ -72,7 +72,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private MapView mapView;
     private MapController mapController;
     private SkyhookUtils skyhook;
-    private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
     protected IntentsHelper intents;
     private DialogManager dialogManager;
@@ -123,7 +122,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         final String action = intent.getAction();
         // If the intent is a request to create a shortcut, we'll do that and exit
         if (Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
-            intents = new IntentsHelper(this, null, null);
+            intents = new IntentsHelper(this, null);
             intents.setupShortcut();
             appAbort = true;
             finish();
@@ -223,33 +222,24 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
         appInitialized = false;
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        if (landmarkManager == null) {
-            LoggerUtils.debug("Creating LandmarkManager...");
-            landmarkManager = new LandmarkManager();
-            ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-        } else {
-            AmzLandmarkOverlay landmarkOverlay = new AmzLandmarkOverlay(landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
-            mapView.getOverlays().add(landmarkOverlay);
-        }
-
+        
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Initializing AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
+            asyncTaskManager = new AsyncTaskManager(this);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
            //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }
 
-        intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
+        intents = new IntentsHelper(this, asyncTaskManager);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
             asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, null, null);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager,  null, null);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
@@ -367,12 +357,12 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             mapController.setCenter(location);
             intents.softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());; //save mapcenter coords
 
-            if (!landmarkManager.isInitialized()) {
-                landmarkManager.initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
+            if (!LandmarkManager.getInstance().isInitialized()) {
+            	LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
 
-            AmzLandmarkOverlay landmarkOverlay = new AmzLandmarkOverlay(landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
+            AmzLandmarkOverlay landmarkOverlay = new AmzLandmarkOverlay(loadingHandler, new String[]{Commons.ROUTES_LAYER});
             mapView.getOverlays().add(landmarkOverlay);
             
             //must be on top of other overlays
@@ -381,7 +371,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             MessageStack.getInstance().setHandler(loadingHandler);
             LayerLoader.getInstance().setRepaintHandler(loadingHandler);
             
-            if (!LayerLoader.getInstance().isInitialized() || !LayerLoader.getInstance().isLoading()) {
+            if (!LayerLoader.getInstance().isInitialized() && !LayerLoader.getInstance().isLoading()) {
                 LoggerUtils.debug("Loading Layers...");
                 intents.loadLayersAction(true, null, false, false, 
                         MathUtils.coordIntToDouble(location.getLatitudeE6()),
@@ -436,7 +426,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                     pickPositionAction(location, true, false, true);
                 }
 
-                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(names), "", Commons.LOCAL_LAYER, true);
+                LandmarkManager.getInstance().addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(names), "", Commons.LOCAL_LAYER, true);
 
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
@@ -456,14 +446,14 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 int id = Integer.parseInt(ids);
 
                 if (action.equals("load")) {
-                    ExtendedLandmark l = landmarkManager.getPhoneLandmark(id);
+                    ExtendedLandmark l = LandmarkManager.getInstance().getPhoneLandmark(id);
                     if (l != null) {
                     	GeoPoint location = new GeoPoint(l.getLatitudeE6(), l.getLongitudeE6());
                         pickPositionAction(location, true, true, true);
                     }
                 } else if (action.equals("delete")) {
                     //delete landmark
-                    landmarkManager.deletePhoneLandmark(id);
+                	LandmarkManager.getInstance().deletePhoneLandmark(id);
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
@@ -491,20 +481,20 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     	} else if (v == nearbyLandmarksButton) {
     		intents.showNearbyLandmarks(getMyPosition(), new AmzLandmarkProjection(mapView));
     	} else {
-    		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();
+    		ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
     		if (selectedLandmark != null) {
     			if (v == lvCloseButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedDealView", "", 0);
     				hideLandmarkView();
 				} else if (v == lvOpenButton || v == thumbnailButton) {
 					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenSelectedDealURL", selectedLandmark.getLayer(), 0);
-					intents.openButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+					intents.openButtonPressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
 				} else if (v == lvCallButton) {
 					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
-					callButtonPressedAction(landmarkManager.getSeletedLandmarkUI());
+					callButtonPressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
 				} else if (v == lvRouteButton) {
 					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
-					loadRoutePressedAction(landmarkManager.getSeletedLandmarkUI());
+					loadRoutePressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
 				} else if (v == lvShareButton) {
 					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
 					sendMessageAction();
@@ -536,7 +526,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
         asyncTaskManager.setActivity(this);
         
-        if (landmarkManager != null && landmarkManager.hasMyLocation()){
+        if (LandmarkManager.getInstance().hasMyLocation()){
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
@@ -549,9 +539,9 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
-        } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
+        } else if (LandmarkManager.getInstance().getSeletedLandmarkUI() != null) {
             getActionBar().hide();
-            ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
+            ExtendedLandmark landmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
             intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
@@ -694,13 +684,13 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private void hideLandmarkView() {
     	lvView.setVisibility(View.GONE);
         getActionBar().show();
-        landmarkManager.clearLandmarkOnFocusQueue();
-        landmarkManager.setSelectedLandmark(null);
-        landmarkManager.setSeletedLandmarkUI();
+        LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
+        LandmarkManager.getInstance().setSelectedLandmark(null);
+        LandmarkManager.getInstance().setSeletedLandmarkUI();
     }
     
     protected double[] getMyPosition() {
-        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitudeE6(),
+        return LandmarkManager.getInstance().getMyLocation(mapView.getMapCenter().getLatitudeE6(),
                 mapView.getMapCenter().getLongitudeE6());
     }
 
@@ -805,7 +795,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             if (CategoriesManager.getInstance().getTopSubCategoryStats() > ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_RECOMMEND_CAT_STATS)
                     && (ConfigurationManager.getInstance().isOn(ConfigurationManager.SHOW_DEAL_OF_THE_DAY) || forceToShow)) {
                 //System.out.println(cm.getTopCategory() + " " + cm.getTopSubCategory());
-                recommended = landmarkManager.findRecommendedLandmark();
+                recommended = LandmarkManager.getInstance().findRecommendedLandmark();
                 if (recommended != null) {
                     ConfigurationManager.getInstance().putObject("dod", recommended);
                 }
@@ -813,7 +803,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         }
 
         if (recommended != null) {
-            landmarkManager.setSelectedLandmark(recommended);
+        	LandmarkManager.getInstance().setSelectedLandmark(recommended);
             dealOfTheDayDialog = new DealOfTheDayDialog(this, recommended);
             ConfigurationManager.getInstance().putObject(AlertDialogBuilder.OPEN_DIALOG, AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG);
             if (!isStopped) {

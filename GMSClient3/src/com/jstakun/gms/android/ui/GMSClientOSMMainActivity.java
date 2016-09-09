@@ -67,7 +67,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private MapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
-    private LandmarkManager landmarkManager;
     private AsyncTaskManager asyncTaskManager;
     private IntentsHelper intents;
     private DialogManager dialogManager;
@@ -209,30 +208,24 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
         appInitialized = false;
-        landmarkManager = ConfigurationManager.getInstance().getLandmarkManager();
-        if (landmarkManager == null) {
-            LoggerUtils.debug("Creating LandmarkManager...");
-            landmarkManager = new LandmarkManager();
-            ConfigurationManager.getInstance().putObject("landmarkManager", landmarkManager);
-        } 
-
+        
         asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
         if (asyncTaskManager == null) {
             LoggerUtils.debug("Creating AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this, landmarkManager);
+            asyncTaskManager = new AsyncTaskManager(this);
             ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
             //check if newer version available
             asyncTaskManager.executeNewVersionCheckTask();
         }
 
-        intents = new IntentsHelper(this, landmarkManager, asyncTaskManager);
+        intents = new IntentsHelper(this, asyncTaskManager);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
             asyncTaskManager.executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, landmarkManager, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, asyncTaskManager, trackMyPosListener);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
@@ -261,7 +254,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         asyncTaskManager.setActivity(this);
         
-        if (landmarkManager != null && landmarkManager.hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        if (LandmarkManager.getInstance().hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
@@ -274,8 +267,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             if (coordsE6 != null) {
             	animateTo(coordsE6);
             }
-        } else if (landmarkManager != null && landmarkManager.getSeletedLandmarkUI() != null) {
-            ExtendedLandmark landmark = landmarkManager.getSeletedLandmarkUI();
+        } else if (LandmarkManager.getInstance().getSeletedLandmarkUI() != null) {
+            ExtendedLandmark landmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
             intents.showLandmarkDetailsView(landmark, lvView, getMyLocation(), true);
         }
 
@@ -368,9 +361,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     }
 
     private void hideLandmarkView() {
-    	landmarkManager.clearLandmarkOnFocusQueue();
-		landmarkManager.setSelectedLandmark(null);
-		landmarkManager.setSeletedLandmarkUI();
+    	LandmarkManager.getInstance().clearLandmarkOnFocusQueue();
+		LandmarkManager.getInstance().setSelectedLandmark(null);
+		LandmarkManager.getInstance().setSeletedLandmarkUI();
 		lvView.setVisibility(View.GONE);
     }
 
@@ -412,9 +405,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         	
         	mapController.setCenter(location);
         	
-            if (!landmarkManager.isInitialized()) {
+            if (!LandmarkManager.getInstance().isInitialized()) {
                 //UserTracker.getInstance().sendMyLocation();
-                landmarkManager.initialize();
+                LandmarkManager.getInstance().initialize();
             }
 
             addLandmarkOverlay();
@@ -436,7 +429,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
             LayerLoader.getInstance().setRepaintHandler(loadingHandler);
             
-            if (!LayerLoader.getInstance().isInitialized() || !LayerLoader.getInstance().isLoading()) {
+            if (!LayerLoader.getInstance().isInitialized() && !LayerLoader.getInstance().isLoading()) {
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 	LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());
                     intents.loadLayersAction(true, null, false, true, location.getLatitude(),
@@ -632,7 +625,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 break;
             case R.id.blogeo:
                 if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-                    if (landmarkManager.hasMyLocation()) {
+                    if (LandmarkManager.getInstance().hasMyLocation()) {
                         intents.startBlogeoActivity();
                     } else {
                         intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -735,7 +728,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
       	  	} else if (v == nearbyLandmarksButton) {
       	  		intents.startLayersListActivity(true);
         	} else {
-      	  		ExtendedLandmark selectedLandmark = landmarkManager.getSeletedLandmarkUI();	  
+      	  		ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getSeletedLandmarkUI();	  
       	  		if (selectedLandmark != null) { 
       	  			if (v == lvCloseButton) {
       	  				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CloseSelectedLandmarkView", "", 0);
@@ -814,7 +807,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 } else {
                     pickPositionAction(location, true, true);
                 }
-                landmarkManager.addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
+                LandmarkManager.getInstance().addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
             } else if (resultCode == RESULT_CANCELED && intent != null && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
@@ -844,14 +837,14 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                 int id = Integer.parseInt(ids);
                 if (action.equals("load")) {
-                    ExtendedLandmark l = landmarkManager.getPhoneLandmark(id);
+                    ExtendedLandmark l = LandmarkManager.getInstance().getPhoneLandmark(id);
                     if (l != null) {
                         GeoPoint location = new GeoPoint(l.getLatitudeE6(), l.getLongitudeE6());
                         pickPositionAction(location, true, true);
                     }
                 } else if (action.equals("delete")) {
                     //delete landmark
-                    landmarkManager.deletePhoneLandmark(id);
+                    LandmarkManager.getInstance().deletePhoneLandmark(id);
                     intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
@@ -954,9 +947,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private void addLandmarkOverlay() {
         OsmLandmarkOverlay landmarkOverlay;
         if (LocationServicesManager.isGpsHardwarePresent()) {
-            landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler);
+            landmarkOverlay = new OsmLandmarkOverlay(this, LandmarkManager.getInstance(), loadingHandler);
         } else {
-            landmarkOverlay = new OsmLandmarkOverlay(this, landmarkManager, loadingHandler, new String[]{Commons.ROUTES_LAYER});
+            landmarkOverlay = new OsmLandmarkOverlay(this, LandmarkManager.getInstance(), loadingHandler, new String[]{Commons.ROUTES_LAYER});
         }
         addOverlay(landmarkOverlay);
     }
@@ -996,7 +989,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     }
 
     private double[] getMyLocation() {
-        return landmarkManager.getMyLocation(mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude());
+        return LandmarkManager.getInstance().getMyLocation(mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude());
     }
 
     private void showRouteAction(String routeKey) {
@@ -1021,7 +1014,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             if (LayerLoader.getInstance().isLoading()) {
             	LayerLoader.getInstance().stopLoading();
             }
-            List<ExtendedLandmark> myPosV = landmarkManager.getUnmodifableLayer(Commons.MY_POSITION_LAYER);
+            List<ExtendedLandmark> myPosV = LandmarkManager.getInstance().getUnmodifableLayer(Commons.MY_POSITION_LAYER);
             if (!myPosV.isEmpty()) {
                 ExtendedLandmark landmark = myPosV.get(0);
                 ProjectionInterface projection = new OsmLandmarkProjection(mapView);
@@ -1050,7 +1043,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     }
 
     private void clearMapAction() {
-        landmarkManager.clearLandmarkStore();
+        LandmarkManager.getInstance().clearLandmarkStore();
         RoutesManager.getInstance().clearRoutesStore();
         syncRoutesOverlays();
         postInvalidate();
