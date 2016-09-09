@@ -84,8 +84,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
 	
-	private AsyncTaskManager asyncTaskManager;
-    private IntentsHelper intents;
+	private IntentsHelper intents;
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
     
@@ -185,23 +184,14 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         
         appInitialized = false;
                 
-        asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-        if (asyncTaskManager == null) {
-            LoggerUtils.debug("Initializing AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this);
-            ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
-            //check if newer version available
-            asyncTaskManager.executeNewVersionCheckTask();           
-        }
-        
-        intents = new IntentsHelper(this, asyncTaskManager);
+        intents = new IntentsHelper(this);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
         	LoggerUtils.debug("Loading deal categories...");
-            asyncTaskManager.executeDealCategoryLoaderTask(true);
+        	AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, null, null);
+        dialogManager = new DialogManager(this, intents, null, null);
         
         ((LoadingHandler) loadingHandler).setDialogManager(dialogManager);
         
@@ -230,10 +220,12 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         LoggerUtils.debug("onResume");
         GmsLocationServicesManager.getInstance().enable(loadingHandler);
         
-        asyncTaskManager.setActivity(this);
+        AsyncTaskManager.getInstance().setActivity(this);
+        
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask();           
         
         //verify access token
-        asyncTaskManager.executeGetTokenTask();
+        AsyncTaskManager.getInstance().executeGetTokenTask();
 
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
@@ -720,7 +712,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 	int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
                     LoggerUtils.debug("Shutter sound played with id " + id);
                 	
-					asyncTaskManager.executeImageUploadTask(out.toByteArray(), filename, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+                    AsyncTaskManager.getInstance().executeImageUploadTask(out.toByteArray(), filename, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
 				    
 					if (notify) {
 						intents.shareImageAction(uri);

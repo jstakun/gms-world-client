@@ -31,7 +31,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
         this.activity = activity;
         this.recommended = recommended;
 
-        intents = new IntentsHelper(activity, null);
+        intents = new IntentsHelper(activity);
 
         //UserTracker.getInstance().startSession(getContext());
         UserTracker.getInstance().trackActivity(getClass().getName());

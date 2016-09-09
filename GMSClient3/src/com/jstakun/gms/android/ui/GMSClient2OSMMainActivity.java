@@ -79,7 +79,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
     private OsmMarkerClusterOverlay markerCluster;
-    private AsyncTaskManager asyncTaskManager;
     private IntentsHelper intents;
     private DialogManager dialogManager;
     private TextView statusBar;
@@ -248,23 +247,14 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         appInitialized = false;
         
-        asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-        if (asyncTaskManager == null) {
-            LoggerUtils.debug("Creating AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this);
-            ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
-            //check if newer version available
-            asyncTaskManager.executeNewVersionCheckTask();
-        }
-
-        intents = new IntentsHelper(this, asyncTaskManager);
+        intents = new IntentsHelper(this);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
-            asyncTaskManager.executeDealCategoryLoaderTask(true);
+            AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager, loadingHandler, trackMyPosListener);
+        dialogManager = new DialogManager(this, intents, loadingHandler, trackMyPosListener);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
@@ -292,15 +282,17 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         OsmMapsTypeSelector.selectMapType(mapView, this);
 
-        asyncTaskManager.setActivity(this);
+        AsyncTaskManager.getInstance().setActivity(this);
         
         //check if myloc is available
         if (LandmarkManager.getInstance().hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
+        
         //verify access token
-        asyncTaskManager.executeGetTokenTask();
+        AsyncTaskManager.getInstance().executeGetTokenTask();
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
@@ -537,7 +529,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             if (delete) {
                 Integer taskId = extras.getInt("notification");
                 //System.out.println("onNewIntent " + taskId + "----------------------------------");
-                asyncTaskManager.cancelTask(taskId, true);
+                AsyncTaskManager.getInstance().cancelTask(taskId, true);
             }
         }
     }
@@ -792,7 +784,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		}
 		    		break;
 		    	case R.id.shareScreenshot:
-		    		asyncTaskManager.executeImageUploadTask(mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(), true);
+		    		AsyncTaskManager.getInstance().executeImageUploadTask(mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(), true);
 		    		break;    
 		    	case R.id.reset:
 	            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
@@ -1212,7 +1204,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             		//TODO check if mapView has loaded map tiles activity.mapView.getTileProvider()
             		//activity.mapView.getOverlayManager().getTilesOverlay()
             		//activity.mapView.getTileProvider().getMapTile(arg0)
-            		activity.asyncTaskManager.executeImageUploadTask(activity.mapView.getMapCenter().getLatitude(),
+            		AsyncTaskManager.getInstance().executeImageUploadTask(activity.mapView.getMapCenter().getLatitude(),
                             activity.mapView.getMapCenter().getLongitude(), false);
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));

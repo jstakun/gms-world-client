@@ -251,8 +251,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         appInitialized = false;
         
-        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
-        
         intents = new IntentsHelper(this);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
@@ -289,6 +287,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         OsmMapsTypeSelector.selectMapType(mapView, this);
 
         AsyncTaskManager.getInstance().setActivity(this);
+        
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
         
         //check if myloc is available
         if (LandmarkManager.getInstance().hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {

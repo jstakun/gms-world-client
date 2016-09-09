@@ -72,7 +72,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private MapView mapView;
     private MapController mapController;
     private SkyhookUtils skyhook;
-    private AsyncTaskManager asyncTaskManager;
     protected IntentsHelper intents;
     private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
@@ -122,7 +121,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         final String action = intent.getAction();
         // If the intent is a request to create a shortcut, we'll do that and exit
         if (Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
-            intents = new IntentsHelper(this, null);
+            intents = new IntentsHelper(this);
             intents.setupShortcut();
             appAbort = true;
             finish();
@@ -223,23 +222,14 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
         appInitialized = false;
         
-        asyncTaskManager = (AsyncTaskManager) ConfigurationManager.getInstance().getObject("asyncTaskManager", AsyncTaskManager.class);
-        if (asyncTaskManager == null) {
-            LoggerUtils.debug("Initializing AsyncTaskManager...");
-            asyncTaskManager = new AsyncTaskManager(this);
-            ConfigurationManager.getInstance().putObject("asyncTaskManager", asyncTaskManager);
-           //check if newer version available
-            asyncTaskManager.executeNewVersionCheckTask();
-        }
-
-        intents = new IntentsHelper(this, asyncTaskManager);
+        intents = new IntentsHelper(this);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
-            asyncTaskManager.executeDealCategoryLoaderTask(true);
+            AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, asyncTaskManager,  null, null);
+        dialogManager = new DialogManager(this, intents, null, null);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
@@ -524,14 +514,16 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         //myLocation.enableMyLocation();
         skyhook.enableMyLocation();
 
-        asyncTaskManager.setActivity(this);
+        AsyncTaskManager.getInstance().setActivity(this);
         
         if (LandmarkManager.getInstance().hasMyLocation()){
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
+        
         //verify access token
-        asyncTaskManager.executeGetTokenTask();
+        AsyncTaskManager.getInstance().executeGetTokenTask();
 
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
@@ -695,7 +687,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     }
 
     protected void loadRoutePressedAction(ExtendedLandmark landmark) {
-        asyncTaskManager.executeRouteServerLoadingTask(loadingHandler, false, landmark);
+    	AsyncTaskManager.getInstance().executeRouteServerLoadingTask(loadingHandler, false, landmark);
     }
 
     protected void callButtonPressedAction(ExtendedLandmark landmark) {
@@ -871,7 +863,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 } else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
                 	activity.showRecommendedDeal(false);
                 	if (activity.mapView.canCoverCenter()) {       			
-                		activity.asyncTaskManager.executeImageUploadTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
+                		AsyncTaskManager.getInstance().executeImageUploadTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
                                 MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
                 	}
                 } else if (msg.what == AmzLandmarkOverlay.SHOW_LANDMARK_DETAILS) {

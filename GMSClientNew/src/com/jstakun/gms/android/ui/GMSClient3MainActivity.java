@@ -202,8 +202,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	
         appInitialized = false;
         
-        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
-        
         intents = new IntentsHelper(this);
 
         if (!CategoriesManager.getInstance().isInitialized()) {
@@ -240,6 +238,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         GmsLocationServicesManager.getInstance().enable(loadingHandler);
         
         AsyncTaskManager.getInstance().setActivity(this);
+        
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
         
         //verify access token
         AsyncTaskManager.getInstance().executeGetTokenTask();

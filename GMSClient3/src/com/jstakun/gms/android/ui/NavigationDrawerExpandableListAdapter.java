@@ -29,7 +29,7 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	
 	public NavigationDrawerExpandableListAdapter(Activity parent) {
 		this.parentActivity = parent;
-		intents = new IntentsHelper(parent, null);
+		intents = new IntentsHelper(parent);
 		rebuild(null);
 	}
 	
