@@ -52,8 +52,7 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
     private String[] keys, values;
     private String fsCategory, selectedLayer;
     private DialogInterface.OnCancelListener fsCatCancel;
-    private IntentsHelper intents;
-
+    
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -75,8 +74,6 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
         nameText = (EditText) findViewById(R.id.nameText);
         categories = (Spinner) findViewById(R.id.categorySpinner);
         addVenueCheckbox = (CheckBox) findViewById(R.id.fsAddVenueCheckbox);
-
-        intents = new IntentsHelper(this);
 
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
             addVenueCheckbox.setVisibility(View.GONE);
@@ -205,7 +202,7 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
                 finalizeActivity();
             }
         } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_name_empty_error));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_name_empty_error));
         }
     }
 

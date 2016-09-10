@@ -23,7 +23,6 @@ public class DialogManager {
 
     private Activity activity;
     private AlertDialogBuilder dialogBuilder;
-    private IntentsHelper intents;
     private Handler loadingHandler;
 
     private DialogInterface.OnClickListener exitListener = new DialogInterface.OnClickListener() {
@@ -39,7 +38,7 @@ public class DialogManager {
     private DialogInterface.OnClickListener loginListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int item) {
-            intents.startLoginActivity(item);
+            IntentsHelper.getInstance().startLoginActivity(item);
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
         }
@@ -51,7 +50,7 @@ public class DialogManager {
         	ConfigurationManager.getAppUtils().clearCounter();
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
-            intents.showInfoToast(Locale.getMessage(R.string.Counter_cleared));
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Counter_cleared));
         }
     };
     private DialogInterface.OnClickListener networkErrorListener = new DialogInterface.OnClickListener() {
@@ -59,7 +58,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
-            intents.startWifiSettingsActivity();
+            IntentsHelper.getInstance().startWifiSettingsActivity();
         }
     };
     private DialogInterface.OnClickListener locationErrorListener = new DialogInterface.OnClickListener() {
@@ -67,7 +66,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
-            intents.startLocationSettingsActivity();
+            IntentsHelper.getInstance().startLocationSettingsActivity();
         }
     };
     private DialogInterface.OnClickListener sendIntentListener = new DialogInterface.OnClickListener() {
@@ -76,7 +75,7 @@ public class DialogManager {
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
             ExtendedLandmark selectedLandmark = LandmarkManager.getInstance().getSelectedLandmark();
-            intents.startSendMessageIntent(id, selectedLandmark);
+            IntentsHelper.getInstance().startSendMessageIntent(id, selectedLandmark);
         }
     };
     private DialogInterface.OnClickListener checkinAutoListener = new DialogInterface.OnClickListener() {
@@ -100,7 +99,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
-            intents.startActionViewIntent(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL));
+            IntentsHelper.getInstance().startActionViewIntent(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL));
             ConfigurationManager.getInstance().setOn(ConfigurationManager.APP_RATED);
         }
     };
@@ -109,7 +108,7 @@ public class DialogManager {
         public void onClick(DialogInterface dialog, int id) {
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
-            intents.startActionViewIntent(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL));
+            IntentsHelper.getInstance().startActionViewIntent(ConfigurationManager.getInstance().getString(ConfigurationManager.APP_URL));
         }
     };
     private DialogInterface.OnClickListener resetListener = new DialogInterface.OnClickListener() {
@@ -118,20 +117,18 @@ public class DialogManager {
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             dialog.cancel();
             ConfigurationManager.getAppUtils().reset();
-            intents.showInfoToast(Locale.getMessage(R.string.Reset_confirmation));
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Reset_confirmation));
         }
     };
    
-    public DialogManager(Activity activity, IntentsHelper intents, DialogInterface.OnClickListener trackMyPosListener) {
+    public DialogManager(Activity activity, DialogInterface.OnClickListener trackMyPosListener) {
         this.activity = activity;
-        this.intents = intents;
         this.trackMyPosListener = trackMyPosListener;
         dialogBuilder = new AlertDialogBuilder(activity, new DialogHandler());
     }
     
-    public DialogManager(Activity activity, IntentsHelper intents, 
-            Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
-        this(activity, intents, trackMyPosListener);
+    public DialogManager(Activity activity, Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
+        this(activity, trackMyPosListener);
         this.loadingHandler = loadingHandler;
     }
 
@@ -191,7 +188,7 @@ public class DialogManager {
     			        public void onClick(DialogInterface dialog, int id) {
     			        	dialog.cancel();
     			        	ConfigurationManager.getInstance().putInteger(ConfigurationManager.ROUTE_TYPE, id);
-    			        	intents.startRouteLoadingTask(landmark, loadingHandler);
+    			        	IntentsHelper.getInstance().startRouteLoadingTask(landmark, loadingHandler);
     			        }
     			    });
                 	break;

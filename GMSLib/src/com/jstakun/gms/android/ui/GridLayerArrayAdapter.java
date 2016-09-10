@@ -5,17 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -24,6 +14,15 @@ import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.squareup.picasso.Picasso;
+
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 

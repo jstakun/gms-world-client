@@ -40,7 +40,6 @@ public class GridLayerListActivity extends Activity {
     private static final int ACTION_DISABLE = 4;
     private static final int ACTION_DELETE = 5;
     private List<String> names = null;
-    private IntentsHelper intents;
     private GridView gridView;
     private int mode = ConfigurationManager.ALL_LAYERS_MODE, currentPos = -1;
     private AlertDialog deleteLayerDialog, enableAllLayersDialog, disableAllLayersDialog;
@@ -56,8 +55,6 @@ public class GridLayerListActivity extends Activity {
         AdsUtils.loadAd(this);
         
         UserTracker.getInstance().trackActivity(getClass().getName());
-        
-        intents = new IntentsHelper(this);
         
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("mode")) {
@@ -233,20 +230,20 @@ public class GridLayerListActivity extends Activity {
         if (type == ACTION_OPEN) {
             //OPEN
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
-                intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
             } else {
                 UserTracker.getInstance().trackEvent("Clicks", "LayersListActivity.ShowLayerAction", layerKey, 0);
                 if (LandmarkManager.getInstance().getLayerSize(layerKey) > 0) {
                     layerAction("show", layerKey);
                 } else {
-                    intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
+                	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
                 }
             }
         } else if (type == ACTION_REFRESH) {
             //REFRESH
             if (layerKey.equals(Commons.ROUTES_LAYER) || LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC
                     || LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_FILESYSTEM) {
-                intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
             } else {
                 layerAction("load", layerKey);
             }
@@ -255,13 +252,13 @@ public class GridLayerListActivity extends Activity {
             if (layerKey.equals(Commons.ROUTES_LAYER)) {
             	RoutesManager.getInstance().clearRoutesStore();
                 ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
-                intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
             } else if (LandmarkManager.getInstance().getLayerType(layerKey) == LayerManager.LAYER_DYNAMIC) {
-                intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
             } else {
             	LandmarkManager.getInstance().clearLayer(layerKey);
                 ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
-                intents.showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_cleared, layerName));
             }
         } else if (type == ACTION_DELETE) {
             //DELETE
@@ -273,15 +270,15 @@ public class GridLayerListActivity extends Activity {
                 ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             }    
             
-            intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, layerName));
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_deleted, layerName));
         } else if (type == ACTION_ENABLE) {
         	LayerManager.getInstance().setLayerEnabled(layerKey, true);
         	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
-        	intents.showInfoToast(Locale.getMessage(R.string.Layer_enabled));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_enabled));
         } else if (type == ACTION_DISABLE) {
         	LayerManager.getInstance().setLayerEnabled(layerKey, false);
         	((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
-        	intents.showInfoToast(Locale.getMessage(R.string.Layer_disabled));      	
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_disabled));      	
         }
 	}
 	
@@ -312,7 +309,7 @@ public class GridLayerListActivity extends Activity {
                 dialog.cancel();
                 LayerManager.getInstance().enableAllLayers();
                 ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
-                intents.showInfoToast(Locale.getMessage(R.string.Layer_all_enabled));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_all_enabled));
             }
         }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -332,7 +329,7 @@ public class GridLayerListActivity extends Activity {
                 dialog.cancel();
                 LayerManager.getInstance().disableAllLayers();
                 ((ArrayAdapter<?>) gridView.getAdapter()).notifyDataSetChanged();
-                intents.showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_all_disabled));
             }
         }).setNegativeButton(Locale.getMessage(R.string.cancelButton), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

@@ -25,11 +25,9 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	private List<NavigationDrawerListItem> checkins = new ArrayList<NavigationDrawerListItem>(); 
 	private static final int CHECKIN = -1;
 	private static final int LANDMARK = -2;
-	private IntentsHelper intents;
 	
 	public NavigationDrawerExpandableListAdapter(Activity parent) {
 		this.parentActivity = parent;
-		intents = new IntentsHelper(parent);
 		rebuild(null);
 	}
 	
@@ -99,7 +97,7 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	    	checkins.add(new NavigationDrawerListItem(checkin[1], R.id.searchcheckin));
 	    }
 	    
-	    if (intents.isIntentAvailable(IntentsHelper.SCAN_INTENT)) {
+	    if (IntentsHelper.getInstance().isIntentAvailable(IntentsHelper.SCAN_INTENT)) {
 	    	checkins.add(new NavigationDrawerListItem(checkin[2], R.id.qrcheckin));
 	    }
 	    

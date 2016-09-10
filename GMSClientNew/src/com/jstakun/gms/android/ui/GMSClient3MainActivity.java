@@ -84,8 +84,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
 	
-	private IntentsHelper intents;
-    private DialogManager dialogManager;
+	private DialogManager dialogManager;
     
     private GoogleLandmarkProjectionV2 projection;
 	private GoogleMarkerClusterOverlay markerCluster;
@@ -148,6 +147,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
         
+        LoggerUtils.debug("GMSClient3MainActivity.onCreate called...");
+        
         loadingHandler = new LoadingHandler(this);
         
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -159,11 +160,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         mapFragment.getMapAsync(this); 
         
-        LoggerUtils.debug("GMSClient3MainActivity.onCreate called...");
-        
         UserTracker.getInstance().trackActivity(getClass().getName());
-
-        ConfigurationManager.getInstance().setContext(getApplicationContext());
+        
         OsUtil.setDisplayType(getResources().getConfiguration());
         
         ActionBar actionBar = getSupportActionBar();
@@ -202,14 +200,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	
         appInitialized = false;
         
-        intents = new IntentsHelper(this);
-
         if (!CategoriesManager.getInstance().isInitialized()) {
         	LoggerUtils.debug("Loading deal categories...");
             AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, intents, loadingHandler, trackMyPosListener);
+        dialogManager = new DialogManager(this, loadingHandler, trackMyPosListener);
 
         LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
             
@@ -238,29 +234,30 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         GmsLocationServicesManager.getInstance().enable(loadingHandler);
         
         AsyncTaskManager.getInstance().setActivity(this);
-        
+        IntentsHelper.getInstance().setActivity(this);
+
         AsyncTaskManager.getInstance().executeNewVersionCheckTask();
         
         //verify access token
         AsyncTaskManager.getInstance().executeGetTokenTask();
-
+        
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = intents.showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, (int)mMap.getCameraPosition().zoom, projection);
+        	int[] coordsE6 = IntentsHelper.getInstance().showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, (int)mMap.getCameraPosition().zoom, projection);
             if (coordsE6 != null) {
             	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
             }
         } else if (LandmarkManager.getInstance().getSeletedLandmarkUI() != null) {
             getSupportActionBar().hide();
             ExtendedLandmark landmark = LandmarkManager.getInstance().getSeletedLandmarkUI();
-            intents.showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
+            IntentsHelper.getInstance().showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
         Integer type = (Integer) ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
         if (type != null) {
             ArrayAdapter<?> arrayAdapter = null;
             if (type == AlertDialogBuilder.SHARE_INTENTS_DIALOG) {
-                List<ResolveInfo> intentList = intents.getSendIntentsList();
+                List<ResolveInfo> intentList = IntentsHelper.getInstance().getSendIntentsList();
                 if (!intentList.isEmpty()) {
                     arrayAdapter = new IntentArrayAdapter(this, intentList);
                 }
@@ -272,7 +269,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             dialogManager.showAlertDialog(type, arrayAdapter, null);
         }
 
-        intents.onAppVersionChanged();
+        IntentsHelper.getInstance().onAppVersionChanged();
 
         if (ConfigurationManager.getInstance().removeObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class) != null) {
             if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.MAP_CENTER, LatLng.class)) {
@@ -281,7 +278,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             }
         }
         
-        intents.startAutoCheckinBroadcast();
+        IntentsHelper.getInstance().startAutoCheckinBroadcast();
         
         if (markerCluster != null) {
         	markerCluster.loadAllMarkers();
@@ -337,9 +334,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
         	GmsLocationServicesManager.getInstance().disable();
-        	intents.hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
+        	IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else if (mMap != null) {
-            intents.softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
+            IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         }
         AdsUtils.destroyAdView(this);
         System.gc();
@@ -383,7 +380,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     @Override
     public boolean onSearchRequested() {
     	if (appInitialized) {
-            intents.startSearchActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
+            IntentsHelper.getInstance().startSearchActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
             		MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), -1, false);
             return true;
         } else {
@@ -488,43 +485,43 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         				hideLandmarkView();
         		} else if (v == lvCommentButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CommentSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				intents.commentButtonPressedAction();
+        				IntentsHelper.getInstance().commentButtonPressedAction();
         		} else if (v == lvCheckinButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CheckinSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				boolean authStatus = intents.checkAuthStatus(selectedLandmark);
+        				boolean authStatus = IntentsHelper.getInstance().checkAuthStatus(selectedLandmark);
         				if (authStatus) {
         					boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
         					CheckinManager.getInstance().checkinAction(addToFavourites, false, selectedLandmark);
         				}
         		} else if (v == lvOpenButton) { 
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				intents.openButtonPressedAction(selectedLandmark);
+        				IntentsHelper.getInstance().openButtonPressedAction(selectedLandmark);
         		} else if (v == thumbnailButton) {
-        				if (intents.startStreetViewActivity(selectedLandmark)) {
+        				if (IntentsHelper.getInstance().startStreetViewActivity(selectedLandmark)) {
         					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenStreetView", selectedLandmark.getLayer(), 0);
         				} else {
         					UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
-            				intents.openButtonPressedAction(selectedLandmark);
+            				IntentsHelper.getInstance().openButtonPressedAction(selectedLandmark);
         				}
         		} else if (v == lvCallButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				intents.startPhoneCallActivity(selectedLandmark);
+        				IntentsHelper.getInstance().startPhoneCallActivity(selectedLandmark);
         		} else if (v == lvRouteButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
         				if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
         					dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
         				} else {
-        					intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+        					IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
         				}	
              	} else if (v == lvShareButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				intents.shareLandmarkAction(dialogManager);
+        				IntentsHelper.getInstance().shareLandmarkAction(dialogManager);
         		} 
         	} else {
-        		intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
         	}	
     	} else {
-    		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+    		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
     	}
 	}
 
@@ -563,22 +560,22 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 LandmarkManager.getInstance().addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
-                intents.showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 LatLng mapCenter = new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude());
                 initOnLocationChanged(mapCenter, 5);
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
-                intents.showInfoToast(message);
+                IntentsHelper.getInstance().showInfoToast(message);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             	Status status = PlaceAutocomplete.getStatus(this, intent);
-                intents.showInfoToast(status.getStatusMessage());
+                IntentsHelper.getInstance().showInfoToast(status.getStatusMessage());
             	if (! appInitialized) {
             		ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
             		LatLng mapCenter = new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude());
             		initOnLocationChanged(mapCenter, 6);
             	}
             } else if (resultCode != RESULT_CANCELED) {
-                intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } 
         } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
@@ -586,7 +583,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 if (action.equals("load")) {
                     String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, (int)mMap.getCameraPosition().zoom, projection);
+                    int[] coordsE6 = IntentsHelper.getInstance().showSelectedLandmark(id, getMyPosition(), lvView, (int)mMap.getCameraPosition().zoom, projection);
                     if (coordsE6 != null) {
                     	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));;
                     }
@@ -605,7 +602,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 } else if (action.equals("delete")) {
                     //delete landmark
                 	LandmarkManager.getInstance().deletePhoneLandmark(id);
-                    intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
+                    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
                 }
             }
         } else if (requestCode == IntentsHelper.INTENT_AUTO_CHECKIN) {
@@ -615,7 +612,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 if (fav != null) {
                     pickPositionAction(new LatLng(fav.getLatitude(), fav.getLongitude()), true, false);
                 } else {
-                    intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+                    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
                 }
             }
         } else if (requestCode == IntentsHelper.INTENT_CALENDAR) {
@@ -625,7 +622,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
                 if (action.equals("load")) {
                     int id = Integer.parseInt(ids);
-                    int[] coordsE6 = intents.showSelectedLandmark(id, getMyPosition(), lvView, (int)mMap.getCameraPosition().zoom, projection);
+                    int[] coordsE6 = IntentsHelper.getInstance().showSelectedLandmark(id, getMyPosition(), lvView, (int)mMap.getCameraPosition().zoom, projection);
                     if (coordsE6 != null) {
                     	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
                     }
@@ -633,11 +630,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             }
         } else {
         	if (mMap != null) {
-        		intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), 
+        		IntentsHelper.getInstance().processActivityResult(requestCode, resultCode, intent, getMyPosition(), 
         				new double[]{mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude}, 
         				loadingHandler, (int)mMap.getCameraPosition().zoom, projection);
         	} else {
-        		intents.processActivityResult(requestCode, resultCode, intent, getMyPosition(), 
+        		IntentsHelper.getInstance().processActivityResult(requestCode, resultCode, intent, getMyPosition(), 
         				new double[]{ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE), ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE)}, 
         				loadingHandler, ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM), projection);
                 
@@ -675,7 +672,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		if (ConfigurationManager.getInstance().getLocation() != null) {
 			showMyPositionAction(true);
 		} else {
-			intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+			IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
 		}
 		return true;
 	}
@@ -692,8 +689,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		
 			ConfigurationManager.getInstance().setLocation(location);
 		
-			intents.addMyLocationLandmark(location);     
-			intents.vibrateOnLocationUpdate();
+			IntentsHelper.getInstance().addMyLocationLandmark(location);     
+			IntentsHelper.getInstance().vibrateOnLocationUpdate();
 			UserTracker.getInstance().sendMyLocation();
 	    	
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
@@ -733,7 +730,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     			} 
             	return true;
         	} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        		int[] coordsE6 = intents.showLandmarkDetailsAction(getMyPosition(), lvView, (int)mMap.getCameraPosition().zoom, projection);
+        		int[] coordsE6 = IntentsHelper.getInstance().showLandmarkDetailsAction(getMyPosition(), lvView, (int)mMap.getCameraPosition().zoom, projection);
                 if (coordsE6 != null) {
                 	getSupportActionBar().hide();
                 	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
@@ -743,7 +740,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	return super.onKeyDown(keyCode, event);
         	}
     	} else {
-    		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+    		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
     		return true;
     	}
 	}
@@ -752,7 +749,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == android.R.id.home || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
 		 switch (itemId) {
 				case R.id.settings:
-					intents.startSettingsActivity(SettingsActivity.class);
+					IntentsHelper.getInstance().startSettingsActivity(SettingsActivity.class);
 					break;
 				case R.id.search:
 					onSearchRequested();
@@ -764,79 +761,79 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 					dialogManager.showAlertDialog(AlertDialogBuilder.INFO_DIALOG, null, null);
 					break;
 				case R.id.releaseNotes:
-					intents.startHelpActivity();
+					IntentsHelper.getInstance().startHelpActivity();
 					break;
 				case R.id.login:
 					if (!ConfigurationManager.getUserManager().isUserLoggedInFully()) {
 						dialogManager.showAlertDialog(AlertDialogBuilder.LOGIN_DIALOG, new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false)), null);
 					} else {
-						intents.showInfoToast(Locale.getMessage(R.string.loginFull));
+						IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.loginFull));
 					}
 					break;
 				case R.id.addLandmark:
 					if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-						intents.startAddLandmarkActivity();
+						IntentsHelper.getInstance().startAddLandmarkActivity();
 					} else {
-						intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+						IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
 					}
 					break;
 				case R.id.autocheckin:
 					if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-						intents.startAutoCheckinListActivity(getMyPosition());
+						IntentsHelper.getInstance().startAutoCheckinListActivity(getMyPosition());
 					} else {
-						intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+						IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
 					}
 					break;
 				case R.id.qrcheckin:
 					if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-						intents.startQrCodeCheckinActivity(getMyPosition());
+						IntentsHelper.getInstance().startQrCodeCheckinActivity(getMyPosition());
 					} else {
-						intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+						IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
 					}
 					break;
 				case R.id.searchcheckin:
 					if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-						intents.startLocationCheckinActivity(getMyPosition());
+						IntentsHelper.getInstance().startLocationCheckinActivity(getMyPosition());
 					} else {
-						intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+						IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
 					}
 					break;
 				case R.id.refreshLayers:
-					intents.loadLayersAction(true, null, false, true,
+					IntentsHelper.getInstance().loadLayersAction(true, null, false, true,
 					mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude,
 		            (int)mMap.getCameraPosition().zoom, projection);
 					break;
 				case R.id.addLayer:
-					intents.startAddLayerActivity();
+					IntentsHelper.getInstance().startAddLayerActivity();
 					break;
 				case R.id.showLayers:
-					intents.startLayersListActivity(false);
+					IntentsHelper.getInstance().startLayersListActivity(false);
 					break;
 				case R.id.clearMap:
 					clearMapAction();
 					break;
 				case R.id.showMyLandmarks:
-		    		intents.startMyLandmarksIntent(getMyPosition());
+		    		IntentsHelper.getInstance().startMyLandmarksIntent(getMyPosition());
 		    		break;
 				case R.id.recentLandmarks:
-		    		intents.startRecentLandmarksIntent(getMyPosition());
+		    		IntentsHelper.getInstance().startRecentLandmarksIntent(getMyPosition());
 		    		break;
 				case R.id.blogeo:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
 		        		if (LandmarkManager.getInstance().hasMyLocation()) {
-		        			intents.startBlogeoActivity();
+		        			IntentsHelper.getInstance().startBlogeoActivity();
 		        		} else {
-		            		intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+		            		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
 		        		}
 		    		} else {
-		        		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+		        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
 		    		}
 		    		break;
 				case R.id.friendsCheckins:
 					if (ConfigurationManager.getUserManager().isFriendSocialLoggedIn()) {
-						intents.startFriendsCheckinsIntent(getMyPosition());
+						IntentsHelper.getInstance().startFriendsCheckinsIntent(getMyPosition());
 					} else {
-						intents.showInfoToast(Locale.getMessage(R.string.Checkin_required_error));
+						IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Checkin_required_error));
 					}
 					break;
 				case R.id.trackPos:
@@ -846,62 +843,62 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 					if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
 			        	dialogManager.showAlertDialog(AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, null);
 			        } else if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
-			            intents.showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosStopped));
+			            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosStopped));
 			        }
 		    		break;
 				case R.id.loadRoute:
-		    		if (intents.startRouteFileLoadingActivity()) {
-		        		intents.showInfoToast(Locale.getMessage(R.string.Routes_NoRoutes));
+		    		if (IntentsHelper.getInstance().startRouteFileLoadingActivity()) {
+		        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_NoRoutes));
 		    		}
 		    		break;
 				case R.id.pauseRoute:
 					RouteRecorder.getInstance().pause();
 		    		if (RouteRecorder.getInstance().isPaused()) {
-		        		intents.showInfoToast(Locale.getMessage(R.string.Routes_PauseRecordingOn));
+		        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_PauseRecordingOn));
 		    		} else {
-		        		intents.showInfoToast(Locale.getMessage(R.string.Routes_PauseRecordingOff));
+		        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_PauseRecordingOff));
 		    		}
 		    		break;
 				case R.id.loadPoiFile: 
-					if (intents.startFilesLoadingActivity()) {
-		        		intents.showInfoToast(Locale.getMessage(R.string.Files_NoFiles));
+					if (IntentsHelper.getInstance().startFilesLoadingActivity()) {
+		        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Files_NoFiles));
 		    		}
 		    		break;
 				case R.id.config:
-					intents.startConfigurationViewerActivity();
+					IntentsHelper.getInstance().startConfigurationViewerActivity();
 					break;
 				case R.id.socialNetworks:
-		    		intents.startSocialListActivity();
+		    		IntentsHelper.getInstance().startSocialListActivity();
 		    		break;
 				case R.id.dataPacket:
 		    		dialogManager.showAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, null);
 		    		break;
 				case R.id.pickMyPos:
-		    		intents.startPickLocationActivity();
+		    		IntentsHelper.getInstance().startPickLocationActivity();
 		    		break;
 				case R.id.deals:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-		    			intents.startCategoryListActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), -1, -1);
+		    			IntentsHelper.getInstance().startCategoryListActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), -1, -1);
 		    		} else {
-		        		intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+		        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
 		    		}
 		    		break;
 				case R.id.register:
-		    		intents.startRegisterActivity();
+		    		IntentsHelper.getInstance().startRegisterActivity();
 		    		break;
 				case R.id.newestLandmarks:
 					final String[] excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
-					intents.startNewestLandmarkIntent(getMyPosition(), excluded, 2);
+					IntentsHelper.getInstance().startNewestLandmarkIntent(getMyPosition(), excluded, 2);
 					break;
 				case R.id.events:
-		    		intents.startCalendarActivity(getMyPosition());
+		    		IntentsHelper.getInstance().startCalendarActivity(getMyPosition());
 		    		break;
 				case R.id.rateUs:
 		    		dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
 		    		break;
 				case R.id.listLandmarks:
 		    		if (!lvView.isShown()) {
-		        		intents.showNearbyLandmarks(getMyPosition(), projection);
+		        		IntentsHelper.getInstance().showNearbyLandmarks(getMyPosition(), projection);
 		    		}
 		    		break;
 				case R.id.shareScreenshot:
@@ -914,7 +911,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 					return true;
 		 	}
 		} else {
-			intents.showInfoToast(Locale.getMessage(R.string.Login_required_error));
+			IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
 		}
 		return true;
     }
@@ -939,7 +936,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                     if (mMap != null) {
                     	zoom = (int)mMap.getCameraPosition().zoom;
                     }
-                    intents.loadLayersAction(true, null, false, true, location.latitude, location.longitude, zoom, projection);
+                    IntentsHelper.getInstance().loadLayersAction(true, null, false, true, location.latitude, location.longitude, zoom, projection);
                 }
             } else {
                 //load existing layers
@@ -1001,10 +998,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 if (projection.isVisible(landmark.getLatitudeE6(), landmark.getLongitudeE6())) {
                     showMyPositionAction(false);
                 } else {
-                    intents.showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
+                    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
                 }
             } else {
-                intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             }
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
@@ -1014,10 +1011,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 if (filename != null) {
                     return filename;
                 } else {
-                    intents.showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOff));
+                    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOff));
                 }
             } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOff));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOff));
             }
         }
 		return null;
@@ -1042,10 +1039,35 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	markerCluster.clearMarkers();
     	LandmarkManager.getInstance().clearLandmarkStore();
     	RoutesManager.getInstance().clearRoutesStore();
-        intents.showInfoToast(Locale.getMessage(R.string.Maps_cleared));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Maps_cleared));
     }
     
-    private void showMyPositionAction(boolean loadLayers) {
+    private void showMapAndMarkers() {
+		if (!findViewById(R.id.mapContainer).isShown()) {
+			findViewById(R.id.mapContainer).setVisibility(View.VISIBLE);
+			findViewById(R.id.mapCanvasWidgetL).setVisibility(View.GONE);
+		}
+		if ((lvView == null || !lvView.isShown()) && getSupportActionBar() != null) {
+			getSupportActionBar().show();
+		}
+		
+	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, this.getResources().getDisplayMetrics());	
+	    markerCluster.loadAllMarkers();
+	    
+	    routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
+	    routesCluster.loadAllRoutes();
+	    
+	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+	        String route = RouteRecorder.getInstance().startRecording();
+	        //Intent routeTracingService = new Intent(this, RouteTracingService.class);	
+	        //startService(routeTracingService);
+	        routesCluster.showRouteAction(route, true);
+	
+	        MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
+	    }
+	}
+
+	private void showMyPositionAction(boolean loadLayers) {
         boolean isVisible = false;
         boolean clearLandmarks = false;
        
@@ -1060,7 +1082,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         	if (!isVisible) {
         		hideLandmarkView();
-        		clearLandmarks = intents.isClearLandmarksRequired(projection, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
+        		clearLandmarks = IntentsHelper.getInstance().isClearLandmarksRequired(projection, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
             		 MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), MathUtils.coordDoubleToInt(myLoc.getLatitude()), MathUtils.coordDoubleToInt(myLoc.getLongitude()));
         	}
         	
@@ -1068,7 +1090,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         		if (clearLandmarks) {
             		markerCluster.clearMarkers();
             	}
-                intents.loadLayersAction(true, null, clearLandmarks, true, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
+                IntentsHelper.getInstance().loadLayersAction(true, null, clearLandmarks, true, myLoc.getLatitude(), myLoc.getLongitude(), (int)mMap.getCameraPosition().zoom, projection);
             }     
         }     
         animateTo(myLocLatLng);
@@ -1083,42 +1105,17 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    	mMap.moveCamera(cameraUpdate);
 	    } 
         if (loadLayers) {     	
-            intents.loadLayersAction(true, null, clearMap, true,
+            IntentsHelper.getInstance().loadLayersAction(true, null, clearMap, true,
                     mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude,
                     (int)mMap.getCameraPosition().zoom, projection);
         }
     }
     
-    private void showMapAndMarkers() {
-    	if (!findViewById(R.id.mapContainer).isShown()) {
-			findViewById(R.id.mapContainer).setVisibility(View.VISIBLE);
-			findViewById(R.id.mapCanvasWidgetL).setVisibility(View.GONE);
-		}
-    	if ((lvView == null || !lvView.isShown()) && getSupportActionBar() != null) {
-    		getSupportActionBar().show();
-    	}
-    	
-	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, this.getResources().getDisplayMetrics());	
-	    markerCluster.loadAllMarkers();
-	    
-	    routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
-	    routesCluster.loadAllRoutes();
-	    
-	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-            String route = RouteRecorder.getInstance().startRecording();
-            //Intent routeTracingService = new Intent(this, RouteTracingService.class);	
-            //startService(routeTracingService);
-            routesCluster.showRouteAction(route, true);
-
-            MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
-        }
-	}
-	
     private void takeScreenshot(final boolean notify)
     {
     	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), Object.class)) && !isFinishing()) {   		
     		//if (notify) {
-    		//	intents.showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
+    		//	IntentsHelper.getInstance().showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
     		//}   		
     		final SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
             final int shutterSound = soundPool.load(this, R.raw.camera_click, 0);
@@ -1150,14 +1147,14 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                     AsyncTaskManager.getInstance().executeImageUploadTask(out.toByteArray(), filename, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
 				    
 					if (notify) {
-						intents.shareImageAction(uri);
+						IntentsHelper.getInstance().shareImageAction(uri);
 					}
 				}        	
         	};
         
         	mMap.snapshot(callback);
     	} else if (notify) {
-    		intents.showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
+    		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
     	} else {
     		LoggerUtils.debug("Screenshot for current location has already been sent!");
     	}
@@ -1208,7 +1205,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         			activity.showMapAndMarkers();
             	} else if (msg.what == PICK_LOCATION) {
             		if (! activity.appInitialized) {
-            			activity.intents.startPickLocationActivity();
+            			IntentsHelper.getInstance().startPickLocationActivity();
             		}
             	} else if (msg.what == MessageStack.STATUS_MESSAGE) {
         			activity.statusBar.setText(MessageStack.getInstance().getMessage());
@@ -1225,15 +1222,15 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             			activity.takeScreenshot(false);
             		}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
-            		activity.intents.showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
+            		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
             	} else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {
-            		int[] coordsE6 = activity.intents.showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, (int)activity.mMap.getCameraPosition().zoom, activity.projection);
+            		int[] coordsE6 = IntentsHelper.getInstance().showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, (int)activity.mMap.getCameraPosition().zoom, activity.projection);
                     if (coordsE6 != null) {
                     	activity.getSupportActionBar().hide();
                     	activity.animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
                     }
             	} else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_LIST) {
-            		activity.intents.startMultiLandmarkIntent(activity.getMyPosition());
+            		IntentsHelper.getInstance().startMultiLandmarkIntent(activity.getMyPosition());
             		activity.animateTo(new LatLng(MathUtils.coordIntToDouble(msg.arg1), MathUtils.coordIntToDouble(msg.arg2)));
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.routesCluster.showRouteAction((String) msg.obj, true);

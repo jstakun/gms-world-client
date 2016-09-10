@@ -106,11 +106,20 @@ public final class IntentsHelper {
     
     public static final String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
     
-    private Activity activity;
-    private List<ResolveInfo> activities;
     private static Toast longToast, shortToast;
     private static final Object shortMutex = new Object();
     private static final Object longMutex = new Object();   
+    private static final IntentsHelper instance = new IntentsHelper(); 
+    
+    private Activity activity;
+    private List<ResolveInfo> activities;
+    
+    private IntentsHelper() {    	
+    }
+    
+    public static IntentsHelper getInstance() {
+    	return instance;
+    }
     
     private static final ImageGetter imgGetter = new Html.ImageGetter() {
         @Override
@@ -128,7 +137,7 @@ public final class IntentsHelper {
         }
     };
 
-    public IntentsHelper(Activity activity) {
+    public void setActivity(Activity activity) {
         this.activity = activity;
     }
 
@@ -330,9 +339,13 @@ public final class IntentsHelper {
 
     public boolean isIntentAvailable(String action) {
         final Intent intent = new Intent(action);
-        return (intent.resolveActivity(activity.getPackageManager()) != null);      
-        //List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        //return (list.size() > 0);
+        if (activity != null) {
+        	return (intent.resolveActivity(activity.getPackageManager()) != null);      
+        	//List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        	//return (list.size() > 0);
+        } else {
+        	return false;
+        }
     }
 
     public void startQrCodeCheckinActivity(double[] currentLocation) {
@@ -1001,8 +1014,12 @@ public final class IntentsHelper {
     		if (longToast != null) {
     			longToast.cancel();
     		}
-    		longToast = Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_LONG);
-    		longToast.show();
+    		if (activity != null) {
+    			longToast = Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_LONG);
+    			longToast.show();
+    		} else {
+    			LoggerUtils.error("Failed to create toast " + msg);
+    		}
     	}
     }
     
@@ -1011,8 +1028,12 @@ public final class IntentsHelper {
     		if (shortToast != null) {
     			shortToast.cancel();
     		}
-    		shortToast = Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_SHORT);
-    		shortToast.show();
+    		if (activity != null) {
+    			shortToast = Toast.makeText(activity.getApplicationContext(), msg, Toast.LENGTH_SHORT);
+    			shortToast.show();
+    		} else {
+    			LoggerUtils.error("Failed to create toast " + msg);
+    		}
     	}
     }
 

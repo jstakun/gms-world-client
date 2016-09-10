@@ -67,7 +67,6 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 	private boolean local;
 	private AlertDialogBuilder alertBuilder;
 	private ProgressDialog progressDialog;
-	private IntentsHelper intents;
 	private DialogInterface.OnClickListener addLayerListener = new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int item) {
 			ConfigurationManager.getInstance().removeObject(
@@ -77,10 +76,10 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				String name = query.substring(0, query.length()-2);
 				boolean containsLayer = LayerManager.getInstance().addDynamicLayer(name);
 				if (containsLayer) {
-	                intents.showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
+					IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
 	            } else {
 	            	AsyncTaskManager.getInstance().executeIndexDynamicLayer(name, new String[]{name});
-	                intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
+	            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.layerCreated));
 	            }	
 			}
 			callSearchTask();
@@ -105,8 +104,6 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 		searchButton.setVisibility(View.GONE);
 
 		alertBuilder = new AlertDialogBuilder(this, null);
-
-		intents = new IntentsHelper(this);
 
 		local = false;
 
@@ -419,7 +416,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				} else if (type == TYPE.LANDMARKS) {
 					message = Locale.getQuantityMessage(R.plurals.foundLandmarks, landmarkList.size());
 				}
-				intents.showInfoToast(message);
+				IntentsHelper.getInstance().showInfoToast(message);
 			}
 			notifyActivityTaskCompleted();
 		}

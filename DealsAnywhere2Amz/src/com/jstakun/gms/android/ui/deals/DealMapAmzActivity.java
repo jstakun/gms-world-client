@@ -128,7 +128,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         }
 
         if (!appAbort) {
-            ConfigurationManager.getInstance().setContext(getApplicationContext());
             skyhook = new SkyhookUtils(this, loadingHandler);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);

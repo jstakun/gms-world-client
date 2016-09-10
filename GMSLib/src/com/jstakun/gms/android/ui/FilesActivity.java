@@ -43,8 +43,6 @@ public class FilesActivity extends AbstractLandmarkList {
     
     private AlertDialog deleteFileDialog;
     
-    private IntentsHelper intents;
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +60,6 @@ public class FilesActivity extends AbstractLandmarkList {
         if (extras != null) {
             files = extras.getParcelableArrayList("files");
             type = extras.getInt("type");
-
-            intents = new IntentsHelper(this);
 
             String directory = PersistenceManagerFactory.getFileManager().getExternalDirectory(null, null).getAbsolutePath();
             if (directory != null) {
@@ -132,9 +128,9 @@ public class FilesActivity extends AbstractLandmarkList {
         		uri = Uri.fromFile(PersistenceManagerFactory.getFileManager().getPoiFile(files.get(currentPos).getName()));
         	}
         	if (uri != null) {
-        		intents.shareFileAction(uri, type);
+        		IntentsHelper.getInstance().shareFileAction(uri, type);
         	} else {
-        		intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
+        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Unexpected_error));
         	}
         } else if (menuItemIndex == ACTION_RENAME) { 
         	showRenameFileDialog(currentPos);
@@ -187,9 +183,9 @@ public class FilesActivity extends AbstractLandmarkList {
                     		}
                     		//refresh files list
                     		((ArrayAdapter<LandmarkParcelable>) getListAdapter()).getItem(filePos).setName(newName);
-                    		intents.showInfoToast(Locale.getMessage(R.string.Files_rename_confirm));
+                    		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Files_rename_confirm));
                     	} else {
-                    		intents.showInfoToast(Locale.getMessage(R.string.Files_rename_empty));
+                    		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Files_rename_empty));
                     	}
                     }
                 }).
@@ -223,7 +219,7 @@ public class FilesActivity extends AbstractLandmarkList {
             fm.deletePoiFile(filename);
         }
         
-        intents.showInfoToast(Locale.getMessage(R.string.Files_deleted));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Files_deleted));
     }
 
     @Override
@@ -231,6 +227,13 @@ public class FilesActivity extends AbstractLandmarkList {
         super.onStop();
         //UserTracker.getInstance().stopSession(this);
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentsHelper.getInstance().setActivity(this);
+    }
+    
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {

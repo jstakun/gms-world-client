@@ -50,8 +50,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	private static final int ID_DIALOG_PROGRESS = 0;
 	private boolean isDialogVisible = false;
 	private String serviceName = null;
-	private IntentsHelper intents;
-
+	
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
@@ -65,8 +64,6 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
 		UserTracker.getInstance().trackActivity(getClass().getName());
-
-		intents = new IntentsHelper(this);
 
 		webView = (WebView) findViewById(R.id.webview);
 		rl = findViewById(R.id.loadingWebView);
@@ -197,7 +194,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
         	setResult(RESULT_OK, result);
 		}
 		finish();
-		intents.showInfoToast(message);
+		IntentsHelper.getInstance().showInfoToast(message);
 	}
 	
 	private void processJSon(String jsonString) {

@@ -34,10 +34,11 @@ public final class HelpActivity extends Activity {
     private static final String BASE_URL = "file:///android_asset/html/";
     private static final String WEBVIEW_STATE_PRESENT = "webview_state_present";
     private static boolean initialized = false;
+    
     private WebView webView;
     private LinearLayout webviewHolder;
     private View backButton;
-    private IntentsHelper intents = null;
+    
     private final Button.OnClickListener backListener = new Button.OnClickListener() {
 
         public void onClick(View view) {
@@ -66,7 +67,6 @@ public final class HelpActivity extends Activity {
         
         webviewHolder = (LinearLayout) findViewById(R.id.webviewHolder);
 
-        intents = new IntentsHelper(this);
         // Froyo has a bug with calling onCreate() twice in a row, which causes the What's New page
         // that's auto-loaded on first run to appear blank. As a workaround we only call restoreState()
         // if a valid URL was loaded at the time the previous activity was torn down.
@@ -109,6 +109,12 @@ public final class HelpActivity extends Activity {
     protected void onStop() {
         super.onStop();
         //UserTracker.getInstance().stopSession(this);
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentsHelper.getInstance().setActivity(this);
     }
     
     @Override
@@ -161,7 +167,7 @@ public final class HelpActivity extends Activity {
                 return false;
             } else {
                 // Open external URLs in Browser.
-                intents.startActionViewIntent(url);
+            	IntentsHelper.getInstance().startActionViewIntent(url);
                 return true;
             }
         }

@@ -37,7 +37,6 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     private AlertDialog deleteLandmarkDialog;
     private int currentPos = -1, requestCode = -1;
     public static final String LANDMARK = "landmark";
-    private IntentsHelper intents;
     private double lat, lng;
     private GetLandmarksTask getLandmarksTask;
     private View progress;
@@ -55,8 +54,6 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         progress = findViewById(R.id.listLoadingProgress);
-
-        intents = new IntentsHelper(this);
 
         Intent intent = getIntent();
         requestCode = intent.getIntExtra("requestCode", -1);
@@ -78,7 +75,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
                 getLandmarksTask.execute();
                 //AsyncTaskExecutor.execute(getLandmarksTask, this);
             } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
                 finish();
             }
         }
@@ -133,7 +130,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
             menu.setHeaderTitle(landmark.getName());
             menu.setHeaderIcon(R.drawable.ic_dialog_menu_generic);
             String[] menuItems = getResources().getStringArray(R.array.landmarkContextMenu);
-            boolean authStatus = intents.checkAuthStatus(landmark.getLayer());
+            boolean authStatus = IntentsHelper.getInstance().checkAuthStatus(landmark.getLayer());
             for (int i = 0; i < menuItems.length; i++) { //open, checkin, delete	
                 if (i != 1 || authStatus) {
                 	menu.add(Menu.NONE, i, Menu.NONE, menuItems[i]);
@@ -155,7 +152,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
         		boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
         		CheckinManager.getInstance().checkinAction(addToFavourites, false, selectedLandmark);
         	} else {
-        		intents.showInfoToast(Locale.getMessage(R.string.Unexpected_error));
+        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Unexpected_error));
         	}
         } else if (menuItemIndex == 2) {
         	deleteLandmarkDialog.setTitle(Locale.getMessage(R.string.Landmark_delete_prompt, getLandmarksTask.getLandmarks().get(currentPos).getName()));
@@ -211,7 +208,7 @@ public class LandmarkListActivity extends AbstractLandmarkList {
                message = Locale.getMessage(R.string.Landmark_deleted_error);
             }
         }
-        intents.showInfoToast(message);
+        IntentsHelper.getInstance().showInfoToast(message);
     }
 
     private void onTaskPreExecute() {
@@ -222,10 +219,10 @@ public class LandmarkListActivity extends AbstractLandmarkList {
     private void onTaskPostExecute() {
         //System.out.println("onPostExecute() start");
         if (getLandmarksTask.getLandmarks().isEmpty()) {
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
             finish();
         } else {
-        	intents.showInfoToast(Locale.getQuantityMessage(R.plurals.foundLandmarks, getLandmarksTask.getLandmarks().size()));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getQuantityMessage(R.plurals.foundLandmarks, getLandmarksTask.getLandmarks().size()));
             
         	if (requestCode == IntentsHelper.INTENT_MYLANDMARKS) {
                 setTitle(R.string.listLocations);

@@ -25,7 +25,6 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final TextView footer;
-    private IntentsHelper intents;
     private static final String[] services = {Commons.GMS_WORLD, Commons.FACEBOOK, Commons.FOURSQUARE,
         Commons.GOOGLE, Commons.TWITTER, Commons.LINKEDIN};
     private static final String[] send_status = {"0", ConfigurationManager.FB_SEND_STATUS, ConfigurationManager.FS_SEND_STATUS,
@@ -47,7 +46,6 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     OAuthServiceFactory.getServiceName(Commons.LINKEDIN)});
         this.context = context;
         this.footer = footer;
-        intents = new IntentsHelper(context);
     }
     
     @Override
@@ -75,12 +73,12 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                 if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
                 	String username;
                 	username =  OAuthServiceFactory.getUsername(services[position]);
-                	intents.startActionViewIntent(ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username);
+                	IntentsHelper.getInstance().startActionViewIntent(ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username);
                 }  else if (ConfigurationManager.getInstance().isOff(auth_status[position])) {
                     if (position == 0) {
-                        intents.startLoginActivity();
+                    	IntentsHelper.getInstance().startLoginActivity();
                     } else {
-                        intents.startOAuthActivity(services[position]);
+                    	IntentsHelper.getInstance().startOAuthActivity(services[position]);
                     }
                 }
             }
@@ -127,7 +125,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
         holder.headerText.setCompoundDrawablesWithIntrinsicBounds(icons[position], 0, 0, 0);
         
-        holder.loginButton.setOnClickListener(new PositionClickListener(position, holder, intents, context, this));
+        holder.loginButton.setOnClickListener(new PositionClickListener(position, holder, context, this));
 
         if (ConfigurationManager.getInstance().isOn(auth_status[position])) {
             holder.loginButton.setText(Locale.getMessage(R.string.Social_logoutButton, adapter));
@@ -151,14 +149,12 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
 
         private int position;
         private ViewHolder holder;
-        private IntentsHelper intents;
         private Activity context;
         private SocialArrayAdapter socialAdapter;
         
-        public PositionClickListener(int pos, ViewHolder holder, IntentsHelper intents, Activity context, SocialArrayAdapter socialAdapter) {
+        public PositionClickListener(int pos, ViewHolder holder, Activity context, SocialArrayAdapter socialAdapter) {
             this.position = pos;
             this.holder = holder;
-            this.intents = intents;
             this.context = context;
             this.socialAdapter = socialAdapter;
         }
@@ -169,7 +165,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     //gms logout
                 	GMSUtils.logout();
                 	socialAdapter.notifyDataSetChanged();
-                    intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
+                	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
                     //refresh listview footer
                     String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (username != null) {
@@ -179,7 +175,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     }
                 } else if (ConfigurationManager.getInstance().isOff(auth_status[0])) {
                     //gms login
-                	intents.startLoginActivity();
+                	IntentsHelper.getInstance().startLoginActivity();
                     context.finish();
                 }
             } else { //OAuth
@@ -187,7 +183,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     //oauth logout
                     OAuthServiceFactory.getSocialUtils(services[position]).logout();
                     socialAdapter.notifyDataSetChanged();
-                    intents.showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
+                    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Social_Logout_successful));
                     //refresh listview footer
                     String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                     if (username != null) {
@@ -198,7 +194,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
                     //
                 } else if (ConfigurationManager.getInstance().isOff(auth_status[position])) {
                     //oauth login
-                    intents.startOAuthActivity(services[position]);
+                	IntentsHelper.getInstance().startOAuthActivity(services[position]);
                 }
             }
         }

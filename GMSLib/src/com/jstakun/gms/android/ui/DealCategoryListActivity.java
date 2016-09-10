@@ -42,8 +42,6 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     private List<String> names = null;
     private int parent = -1, radius = 3, currentPos = -1, lat, lng;
     
-    private IntentsHelper intents;
-    
     private View searchButton, mapViewButton, addLayerButton;
     private AlertDialog deleteLayerDialog;
     
@@ -60,8 +58,6 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
-
-        intents = new IntentsHelper(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -131,12 +127,14 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
             setTitle(Locale.getMessage(R.string.dealsString, parentCat.getCategory()));
         }
 
+        IntentsHelper.getInstance().setActivity(this);
+        
         setListAdapter(new DealCategoryArrayAdapter(this, names));
     }
 
     @Override
     public boolean onSearchRequested() {
-        intents.startSearchActivity(lat, lng, radius, true);
+    	IntentsHelper.getInstance().startSearchActivity(lat, lng, radius, true);
         return true;
     }
 
@@ -182,7 +180,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        intents.processActivityResult(requestCode, resultCode, intent, new double[]{lat, lng}, null, null, -1, null);
+    	IntentsHelper.getInstance().processActivityResult(requestCode, resultCode, intent, new double[]{lat, lng}, null, null, -1, null);
     }
 
     public void onClick(View v) {
@@ -268,7 +266,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
     protected void onClickAction(int position, String action) {
         if (action.equals("drill")) {
-            intents.startCategoryListActivity(lat, lng, categories.get(position).getCategoryID(), radius);
+        	IntentsHelper.getInstance().startCategoryListActivity(lat, lng, categories.get(position).getCategoryID(), radius);
         } else if (action.equals("cancel")) {
             cancelActivity(false);
         } else {
@@ -288,7 +286,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
                 setResult(RESULT_OK, result);
                 finish();
             } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
             }
         }
     }
@@ -313,12 +311,12 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
     private void layerDeleteAction() {
         Category c = getCategory(currentPos);
         if (!c.isCustom()) {
-            intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
         } else {
         	LandmarkManager.getInstance().deleteLayer(c.getCategory());
             ((ArrayAdapter<String>) getListAdapter()).remove(names.remove(currentPos));
             categories.remove(c);
-            intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, c.getCategory()));
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_deleted, c.getCategory()));
         }
     }
 

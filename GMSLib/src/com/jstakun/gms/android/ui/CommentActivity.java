@@ -21,8 +21,7 @@ public class CommentActivity extends Activity implements OnClickListener {
     private View commentButton, cancelButton;
     private EditText commentText;
     private String service, placeId, name;
-    private IntentsHelper intents;
-
+    
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -36,8 +35,6 @@ public class CommentActivity extends Activity implements OnClickListener {
         if (extras != null) {
             //UserTracker.getInstance().startSession(this);
             UserTracker.getInstance().trackActivity(getClass().getName());
-
-            intents = new IntentsHelper(this);
 
             service = extras.getString("service");
             placeId = extras.getString("placeId");
@@ -67,7 +64,7 @@ public class CommentActivity extends Activity implements OnClickListener {
             	AsyncTaskManager.getInstance().executeSendCommentTask(service, placeId, commentText.getText().toString(), name);
                 finish();
             } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Comment_empty_error));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Comment_empty_error));
             }
         } else if (v == cancelButton) {
             finish();

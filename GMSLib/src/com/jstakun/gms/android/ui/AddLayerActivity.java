@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
@@ -27,7 +26,6 @@ public class AddLayerActivity extends Activity implements OnClickListener {
 
     private View addButton, cancelButton;
     private EditText nameText, keywordsText;
-    private IntentsHelper intents = null;
     private String name;
     private static final String NAME = "name";
     
@@ -43,42 +41,12 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        //Object retained = getLastNonConfigurationInstance();
-        //if (retained instanceof String) {
-        //    name = (String) retained;
-        //}
-        
         if (savedInstanceState != null) {
         	name = savedInstanceState.getString(NAME);
         } 
 
         initComponents();
     }
-
-    /*@Override
-    protected Dialog onCreateDialog(int id) {
-        if (id == ID_DIALOG_PROGRESS) {
-            //System.out.println("onCreateDialog------- ID_DIALOG_PROGRESS -------------------------");
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            if (name != null) {
-                progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Layer_creating_dynamic, name)));
-            } else {
-                progressDialog.setMessage(Locale.getMessage(R.string.Please_Wait));
-            }
-            progressDialog.setIndeterminate(true);
-            progressDialog.setCancelable(false);
-            progressDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-            return progressDialog;
-        } else {
-            //System.out.println("onCreateDialog--------------------------------");
-            return super.onCreateDialog(id);
-        }
-    }*/
-
-    //@Override
-    //public Object onRetainNonConfigurationInstance() {
-    //    return name;
-    //}
     
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -90,8 +58,6 @@ public class AddLayerActivity extends Activity implements OnClickListener {
         cancelButton = findViewById(R.id.cancelButton);
         keywordsText = (EditText) findViewById(R.id.keywordsText);
         nameText = (EditText) findViewById(R.id.nameText);
-
-        intents = new IntentsHelper(this);
 
         AdsUtils.loadAd(this);
 
@@ -168,51 +134,14 @@ public class AddLayerActivity extends Activity implements OnClickListener {
             containsLayer = LayerManager.getInstance().addDynamicLayer(keywordsJoin);
           
             if (containsLayer) {
-                intents.showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_exists_error));
             } else {
             	AsyncTaskManager.getInstance().executeIndexDynamicLayer(name, keywordsList.toArray(new String[keywordsList.size()]));
-                intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
-                //new AddLayerTask(this, name, keywordsList.toArray(new String[keywordsList.size()])).execute();
-            	finish();
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.layerCreated));
+                finish();
             }
         } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Layer_name_empty_error));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_name_empty_error));
         }
     }
-
-    /*private class AddLayerTask extends GMSAsyncTask<Void, Void, Void> {
-
-        private AddLayerActivity activity;
-        private String[] keywords;
-        private String name;
-
-        public AddLayerTask(AddLayerActivity caller, String name, String[] keywords) {
-            super(1);
-            this.activity = caller;
-            this.name = name;
-            this.keywords = keywords;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            showDialog(ID_DIALOG_PROGRESS);
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            List<LandmarkParcelable> results = new ArrayList<LandmarkParcelable>();
-            landmarkManager.searchLandmarks(results, null, keywords, 0.0, 0.0, -1);
-            Layer l = landmarkManager.getLayerManager().getLayer(name);
-            if (l != null) {
-                l.setCount(results.size());
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void errorMessage) {
-            intents.showInfoToast(Locale.getMessage(R.string.layerCreated));
-            activity.onTaskCompleted();
-        }
-    }*/
 }

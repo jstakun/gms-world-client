@@ -55,7 +55,6 @@ public class AsyncTaskManager {
     public static final int SHOW_ROUTE_MESSAGE = 30;
     private static Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress = new ConcurrentHashMap<Integer, GMSAsyncTask<?,?,?>>();
     private GMSNotificationManager notificationManager;
-    private IntentsHelper intents;
     private Activity activity;
     private static final AsyncTaskManager instance = new AsyncTaskManager();
     
@@ -69,7 +68,6 @@ public class AsyncTaskManager {
     public final void setActivity(Activity context) {
         this.activity = context;
         this.notificationManager = new GMSNotificationManager(context);
-        intents = new IntentsHelper(context);
     }
 
     public void cancelTask(Integer taskId, boolean notify) {
@@ -86,7 +84,7 @@ public class AsyncTaskManager {
         }
 
         if (notify) {
-            intents.showInfoToast(message);
+        	IntentsHelper.getInstance().showInfoToast(message);
         }
     }
 
@@ -217,7 +215,7 @@ public class AsyncTaskManager {
 
     public void executeRouteLoadingTask(String filename, Handler showRouteHandler) {
         String route_loading_msg = Locale.getMessage(R.string.Routes_Background_task_loading);
-        intents.showInfoToast(Locale.getMessage(R.string.Task_started, route_loading_msg));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, route_loading_msg));
         LoadRouteTask routeLoading = new LoadRouteTask(showRouteHandler);
         String notificationId = createNotification(R.drawable.route_24, route_loading_msg, route_loading_msg, true);
         routeLoading.execute(filename, notificationId);
@@ -236,11 +234,11 @@ public class AsyncTaskManager {
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
             if (res.equals("0")) {
-                intents.showInfoToast(Locale.getMessage(R.string.Routes_Failed));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_Failed));
             } else {
                 Message msg = showRouteHandler.obtainMessage(SHOW_ROUTE_MESSAGE, filename);
                 showRouteHandler.handleMessage(msg);
-                intents.showInfoToast(Locale.getMessage(R.string.Routes_Loaded));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_Loaded));
             }
         }
 
@@ -280,7 +278,7 @@ public class AsyncTaskManager {
 
             ExtendedLandmark start = myPosV.get(0);
             String route_loading_msg = Locale.getMessage(R.string.Routes_Background_task_loading);
-            intents.showInfoToast(Locale.getMessage(R.string.Task_started, route_loading_msg));
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, route_loading_msg));
             LoadServerRouteTask routeLoading = new LoadServerRouteTask(showRouteHandler, silent);
             String notificationId = createNotification(R.drawable.route_24, route_loading_msg, route_loading_msg, true);
             double[] start_coords = MercatorUtils.normalizeE6(new double[]{start.getQualifiedCoordinates().getLatitude(), start.getQualifiedCoordinates().getLongitude()});
@@ -288,7 +286,7 @@ public class AsyncTaskManager {
             String routeName = StringUtils.replace(end.getName(), " ", "_") + "-My_Location-" + DateTimeUtils.getCurrentDateStamp();
             routeLoading.execute(routeName, notificationId, Double.toString(start_coords[0]), Double.toString(start_coords[1]), Double.toString(end_coords[0]), Double.toString(end_coords[1]), type, end.getName());
         } else if (!silent) {
-            intents.showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
         }
     }
 
@@ -311,7 +309,7 @@ public class AsyncTaskManager {
             	showRouteHandler.handleMessage(msg);
             }
             if (!silent) {
-            	intents.showInfoToast(res);
+            	IntentsHelper.getInstance().showInfoToast(res);
             }
         }
 
@@ -331,15 +329,12 @@ public class AsyncTaskManager {
     public void executePoiFileLoadingTask(String filename, Handler handler) {
         if (!LayerManager.getInstance().layerExists(filename)) {
             String files_loading_msg = Locale.getMessage(R.string.Files_Background_task_loading);
-            intents.showInfoToast(Locale.getMessage(R.string.Task_started, files_loading_msg));
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, files_loading_msg));
             LoadPoiFileTask poiLoading = new LoadPoiFileTask(handler);
             String notificationId = createNotification(R.drawable.star24, files_loading_msg, files_loading_msg, true);
             poiLoading.execute(filename, notificationId);
-            //if (!AsyncTaskExecutor.execute(poiLoading, activity, filename, Integer.toString(notificationId))) {
-            //  poiLoading.clear();
-            //}
         } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Layer_exists));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_exists));
         }
     }
 
@@ -355,9 +350,9 @@ public class AsyncTaskManager {
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
             if (res.equals("0")) {
-                intents.showInfoToast(Locale.getMessage(R.string.Files_Failed));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Files_Failed));
             } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Files_Loaded, res));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Files_Loaded, res));
             }
         }
 
@@ -398,8 +393,8 @@ public class AsyncTaskManager {
 
     public void executeSaveRouteTask(String filename) { 	
     	String message = Locale.getMessage(R.string.saveRoute);
-        //intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
-        intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+        //IntentsHelper.getInstance().showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
         SaveRouteTask saveRoute = new SaveRouteTask();
         String notificationId = createNotification(R.drawable.route_24, message, message, true);
         saveRoute.execute(filename, notificationId);
@@ -421,7 +416,7 @@ public class AsyncTaskManager {
             } else {
                 message = Locale.getMessage(R.string.Routes_NoRoute);
             }
-            intents.showInfoToast(message);
+            IntentsHelper.getInstance().showInfoToast(message);
         }
 
         @Override
@@ -436,7 +431,7 @@ public class AsyncTaskManager {
     public void executeSocialCheckInTask(String message, int icon, boolean silent, String layer, String venueid, String name, Double lat, Double lng, List<String> checkinInProgress) {
     	String notificationId = "-1";
     	if (!silent) {
-            intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
             notificationId = createNotification(icon, message, message, true);
         }
         SocialCheckinTask checkInTask = new SocialCheckinTask(checkinInProgress);
@@ -467,7 +462,7 @@ public class AsyncTaskManager {
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
             if (! silent) {
-            	intents.showInfoToast(res);
+            	IntentsHelper.getInstance().showInfoToast(res);
             } else {
             	LoggerUtils.debug(res);
             }
@@ -494,8 +489,8 @@ public class AsyncTaskManager {
     }
 
     public void executeQrCodeCheckInTask(String checkinLandmarkCode, String qrformat, String message) {
-        //intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
-        intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+        //IntentsHelper.getInstance().showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
         QrCodeCheckInTask checkInTask = new QrCodeCheckInTask();
         String notificationId = createNotification(-1, message, message, true);
         checkInTask.execute("", notificationId, checkinLandmarkCode, qrformat);
@@ -511,7 +506,7 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
-            intents.showInfoToast(res);
+            IntentsHelper.getInstance().showInfoToast(res);
         }
 
         @Override
@@ -534,7 +529,7 @@ public class AsyncTaskManager {
     public void executeLocationCheckInTask(int icon, String checkinLandmarkCode, String message, String name, boolean silent, List<String> checkinInProgress) {
         String notificationId = "-1";
         if (!silent) {
-               intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+               IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
                notificationId = createNotification(icon, message, message, true);
            }
            LocationCheckinTask checkInTask = new LocationCheckinTask(checkinInProgress);
@@ -554,7 +549,7 @@ public class AsyncTaskManager {
            protected void onPostExecute(String res) {
                super.onPostExecute(res);
                if (! silent) {
-                   intents.showInfoToast(res);
+                   IntentsHelper.getInstance().showInfoToast(res);
                } else {
             	   LoggerUtils.debug(res);
                }
@@ -579,8 +574,8 @@ public class AsyncTaskManager {
     public void executeSocialSendMyLocationTask(boolean silent) {
         if (!silent) {
         	String message = Locale.getMessage(R.string.Task_Background_sendMyLoc);
-        	//intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
-        	intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+        	//IntentsHelper.getInstance().showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
         	SocialSendMyLocationTask socialSendMyLocationTask = new SocialSendMyLocationTask();
         	String notificationId = createNotification(R.drawable.checkin_24, message, message, true);
         	socialSendMyLocationTask.execute("", notificationId);
@@ -600,13 +595,13 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String msg) {
             super.onPostExecute(msg);
-            intents.showInfoToast(msg);
+            IntentsHelper.getInstance().showInfoToast(msg);
         }
     }
 
     public void executeSendBlogeoPostTask(String name, String desc, String validityDate, String message) {
-        //intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
-        intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+        //IntentsHelper.getInstance().showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
         SendBlogeoPostTask sendBlogeoPostTask = new SendBlogeoPostTask();
         String notificationId = createNotification(-1, message, message, true);
         sendBlogeoPostTask.execute("", notificationId, name, desc, validityDate);
@@ -642,13 +637,13 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
-            intents.showInfoToast(res);
+            IntentsHelper.getInstance().showInfoToast(res);
         }
     }
 
     public void executeAddLandmarkTask(String name, String desc, String layer, String message, double lat, double lng, boolean addVenue, String fsCategory) {
         //System.out.println(name + " " + desc + " " + layer + " " + addVenue);
-        intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
         AddLandmarkTask addLandmarkTask = new AddLandmarkTask(lat, lng);
         String notificationId = createNotification(-1, message, message, true);
         addLandmarkTask.execute("", notificationId, name, desc, layer);
@@ -709,7 +704,7 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
-            intents.showInfoToast(res);
+            IntentsHelper.getInstance().showInfoToast(res);
         }
     }
 
@@ -738,14 +733,14 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
-            intents.showInfoToast(res);
+            IntentsHelper.getInstance().showInfoToast(res);
         }
     }
 
     public void executeSendCommentTask(String service, String placeId, String commentText, String name) {
-        //intents.showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
+        //IntentsHelper.getInstance().showInfoToast(Locale.getMessage("Background.task.executed", new Object[]{message}));
         String message = Locale.getMessage(R.string.Task_Background_send_comment);
-        intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
         SendCommentTask sendCommentTask = new SendCommentTask();
         String notificationId = createNotification(-1, message, message, true);
         sendCommentTask.execute("", notificationId, service, placeId, commentText, name);
@@ -759,7 +754,7 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
-            intents.showInfoToast(res);
+            IntentsHelper.getInstance().showInfoToast(res);
         }
 
         @Override
@@ -781,7 +776,7 @@ public class AsyncTaskManager {
 
     public void executeLoginTask(String login, String password) {
         String message = Locale.getMessage(R.string.Task_Background_login);
-        intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
         LoginTask loginTask = new LoginTask();
         String notificationId = createNotification(-1, message, message, true);
         loginTask.execute("", notificationId, login, password);
@@ -793,9 +788,9 @@ public class AsyncTaskManager {
         protected void onPostExecute(String message) {
             super.onPostExecute(message);
             if (message != null) {
-                intents.showInfoToast(message);
+                IntentsHelper.getInstance().showInfoToast(message);
             } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Authn_success));
+                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Authn_success));
             }
         }
 
@@ -807,7 +802,7 @@ public class AsyncTaskManager {
     }
 
     public void executeClearStatsTask(String message) {
-        intents.showInfoToast(Locale.getMessage(R.string.Task_started, message));
+        IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, message));
         ClearStatsTask clearTasks = new ClearStatsTask();
         String notificationId = createNotification(-1, message, message, true);
         clearTasks.execute("", notificationId);
@@ -818,7 +813,7 @@ public class AsyncTaskManager {
         @Override
         protected void onPostExecute(String res) {
             super.onPostExecute(res);
-            intents.showInfoToast(res);
+            IntentsHelper.getInstance().showInfoToast(res);
         }
 
         @Override
@@ -901,7 +896,7 @@ public class AsyncTaskManager {
         protected void onPostExecute(Boolean status) {
             if (status) {
                 try {
-                    DialogManager dialogManager = new DialogManager((Activity)activity, intents, null, null);
+                    DialogManager dialogManager = new DialogManager((Activity)activity, null, null);
                     dialogManager.showAlertDialog(AlertDialogBuilder.NEW_VERSION_DIALOG, null, null);
                 } catch (Throwable e) {
                     LoggerUtils.error("NewVersionCheckTask.onPostExceute() exception:", e);
@@ -911,14 +906,14 @@ public class AsyncTaskManager {
 
         @Override
         protected Boolean doInBackground(Void... arg0) {
-            return intents.isNewerVersionAvailable();
+            return IntentsHelper.getInstance().isNewerVersionAvailable();
         }
     }
 
     public void executeImageUploadTask(double lat, double lng, boolean notify) {
     	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), Object.class)) && !activity.isFinishing()) {
     	    //if (notify) {
-    		//	intents.showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
+    		//	IntentsHelper.getInstance().showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
     		//}   		
     		long loadingTime = 0; 
     		Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
@@ -931,7 +926,7 @@ public class AsyncTaskManager {
     		String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
     		new TakeScreenshotTask(filename, notify).execute(lat, lng);
     	} else if (notify) {
-    		intents.showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
+    		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
     	} else {
     		LoggerUtils.debug("Screenshot for current location has already been sent!");
     	}
@@ -998,7 +993,7 @@ public class AsyncTaskManager {
     	@Override
         protected void onPostExecute(Void res) {
     		if (notify && uri != null) {
-    			intents.shareImageAction(uri);
+    			IntentsHelper.getInstance().shareImageAction(uri);
     		}
     	}
     	

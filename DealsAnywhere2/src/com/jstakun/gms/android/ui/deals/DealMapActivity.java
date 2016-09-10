@@ -108,7 +108,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        ConfigurationManager.getInstance().setContext(getApplicationContext());
         OsUtil.setDisplayType(getResources().getConfiguration()); 
         loadingHandler = new LoadingHandler(this);
         

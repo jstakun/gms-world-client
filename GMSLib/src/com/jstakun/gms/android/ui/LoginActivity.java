@@ -20,8 +20,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
     private View loginButton, cancelButton;
     private EditText loginText, passwordText;
-    private IntentsHelper intents;
-
+    
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -32,8 +31,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
-
-        intents = new IntentsHelper(this);
 
         initComponents();
     }
@@ -62,7 +59,7 @@ public class LoginActivity extends Activity implements OnClickListener {
             	AsyncTaskManager.getInstance().executeLoginTask(loginText.getText().toString(), passwordText.getText().toString());
                 finish();            
             } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Empty_credentials_error));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Empty_credentials_error));
             }
         } else if (v == cancelButton) {
             UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".LoginCancelled", "", 0);

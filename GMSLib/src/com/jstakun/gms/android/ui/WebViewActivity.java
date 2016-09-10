@@ -29,8 +29,8 @@ public class WebViewActivity extends Activity {
     private View rl, backButton;
     private LinearLayout webviewHolder;
     private String url = null, title = null;
-    private IntentsHelper intents = null;
     private static final String WEBVIEW_STATE_PRESENT = "webview_state_present";
+    
     private final Button.OnClickListener backListener = new Button.OnClickListener() {
         public void onClick(View view) {
             webView.goBack();
@@ -61,8 +61,6 @@ public class WebViewActivity extends Activity {
         setContentView(R.layout.gms_webview);
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
-
-        intents = new IntentsHelper(this);
 
         setProgressBarIndeterminateVisibility(true);
         setProgressBarVisibility(true);
@@ -137,6 +135,7 @@ public class WebViewActivity extends Activity {
     protected void onResume() {
         super.onResume();
         backButton.setEnabled(webView.canGoBack());
+        IntentsHelper.getInstance().setActivity(this);
     }
 
     @Override
@@ -203,7 +202,7 @@ public class WebViewActivity extends Activity {
             //System.out.println("shouldOverrideUrlLoading Loading url: " + url);
             LoggerUtils.debug("Loading url: " + url);
             if (url.startsWith("market://")) {
-                intents.startActionViewIntent(url);
+            	IntentsHelper.getInstance().startActionViewIntent(url);
             } else {
                 view.loadUrl(url);
             }

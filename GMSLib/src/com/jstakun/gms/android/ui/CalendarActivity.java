@@ -19,7 +19,6 @@ import com.jstakun.gms.android.utils.UserTracker;
 public class CalendarActivity extends Activity {
 	
 	CalendarView calendarView;
-    private IntentsHelper intents;
     private double lat = 0.0d, lng = 0.0d;
     private static boolean isSearching = false;
     
@@ -36,7 +35,7 @@ public class CalendarActivity extends Activity {
 			    if (!isSearching) {
 			    	java.util.Locale currentLocale = ConfigurationManager.getInstance().getCurrentLocale();
 			    	String date = DateTimeUtils.getShortDateString(view.getDate(), currentLocale);
-			    	intents.showShortToast(Locale.getMessage(R.string.Searching_calendar_message, date));
+			    	IntentsHelper.getInstance().showShortToast(Locale.getMessage(R.string.Searching_calendar_message, date));
 			    	new GetLandmarksTask().execute(year, month, dayOfMonth);
 			    }
 		    }
@@ -47,40 +46,12 @@ public class CalendarActivity extends Activity {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
         
-        intents = new IntentsHelper(this);
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             lat = extras.getDouble("lat");
             lng = extras.getDouble("lng");
         }
         
-        //Calendar cal = Calendar.getInstance();
-        //cal.add(Calendar.YEAR, 1);
-        //calendarView.setMaxDate(cal.getTimeInMillis());
-        
-        //cal.add(Calendar.YEAR, -2);
-        //calendarView.setMinDate(cal.getTimeInMillis());
-        
-        //final ListView mListView = (ListView) findViewById(android.R.id.list);
-        //adapter = (BaseAdapter) mListView.getAdapter();
-        
-        /*mListView.setClickable(true);
-        mListView.setAddStatesFromChildren(true);
-        mListView.setOnTouchListener(new CalendarTouchListener());  	
-        adapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-            	System.out.println("Data set changed ....................................");
-            }
-        });  
-        mListView.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				System.out.println("OnItemClick " + position + "...");
-				
-			}
-		});*/
         AdsUtils.loadAd(this);
     }    
 	
@@ -137,42 +108,12 @@ public class CalendarActivity extends Activity {
                         setResult(RESULT_OK, result);
                         finish();
                     } else {
-                        intents.showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
+                    	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
                     }
                 }
             }
         }
     }
-    
-    /*private class CalendarTouchListener implements View.OnTouchListener {
-    
-    	//private final GestureDetector mGestureDetector;
-    	
-    	//public CalendarTouchListener() {
-    	//	mGestureDetector = new GestureDetector(ConfigurationManager.getInstance().getContext(), new CalendarGestureListener());
-    	//}
-
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-        	//if (mGestureDetector.onTouchEvent(event)) {
-        		//System.out.println("onSingleTapUp");
-        		//intents.showInfoToast("Searching for landmarks for the day...");
-        	//} else {
-        		//System.out.println("onTouch");
-        	//}
-        	if (!isSearching) {
-        		adapter.notifyDataSetChanged();
-        	}
-        	return false;
-		}
-    	
-		//private class CalendarGestureListener extends GestureDetector.SimpleOnGestureListener {
-        //    @Override
-        //    public boolean onSingleTapUp(MotionEvent event) {
-        //    	return true;
-        //    }
-        //}
-    }*/
     
     private class GetLandmarksTask extends GMSAsyncTask<Integer, Void, Void> {
 
@@ -189,7 +130,7 @@ public class CalendarActivity extends Activity {
 		@Override
 		protected Void doInBackground(Integer... params) {
 			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CalendarCellAction", "", 0);
-	    	intents.showLandmarksInDay(new double[]{lat, lng}, params[0], params[1], params[2]);
+			IntentsHelper.getInstance().showLandmarksInDay(new double[]{lat, lng}, params[0], params[1], params[2]);
 	    	return null;
 		}
     	

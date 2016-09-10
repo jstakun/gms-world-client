@@ -144,8 +144,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         mapProvider = ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER);
-        ConfigurationManager.getInstance().setContext(getApplicationContext());
-
+        
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         OsUtil.setDisplayType(getResources().getConfiguration());

@@ -25,8 +25,7 @@ public class SendBlogeoPostActivity extends Activity implements OnClickListener 
     private EditText nameText, descText;
     private TimePicker timePicker;
     private long validityTime = 0;
-    private IntentsHelper intents;
-
+    
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -37,8 +36,6 @@ public class SendBlogeoPostActivity extends Activity implements OnClickListener 
         
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
-
-        intents = new IntentsHelper(this);
 
         initComponents();
     }
@@ -89,7 +86,7 @@ public class SendBlogeoPostActivity extends Activity implements OnClickListener 
             setResult(RESULT_OK, result);
             finish();
         } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_name_empty_error));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_name_empty_error));
         }
     }
 

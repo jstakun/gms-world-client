@@ -39,8 +39,6 @@ public class GridCategoryListActivity extends Activity {
     private List<String> names = null;
     private List<Category> categories = null;
     
-    private IntentsHelper intents;
-    
     private GridView gridView;
     private AlertDialog deleteLayerDialog;
     
@@ -58,8 +56,6 @@ public class GridCategoryListActivity extends Activity {
         AdsUtils.loadAd(this);
         
         UserTracker.getInstance().trackActivity(getClass().getName());
-        
-        intents = new IntentsHelper(this);
         
         gridView = (GridView) findViewById(R.id.layers_grid_view);
         
@@ -114,12 +110,14 @@ public class GridCategoryListActivity extends Activity {
             }
         }
 
+        IntentsHelper.getInstance().setActivity(this);
+        
         gridView.setAdapter(new GridCategoryArrayAdapter(this, names, categories, new PositionClickListener()));	
 	}   
 	
 	@Override
     public boolean onSearchRequested() {
-        intents.startSearchActivity(lat, lng, radius, true);
+		IntentsHelper.getInstance().startSearchActivity(lat, lng, radius, true);
         return true;
     }
 
@@ -165,7 +163,7 @@ public class GridCategoryListActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        intents.processActivityResult(requestCode, resultCode, intent, new double[]{lat, lng}, null, null, -1, null);
+    	IntentsHelper.getInstance().processActivityResult(requestCode, resultCode, intent, new double[]{lat, lng}, null, null, -1, null);
     }
     
     @Override
@@ -210,7 +208,7 @@ public class GridCategoryListActivity extends Activity {
     
     private void onClickAction(int position, String action) {
         if (action.equals("drill")) {
-            intents.startCategoryListActivity(lat, lng, categories.get(position).getCategoryID(), radius);
+        	IntentsHelper.getInstance().startCategoryListActivity(lat, lng, categories.get(position).getCategoryID(), radius);
         } else if (action.equals("cancel")) {
             cancelActivity(false);
         } else {
@@ -230,7 +228,7 @@ public class GridCategoryListActivity extends Activity {
                 setResult(RESULT_OK, result);
                 finish();
             } else {
-                intents.showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_search_empty_result));
             }
         }
     }
@@ -255,12 +253,12 @@ public class GridCategoryListActivity extends Activity {
     private void layerDeleteAction() {
         Category c = categories.get(currentPos);
         if (!c.isCustom()) {
-            intents.showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_operation_unsupported));
         } else {
         	LandmarkManager.getInstance().deleteLayer(c.getCategory());
             ((ArrayAdapter<String>) gridView.getAdapter()).remove(names.remove(currentPos));
             categories.remove(c);
-            intents.showInfoToast(Locale.getMessage(R.string.Layer_deleted, c.getCategory()));
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_deleted, c.getCategory()));
         }
     }
 

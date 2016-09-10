@@ -25,7 +25,6 @@ public class GMSClientDispatchActivity extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
 
-        IntentsHelper intents = new IntentsHelper(this);
         boolean abort = false;
 
         try {
@@ -33,7 +32,7 @@ public class GMSClientDispatchActivity extends Activity {
             super.onCreate(icicle);
         } catch (Throwable t) {
         	ACRA.getErrorReporter().handleSilentException(t);
-            intents.showInfoToast("Sorry. Your device is currently unsupported :(");
+        	IntentsHelper.getInstance().showInfoToast("Sorry. Your device is currently unsupported :(");
             abort = true;
         }
 
@@ -42,7 +41,7 @@ public class GMSClientDispatchActivity extends Activity {
             final String action = intent.getAction();
             // If the intent is a request to create a shortcut, we'll do that and exit
             if (Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
-                intents.setupShortcut();
+            	IntentsHelper.getInstance().setupShortcut();
                 abort = true;
             } else {
             	long lastStartupTime = ConfigurationManager.getInstance().getLong(ConfigurationManager.LAST_STARTING_DATE);
@@ -60,7 +59,7 @@ public class GMSClientDispatchActivity extends Activity {
                     }
                     startActivity(mapActivity);
                 } else {
-                	intents.showInfoToast("This application requires Android 3.0 or higher to run!");
+                	IntentsHelper.getInstance().showInfoToast("This application requires Android 3.0 or higher to run!");
                 }
                 
             }

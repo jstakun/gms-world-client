@@ -28,19 +28,14 @@ import java.util.List;
 public class AutoCheckinListActivity extends AbstractLandmarkList {
 
     private List<LandmarkParcelable> favourites;
-    private int currentPos = -1;
-    
+    private int currentPos = -1;  
     private AlertDialog deleteFileDialog;
     
-    private IntentsHelper intents = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         favourites = getIntent().getParcelableArrayListExtra("favourites");
-
-        intents = new IntentsHelper(this);
 
         if (favourites != null) {
 
@@ -57,9 +52,9 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
             createDeleteFileAlertDialog();
             
-            intents.showInfoToast(Locale.getQuantityMessage(R.plurals.foundLandmarks, favourites.size()));
+            IntentsHelper.getInstance().showInfoToast(Locale.getQuantityMessage(R.plurals.foundLandmarks, favourites.size()));
         } else {
-        	intents.showInfoToast(Locale.getMessage(R.string.autoCheckinListEmpty));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.autoCheckinListEmpty));
             finish();
         }
     }
@@ -132,9 +127,9 @@ public class AutoCheckinListActivity extends AbstractLandmarkList {
 
         if (response > 0) {
             ((ArrayAdapter<LandmarkParcelable>) getListAdapter()).remove(favourites.remove(position));
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_deleted));
         } else {
-            intents.showInfoToast(Locale.getMessage(R.string.Landmark_deleted_error));
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_deleted_error));
         }
     }
 

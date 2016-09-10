@@ -15,7 +15,6 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
