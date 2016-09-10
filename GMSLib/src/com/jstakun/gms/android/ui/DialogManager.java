@@ -121,14 +121,9 @@ public class DialogManager {
         }
     };
    
-    public DialogManager(Activity activity, DialogInterface.OnClickListener trackMyPosListener) {
-        this.activity = activity;
-        this.trackMyPosListener = trackMyPosListener;
-        dialogBuilder = new AlertDialogBuilder(activity, new DialogHandler());
-    }
-    
     public DialogManager(Activity activity, Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
-        this(activity, trackMyPosListener);
+    	this.activity = activity;
+        this.trackMyPosListener = trackMyPosListener;
         this.loadingHandler = loadingHandler;
     }
 

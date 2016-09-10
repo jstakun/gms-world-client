@@ -1262,7 +1262,7 @@ public final class IntentsHelper {
                     Intent src = new Intent();
                     src.putExtras(intent);
                     startLandmarkListActivity(INTENT_MULTILANDMARK, src, LandmarkListActivity.SOURCE.CATEGORY, myLocation);
-                } else if (StringUtils.equals(action, "noshow")) { //DealCategoryListActivity
+                } else if (StringUtils.equals(action, "noshow")) { //DealCategoryListActivity, GridCategoryListActivity
                     Intent result = new Intent();
                     result.putExtras(intent);
                     result.putExtra("action", "show");

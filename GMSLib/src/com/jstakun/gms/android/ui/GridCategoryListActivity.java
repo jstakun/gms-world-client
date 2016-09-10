@@ -163,6 +163,7 @@ public class GridCategoryListActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    	IntentsHelper.getInstance().setActivity(this);
     	IntentsHelper.getInstance().processActivityResult(requestCode, resultCode, intent, new double[]{lat, lng}, null, null, -1, null);
     }
     

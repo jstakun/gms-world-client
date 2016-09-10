@@ -30,6 +30,7 @@ public class DealMapDispatchActivity extends Activity {
             super.onCreate(icicle);
         } catch (Throwable t) {
             ACRA.getErrorReporter().handleSilentException(t);
+            IntentsHelper.getInstance().setActivity(this);
             IntentsHelper.getInstance().showInfoToast("Sorry. Your device is currently unsupported :(");
             abort = true;
         }

@@ -24,7 +24,6 @@ public class DealMapDispatchActivity extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
 
-        IntentsHelper intents = new IntentsHelper(this);
         boolean abort = false;
 
         try {
@@ -32,7 +31,8 @@ public class DealMapDispatchActivity extends Activity {
             super.onCreate(icicle);
         } catch (Throwable t) {
             ACRA.getErrorReporter().handleSilentException(t);
-            intents.showInfoToast("Sorry. Your device is currently unsupported :(");
+            IntentsHelper.getInstance().setActivity(this);
+            IntentsHelper.getInstance().showInfoToast("Sorry. Your device is currently unsupported :(");
             abort = true;
         }
 
@@ -41,7 +41,7 @@ public class DealMapDispatchActivity extends Activity {
             final String action = intent.getAction();
             // If the intent is a request to create a shortcut, we'll do that and exit
             if (Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
-                intents.setupShortcut();
+            	IntentsHelper.getInstance().setupShortcut();
                 abort = true;
             } else if (OsUtil.isAmazonMapActivityInstalled()) {
             	LoggerUtils.debug("Amazon Maps library found!");
@@ -52,7 +52,7 @@ public class DealMapDispatchActivity extends Activity {
                 Intent mapActivity = new Intent(this, DealMapAmzActivity.class); 
                 startActivity(mapActivity);
             } else {
-            	intents.showInfoToast("Amazon Maps are required for this version of Landmark Manager!");
+            	IntentsHelper.getInstance().showInfoToast("Amazon Maps are required for this version of Landmark Manager!");
             	abort = true;
             }
         }

@@ -24,16 +24,12 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
     private CheckBox showAtStratup;
     private DealMapAmzActivity activity;
     private ExtendedLandmark recommended;
-    private IntentsHelper intents;
     
     public DealOfTheDayDialog(DealMapAmzActivity activity, ExtendedLandmark recommended) {
         super(activity);
         this.activity = activity;
         this.recommended = recommended;
 
-        intents = new IntentsHelper(activity);
-
-        //UserTracker.getInstance().startSession(getContext());
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         setContentView(R.layout.dod);
@@ -50,7 +46,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
         setOnCancelListener(this);
 
         activity.getActionBar().hide();
-        intents.showLandmarkDetailsView(recommended, findViewById(R.id.lvView), activity.getMyPosition(), false);
+        IntentsHelper.getInstance().showLandmarkDetailsView(recommended, findViewById(R.id.lvView), activity.getMyPosition(), false);
 
         showAtStratup = (CheckBox) findViewById(R.id.showDodCheckbox);
 
@@ -86,7 +82,7 @@ public class DealOfTheDayDialog extends Dialog implements OnClickListener, OnCan
             ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
         } else if (v == lvOpenButton) {
             UserTracker.getInstance().trackEvent("Clicks", "DealOfTheDayDialog.OpenURLSelectedDeal", recommended.getLayer(), 0);
-            activity.intents.openButtonPressedAction(recommended);
+            IntentsHelper.getInstance().openButtonPressedAction(recommended);
         } else if (v == lvCallButton) {
             UserTracker.getInstance().trackEvent("Clicks", "DealOfTheDayDialog.CallSelectedDeal", recommended.getLayer(), 0);
             activity.callButtonPressedAction(recommended);
