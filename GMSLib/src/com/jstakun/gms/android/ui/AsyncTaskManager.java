@@ -896,8 +896,7 @@ public class AsyncTaskManager {
         protected void onPostExecute(Boolean status) {
             if (status) {
                 try {
-                    DialogManager dialogManager = new DialogManager((Activity)activity, null, null);
-                    dialogManager.showAlertDialog(AlertDialogBuilder.NEW_VERSION_DIALOG, null, null);
+                    DialogManager.getInstance().showAlertDialog(activity, AlertDialogBuilder.NEW_VERSION_DIALOG, null, null);
                 } catch (Throwable e) {
                     LoggerUtils.error("NewVersionCheckTask.onPostExceute() exception:", e);
                 }

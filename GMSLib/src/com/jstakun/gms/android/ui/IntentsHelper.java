@@ -641,7 +641,7 @@ public final class IntentsHelper {
         }
     }
 
-    public void shareLandmarkAction(DialogManager dialogManager) {
+    public void shareLandmarkAction() {
 
         if (activities == null) {
             getSendIntentsList();
@@ -649,7 +649,7 @@ public final class IntentsHelper {
 
         if (!activities.isEmpty()) {
             IntentArrayAdapter arrayAdapter = new IntentArrayAdapter(activity, activities);
-            dialogManager.showAlertDialog(AlertDialogBuilder.SHARE_INTENTS_DIALOG, arrayAdapter, null);
+            DialogManager.getInstance().showAlertDialog(activity, AlertDialogBuilder.SHARE_INTENTS_DIALOG, arrayAdapter, null);
         } else {
             showInfoToast(Locale.getMessage(R.string.Share_no_share_apps));
         }

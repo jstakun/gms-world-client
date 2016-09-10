@@ -21,21 +21,17 @@ import android.widget.ArrayAdapter;
  */
 public class DialogManager {
 
-    private Activity activity;
-    private AlertDialogBuilder dialogBuilder;
-    private Handler loadingHandler;
-
-    private DialogInterface.OnClickListener exitListener = new DialogInterface.OnClickListener() {
-
-        public void onClick(DialogInterface dialog, int id) {
-            ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            dialog.cancel();
-            ConfigurationManager.getInstance().putObject(ConfigurationManager.APP_CLOSING, new Object());
-            activity.finish();
-        }
-    };
-    private DialogInterface.OnClickListener trackMyPosListener;
-    private DialogInterface.OnClickListener loginListener = new DialogInterface.OnClickListener() {
+    private static DialogManager instance = new DialogManager();
+    
+    private DialogManager() {
+    	
+    }
+    
+    public static DialogManager getInstance() {
+    	return instance;
+    }
+    	
+	private DialogInterface.OnClickListener loginListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int item) {
             IntentsHelper.getInstance().startLoginActivity(item);
@@ -121,91 +117,96 @@ public class DialogManager {
         }
     };
    
-    public DialogManager(Activity activity, Handler loadingHandler, DialogInterface.OnClickListener trackMyPosListener) {
-    	this.activity = activity;
-        this.trackMyPosListener = trackMyPosListener;
-        this.loadingHandler = loadingHandler;
-    }
-
-    public void showAlertDialog(int type, ArrayAdapter<?> arrayAdapter, Spannable message) {
+    public void showAlertDialog(Activity activity, int type, ArrayAdapter<?> arrayAdapter, Spannable message) {
         AlertDialog alertDialog = null;
 
-        if (!activity.isFinishing()) {
+        if (activity != null && !activity.isFinishing()) {
             switch (type) {
-                case AlertDialogBuilder.EXIT_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, exitListener);
-                    break;
-                case AlertDialogBuilder.INFO_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.INFO_DIALOG, null);
-                    break;
-                case AlertDialogBuilder.TRACK_MYPOS_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.TRACK_MYPOS_DIALOG, null, trackMyPosListener);
+            	case AlertDialogBuilder.INFO_DIALOG:
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.INFO_DIALOG, null);
                     break;
                 case AlertDialogBuilder.SAVE_ROUTE_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, null);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, new DialogHandler());
                     break;
                 case AlertDialogBuilder.PACKET_DATA_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, packetDataListener);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.PACKET_DATA_DIALOG, null, packetDataListener);
                     break;
                 case AlertDialogBuilder.NETWORK_ERROR_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, networkErrorListener);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, networkErrorListener);
                     break;
                 case AlertDialogBuilder.LOGIN_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.LOGIN_DIALOG, arrayAdapter, loginListener);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.LOGIN_DIALOG, arrayAdapter, loginListener);
                     break;
                 case AlertDialogBuilder.SHARE_INTENTS_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.SHARE_INTENTS_DIALOG, arrayAdapter, sendIntentListener);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.SHARE_INTENTS_DIALOG, arrayAdapter, sendIntentListener);
                     break;
                 case AlertDialogBuilder.LOCATION_ERROR_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.LOCATION_ERROR_DIALOG, null, locationErrorListener);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.LOCATION_ERROR_DIALOG, null, locationErrorListener);
                     break;
                 case AlertDialogBuilder.RATE_US_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, rateUsListener);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.RATE_US_DIALOG, null, rateUsListener);
                     break;
                 case AlertDialogBuilder.NEW_VERSION_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.NEW_VERSION_DIALOG, null, newVersionListener);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.NEW_VERSION_DIALOG, null, newVersionListener);
                     break;
                 case AlertDialogBuilder.AUTO_CHECKIN_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, checkinAutoListener, checkinManualListener);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.AUTO_CHECKIN_DIALOG, null, checkinAutoListener, checkinManualListener);
                     break;
                 case AlertDialogBuilder.RESET_DIALOG:
-                    alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, resetListener);
+                    alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.RESET_DIALOG, null, resetListener);
                     break;  
-                case AlertDialogBuilder.ROUTE_DIALOG:
-                	ExtendedLandmark l = null;
-                	if (message != null && message.toString().equals("dod") && ConfigurationManager.getInstance().containsObject("dod", ExtendedLandmark.class)) {
-                		l = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class); 
-                	} else {
-                		l = LandmarkManager.getInstance().getSeletedLandmarkUI();
-                	}
-                	final ExtendedLandmark landmark = l;
-                	alertDialog = dialogBuilder.getAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, new DialogInterface.OnClickListener() {
-    			        public void onClick(DialogInterface dialog, int id) {
-    			        	dialog.cancel();
-    			        	ConfigurationManager.getInstance().putInteger(ConfigurationManager.ROUTE_TYPE, id);
-    			        	IntentsHelper.getInstance().startRouteLoadingTask(landmark, loadingHandler);
-    			        }
-    			    });
-                	break;
                 default:
                     break;
             }
         }
 
         if (alertDialog != null) {
-            //if (message != null) {
-            //   alertDialog.setMessage(message);
-            //}
             alertDialog.show();
         }
     }
+    
+    public void showTrackMyPosAlertDialog(Activity activity, DialogInterface.OnClickListener trackMyPosListener) {
+    	if (activity != null && !activity.isFinishing()) {
+            AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.TRACK_MYPOS_DIALOG, null, trackMyPosListener).show();
+    	}
+    }
+    
+    public void showRouteAlertDialog(Activity activity, Spannable message, final  Handler loadingHandler) {
+    	if (activity != null && !activity.isFinishing()) {
+    		ExtendedLandmark l = null;
+    		if (message != null && message.toString().equals("dod") && ConfigurationManager.getInstance().containsObject("dod", ExtendedLandmark.class)) {
+    			l = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class); 
+    		} else {
+    			l = LandmarkManager.getInstance().getSeletedLandmarkUI();
+    		}
+    		final ExtendedLandmark landmark = l;
+    		AlertDialog alertDialog = AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.ROUTE_DIALOG, null, new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				dialog.cancel();
+    				ConfigurationManager.getInstance().putInteger(ConfigurationManager.ROUTE_TYPE, id);
+    				IntentsHelper.getInstance().startRouteLoadingTask(landmark, loadingHandler);
+    			}
+    		});
+    		alertDialog.show();
+    	}
+    }
+    
+    public void showExitAlertDialog(final Activity activity) {
+    	if (activity != null && !activity.isFinishing()) {
+    		AlertDialogBuilder.getInstance().getAlertDialog(activity, AlertDialogBuilder.EXIT_DIALOG, null, new DialogInterface.OnClickListener() {
 
-    public int dismissDialog() {
-        if (dialogBuilder != null) {
-            return dialogBuilder.dismissDialog();
-        } else {
-            return -1;
-        }
+    	        public void onClick(DialogInterface dialog, int id) {
+    	            ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
+    	            dialog.cancel();
+    	            ConfigurationManager.getInstance().putObject(ConfigurationManager.APP_CLOSING, new Object());
+    	            activity.finish();
+    	        }
+    	    }).show();
+    	}
+    }
+
+    public int dismissDialog(Activity activity) {
+        return AlertDialogBuilder.getInstance().dismissDialog(activity);
     }
     
     private static class DialogHandler extends Handler {

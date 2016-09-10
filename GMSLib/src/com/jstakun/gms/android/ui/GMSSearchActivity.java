@@ -65,7 +65,6 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 	private TYPE type;
 	private SearchTask searchTask;
 	private boolean local;
-	private AlertDialogBuilder alertBuilder;
 	private ProgressDialog progressDialog;
 	private DialogInterface.OnClickListener addLayerListener = new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int item) {
@@ -102,8 +101,6 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 		setTitle(R.string.listSelection);
 		searchButton.setVisibility(View.GONE);
-
-		alertBuilder = new AlertDialogBuilder(this, null);
 
 		local = false;
 
@@ -163,7 +160,7 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				// 0); // InputMethodManager.HIDE_IMPLICIT_ONLY);
 				
 				if (StringUtils.endsWith(query, "/l") && query.length() > 2) {
-					AlertDialog addLayerDialog = alertBuilder.getAlertDialog(AlertDialogBuilder.ADD_LAYER_DIALOG, null, addLayerListener, cancelAddLayerListener);
+					AlertDialog addLayerDialog = AlertDialogBuilder.getInstance().getAlertDialog(this, AlertDialogBuilder.ADD_LAYER_DIALOG, null, addLayerListener, cancelAddLayerListener);
 					addLayerDialog.setTitle(Locale.getMessage(R.string.Layer_add_message_short, query.substring(0, query.length()-2)));
 					//addLayerDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Layer_add_message_long, query.substring(0, query.length()-2))));
 					addLayerDialog.setMessage(Locale.getMessage(R.string.Layer_add_message_long_plain, query.substring(0, query.length()-2)));	

@@ -58,7 +58,7 @@ public class NavigationDrawerFragment extends Fragment {
     private LinearLayout mDrawerLinearLayout;
 
     private int mCurrentSelectedPosition = 0;
-    private boolean mFromSavedInstanceState;
+    //private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
     public NavigationDrawerFragment() {
@@ -75,7 +75,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
-            mFromSavedInstanceState = true;
+            //mFromSavedInstanceState = true;
         }
 
         // Select either the default item (0) or the last selected item.

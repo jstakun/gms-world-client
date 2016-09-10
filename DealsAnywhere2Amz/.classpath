@@ -4,7 +4,6 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GMSLib"/>
-	<classpathentry kind="lib" path="/home/jstakun/toolkit/libs/gms-client/Amazon-Android-SDKs-5.6.20/AmazonMaps/PreviousVersions/1.0/amazonmaps-1.0.2.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>

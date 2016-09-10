@@ -69,11 +69,13 @@ import android.widget.TextView;
 public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
     private static final int SHOW_MAP_VIEW = 0;
+    
     private MapView mapView;
     private MapController mapController;
     private SkyhookUtils skyhook;
-    private DialogManager dialogManager;
+    
     private DealOfTheDayDialog dealOfTheDayDialog;
+    
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvOpenButton, mapButtons, nearbyLandmarksButton,
             lvView, lvShareButton, lvRouteButton, myLocationButton,
@@ -82,9 +84,12 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
     private ProgressBar loadingProgressBar;
+    
     private boolean appAbort = false, isStopped = false, appInitialized = false, isRouteDisplayed = false;
+    
     //Handlers
     private Handler loadingHandler;
+    
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = getMyLocation();
@@ -116,9 +121,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        final Intent intent = getIntent();
-        final String action = intent.getAction();
-        
         if (!appAbort) {
             skyhook = new SkyhookUtils(this, loadingHandler);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -218,8 +220,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, null, null);
-
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
         } else {
@@ -301,10 +301,10 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 IntentsHelper.getInstance().startRecentLandmarksIntent(getMyPosition());
                 break;
             case R.id.exit:
-                dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+            	DialogManager.getInstance().showExitAlertDialog(this);
                 break;
             case R.id.about:
-                dialogManager.showAlertDialog(AlertDialogBuilder.INFO_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.INFO_DIALOG, null, null);
                 break;
             case R.id.releaseNotes:
                 IntentsHelper.getInstance().startHelpActivity();
@@ -319,10 +319,10 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 IntentsHelper.getInstance().startCalendarActivity(getMyPosition());
                 break;
             case R.id.rateUs:
-                dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
             case R.id.reset:
-            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RESET_DIALOG, null, null);
             	break;     
             default:
                 return true;
@@ -541,7 +541,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                         arrayAdapter = new IntentArrayAdapter(this, intentList);
                     }
                 }
-                dialogManager.showAlertDialog(type, arrayAdapter, null);
+                DialogManager.getInstance().showAlertDialog(this, type, arrayAdapter, null);
             }
         }
 
@@ -574,7 +574,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
         boolean networkActive = ServicesUtils.isNetworkActive(this);
         if (networkStatus == null && !networkActive) {
-            dialogManager.showAlertDialog(AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
+        	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
             ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
         }
 
@@ -583,7 +583,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
             //show rate us dialog
             if (useCount > 0 && (useCount % 10) == 0) {
-                dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
                 ConfigurationManager.getInstance().putObject("rateDialogStatus", new Object());
             }
@@ -595,7 +595,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         super.onStop();
         LoggerUtils.debug("onStop");
         isStopped = true;
-        int type = dialogManager.dismissDialog();
+        int type = DialogManager.getInstance().dismissDialog(this);
         if (type == AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG) {
             dealOfTheDayDialog.dismiss();
         } else if (dealOfTheDayDialog != null && dealOfTheDayDialog.isShowing()) {
@@ -644,7 +644,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             if (lvView.isShown()) {
             	hideLandmarkView();
             } else {
-                dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+            	DialogManager.getInstance().showExitAlertDialog(this);
             }
             //System.out.println("key back pressed in activity");
             return true;
@@ -693,7 +693,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         List<ResolveInfo> intentList = IntentsHelper.getInstance().getSendIntentsList();
         if (!intentList.isEmpty()) {
             IntentArrayAdapter arrayAdapter = new IntentArrayAdapter(this, intentList);
-            dialogManager.showAlertDialog(AlertDialogBuilder.SHARE_INTENTS_DIALOG, arrayAdapter, null);
+            DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.SHARE_INTENTS_DIALOG, arrayAdapter, null);
         } else {
             IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Share_no_share_apps));
         }

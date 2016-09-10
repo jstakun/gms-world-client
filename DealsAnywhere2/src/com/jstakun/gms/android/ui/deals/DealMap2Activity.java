@@ -78,7 +78,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private MapController mapController;
     private GoogleMyLocationOverlay myLocation;
     
-    private DialogManager dialogManager;
     private DealOfTheDayDialog dealOfTheDayDialog;
     
     private TextView statusBar;
@@ -214,10 +213,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, null, null);
-        
-        ((LoadingHandler) loadingHandler).setDialogManager(dialogManager);
-
         GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
@@ -306,13 +301,13 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 IntentsHelper.getInstance().startRecentLandmarksIntent(getMyPosition());
                 break;
             case R.id.exit:
-                dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+            	DialogManager.getInstance().showExitAlertDialog(this);
                 break;
             case R.id.config:
 				IntentsHelper.getInstance().startConfigurationViewerActivity();
 				break;
 			case R.id.about:
-                dialogManager.showAlertDialog(AlertDialogBuilder.INFO_DIALOG, null, null);
+				DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.INFO_DIALOG, null, null);
                 break;
             case R.id.releaseNotes:
                 IntentsHelper.getInstance().startHelpActivity();
@@ -327,10 +322,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 IntentsHelper.getInstance().startCalendarActivity(getMyPosition());
                 break;
             case R.id.rateUs:
-                dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
             case R.id.reset:
-            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RESET_DIALOG, null, null);
             	break;    
             default:
                 return true;
@@ -500,7 +495,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     				callButtonPressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
     			} else if (v == lvRouteButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
-    				dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
+    				DialogManager.getInstance().showRouteAlertDialog(this, null, loadingHandler);
     			} else if (v == lvShareButton) {
     				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
     				sendMessageAction();
@@ -570,7 +565,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                         arrayAdapter = new IntentArrayAdapter(this, intentList);
                     }
                 }
-                dialogManager.showAlertDialog(type, arrayAdapter, null);
+                DialogManager.getInstance().showAlertDialog(this, type, arrayAdapter, null);
             }
         }
 
@@ -601,7 +596,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
         boolean networkActive = ServicesUtils.isNetworkActive(this);
         if (networkStatus == null && !networkActive) {
-            dialogManager.showAlertDialog(AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
+        	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
             ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
         }
 
@@ -610,7 +605,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         if (rateDialogStatus == null && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && networkActive) {
             int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
             if (useCount > 0 && (useCount % 10) == 0) {
-                dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
                 ConfigurationManager.getInstance().putObject("rateDialogStatus", new Object());
             }
@@ -622,7 +617,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         super.onStop();
         LoggerUtils.debug("onStop");
         isStopped = true;
-        int type = dialogManager.dismissDialog();
+        int type = DialogManager.getInstance().dismissDialog(this);
         if (type == AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG) {
             dealOfTheDayDialog.dismiss();
         } else if (dealOfTheDayDialog != null && dealOfTheDayDialog.isShowing()) {
@@ -669,7 +664,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             if (lvView.isShown()) {
             	hideLandmarkView();
             } else {
-                dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+            	DialogManager.getInstance().showExitAlertDialog(this);
             }
             //System.out.println("key back pressed in activity");
             return true;
@@ -718,7 +713,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     }
 
     private void sendMessageAction() {
-        IntentsHelper.getInstance().shareLandmarkAction(dialogManager);
+        IntentsHelper.getInstance().shareLandmarkAction();
     }
 
     private void pickPositionAction(GeoPoint newCenter, boolean loadLayers, boolean animate, boolean clearMap) {
@@ -833,17 +828,12 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private static class LoadingHandler extends Handler {
     	
         private WeakReference<DealMap2Activity> parentActivity;
-        private WeakReference<DialogManager> dialogManager;
-    	
+        
     	public LoadingHandler(DealMap2Activity parentActivity) {
     		this.parentActivity = new WeakReference<DealMap2Activity>(parentActivity);
     	}
     	
-    	public void setDialogManager(DialogManager dialogManager) {
-    		this.dialogManager = new WeakReference<DialogManager>(dialogManager); 
-    	}
-    	
-        @Override
+    	@Override
         public void handleMessage(Message msg) {
         	DealMap2Activity activity = parentActivity.get();
         	if (activity != null && !activity.isFinishing()) {
@@ -860,9 +850,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			ExtendedLandmark recommended = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class);
         			activity.callButtonPressedAction(recommended);
         		} else if (msg.what == DealOfTheDayDialog.ROUTE) {
-        			dialogManager.get().showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, new SpannableString("dod"));
-        			//ExtendedLandmark recommended = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class);
-        			//activity.loadRoutePressedAction(recommended);
+        			DialogManager.getInstance().showRouteAlertDialog(activity, new SpannableString("dod"), this);
         		} else if (msg.what == DealOfTheDayDialog.SEND_MAIL) {
         			activity.sendMessageAction();
         		} else if (msg.what == LayerLoader.LAYER_LOADED) {

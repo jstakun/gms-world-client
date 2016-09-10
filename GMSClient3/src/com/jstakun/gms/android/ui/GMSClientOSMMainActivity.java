@@ -64,19 +64,22 @@ import android.widget.TextView;
 public class GMSClientOSMMainActivity extends Activity implements OnClickListener {
 
     private static final int SHOW_MAP_VIEW = 0;
+    
     private MapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
-    private DialogManager dialogManager;
+    
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton, mapButtons,
             lvOpenButton, lvView, lvShareButton, myLocationButton, nearbyLandmarksButton,
             newestButton, listButton, layersButton,
             lvCheckinButton, lvRouteButton, thumbnailButton, loadingImage;
     private ProgressBar loadingProgressBar;
+    
     private boolean appInitialized = false;
     //Handlers
     private Handler loadingHandler;
+    
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = LocationServicesManager.getMyLocation();
@@ -100,17 +103,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     //OnClickListener
     private DialogInterface.OnClickListener trackMyPosListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int id) {
-            String filename = followMyPositionAction();
-
-            LocationServicesManager.enableCompass();
-
-            ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            if (filename != null) {
-                dialogManager.showAlertDialog(AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, new SpannableString(Locale.getMessage(R.string.Routes_Recording_Question, filename)));
-            } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)
-                    && !ServicesUtils.isGpsActive(ConfigurationManager.getInstance().getContext())) {
-                dialogManager.showAlertDialog(AlertDialogBuilder.LOCATION_ERROR_DIALOG, null, null);
-            }
+            trackMyPosAction();
         }
     };
 
@@ -202,8 +195,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, loadingHandler, trackMyPosListener);
-
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
         } else {
@@ -266,7 +257,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                     arrayAdapter = new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false));
                 }
             }
-            dialogManager.showAlertDialog(type, arrayAdapter, null);
+            DialogManager.getInstance().showAlertDialog(this, type, arrayAdapter, null);
         }
 
         IntentsHelper.getInstance().onAppVersionChanged();
@@ -291,9 +282,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         LocationServicesManager.disableMyLocation();
 
-        if (dialogManager != null) {
-            dialogManager.dismissDialog();
-        }
+        DialogManager.getInstance().dismissDialog(this);
     }
 
     @Override
@@ -302,7 +291,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
         boolean networkActive = ServicesUtils.isNetworkActive(this);
         if (networkStatus == null && !networkActive) {
-            dialogManager.showAlertDialog(AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
+        	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
             ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
         }
 
@@ -311,7 +300,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
             //show rate us dialog
             if (useCount > 0 && (useCount % 10) == 0) {
-                dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
                 ConfigurationManager.getInstance().putObject("rateDialogStatus", new Object());
             }
@@ -356,7 +345,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     			if (lvView.isShown()) {
     				hideLandmarkView();
     			} else {
-    				dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+    				DialogManager.getInstance().showExitAlertDialog(this);
     			} //System.out.println("key back pressed in activity");
     			return true;
     		} else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
@@ -541,17 +530,17 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 onSearchRequested();
                 break;
             case R.id.exit:
-                dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+            	DialogManager.getInstance().showExitAlertDialog(this);
                 break;
             case R.id.about:
-                dialogManager.showAlertDialog(AlertDialogBuilder.INFO_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.INFO_DIALOG, null, null);
                 break;
             case R.id.releaseNotes:
                 IntentsHelper.getInstance().startHelpActivity();
                 break;
             case R.id.login:
                 if (!ConfigurationManager.getUserManager().isUserLoggedInFully()) {
-                    dialogManager.showAlertDialog(AlertDialogBuilder.LOGIN_DIALOG, new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false)), null);
+                	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.LOGIN_DIALOG, new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false)), null);
                 } else {
                     IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Checkin_required_error));
                 }
@@ -623,11 +612,11 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 }
                 break;
             case R.id.trackPos:
-                dialogManager.showAlertDialog(AlertDialogBuilder.TRACK_MYPOS_DIALOG, null, null);
+            	DialogManager.getInstance().showTrackMyPosAlertDialog(this, trackMyPosListener);
                 break;
             case R.id.saveRoute:
             	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-		        	dialogManager.showAlertDialog(AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, null);
+            		DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, null);
 		        } else if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
 		            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosStopped));
 		        }
@@ -657,7 +646,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 				IntentsHelper.getInstance().startConfigurationViewerActivity();
 				break;
 			case R.id.dataPacket:
-                dialogManager.showAlertDialog(AlertDialogBuilder.PACKET_DATA_DIALOG, null, null);
+				DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.PACKET_DATA_DIALOG, null, null);
                 break;
             case R.id.pickMyPos:
                 IntentsHelper.getInstance().startPickLocationActivity();
@@ -680,7 +669,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 //IntentsHelper.getInstance().startCalendarActivity(getMyPosition());
                 //break;
             case R.id.rateUs:
-                dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
             case R.id.listLandmarks:
 	    		if (!lvView.isShown()) {
@@ -691,7 +680,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             	AsyncTaskManager.getInstance().executeImageUploadTask(mapView.getMapCenter().getLatitude(),mapView.getMapCenter().getLongitude(), true);
             	break;    
             case R.id.reset:
-            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RESET_DIALOG, null, null);
             	break;	
             default:
                 return super.onOptionsItemSelected(item);
@@ -739,7 +728,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
       	  				}
       	  			} else if (v == lvShareButton) {
       	  				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedLandmark", selectedLandmark.getLayer(), 0);
-      	  				IntentsHelper.getInstance().shareLandmarkAction(dialogManager);
+      	  				IntentsHelper.getInstance().shareLandmarkAction();
       	  			}
       	  		}	else if (v == newestButton) {
       	  			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowNewestLandmarks", "", 0);
@@ -1034,6 +1023,20 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private void animateTo(int[] coordsE6) {
     	GeoPoint g = new GeoPoint(coordsE6[0], coordsE6[1]);
         mapController.animateTo(g);
+    }
+    
+    private void trackMyPosAction() {
+    	String filename = followMyPositionAction();
+
+        LocationServicesManager.enableCompass();
+
+        ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
+        if (filename != null) {
+            DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.SAVE_ROUTE_DIALOG, null, new SpannableString(Locale.getMessage(R.string.Routes_Recording_Question, filename)));
+        } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)
+                && !ServicesUtils.isGpsActive(ConfigurationManager.getInstance().getContext())) {
+            DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.LOCATION_ERROR_DIALOG, null, null);
+        }
     }
     
     private static class LoadingHandler extends Handler {

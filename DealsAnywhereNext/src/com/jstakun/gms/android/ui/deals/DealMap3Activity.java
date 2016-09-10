@@ -84,8 +84,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
 	
-	private DialogManager dialogManager;
-    private DealOfTheDayDialog dealOfTheDayDialog;
+	private DealOfTheDayDialog dealOfTheDayDialog;
     
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvOpenButton,
@@ -187,10 +186,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         	AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        dialogManager = new DialogManager(this, null, null);
-        
-        ((LoadingHandler) loadingHandler).setDialogManager(dialogManager);
-        
         LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
         
         if (mapCenter != null) {
@@ -249,7 +244,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                         arrayAdapter = new IntentArrayAdapter(this, intentList);
                     }
                 }
-                dialogManager.showAlertDialog(type, arrayAdapter, null);
+                DialogManager.getInstance().showAlertDialog(this, type, arrayAdapter, null);
             }
         }
 
@@ -287,7 +282,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
         boolean networkActive = ServicesUtils.isNetworkActive(this);
         if (networkStatus == null && !networkActive) {
-            dialogManager.showAlertDialog(AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
+            DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
             ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
         }
 
@@ -296,7 +291,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         if (rateDialogStatus == null && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && networkActive) {
             int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
             if (useCount > 0 && (useCount % 10) == 0) {
-                dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
+                DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
                 ConfigurationManager.getInstance().putObject("rateDialogStatus", new Object());
             }
@@ -308,9 +303,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         super.onPause();
         GmsLocationServicesManager.getInstance().disable();
         
-        if (dialogManager != null) {
-            dialogManager.dismissDialog();
-        }
+        DialogManager.getInstance().dismissDialog(this);
     }
 	
 	@Override
@@ -319,7 +312,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         if (mMap != null) {
         	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
         }
-        int type = dialogManager.dismissDialog();
+        int type = DialogManager.getInstance().dismissDialog(this);
         if (type == AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG) {
             dealOfTheDayDialog.dismiss();
         } else if (dealOfTheDayDialog != null && dealOfTheDayDialog.isShowing()) {
@@ -401,7 +394,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     		if (lvView.isShown()) {
     			hideLandmarkView();
     		} else {
-    			dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+                DialogManager.getInstance().showExitAlertDialog(this);
     		} 
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
@@ -500,13 +493,13 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 IntentsHelper.getInstance().startRecentLandmarksIntent(getMyPosition());
                 break;
             case R.id.exit:
-                dialogManager.showAlertDialog(AlertDialogBuilder.EXIT_DIALOG, null, null);
+                DialogManager.getInstance().showExitAlertDialog(this);
                 break;
             case R.id.config:
 				IntentsHelper.getInstance().startConfigurationViewerActivity();
 				break;
 			case R.id.about:
-                dialogManager.showAlertDialog(AlertDialogBuilder.INFO_DIALOG, null, null);
+                DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.INFO_DIALOG, null, null);
                 break;
             case R.id.releaseNotes:
                 IntentsHelper.getInstance().startHelpActivity();
@@ -521,13 +514,13 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 IntentsHelper.getInstance().startCalendarActivity(getMyPosition());
                 break;
             case R.id.rateUs:
-                dialogManager.showAlertDialog(AlertDialogBuilder.RATE_US_DIALOG, null, null);
+                DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
             case R.id.shareScreenshot:
 				takeScreenshot(true);
 				break;
 			case R.id.reset:
-            	dialogManager.showAlertDialog(AlertDialogBuilder.RESET_DIALOG, null, null);
+            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RESET_DIALOG, null, null);
             	break;              	
             default:
                 return true;
@@ -657,7 +650,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     }
 
     private void sendMessageAction() {
-        IntentsHelper.getInstance().shareLandmarkAction(dialogManager);
+        IntentsHelper.getInstance().shareLandmarkAction();
     }
     
     private void showMapAndMarkers() {
@@ -882,7 +875,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     			callButtonPressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
     		} else if (v == lvRouteButton) {
     			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
-    			dialogManager.showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, null);
+                DialogManager.getInstance().showRouteAlertDialog(this, null, loadingHandler);
     		} else if (v == lvShareButton) {
     			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShareSelectedDeal", selectedLandmark.getLayer(), 0);
     			sendMessageAction();
@@ -943,17 +936,12 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	private static class LoadingHandler extends Handler {
 		
 		 private WeakReference<DealMap3Activity> parentActivity;
-	     private WeakReference<DialogManager> dialogManager;
-	    	
+	     	
 	     public LoadingHandler(DealMap3Activity parentActivity) {
 	    	this.parentActivity = new WeakReference<DealMap3Activity>(parentActivity);
 	     }
 	    	
-	     public void setDialogManager(DialogManager dialogManager) {
-	     	this.dialogManager = new WeakReference<DialogManager>(dialogManager); 
-	     }
-	     
-		 @Override
+	     @Override
          public void handleMessage(Message msg) {
 			DealMap3Activity activity = parentActivity.get();
         	if (activity != null && !activity.isFinishing()) {
@@ -970,7 +958,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         			ExtendedLandmark recommended = (ExtendedLandmark) ConfigurationManager.getInstance().getObject("dod", ExtendedLandmark.class);
         			activity.callButtonPressedAction(recommended);
         		} else if (msg.what == DealOfTheDayDialog.ROUTE) {
-        			dialogManager.get().showAlertDialog(AlertDialogBuilder.ROUTE_DIALOG, null, new SpannableString("dod"));
+                    DialogManager.getInstance().showRouteAlertDialog(activity, new SpannableString("dod"), this);
         		} else if (msg.what == DealOfTheDayDialog.SEND_MAIL) {
         			activity.sendMessageAction();
         		} else if (msg.what == LayerLoader.LAYER_LOADED) {

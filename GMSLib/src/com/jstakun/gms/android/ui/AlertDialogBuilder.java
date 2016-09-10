@@ -25,9 +25,9 @@ import android.widget.TextView;
  */
 public class AlertDialogBuilder {
 
-    public static final int EXIT_DIALOG = 0;
+    protected static final int EXIT_DIALOG = 0;
     public static final int INFO_DIALOG = 1;
-    public static final int TRACK_MYPOS_DIALOG = 2;
+    protected static final int TRACK_MYPOS_DIALOG = 2;
     public static final int SAVE_ROUTE_DIALOG = 3;
     public static final int PACKET_DATA_DIALOG = 4;
     public static final int NETWORK_ERROR_DIALOG = 5;
@@ -41,19 +41,24 @@ public class AlertDialogBuilder {
     public static final int RATE_US_DIALOG = 13;
     public static final int NEW_VERSION_DIALOG = 14;
     public static final int RESET_DIALOG = 15;
-    public static final int ROUTE_DIALOG = 16;
+    protected static final int ROUTE_DIALOG = 16;
     public static final String OPEN_DIALOG = "openDialog";
+    
+    private static AlertDialogBuilder instance = new AlertDialogBuilder();
+    
+    private AlertDialogBuilder() {
+    	
+    }
+    
+    protected static AlertDialogBuilder getInstance() {
+    	return instance;
+    }
+    
     private AlertDialog exitDialog, infoDialog, trackMyPosDialog, saveRouteDialog,
             packetDataDialog, networkErrorDialog, loginDialog, checkinDialog,
             shareIntentsDialog, autoCheckinDialog, locationErrorDialog, addLayerDialog,
             rateUsDialog, newVersionDialog, resetDialog, routeDialog;
-    private Activity activity;
-    private Handler saveRouteHandler;
-
-    public AlertDialogBuilder(Activity activity, Handler saveRouteHandler) {
-        this.activity = activity;
-        this.saveRouteHandler = saveRouteHandler;
-    }
+    
     private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 
         public void onClick(DialogInterface dialog, int id) {
@@ -68,7 +73,7 @@ public class AlertDialogBuilder {
         }
     };
 
-    private void createExitAlertDialog(DialogInterface.OnClickListener exitListener) {
+    private void createExitAlertDialog(Activity activity, DialogInterface.OnClickListener exitListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(Locale.getMessage(R.string.Close_app_prompt)).
                 setCancelable(true).
@@ -79,7 +84,7 @@ public class AlertDialogBuilder {
         exitDialog = builder.create();
     }
     
-    private void createRouteAlertDialog(DialogInterface.OnClickListener routeListener) {
+    private void createRouteAlertDialog(Activity activity, DialogInterface.OnClickListener routeListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(Locale.getMessage(R.string.Routes_title)).
                 setCancelable(true).
@@ -90,7 +95,7 @@ public class AlertDialogBuilder {
         routeDialog = builder.create();
     }
 
-    private void createInfoAlertDialog() {
+    private void createInfoAlertDialog(Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         final TextView text = new TextView(activity);
@@ -108,7 +113,7 @@ public class AlertDialogBuilder {
         infoDialog = builder.create();
     }
 
-    private void createTrackMyPosDialog(DialogInterface.OnClickListener trackMyPosListener) {
+    private void createTrackMyPosDialog(Activity activity, DialogInterface.OnClickListener trackMyPosListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         String message;
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
@@ -125,7 +130,7 @@ public class AlertDialogBuilder {
         trackMyPosDialog = builder.create();
     }
 
-    private void createLoginDialog(ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener loginListener) {
+    private void createLoginDialog(Activity activity, ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener loginListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
        
         builder.setTitle(R.string.login).
@@ -137,7 +142,7 @@ public class AlertDialogBuilder {
         loginDialog = builder.create();
     }
 
-    private void createSaveRouteDialog() {
+    private void createSaveRouteDialog(Activity activity, final Handler saveRouteHandler) {
     	AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         View promptView = LayoutInflater.from(activity).inflate(R.layout.routename, null);
         final EditText input =  (EditText) promptView.findViewById(R.id.dialogRouteName);
@@ -164,7 +169,7 @@ public class AlertDialogBuilder {
         saveRouteDialog = builder.create();
     }
 
-    private void createPacketDataAlertDialog(DialogInterface.OnClickListener packetDataListener) {
+    private void createPacketDataAlertDialog(Activity activity, DialogInterface.OnClickListener packetDataListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         String[] dd = ConfigurationManager.getAppUtils().formatCounter();
         String message = Locale.getMessage(R.string.Packet_data, dd[0], dd[1], dd[2]);
@@ -178,7 +183,7 @@ public class AlertDialogBuilder {
         packetDataDialog = builder.create();
     }
 
-    private void createNetworkErrorDialog(DialogInterface.OnClickListener createNetworkListener) {
+    private void createNetworkErrorDialog(Activity activity, DialogInterface.OnClickListener createNetworkListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(Locale.getMessage(R.string.Network_connection_error_message)).
                 setTitle(Locale.getMessage(R.string.Network_connection_error_title)).
@@ -190,7 +195,7 @@ public class AlertDialogBuilder {
         networkErrorDialog = builder.create();
     }
 
-    private void createLocationErrorDialog(DialogInterface.OnClickListener locationListener) {
+    private void createLocationErrorDialog(Activity activity, DialogInterface.OnClickListener locationListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(Locale.getMessage(R.string.Location_connection_error_message)).
                 setTitle(Locale.getMessage(R.string.Location_connection_error_title)).
@@ -202,7 +207,7 @@ public class AlertDialogBuilder {
         locationErrorDialog = builder.create();
     }
 
-    private void createCheckinDialog(DialogInterface.OnClickListener checkinListener) {
+    private void createCheckinDialog(Activity activity, DialogInterface.OnClickListener checkinListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.checkin)
                 .setCancelable(true)
@@ -212,7 +217,7 @@ public class AlertDialogBuilder {
         checkinDialog = builder.create();
     }
 
-    private void createShareIntentsDialog(ArrayAdapter<?> arrayAdatper, DialogInterface.OnClickListener shareListener) {
+    private void createShareIntentsDialog(Activity activity, ArrayAdapter<?> arrayAdatper, DialogInterface.OnClickListener shareListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(Locale.getMessage(R.string.Landmark_share))
                 .setIcon(R.drawable.ic_dialog_menu_generic)
@@ -222,7 +227,7 @@ public class AlertDialogBuilder {
         shareIntentsDialog = builder.create();
     }
 
-    private void createAutoCheckinAlertDialog(DialogInterface.OnClickListener... onClickListeners) {
+    private void createAutoCheckinAlertDialog(Activity activity, DialogInterface.OnClickListener... onClickListeners) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(Locale.getMessage(R.string.autoCheckinTitle)).
                 setIcon(android.R.drawable.ic_dialog_alert).
@@ -232,7 +237,7 @@ public class AlertDialogBuilder {
         autoCheckinDialog = builder.create();
     }
 
-    private void createAddLayerAlertDialog(DialogInterface.OnClickListener... addLayerListeners) {
+    private void createAddLayerAlertDialog(Activity activity, DialogInterface.OnClickListener... addLayerListeners) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setCancelable(false).
                 setIcon(android.R.drawable.ic_dialog_alert).
@@ -242,7 +247,7 @@ public class AlertDialogBuilder {
         addLayerDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
     }
 
-    private void createRateUsAlertDialog(DialogInterface.OnClickListener rateListener) {
+    private void createRateUsAlertDialog(Activity activity, DialogInterface.OnClickListener rateListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
         builder.setMessage(Locale.getMessage(R.string.rate_us_message, useCount)).
@@ -255,7 +260,7 @@ public class AlertDialogBuilder {
         rateUsDialog = builder.create();
     }
 
-    private void createNewVersionAlertDialog(DialogInterface.OnClickListener vListener) {
+    private void createNewVersionAlertDialog(Activity activity, DialogInterface.OnClickListener vListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(Locale.getMessage(R.string.New_version_long_message)).
                 setTitle(Locale.getMessage(R.string.New_version_short_message)).
@@ -267,7 +272,7 @@ public class AlertDialogBuilder {
         newVersionDialog = builder.create();
     }
     
-    private void createResetAlertDialog(DialogInterface.OnClickListener resetListener) {
+    private void createResetAlertDialog(Activity activity, DialogInterface.OnClickListener resetListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(Locale.getMessage(R.string.Reset_long_message)).
                 setTitle(Locale.getMessage(R.string.Reset_short_message)).
@@ -279,165 +284,162 @@ public class AlertDialogBuilder {
         resetDialog = builder.create();
     }
 
-    private AlertDialog getLoginDialog(ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener loginListener) {
-        createLoginDialog(arrayAdapter, loginListener);
+    private AlertDialog getLoginDialog(Activity activity, ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener loginListener) {
+        createLoginDialog(activity, arrayAdapter, loginListener);
         return loginDialog;
     }
 
-    private AlertDialog getExitAlertDialog(DialogInterface.OnClickListener exitListener) {
+    private AlertDialog getExitAlertDialog(Activity activity, DialogInterface.OnClickListener exitListener) {
         if (exitDialog == null) {
-            createExitAlertDialog(exitListener);
+            createExitAlertDialog(activity, exitListener);
         }
         return exitDialog;
     }
     
-    private AlertDialog getRouteAlertDialog(DialogInterface.OnClickListener routeListener) {
+    private AlertDialog getRouteAlertDialog(Activity activity, DialogInterface.OnClickListener routeListener) {
         if (routeDialog == null) {
-            createRouteAlertDialog(routeListener);
+            createRouteAlertDialog(activity, routeListener);
         }
         return routeDialog;
     }
 
-    private AlertDialog getTrackMyPosDialog(DialogInterface.OnClickListener trackMyPosListener) {
-        createTrackMyPosDialog(trackMyPosListener);
+    private AlertDialog getTrackMyPosDialog(Activity activity, DialogInterface.OnClickListener trackMyPosListener) {
+        createTrackMyPosDialog(activity, trackMyPosListener);
         return trackMyPosDialog;
     }
 
-    private AlertDialog getInfoAlertDialog() {
+    private AlertDialog getInfoAlertDialog(Activity activity) {
         if (infoDialog == null) {
-            createInfoAlertDialog();
+            createInfoAlertDialog(activity);
         }
         return infoDialog;
     }
 
-    private AlertDialog getSaveRouteDialog() {
+    private AlertDialog getSaveRouteDialog(Activity activity, Handler saveRouteHandler) {
         if (saveRouteDialog == null) {
-            createSaveRouteDialog();
+            createSaveRouteDialog(activity, saveRouteHandler);
         }
         return saveRouteDialog;
     }
 
-    private AlertDialog getPacketDataAlertDialog(DialogInterface.OnClickListener packetDataListener) {
-        createPacketDataAlertDialog(packetDataListener);
+    private AlertDialog getPacketDataAlertDialog(Activity activity, DialogInterface.OnClickListener packetDataListener) {
+        createPacketDataAlertDialog(activity, packetDataListener);
         return packetDataDialog;
     }
 
-    private AlertDialog getNetworkErrorDialog(DialogInterface.OnClickListener createNetworkListener) {
+    private AlertDialog getNetworkErrorDialog(Activity activity, DialogInterface.OnClickListener createNetworkListener) {
         if (networkErrorDialog == null) {
-            createNetworkErrorDialog(createNetworkListener);
+            createNetworkErrorDialog(activity, createNetworkListener);
         }
         return networkErrorDialog;
     }
 
-    private AlertDialog getLocationErrorDialog(DialogInterface.OnClickListener locationListener) {
+    private AlertDialog getLocationErrorDialog(Activity activity, DialogInterface.OnClickListener locationListener) {
         if (locationErrorDialog == null) {
-            createLocationErrorDialog(locationListener);
+            createLocationErrorDialog(activity, locationListener);
         }
         return locationErrorDialog;
     }
 
-    private AlertDialog getCheckinDialog(DialogInterface.OnClickListener checkinListener) {
+    private AlertDialog getCheckinDialog(Activity activity, DialogInterface.OnClickListener checkinListener) {
         if (checkinDialog == null) {
-            createCheckinDialog(checkinListener);
+            createCheckinDialog(activity, checkinListener);
         }
         return checkinDialog;
     }
 
-    private AlertDialog getAutoCheckinDialog(DialogInterface.OnClickListener... checkinListeners) {
+    private AlertDialog getAutoCheckinDialog(Activity activity, DialogInterface.OnClickListener... checkinListeners) {
         if (autoCheckinDialog == null) {
-            createAutoCheckinAlertDialog(checkinListeners);
+            createAutoCheckinAlertDialog(activity, checkinListeners);
         }
         return autoCheckinDialog;
     }
 
-    private AlertDialog getShareIntentsDialog(ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener listener) {
+    private AlertDialog getShareIntentsDialog(Activity activity, ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener listener) {
         ConfigurationManager.getInstance().putObject(OPEN_DIALOG, SHARE_INTENTS_DIALOG);
         if (shareIntentsDialog == null) {
-            createShareIntentsDialog(arrayAdapter, listener);
+            createShareIntentsDialog(activity, arrayAdapter, listener);
         }
         return shareIntentsDialog;
     }
 
-    private AlertDialog getAddLayerAlertDialog(DialogInterface.OnClickListener... addLayerListeners) {
+    private AlertDialog getAddLayerAlertDialog(Activity activity, DialogInterface.OnClickListener... addLayerListeners) {
         if (addLayerDialog == null) {
-            createAddLayerAlertDialog(addLayerListeners);
+            createAddLayerAlertDialog(activity, addLayerListeners);
         }
         return addLayerDialog;
     }
 
-    private AlertDialog getRateUsAlertDialog(DialogInterface.OnClickListener rateUsListener) {
+    private AlertDialog getRateUsAlertDialog(Activity activity, DialogInterface.OnClickListener rateUsListener) {
         if (rateUsDialog == null) {
-            createRateUsAlertDialog(rateUsListener);
+            createRateUsAlertDialog(activity, rateUsListener);
         }
         return rateUsDialog;
     }
 
-    private AlertDialog getNewVersionAlertDialog(DialogInterface.OnClickListener vListener) {
+    private AlertDialog getNewVersionAlertDialog(Activity activity, DialogInterface.OnClickListener vListener) {
         if (newVersionDialog == null) {
-            createNewVersionAlertDialog(vListener);
+            createNewVersionAlertDialog(activity, vListener);
         }
         return newVersionDialog;
     }
     
-    private AlertDialog getResetAlertDialog(DialogInterface.OnClickListener resetListener) {
+    private AlertDialog getResetAlertDialog(Activity activity, DialogInterface.OnClickListener resetListener) {
         if (resetDialog == null) {
-            createResetAlertDialog(resetListener);
+            createResetAlertDialog(activity, resetListener);
         }
         return resetDialog;
     }
 
-    protected AlertDialog getAlertDialog(Integer type, ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener... listeners) {
+    protected AlertDialog getAlertDialog(Activity activity, int type, ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener... listeners) {
         AlertDialog alertDialog = null;
         ConfigurationManager.getInstance().putObject(OPEN_DIALOG, type);
 
         switch (type) {
             case EXIT_DIALOG:
-                alertDialog = getExitAlertDialog(listeners[0]);
+                alertDialog = getExitAlertDialog(activity, listeners[0]);
                 break;
             case INFO_DIALOG:
-                alertDialog = getInfoAlertDialog();
+                alertDialog = getInfoAlertDialog(activity);
                 break;
             case TRACK_MYPOS_DIALOG:
-                alertDialog = getTrackMyPosDialog(listeners[0]);
-                break;
-            case SAVE_ROUTE_DIALOG:
-                alertDialog = getSaveRouteDialog();
+                alertDialog = getTrackMyPosDialog(activity, listeners[0]);
                 break;
             case PACKET_DATA_DIALOG:
-                alertDialog = getPacketDataAlertDialog(listeners[0]);
+                alertDialog = getPacketDataAlertDialog(activity, listeners[0]);
                 break;
             case NETWORK_ERROR_DIALOG:
-                alertDialog = getNetworkErrorDialog(listeners[0]);
+                alertDialog = getNetworkErrorDialog(activity, listeners[0]);
                 break;
             case LOCATION_ERROR_DIALOG:
-                alertDialog = getLocationErrorDialog(listeners[0]);
+                alertDialog = getLocationErrorDialog(activity, listeners[0]);
                 break;
             case LOGIN_DIALOG:
-                alertDialog = getLoginDialog(arrayAdapter, listeners[0]);
+                alertDialog = getLoginDialog(activity, arrayAdapter, listeners[0]);
                 break;
             case CHECKIN_DIALOG:
-                alertDialog = getCheckinDialog(listeners[0]);
+                alertDialog = getCheckinDialog(activity, listeners[0]);
                 break;
             case SHARE_INTENTS_DIALOG:
-                alertDialog = getShareIntentsDialog(arrayAdapter, listeners[0]);
+                alertDialog = getShareIntentsDialog(activity, arrayAdapter, listeners[0]);
                 break;
             case AUTO_CHECKIN_DIALOG:
-                alertDialog = getAutoCheckinDialog(listeners);
+                alertDialog = getAutoCheckinDialog(activity, listeners);
                 break;
             case ADD_LAYER_DIALOG:
-                alertDialog = getAddLayerAlertDialog(listeners);
+                alertDialog = getAddLayerAlertDialog(activity, listeners);
                 break;
             case RATE_US_DIALOG:
-                alertDialog = getRateUsAlertDialog(listeners[0]);
+                alertDialog = getRateUsAlertDialog(activity, listeners[0]);
                 break;
             case NEW_VERSION_DIALOG:
-                alertDialog = getNewVersionAlertDialog(listeners[0]);
+                alertDialog = getNewVersionAlertDialog(activity, listeners[0]);
                 break;
             case RESET_DIALOG:
-            	alertDialog = getResetAlertDialog(listeners[0]);
+            	alertDialog = getResetAlertDialog(activity, listeners[0]);
                 break;
             case ROUTE_DIALOG:
-            	alertDialog = getRouteAlertDialog(listeners[0]);
+            	alertDialog = getRouteAlertDialog(activity, listeners[0]);
                 break;
             default:
                 break;
@@ -445,13 +447,18 @@ public class AlertDialogBuilder {
 
         return alertDialog;
     }
+    
+    protected AlertDialog getAlertDialog(Activity activity, Handler saveRouteDialog) {
+    	ConfigurationManager.getInstance().putObject(OPEN_DIALOG, SAVE_ROUTE_DIALOG);
+    	return getSaveRouteDialog(activity, saveRouteDialog);	
+    }
 
-    protected int dismissDialog() {
+    protected int dismissDialog(Activity activity) {
         int type = -1;
         if (ConfigurationManager.getInstance().containsObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class)) {
             type = (Integer) ConfigurationManager.getInstance().getObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             if (type != DEAL_OF_THE_DAY_DIALOG && type != ADD_LAYER_DIALOG) {
-                getAlertDialog(type, null, dialogClickListener).dismiss();
+                getAlertDialog(activity, type, null, dialogClickListener).dismiss();
             }
         }
         return type;
