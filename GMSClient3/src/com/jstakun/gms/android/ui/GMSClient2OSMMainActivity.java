@@ -322,11 +322,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
         }
         
-        syncRoutesOverlays();
-        
         if (markerCluster != null && mapProvider == ConfigurationManager.OSM_MAPS) {
         	markerCluster.loadAllMarkers(mapView);
         }
+        
+        syncRoutesOverlays();
         
         IntentsHelper.getInstance().startAutoCheckinBroadcast();
     }

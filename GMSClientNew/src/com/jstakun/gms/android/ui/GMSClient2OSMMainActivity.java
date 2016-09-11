@@ -313,11 +313,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
         }
         
-        syncRoutesOverlays();
-        
         if (markerCluster != null) {
         	markerCluster.loadAllMarkers(mapView);
         }
+        
+        syncRoutesOverlays();
         
         IntentsHelper.getInstance().startAutoCheckinBroadcast();
     }
@@ -1025,7 +1025,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         if (routePoints.size() > 1) {
             markerCluster.addMarker(routePoints.get(0), mapView);
             markerCluster.addMarker(routePoints.get(routePoints.size()-1), mapView);
-            postInvalidate();
         }
     }
     

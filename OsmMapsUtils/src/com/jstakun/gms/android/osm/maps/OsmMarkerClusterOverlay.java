@@ -120,7 +120,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		readWriteLock.writeLock().lock();
 		int size = getItems().size();
 		for (final ExtendedLandmark landmark : landmarks) {		
-			addMarker(landmark, mapView);			
+			addMarker(landmark, mapView, false);			
 		}
 		readWriteLock.writeLock().unlock();
 		//LoggerUtils.debug(getItems().size() + " markers stored in cluster.");
@@ -129,7 +129,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		}
 	}
 	
-	public void addMarker(ExtendedLandmark landmark, MapView mapView) {
+	public void addMarker(ExtendedLandmark landmark, MapView mapView, boolean invalidate) {
 		Marker marker = null; 
 		if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof Marker) {
 			marker = (Marker)landmark.getRelatedUIObject();
@@ -184,12 +184,18 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
         
 			//LoggerUtils.debug("Adding marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
 			add(marker);
+			
+			if (invalidate) {
+				invalidate();
+			}
 		} else if (!getItems().contains(marker)) {
 			//LoggerUtils.debug("Adding marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
 			add(marker);
-		} else {
-			//LoggerUtils.debug("Marker exists " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
-		}
+			
+			if (invalidate) {
+				invalidate();
+			}
+		} 
 	}
 	
 	public void clearMarkers() {
