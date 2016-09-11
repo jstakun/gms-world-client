@@ -917,15 +917,15 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private void addLandmarkOverlay() {
         OsmLandmarkOverlay landmarkOverlay;
         if (LocationServicesManager.isGpsHardwarePresent()) {
-            landmarkOverlay = new OsmLandmarkOverlay(this, LandmarkManager.getInstance(), loadingHandler);
+            landmarkOverlay = new OsmLandmarkOverlay(this, loadingHandler);
         } else {
-            landmarkOverlay = new OsmLandmarkOverlay(this, LandmarkManager.getInstance(), loadingHandler, new String[]{Commons.ROUTES_LAYER});
+            landmarkOverlay = new OsmLandmarkOverlay(this, loadingHandler, new String[]{Commons.ROUTES_LAYER});
         }
         addOverlay(landmarkOverlay);
     }
 
     private void addRoutesOverlay(String routeName) {
-        OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay(mapView, this, routeName);
+        OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay(mapView, this, routeName, null);
         addOverlay(routesOverlay);
     }
     

@@ -965,9 +965,9 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
         	 OsmLandmarkOverlay landmarkOverlay = null;
         	 if (LocationServicesManager.isGpsHardwarePresent()) {
-                 landmarkOverlay = new OsmLandmarkOverlay(this, LandmarkManager.getInstance(), loadingHandler);
+                 landmarkOverlay = new OsmLandmarkOverlay(this, loadingHandler);
              } else {
-                 landmarkOverlay = new OsmLandmarkOverlay(this, LandmarkManager.getInstance(), loadingHandler, new String[]{Commons.ROUTES_LAYER});
+                 landmarkOverlay = new OsmLandmarkOverlay(this, loadingHandler, new String[]{Commons.ROUTES_LAYER});
              }
             addOverlay(landmarkOverlay);
         } else {
@@ -983,7 +983,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     private void addRoutesOverlay(String routeName) {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routeName);
+            OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routeName, null);
             addOverlay(routesOverlay);
         } else {
             GoogleRoutesOverlay routesOverlay = new GoogleRoutesOverlay(this, routeName);

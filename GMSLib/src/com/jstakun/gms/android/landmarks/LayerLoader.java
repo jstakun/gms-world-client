@@ -298,7 +298,7 @@ public class LayerLoader {
             int i = 0;
             final int maxConcurrentTasks = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_CONCURRENT_COUNT, 3);
             
-            while (i < maxConcurrentTasks && currentLayerIndex < LayerManager.getInstance().getLayers().size()) {
+            while (i < maxConcurrentTasks && currentLayerIndex < LayerManager.getInstance().getLayers().size() && !isCancelled()) {
                 try {
                     String key = LayerManager.getInstance().getLayers().get(currentLayerIndex);
                     Layer layer = LayerManager.getInstance().getLayer(key);

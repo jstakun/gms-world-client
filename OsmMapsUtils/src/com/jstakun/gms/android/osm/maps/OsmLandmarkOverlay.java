@@ -22,37 +22,34 @@ public class OsmLandmarkOverlay extends Overlay {
 
     public static final int SHOW_LANDMARK_DETAILS = 22;
     
-    private LandmarkManager lm;
     private Handler landmarkDetailsHandler;
     private String[] excluded;
     private final Rect viewportRect = new Rect();
 
-    public OsmLandmarkOverlay(Context context, LandmarkManager lm, Handler landmarkDetailsHandler) {
+    public OsmLandmarkOverlay(Context context, Handler landmarkDetailsHandler) {
         super(context);
         this.landmarkDetailsHandler = landmarkDetailsHandler;
-        this.lm = lm;
         this.excluded = new String[]{Commons.MY_POSITION_LAYER, Commons.ROUTES_LAYER};
     }
 
-    public OsmLandmarkOverlay(Context context, LandmarkManager lm, Handler landmarkDetailsHandler, String[] excluded) {
+    public OsmLandmarkOverlay(Context context, Handler landmarkDetailsHandler, String[] excluded) {
         super(context);
         this.landmarkDetailsHandler = landmarkDetailsHandler;
-        this.lm = lm;
         this.excluded = excluded;
     }
 
     @Override
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-        if (shadow == false && lm != null) {
+        if (shadow == false) {
             ProjectionInterface projection = new OsmLandmarkProjection(mapView);
-            lm.paintLandmarks(canvas, projection, mapView.getWidth(), mapView.getHeight(), excluded, mapView.getResources().getDisplayMetrics());
+            LandmarkManager.getInstance().paintLandmarks(canvas, projection, mapView.getWidth(), mapView.getHeight(), excluded, mapView.getResources().getDisplayMetrics());
 
-            List<Drawable> landmarkDrawables = lm.getLandmarkDrawables();
+            List<Drawable> landmarkDrawables = LandmarkManager.getInstance().getLandmarkDrawables();
             for (Drawable d : landmarkDrawables) {
                 d.draw(canvas);
             }
 
-            Drawable selectedLandmark = lm.getSelectedLandmarkDrawable();
+            Drawable selectedLandmark = LandmarkManager.getInstance().getSelectedLandmarkDrawable();
             if (selectedLandmark != null) {
                 selectedLandmark.draw(canvas);
             }
@@ -65,7 +62,7 @@ public class OsmLandmarkOverlay extends Overlay {
         //System.out.println("onSingleTapUp");
         ProjectionInterface proj = new OsmLandmarkProjection(mapView);
         viewportRect.set(mapView.getProjection().getScreenRect());
-        if (lm.findLandmarksInRadius(viewportRect.left + (int) e.getX(), viewportRect.top + (int) e.getY(), proj, true, mapView.getResources().getDisplayMetrics())) {
+        if (LandmarkManager.getInstance().findLandmarksInRadius(viewportRect.left + (int) e.getX(), viewportRect.top + (int) e.getY(), proj, true, mapView.getResources().getDisplayMetrics())) {
             landmarkDetailsHandler.sendEmptyMessage(SHOW_LANDMARK_DETAILS);
         }
         return true;

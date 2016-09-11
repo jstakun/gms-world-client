@@ -41,16 +41,24 @@ public class OsmRoutesOverlay extends Overlay {
     private boolean isCurrentlyRecording = false;
     private Bitmap routesLayerBitmap;
     
-    public OsmRoutesOverlay(MapView mapView, Context context, String routeName) {
+    public OsmRoutesOverlay(MapView mapView, Context context, String routeName, OsmMarkerClusterOverlay markerCluster) {
         super(context);
         this.routeName = routeName;
         isCurrentlyRecording = routeName.equals(RouteRecorder.CURRENTLY_RECORDED);
         if (!isCurrentlyRecording && RoutesManager.getInstance().containsRoute(routeName)) {
             List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
             routeSize = routePoints.size();
-            for (ExtendedLandmark l : routePoints) {
-            	Point p = mapView.getProjection().toProjectedPixels(l.getLatitudeE6(), l.getLongitudeE6(), null);
-                projectedPoints.add(p);
+            if (routeSize > 0) {
+            	for (ExtendedLandmark l : routePoints) {
+            		Point p = mapView.getProjection().toProjectedPixels(l.getLatitudeE6(), l.getLongitudeE6(), null);
+            		projectedPoints.add(p);
+            	}
+            	if (markerCluster != null) {
+            		markerCluster.addMarker(routePoints.get(0), mapView, false);
+            		if (! isCurrentlyRecording) {
+            			markerCluster.addMarker(routePoints.get(routePoints.size()-1), mapView, true);
+            		}
+            	}
             }
         }
 

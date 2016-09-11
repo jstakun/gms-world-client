@@ -1076,7 +1076,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     private void addRoutesOverlay(String routeName) {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routeName);
+            OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routeName, markerCluster);
             addOverlay(routesOverlay);
             //add first & last route point to marker cluster
             List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
