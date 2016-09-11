@@ -1023,8 +1023,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         //add first & last route point to marker cluster
         List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
         if (routePoints.size() > 1) {
-            markerCluster.addMarker(routePoints.get(0), mapView);
-            markerCluster.addMarker(routePoints.get(routePoints.size()-1), mapView);
+            markerCluster.addMarker(routePoints.get(0), mapView, false);
+            markerCluster.addMarker(routePoints.get(routePoints.size()-1), mapView, true);
         }
     }
     
@@ -1033,19 +1033,18 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     	int routesOverlaysCount = 0;
     	
     	for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-            	if (iter.next() instanceof OsmRoutesOverlay) {
-            		routesOverlaysCount++;
-            	}
+            if (iter.next() instanceof OsmRoutesOverlay) {
+            	routesOverlaysCount++;
+            }
         }         
-        
     	
     	boolean isRoutesEnabled = LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER);
     		
     	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
     		for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-    				if (iter.next() instanceof OsmRoutesOverlay) {
-    					iter.remove();
-    				}
+    			if (iter.next() instanceof OsmRoutesOverlay) {
+    				iter.remove();
+    			}
     		}         
     	} else if (routesCount > 0 && isRoutesEnabled && routesOverlaysCount == 0) {
     		for (String routeKey : RoutesManager.getInstance().getRoutes()) {

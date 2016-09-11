@@ -1023,6 +1023,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private void addRoutesOverlay(String routeName) {
         OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay(mapView, this, routeName);
         addOverlay(routesOverlay);
+        //add first & last route point to marker cluster
+        List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
+        if (routePoints.size() > 1) {
+            markerCluster.addMarker(routePoints.get(0), mapView, false);
+            markerCluster.addMarker(routePoints.get(routePoints.size()-1), mapView, true);
+        }
     }
     
     private void syncRoutesOverlays() {
@@ -1030,9 +1036,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     	int routesOverlaysCount = 0;
     	
     	for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-            	if (iter.next() instanceof OsmRoutesOverlay) {
-            		routesOverlaysCount++;
-            	}
+            if (iter.next() instanceof OsmRoutesOverlay) {
+            	routesOverlaysCount++;
+            }
         }         
         
     	
