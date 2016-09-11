@@ -323,6 +323,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
         
         if (markerCluster != null && mapProvider == ConfigurationManager.OSM_MAPS) {
+        	markerCluster.clearMarkers();
         	markerCluster.loadAllMarkers(mapView);
         }
         
@@ -1026,8 +1027,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         //add first & last route point to marker cluster
         List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
         if (routePoints.size() > 1) {
-            markerCluster.addMarker(routePoints.get(0), mapView, false);
-            markerCluster.addMarker(routePoints.get(routePoints.size()-1), mapView, true);
+            markerCluster.addMarker(routePoints.get(0), mapView);
+            markerCluster.addMarker(routePoints.get(routePoints.size()-1), mapView);
         }
     }
     

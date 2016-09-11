@@ -140,7 +140,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 				landmark.setRelatedUIObject(marker);
 				mClusterManager.addItem(marker);
 				added = true;
-			} else if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
+			} else { //if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
 				mClusterManager.addItem(marker);
 				added = true;
 			}	

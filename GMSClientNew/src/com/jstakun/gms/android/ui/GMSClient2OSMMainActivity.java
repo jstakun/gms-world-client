@@ -75,8 +75,8 @@ import android.widget.TextView;
 
 public class GMSClient2OSMMainActivity extends Activity implements OnClickListener {
 
-    private static final int SHOW_MAP_VIEW = 0;
-    
+	private static final int SHOW_MAP_VIEW = 0;
+	
     private MapView mapView;
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
@@ -314,6 +314,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
         
         if (markerCluster != null) {
+        	markerCluster.clearMarkers();
         	markerCluster.loadAllMarkers(mapView);
         }
         

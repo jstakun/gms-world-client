@@ -26,6 +26,8 @@ import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.routes.RouteRecorder;
+import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
 public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
@@ -119,17 +121,20 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 		//LoggerUtils.debug("Loading " + landmarks.size() + " markers from layer " + layerKey);
 		readWriteLock.writeLock().lock();
 		int size = getItems().size();
-		for (final ExtendedLandmark landmark : landmarks) {		
-			addMarker(landmark, mapView, false);			
+		try {
+			for (final ExtendedLandmark landmark : landmarks) {		
+				addMarker(landmark, mapView);			
+			}
+		} finally {
+			readWriteLock.writeLock().unlock();
 		}
-		readWriteLock.writeLock().unlock();
 		//LoggerUtils.debug(getItems().size() + " markers stored in cluster.");
 		if (getItems().size() > size) {
 			invalidate();
 		}
 	}
 	
-	public void addMarker(ExtendedLandmark landmark, MapView mapView, boolean invalidate) {
+	public void addMarker(ExtendedLandmark landmark, MapView mapView) {
 		Marker marker = null; 
 		if (landmark.getRelatedUIObject() != null && landmark.getRelatedUIObject() instanceof Marker) {
 			marker = (Marker)landmark.getRelatedUIObject();
@@ -184,17 +189,9 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
         
 			//LoggerUtils.debug("Adding marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
 			add(marker);
-			
-			if (invalidate) {
-				invalidate();
-			}
 		} else if (!getItems().contains(marker)) {
 			//LoggerUtils.debug("Adding marker " + landmark.getName() + "," + landmark.getLayer() + ": " + landmark.hashCode());
 			add(marker);
-			
-			if (invalidate) {
-				invalidate();
-			}
 		} 
 	}
 	
@@ -213,11 +210,20 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 	
 	public void loadAllMarkers(MapView mapView) {
 		LoggerUtils.debug("Loading all markers to OSM maps!");
-		clearMarkers();
 		for (String layer : LayerManager.getInstance().getLayers()) {
     		if (LayerManager.getInstance().getLayer(layer).getType() != LayerManager.LAYER_DYNAMIC && LayerManager.getInstance().getLayer(layer).isEnabled() && LandmarkManager.getInstance().getLayerSize(layer) > 0) {
     			addMarkers(layer, mapView);
     		}      		
     	}
+		//load routes landmarks
+		for (String routeKey : RoutesManager.getInstance().getRoutes()) {
+			List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeKey);
+			if (routePoints.size() > 1) {
+				addMarker(routePoints.get(0), mapView);
+            	if (! routeKey.equals(RouteRecorder.CURRENTLY_RECORDED)) {
+           			addMarker(routePoints.get(routePoints.size()-1), mapView);
+           		}
+			}
+		}	
 	}
 }

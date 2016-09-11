@@ -344,6 +344,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         }
         
         if (markerCluster != null && mapProvider == ConfigurationManager.OSM_MAPS) {
+        	markerCluster.clearMarkers();
         	markerCluster.loadAllMarkers((org.osmdroid.views.MapView)mapView);
         }
         
@@ -1078,12 +1079,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
             OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routeName, markerCluster);
             addOverlay(routesOverlay);
-            //add first & last route point to marker cluster
-            List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
-            if (routePoints.size() > 1) {
-                markerCluster.addMarker(routePoints.get(0), (org.osmdroid.views.MapView)mapView, false);
-                markerCluster.addMarker(routePoints.get(routePoints.size()-1), (org.osmdroid.views.MapView)mapView, true);
-            }
         } else {
             GoogleRoutesOverlay routesOverlay = new GoogleRoutesOverlay(this, routeName);
             addOverlay(routesOverlay);

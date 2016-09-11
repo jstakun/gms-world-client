@@ -20,6 +20,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.utils.LoggerUtils;
 
 /**
  *
@@ -48,15 +49,16 @@ public class OsmRoutesOverlay extends Overlay {
         if (!isCurrentlyRecording && RoutesManager.getInstance().containsRoute(routeName)) {
             List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
             routeSize = routePoints.size();
-            if (routeSize > 0) {
+            if (routeSize > 1) {
             	for (ExtendedLandmark l : routePoints) {
             		Point p = mapView.getProjection().toProjectedPixels(l.getLatitudeE6(), l.getLongitudeE6(), null);
             		projectedPoints.add(p);
             	}
             	if (markerCluster != null) {
-            		markerCluster.addMarker(routePoints.get(0), mapView, false);
+            		LoggerUtils.debug("Adding route points to marker cluster!");
+            		markerCluster.addMarker(routePoints.get(0), mapView);
             		if (! isCurrentlyRecording) {
-            			markerCluster.addMarker(routePoints.get(routePoints.size()-1), mapView, true);
+            			markerCluster.addMarker(routePoints.get(routePoints.size()-1), mapView);
             		}
             	}
             }
