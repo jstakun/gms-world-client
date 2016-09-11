@@ -290,16 +290,12 @@ public class AlertDialogBuilder {
     }
 
     private AlertDialog getExitAlertDialog(Activity activity, DialogInterface.OnClickListener exitListener) {
-        if (exitDialog == null) {
-            createExitAlertDialog(activity, exitListener);
-        }
+        createExitAlertDialog(activity, exitListener);
         return exitDialog;
     }
     
     private AlertDialog getRouteAlertDialog(Activity activity, DialogInterface.OnClickListener routeListener) {
-        if (routeDialog == null) {
-            createRouteAlertDialog(activity, routeListener);
-        }
+        createRouteAlertDialog(activity, routeListener);
         return routeDialog;
     }
 
@@ -309,16 +305,12 @@ public class AlertDialogBuilder {
     }
 
     private AlertDialog getInfoAlertDialog(Activity activity) {
-        if (infoDialog == null) {
-            createInfoAlertDialog(activity);
-        }
+        createInfoAlertDialog(activity);
         return infoDialog;
     }
 
     private AlertDialog getSaveRouteDialog(Activity activity, Handler saveRouteHandler) {
-        if (saveRouteDialog == null) {
-            createSaveRouteDialog(activity, saveRouteHandler);
-        }
+        createSaveRouteDialog(activity, saveRouteHandler);
         return saveRouteDialog;
     }
 
@@ -328,66 +320,47 @@ public class AlertDialogBuilder {
     }
 
     private AlertDialog getNetworkErrorDialog(Activity activity, DialogInterface.OnClickListener createNetworkListener) {
-        if (networkErrorDialog == null) {
-            createNetworkErrorDialog(activity, createNetworkListener);
-        }
+        createNetworkErrorDialog(activity, createNetworkListener);
         return networkErrorDialog;
     }
 
     private AlertDialog getLocationErrorDialog(Activity activity, DialogInterface.OnClickListener locationListener) {
-        if (locationErrorDialog == null) {
-            createLocationErrorDialog(activity, locationListener);
-        }
+        createLocationErrorDialog(activity, locationListener);
         return locationErrorDialog;
     }
 
     private AlertDialog getCheckinDialog(Activity activity, DialogInterface.OnClickListener checkinListener) {
-        if (checkinDialog == null) {
-            createCheckinDialog(activity, checkinListener);
-        }
+        createCheckinDialog(activity, checkinListener);
         return checkinDialog;
     }
 
     private AlertDialog getAutoCheckinDialog(Activity activity, DialogInterface.OnClickListener... checkinListeners) {
-        if (autoCheckinDialog == null) {
-            createAutoCheckinAlertDialog(activity, checkinListeners);
-        }
+        createAutoCheckinAlertDialog(activity, checkinListeners);
         return autoCheckinDialog;
     }
 
     private AlertDialog getShareIntentsDialog(Activity activity, ArrayAdapter<?> arrayAdapter, DialogInterface.OnClickListener listener) {
-        ConfigurationManager.getInstance().putObject(OPEN_DIALOG, SHARE_INTENTS_DIALOG);
-        if (shareIntentsDialog == null) {
-            createShareIntentsDialog(activity, arrayAdapter, listener);
-        }
+        createShareIntentsDialog(activity, arrayAdapter, listener);
         return shareIntentsDialog;
     }
 
     private AlertDialog getAddLayerAlertDialog(Activity activity, DialogInterface.OnClickListener... addLayerListeners) {
-        if (addLayerDialog == null) {
-            createAddLayerAlertDialog(activity, addLayerListeners);
-        }
+        createAddLayerAlertDialog(activity, addLayerListeners);
         return addLayerDialog;
     }
 
     private AlertDialog getRateUsAlertDialog(Activity activity, DialogInterface.OnClickListener rateUsListener) {
-        if (rateUsDialog == null) {
-            createRateUsAlertDialog(activity, rateUsListener);
-        }
+        createRateUsAlertDialog(activity, rateUsListener);
         return rateUsDialog;
     }
 
     private AlertDialog getNewVersionAlertDialog(Activity activity, DialogInterface.OnClickListener vListener) {
-        if (newVersionDialog == null) {
-            createNewVersionAlertDialog(activity, vListener);
-        }
+        createNewVersionAlertDialog(activity, vListener);
         return newVersionDialog;
     }
     
     private AlertDialog getResetAlertDialog(Activity activity, DialogInterface.OnClickListener resetListener) {
-        if (resetDialog == null) {
-            createResetAlertDialog(activity, resetListener);
-        }
+        createResetAlertDialog(activity, resetListener);
         return resetDialog;
     }
 

@@ -94,7 +94,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		List<ExtendedLandmark> landmarks = LandmarkManager.getInstance().getLandmarkStoreLayer(layerKey);
 		int count = 0;
 		for (final ExtendedLandmark landmark : landmarks) {
-			if (addMarker(landmark)) {
+			if (addMarker(landmark, false)) {
 				count++;
 			}
 		}
@@ -105,7 +105,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		return count;
 	}
 	
-	public boolean addMarker(ExtendedLandmark landmark) {
+	public boolean addMarker(ExtendedLandmark landmark, boolean cluster) {
 		boolean added = false;
 		GoogleMarker marker = null;
 		readWriteLock.writeLock().lock();
@@ -147,6 +147,10 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		} finally {
 			readWriteLock.writeLock().unlock();
 		}
+		if (cluster) {
+			mClusterManager.cluster();
+		}
+		
 		return added;
 	}
 	
@@ -161,6 +165,10 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 			}
 			mClusterManager.cluster();
 		}
+	}
+	
+	public void removeItem(GoogleMarker item) {
+		mClusterManager.removeItem(item);
 	}
 	
 	public void loadAllMarkers() {
