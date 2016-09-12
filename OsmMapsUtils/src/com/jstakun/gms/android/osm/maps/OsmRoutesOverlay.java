@@ -7,21 +7,17 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.Overlay;
 
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.routes.RouteRecorder;
+import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.utils.LoggerUtils;
+
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LayerManager;
-import com.jstakun.gms.android.routes.RouteRecorder;
-import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.utils.LoggerUtils;
 
 /**
  *
@@ -30,7 +26,7 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 public class OsmRoutesOverlay extends Overlay {
 
     private String routeName = null;
-    private final Paint lmpaint = new Paint();
+    //private final Paint lmpaint = new Paint();
     private final Paint paint = new Paint();
     private final Path path = new Path();
     private final Point point1 = new Point();
@@ -39,9 +35,9 @@ public class OsmRoutesOverlay extends Overlay {
     private final Point gp1 = new Point();
     private final Point gp2 = new Point();
     private List<Point> projectedPoints = new ArrayList<Point>();
-    private int routeSize = 0, w, h;
+    private int routeSize = 0;//, w, h;
     private boolean isCurrentlyRecording = false;
-    private Bitmap routesLayerBitmap;
+    //private Bitmap routesLayerBitmap;
     
     public OsmRoutesOverlay(MapView mapView, Context context, String routeName, OsmMarkerClusterOverlay markerCluster) {
         super(context);
@@ -65,10 +61,9 @@ public class OsmRoutesOverlay extends Overlay {
             }
         }
 
-        routesLayerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet_blue); //.start_marker;);
-        
-        w = routesLayerBitmap.getWidth();
-        h = routesLayerBitmap.getHeight();
+        //routesLayerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet_blue); //.start_marker;);    
+        //w = routesLayerBitmap.getWidth();
+        //h = routesLayerBitmap.getHeight();
         
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
@@ -84,7 +79,7 @@ public class OsmRoutesOverlay extends Overlay {
 
             if (!isCurrentlyRecording && routeSize > 1) {
                 projection.toPixelsFromProjected(projectedPoints.get(0), point1); 
-                canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - h, lmpaint);
+                //canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - h, lmpaint);
                 path.moveTo(point1.x, point1.y);
 
                 for (int i = 1; i < routeSize; i++) {
@@ -96,7 +91,7 @@ public class OsmRoutesOverlay extends Overlay {
                 }
 
                 canvas.drawPath(path, paint);
-                canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
+                //canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
             } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point only
                 List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
@@ -131,9 +126,9 @@ public class OsmRoutesOverlay extends Overlay {
                     canvas.drawPath(path, paint);
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
-                    if (i == -1) {
-                        canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
-                    }
+                    //if (i == -1) {
+                    //    canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
+                    //}
                 }
             }
         }

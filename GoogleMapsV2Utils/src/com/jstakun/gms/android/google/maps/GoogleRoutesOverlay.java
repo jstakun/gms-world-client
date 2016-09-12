@@ -56,13 +56,13 @@ public class GoogleRoutesOverlay {
                 pointsLatLng.add(p);
            	}
                 
-        	final int resourceId = R.drawable.bullet_blue; //.start_marker;
+        	//final int resourceId = R.drawable.bullet_blue; //.start_marker;
         	
-        	mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(resourceId)));
+        	//mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(resourceId)));
            	mMarkerCluster.addMarker(points.get(0), true);
             
         	if (!isCurrentlyRecorded) {
-        		mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(resourceId)));
+        		//mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(pointsLatLng.size()-1)).icon(BitmapDescriptorFactory.fromResource(resourceId)));
                 mMarkerCluster.addMarker(points.get(points.size()-1), true);
            	}
             

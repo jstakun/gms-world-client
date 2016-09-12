@@ -82,7 +82,7 @@ public class RouteRecorder {
 
         String[] details = null;
 
-        if (routePoints.size() > 1) {
+        if (routePoints.size() > 2) { //save route only if longer than 2 points
 
             String filename = DateTimeUtils.getCurrentDateStamp() + ".kml";
             if (StringUtils.isNotEmpty(prefix)) {

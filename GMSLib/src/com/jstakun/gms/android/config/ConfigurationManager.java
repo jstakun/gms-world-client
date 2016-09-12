@@ -812,7 +812,7 @@ public final class ConfigurationManager {
     		cdb.delete();
     	}
 
-    	private ConfigDbDataSource getConfigDatabase() {
+    	private synchronized ConfigDbDataSource getConfigDatabase() {
         	ConfigDbDataSource cdb = (ConfigDbDataSource) getObject(CONFIGDB, ConfigDbDataSource.class);
         	if (cdb == null) {
             	cdb = new ConfigDbDataSource(getContext());
@@ -821,7 +821,7 @@ public final class ConfigurationManager {
         	return cdb;
     	}
     	
-    	public FavouritesDbDataSource getFavouritesDatabase() {
+    	public synchronized FavouritesDbDataSource getFavouritesDatabase() {
     		FavouritesDbDataSource fdb = (FavouritesDbDataSource) ConfigurationManager.getInstance().getObject(FAVOURITESDB, FavouritesDbDataSource.class);
             if (fdb == null) {
                 fdb = new FavouritesDbDataSource(getContext());
@@ -830,7 +830,7 @@ public final class ConfigurationManager {
             return fdb;
     	}
 
-    	public List<ExtendedLandmark> getLandmarkDatabase() {
+    	public synchronized List<ExtendedLandmark> getLandmarkDatabase() {
         	LandmarkDbDataSource db = new LandmarkDbDataSource(getContext());
         	List<ExtendedLandmark> lmdb;
         	FileManager fm = PersistenceManagerFactory.getFileManager();
@@ -850,7 +850,7 @@ public final class ConfigurationManager {
         	return lmdb;
     	}
 
-    	public void closeAllDatabases() {
+    	public synchronized void closeAllDatabases() {
         	ConfigDbDataSource cdb = (ConfigDbDataSource) getObject(CONFIGDB, ConfigDbDataSource.class);
         	if (cdb != null) {
             	cdb.close();

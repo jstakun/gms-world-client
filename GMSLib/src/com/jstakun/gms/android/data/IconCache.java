@@ -56,6 +56,8 @@ public class IconCache {
      
     private IconCache() {
         try {
+        	LoggerUtils.debug("Creating IconCache instance...");
+        	
             Context ctx = ConfigurationManager.getInstance().getContext();
 
         	if (!images.containsKey(CURSOR)) {
@@ -110,7 +112,7 @@ public class IconCache {
         return instance;
     }
 
-    public Bitmap getImage(String resourceName) {
+    public synchronized Bitmap getImage(String resourceName) {
         Bitmap img;
 
         if (resourceName != null && isImageLoaded(resourceName)) {
@@ -140,7 +142,7 @@ public class IconCache {
         boolean serverLoading = false;
         String resourceName = layerName + suffix;
         if (isImageLoaded(resourceName)) {
-            img = images.get(resourceName);
+            img = getImage(resourceName);
         } else {
             if (type == LayerManager.LAYER_LOCAL || type == LayerManager.LAYER_DYNAMIC) {
                 try {
@@ -221,7 +223,7 @@ public class IconCache {
         	//System.out.println("Searching for " + hash + "...");
             if (isImageLoaded(hash)) {
             	//System.out.println(hash + " already in cache...");
-                img = images.get(hash);
+                img = getImage(hash);
             } else if (!loadingTasks.containsKey(hash)) {
                 //check if image exists in file cache
                 try {
@@ -302,7 +304,7 @@ public class IconCache {
     	    Paint paint = new Paint();
             paint.setAntiAlias(true);
     	
-    		Bitmap bottom = images.get(GRID);
+    		Bitmap bottom = getImage(GRID);
     		final int bottomSpace = (bottom.getHeight() / 2) + 5; //TODO handle bottom npe
     		int w = 4 * b.getWidth() / 3;
     		int h = 4 * b.getHeight() / 3 + bottomSpace;
@@ -392,6 +394,7 @@ public class IconCache {
     	}
     	images.clear();
     	
+    	LoggerUtils.debug("Deleting IconCache instance...");
     	instance = null;
     }
 
