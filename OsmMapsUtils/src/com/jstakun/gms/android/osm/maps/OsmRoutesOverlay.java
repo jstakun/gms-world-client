@@ -9,6 +9,7 @@ import org.osmdroid.views.overlay.Overlay;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -64,7 +65,8 @@ public class OsmRoutesOverlay extends Overlay {
             }
         }
 
-        routesLayerBitmap = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, mapView.getResources().getDisplayMetrics(), null).getBitmap();
+        routesLayerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet_blue); //.start_marker;);
+        
         w = routesLayerBitmap.getWidth();
         h = routesLayerBitmap.getHeight();
         
