@@ -316,7 +316,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     @Override
     public void onDestroy() {
         LoggerUtils.debug("onDestroy");
-        //if (!appAbort) {
+        super.onDestroy();
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
             IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
@@ -325,8 +325,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
         AdsUtils.destroyAdView(this);
-        //}
-        super.onDestroy();
         System.gc();
     }
 

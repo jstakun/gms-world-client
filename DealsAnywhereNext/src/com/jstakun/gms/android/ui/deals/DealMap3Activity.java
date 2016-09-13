@@ -324,15 +324,15 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	@Override
     public void onDestroy() {
     	LoggerUtils.debug("onDestroy");
-        if (ConfigurationManager.getInstance().isClosing()) {
+    	super.onDestroy();
+    	if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
         	IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else if (mMap != null) {
             IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         }
         AdsUtils.destroyAdView(this);
-        System.gc();
-    	super.onDestroy();
+        System.gc();  	
     }
 	
 	@Override

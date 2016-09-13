@@ -558,8 +558,8 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
     @Override
     public void onDestroy() {
+    	LoggerUtils.debug("onDestroy");
         super.onDestroy();
-        LoggerUtils.debug("onDestroy");
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
             IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());

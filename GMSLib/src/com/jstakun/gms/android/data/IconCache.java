@@ -53,49 +53,55 @@ public class IconCache {
     private static SimpleArrayMap<String, Bitmap> images = new SimpleArrayMap<String, Bitmap>();
     private static SimpleArrayMap<String, GMSAsyncTask<?,?,?>> loadingTasks = new SimpleArrayMap<String, GMSAsyncTask<?,?,?>>();
     private static IconCache instance;
+    private static boolean initialized = false;
      
-    private IconCache() {
+    private IconCache() {}
+    
+    private static void initialize() {
         try {
         	LoggerUtils.debug("Creating IconCache instance...");
         	
             Context ctx = ConfigurationManager.getInstance().getContext();
 
-        	if (!images.containsKey(CURSOR)) {
-        		images.put(CURSOR, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.pointer16));
-        	}
-        	if (!images.containsKey(MAGNIFIER)) {
-        		images.put(MAGNIFIER, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.magnifier));
-        	}
-        	if (!images.containsKey(ICON_MISSING32)) {
-        		images.put(ICON_MISSING32, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing32));
-        	}
-        	if (!images.containsKey(ICON_MISSING16)) {
-        		images.put(ICON_MISSING16, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing16));
-        	}
-        	if (!images.containsKey(LOADING)) {
-        		images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
-        	}
-        	if (!images.containsKey(DOWNLOAD)) {
-        		images.put(DOWNLOAD, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.download));
-        	}
-        	if (!images.containsKey(GRID)) {
-        		images.put(GRID, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.grid));
-        	}
-        	if (!images.containsKey(MARKER_CLUSTER_M1)) {
-        		images.put(MARKER_CLUSTER_M1, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m1));
-        	}
-        	if (!images.containsKey(MARKER_CLUSTER_M2)) {
-        		images.put(MARKER_CLUSTER_M2, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m2));
-        	}
-        	if (!images.containsKey(MARKER_CLUSTER_M3)) {
-        		images.put(MARKER_CLUSTER_M3, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m3));
-        	}
-        	if (!images.containsKey(MARKER_CLUSTER_M4)) {
-        		images.put(MARKER_CLUSTER_M4, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m4));
-        	}
-        	if (!images.containsKey(MARKER_CLUSTER_M5)) {
-        		images.put(MARKER_CLUSTER_M5, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m5));
-        	}
+            if (ctx != null) {
+            	if (!images.containsKey(CURSOR)) {
+            		images.put(CURSOR, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.pointer16));
+            	}
+            	if (!images.containsKey(MAGNIFIER)) {
+            		images.put(MAGNIFIER, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.magnifier));
+            	}
+            	if (!images.containsKey(ICON_MISSING32)) {
+            		images.put(ICON_MISSING32, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing32));
+            	}
+        		if (!images.containsKey(ICON_MISSING16)) {
+        			images.put(ICON_MISSING16, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image_missing16));
+        		}
+        		if (!images.containsKey(LOADING)) {
+        			images.put(LOADING, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.loading));
+        		}
+        		if (!images.containsKey(DOWNLOAD)) {
+        			images.put(DOWNLOAD, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.download));
+        		}
+        		if (!images.containsKey(GRID)) {
+        			images.put(GRID, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.grid));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M1)) {
+        			images.put(MARKER_CLUSTER_M1, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m1));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M2)) {
+        			images.put(MARKER_CLUSTER_M2, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m2));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M3)) {
+        			images.put(MARKER_CLUSTER_M3, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m3));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M4)) {
+        			images.put(MARKER_CLUSTER_M4, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m4));
+        		}
+        		if (!images.containsKey(MARKER_CLUSTER_M5)) {
+        			images.put(MARKER_CLUSTER_M5, BitmapFactory.decodeResource(ctx.getResources(), R.drawable.m5));
+        		}
+        		initialized = true;
+            }
 
         } catch (Exception ex) {
             LoggerUtils.error("IconCache.IconCache() exception", ex);
@@ -108,6 +114,9 @@ public class IconCache {
     public synchronized static IconCache getInstance() {
         if (instance == null) {
             instance = new IconCache();
+        }
+        if (!initialized) {
+        	initialize();
         }
         return instance;
     }
@@ -396,6 +405,7 @@ public class IconCache {
     	
     	LoggerUtils.debug("Deleting IconCache instance...");
     	instance = null;
+    	initialized = false;
     }
 
     private class LoadExternalImageTask extends GMSAsyncTask<String, Void, Void> {
