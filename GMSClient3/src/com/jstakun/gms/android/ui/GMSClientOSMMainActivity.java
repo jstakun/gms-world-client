@@ -220,7 +220,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         OsmMapsTypeSelector.selectMapType(mapView, this);
 
-        AsyncTaskManager.getInstance().setActivity(this);
+        AsyncTaskManager.getInstance().setContext(this);
         
     	IntentsHelper.getInstance().setActivity(this);
         
@@ -228,7 +228,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
-        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask(this);
         
         //verify access token
         AsyncTaskManager.getInstance().executeGetTokenTask();
@@ -677,7 +677,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 	    		}
 	    		break;    
             case R.id.shareScreenshot:
-            	AsyncTaskManager.getInstance().executeImageUploadTask(mapView.getMapCenter().getLatitude(),mapView.getMapCenter().getLongitude(), true);
+            	AsyncTaskManager.getInstance().executeImageUploadTask(this, mapView.getMapCenter().getLatitude(),mapView.getMapCenter().getLongitude(), true);
             	break;    
             case R.id.reset:
             	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RESET_DIALOG, null, null);
@@ -1060,7 +1060,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         		} else if (msg.what == LayerLoader.LAYER_LOADED) {
         			activity.postInvalidate();
         		} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-        			AsyncTaskManager.getInstance().executeImageUploadTask(activity.mapView.getMapCenter().getLatitude(),
+        			AsyncTaskManager.getInstance().executeImageUploadTask(activity, activity.mapView.getMapCenter().getLatitude(),
                             activity.mapView.getMapCenter().getLongitude(), false);
         		} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
         			IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));

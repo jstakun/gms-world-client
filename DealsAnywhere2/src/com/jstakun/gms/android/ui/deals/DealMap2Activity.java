@@ -528,7 +528,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         GoogleMapsTypeSelector.selectMapType(mapView);
 
-        AsyncTaskManager.getInstance().setActivity(this);
+        AsyncTaskManager.getInstance().setContext(this);
         
         IntentsHelper.getInstance().setActivity(this);
         
@@ -536,7 +536,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
-        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask(this);
         //verify access token
         AsyncTaskManager.getInstance().executeGetTokenTask();
 
@@ -858,7 +858,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         		} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
         			activity.showRecommendedDeal(false);
         			if (activity.mapView.canCoverCenter()) {
-        				AsyncTaskManager.getInstance().executeImageUploadTask(MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
+        				AsyncTaskManager.getInstance().executeImageUploadTask(activity, MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
                             MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
         			}
         		} else if (msg.what == GoogleLandmarkOverlay.SHOW_LANDMARK_DETAILS) {

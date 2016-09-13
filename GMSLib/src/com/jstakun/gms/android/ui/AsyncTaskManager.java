@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.media.AudioManager;
@@ -55,7 +56,6 @@ public class AsyncTaskManager {
     public static final int SHOW_ROUTE_MESSAGE = 30;
     private static Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress = new ConcurrentHashMap<Integer, GMSAsyncTask<?,?,?>>();
     private GMSNotificationManager notificationManager;
-    private Activity activity;
     private static final AsyncTaskManager instance = new AsyncTaskManager();
     
     private AsyncTaskManager() {
@@ -65,8 +65,7 @@ public class AsyncTaskManager {
     	return instance;
     }
     
-    public final void setActivity(Activity context) {
-        this.activity = context;
+    public final void setContext(Context context) {
         this.notificationManager = new GMSNotificationManager(context);
     }
 
@@ -882,14 +881,17 @@ public class AsyncTaskManager {
     	
     }
     
-    public void executeNewVersionCheckTask() {
-        new NewVersionCheckTask().execute();
+    public void executeNewVersionCheckTask(Activity activity) {
+        new NewVersionCheckTask(activity).execute();
     }
     
     private class NewVersionCheckTask extends GMSAsyncTask<Void, Void, Boolean> {
 
-        public NewVersionCheckTask() {
+    	private Activity activity;
+    	
+        public NewVersionCheckTask(Activity activity) {
             super(10, NewVersionCheckTask.class.getName());
+            this.activity = activity;
         }
 
         @Override
@@ -909,7 +911,7 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeImageUploadTask(double lat, double lng, boolean notify) {
+    public void executeImageUploadTask(Activity activity, double lat, double lng, boolean notify) {
     	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), Object.class)) && !activity.isFinishing()) {
     	    //if (notify) {
     		//	IntentsHelper.getInstance().showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
@@ -923,7 +925,7 @@ public class AsyncTaskManager {
     		int numOfLandmarks = LandmarkManager.getInstance().getAllLayersSize();
     		int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
     		String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
-    		new TakeScreenshotTask(filename, notify).execute(lat, lng);
+    		new TakeScreenshotTask(activity, filename, notify).execute(lat, lng);
     	} else if (notify) {
     		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
     	} else {
@@ -942,11 +944,13 @@ public class AsyncTaskManager {
     	private String filename;
     	private boolean notify;
     	private Uri uri;
+    	private Activity activity;
     	
-    	public TakeScreenshotTask(String filename, boolean notify) {
+    	public TakeScreenshotTask(Activity activity, String filename, boolean notify) {
 			super(10, TakeScreenshotTask.class.getName());
 			this.filename = filename;
 			this.notify = notify;
+			this.activity = activity;
 		}
 
     	private byte[] takeScreenshot() {

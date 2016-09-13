@@ -215,10 +215,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         LoggerUtils.debug("onResume");
         GmsLocationServicesManager.getInstance().enable(loadingHandler);
         
-        AsyncTaskManager.getInstance().setActivity(this);
+        AsyncTaskManager.getInstance().setContext(this);
         IntentsHelper.getInstance().setActivity(this);
 
-        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask(this);
         
         //verify access token
         AsyncTaskManager.getInstance().executeGetTokenTask();

@@ -262,10 +262,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         OsmMapsTypeSelector.selectMapType(mapView, this);
 
-        AsyncTaskManager.getInstance().setActivity(this);
+        AsyncTaskManager.getInstance().setContext(this);
         IntentsHelper.getInstance().setActivity(this);
         
-        AsyncTaskManager.getInstance().executeNewVersionCheckTask();
+        AsyncTaskManager.getInstance().executeNewVersionCheckTask(this);
         
         //check if myloc is available
         if (LandmarkManager.getInstance().hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
@@ -767,7 +767,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		}
 		    		break;
 		    	case R.id.shareScreenshot:
-		    		AsyncTaskManager.getInstance().executeImageUploadTask(MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
+		    		AsyncTaskManager.getInstance().executeImageUploadTask(this, MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()),
 		                MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), true);
 		    		break;    
 		    	case R.id.reset:
@@ -1197,7 +1197,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             		} 
             		activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
-            		AsyncTaskManager.getInstance().executeImageUploadTask(activity.mapView.getMapCenter().getLatitude(), activity.mapView.getMapCenter().getLongitude(), false);
+            		AsyncTaskManager.getInstance().executeImageUploadTask(activity, activity.mapView.getMapCenter().getLatitude(), activity.mapView.getMapCenter().getLongitude(), false);
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));
             	} else if (msg.what == OsmLandmarkOverlay.SHOW_LANDMARK_DETAILS || msg.what == OsmMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {

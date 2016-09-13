@@ -1,5 +1,6 @@
 package com.jstakun.gms.android.service;
 
+import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.CheckinManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
@@ -28,7 +29,8 @@ public class AutoCheckinService extends Service {
             //if (AsyncTaskManager == null) {
             //	silent = true; 
             //}
-        	int checkinCount = CheckinManager.getInstance().autoCheckin(lat, lng, silent); //set silent to true if running in background
+        	AsyncTaskManager.getInstance().setContext(getApplicationContext());
+            int checkinCount = CheckinManager.getInstance().autoCheckin(lat, lng, silent); //set silent to true if running in background
         	//lastExecutedLat = lat;
         	//lastExecutedLng = lng;
         	LoggerUtils.debug("AutoCheckinService.doReceive() Initiated " + checkinCount + " checkins");
