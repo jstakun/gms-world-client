@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<item type="id" name="addLandmark" /> 
+	<item type="id" name="autocheckin" /> 
+	<item type="id" name="qrcheckin" /> 
+	<item type="id" name="blogeo" />
+	<item type="id" name="friendsCheckins" /> 
+	<item type="id" name="trackPos" /> 
+	<item type="id" name="saveRoute" />
+	<item type="id" name="loadRoute" /> 
+	<item type="id" name="pauseRoute" /> 
+	<item type="id" name="loadPoiFile" />
+	<item type="id" name="config" /> 
+	<item type="id" name="pickMyPos" /> 
+	<item type="id" name="deals" /> 
+	<item type="id" name="newestLandmarks" />
+	<item type="id" name="events" /> 
+	<item type="id" name="reset" />     
+</resources>
