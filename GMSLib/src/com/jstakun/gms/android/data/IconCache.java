@@ -314,7 +314,7 @@ public class IconCache {
             paint.setAntiAlias(true);
     	
     		Bitmap bottom = getImage(GRID);
-    		final int bottomSpace = (bottom.getHeight() / 2) + 5; //TODO handle bottom npe
+    		final int bottomSpace = (bottom.getHeight() / 2) + 5; 
     		int w = 4 * b.getWidth() / 3;
     		int h = 4 * b.getHeight() / 3 + bottomSpace;
 

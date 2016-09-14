@@ -9,10 +9,13 @@ import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.preference.PreferenceManager;
 
 public class RouteTracingService extends Service implements LocationListener,
 															GoogleApiClient.ConnectionCallbacks,
@@ -20,6 +23,7 @@ public class RouteTracingService extends Service implements LocationListener,
 
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
+	private PowerManager.WakeLock mWakeLock;
     
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -36,6 +40,15 @@ public class RouteTracingService extends Service implements LocationListener,
         if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
         	mGoogleApiClient.connect();
         }
+        
+        PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        if (this.mWakeLock != null)
+        {
+           this.mWakeLock.release();
+           this.mWakeLock = null;
+        }
+        this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LoggerUtils.getTag());
+        this.mWakeLock.acquire();
         
         return START_STICKY;
     }
@@ -61,6 +74,11 @@ public class RouteTracingService extends Service implements LocationListener,
     	if (mGoogleApiClient.isConnected()) {
         	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
+        }
+    	if (this.mWakeLock != null)
+        {
+           this.mWakeLock.release();
+           this.mWakeLock = null;
         }
     }
 	
@@ -95,6 +113,7 @@ public class RouteTracingService extends Service implements LocationListener,
 			LoggerUtils.debug("RouteTracingService received last known location");
 			RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
 		}
+		LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 	}
 
