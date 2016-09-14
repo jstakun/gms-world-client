@@ -453,7 +453,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	} else if (keyCode == KeyEvent.KEYCODE_8) { //key *
             	mapController.zoomIn();
             	return true;
-        	} else if (keyCode == KeyEvent.KEYCODE_0) {
+        	} else if (keyCode == KeyEvent.KEYCODE_0) { //key #
             	mapController.zoomOut();
             	return true;
         	} else {
@@ -642,7 +642,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
 	private boolean onMenuItemSelected(int itemId) {
-		if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == android.R.id.home || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
+		if (ConfigurationManager.getUserManager().isUserAllowedAction() || !ConfigurationManager.getUserManager().isItemRestricted(itemId)) {	
 		 switch (itemId) {
 				case R.id.settings:
 					IntentsHelper.getInstance().startSettingsActivity(SettingsActivity.class);

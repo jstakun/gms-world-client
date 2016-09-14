@@ -1414,18 +1414,19 @@ public final class IntentsHelper {
 
         //SuggestionProviderUtil.clearHistory();
 
-        IconCache.getInstance().clearAll();
-        LandmarkManager.getInstance().clearLandmarkStore();
         AsyncTaskManager.getInstance().cancelAll();
+        LandmarkManager.getInstance().clearLandmarkStore();
         
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
             RouteRecorder.getInstance().onAppClose();
         }
         RoutesManager.getInstance().clearRoutesStore();
 
-        PersistenceManagerFactory.getFileManager().clearImageCache();
         ConfigurationManager.getDatabaseManager().closeAllDatabases();
         ConfigurationManager.getInstance().clearObjectCache();
+        IconCache.getInstance().clearAll();
+        
+        PersistenceManagerFactory.getFileManager().clearImageCache();
         
         HttpUtils.closeConnManager();
         

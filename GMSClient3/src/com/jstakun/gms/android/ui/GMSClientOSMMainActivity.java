@@ -519,7 +519,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     public boolean onOptionsItemSelected(MenuItem item) {
     	UserTracker.getInstance().trackEvent("MenuClicks", item.getTitle().toString(), "", 0);
         int itemId = item.getItemId();
-    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || itemId == R.id.exit || itemId == R.id.login || itemId == R.id.register) {	
+    	if (ConfigurationManager.getUserManager().isUserAllowedAction() || !ConfigurationManager.getUserManager().isItemRestricted(itemId)) {	
     	  switch (itemId) {
             case R.id.settings:
                 IntentsHelper.getInstance().startSettingsActivity(SettingsActivity.class);

@@ -1020,6 +1020,19 @@ public final class ConfigurationManager {
     		return (isUserLoggedIn() || getInt(ConfigurationManager.USE_COUNT, 0) < GUEST_LIMIT);
     	}
     	
+    	public boolean isItemRestricted(int itemId) {
+    		final int[] restrictedItems = new int[]{R.id.search, R.id.addLandmark, R.id.autocheckin, R.id.qrcheckin,
+    				R.id.refreshLayers, R.id.addLayer, R.id.blogeo, R.id.friendsCheckins, R.id.trackPos, R.id.saveRoute,
+    				R.id.loadRoute, R.id.pauseRoute, R.id.loadPoiFile, R.id.config, R.id.pickMyPos, R.id.deals, 
+    				R.id.newestLandmarks, R.id.events, R.id.reset};
+    		for (int i=0; i<restrictedItems.length; i++) {
+    			if (restrictedItems[i] == itemId) {
+    				return true;
+    			}
+    		}
+    		return false;
+    	}
+    	
     	public void verifyToken() {
     		if (!StringUtils.isNotEmpty(getString(GMS_TOKEN))) {
     			String errorMessage = GMSUtils.generateToken(getString(GMS_SCOPE));
