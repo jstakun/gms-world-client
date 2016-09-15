@@ -47,8 +47,11 @@ import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -57,7 +60,9 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -90,6 +95,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private GoogleRoutesOverlay routesCluster;
 	
 	private Handler loadingHandler;
+	private Messenger mMessenger;
 	
 	private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton, 
@@ -118,6 +124,28 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		}
 	};    
 	
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName arg0, IBinder service) {
+			try {
+                Message msg = Message.obtain(null, RouteTracingService.COMMAND_REGISTER_CLIENT);
+                msg.replyTo = mMessenger;
+                new Messenger(service).send(msg);
+            }
+            catch (Exception e) {
+                LoggerUtils.error(e.getMessage(), e);
+            }
+			
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName arg0) {
+		}
+        
+    };
+
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +153,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.gmsclient3_main);
-         
+        
+        //TODO testing
+        ConfigurationManager.getInstance().setContext(this);
+        
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
     
         // Set up the drawer.
@@ -134,6 +165,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         LoggerUtils.debug("GMSClient3MainActivity.onCreate called...");
         
         loadingHandler = new LoadingHandler(this);
+        
+        mMessenger = new Messenger(loadingHandler);
         
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         
@@ -315,6 +348,14 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
         	GmsLocationServicesManager.getInstance().disable();
+        	//TODO testing
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        		Intent routeTracingService = new Intent(this, RouteTracingService.class);	
+        		routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_STOP);
+        		unbindService(mConnection);
+        		stopService(routeTracingService);
+        	}
+	        //
         	IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else if (mMap != null) {
             IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
@@ -669,19 +710,20 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		
 			ConfigurationManager.getInstance().setLocation(location);
 		
-			IntentsHelper.getInstance().addMyLocationLandmark(location);     
+			IntentsHelper.getInstance().addMyLocationLandmark(location); 
+			//TODO remove my pos marker
 			IntentsHelper.getInstance().vibrateOnLocationUpdate();
 			UserTracker.getInstance().sendMyLocation();
 	    	
-			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-					RouteRecorder.getInstance().addCoordinate(location.getLatitude(), location.getLongitude(), (float)location.getAltitude(), location.getAccuracy(), location.getSpeed(), location.getBearing());
-					if (routesCluster != null) {
-					   routesCluster.showRecordedRoute();
-					}
-				}
-				showMyPositionAction(false);
-			} 
+			//if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+			//	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+			//		RouteRecorder.getInstance().addCoordinate(location);
+			//		if (routesCluster != null) {
+			//		   routesCluster.showRecordedRoute();
+			//		}
+			//	}
+			//	showMyPositionAction(false);
+			//} 
 	        
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
 				CheckinManager.getInstance().autoCheckin(location.getLatitude(), location.getLongitude(), false);
@@ -971,7 +1013,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
             String route = RouteRecorder.getInstance().startRecording();
-            startService(routeTracingService);
+            //TODO testing
+            routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_START);
+    		startService(routeTracingService);
+    		bindService(routeTracingService, mConnection, Context.BIND_AUTO_CREATE);         
+    		//
             routesCluster.showRouteAction(route, true);
             if (LayerLoader.getInstance().isLoading()) {
             	LayerLoader.getInstance().stopLoading();
@@ -990,7 +1036,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            	//stopService(routeTracingService);
+            	//TODO testing
+            	routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_STOP);
+            	unbindService(mConnection);
+        		stopService(routeTracingService);
+        		//
             	String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
@@ -1045,7 +1095,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	        String route = RouteRecorder.getInstance().startRecording();
 	        //TODO testing
 	        Intent routeTracingService = new Intent(this, RouteTracingService.class);	
+	        routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_START);
 	        startService(routeTracingService);
+	        bindService(routeTracingService, mConnection, Context.BIND_AUTO_CREATE);         
+	        //
 	        routesCluster.showRouteAction(route, true);
 	
 	        MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
@@ -1235,6 +1288,16 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		activity.onConnected();
             	} else if (msg.what == GmsLocationServicesManager.UPDATE_LOCATION) {
             		activity.onLocationChanged();
+            	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) {
+            		LoggerUtils.debug("I will now repaint route!");
+            		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        					if (activity.routesCluster != null) {
+        						activity.routesCluster.showRecordedRoute();
+        					}
+        				}
+        				activity.showMyPositionAction(false);
+        			} 
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	} 

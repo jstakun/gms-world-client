@@ -19,6 +19,8 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.openlapi.QualifiedCoordinates;
 
+import android.location.Location;
+
 /**
  *
  * @author jstakun
@@ -104,10 +106,11 @@ public class RouteRecorder {
         return details;
     }
 
-    public int addCoordinate(double lat, double lng, float altitude, float accuracy, float speed, float bearing) {
+    public int addCoordinate(Location location) {
+    	//TODO implement location quality check
         int mode = -1; //-1 - nothing, 0 - replaced, 1 - added
     	if (!paused) {
-            QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, accuracy, accuracy, Float.NaN); 
+            QualifiedCoordinates qc = new QualifiedCoordinates(location.getLatitude(), location.getLongitude(), location.getAccuracy(), location.getAccuracy(), Float.NaN); 
             String l = DateTimeUtils.getCurrentDateStamp();
             String description = null;
             if (!routePoints.isEmpty()) {
@@ -119,7 +122,7 @@ public class RouteRecorder {
             
             if (routePoints.isEmpty()) {
                 routePoints.add(lm);
-                LoggerUtils.debug("1. Adding first route point: " + lat + "," + lng + " with speed: " + speed + ", meters and bearing: " + bearing + ".");
+                LoggerUtils.debug("1. Adding first route point: " + location.getLatitude() + "," + location.getLongitude() + " with speed: " + location.getSpeed() + ", meters and bearing: " + location.getBearing() + ".");
         		saveNextPoint = true;
                 mode = 1;
             } else {
@@ -128,29 +131,29 @@ public class RouteRecorder {
                 float dist = DistanceUtils.distanceInKilometer(current.getQualifiedCoordinates().getLatitude(), current.getQualifiedCoordinates().getLongitude(),
                         lm.getQualifiedCoordinates().getLatitude(), lm.getQualifiedCoordinates().getLongitude());
 
-                if (((dist >= 0.008 && speed > 5) || (dist >= 0.005 && speed <= 5))) { // meters
+                if (((dist >= 0.008 && location.getSpeed() > 5) || (dist >= 0.005 && location.getSpeed() <= 5))) { // meters
                     
-                	if (MathUtils.abs(bearing - currentBearing) > MAX_BEARING_RANGE) { //|| bearing == 0f
-                		currentBearing = bearing;
+                	if (MathUtils.abs(location.getBearing() - currentBearing) > MAX_BEARING_RANGE) { //|| bearing == 0f
+                		currentBearing = location.getBearing();
                 		routePoints.add(lm);
-                		LoggerUtils.debug(routePoints.size() + ". Adding route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + ", meters and bearing: " + bearing + ".");
+                		LoggerUtils.debug(routePoints.size() + ". Adding route point: " + location.getLatitude() + "," + location.getLongitude() + " with speed: " + location.getSpeed() + ", distance: " + (dist * 1000f) + ", meters and bearing: " + location.getBearing() + ".");
                 		saveNextPoint = true;
                 		mode = 1;
                 	} else if (saveNextPoint) {
-                		currentBearing = bearing;
+                		currentBearing = location.getBearing();
                 		routePoints.add(lm);
-                		LoggerUtils.debug("2. Adding second route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + ", meters and bearing: " + bearing + ".");
+                		LoggerUtils.debug("2. Adding second route point: " + location.getLatitude() + "," + location.getLongitude() + " with speed: " + location.getSpeed() + ", distance: " + (dist * 1000f) + ", meters and bearing: " + location.getBearing() + ".");
                 		saveNextPoint = false;
                 		mode = 1;
                 	} else {
                 		//replace last point
-                		LoggerUtils.debug(routePoints.size() + ". Replacing route point: " + lat + "," + lng + " with speed: " + speed + ", distance: " + (dist * 1000f) + ", meters and bearing: " + bearing + ".");
+                		LoggerUtils.debug(routePoints.size() + ". Replacing route point: " + location.getLatitude() + "," + location.getLongitude() + " with speed: " + location.getSpeed() + ", distance: " + (dist * 1000f) + ", meters and bearing: " + location.getBearing() + ".");
                 		routePoints.add(lm);
                 		routePoints.remove(routePoints.size()-2);
                 		mode = 0;
                 	}
                 } else {
-                	LoggerUtils.debug(routePoints.size() + ". Skipping point due to small distance");
+                	LoggerUtils.debug(routePoints.size() + ". Skipping point due to small distance: " + dist + " and speed: " + location.getSpeed());
                 }
             }
         }

@@ -1032,7 +1032,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	mapButtons.setVisibility(View.GONE);
         	showMyPositionAction(false);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            	RouteRecorder.getInstance().addCoordinate(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), l.getAccuracy(), l.getSpeed(), l.getBearing());
+            	RouteRecorder.getInstance().addCoordinate(l);
             }
         } else {
         	mapButtons.setVisibility(View.VISIBLE);
