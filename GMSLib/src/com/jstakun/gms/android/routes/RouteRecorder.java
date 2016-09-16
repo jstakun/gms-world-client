@@ -131,7 +131,7 @@ public class RouteRecorder {
                 float dist = DistanceUtils.distanceInKilometer(current.getQualifiedCoordinates().getLatitude(), current.getQualifiedCoordinates().getLongitude(),
                         lm.getQualifiedCoordinates().getLatitude(), lm.getQualifiedCoordinates().getLongitude());
 
-                if (((dist >= 0.008 && location.getSpeed() > 5) || (dist >= 0.005 && location.getSpeed() <= 5))) { // meters
+                //if (((dist >= 0.008 && location.getSpeed() > 5) || (dist >= 0.005 && location.getSpeed() <= 5))) { // meters
                     
                 	if (MathUtils.abs(location.getBearing() - currentBearing) > MAX_BEARING_RANGE) { //|| bearing == 0f
                 		currentBearing = location.getBearing();
@@ -152,9 +152,9 @@ public class RouteRecorder {
                 		routePoints.remove(routePoints.size()-2);
                 		mode = 0;
                 	}
-                } else {
-                	LoggerUtils.debug(routePoints.size() + ". Skipping point due to small distance: " + dist + " and speed: " + location.getSpeed());
-                }
+                //} else {
+                //	LoggerUtils.debug(routePoints.size() + ". Skipping point due to small distance: " + dist + " and speed: " + location.getSpeed());
+                //}
             }
         }
     	return mode;

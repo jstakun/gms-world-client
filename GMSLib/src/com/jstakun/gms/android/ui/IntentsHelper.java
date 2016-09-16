@@ -1457,8 +1457,12 @@ public final class IntentsHelper {
     public void stopRouteTrackingService(ServiceConnection mConnection) {
     	Intent routeTracingService = new Intent(activity, RouteTracingService.class);	
 		routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_STOP);
-		activity.unbindService(mConnection);
-		activity.stopService(routeTracingService);
+		try {
+			activity.unbindService(mConnection);
+			activity.stopService(routeTracingService);
+		} catch (Exception e) {
+			LoggerUtils.error(e.getMessage(), e);
+		}
     }
     
     private boolean isGoogleApiAvailable() {
