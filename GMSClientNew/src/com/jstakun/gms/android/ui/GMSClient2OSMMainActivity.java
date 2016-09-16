@@ -36,6 +36,7 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.service.RouteTracingService;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
@@ -47,14 +48,18 @@ import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -81,6 +86,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private IMapController mapController;
     private IMyLocationOverlay myLocation;
     private OsmMarkerClusterOverlay markerCluster;
+    
     private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton, mapButtons,
             lvOpenButton, lvView, lvShareButton, myLocationButton, nearbyLandmarksButton,
@@ -91,9 +97,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private ExpandableListView drawerList;
     private ProgressBar loadingProgressBar;
     
-    private int mapProvider;
     private boolean appInitialized = false;
+    
     private  Handler loadingHandler;
+    private Messenger mMessenger;
+    
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = LocationServicesManager.getMyLocation();
@@ -114,6 +122,27 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
         }
     };
+    
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName arg0, IBinder service) {
+			try {
+                Message msg = Message.obtain(null, RouteTracingService.COMMAND_REGISTER_CLIENT);
+                msg.replyTo = mMessenger;
+                new Messenger(service).send(msg);
+            }
+            catch (Exception e) {
+                LoggerUtils.error(e.getMessage(), e);
+            }
+			
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName arg0) {
+		}
+        
+    };
   
     /**
      * Called when the activity is first created.
@@ -128,7 +157,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        mapProvider = ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER);
+        //TODO testing
+        ConfigurationManager.getInstance().setContext(this);
+        
         
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
@@ -136,8 +167,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         getActionBar().hide();
         
         loadingHandler = new LoadingHandler(this);
+        mMessenger = new Messenger(loadingHandler);
         
-        LoggerUtils.debug("Map provider is " + mapProvider);
+        LoggerUtils.debug("Map provider is osm");
 
         setContentView(R.layout.osmdroidcanvasview_2);
         
@@ -367,6 +399,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         super.onDestroy();
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
+        	//TODO testing
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        		IntentsHelper.getInstance().stopRouteTrackingService(mConnection);
+        	}
+	        //
         	IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else {
         	IntentsHelper.getInstance().softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
@@ -464,6 +501,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             	String route = RouteRecorder.getInstance().startRecording();
+            	//TODO testing
+                IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
+        		//
                 showRouteAction(route);
                 MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
             } 
@@ -993,15 +1033,15 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	IntentsHelper.getInstance().vibrateOnLocationUpdate();
         	UserTracker.getInstance().sendMyLocation();
     	
-        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        		mapButtons.setVisibility(View.GONE);
-        		showMyPositionAction(false);
-            	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            		RouteRecorder.getInstance().addCoordinate(l);
-             	}
-        	} else {
-        		mapButtons.setVisibility(View.VISIBLE);
-        	}
+        	//if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        	//	mapButtons.setVisibility(View.GONE);
+        	//	showMyPositionAction(false);
+            //	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+            //		RouteRecorder.getInstance().addCoordinate(l);
+            // 	}
+        	//} else {
+        	//	mapButtons.setVisibility(View.VISIBLE);
+        	//}
 
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
         		CheckinManager.getInstance().autoCheckin(l.getLatitude(), l.getLongitude(), false);
@@ -1074,6 +1114,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
             String route = RouteRecorder.getInstance().startRecording();
+            //TODO testing
+            IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
+    		//
             showRouteAction(route);
             if (LayerLoader.getInstance().isLoading()) {
             	LayerLoader.getInstance().stopLoading();
@@ -1093,6 +1136,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+            	//TODO testing
+                IntentsHelper.getInstance().stopRouteTrackingService(mConnection);     
+        		//
                 String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
@@ -1192,9 +1238,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             	} else if (msg.what == MessageStack.STATUS_GONE) {
             		activity.loadingImage.setVisibility(View.GONE);
             	} else if (msg.what == LayerLoader.LAYER_LOADED) {
-            		if (activity.mapProvider == ConfigurationManager.OSM_MAPS) {
-            			activity.markerCluster.addMarkers((String)msg.obj, (org.osmdroid.views.MapView)activity.mapView);
-            		} 
+            		activity.markerCluster.addMarkers((String)msg.obj, (org.osmdroid.views.MapView)activity.mapView);
             		activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
             		AsyncTaskManager.getInstance().executeImageUploadTask(activity, activity.mapView.getMapCenter().getLatitude(), activity.mapView.getMapCenter().getLongitude(), false);
@@ -1220,6 +1264,14 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             		activity.showRouteAction((String) msg.obj);
             	} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
             		activity.updateLocation((Location) msg.obj);
+            	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) {
+            		LoggerUtils.debug("I will now repaint route!");
+            		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+                		activity.mapButtons.setVisibility(View.GONE);
+                		activity.showMyPositionAction(false);
+                	} else {
+                		activity.mapButtons.setVisibility(View.VISIBLE);
+                	}
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}

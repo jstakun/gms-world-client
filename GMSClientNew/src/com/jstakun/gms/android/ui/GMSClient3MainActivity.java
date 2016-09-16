@@ -350,10 +350,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	GmsLocationServicesManager.getInstance().disable();
         	//TODO testing
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-        		Intent routeTracingService = new Intent(this, RouteTracingService.class);	
-        		routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_STOP);
-        		unbindService(mConnection);
-        		stopService(routeTracingService);
+        		IntentsHelper.getInstance().stopRouteTrackingService(mConnection);
         	}
 	        //
         	IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
@@ -711,7 +708,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			ConfigurationManager.getInstance().setLocation(location);
 		
 			IntentsHelper.getInstance().addMyLocationLandmark(location); 
-			//TODO remove my pos marker
 			IntentsHelper.getInstance().vibrateOnLocationUpdate();
 			UserTracker.getInstance().sendMyLocation();
 	    	
@@ -1009,14 +1005,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	}
 	
 	private String followMyPositionAction() {
-		Intent routeTracingService = new Intent(this, RouteTracingService.class);	
 		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
             String route = RouteRecorder.getInstance().startRecording();
             //TODO testing
-            routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_START);
-    		startService(routeTracingService);
-    		bindService(routeTracingService, mConnection, Context.BIND_AUTO_CREATE);         
+            IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
     		//
             routesCluster.showRouteAction(route, true);
             if (LayerLoader.getInstance().isLoading()) {
@@ -1037,9 +1030,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
             	//TODO testing
-            	routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_STOP);
-            	unbindService(mConnection);
-        		stopService(routeTracingService);
+            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection);
         		//
             	String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
@@ -1094,10 +1085,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 	        String route = RouteRecorder.getInstance().startRecording();
 	        //TODO testing
-	        Intent routeTracingService = new Intent(this, RouteTracingService.class);	
-	        routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_START);
-	        startService(routeTracingService);
-	        bindService(routeTracingService, mConnection, Context.BIND_AUTO_CREATE);         
+	        IntentsHelper.getInstance().startRouteTrackingService(mConnection);
 	        //
 	        routesCluster.showRouteAction(route, true);
 	

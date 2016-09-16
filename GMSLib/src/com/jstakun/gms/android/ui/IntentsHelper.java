@@ -42,6 +42,7 @@ import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.service.AutoCheckinStartServiceReceiver;
+import com.jstakun.gms.android.service.RouteTracingService;
 import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
@@ -62,6 +63,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -1443,6 +1445,20 @@ public final class IntentsHelper {
     		String date = DateTimeUtils.getDefaultDateTimeString(System.currentTimeMillis(), ConfigurationManager.getInstance().getCurrentLocale());
     		LandmarkManager.getInstance().addLandmark(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), Locale.getMessage(R.string.Your_Location), Locale.getMessage(R.string.Your_Location_Desc, provider, l.getAccuracy(), date), Commons.MY_POSITION_LAYER, false);
         }
+    }
+    
+    public void startRouteTrackingService(ServiceConnection mConnection) {
+    	Intent routeTracingService = new Intent(activity, RouteTracingService.class);	
+		routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_START);
+		activity.startService(routeTracingService);
+		activity.bindService(routeTracingService, mConnection, Context.BIND_AUTO_CREATE);         
+    }
+    
+    public void stopRouteTrackingService(ServiceConnection mConnection) {
+    	Intent routeTracingService = new Intent(activity, RouteTracingService.class);	
+		routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_STOP);
+		activity.unbindService(mConnection);
+		activity.stopService(routeTracingService);
     }
     
     private boolean isGoogleApiAvailable() {
