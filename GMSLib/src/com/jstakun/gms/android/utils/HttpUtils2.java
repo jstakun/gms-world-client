@@ -28,9 +28,32 @@ public class HttpUtils2 {
 	private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
 	private static final Map<String, Integer> httpResponseStatuses = new HashMap<String, Integer>();
 	private static final Map<String, String> httpErrorMessages = new HashMap<String, String>();
+	private static final Map<String, String> httpHeaders = new HashMap<String, String>();
 	
-	public String uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
-	    //must implement form multi part data
+	//TODO implement aborting
+	private static boolean aborted = false;
+	
+	public static void close() {
+		aborted = true;
+	}
+	
+	public static void open() {
+		aborted = false;
+	}
+	
+	public static String uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
+	    //TODO to be implemented
+		//must implement form multi part data
+		return null;
+	}
+	
+	public static byte[] loadFile(String url, boolean auth, String format) {
+		//TODO to be implemented
+		return null;
+	}
+	
+	public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
+		//TODO to be implemented
 		return null;
 	}
 	
@@ -131,24 +154,6 @@ public class HttpUtils2 {
         return response;
     }*/
 
-	public static Integer getResponseCode(String url) {
-    	return httpResponseStatuses.remove(url);
-    }
-	
-	public static String getErrorMessage(String url) {
-		return httpErrorMessages.remove(url);
-	}
-	
-	private static void setAuthHeader(HttpURLConnection conn, boolean throwIfEmpty) {
-    	if (ConfigurationManager.getUserManager().isTokenPresent()) {
-    		conn.setRequestProperty(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
-    		conn.setRequestProperty(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
-    	} else if (throwIfEmpty) {
-    		LoggerUtils.error("Missing authorization token");
-    		throw new SecurityException("Missing authorization token");
-    	}
-    }
-	
 	public static List<ExtendedLandmark> loadLandmarksList(String fileUrl, Map<String, String> params, boolean auth, String[] formats) {
     	ObjectInputStream ois = null;
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
@@ -156,83 +161,93 @@ public class HttpUtils2 {
     	httpErrorMessages.remove(fileUrl);
         
     	try {
-    		HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
-            conn.setRequestMethod("POST");
-            conn.setConnectTimeout(SOCKET_TIMEOUT);
-            conn.setReadTimeout(SOCKET_TIMEOUT);
-            conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-            conn.setRequestProperty("User-Agent", Locale.getMessage(R.string.app_name) + " HTTP client");
-            conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-            conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
-            conn.setRequestProperty(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+    		if (ServicesUtils.isNetworkActive()) { 	
+    			HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
+    			conn.setRequestMethod("POST");
+    			conn.setConnectTimeout(SOCKET_TIMEOUT);
+    			conn.setReadTimeout(SOCKET_TIMEOUT);
+            	conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+            	conn.setRequestProperty("User-Agent", Locale.getMessage(R.string.app_name) + " HTTP client");
+            	conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            	conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
+            	conn.setRequestProperty(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
             
-            if (auth) {
-                setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
-            }
-            
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-            
-            String queryString = getQuery(params);
-            OutputStream os = conn.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-            writer.write(queryString);
-            writer.flush();
-            writer.close();
-            os.close();            
-            
-            conn.connect();
-            
-            int responseCode = conn.getResponseCode();
-            httpResponseStatuses.put(fileUrl, responseCode);
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-            	String contentType = conn.getContentType();
-            	if (contentType != null) {
-					if (!StringUtils.startsWithAny(contentType, formats)) {
-						responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
-						throw new IOException("Wrong content format! Expected: " + StringUtils.join(formats," or ") + ", found: " + contentType + " at url: " + fileUrl);
-					}
-				} else {
-					//throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
-					LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + fileUrl);
-				}
-            	ConfigurationManager.getAppUtils().increaseCounter(queryString.getBytes().length, conn.getContentLength());
-            	if (conn.getContentLength() > 0) {
-            		if (conn.getContentType().indexOf("deflate") != -1) {
-            			ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
-            		} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
-            			ois = new ObjectInputStream(conn.getInputStream());
-            		} 
-            	} else {
-            		LoggerUtils.debug("Received no content from " + fileUrl); 	
+            	if (auth) {
+            		setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
             	}
-            	int size = 0;
-            	if (ois != null) {
-        			size = ois.readInt();
-        			LoggerUtils.debug("Reading " + size + " landmarks");
-        			if (size > 0) {
-        				for(int i = 0;i < size;i++) {
-        					try {
-        						ExtendedLandmark landmark = new ExtendedLandmark(); 
-        						landmark.readExternal(ois);
-        						landmarks.add(landmark);
-        					} catch (IOException e) {
-        						responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
-    							throw new IOException("Unable to create object input stream from " + fileUrl, e);
-        					}
-        				}       				
-        			}
-        		} else {
-        			LoggerUtils.error("Object stream is null");
+            
+            	conn.setDoInput(true);
+            	conn.setDoOutput(true);
+            
+            	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+            
+            	String queryString = getQuery(params);
+            	OutputStream os = conn.getOutputStream();
+            	BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            	writer.write(queryString);
+            	writer.flush();
+            	writer.close();
+            	os.close();            
+            
+            	if (!aborted) {
+            		conn.connect();
+            
+            		int responseCode = conn.getResponseCode();
+            		httpResponseStatuses.put(fileUrl, responseCode);
+
+            		if (responseCode == HttpURLConnection.HTTP_OK && !aborted) {
+            			String contentType = conn.getContentType();
+            			if (contentType != null) {
+            				if (!StringUtils.startsWithAny(contentType, formats)) {
+            					responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+            					throw new IOException("Wrong content format! Expected: " + StringUtils.join(formats," or ") + ", found: " + contentType + " at url: " + fileUrl);
+            				}
+            			} else {
+            				//throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
+            				LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + fileUrl);
+            			}
+            			ConfigurationManager.getAppUtils().increaseCounter(queryString.getBytes().length, conn.getContentLength());
+            			if (conn.getContentLength() > 0) {
+            				if (conn.getContentType().indexOf("deflate") != -1) {
+            					ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
+            				} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
+            					ois = new ObjectInputStream(conn.getInputStream());
+            				} 
+            			} else {
+            				LoggerUtils.debug("Received no content from " + fileUrl); 	
+            			}
+            			int size = 0;
+            			if (ois != null) {
+            				size = ois.readInt();
+            				LoggerUtils.debug("Reading " + size + " landmarks");
+            				if (size > 0) {
+            					for(int i = 0;i < size;i++) {
+            						try {
+            							ExtendedLandmark landmark = new ExtendedLandmark(); 
+            							landmark.readExternal(ois);
+            							landmarks.add(landmark);
+            						} catch (IOException e) {
+            							responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+            							throw new IOException("Unable to create object input stream from " + fileUrl, e);
+            						}
+            					}       				
+            				}
+            			} else {
+            				LoggerUtils.error("Object stream is null");
+            			}
+            			LoggerUtils.debug("Received " + size + " landmarks from " + fileUrl);
+            		} else if (!aborted) {
+            			LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
+            			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
+            		} else {
+            			LoggerUtils.debug("Request to " + fileUrl + " has been aborted");
+            		}
+            	} else {
+        			String errorMessage = Locale.getMessage(R.string.Network_connection_error_title);
+        			httpErrorMessages.put(fileUrl, errorMessage);
+        			LoggerUtils.error("HttpUtils.loadLandmarkList() network exception: " + errorMessage);
         		}
-                LoggerUtils.debug("Received " + size + " landmarks from " + fileUrl);
-            } else {
-				LoggerUtils.error(fileUrl + " loading error: " + responseCode); // + " " + httpResponse.getStatusLine().getReasonPhrase());
-				httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
-			}
+    		}
         } catch (Exception e) {
         	if (StringUtils.equals(e.getMessage(), "Connection already shutdown")) {
         		LoggerUtils.debug("HttpUtils.loadLandmarkList() exception: " + e.getMessage(), e);
@@ -251,6 +266,36 @@ public class HttpUtils2 {
         }
         
         return landmarks;
+    }
+	
+	public static Integer getResponseCode(String url) {
+    	return httpResponseStatuses.remove(url);
+    }
+	
+	public static String getErrorMessage(String url) {
+		return httpErrorMessages.remove(url);
+	}
+	
+	public static String getHeader(String url, String headerName) {
+		return httpHeaders.remove(url + "->" + headerName);
+	}
+	
+	private static void readHeaders(HttpURLConnection conn, String url, String... headerNames) {
+		for (int i = 0; i < headerNames.length; i++) {
+            String headerName = headerNames[i];
+            String headerValue = conn.getHeaderField(headerName);
+            httpHeaders.put(url + "->" + headerName, headerValue);
+		}
+	}
+	
+	private static void setAuthHeader(HttpURLConnection conn, boolean throwIfEmpty) {
+    	if (ConfigurationManager.getUserManager().isTokenPresent()) {
+    		conn.setRequestProperty(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
+    		conn.setRequestProperty(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
+    	} else if (throwIfEmpty) {
+    		LoggerUtils.error("Missing authorization token");
+    		throw new SecurityException("Missing authorization token");
+    	}
     }
 	
 	private static String handleHttpException(Throwable e) {
