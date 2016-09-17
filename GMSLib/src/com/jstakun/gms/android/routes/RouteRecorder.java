@@ -1,6 +1,9 @@
 package com.jstakun.gms.android.routes;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +19,6 @@ import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.MathUtils;
 import com.openlapi.QualifiedCoordinates;
 
 import android.location.Location;
@@ -29,16 +31,20 @@ public class RouteRecorder {
 
 	public static final String CURRENTLY_RECORDED = "Current";
     public static final String ROUTE_PREFIX = "my_route";
-    //TODO MAX_BEARING_RANGE should be based on zoom level
-    private static final float MAX_BEARING_RANGE = 9f;
-
+    private static final int MAX_REASONABLE_SPEED = 90; //324 kilometer per hour or 201 mile per hour
+    private static final int MAX_REASONABLE_ALTITUDECHANGE = 200; //meters
+ 
     private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
     private static RouteRecorder instance = null;
     private long startTime = -1, endTime = -1;
     private int notificationId = -1;
     private boolean paused = false;
-    private boolean saveNextPoint = false;
-    private float currentBearing = 0f;
+    
+    private static final float mMaxAcceptableAccuracy = 50; //meters
+    private static final Vector<Location> mWeakLocations = new Vector<Location>(3);
+    private static final Queue<Double> mAltitudes = new LinkedList<Double>();;
+    private Location mPreviousLocation;
+    private boolean mSpeedSanityCheck = true;
     
     private RouteRecorder() {
     }
@@ -54,7 +60,6 @@ public class RouteRecorder {
     	ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);  	
     	if (!RoutesManager.getInstance().containsRoute(CURRENTLY_RECORDED)) {
     		startTime = System.currentTimeMillis();
-    		currentBearing = 0f;
     		RoutesManager.getInstance().addRoute(CURRENTLY_RECORDED, routePoints, null);
     	}
     	if (notificationId == -1) {
@@ -106,11 +111,12 @@ public class RouteRecorder {
         return details;
     }
 
-    public int addCoordinate(Location location) {
-    	//TODO implement location quality check
-        int mode = -1; //-1 - nothing, 0 - replaced, 1 - added
-    	if (!paused) {
-            QualifiedCoordinates qc = new QualifiedCoordinates(location.getLatitude(), location.getLongitude(), location.getAccuracy(), location.getAccuracy(), Float.NaN); 
+    public boolean addCoordinate(Location newLocation) {
+    	Location candidate = filterLocation(newLocation);
+    	boolean added = false;   
+    	if (!paused && candidate != null) {
+    		mPreviousLocation = newLocation;
+        	QualifiedCoordinates qc = new QualifiedCoordinates(candidate.getLatitude(),candidate.getLongitude(), (float)candidate.getAltitude(), candidate.getAccuracy(), Float.NaN); 
             String l = DateTimeUtils.getCurrentDateStamp();
             String description = null;
             if (!routePoints.isEmpty()) {
@@ -119,45 +125,10 @@ public class RouteRecorder {
             } 
             ExtendedLandmark lm = LandmarkFactory.getLandmark(l, description, qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
             endTime = System.currentTimeMillis();
-            
-            if (routePoints.isEmpty()) {
-                routePoints.add(lm);
-                LoggerUtils.debug("1. Adding first route point: " + location.getLatitude() + "," + location.getLongitude() + " with speed: " + location.getSpeed() + ", meters and bearing: " + location.getBearing() + ".");
-        		saveNextPoint = true;
-                mode = 1;
-            } else {
-                ExtendedLandmark current = routePoints.get(routePoints.size()-1);
-
-                float dist = DistanceUtils.distanceInKilometer(current.getQualifiedCoordinates().getLatitude(), current.getQualifiedCoordinates().getLongitude(),
-                        lm.getQualifiedCoordinates().getLatitude(), lm.getQualifiedCoordinates().getLongitude());
-
-                //if (((dist >= 0.008 && location.getSpeed() > 5) || (dist >= 0.005 && location.getSpeed() <= 5))) { // meters
-                    
-                	if (MathUtils.abs(location.getBearing() - currentBearing) > MAX_BEARING_RANGE) { //|| bearing == 0f
-                		currentBearing = location.getBearing();
-                		routePoints.add(lm);
-                		LoggerUtils.debug(routePoints.size() + ". Adding route point: " + location.getLatitude() + "," + location.getLongitude() + " with speed: " + location.getSpeed() + ", distance: " + (dist * 1000f) + ", meters and bearing: " + location.getBearing() + ".");
-                		saveNextPoint = true;
-                		mode = 1;
-                	} else if (saveNextPoint) {
-                		currentBearing = location.getBearing();
-                		routePoints.add(lm);
-                		LoggerUtils.debug("2. Adding second route point: " + location.getLatitude() + "," + location.getLongitude() + " with speed: " + location.getSpeed() + ", distance: " + (dist * 1000f) + ", meters and bearing: " + location.getBearing() + ".");
-                		saveNextPoint = false;
-                		mode = 1;
-                	} else {
-                		//replace last point
-                		LoggerUtils.debug(routePoints.size() + ". Replacing route point: " + location.getLatitude() + "," + location.getLongitude() + " with speed: " + location.getSpeed() + ", distance: " + (dist * 1000f) + ", meters and bearing: " + location.getBearing() + ".");
-                		routePoints.add(lm);
-                		routePoints.remove(routePoints.size()-2);
-                		mode = 0;
-                	}
-                //} else {
-                //	LoggerUtils.debug(routePoints.size() + ". Skipping point due to small distance: " + dist + " and speed: " + location.getSpeed());
-                //}
-            }
+            routePoints.add(lm);
+            added = true;
         }
-    	return mode;
+    	return added;
     }
 
     public void pause() {
@@ -223,5 +194,104 @@ public class RouteRecorder {
         }
         
         return new String[] {dist, avg, timeInterval};
+    }
+    
+    private Location filterLocation(Location proposedLocation) {
+    	// Do no include log wrong 0.0 lat 0.0 long, skip to next value in while-loop
+    	if (proposedLocation != null && (proposedLocation.getLatitude() == 0.0d || proposedLocation.getLongitude() == 0.0d)) {
+    		LoggerUtils.debug("A wrong location was received, 0.0 latitude and 0.0 longitude... ");
+    		proposedLocation = null;
+    	}
+
+    	// Do not log a waypoint which is more inaccurate then is configured to be acceptable
+    	if (proposedLocation != null && proposedLocation.getAccuracy() > mMaxAcceptableAccuracy) {
+    		LoggerUtils.debug(String.format("A weak location was received, lots of inaccuracy... (%f is more then max %f)", proposedLocation.getAccuracy(),
+                mMaxAcceptableAccuracy));
+    		proposedLocation = addBadLocation(proposedLocation);
+    	}
+
+    	// Do not log a waypoint which might be on any side of the previous waypoint
+    	if (proposedLocation != null && mPreviousLocation != null && proposedLocation.getAccuracy() > mPreviousLocation.distanceTo(proposedLocation)) {
+    		LoggerUtils.debug(
+                String.format("A weak location was received, not quite clear from the previous route point... (%f more then max %f)",
+                      proposedLocation.getAccuracy(), mPreviousLocation.distanceTo(proposedLocation)));
+    		proposedLocation = addBadLocation(proposedLocation);
+    	}
+
+    	// Speed checks, check if the proposed location could be reached from the previous one in sane speed
+    	// Common to jump on network logging and sometimes jumps on Samsung Galaxy S type of devices
+    	if (mSpeedSanityCheck && proposedLocation != null && mPreviousLocation != null) {
+    		// To avoid near instant teleportation on network location or glitches cause continent hopping
+    		float meters = proposedLocation.distanceTo(mPreviousLocation);
+    		long seconds = (proposedLocation.getTime() - mPreviousLocation.getTime()) / 1000L;
+    		float speed = meters / seconds;
+    		if (speed > MAX_REASONABLE_SPEED) {
+    			LoggerUtils.debug("A strange location was received, a really high speed of " + speed + " m/s, prob wrong...");
+    			proposedLocation = addBadLocation(proposedLocation);
+    			//Might be a messed up Samsung Galaxy S GPS, reset the logging
+    			//stop and start gps listener
+    		}
+    	}
+
+    	// Remove speed if not sane
+    	if (mSpeedSanityCheck && proposedLocation != null && proposedLocation.getSpeed() > MAX_REASONABLE_SPEED) {
+    		LoggerUtils.debug("A strange speed, a really high speed, prob wrong...");
+    		proposedLocation.removeSpeed();
+    	}
+
+    	// Remove altitude if not sane
+    	if (mSpeedSanityCheck && proposedLocation != null && proposedLocation.hasAltitude()) {
+    		if (!addSaneAltitude(proposedLocation.getAltitude())) {
+    			LoggerUtils.debug("A strange altitude, a really big difference, prob wrong...");
+    			proposedLocation.removeAltitude();
+    		}
+    	}
+       
+    	// Older bad locations will not be needed
+    	if (proposedLocation != null) {
+    		mWeakLocations.clear();
+    	}
+    	return proposedLocation;
+    }
+    
+    private Location addBadLocation(Location location) {
+    	mWeakLocations.add(location);
+    	if (mWeakLocations.size() < 3) {
+    		location = null;
+    	} else {
+    		Location best = mWeakLocations.lastElement();
+    		for (Location whimp : mWeakLocations) {
+    			if (whimp.hasAccuracy() && best.hasAccuracy() && whimp.getAccuracy() < best.getAccuracy()) {
+    				best = whimp;
+    			} else if (whimp.hasAccuracy() && !best.hasAccuracy()) {
+    				best = whimp;
+                }
+             
+    		}
+    		synchronized (mWeakLocations) {
+    			mWeakLocations.clear();
+    		}
+    		location = best;
+       }
+       return location;
+    }
+    
+    private boolean addSaneAltitude(double altitude) {
+    	boolean sane = true;
+    	double avg = 0;
+    	int elements = 0;
+    	// Even insane altitude shifts increases alter perception
+    	mAltitudes.add(altitude);
+    	if (mAltitudes.size() > 3) {
+    		mAltitudes.poll();
+    	}
+    	for (Double alt : mAltitudes) {
+    		avg += alt;
+    		elements++;
+    	}
+    	avg = avg / elements;
+    	sane = Math.abs(altitude - avg) < MAX_REASONABLE_ALTITUDECHANGE;
+
+    	return sane;
     }
 }

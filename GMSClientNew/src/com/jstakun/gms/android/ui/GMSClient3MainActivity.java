@@ -1076,21 +1076,25 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			getSupportActionBar().show();
 		}
 		
-	    markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, this.getResources().getDisplayMetrics());	
-	    markerCluster.loadAllMarkers();
+		if (markerCluster == null) {
+			markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, this.getResources().getDisplayMetrics());	
+			markerCluster.loadAllMarkers();
+		}
 	    
-	    routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
-	    routesCluster.loadAllRoutes();
+		if (routesCluster == null) {
+			routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
+			routesCluster.loadAllRoutes();
 	    
-	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-	        String route = RouteRecorder.getInstance().startRecording();
-	        //TODO testing
-	        IntentsHelper.getInstance().startRouteTrackingService(mConnection);
-	        //
-	        routesCluster.showRouteAction(route, true);
+			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+				String route = RouteRecorder.getInstance().startRecording();
+				//TODO testing
+				IntentsHelper.getInstance().startRouteTrackingService(mConnection);
+				//
+				routesCluster.showRouteAction(route, true);
 	
-	        MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
-	    }
+				MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
+			}
+		}
 	}
 
 	private void showMyPositionAction(boolean loadLayers) {

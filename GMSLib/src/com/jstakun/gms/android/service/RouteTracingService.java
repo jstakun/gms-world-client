@@ -121,17 +121,18 @@ public class RouteTracingService extends Service implements LocationListener,
 	public void onLocationChanged(Location location) {
 		// add location to route points
 		LoggerUtils.debug("RouteTracingService received new location");
-		RouteRecorder.getInstance().addCoordinate(location);
-		//notify ui to repaint route
-		if (mClient != null) {
-			try {
-				Message message = Message.obtain(null, COMMAND_SHOW_ROUTE);
-				mClient.send(message); 
-			} catch (Exception e) {
-				LoggerUtils.error(e.getMessage(), e);
+		if (RouteRecorder.getInstance().addCoordinate(location)) {
+			//notify ui to repaint route
+			if (mClient != null) {
+				try {
+					Message message = Message.obtain(null, COMMAND_SHOW_ROUTE);
+					mClient.send(message); 
+				} catch (Exception e) {
+					LoggerUtils.error(e.getMessage(), e);
+				}
+			} else {
+				LoggerUtils.debug("Unable to notify client");
 			}
-		} else {
-			LoggerUtils.debug("Unable to notify client");
 		}
 	}
 

@@ -130,13 +130,13 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 				if (landmark.getCategoryId() != -1) {
             		int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
             		frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, mDisplayMetrics);
-        		} else if (!landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
+        		} else { //if (!landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
            			//doesn't work with local layer
         			BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, mDisplayMetrics, null);
            			frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, mDisplayMetrics);
-        		} else if (landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-        			frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
-        		}
+        		} //else if (landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
+        		//	frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
+        		//}
 				marker = new GoogleMarker(landmark, frame);
 				landmark.setRelatedUIObject(marker);
 				mClusterManager.addItem(marker);

@@ -348,7 +348,6 @@ public class LayerManager {
     }
     
     public static BitmapDrawable getLayerIcon(String layerName, int type, DisplayMetrics displayMetrics, Handler handler) {
-        IconCache imageCache = IconCache.getInstance();
         BitmapDrawable layerDrawable = null;
         if (StringUtils.isNotEmpty(layerName)) {
         	try {
@@ -356,11 +355,11 @@ public class LayerManager {
             	if (layer != null) {
             		if (type == LAYER_ICON_LARGE && (layer.getLargeIconPath() != null || layer.getLargeIconResource() != -1)) {
             	  		//layer has large icon
-            	  		layerDrawable = imageCache.getLayerImageResource(layer.getName(), "_large", layer.getLargeIconPath(),
+            	  		layerDrawable = IconCache.getInstance().getLayerImageResource(layer.getName(), "_large", layer.getLargeIconPath(),
                         layer.getLargeIconResource(), null, layer.getType(), displayMetrics, handler);
               		} else {
             	  		//SMALL icon default
-            	  		layerDrawable = imageCache.getLayerImageResource(layer.getName(), "_small", layer.getSmallIconPath(),
+            	  		layerDrawable = IconCache.getInstance().getLayerImageResource(layer.getName(), "_small", layer.getSmallIconPath(),
                         layer.getSmallIconResource(), null, layer.getType(), displayMetrics, handler);
               		}	
             	} 
@@ -370,9 +369,9 @@ public class LayerManager {
         }
         if (layerDrawable == null || layerDrawable.getBitmap() == null || layerDrawable.getBitmap().isRecycled()) {
         	if (type == LAYER_ICON_SMALL) {
-        		layerDrawable = imageCache.getImageDrawable(IconCache.ICON_MISSING16);
+        		layerDrawable = IconCache.getInstance().getImageDrawable(IconCache.ICON_MISSING16);
         	} else {
-        		layerDrawable = imageCache.getImageDrawable(IconCache.ICON_MISSING32);
+        		layerDrawable = IconCache.getInstance().getImageDrawable(IconCache.ICON_MISSING32);
         	}	
         }
         return layerDrawable;
