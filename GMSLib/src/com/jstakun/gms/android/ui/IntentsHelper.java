@@ -1,9 +1,11 @@
 package com.jstakun.gms.android.ui;
 
 import java.io.File;
+import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,9 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -1062,32 +1061,25 @@ public final class IntentsHelper {
         return clearLandmarks;
     }
 
-    /*public void setRepeatingAlarm(Class<?> clazz) {
-        AlarmManager am = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(activity, clazz);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), (60 * 1000), pendingIntent);
-    }*/
-
     protected boolean isNewerVersionAvailable() {
         HttpUtils utils = new HttpUtils();
         boolean response = false;
 
         try {
-        	List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair(ConfigurationManager.APP_ID, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID)));
-			params.add(new BasicNameValuePair("type", "v")); 
+        	Map<String, String> params = new HashMap<String, String>();
+			params.put(ConfigurationManager.APP_ID, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+			params.put("type", "v"); 
             String url = ConfigurationManager.getInstance().getServerUrl() + "notifications";
             
             Location location = ConfigurationManager.getInstance().getLocation();
             if (location != null) {
-            	params.add(new BasicNameValuePair("lat", Double.toString(location.getLatitude())));
-            	params.add(new BasicNameValuePair("lng", Double.toString(location.getLongitude())));
-            	params.add(new BasicNameValuePair("username", Commons.MY_POS_USER));
+            	params.put("lat", Double.toString(location.getLatitude()));
+            	params.put("lng", Double.toString(location.getLongitude()));
+            	params.put("username", Commons.MY_POS_USER);
             }
 
             String resp = utils.sendPostRequest(url, params, true);
-            if (utils.getResponseCode() == HttpStatus.SC_OK) {
+            if (utils.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 if (StringUtils.startsWith(resp, "{")) {
                     JSONObject json = new JSONObject(resp);
                     int version = Integer.valueOf(json.optString("value", "0"));

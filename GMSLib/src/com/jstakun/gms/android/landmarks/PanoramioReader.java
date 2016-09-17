@@ -1,7 +1,5 @@
 package com.jstakun.gms.android.landmarks;
 
-import org.apache.http.message.BasicNameValuePair;
-
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.BoundingBox;
 import com.jstakun.gms.android.utils.StringUtil;
@@ -18,10 +16,10 @@ public class PanoramioReader extends AbstractSerialReader {
 		super.init(latitude, longitude, zoom, width, height);
 		BoundingBox bbox = (BoundingBox) ConfigurationManager.getInstance().getObject("bbox", BoundingBox.class);
         if (bbox != null) {
-        	params.add(new BasicNameValuePair("minx", StringUtil.formatCoordE2(bbox.west)));
-        	params.add(new BasicNameValuePair("miny", StringUtil.formatCoordE2(bbox.south)));
-        	params.add(new BasicNameValuePair("maxx", StringUtil.formatCoordE2(bbox.east)));  
-        	params.add(new BasicNameValuePair("maxy", StringUtil.formatCoordE2(bbox.north)));
+        	params.put("minx", StringUtil.formatCoordE2(bbox.west));
+        	params.put("miny", StringUtil.formatCoordE2(bbox.south));
+        	params.put("maxx", StringUtil.formatCoordE2(bbox.east));  
+        	params.put("maxy", StringUtil.formatCoordE2(bbox.north));
         }
 	}
 

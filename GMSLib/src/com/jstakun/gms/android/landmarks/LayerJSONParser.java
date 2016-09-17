@@ -1,5 +1,17 @@
 package com.jstakun.gms.android.landmarks;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
@@ -7,18 +19,6 @@ import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.StringUtil;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
@@ -36,18 +36,18 @@ public class LayerJSONParser {
 
             String url = ConfigurationManager.getInstance().getServerUrl() + "listLayers";
 
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("format","json"));
-			params.add(new BasicNameValuePair("latitudeMin",StringUtil.formatCoordE6(latitude)));
-			params.add(new BasicNameValuePair("longitudeMin", StringUtil.formatCoordE6(longitude)));
-			params.add(new BasicNameValuePair("version","2"));
-			params.add(new BasicNameValuePair("radius",Integer.toString(radius)));
+            Map<String, String> params = new HashMap<String, String>();
+	    	params.put("format","json");
+			params.put("latitudeMin",StringUtil.formatCoordE6(latitude));
+			params.put("longitudeMin", StringUtil.formatCoordE6(longitude));
+			params.put("version","2");
+			params.put("radius",Integer.toString(radius));
             
 			String jsonResp = utils.sendPostRequest(url, params, true);
             
             int responseCode = utils.getResponseCode();
             
-            if (responseCode == HttpStatus.SC_OK && StringUtils.startsWith(jsonResp, "{")) {
+            if (responseCode == HttpURLConnection.HTTP_OK && StringUtils.startsWith(jsonResp, "{")) {
                 JSONObject jsonRoot = new JSONObject(jsonResp);
                 if (jsonRoot.has("ResultSet")) {
                     parseJSonArray(jsonRoot, layers, excluded);

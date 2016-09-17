@@ -2,8 +2,6 @@ package com.jstakun.gms.android.landmarks;
 
 import java.util.List;
 
-import org.apache.http.message.BasicNameValuePair;
-
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.social.ISocialUtils;
@@ -25,7 +23,7 @@ public class FbPhotosReader extends AbstractSerialReader {
 			ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
             String token = fbUtils.getAccessToken().getToken();
             if (token != null) {
-            	params.add(new BasicNameValuePair("token", token));
+            	params.put("token", token);
             	hasToken = true; 
             }
 		}

@@ -1,16 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.social;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
@@ -73,15 +67,15 @@ public final class GoogleUtils extends AbstractSocialUtils {
 		
 			try {
 				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "glSendPost";			
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				if (expires_in > System.currentTimeMillis()) {
-					params.add(new BasicNameValuePair("token", token));
+				Map<String, String> params = new HashMap<String, String>();
+		    	if (expires_in > System.currentTimeMillis()) {
+					params.put("token", token);
 				}
-				params.add(new BasicNameValuePair("refresh_token", refreshToken));
+				params.put("refresh_token", refreshToken);
 				if (landmark != null) {
 					String key = landmark.getServerKey();
 					if (key != null) {
-						params.add(new BasicNameValuePair("key", key));
+						params.put("key", key);
 					}
 				}
 		    	utils.sendPostRequest(url, params, true);
@@ -178,11 +172,11 @@ public final class GoogleUtils extends AbstractSocialUtils {
 
 		try {
 			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialCheckin";			
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("reference", reference));
-		    params.add(new BasicNameValuePair("service", Commons.GOOGLE));
-		    params.add(new BasicNameValuePair("lat", StringUtil.formatCoordE6(lat)));
-		    params.add(new BasicNameValuePair("lng", StringUtil.formatCoordE6(lng)));
+			Map<String, String> params = new HashMap<String, String>();
+	    	params.put("reference", reference);
+		    params.put("service", Commons.GOOGLE);
+		    params.put("lat", StringUtil.formatCoordE6(lat));
+		    params.put("lng", StringUtil.formatCoordE6(lng));
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();

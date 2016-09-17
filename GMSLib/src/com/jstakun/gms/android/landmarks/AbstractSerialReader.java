@@ -1,10 +1,9 @@
 package com.jstakun.gms.android.landmarks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import java.util.Map;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DistanceUtils;
@@ -16,7 +15,7 @@ public abstract class AbstractSerialReader implements LayerReader {
 	private static final int DEFAULT_LIMIT = 30;
     private static final int DEFAULT_DEAL_LIMIT = 300;
     private static final String SERIAL_VERSION = "12";
-    protected List<NameValuePair> params = null;
+    protected Map<String, String> params = null;
     protected SerialParser parser = null;
     protected int radius;
      
@@ -31,15 +30,15 @@ public abstract class AbstractSerialReader implements LayerReader {
         if (dealLimit == DEFAULT_DEAL_LIMIT && OsUtil.isIceCreamSandwichOrHigher()) {
             dealLimit = (int) (1.5 * dealLimit);
         }
-        params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("radius", Integer.toString(radius)));
-        params.add(new BasicNameValuePair("latitude", StringUtil.formatCoordE6(latitude)));
-        params.add(new BasicNameValuePair("longitude", StringUtil.formatCoordE6(longitude)));
-        params.add(new BasicNameValuePair("limit", Integer.toString(limit)));
-        params.add(new BasicNameValuePair("dealLimit", Integer.toString(dealLimit)));
-        params.add(new BasicNameValuePair("display", OsUtil.getDisplayType()));
-        params.add(new BasicNameValuePair("format", "bin"));
-        params.add(new BasicNameValuePair("version", SERIAL_VERSION));
+        params = new HashMap<String, String>();
+        params.put("radius", Integer.toString(radius));
+        params.put("latitude", StringUtil.formatCoordE6(latitude));
+        params.put("longitude", StringUtil.formatCoordE6(longitude));
+        params.put("limit", Integer.toString(limit));
+        params.put("dealLimit", Integer.toString(dealLimit));
+        params.put("display", OsUtil.getDisplayType());
+        params.put("format", "bin");
+        params.put("version", SERIAL_VERSION);
     }
     
     protected abstract String getUri();
@@ -56,7 +55,7 @@ public abstract class AbstractSerialReader implements LayerReader {
 
     public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
     	init(latitude, longitude, zoom, width, height);
-    	params.add(new BasicNameValuePair("layer", layer));
+    	params.put("layer", layer);
 	    return parser.parse(getUrls(), 0, params, landmarks, task, true, layer, false);
     }
 

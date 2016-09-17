@@ -1,11 +1,9 @@
 package com.jstakun.gms.android.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.ads.AdsUtils;
@@ -284,18 +282,18 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         HttpUtils utils = new HttpUtils();
         
         try {
-        	List<NameValuePair> params = new ArrayList<NameValuePair>();
-        	String address = locationAddressText.getText().toString();
+        	Map<String, String> params = new HashMap<String, String>();
+	    	String address = locationAddressText.getText().toString();
             name = country;
             if (StringUtils.isNotEmpty(address)) {
                 name += "," + StringUtils.trimToEmpty(address);
             }
 
-            params.add(new BasicNameValuePair("address", name));
+            params.put("address", name);
             
             String email = ConfigurationManager.getUserManager().getUserEmail();
             if (StringUtils.isNotEmpty(email)) {
-              	params.add(new BasicNameValuePair("email", email));
+              	params.put("email", email);
             }
 
             String url = ConfigurationManager.getInstance().getServerUrl() + "geocode";

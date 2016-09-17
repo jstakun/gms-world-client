@@ -11,8 +11,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -145,18 +143,18 @@ public class RoutesManager {
         String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "routeProvider";
         
         try {
-        	List<NameValuePair> params = new ArrayList<NameValuePair>();
-        	params.add(new BasicNameValuePair("lat_start", lat_start));
-        	params.add(new BasicNameValuePair("lng_start", lng_start));
-        	params.add(new BasicNameValuePair("lat_end", lat_end));
-        	params.add(new BasicNameValuePair("lng_end", lng_end));
-        	params.add(new BasicNameValuePair("type", type));
+        	Map<String, String> params = new HashMap<String, String>();
+	    	params.put("lat_start", lat_start);
+        	params.put("lng_start", lng_start);
+        	params.put("lat_end", lat_end);
+        	params.put("lng_end", lng_end);
+        	params.put("type", type);
         
         	String username = ConfigurationManager.getUserManager().getLoggedInUsername();
         	if (username == null) {
         		username = "anonymous";
         	}
-        	params.add(new BasicNameValuePair("username", username));
+        	params.put("username", username);
         
         	String jsonResp = utils.sendPostRequest(url, params, true);
         

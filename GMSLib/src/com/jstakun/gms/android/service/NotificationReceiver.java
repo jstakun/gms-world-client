@@ -1,18 +1,11 @@
 package com.jstakun.gms.android.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.location.Location;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -20,6 +13,11 @@ import com.jstakun.gms.android.location.AndroidDevice;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
@@ -51,22 +49,22 @@ public class NotificationReceiver extends BroadcastReceiver {
 	        
 	        try {
 	        	String url = ConfigurationManager.SERVER_URL + "notifications";
-	            List<NameValuePair> postParams = new ArrayList<NameValuePair>();
-	        	postParams.add(new BasicNameValuePair("type", "u"));
+	        	Map<String, String> postParams = new HashMap<String, String>();
+		    	postParams.put("type", "u");
 	        	//this is sent in header
-	        	//postParams.add(new BasicNameValuePair(ConfigurationManager.APP_ID, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID)));
-	        	postParams.add(new BasicNameValuePair("lst", ConfigurationManager.getInstance().getString(ConfigurationManager.LAST_STARTING_DATE)));
-	        	postParams.add(new BasicNameValuePair("uc", Integer.toString(ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0))));
+	        	//postParams.put(ConfigurationManager.APP_ID, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+	        	postParams.put("lst", ConfigurationManager.getInstance().getString(ConfigurationManager.LAST_STARTING_DATE));
+	        	postParams.put("uc", Integer.toString(ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT, 0)));
 	            
 	            String email = ConfigurationManager.getUserManager().getUserEmail();
 	            if (StringUtils.isNotEmpty(email)) {
-	            	postParams.add(new BasicNameValuePair("e", email));
+	            	postParams.put("e", email);
 	            }
 	            
 	            if (params != null && params.length == 2) {
-	            	postParams.add(new BasicNameValuePair("lat", params[0].toString()));
-	            	postParams.add(new BasicNameValuePair("lng", params[1].toString()));
-	            	postParams.add(new BasicNameValuePair("username", Commons.MY_POS_USER));
+	            	postParams.put("lat", params[0].toString());
+	            	postParams.put("lng", params[1].toString());
+	            	postParams.put("username", Commons.MY_POS_USER);
 	            }
 	            
 	            String response = utils.sendPostRequest(url, postParams, true);

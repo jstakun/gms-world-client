@@ -1,14 +1,14 @@
 package com.jstakun.gms.android.ui;
 
-import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -446,19 +446,16 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 
 		private String searchServerAction(GMSAsyncTask<?, ? ,?> task) {
 			HttpUtils utils = new HttpUtils();
-			//JSONParser jsonParser = new JSONParser();
 			String errorMessage = null;
 
 			try {
-				//String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "search";			
-				
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("lat",StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lat))));
-				params.add(new BasicNameValuePair("lng", StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lng))));
-				params.add(new BasicNameValuePair("radius", Integer.toString(radius)));				
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("lat",StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lat)));
+				params.put("lng", StringUtil.formatCoordE6(MathUtils.coordIntToDouble(lng)));
+				params.put("radius", Integer.toString(radius));				
 				PackageInfo info = ConfigurationManager.getAppUtils().getPackageInfo();
 				if (info != null) {
-					params.add(new BasicNameValuePair("version", Integer.toString(info.versionCode)));
+					params.put("version", Integer.toString(info.versionCode));
 				}
 				String q;
 				if (query.length() > 2 && query.lastIndexOf("/") == query.length()-2) {
@@ -466,30 +463,30 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				} else {
 					q = query;
 				}
-				params.add(new BasicNameValuePair("query", URLEncoder.encode(q, "UTF-8")));
+				params.put("query", URLEncoder.encode(q, "UTF-8"));
 				if (query.endsWith("/a")) {
-					params.add(new BasicNameValuePair("geocode","1"));
+					params.put("geocode","1");
 				} else if (query.endsWith("/c")) {
-					params.add(new BasicNameValuePair("geocode","2"));
+					params.put("geocode","2");
 				}
-				params.add(new BasicNameValuePair("display",OsUtil.getDisplayType()));
+				params.put("display",OsUtil.getDisplayType());
 				if (type == TYPE.DEALS) {
-					params.add(new BasicNameValuePair("deals","1"));
+					params.put("deals","1");
 				} else if (type == TYPE.LANDMARKS) {
 					if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
 						ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
 						String ftoken = fbUtils.getAccessToken().getToken();
-						params.add(new BasicNameValuePair("ftoken",URLEncoder.encode(ftoken, "UTF-8")));
+						params.put("ftoken",URLEncoder.encode(ftoken, "UTF-8"));
 					}
 				}
 
-				params.add(new BasicNameValuePair("format", "bin"));
+				params.put("format", "bin");
 				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "search";
-				List<ExtendedLandmark> received = utils.loadLandmarkList(new URI(url), params, true, new String[]{"deflate", "application/x-java-serialized-object"});
+				List<ExtendedLandmark> received = utils.loadLandmarkList(new URL(url), params, true, new String[]{"deflate", "application/x-java-serialized-object"});
 				//call backup service if above fails
 				if (utils.getResponseCode() >= 400 && received.isEmpty()) {
 					url = ConfigurationManager.getInstance().getSecuredRHCloudUrl() + "search";
-					received = utils.loadLandmarkList(new URI(url), params, true, new String[]{"deflate", "application/x-java-serialized-object"});
+					received = utils.loadLandmarkList(new URL(url), params, true, new String[]{"deflate", "application/x-java-serialized-object"});
 				}
 				
 				errorMessage = utils.getResponseCodeErrorMessage();

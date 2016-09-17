@@ -1,11 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.gms.android.landmarks;
-
-import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
@@ -18,7 +11,7 @@ public class YelpReader extends AbstractSerialReader{
 		super.init(latitude, longitude, zoom, width, height);
 		int dist = radius * 1000;
 		params.remove(0); //remove default radius parameter
-		params.add(new BasicNameValuePair("radius", Integer.toString(dist)));
+		params.put("radius", Integer.toString(dist));
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
@@ -60,6 +61,7 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpConnectionParams;
@@ -135,7 +137,7 @@ public class HttpUtils {
         return httpClient;
     }
 
-    public String sendPostRequest(String url, List<NameValuePair> params, boolean auth) {
+    public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
         getThreadSafeClientConnManagerStats();
         InputStream is = null;
         String postResponse = null;
@@ -144,11 +146,10 @@ public class HttpUtils {
             locale = ConfigurationManager.getInstance().getCurrentLocale();
         }
 
-        /*System.out.println("Calling: " + url);
-        for (int i = 0; i < params.size(); i++) {
-            NameValuePair nvp = params.get(i);
-            System.out.println(nvp.getName() + " " + nvp.getValue());
-        }*/
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        for (Map.Entry<String, String> param : postParams.entrySet()) {
+        	params.add(new BasicNameValuePair(param.getKey(), param.getValue()));
+        }
 
         try {
         	URI uri = new URI(url);
@@ -293,7 +294,7 @@ public class HttpUtils {
         return postResponse;
     }
 
-    public byte[] loadHttpFile(String url, boolean auth, String format) {
+    public byte[] loadFile(String url, boolean auth, String format) {
         getThreadSafeClientConnManagerStats();     
         byte[] byteBuffer = null;
         
@@ -383,16 +384,15 @@ public class HttpUtils {
         return byteBuffer;
     }
     
-    public List<ExtendedLandmark> loadLandmarkList(URI uri, List<NameValuePair> params, boolean auth, String[] formats) {
-        getThreadSafeClientConnManagerStats();
+    public List<ExtendedLandmark> loadLandmarkList(URL url, Map<String, String> postParams, boolean auth, String[] formats) {
+        /*getThreadSafeClientConnManagerStats();
         
         List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
         
-        /*System.out.println("Calling: " + uri.toString());
-        for (int i = 0; i < params.size(); i++) {
-            NameValuePair nvp = params.get(i);
-            System.out.println(nvp.getName() + " " + nvp.getValue());
-        }*/
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        for (Map.Entry<String, String> param : postParams.entrySet()) {
+        	params.add(new BasicNameValuePair(param.getKey(), param.getValue()));
+        }
         
         try {
         	if (ServicesUtils.isNetworkActive()) { 	
@@ -510,7 +510,8 @@ public class HttpUtils {
         //	System.out.println(c.getName() + ": " + c.getValue());
         //}
         
-        return reply;
+        return reply;*/
+    	return HttpUtils2.loadLandmarksList(url, postParams, auth, formats);
     }
 
     public void close() throws IOException {

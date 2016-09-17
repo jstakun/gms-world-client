@@ -2,8 +2,6 @@ package com.jstakun.gms.android.landmarks;
 
 import java.util.List;
 
-import org.apache.http.message.BasicNameValuePair;
-
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.social.ISocialUtils;
@@ -22,8 +20,8 @@ public class TwFriendsReader extends AbstractSerialReader {
 			ISocialUtils twUtils = OAuthServiceFactory.getSocialUtils(Commons.TWITTER);
 			Token token = twUtils.getAccessToken();
 			if (token != null) {
-				params.add(new BasicNameValuePair("token", token.getToken()));
-				params.add(new BasicNameValuePair("secret", token.getSecret()));
+				params.put("token", token.getToken());
+				params.put("secret", token.getSecret());
 				hasToken = true;
 			}	
 		}

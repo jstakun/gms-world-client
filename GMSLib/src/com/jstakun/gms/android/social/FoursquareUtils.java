@@ -1,16 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.social;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
@@ -102,13 +96,13 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 				throw new NullPointerException("Missing FS authentication token!");
 			}
 			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialCheckin";			
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("accessToken", token));
-		    params.add(new BasicNameValuePair("venueId", venueId));
-		    params.add(new BasicNameValuePair("name", name));
-		    params.add(new BasicNameValuePair("service", Commons.FOURSQUARE));
-		    params.add(new BasicNameValuePair("lat", StringUtil.formatCoordE6(lat)));
-		    params.add(new BasicNameValuePair("lng", StringUtil.formatCoordE6(lng)));
+			Map<String, String> params = new HashMap<String, String>();
+	    	params.put("accessToken", token);
+		    params.put("venueId", venueId);
+		    params.put("name", name);
+		    params.put("service", Commons.FOURSQUARE);
+		    params.put("lat", StringUtil.formatCoordE6(lat));
+		    params.put("lng", StringUtil.formatCoordE6(lng));
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();
@@ -148,12 +142,12 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 				throw new NullPointerException("Missing FS authentication token!");
 			}
 			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialComment";			
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("accessToken", token));
-		    params.add(new BasicNameValuePair("venueId", venueId));
-		    params.add(new BasicNameValuePair("text", tip));
-		    params.add(new BasicNameValuePair("name", name));
-		    params.add(new BasicNameValuePair("service", Commons.FOURSQUARE));
+			Map<String, String> params = new HashMap<String, String>();
+	    	params.put("accessToken", token);
+		    params.put("venueId", venueId);
+		    params.put("text", tip);
+		    params.put("name", name);
+		    params.put("service", Commons.FOURSQUARE);
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();
@@ -192,15 +186,15 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 				throw new NullPointerException("Missing FS authentication token!");
 			}
 			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "fsAddVenue";			
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("accessToken", token));
-		    params.add(new BasicNameValuePair("ll", Double.toString(lat) + "," + Double.toString(lng)));
-	        params.add(new BasicNameValuePair("desc", desc));
-	        params.add(new BasicNameValuePair("name", name));
+			Map<String, String> params = new HashMap<String, String>();
+	    	params.put("accessToken", token);
+		    params.put("ll", Double.toString(lat) + "," + Double.toString(lng));
+	        params.put("desc", desc);
+	        params.put("name", name);
 	        if (StringUtils.isNotEmpty(category)) {
-	        	params.add(new BasicNameValuePair("catId", category));
+	        	params.put("catId", category);
 	        }
-		    params.add(new BasicNameValuePair("service", "fs"));
+		    params.put("service", Commons.FOURSQUARE);
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();

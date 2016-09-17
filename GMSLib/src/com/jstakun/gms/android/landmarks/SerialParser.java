@@ -1,12 +1,11 @@
 package com.jstakun.gms.android.landmarks;
 
 import java.io.IOException;
-import java.net.URI;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
-
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
+import java.util.Map;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -34,13 +33,13 @@ public class SerialParser {
         }
     }
 	
-    protected String parse(String[] urls, int urlIndex, List<NameValuePair> params, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService, boolean removeIfExists) { 	
+    protected String parse(String[] urls, int urlIndex, Map<String, String> params, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService, boolean removeIfExists) { 	
         String errorMessage = null;
         
         try {
-        	URI uri = new URI(urls[urlIndex]);
+        	URL url = new URL(urls[urlIndex]);
         	if (!task.isCancelled()) {
-        		List<ExtendedLandmark> received = utils.loadLandmarkList(uri, params, true, new String[]{"deflate", "application/x-java-serialized-object"});
+        		List<ExtendedLandmark> received = utils.loadLandmarkList(url, params, true, new String[]{"deflate", "application/x-java-serialized-object"});
         		if (!received.isEmpty()) {
         			if (landmarks.isEmpty()) {
         				LandmarkManager.getInstance().addLandmarkListToDynamicLayer(received);
@@ -59,7 +58,7 @@ public class SerialParser {
             LoggerUtils.error("SerialParser.parse() exception: ", ex);
         } finally {
         	int responseCode = utils.getResponseCode();
-        	if (responseCode == HttpStatus.SC_UNAUTHORIZED && socialService != null) {
+        	if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && socialService != null) {
         		ISocialUtils service = OAuthServiceFactory.getSocialUtils(socialService);
         		if (service != null) {
         			service.logout();

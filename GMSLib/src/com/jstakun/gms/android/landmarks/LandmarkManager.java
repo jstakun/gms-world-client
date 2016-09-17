@@ -14,14 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.util.DisplayMetrics;
 
 import com.devahead.util.objectpool.ObjectPool;
 import com.google.common.base.Function;
@@ -53,6 +45,12 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.SMSSender;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.openlapi.QualifiedCoordinates;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 
 /**
  *
@@ -563,37 +561,36 @@ public class LandmarkManager {
 
         String errorMessage;
 
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+        Map<String, String> params = new HashMap<String, String>();
+    	String username = ConfigurationManager.getUserManager().getLoggedInUsername();
         if (username == null || ConfigurationManager.getInstance().isOff(ConfigurationManager.TRACK_USER)) {
         	username = Commons.MY_POS_USER;
         } else {
-        	params.add(new BasicNameValuePair("socialIds", ConfigurationManager.getUserManager().getSocialIds()));
+        	params.put("socialIds", ConfigurationManager.getUserManager().getSocialIds());
         }
-        params.add(new BasicNameValuePair("username", username));
+        params.put("username", username);
         
         double[] coords = MercatorUtils.normalizeE6(new double[]{landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()});
         double alt = MercatorUtils.normalizeE6(landmark.getQualifiedCoordinates().getAltitude());
         String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "persistLandmark";
-        params.add(new BasicNameValuePair("name", landmark.getName()));
-        params.add(new BasicNameValuePair("description", landmark.getDescription()));
-        params.add(new BasicNameValuePair("longitude", Double.toString(coords[1])));
-        params.add(new BasicNameValuePair("latitude", Double.toString(coords[0])));
-        params.add(new BasicNameValuePair("altitude", Double.toString(alt)));
-        params.add(new BasicNameValuePair("radius", Integer.toString(DistanceUtils.radiusInKilometer()))); 
-
-        params.add(new BasicNameValuePair("layer", landmark.getLayer()));
+        params.put("name", landmark.getName());
+        params.put("description", landmark.getDescription());
+        params.put("longitude", Double.toString(coords[1]));
+        params.put("latitude", Double.toString(coords[0]));
+        params.put("altitude", Double.toString(alt));
+        params.put("radius", Integer.toString(DistanceUtils.radiusInKilometer()));
+        params.put("layer", landmark.getLayer());
 
         if (StringUtils.isNotEmpty(validityDate)) {
-            params.add(new BasicNameValuePair("validityDate", validityDate));
+            params.put("validityDate", validityDate);
         }
 
         String email = ConfigurationManager.getUserManager().getUserEmail();
         if (StringUtils.isNotEmpty(email)) {
-            params.add(new BasicNameValuePair("email", email));
+            params.put("email", email);
         }
 
-        params.add(new BasicNameValuePair("anonymous", ConfigurationManager.getInstance().getString(ConfigurationManager.TRACK_USER)));
+        params.put("anonymous", ConfigurationManager.getInstance().getString(ConfigurationManager.TRACK_USER));
         
         HttpUtils utils = new HttpUtils();
         utils.sendPostRequest(url, params, true);

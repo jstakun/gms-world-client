@@ -1,7 +1,6 @@
 package com.jstakun.gms.android.landmarks;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.deals.CategoriesManager;
 
@@ -16,7 +15,7 @@ public class CouponsReader extends AbstractSerialReader {
 		super.init(latitude, longitude, zoom, width, height);
 		String categoryid = CategoriesManager.getInstance().getEnabledCategoriesString();
         if (StringUtils.isNotEmpty(categoryid)) {
-            params.add(new BasicNameValuePair("categoryid", categoryid));
+            params.put("categoryid", categoryid);
         }
 	}
 

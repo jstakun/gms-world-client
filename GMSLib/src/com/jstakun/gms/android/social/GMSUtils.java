@@ -1,12 +1,10 @@
 package com.jstakun.gms.android.social;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -30,7 +28,7 @@ public final class GMSUtils {
             //ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_USERNAME, login);
             //ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_PASSWORD, password);
             String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "authenticate";
-            byte[] resp = utils.loadHttpFile(url, true, "text/json");
+            byte[] resp = utils.loadFile(url, true, "text/json");
             if (resp != null && resp.length > 0) {
                 String jsonResp = new String(resp, "UTF-8");   
                 if (jsonResp.startsWith("{")) {          
@@ -80,7 +78,7 @@ public final class GMSUtils {
         
 		try {
             String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "token?scope=" + scope;
-            byte[] resp = utils.loadHttpFile(url, false, "text/json");
+            byte[] resp = utils.loadFile(url, false, "text/json");
             if (resp != null && resp.length > 0) {
                 String jsonResp = new String(resp, "UTF-8");   
                 if (jsonResp.startsWith("{")) {          
@@ -123,12 +121,12 @@ public final class GMSUtils {
 	public static String sendComment(String placeId, String commentText) {
         String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "addComment";
         String message = "";
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("key", placeId));
-        params.add(new BasicNameValuePair("message", commentText));
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("key", placeId);
+        params.put("message", commentText);
         String username = ConfigurationManager.getUserManager().getLoggedInUsername();
         if (username != null) {
-            params.add(new BasicNameValuePair("username", username));
+            params.put("username", username);
         } 
         HttpUtils utils = new HttpUtils();
         try {
@@ -155,11 +153,11 @@ public final class GMSUtils {
 	
 	public static String checkin(String service, String checkinLandmarkCode, String name) {
  	   String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + service; 
- 	   List<NameValuePair> params = new ArrayList<NameValuePair>();
- 	   params.add(new BasicNameValuePair("key", checkinLandmarkCode));
+ 	   Map<String, String> params = new HashMap<String, String>();
+  	   params.put("key", checkinLandmarkCode);
  	   String username = ConfigurationManager.getUserManager().getLoggedInUsername();
  	   if (username != null) {
- 		   params.add(new BasicNameValuePair("username",username));
+ 		   params.put("username",username);
  	   } 
 
  	   HttpUtils utils = new HttpUtils();

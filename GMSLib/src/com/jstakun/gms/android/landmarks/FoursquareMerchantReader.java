@@ -3,7 +3,6 @@ package com.jstakun.gms.android.landmarks;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -20,18 +19,18 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
     @Override
 	protected void init(double latitude, double longitude, int zoom, int width, int height) {
 		super.init(latitude, longitude, zoom, width, height);
-		params.add(new BasicNameValuePair("lang", Locale.getDefault().getLanguage()));
+		params.put("lang", Locale.getDefault().getLanguage());
 		
 		String categoryid = CategoriesManager.getInstance().getEnabledCategoriesString();
         if (StringUtils.isNotEmpty(categoryid)) {
-            params.add(new BasicNameValuePair("&categoryid", categoryid));
+            params.put("&categoryid", categoryid);
         }
         
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FS_AUTH_STATUS)) {
 			ISocialUtils fsUtils = OAuthServiceFactory.getSocialUtils(Commons.FOURSQUARE);
 			String token = fsUtils.getAccessToken().getToken();
 			if (token != null) {
-				params.add(new BasicNameValuePair("token", token));
+				params.put("token", token);
 			}	
 		}
 	}

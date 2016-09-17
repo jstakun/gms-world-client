@@ -1,10 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
-
-import org.apache.http.message.BasicNameValuePair;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -24,7 +18,7 @@ public class FbPlacesReader extends AbstractSerialReader {
 			ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
             String token = fbUtils.getAccessToken().getToken();
             if (token != null) {
-            	params.add(new BasicNameValuePair("token", token));
+            	params.put("token", token);
             }
 		}
 	}

@@ -1,12 +1,10 @@
 package com.jstakun.gms.android.social;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
@@ -108,12 +106,12 @@ public final class FacebookUtils extends AbstractSocialUtils {
 			
 			try {
 				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "fbSendMessage";			
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    	params.add(new BasicNameValuePair("token", accessToken.getToken()));
+				Map<String, String> params = new HashMap<String, String>();
+		    	params.put("token", accessToken.getToken());
 		    	if (landmark != null) {
 					String key = landmark.getServerKey();
 					if (key != null) {
-						params.add(new BasicNameValuePair("key", key));
+						params.put("key", key);
 					}
 				}
 		    	utils.sendPostRequest(url, params, true);
@@ -147,13 +145,13 @@ public final class FacebookUtils extends AbstractSocialUtils {
 				throw new NullPointerException("Missing FB authentication token!");
 			}
 			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialCheckin";			
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("accessToken", token));
-		    params.add(new BasicNameValuePair("venueId", placeId));
-		    params.add(new BasicNameValuePair("name", name));
-		    params.add(new BasicNameValuePair("service", Commons.FACEBOOK));
-		    params.add(new BasicNameValuePair("lat", StringUtil.formatCoordE6(lat)));
-		    params.add(new BasicNameValuePair("lng", StringUtil.formatCoordE6(lng)));
+			Map<String, String> params = new HashMap<String, String>();
+		    params.put("accessToken", token);
+		    params.put("venueId", placeId);
+		    params.put("name", name);
+		    params.put("service", Commons.FACEBOOK);
+		    params.put("lat", StringUtil.formatCoordE6(lat));
+		    params.put("lng", StringUtil.formatCoordE6(lng));
 		    utils.sendPostRequest(url, params, true);
 		    
 		    message = utils.getResponseCodeErrorMessage();
@@ -188,12 +186,12 @@ public final class FacebookUtils extends AbstractSocialUtils {
 
 		try {
 			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "socialComment";			
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("accessToken", accessToken.getToken()));
-		    params.add(new BasicNameValuePair("venueId", placeId));
-		    params.add(new BasicNameValuePair("text", message));
-		    params.add(new BasicNameValuePair("name", name));
-		    params.add(new BasicNameValuePair("service", Commons.FACEBOOK));
+			Map<String, String> params = new HashMap<String, String>();
+	    	params.put("accessToken", accessToken.getToken());
+		    params.put("venueId", placeId);
+		    params.put("text", message);
+		    params.put("name", name);
+		    params.put("service", Commons.FACEBOOK);
 		    utils.sendPostRequest(url, params, true);
 		    
 		    errorMessage = utils.getResponseCodeErrorMessage();

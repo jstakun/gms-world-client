@@ -1,10 +1,8 @@
 package com.jstakun.gms.android.social;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
@@ -80,13 +78,13 @@ public final class TwitterUtils extends AbstractSocialUtils {
 
 		try {
 			String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "twSendUpdate";			
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("token", accessToken.getToken()));
-		    params.add(new BasicNameValuePair("secret", accessToken.getSecret()));
+			Map<String, String> params = new HashMap<String, String>();
+		    params.put("token", accessToken.getToken());
+		    params.put("secret", accessToken.getSecret());
 		    if (landmark != null) {
 				String key = landmark.getServerKey();
 				if (key != null) {
-					params.add(new BasicNameValuePair("key", key));
+					params.put("key", key);
 				}
 			}
 		    utils.sendPostRequest(url, params, true);
