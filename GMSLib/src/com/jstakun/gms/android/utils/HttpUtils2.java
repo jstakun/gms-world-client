@@ -149,14 +149,14 @@ public class HttpUtils2 {
     	}
     }
 	
-	public static List<ExtendedLandmark> loadLandmarksList(URL fileUrl, Map<String, String> params, boolean auth, String[] formats) {
+	public static List<ExtendedLandmark> loadLandmarksList(String fileUrl, Map<String, String> params, boolean auth, String[] formats) {
     	ObjectInputStream ois = null;
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
     	
-    	httpErrorMessages.remove(fileUrl.toExternalForm());
+    	httpErrorMessages.remove(fileUrl);
         
     	try {
-    		HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
+    		HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
             conn.setRequestMethod("POST");
             conn.setConnectTimeout(SOCKET_TIMEOUT);
             conn.setReadTimeout(SOCKET_TIMEOUT);
@@ -167,7 +167,7 @@ public class HttpUtils2 {
             conn.setRequestProperty(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
             
             if (auth) {
-                setAuthHeader(conn, fileUrl.toExternalForm().contains(ConfigurationManager.SERVICES_SUFFIX));
+                setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
             }
             
             conn.setDoInput(true);
@@ -175,9 +175,10 @@ public class HttpUtils2 {
             
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
             
+            String queryString = getQuery(params);
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-            writer.write(getQuery(params));
+            writer.write(queryString);
             writer.flush();
             writer.close();
             os.close();            
@@ -185,25 +186,29 @@ public class HttpUtils2 {
             conn.connect();
             
             int responseCode = conn.getResponseCode();
-            httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
+            httpResponseStatuses.put(fileUrl, responseCode);
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
             	String contentType = conn.getContentType();
             	if (contentType != null) {
 					if (!StringUtils.startsWithAny(contentType, formats)) {
 						responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
-						throw new IOException("Wrong content format! Expected: " + StringUtils.join(formats," or ") + ", found: " + contentType + " at url: " + fileUrl.toExternalForm());
+						throw new IOException("Wrong content format! Expected: " + StringUtils.join(formats," or ") + ", found: " + contentType + " at url: " + fileUrl);
 					}
 				} else {
 					//throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
-					LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + fileUrl.toExternalForm());
+					LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + fileUrl);
 				}
-            	LoggerUtils.debug("Received " + conn.getContentType() + " content"); 
-            	if (conn.getContentType().indexOf("deflate") != -1) {
-					ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
-				} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
-					ois = new ObjectInputStream(conn.getInputStream());
-				} 
+            	ConfigurationManager.getAppUtils().increaseCounter(queryString.getBytes().length, conn.getContentLength());
+            	if (conn.getContentLength() > 0) {
+            		if (conn.getContentType().indexOf("deflate") != -1) {
+            			ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
+            		} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
+            			ois = new ObjectInputStream(conn.getInputStream());
+            		} 
+            	} else {
+            		LoggerUtils.debug("Received no content from " + fileUrl); 	
+            	}
             	int size = 0;
             	if (ois != null) {
         			size = ois.readInt();
@@ -216,17 +221,17 @@ public class HttpUtils2 {
         						landmarks.add(landmark);
         					} catch (IOException e) {
         						responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
-    							throw new IOException("Unable to create object input stream from " + fileUrl.toExternalForm(), e);
+    							throw new IOException("Unable to create object input stream from " + fileUrl, e);
         					}
         				}       				
         			}
         		} else {
         			LoggerUtils.error("Object stream is null");
         		}
-                LoggerUtils.debug("Received " + conn.getContentType() + " file has " + size + " landmarks");
+                LoggerUtils.debug("Received " + size + " landmarks from " + fileUrl);
             } else {
-				LoggerUtils.error(fileUrl.toExternalForm() + " loading error: " + responseCode); // + " " + httpResponse.getStatusLine().getReasonPhrase());
-				httpErrorMessages.put(fileUrl.toExternalForm(), handleHttpStatus(responseCode));
+				LoggerUtils.error(fileUrl + " loading error: " + responseCode); // + " " + httpResponse.getStatusLine().getReasonPhrase());
+				httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
 			}
         } catch (Exception e) {
         	if (StringUtils.equals(e.getMessage(), "Connection already shutdown")) {
@@ -234,7 +239,7 @@ public class HttpUtils2 {
         	} else {
         		LoggerUtils.error("HttpUtils.loadLandmarkList() exception: " + e.getMessage(), e);
         	}
-        	httpErrorMessages.put(fileUrl.toExternalForm(), handleHttpException(e));
+        	httpErrorMessages.put(fileUrl, handleHttpException(e));
         } finally {
         	try {
         		if (ois != null) {

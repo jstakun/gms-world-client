@@ -2,7 +2,6 @@ package com.jstakun.gms.android.landmarks;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +36,8 @@ public class SerialParser {
         String errorMessage = null;
         
         try {
-        	URL url = new URL(urls[urlIndex]);
         	if (!task.isCancelled()) {
-        		List<ExtendedLandmark> received = utils.loadLandmarkList(url, params, true, new String[]{"deflate", "application/x-java-serialized-object"});
+        		List<ExtendedLandmark> received = utils.loadLandmarkList(urls[urlIndex], params, true, new String[]{"deflate", "application/x-java-serialized-object"});
         		if (!received.isEmpty()) {
         			if (landmarks.isEmpty()) {
         				LandmarkManager.getInstance().addLandmarkListToDynamicLayer(received);

@@ -125,7 +125,7 @@ public class IconCache {
         Bitmap img;
 
         if (resourceName != null && isImageLoaded(resourceName)) {
-        	LoggerUtils.debug("Reading " + resourceName + " from cache");
+        	//LoggerUtils.debug("Reading " + resourceName + " from cache");
             img = images.get(resourceName);
         } else {
             img = images.get(ICON_MISSING32);

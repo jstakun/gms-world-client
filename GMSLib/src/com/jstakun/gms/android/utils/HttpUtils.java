@@ -176,22 +176,11 @@ public class HttpUtils {
             HttpEntity entity = httpResponse.getEntity();
         	
             if (!postRequest.isAborted()) {
-            	/*is = entity.getContent();
-
-            	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            	byte[] buffer = new byte[512];
-            	int count;
-            	while ((count = is.read(buffer)) >= 0) {
-                	bos.write(buffer, 0, count);
-            	}*/
-
-            	byte[] byteBuffer = EntityUtils.toByteArray(entity); //bos.toByteArray();
+            	byte[] byteBuffer = EntityUtils.toByteArray(entity);
 
             	postResponse = new String(byteBuffer, "UTF-8");
 
-            	//LoggerUtils.debug(postResponse);
-
-            	if (params != null && byteBuffer != null) {
+              	if (params != null && byteBuffer != null) {
             		ConfigurationManager.getAppUtils().increaseCounter(1024, byteBuffer.length);
             	}
             	if (responseCode == HttpStatus.SC_OK) {
@@ -384,7 +373,7 @@ public class HttpUtils {
         return byteBuffer;
     }
     
-    public List<ExtendedLandmark> loadLandmarkList(URL url, Map<String, String> postParams, boolean auth, String[] formats) {
+    public List<ExtendedLandmark> loadLandmarkList(String url, Map<String, String> postParams, boolean auth, String[] formats) {
         /*getThreadSafeClientConnManagerStats();
         
         List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
@@ -396,13 +385,13 @@ public class HttpUtils {
         
         try {
         	if (ServicesUtils.isNetworkActive()) { 	
-        		LoggerUtils.debug("Loading file: " + uri.toString());
+        		LoggerUtils.debug("Loading file: " + url);
             
         		if (locale == null) {
         			locale = ConfigurationManager.getInstance().getCurrentLocale();
         		}
 
-        		postRequest = new HttpPost(uri);
+        		postRequest = new HttpPost(url);
 
         		postRequest.addHeader("Accept-Encoding", "gzip, deflate");
         		postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
@@ -412,7 +401,7 @@ public class HttpUtils {
                 postRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
 
         		if (auth) {
-        			setAuthHeader(postRequest, uri.getPath().contains(ConfigurationManager.SERVICES_SUFFIX));
+        			setAuthHeader(postRequest, url.contains(ConfigurationManager.SERVICES_SUFFIX));
         		}
            
         		postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
@@ -432,17 +421,17 @@ public class HttpUtils {
         						String contentTypeValue = contentType.getValue();
         						if (!StringUtils.startsWithAny(contentTypeValue, formats)) {
         							responseCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-        							throw new IOException("Wrong content format! Expected: " + StringUtils.join(formats," or ") + ", found: " + contentTypeValue + " at url: " + uri.toString());
+        							throw new IOException("Wrong content format! Expected: " + StringUtils.join(formats," or ") + ", found: " + contentTypeValue + " at url: " + url);
         						}
         					} else {
         						//throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
-        						LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + uri.toString());
+        						LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + url);
         					}
 
         					byte[] buffer = EntityUtils.toByteArray(entity);
         					int bufferSize = buffer.length;
                     
-        					LoggerUtils.debug("File " + uri.toString() + " size: " + bufferSize + " bytes");
+        					LoggerUtils.debug("File " + url + " size: " + bufferSize + " bytes");
             		
         					if (bufferSize > 0 && !postRequest.isAborted()) {
         						ConfigurationManager.getAppUtils().increaseCounter(0, bufferSize);
@@ -456,12 +445,12 @@ public class HttpUtils {
         							}
         						} catch (IOException e) {
         							responseCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-        							throw new IOException("Unable to create object input stream from " + uri, e);
+        							throw new IOException("Unable to create object input stream from " + url, e);
         						}
                    
         						if (ois != null && ois.available() > 0) {
         							int size = ois.readInt();
-        							LoggerUtils.debug("Reading " + size + " landmarks from " + uri.toString());
+        							LoggerUtils.debug("Reading " + size + " landmarks from " + url);
         							if (size > 0) {
         								for(int i = 0;i < size;i++) {
         									try {
@@ -486,7 +475,7 @@ public class HttpUtils {
         					entity.consumeContent();
         				}
         			} else {
-        				LoggerUtils.error(uri.toString() + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
+        				LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
         				errorMessage = handleHttpStatus(responseCode);
         			}
         		}
@@ -511,6 +500,7 @@ public class HttpUtils {
         //}
         
         return reply;*/
+    	
     	return HttpUtils2.loadLandmarksList(url, postParams, auth, formats);
     }
 
