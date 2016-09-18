@@ -71,6 +71,8 @@ public class HttpUtils2 {
         InputStream is = null;
         byte[] response = null;
         long start = System.currentTimeMillis();
+        
+        httpErrorMessages.remove(fileUrl);
 
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
@@ -139,6 +141,7 @@ public class HttpUtils2 {
             		if (format != null) {
         				if (!StringUtils.contains(conn.getContentType(), format)) {
         					responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+        					httpResponseStatuses.put(fileUrl, responseCode);
         					throw new IOException("Wrong content format! Expected: " + format + ", found: " + conn.getContentType() + " at url: " + fileUrl);
         				}
         			} 
