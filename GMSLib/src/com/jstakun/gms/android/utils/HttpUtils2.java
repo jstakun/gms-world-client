@@ -28,6 +28,7 @@ import com.jstakun.gms.android.ui.lib.R;
 public class HttpUtils2 {
 	
 	private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
+	private static final String FORM_ENCODING = "application/x-www-form-urlencoded;charset=UTF-8";
 	private static final Map<String, Integer> httpResponseStatuses = new HashMap<String, Integer>();
 	private static final Map<String, String> httpErrorMessages = new HashMap<String, String>();
 	private static final Map<String, String> httpHeaders = new HashMap<String, String>();
@@ -49,20 +50,24 @@ public class HttpUtils2 {
 	}
 	
 	public byte[] loadFile(String url, boolean auth, String format) {
-		return processRequest(url, auth, "GET", null, null, format, true, null, null);
+		return processRequest(url, auth, "GET", null, null, null, true, format, null, null);
 	}
 	
 	public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
 		try {
-			byte[] response = processRequest(url, auth, "POST", null, getQuery(postParams).getBytes(), "application/x-www-form-urlencoded; charset=utf-8", true, null, null, "key", "name", "hash");
-			return new String(response, "UTF-8");
+			byte[] response = processRequest(url, auth, "POST", null, getQuery(postParams).getBytes(), FORM_ENCODING, true, null, null, null, "key", "name", "hash");
+			if (response != null && response.length > 0) {
+				return new String(response, "UTF-8");
+			} else {
+				return null;
+			}
 		} catch (Exception e) {
 			LoggerUtils.error(e.getMessage(), e);
 			return null;
 		}
 	}
 	
-	private byte[] processRequest(String fileUrl, boolean auth, String method, String accept, byte[] content, String contentType, boolean compress, Double latitude, Double longitude, String... headersToRead) {
+	private byte[] processRequest(String fileUrl, boolean auth, String method, String accept, byte[] content, String contentType, boolean compress, String format, Double latitude, Double longitude, String... headersToRead) {
         InputStream is = null;
         byte[] response = null;
         long start = System.currentTimeMillis();
@@ -110,7 +115,7 @@ public class HttpUtils2 {
             		if (contentType != null) {
             			conn.setRequestProperty("Content-Type", contentType);
             		} else {
-            			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+            			conn.setRequestProperty("Content-Type", FORM_ENCODING);
             		}
                 
             		if (compress) {
@@ -131,10 +136,10 @@ public class HttpUtils2 {
             	httpResponseStatuses.put(fileUrl, responseCode);
 
             	if (responseCode == HttpURLConnection.HTTP_OK) {
-            		if (contentType != null) {
-        				if (!StringUtils.contains(conn.getContentType(), contentType)) {
+            		if (format != null) {
+        				if (!StringUtils.contains(conn.getContentType(), format)) {
         					responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
-        					throw new IOException("Wrong content format! Expected: " + contentType + ", found: " + contentType + " at url: " + fileUrl);
+        					throw new IOException("Wrong content format! Expected: " + format + ", found: " + conn.getContentType() + " at url: " + fileUrl);
         				}
         			} 
             		
@@ -204,7 +209,7 @@ public class HttpUtils2 {
             	conn.setDoInput(true);
             	conn.setDoOutput(true);
             
-            	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+            	conn.setRequestProperty("Content-Type", FORM_ENCODING);
             
             	String queryString = getQuery(params);
             	OutputStream os = conn.getOutputStream();
