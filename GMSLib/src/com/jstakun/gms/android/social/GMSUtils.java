@@ -1,10 +1,10 @@
 package com.jstakun.gms.android.social;
 
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -167,7 +167,7 @@ public final class GMSUtils {
 
  	   LoggerUtils.debug("Location check-in at " + checkinLandmarkCode + " response: " + msg);
  	   
- 	   if (responseCode == HttpStatus.SC_OK) {
+ 	   if (responseCode == HttpURLConnection.HTTP_OK) {
  		   String nameP = name;
  		   if (nameP == null) {
  			   nameP = utils.getHeader("name");

@@ -1,10 +1,10 @@
 package com.jstakun.gms.android.social;
 
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
@@ -181,7 +181,7 @@ public final class GoogleUtils extends AbstractSocialUtils {
 		    
 		    message = utils.getResponseCodeErrorMessage();
 		    int responseCode = utils.getResponseCode();
-	        if (responseCode == HttpStatus.SC_OK) {
+	        if (responseCode == HttpURLConnection.HTTP_OK) {
 	           message = Locale.getMessage(R.string.Social_checkin_success, name);
 	           onCheckin(reference);
 	        } else {

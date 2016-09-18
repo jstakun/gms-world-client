@@ -1,10 +1,10 @@
 package com.jstakun.gms.android.service;
 
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
@@ -72,7 +72,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 	            if (StringUtils.isNotEmpty(response)) {
 	                LoggerUtils.debug("Received response: " + response);
 	            }              
-	            if (utils.getResponseCode() == HttpStatus.SC_OK) {
+	            if (utils.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	            	//user has been engaged
 	            	long timestamp = 0l;
 	            	if (StringUtils.startsWith(response, "{")) {

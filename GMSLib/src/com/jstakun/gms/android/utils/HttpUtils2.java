@@ -2,10 +2,10 @@ package com.jstakun.gms.android.utils;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.gms.android.config.Commons;
@@ -30,40 +32,43 @@ public class HttpUtils2 {
 	private static final Map<String, String> httpErrorMessages = new HashMap<String, String>();
 	private static final Map<String, String> httpHeaders = new HashMap<String, String>();
 	
-	//TODO implement aborting
 	private static boolean aborted = false;
 	
 	public static void close() {
 		aborted = true;
 	}
 	
-	public static void open() {
+	public HttpUtils2() {
 		aborted = false;
 	}
 	
-	public static String uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
+	public String uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
 	    //TODO to be implemented
 		//must implement form multi part data
 		return null;
 	}
 	
-	public static byte[] loadFile(String url, boolean auth, String format) {
-		//TODO to be implemented
-		return null;
+	public byte[] loadFile(String url, boolean auth, String format) {
+		return processRequest(url, auth, "GET", null, null, format, true, null, null);
 	}
 	
 	public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
-		//TODO to be implemented
-		return null;
+		try {
+			byte[] response = processRequest(url, auth, "POST", null, getQuery(postParams).getBytes(), "application/x-www-form-urlencoded; charset=utf-8", true, null, null, "key", "name", "hash");
+			return new String(response, "UTF-8");
+		} catch (Exception e) {
+			LoggerUtils.error(e.getMessage(), e);
+			return null;
+		}
 	}
 	
-	/*private static String processRequest(URL fileUrl, boolean auth, String method, String accept, byte[] content, String contentType, boolean compress, Double latitude, Double longitude) throws IOException {
+	private byte[] processRequest(String fileUrl, boolean auth, String method, String accept, byte[] content, String contentType, boolean compress, Double latitude, Double longitude, String... headersToRead) {
         InputStream is = null;
-        String response = null;
+        byte[] response = null;
         long start = System.currentTimeMillis();
 
         try {
-            HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
             conn.setRequestMethod(method);
             conn.setConnectTimeout(SOCKET_TIMEOUT);
             conn.setReadTimeout(SOCKET_TIMEOUT);
@@ -80,7 +85,7 @@ public class HttpUtils2 {
             	conn.setRequestProperty(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
             }
             if (auth) {
-                setAuthHeader(conn, fileUrl.toExternalForm().contains(ConfigurationManager.SERVICES_SUFFIX));
+                setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
                 String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                 if (StringUtils.isNotEmpty(username)) {
                 	conn.setRequestProperty("username", username);
@@ -98,63 +103,83 @@ public class HttpUtils2 {
                 conn.setRequestProperty("Accept", accept);
             }
             
-            if (content != null) {
-                conn.setRequestProperty("Content-Length", Integer.toString(content.length));
+            if (!aborted) {
+            	if (content != null) {
+            		conn.setRequestProperty("Content-Length", Integer.toString(content.length));
                 
-                if (contentType != null) {
-                	conn.setRequestProperty("Content-Type", contentType);
-                } else {
-                	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-                }
+            		if (contentType != null) {
+            			conn.setRequestProperty("Content-Type", contentType);
+            		} else {
+            			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+            		}
                 
-                if (compress) {
-                	conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-                }
+            		if (compress) {
+            			conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+            		}
                 
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                //Send request
-                IOUtils.write(content, conn.getOutputStream());
-            } else {
-                conn.connect();
-            }
-            
-            int responseCode = conn.getResponseCode();
-            httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                is = conn.getInputStream();   
-            } else if (responseCode >= 400 ){
-                is = conn.getErrorStream();
-                LoggerUtils.error("Received http status code " + responseCode + " for url " + fileUrl.toString());   
-            } else if (responseCode >= 300 && responseCode < 400) {
-            	LoggerUtils.error("Received http status code " + responseCode + " for url " + fileUrl.toString());   
-            } else if (responseCode > 200) {
-            	LoggerUtils.debug("Received http status code " + responseCode + " for url " + fileUrl.toString());
-            }
-            
-            if (is != null) {
-            	response = IOUtils.toString(is, "UTF-8");
-            	int length = response.length();
-            	if (length > 0) {
-            		LoggerUtils.debug("Received " + conn.getContentType() + " document having " + length + " characters");
+            		conn.setDoInput(true);
+                	conn.setDoOutput(true);
+                	//Send request
+                	IOUtils.write(content, conn.getOutputStream());
+            	} else {
+            		conn.connect();
             	}
             }
             
-            LoggerUtils.debug("Request processed with status " + responseCode + " in " + (System.currentTimeMillis()-start) + " millis.");
+            if (!aborted) {
+            	int responseCode = conn.getResponseCode();
+            	httpResponseStatuses.put(fileUrl, responseCode);
+
+            	if (responseCode == HttpURLConnection.HTTP_OK) {
+            		if (contentType != null) {
+        				if (!StringUtils.contains(conn.getContentType(), contentType)) {
+        					responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+        					throw new IOException("Wrong content format! Expected: " + contentType + ", found: " + contentType + " at url: " + fileUrl);
+        				}
+        			} 
+            		
+            		if (conn.getContentType().indexOf("gzip") != -1) {
+            			is = new GZIPInputStream(conn.getInputStream());
+            		} else {
+            			is = conn.getInputStream();
+            		}
+            	} else {
+                	is = conn.getErrorStream();
+                	LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
+        			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
+            	}
+                
+            	if (is != null) {
+            		//Read response
+            		response = IOUtils.toByteArray(is);
+            		int length = response.length;
+            		if (length > 0) {
+            			LoggerUtils.debug("Received " + conn.getContentType() + " document having " + length + " characters");
+            		}
+            	}
+            	
+            	if (headersToRead != null && headersToRead.length > 0) {
+            		readHeaders(conn, fileUrl, headersToRead);
+            	}
             
+            	LoggerUtils.debug("Request processed with status " + responseCode + " in " + (System.currentTimeMillis()-start) + " millis.");
+            }
         } catch (Exception e) {
         	LoggerUtils.error(e.getMessage(), e);
         } finally {
             if (is != null) {
-                is.close();
+            	try {
+            		is.close();
+            	} catch (Exception e) {
+            		LoggerUtils.error(e.getMessage(), e);
+            	}
             }
         }
         
         return response;
-    }*/
+    }
 
-	public static List<ExtendedLandmark> loadLandmarksList(String fileUrl, Map<String, String> params, boolean auth, String[] formats) {
+	public List<ExtendedLandmark> loadLandmarksList(String fileUrl, Map<String, String> params, boolean auth, String[] formats) {
     	ObjectInputStream ois = null;
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
     	
@@ -340,21 +365,26 @@ public class HttpUtils2 {
         }
     }
 	
-	private static String getQuery(Map<String, String> params) throws UnsupportedEncodingException
+	private static String getQuery(Map<String, String> params) 
 	{
 	    StringBuilder result = new StringBuilder();
 	    boolean first = true;
 
-	    for (Map.Entry<String, String> pair : params.entrySet())
-	    {
-	        if (first)
-	            first = false;
-	        else
-	            result.append("&");
-
-	        result.append(URLEncoder.encode(pair.getKey(), "UTF-8"));
-	        result.append("=");
-	        result.append(URLEncoder.encode(pair.getValue(), "UTF-8"));
+	    try {
+	    	for (Map.Entry<String, String> pair : params.entrySet())
+	    	{
+	    		if (first) {
+	    			first = false;
+	    		} else {
+	    			result.append("&");
+	    		}
+	    		
+	    		result.append(URLEncoder.encode(pair.getKey(), "UTF-8"));
+	    		result.append("=");
+	    		result.append(URLEncoder.encode(pair.getValue(), "UTF-8"));
+	    	}
+	    } catch (Exception e) {
+	    	LoggerUtils.error(e.getMessage(), e);
 	    }
 
 	    return result.toString();

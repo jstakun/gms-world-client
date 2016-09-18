@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.routes;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -161,7 +161,7 @@ public class RoutesManager {
         	int responseCode = utils.getResponseCode();
         	message = utils.getResponseCodeErrorMessage();
         
-        	if (responseCode == HttpStatus.SC_OK && StringUtils.startsWith(jsonResp, "{")) {
+        	if (responseCode == HttpURLConnection.HTTP_OK && StringUtils.startsWith(jsonResp, "{")) {
         		JSONObject json = new JSONObject(jsonResp);
         		desc = parse(json, routePoints);
         		if (routePoints.size() > 1) {

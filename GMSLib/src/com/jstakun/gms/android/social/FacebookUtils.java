@@ -1,10 +1,10 @@
 package com.jstakun.gms.android.social;
 
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
@@ -156,11 +156,11 @@ public final class FacebookUtils extends AbstractSocialUtils {
 		    
 		    message = utils.getResponseCodeErrorMessage();
 		    int responseCode = utils.getResponseCode();
-	        if (responseCode == HttpStatus.SC_OK) {
+	        if (responseCode == HttpURLConnection.HTTP_OK) {
 	           message = Locale.getMessage(R.string.Social_checkin_success, name);
 	           onCheckin(placeId);
 	        } else {
-	           if (responseCode == HttpStatus.SC_UNAUTHORIZED) {
+	           if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
 		          logout();
 		       }	
 	           message = Locale.getMessage(R.string.Social_checkin_failure, message);

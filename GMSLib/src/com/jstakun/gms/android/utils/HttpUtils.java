@@ -138,7 +138,7 @@ public class HttpUtils {
     }
 
     public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
-        getThreadSafeClientConnManagerStats();
+        /*getThreadSafeClientConnManagerStats();
         InputStream is = null;
         String postResponse = null;
         
@@ -201,7 +201,8 @@ public class HttpUtils {
             } catch (IOException e) {
             }
         }
-        return postResponse;
+        return postResponse;*/
+    	return new HttpUtils2().sendPostRequest(url, postParams, auth);
     }
 
     public String uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
@@ -284,7 +285,7 @@ public class HttpUtils {
     }
 
     public byte[] loadFile(String url, boolean auth, String format) {
-        getThreadSafeClientConnManagerStats();     
+        /*getThreadSafeClientConnManagerStats();     
         byte[] byteBuffer = null;
         
         try {
@@ -370,7 +371,8 @@ public class HttpUtils {
             errorMessage = handleHttpException(e);
         }
 
-        return byteBuffer;
+        return byteBuffer;*/
+    	return new HttpUtils2().loadFile(url, auth, format);
     }
     
     public List<ExtendedLandmark> loadLandmarkList(String url, Map<String, String> postParams, boolean auth, String[] formats) {
@@ -501,7 +503,7 @@ public class HttpUtils {
         
         return reply;*/
     	
-    	return HttpUtils2.loadLandmarksList(url, postParams, auth, formats);
+    	return new HttpUtils2().loadLandmarksList(url, postParams, auth, formats);
     }
 
     public void close() throws IOException {
