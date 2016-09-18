@@ -43,7 +43,7 @@ public class KMLParser {
 
         if (source != null && source.startsWith("http")) {
             byte[] file = utils.loadFile(source, authn, "kml");
-            errorMessage = utils.getResponseCodeErrorMessage();
+            errorMessage = utils.getResponseErrorMessage(source);
             if (file != null) {
                 is = new ByteArrayInputStream(file);
             }

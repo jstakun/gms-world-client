@@ -105,8 +105,8 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 		    params.put("lng", StringUtil.formatCoordE6(lng));
 		    utils.sendPostRequest(url, params, true);
 		    
-		    message = utils.getResponseCodeErrorMessage();
-		    int responseCode = utils.getResponseCode();
+		    message = utils.getResponseErrorMessage(url);
+		    int responseCode = utils.getResponseCode(url);
 	        if (responseCode == HttpURLConnection.HTTP_OK) {
 	           message = Locale.getMessage(R.string.Social_checkin_success, name);
 	           onCheckin(venueId);
@@ -150,8 +150,8 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 		    params.put("service", Commons.FOURSQUARE);
 		    utils.sendPostRequest(url, params, true);
 		    
-		    message = utils.getResponseCodeErrorMessage();
-		    int responseCode = utils.getResponseCode();
+		    message = utils.getResponseErrorMessage(url);
+		    int responseCode = utils.getResponseCode(url);
 	        if (responseCode == HttpURLConnection.HTTP_OK) {
 	            message = Locale.getMessage(R.string.Social_comment_sent);
 	        } else {
@@ -197,8 +197,8 @@ public final class FoursquareUtils extends AbstractSocialUtils {
 		    params.put("service", Commons.FOURSQUARE);
 		    utils.sendPostRequest(url, params, true);
 		    
-		    message = utils.getResponseCodeErrorMessage();
-		    int responseCode = utils.getResponseCode();
+		    message = utils.getResponseErrorMessage(url);
+		    int responseCode = utils.getResponseCode(url);
 	        if (responseCode == HttpURLConnection.HTTP_OK) {
 	            message = Locale.getMessage(R.string.venueCreated_success);
 	        } else {

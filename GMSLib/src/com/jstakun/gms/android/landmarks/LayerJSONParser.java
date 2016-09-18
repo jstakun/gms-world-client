@@ -30,12 +30,11 @@ public class LayerJSONParser {
 
     public String parse(Map<String, Layer> layers, List<String> excluded, double latitude, double longitude, int zoom, int width, int height) {
         String errorMessage = null;
+        String url = ConfigurationManager.getInstance().getServerUrl() + "listLayers";
 
         try {
             int radius = DistanceUtils.radiusInKilometer();
-
-            String url = ConfigurationManager.getInstance().getServerUrl() + "listLayers";
-
+        
             Map<String, String> params = new HashMap<String, String>();
 	    	params.put("format","json");
 			params.put("latitudeMin",StringUtil.formatCoordE6(latitude));
@@ -45,7 +44,7 @@ public class LayerJSONParser {
             
 			String jsonResp = utils.sendPostRequest(url, params, true);
             
-            int responseCode = utils.getResponseCode();
+            int responseCode = utils.getResponseCode(url);
             
             if (responseCode == HttpURLConnection.HTTP_OK && StringUtils.startsWith(jsonResp, "{")) {
                 JSONObject jsonRoot = new JSONObject(jsonResp);
@@ -57,7 +56,7 @@ public class LayerJSONParser {
             }
         } catch (Exception ex) {
             LoggerUtils.error("LayerJSONParser.parse() exception: ", ex);
-            errorMessage = utils.getResponseCodeErrorMessage();
+            errorMessage = utils.getResponseErrorMessage(url);
         } finally {
             close();
         }

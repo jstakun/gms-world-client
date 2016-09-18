@@ -483,12 +483,12 @@ public class GMSSearchActivity extends AbstractLandmarkList {
 				String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "search";
 				List<ExtendedLandmark> received = utils.loadLandmarkList(url, params, true, new String[]{"deflate", "application/x-java-serialized-object"});
 				//call backup service if above fails
-				if (utils.getResponseCode() >= 400 && received.isEmpty()) {
+				if (utils.getResponseCode(url) >= 400 && received.isEmpty()) {
 					url = ConfigurationManager.getInstance().getSecuredRHCloudUrl() + "search";
 					received = utils.loadLandmarkList(url, params, true, new String[]{"deflate", "application/x-java-serialized-object"});
 				}
 				
-				errorMessage = utils.getResponseCodeErrorMessage();
+				errorMessage = utils.getResponseErrorMessage(url);
 				
 				//process received landmark list
 				int landmarkCount = received.size();

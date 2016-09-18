@@ -55,7 +55,7 @@ public class SerialParser {
         } catch (Exception ex) {
             LoggerUtils.error("SerialParser.parse() exception: ", ex);
         } finally {
-        	int responseCode = utils.getResponseCode();
+        	int responseCode = utils.getResponseCode(urls[urlIndex]);
         	if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && socialService != null) {
         		ISocialUtils service = OAuthServiceFactory.getSocialUtils(socialService);
         		if (service != null) {
@@ -64,7 +64,7 @@ public class SerialParser {
         	} else if (responseCode >= 400 && urlIndex+1 < urls.length) {
         		return parse(urls, urlIndex+1, params, landmarks, task, close, socialService, removeIfExists);
         	}
-        	errorMessage = utils.getResponseCodeErrorMessage();
+        	errorMessage = utils.getResponseErrorMessage(urls[urlIndex]);
             if (close) {
                 close();
             }

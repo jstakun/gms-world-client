@@ -86,14 +86,14 @@ public class HttpUtils {
     private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
     private static DefaultHttpClient httpClient = null;
     private static HttpContext httpContext = null;
-    private static java.util.Locale locale;
     private static boolean closeConnManager = false;
-	private String errorMessage = null;
-    private HttpPost postRequest;
+	private HttpPost postRequest;
     private HttpGet getRequest;
-    private Map<String, String> headers = new HashMap<String, String>();
+    //private String errorMessage = null;
+    //private static java.util.Locale locale;
+    //private Map<String, String> headers = new HashMap<String, String>();
     //private String postResponse = null;
-    private int responseCode;
+    //private int responseCode;
     
     private static HttpClient getHttpClient() {
         if (httpClient == null) {
@@ -243,9 +243,9 @@ public class HttpUtils {
 
             HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
 
-            responseCode = httpResponse.getStatusLine().getStatusCode();
-            errorMessage = null;
-
+            int responseCode = httpResponse.getStatusLine().getStatusCode();
+            HttpUtils2.setResponseCode(url, responseCode);
+            
             HttpEntity respEntity = httpResponse.getEntity();
             is = respEntity.getContent();
 
@@ -265,14 +265,13 @@ public class HttpUtils {
             if (byteBuffer != null) {
             	ConfigurationManager.getAppUtils().increaseCounter(1024 + file.length, byteBuffer.length);
             }
-            if (responseCode == HttpStatus.SC_OK) {
-            } else {
-                errorMessage = handleHttpStatus(responseCode);
+            if (responseCode != HttpStatus.SC_OK) {
+               HttpUtils2.setResponseErrorMessage(url, handleHttpStatus(responseCode));
             }
             respEntity.consumeContent();
         } catch (Throwable e) {
             LoggerUtils.debug("HttpUtils.uploadScreenshot() exception: " + e.getMessage(), e);
-            errorMessage = handleHttpException(e);
+            HttpUtils2.setResponseErrorMessage(url, handleHttpException(e));
         } finally {
             try {
                 if (is != null) {
@@ -516,15 +515,15 @@ public class HttpUtils {
         }
     }
 
-    private void readHeaders(HttpResponse httpResponse, String... headerNames) throws UnsupportedEncodingException {
-        for (int i = 0; i < headerNames.length; i++) {
-            String headerName = headerNames[i];
-            Header header = httpResponse.getFirstHeader(headerName);
-            if (header != null) {
-                headers.put(headerName, URLDecoder.decode(header.getValue(), "UTF-8"));
-            }
-        }
-    }
+    //private void readHeaders(HttpResponse httpResponse, String... headerNames) throws UnsupportedEncodingException {
+    //    for (int i = 0; i < headerNames.length; i++) {
+    //        String headerName = headerNames[i];
+    //        Header header = httpResponse.getFirstHeader(headerName);
+    //        if (header != null) {
+    //            headers.put(headerName, URLDecoder.decode(header.getValue(), "UTF-8"));
+    //        }
+    //    }
+    //}
 
     private static void setAuthHeader(HttpRequest request, boolean throwIfEmpty) {
     	if (ConfigurationManager.getUserManager().isTokenPresent()) {
@@ -550,12 +549,12 @@ public class HttpUtils {
     	return HttpUtils2.getHeader(url, key);
     }
 
-    public String getResponseCodeErrorMessage() {
-        return errorMessage;
+    public String getResponseErrorMessage(String url) {
+        return HttpUtils2.getResponseErrorMessage(url);
     }
     
-    public int getResponseCode() {
-    	return responseCode;
+    public int getResponseCode(String url) {
+    	return HttpUtils2.getResponseCode(url);
     }
 
     private static String handleHttpException(Throwable e) {

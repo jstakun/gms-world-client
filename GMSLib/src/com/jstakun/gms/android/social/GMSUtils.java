@@ -23,11 +23,9 @@ public final class GMSUtils {
         HttpUtils utils = new HttpUtils();
         String errorMessage = null, //encPwd = null, 
         		email = null, user = null, token = null;
-
+        String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "authenticate";
+        
         try {
-            //ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_USERNAME, login);
-            //ConfigurationManager.getInstance().putObject(ConfigurationManager.GMS_PASSWORD, password);
-            String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "authenticate";
             byte[] resp = utils.loadFile(url, true, "text/json");
             if (resp != null && resp.length > 0) {
                 String jsonResp = new String(resp, "UTF-8");   
@@ -46,7 +44,7 @@ public final class GMSUtils {
         } finally {
             try {
                 if (utils != null) {
-                    errorMessage = utils.getResponseCodeErrorMessage();
+                    errorMessage = utils.getResponseErrorMessage(url);
                     utils.close();
                 }
             } catch (Exception e) {
@@ -75,9 +73,9 @@ public final class GMSUtils {
 	public static String generateToken(String scope) {
 		HttpUtils utils = new HttpUtils();
         String token = null, errorMessage = null;
+        String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "token?scope=" + scope;
         
-		try {
-            String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "token?scope=" + scope;
+        try {
             byte[] resp = utils.loadFile(url, false, "text/json");
             if (resp != null && resp.length > 0) {
                 String jsonResp = new String(resp, "UTF-8");   
@@ -93,7 +91,7 @@ public final class GMSUtils {
         } finally {
             try {
                 if (utils != null) {
-                    errorMessage = utils.getResponseCodeErrorMessage();
+                    errorMessage = utils.getResponseErrorMessage(url);
                     utils.close();
                 }
             } catch (Exception e) {
@@ -131,7 +129,7 @@ public final class GMSUtils {
         HttpUtils utils = new HttpUtils();
         try {
             utils.sendPostRequest(url, params, true);
-            message = utils.getResponseCodeErrorMessage();
+            message = utils.getResponseErrorMessage(url);
             if (message == null) {
                 message = Locale.getMessage(R.string.Social_comment_sent);
             } else {
@@ -162,8 +160,8 @@ public final class GMSUtils {
 
  	   HttpUtils utils = new HttpUtils();
  	   utils.sendPostRequest(url, params, true);
- 	   String msg = utils.getResponseCodeErrorMessage();
- 	   int responseCode = utils.getResponseCode();
+ 	   String msg = utils.getResponseErrorMessage(url);
+ 	   int responseCode = utils.getResponseCode(url);
 
  	   LoggerUtils.debug("Location check-in at " + checkinLandmarkCode + " response: " + msg);
  	   

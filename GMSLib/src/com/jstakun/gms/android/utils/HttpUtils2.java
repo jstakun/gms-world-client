@@ -302,12 +302,20 @@ public class HttpUtils2 {
     	return httpResponseStatuses.remove(url);
     }
 	
-	public static String getErrorMessage(String url) {
+	public static String getResponseErrorMessage(String url) {
 		return httpErrorMessages.remove(url);
 	}
 	
 	public static String getHeader(String url, String headerName) {
 		return httpHeaders.remove(url + "->" + headerName);
+	}
+	
+	protected static void setResponseErrorMessage(String url, String errorMessage) {
+		httpErrorMessages.put(url, errorMessage);
+	}
+	
+	protected static void setResponseCode(String url, Integer responseCode) {
+		httpResponseStatuses.put(url, responseCode);
 	}
 	
 	private static void readHeaders(HttpURLConnection conn, String url, String... headerNames) {

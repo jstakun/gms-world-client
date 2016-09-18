@@ -1079,7 +1079,7 @@ public final class IntentsHelper {
             }
 
             String resp = utils.sendPostRequest(url, params, true);
-            if (utils.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            if (utils.getResponseCode(url) == HttpURLConnection.HTTP_OK) {
                 if (StringUtils.startsWith(resp, "{")) {
                     JSONObject json = new JSONObject(resp);
                     int version = Integer.valueOf(json.optString("value", "0"));

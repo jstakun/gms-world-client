@@ -91,7 +91,7 @@ public final class LinkedInUtils extends AbstractSocialUtils {
 					}
 				}
 				utils.sendPostRequest(url, params, true);
-				errorMessage = utils.getResponseCodeErrorMessage();
+				errorMessage = utils.getResponseErrorMessage(url);
 			} catch (Exception ex) {
 				LoggerUtils.error("LinkedInUtils.sendPost() exception", ex);
 				errorMessage = Locale.getMessage(R.string.Http_error, ex.getMessage());

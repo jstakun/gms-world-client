@@ -115,7 +115,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 					}
 				}
 		    	utils.sendPostRequest(url, params, true);
-		    	errorMessage = utils.getResponseCodeErrorMessage();
+		    	errorMessage = utils.getResponseErrorMessage(url);
 			} catch (Exception ex) {
 				LoggerUtils.error("FacebookUtils.sendMessage() exception", ex);
 				errorMessage = Locale.getMessage(R.string.Http_error, ex.getMessage());
@@ -154,8 +154,8 @@ public final class FacebookUtils extends AbstractSocialUtils {
 		    params.put("lng", StringUtil.formatCoordE6(lng));
 		    utils.sendPostRequest(url, params, true);
 		    
-		    message = utils.getResponseCodeErrorMessage();
-		    int responseCode = utils.getResponseCode();
+		    message = utils.getResponseErrorMessage(url);
+		    int responseCode = utils.getResponseCode(url);
 	        if (responseCode == HttpURLConnection.HTTP_OK) {
 	           message = Locale.getMessage(R.string.Social_checkin_success, name);
 	           onCheckin(placeId);
@@ -194,7 +194,7 @@ public final class FacebookUtils extends AbstractSocialUtils {
 		    params.put("service", Commons.FACEBOOK);
 		    utils.sendPostRequest(url, params, true);
 		    
-		    errorMessage = utils.getResponseCodeErrorMessage();
+		    errorMessage = utils.getResponseErrorMessage(url);
 		    if (errorMessage == null) {
 	            errorMessage = Locale.getMessage(R.string.Social_comment_sent);
 	        } else {

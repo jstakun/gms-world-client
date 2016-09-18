@@ -315,7 +315,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
                   message = Locale.getMessage(R.string.Http_error, json.getString("message"));
                }              
             } else {
-                message = utils.getResponseCodeErrorMessage();
+                message = utils.getResponseErrorMessage(url);
             }
         } catch (Exception ex) {
             LoggerUtils.error("PickLocationActivity.pickLocationAction() exception", ex);

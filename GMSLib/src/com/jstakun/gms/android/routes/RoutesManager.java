@@ -158,8 +158,8 @@ public class RoutesManager {
         
         	String jsonResp = utils.sendPostRequest(url, params, true);
         
-        	int responseCode = utils.getResponseCode();
-        	message = utils.getResponseCodeErrorMessage();
+        	int responseCode = utils.getResponseCode(url);
+        	message = utils.getResponseErrorMessage(url);
         
         	if (responseCode == HttpURLConnection.HTTP_OK && StringUtils.startsWith(jsonResp, "{")) {
         		JSONObject json = new JSONObject(jsonResp);
@@ -176,7 +176,7 @@ public class RoutesManager {
         	}    
         } catch (Exception ex) {
             LoggerUtils.error("RoutesManager.readRouteFromServer() exception", ex);
-            message = utils.getResponseCodeErrorMessage();
+            message = utils.getResponseErrorMessage(url);
         } finally {
         	try {
                 if (utils != null) {

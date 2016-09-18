@@ -72,7 +72,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 	            if (StringUtils.isNotEmpty(response)) {
 	                LoggerUtils.debug("Received response: " + response);
 	            }              
-	            if (utils.getResponseCode() == HttpURLConnection.HTTP_OK) {
+	            if (utils.getResponseCode(url) == HttpURLConnection.HTTP_OK) {
 	            	//user has been engaged
 	            	long timestamp = 0l;
 	            	if (StringUtils.startsWith(response, "{")) {

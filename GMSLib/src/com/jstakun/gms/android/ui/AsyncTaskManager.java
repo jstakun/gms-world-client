@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.ui;
 
 import java.io.ByteArrayOutputStream;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -1021,7 +1022,7 @@ public class AsyncTaskManager {
             		utils = new HttpUtils();
         			String url = ConfigurationManager.getInstance().getServerUrl() + "imageUpload";
         			utils.uploadScreenshot(url, true, coords[0], coords[1], image, filename);
-        			if (utils.getResponseCode() == 200) {
+        			if (utils.getResponseCode(url) == HttpURLConnection.HTTP_OK) {
         				ConfigurationManager.getInstance().putObject("screenshot_" + StringUtil.formatCoordE2(coords[0]) + "_" + StringUtil.formatCoordE2(coords[1]), new Object());
         			}
         		} else {

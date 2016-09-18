@@ -41,9 +41,9 @@ public class LayerXMLParser {
      public String parse(Map<String,Layer> layers) {
         InputStream input = null;
         String errorMessage = null;
-
+        String url = ConfigurationManager.getInstance().getServerUrl() + "listLayers";
+        
         try {
-            String url = ConfigurationManager.getInstance().getServerUrl() + "listLayers";
             byte[] file = utils.loadFile(url, true, "xml");
             
             if (file != null)
@@ -61,7 +61,7 @@ public class LayerXMLParser {
                     input.close();
                 }
                 if (utils != null) {
-                    errorMessage = utils.getResponseCodeErrorMessage();
+                    errorMessage = utils.getResponseErrorMessage(url);
                     utils.close();
                 }
             } catch (IOException e) {

@@ -594,7 +594,7 @@ public class LandmarkManager {
         
         HttpUtils utils = new HttpUtils();
         utils.sendPostRequest(url, params, true);
-        errorMessage = utils.getResponseCodeErrorMessage();
+        errorMessage = utils.getResponseErrorMessage(url);
 
         //we are using url shorter
         String lmUrl = null;
