@@ -125,7 +125,8 @@ public class RouteRecorder {
             } 
             ExtendedLandmark lm = LandmarkFactory.getLandmark(l, description, qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
             endTime = System.currentTimeMillis();
-            routePoints.add(lm);
+            LoggerUtils.debug(routePoints.size() + ". Adding route point: " + candidate.getLatitude() + "," + candidate.getLongitude() + " with speed: " + candidate.getSpeed() + ", accuracy " + candidate.getAccuracy() + " and bearing: " + candidate.getBearing() + ".");
+    		routePoints.add(lm);
             added = true;
         }
     	return added;

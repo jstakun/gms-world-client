@@ -596,11 +596,10 @@ public class LandmarkManager {
         utils.sendPostRequest(url, params, true);
         errorMessage = utils.getResponseCodeErrorMessage();
 
-        //if (errorMessage == null) {
-            //we are using bit.ly url shorter
+        //we are using url shorter
         String lmUrl = null;
-        String hash = utils.getHeader("hash");
-        String key = utils.getHeader("key");
+        String hash = utils.getHeader(url, "hash");
+        String key = utils.getHeader(url, "key");
             
         if (hash != null) {
            lmUrl = ConfigurationManager.BITLY_URL + hash;
@@ -615,7 +614,6 @@ public class LandmarkManager {
         if (lmUrl != null) {
            landmark.setUrl(lmUrl);
         }
-        //}
         
         //System.out.println("Set values: " + key + " " + lmUrl);
 

@@ -1281,7 +1281,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	} else if (msg.what == GmsLocationServicesManager.UPDATE_LOCATION) {
             		activity.onLocationChanged();
             	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) {
-            		LoggerUtils.debug("I will now repaint route!");
             		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
         				if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         					if (activity.routesCluster != null) {

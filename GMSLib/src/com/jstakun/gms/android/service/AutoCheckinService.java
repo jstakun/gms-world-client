@@ -33,6 +33,7 @@ public class AutoCheckinService extends Service {
         	AsyncTaskManager.getInstance().setContext(this);
         	if (ConfigurationManager.getInstance().getContext() == null) {
         		ConfigurationManager.getInstance().setContext(this);
+        		silent= true;
         	}
         	int checkinCount = CheckinManager.getInstance().autoCheckin(lat, lng, silent); //set silent to true if running in background
         	//lastExecutedLat = lat;

@@ -170,7 +170,7 @@ public final class GMSUtils {
  	   if (responseCode == HttpURLConnection.HTTP_OK) {
  		   String nameP = name;
  		   if (nameP == null) {
- 			   nameP = utils.getHeader("name");
+ 			   nameP = utils.getHeader(url, "name");
  			   if (nameP == null) {
  				   nameP = "Landmark";
  			   }

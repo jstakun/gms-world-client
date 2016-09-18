@@ -5,6 +5,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
@@ -121,6 +122,7 @@ public class RouteTracingService extends Service implements LocationListener,
 	public void onLocationChanged(Location location) {
 		// add location to route points
 		LoggerUtils.debug("RouteTracingService received new location");
+		ConfigurationManager.getInstance().setLocation(location);
 		if (RouteRecorder.getInstance().addCoordinate(location)) {
 			//notify ui to repaint route
 			if (mClient != null) {

@@ -541,12 +541,13 @@ public class HttpUtils {
         new HttpClientClosingTask(1).execute();
     }
 
-    public String getHeader(String key) {
-        if (headers.containsKey(key)) {
-            return headers.get(key);
-        } else {
-            return null;
-        }
+    public String getHeader(String url, String key) {
+        //if (headers.containsKey(key)) {
+        //    return headers.get(key);
+        //} else {
+        //    return null;
+        //}
+    	return HttpUtils2.getHeader(url, key);
     }
 
     public String getResponseCodeErrorMessage() {

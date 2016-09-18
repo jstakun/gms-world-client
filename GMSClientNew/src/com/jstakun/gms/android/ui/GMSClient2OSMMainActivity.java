@@ -1265,7 +1265,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             	} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
             		activity.updateLocation((Location) msg.obj);
             	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) {
-            		LoggerUtils.debug("I will now repaint route!");
             		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 		activity.mapButtons.setVisibility(View.GONE);
                 		activity.showMyPositionAction(false);
