@@ -1,206 +1,138 @@
 package com.jstakun.gms.android.utils;
 
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.ui.lib.R;
 
-/**
- *
- * @author jstakun
- */
 public class HttpUtils {
-
-	//private static final int REQUEST_RETRY_COUNT = 2;
-    //private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
-    //private static DefaultHttpClient httpClient = null;
-    //private static HttpContext httpContext = null;
-    //private static boolean closeConnManager = false;
-	//private HttpPost postRequest;
-    //private HttpGet getRequest;
-    //private String errorMessage = null;
-    //private static java.util.Locale locale;
-    //private Map<String, String> headers = new HashMap<String, String>();
-    //private String postResponse = null;
-    //private int responseCode;
-    
-    /*private static HttpClient getHttpClient() {
-        if (httpClient == null) {
-        	closeConnManager = false;
-            HttpParams params = new BasicHttpParams();
-            params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, SOCKET_TIMEOUT);
-            params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, SOCKET_TIMEOUT);
-            params.setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
+	
+	private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
+	private static final String FORM_ENCODING = "application/x-www-form-urlencoded;charset=UTF-8";
+	private static final Map<String, Integer> httpResponseStatuses = new HashMap<String, Integer>();
+	private static final Map<String, String> httpErrorMessages = new HashMap<String, String>();
+	private static final Map<String, String> httpHeaders = new HashMap<String, String>();
+	
+	private boolean aborted = false;
+	
+	public void close() {
+		aborted = true;
+	}
+	
+	public HttpUtils() {
+		aborted = false;
+	}
+	
+	public String uploadScreenshot(String fileUrl, boolean auth, Double latitude, Double longitude, byte[] file, String filename) {
+	    InputStream is = null;
+	    String response = null;
+	    
+	    final String attachmentName = "screenshot";
+	    final String crlf = "\r\n";
+	    final String twoHyphens = "--";
+	    final String boundary =  "*****";
+		
+		try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
+            conn.setRequestMethod("POST");
+            conn.setConnectTimeout(SOCKET_TIMEOUT);
+            conn.setReadTimeout(SOCKET_TIMEOUT);
             
-            ConnPerRouteBean connPerRoute = new ConnPerRouteBean();
-            connPerRoute.setDefaultMaxPerRoute(12);
-            HttpHost gmsHost1 = new HttpHost(ConfigurationManager.SERVER_HOST, 443);
-            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost1), 32);
-            HttpHost gmsHost2 = new HttpHost("www.gms-world.net", 80);
-            connPerRoute.setMaxForRoute(new HttpRoute(gmsHost2), 32);
-            ConnManagerParams.setMaxConnectionsPerRoute(params, connPerRoute);
-
-            String userAgent = System.getProperty("http.agent");
-            if (StringUtils.isEmpty(userAgent)) {
-            	userAgent = ConfigurationManager.getAppUtils().collectSystemInformation();
-            }	
+            conn.setRequestProperty("User-Agent", Locale.getMessage(R.string.app_name) + " HTTP client");
             
-            HttpProtocolParams.setUserAgent(params, userAgent);          
-            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-            HttpProtocolParams.setUseExpectContinue(params, false);
-            HttpConnectionParams.setStaleCheckingEnabled(params, false);
-
-            SchemeRegistry schemeRegistry = new SchemeRegistry();
-            schemeRegistry.register(
-                    new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            schemeRegistry.register(
-                    new Scheme("https", getSSLSocketFactory(), 443));
-            
-            httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schemeRegistry), params);
-            httpClient.setHttpRequestRetryHandler(new SocketTimeOutRetryHandler(params, REQUEST_RETRY_COUNT, true));
-            
-            httpContext = new BasicHttpContext(); 
-            httpContext.setAttribute(ClientContext.COOKIE_STORE, new BasicCookieStore());
-        }
-
-        return httpClient;
-    }*/
-
-    public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
-        /*getThreadSafeClientConnManagerStats();
-        InputStream is = null;
-        String postResponse = null;
-        
-        if (locale == null) {
-            locale = ConfigurationManager.getInstance().getCurrentLocale();
-        }
-
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        for (Map.Entry<String, String> param : postParams.entrySet()) {
-        	params.add(new BasicNameValuePair(param.getKey(), param.getValue()));
-        }
-
-        try {
-        	URI uri = new URI(url);
-        	
-            postRequest = new HttpPost(uri);
-
-            postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-            postRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
-            postRequest.addHeader(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-            postRequest.addHeader(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
-            postRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
-
+            conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
+            conn.setRequestProperty(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+       
+            if (latitude != null) {
+            	conn.setRequestProperty(Commons.LAT_HEADER, StringUtil.formatCoordE6(latitude));
+            }
+            if (longitude != null) {
+            	conn.setRequestProperty(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
+            }
             if (auth) {
-               setAuthHeader(postRequest, url.contains(ConfigurationManager.SERVICES_SUFFIX));
-            }
-           
-            postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-
-            HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
-
-            responseCode = httpResponse.getStatusLine().getStatusCode();
-            errorMessage = null;
-
-            HttpEntity entity = httpResponse.getEntity();
-        	
-            if (!postRequest.isAborted()) {
-            	byte[] byteBuffer = EntityUtils.toByteArray(entity);
-
-            	postResponse = new String(byteBuffer, "UTF-8");
-
-              	if (params != null && byteBuffer != null) {
-            		ConfigurationManager.getAppUtils().increaseCounter(1024, byteBuffer.length);
-            	}
-            	if (responseCode == HttpStatus.SC_OK) {
-            		readHeaders(httpResponse, "key", "name", "hash");
-            	} else {
-            		errorMessage = handleHttpStatus(responseCode);
-            	}
-            }
-            entity.consumeContent();
-        } catch (Exception e) {
-            LoggerUtils.debug("HttpUtils.loadHttpFile exception: " + e.getMessage(), e);
-            errorMessage = handleHttpException(e);
-        } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (IOException e) {
-            }
-        }
-        return postResponse;*/
-    	return new HttpUtils2().sendPostRequest(url, postParams, auth);
-    }
-
-    public String uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
-        /*getThreadSafeClientConnManagerStats();
-        InputStream is = null;
-        String postResponse = null;
-        
-        try {
-        	URI uri = new URI(url);
-        	
-            postRequest = new HttpPost(uri);
-
-            postRequest.addHeader(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-            postRequest.addHeader(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
-            postRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
-            postRequest.addHeader(Commons.LAT_HEADER, StringUtil.formatCoordE6(latitude));
-            postRequest.addHeader(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
-            
-            String myPosKey = (String)ConfigurationManager.getInstance().removeObject(Commons.MY_POS_CODE, String.class);
-            if (StringUtils.isNotEmpty(myPosKey)) {
-            	 postRequest.addHeader(Commons.MYPOS_KEY_HEADER, myPosKey);
-            }
-            
-            if (auth) {
-                setAuthHeader(postRequest, url.contains(ConfigurationManager.SERVICES_SUFFIX));
+                setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
                 String username = ConfigurationManager.getUserManager().getLoggedInUsername();
                 if (StringUtils.isNotEmpty(username)) {
-                   postRequest.addHeader("username", username);
+                	conn.setRequestProperty("username", username);
                 }                      
             }
-    
-            ByteArrayBody bab = new ByteArrayBody(file, filename);
             
-            MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-            entity.addPart("screenshot", bab);
-
-            postRequest.setEntity(entity);        
-
-            HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
-
-            int responseCode = httpResponse.getStatusLine().getStatusCode();
-            HttpUtils2.setResponseCode(url, responseCode);
+            conn.setRequestProperty("Accept-Encoding", "gzip");
             
-            HttpEntity respEntity = httpResponse.getEntity();
-            is = respEntity.getContent();
+            if (!aborted) {
+            	//write file
+            	conn.setDoOutput(true);
+            	conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            	DataOutputStream request = new DataOutputStream(conn.getOutputStream());
 
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[512];
-            int count;
-            while ((count = is.read(buffer)) >= 0) {
-                bos.write(buffer, 0, count);
+            	request.writeBytes(twoHyphens + boundary + crlf);
+            	request.writeBytes("Content-Disposition: form-data; name=\"" + attachmentName + "\";filename=\"" + filename + "\"" + crlf);
+            	request.writeBytes(crlf);
+            		
+            	IOUtils.write(file, request);
+            		
+            	request.writeBytes(crlf);
+            	request.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
+            		
+            	request.flush();
+            	request.close();
             }
+            
+            if (! aborted) {
+            	int responseCode = conn.getResponseCode();
+            	httpResponseStatuses.put(fileUrl, responseCode);
 
-            byte[] byteBuffer = bos.toByteArray(); //EntityUtils.toByteArray(entity); 
-
-            postResponse = new String(byteBuffer, "UTF-8");
-
-            LoggerUtils.debug(postResponse);
-
-            if (byteBuffer != null) {
-            	ConfigurationManager.getAppUtils().increaseCounter(1024 + file.length, byteBuffer.length);
+            	if (responseCode == HttpURLConnection.HTTP_OK) {
+            		if (conn.getContentType().indexOf("gzip") != -1) {
+            			is = new GZIPInputStream(conn.getInputStream());
+            		} else {
+            			is = conn.getInputStream();
+            		}
+            	} else {
+                	is = conn.getErrorStream();
+                	LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
+        			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
+            	}
+                
+            	if (is != null) {
+            		//Read response
+            		response = IOUtils.toString(is, "UTF-8");
+            	}
+            	
+            	int sent = file.length;
+            	int received = 0;
+            	if (response != null) {
+            		received = response.getBytes().length;
+            	}
+            	if (sent > 0 || received > 0) {
+            		ConfigurationManager.getAppUtils().increaseCounter(sent, received);
+            	}
             }
-            if (responseCode != HttpStatus.SC_OK) {
-               HttpUtils2.setResponseErrorMessage(url, handleHttpStatus(responseCode));
-            }
-            respEntity.consumeContent();
-        } catch (Throwable e) {
+		} catch (Throwable e) {
             LoggerUtils.debug("HttpUtils.uploadScreenshot() exception: " + e.getMessage(), e);
-            HttpUtils2.setResponseErrorMessage(url, handleHttpException(e));
+            httpErrorMessages.put(fileUrl, handleHttpException(e));
         } finally {
             try {
                 if (is != null) {
@@ -209,285 +141,319 @@ public class HttpUtils {
             } catch (IOException e) {
             }
         }
-        return postResponse;*/
-    	return new HttpUtils2().uploadScreenshot(url, auth, latitude, longitude, file, filename);
-    }
-
-    public byte[] loadFile(String url, boolean auth, String format) {
-        /*getThreadSafeClientConnManagerStats();     
-        byte[] byteBuffer = null;
+		
+		return response;
+	}
+	
+	public byte[] loadFile(String url, boolean auth, String format) {
+		return processRequest(url, auth, "GET", null, null, null, true, format, null, null);
+	}
+	
+	public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
+		try {
+			byte[] response = processRequest(url, auth, "POST", null, getQuery(postParams).getBytes(), FORM_ENCODING, true, null, null, null, "key", "name", "hash");
+			if (response != null && response.length > 0) {
+				return new String(response, "UTF-8");
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			LoggerUtils.error(e.getMessage(), e);
+			return null;
+		}
+	}
+	
+	private byte[] processRequest(String fileUrl, boolean auth, String method, String accept, byte[] content, String contentType, boolean compress, String format, Double latitude, Double longitude, String... headersToRead) {
+        InputStream is = null;
+        byte[] response = null;
+        long start = System.currentTimeMillis();
+        HttpURLConnection conn = null;
         
+        httpErrorMessages.remove(fileUrl);
+
         try {
-            LoggerUtils.debug("Loading file: " + url);
-            //boolean compressed = false;
-            InputStream is;
-
-            if (locale == null) {
-                locale = ConfigurationManager.getInstance().getCurrentLocale();
-            }
-
-            URI uri = new URI(url);
+            conn = (HttpURLConnection) new URL(fileUrl).openConnection();
+            conn.setRequestMethod(method);
+            conn.setConnectTimeout(SOCKET_TIMEOUT);
+            conn.setReadTimeout(SOCKET_TIMEOUT);
             
-            getRequest = new HttpGet(uri);
-
-            getRequest.addHeader("Accept-Encoding", "gzip, deflate");
-            getRequest.addHeader("Connection", "close");
-            getRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-            getRequest.addHeader(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-            getRequest.addHeader(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
-            getRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
-
-            // HTTP Response
+            conn.setRequestProperty("User-Agent", Locale.getMessage(R.string.app_name) + " HTTP client");
+            
+            conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
+            conn.setRequestProperty(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+            if (latitude != null) {
+            	conn.setRequestProperty(Commons.LAT_HEADER, StringUtil.formatCoordE6(latitude));
+            }
+            if (longitude != null) {
+            	conn.setRequestProperty(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
+            }
             if (auth) {
-               setAuthHeader(getRequest, url.contains(ConfigurationManager.SERVICES_SUFFIX));
+                setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
+                String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+                if (StringUtils.isNotEmpty(username)) {
+                	conn.setRequestProperty("username", username);
+                }                      
+            }
+
+            java.util.Locale locale = ConfigurationManager.getInstance().getCurrentLocale();
+            if (locale != null) {
+                conn.setRequestProperty("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
+            }
+
+            conn.setRequestProperty("Accept-Charset", "utf-8");
+
+            if (StringUtils.isNotEmpty(accept)) {
+                conn.setRequestProperty("Accept", accept);
             }
             
-            if (!getRequest.isAborted() && !closeConnManager) {
-            	HttpResponse httpResponse = getHttpClient().execute(getRequest, httpContext);
-
-            	responseCode = httpResponse.getStatusLine().getStatusCode();
-            	errorMessage = null;
-            	
-            	if (responseCode == HttpStatus.SC_OK) {
-            		HttpEntity entity = httpResponse.getEntity();
-
-            		if (entity != null) {
-            			Header contentEncoding = entity.getContentEncoding();
-
-            			Header contentType = entity.getContentType();
-            			if (contentType != null) {
-            				String contentTypeValue = contentType.getValue();
-            				if (!contentTypeValue.contains(format)) {
-            					throw new IOException("Wrong content format! Expected: " + format + ", found: " + contentTypeValue + " at url: " + url);
-            				}
-            			} else {
-            				//throw new IOException("Missing content type! Expected: " + format + " at url: " + url);
-            				LoggerUtils.debug("Missing content type! Expected: " + format + " at url: " + url);
-            			}
-
-            			if (contentEncoding != null && contentEncoding.getValue().indexOf("gzip") != -1) {
-            				is = new GZIPInputStream(entity.getContent());
-            			} else {
-            				is = entity.getContent();
-            			}
-
-                    	try {
-                        	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        	byte[] buffer = new byte[512];
-                        	int count;
-                        	while ((count = is.read(buffer)) >= 0) {
-                            	bos.write(buffer, 0, count);
-                        	}
-
-                        	byteBuffer = bos.toByteArray();
-                        	ConfigurationManager.getAppUtils().increaseCounter(0, byteBuffer.length);
-                        	LoggerUtils.debug("File " + url + " size: " + byteBuffer.length + " bytes");//, Compressed = " + compressed);
-                    	} finally {
-                        	if (is != null) {
-                            	is.close();
-                        	}
-                    	}
-                    	entity.consumeContent();
-                	}
+            if (!aborted) {
+            	if (content != null) {
+            		conn.setRequestProperty("Content-Length", Integer.toString(content.length));
+                
+            		if (contentType != null) {
+            			conn.setRequestProperty("Content-Type", contentType);
+            		} else {
+            			conn.setRequestProperty("Content-Type", FORM_ENCODING);
+            		}
+                
+            		if (compress) {
+            			conn.setRequestProperty("Accept-Encoding", "gzip");
+            		}
+                
+            		conn.setDoInput(true);
+                	conn.setDoOutput(true);
+                	//Send request
+                	IOUtils.write(content, conn.getOutputStream());
             	} else {
-                	LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
-                	errorMessage = handleHttpStatus(responseCode);
+            		conn.connect();
             	}
             }
-        } catch (Exception e) {
-            byteBuffer = null;
-            LoggerUtils.error("HttpUtils.loadHttpFile() exception: " + e.getMessage(), e);
-            errorMessage = handleHttpException(e);
-        }
-
-        return byteBuffer;*/
-    	return new HttpUtils2().loadFile(url, auth, format);
-    }
-    
-    public List<ExtendedLandmark> loadLandmarkList(String url, Map<String, String> postParams, boolean auth, String[] formats) {
-        /*getThreadSafeClientConnManagerStats();
-        
-        List<ExtendedLandmark> reply = new ArrayList<ExtendedLandmark>();
-        
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        for (Map.Entry<String, String> param : postParams.entrySet()) {
-        	params.add(new BasicNameValuePair(param.getKey(), param.getValue()));
-        }
-        
-        try {
-        	if (ServicesUtils.isNetworkActive()) { 	
-        		LoggerUtils.debug("Loading file: " + url);
             
-        		if (locale == null) {
-        			locale = ConfigurationManager.getInstance().getCurrentLocale();
-        		}
+            if (!aborted) {
+            	int responseCode = conn.getResponseCode();
+            	httpResponseStatuses.put(fileUrl, responseCode);
 
-        		postRequest = new HttpPost(url);
-
-        		postRequest.addHeader("Accept-Encoding", "gzip, deflate");
-        		postRequest.addHeader("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
-        		postRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        		postRequest.addHeader(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-        		postRequest.addHeader(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
-                postRequest.addHeader(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
-
-        		if (auth) {
-        			setAuthHeader(postRequest, url.contains(ConfigurationManager.SERVICES_SUFFIX));
-        		}
-           
-        		postRequest.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-            
-        		if (!postRequest.isAborted() && !closeConnManager) {
-        			HttpResponse httpResponse = getHttpClient().execute(postRequest, httpContext);
-        			
-        			responseCode = httpResponse.getStatusLine().getStatusCode();
-        			errorMessage = null;
-
-        			if (responseCode == HttpStatus.SC_OK) {
-        				HttpEntity entity = httpResponse.getEntity();
-
-        				if (entity != null) {
-        					Header contentType = entity.getContentType();
-        					if (contentType != null) {
-        						String contentTypeValue = contentType.getValue();
-        						if (!StringUtils.startsWithAny(contentTypeValue, formats)) {
-        							responseCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-        							throw new IOException("Wrong content format! Expected: " + StringUtils.join(formats," or ") + ", found: " + contentTypeValue + " at url: " + url);
-        						}
-        					} else {
-        						//throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
-        						LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + url);
-        					}
-
-        					byte[] buffer = EntityUtils.toByteArray(entity);
-        					int bufferSize = buffer.length;
-                    
-        					LoggerUtils.debug("File " + url + " size: " + bufferSize + " bytes");
-            		
-        					if (bufferSize > 0 && !postRequest.isAborted()) {
-        						ConfigurationManager.getAppUtils().increaseCounter(0, bufferSize);
-        						ObjectInputStream ois = null;
-        						ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-        						try {
-        							if (contentType != null && contentType.getValue().indexOf("deflate") != -1) {
-        								ois = new ObjectInputStream(new InflaterInputStream(bais, new Inflater(false)));
-        							} else {
-        								ois = new ObjectInputStream(bais);
-        							}
-        						} catch (IOException e) {
-        							responseCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-        							throw new IOException("Unable to create object input stream from " + url, e);
-        						}
-                   
-        						if (ois != null && ois.available() > 0) {
-        							int size = ois.readInt();
-        							LoggerUtils.debug("Reading " + size + " landmarks from " + url);
-        							if (size > 0) {
-        								for(int i = 0;i < size;i++) {
-        									try {
-        										ExtendedLandmark landmark = new ExtendedLandmark(); 
-        										landmark.readExternal(ois);
-        										reply.add(landmark);
-        									} catch (IOException e) {
-        										LoggerUtils.error("HttpUtils.loadLandmarkList() " + e.getClass().getName() + ": " +  e.getMessage());
-        									}
-        									if (postRequest.isAborted()) {
-        										break;
-        									}
-        								}
-        								//LoggerUtils.debug("Loaded " + reply.size() + " landmarks from " + uri.toString());
-        							}
-        						}
-                            
-        						bais.close();
-        						ois.close();
-        					} 
-                    
-        					entity.consumeContent();
+            	if (responseCode == HttpURLConnection.HTTP_OK) {
+            		if (format != null) {
+        				if (!StringUtils.contains(conn.getContentType(), format)) {
+        					responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+        					httpResponseStatuses.put(fileUrl, responseCode);
+        					throw new IOException("Wrong content format! Expected: " + format + ", found: " + conn.getContentType() + " at url: " + fileUrl);
         				}
-        			} else {
-        				LoggerUtils.error(url + " loading error: " + responseCode + " " + httpResponse.getStatusLine().getReasonPhrase());
-        				errorMessage = handleHttpStatus(responseCode);
-        			}
-        		}
-        	} else {
-        		errorMessage = Locale.getMessage(R.string.Network_connection_error_title);
-        		LoggerUtils.error("HttpUtils.loadLandmarkList() network exception: " + errorMessage);
+        			} 
+            		
+            		if (conn.getContentType().indexOf("gzip") != -1) {
+            			is = new GZIPInputStream(conn.getInputStream());
+            		} else {
+            			is = conn.getInputStream();
+            		}
+            	} else if (responseCode > 299) {
+                	is = conn.getErrorStream();
+                	LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
+        			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
+            	} else {
+            		LoggerUtils.debug(fileUrl + " loading response code: " + responseCode); 
+            	}
+                
+            	if (is != null) {
+            		//Read response
+            		response = IOUtils.toByteArray(is);
+            		int length = response.length;
+            		if (length > 0) {
+            			LoggerUtils.debug("Received " + conn.getContentType() + " document having " + length + " characters");
+            		}
+            	}
+            	
+            	int sent = 0;
+            	if (content != null )
+            	{
+            		sent = content.length;
+            	}
+            	int received = 0;
+            	if (response != null) {
+            		received = response.length;
+            	}
+            	if (sent > 0 || received > 0) {
+            		ConfigurationManager.getAppUtils().increaseCounter(sent, received);
+            	}
+            	
+            	if (headersToRead != null && headersToRead.length > 0) {
+            		readHeaders(conn, fileUrl, headersToRead);
+            	}
+            
+            	LoggerUtils.debug("Request processed with status " + responseCode + " in " + (System.currentTimeMillis()-start) + " millis.");
+            }
+        } catch (Exception e) {
+        	LoggerUtils.error(e.getMessage(), e);
+        } finally {
+            if (is != null) {
+            	try {
+            		is.close();
+            	} catch (Exception e) {
+            		LoggerUtils.error(e.getMessage(), e);
+            	}
+            	if (conn != null) {
+            		conn.disconnect();
+            	}
+            }
+            if (conn != null) {
+        		conn.disconnect();
         	}
+        }
+        
+        return response;
+    }
+
+	public List<ExtendedLandmark> loadLandmarkList(String fileUrl, Map<String, String> params, boolean auth, String[] formats) {
+    	ObjectInputStream ois = null;
+    	HttpURLConnection conn = null;
+    	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
+    	
+    	httpErrorMessages.remove(fileUrl);
+        
+    	try {
+    		if (ServicesUtils.isNetworkActive()) { 	
+    			conn = (HttpURLConnection) new URL(fileUrl).openConnection();
+    			conn.setRequestMethod("POST");
+    			conn.setConnectTimeout(SOCKET_TIMEOUT);
+    			conn.setReadTimeout(SOCKET_TIMEOUT);
+            	conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+            	conn.setRequestProperty("User-Agent", Locale.getMessage(R.string.app_name) + " HTTP client");
+            	conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            	conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
+            	conn.setRequestProperty(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+            
+            	if (auth) {
+            		setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
+            	}
+            
+            	conn.setDoInput(true);
+            	conn.setDoOutput(true);
+            
+            	conn.setRequestProperty("Content-Type", FORM_ENCODING);
+            
+            	String queryString = getQuery(params);
+            	OutputStream os = conn.getOutputStream();
+            	BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            	writer.write(queryString);
+            	writer.flush();
+            	writer.close();
+            	os.close();            
+            
+            	if (!aborted) {
+            		conn.connect();
+            
+            		int responseCode = conn.getResponseCode();
+            		httpResponseStatuses.put(fileUrl, responseCode);
+
+            		if (responseCode == HttpURLConnection.HTTP_OK && !aborted) {
+            			String contentType = conn.getContentType();
+            			if (contentType != null) {
+            				if (!StringUtils.startsWithAny(contentType, formats)) {
+            					responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+            					throw new IOException("Wrong content format! Expected: " + StringUtils.join(formats," or ") + ", found: " + contentType + " at url: " + fileUrl);
+            				}
+            			} else {
+            				//throw new IOException("Missing content type! Expected: " + format + " at url: " + uri.toString());
+            				LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + fileUrl);
+            			}
+            			ConfigurationManager.getAppUtils().increaseCounter(queryString.getBytes().length, conn.getContentLength());
+            			if (conn.getContentLength() > 0) {
+            				if (conn.getContentType().indexOf("deflate") != -1) {
+            					ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
+            				} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
+            					ois = new ObjectInputStream(conn.getInputStream());
+            				} 
+            			} else {
+            				LoggerUtils.debug("Received no content from " + fileUrl); 	
+            			}
+            			int size = 0;
+            			if (ois != null) {
+            				size = ois.readInt();
+            				LoggerUtils.debug("Reading " + size + " landmarks");
+            				if (size > 0) {
+            					for(int i = 0;i < size;i++) {
+            						try {
+            							ExtendedLandmark landmark = new ExtendedLandmark(); 
+            							landmark.readExternal(ois);
+            							landmarks.add(landmark);
+            						} catch (IOException e) {
+            							responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+            							throw new IOException("Unable to create object input stream from " + fileUrl, e);
+            						}
+            					}       				
+            				}
+            			} else {
+            				LoggerUtils.error("Object stream is null");
+            			}
+            			LoggerUtils.debug("Received " + size + " landmarks from " + fileUrl);
+            		} else if (!aborted) {
+            			LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
+            			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
+            		} else {
+            			LoggerUtils.debug("Request to " + fileUrl + " has been aborted");
+            		}
+            	} else {
+        			String errorMessage = Locale.getMessage(R.string.Network_connection_error_title);
+        			httpErrorMessages.put(fileUrl, errorMessage);
+        			LoggerUtils.error("HttpUtils.loadLandmarkList() network exception: " + errorMessage);
+        		}
+    		}
         } catch (Exception e) {
         	if (StringUtils.equals(e.getMessage(), "Connection already shutdown")) {
         		LoggerUtils.debug("HttpUtils.loadLandmarkList() exception: " + e.getMessage(), e);
         	} else {
         		LoggerUtils.error("HttpUtils.loadLandmarkList() exception: " + e.getMessage(), e);
         	}
-        	errorMessage = handleHttpException(e);
+        	httpErrorMessages.put(fileUrl, handleHttpException(e));
+        } finally {
+        	try {
+        		if (ois != null) {
+        			ois.close();
+        		}
+        	} catch (Exception e) {
+        		LoggerUtils.error(e.getMessage(), e);
+        	}
+        	if (conn != null) {
+        		conn.disconnect();
+        	}
         }
-
-        //comment
-        //System.out.println("Cookies list: ------------------------------------------------------------------------");
-        //BasicCookieStore bcs = (BasicCookieStore)httpContext.getAttribute(ClientContext.COOKIE_STORE);
-        //for (Cookie c : bcs.getCookies()) {
-        //	System.out.println(c.getName() + ": " + c.getValue());
-        //}
         
-        return reply;*/
-    	
-    	return new HttpUtils2().loadLandmarksList(url, postParams, auth, formats);
+        return landmarks;
     }
-
-    public void close() {
-    	//if (getRequest != null) {
-        	//LoggerUtils.debug("Closing connection to " + getRequest.getURI());
-        	//getRequest.abort();
-        //} else if (postRequest != null) {
-        	//LoggerUtils.debug("Closing connection to " + postRequest.getURI());
-            //postRequest.abort();
-        //}
+	
+	public Integer getResponseCode(String url) {
+    	return httpResponseStatuses.remove(url);
     }
-
-    //private void readHeaders(HttpResponse httpResponse, String... headerNames) throws UnsupportedEncodingException {
-    //    for (int i = 0; i < headerNames.length; i++) {
-    //        String headerName = headerNames[i];
-    //        Header header = httpResponse.getFirstHeader(headerName);
-    //        if (header != null) {
-    //            headers.put(headerName, URLDecoder.decode(header.getValue(), "UTF-8"));
-    //        }
-    //    }
-    //}
-
-    /*private static void setAuthHeader(HttpRequest request, boolean throwIfEmpty) {
+	
+	public String getResponseErrorMessage(String url) {
+		return httpErrorMessages.remove(url);
+	}
+	
+	public String getHeader(String url, String headerName) {
+		return httpHeaders.remove(url + "->" + headerName);
+	}
+	
+	private static void readHeaders(HttpURLConnection conn, String url, String... headerNames) {
+		for (int i = 0; i < headerNames.length; i++) {
+            String headerName = headerNames[i];
+            String headerValue = conn.getHeaderField(headerName);
+            httpHeaders.put(url + "->" + headerName, headerValue);
+		}
+	}
+	
+	private static void setAuthHeader(HttpURLConnection conn, boolean throwIfEmpty) {
     	if (ConfigurationManager.getUserManager().isTokenPresent()) {
-    		request.addHeader(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
-    		request.addHeader(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
+    		conn.setRequestProperty(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
+    		conn.setRequestProperty(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
     	} else if (throwIfEmpty) {
     		LoggerUtils.error("Missing authorization token");
     		throw new SecurityException("Missing authorization token");
     	}
-    }*/
-
-    public static void closeConnManager() {
-    	//closeConnManager = true;
-        //new HttpClientClosingTask(1).execute();
     }
-
-    public String getHeader(String url, String key) {
-        //if (headers.containsKey(key)) {
-        //    return headers.get(key);
-        //} else {
-        //    return null;
-        //}
-    	return HttpUtils2.getHeader(url, key);
-    }
-
-    public String getResponseErrorMessage(String url) {
-        return HttpUtils2.getResponseErrorMessage(url);
-    }
-    
-    public int getResponseCode(String url) {
-    	return HttpUtils2.getResponseCode(url);
-    }
-
-    /*private static String handleHttpException(Throwable e) {
+	
+	private static String handleHttpException(Throwable e) {
         if (e instanceof java.net.UnknownHostException) {
             //unknown host exception
             return Locale.getMessage(R.string.Internet_connection_error);
@@ -513,142 +479,44 @@ public class HttpUtils {
         } else {
             return Locale.getMessage(R.string.Internet_connection_error);
         }
-    }*/
-
-    /*private String handleHttpStatus(int status) {
-        if (status == HttpStatus.SC_UNAUTHORIZED) {
+    }
+	
+	private static String handleHttpStatus(int status) {
+        if (status == HttpURLConnection.HTTP_UNAUTHORIZED) {
             return Locale.getMessage(R.string.Authz_error);
-        } else if (status == HttpStatus.SC_CONFLICT) {
+        } else if (status == HttpURLConnection.HTTP_CONFLICT) {
             return Locale.getMessage(R.string.Venue_exists_error);
-        } else if (status == HttpStatus.SC_FORBIDDEN) {
+        } else if (status == HttpURLConnection.HTTP_FORBIDDEN) {
         	return Locale.getMessage(R.string.Forbidden_connection_error);
-        } else if (status == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+        } else if (status == HttpURLConnection.HTTP_UNAVAILABLE) {
         	return Locale.getMessage(R.string.Service_unavailable_error); 
         }  else {
             return Locale.getMessage(R.string.Http_error, Integer.toString(status));
         }
-    }*/
-
-    /*private void getThreadSafeClientConnManagerStats() {
-        if (httpClient != null) {
-            ClientConnectionManager cm = httpClient.getConnectionManager();
-            if (cm != null && cm instanceof ThreadSafeClientConnManager) {
-                LoggerUtils.debug("No of connections in pool: " + ((ThreadSafeClientConnManager) cm).getConnectionsInPool());
-            }
-        }
-    }*/
-
-    /*private static SSLSocketFactory getSSLSocketFactory() {
-    	try {
-    		KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-    		trustStore.load(null, null);
-
-    		SSLSocketFactory sslSocketFactory = TrustAllSSLSocketFactory.getSSLSocketFactory(trustStore);
-    		sslSocketFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-    		return sslSocketFactory;
-    	} catch (Exception e) {
-    		LoggerUtils.error("HttpUtils.getSSLSocketFactory() exception", e);
-    		return null;
-    	}
-    }*/   
-  
-    /*private static class HttpClientClosingTask extends GMSAsyncTask<Void, Void, Void> {
-
-		public HttpClientClosingTask(int priority) {
-			super(priority, HttpClientClosingTask.class.getName());
-		}
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			if (httpClient != null) {
-	            try {
-	                ClientConnectionManager cm = httpClient.getConnectionManager();
-	                if (cm != null) {
-	                    cm.shutdown();
-	                }
-	            } catch (Exception e) {
-	                LoggerUtils.error("HttpUtils.closeConnManager()", e);
-	            }
-	        }
-	        httpClient = null;
-	        return null;
-		}   	
     }
-    
-    private static class SocketTimeOutRetryHandler extends DefaultHttpRequestRetryHandler {
-    	
-    	 private HttpParams httpParams;
-    	
-    	 public SocketTimeOutRetryHandler(HttpParams httpParams, int retryCount, boolean requestSentRetryEnabled) {
-    		 super(retryCount, requestSentRetryEnabled);
-    		 this.httpParams = httpParams;
-    	 }
-    	 
-    	 @Override
-         public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-             if (exception instanceof SocketTimeoutException) {
-                 if (executionCount <= getRetryCount() && !closeConnManager) {
-                	 if (httpParams != null) {
-                         final int newSocketTimeOut = HttpConnectionParams.getSoTimeout(httpParams) * 2;
-                         HttpConnectionParams.setSoTimeout(httpParams, newSocketTimeOut);
-                         LoggerUtils.debug("SocketTimeOut - increasing time out to " + newSocketTimeOut
-                                 + " millis and trying again");
-                     } else {
-                    	 LoggerUtils.debug("SocketTimeOut - no HttpParams, cannot increase time out. Trying again with current settings");
-                     }
-                     return true;
-                 } else {
-                	 return false;
-                 }
-             } else {
-            	 LoggerUtils.debug("Invoking super class retry request after " + exception.getClass().getName());
-            	 return super.retryRequest(exception, executionCount, context);
-             }
-    	 }   
-    }
-    
-    private static class TrustAllSSLSocketFactory extends SSLSocketFactory {
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        private static TrustAllSSLSocketFactory instance; 
-        
-        public static SSLSocketFactory getSSLSocketFactory(KeyStore truststore) throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
-        	instance = new TrustAllSSLSocketFactory(truststore);
-        	return instance;
-        }
-        
-        private TrustAllSSLSocketFactory(KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
-            super(truststore);
+	
+	private static String getQuery(Map<String, String> params) 
+	{
+	    StringBuilder result = new StringBuilder();
+	    boolean first = true;
 
-            TrustManager tm = new X509TrustManager() {
+	    try {
+	    	for (Map.Entry<String, String> pair : params.entrySet())
+	    	{
+	    		if (first) {
+	    			first = false;
+	    		} else {
+	    			result.append("&");
+	    		}
+	    		
+	    		result.append(URLEncoder.encode(pair.getKey(), "UTF-8"));
+	    		result.append("=");
+	    		result.append(URLEncoder.encode(pair.getValue(), "UTF-8"));
+	    	}
+	    } catch (Exception e) {
+	    	LoggerUtils.error(e.getMessage(), e);
+	    }
 
-				@Override
-				public void checkClientTrusted(X509Certificate[] chain,
-						String authType) throws CertificateException {
-				}
-
-				@Override
-				public void checkServerTrusted(X509Certificate[] chain,
-						String authType) throws CertificateException {
-				}
-
-				@Override
-				public X509Certificate[] getAcceptedIssuers() {
-					return null;
-				}
-                
-            };
-
-            sslContext.init(null, new TrustManager[] { tm }, null);
-        }
-
-        @Override
-        public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
-            return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
-        }
-
-        @Override
-        public Socket createSocket() throws IOException {
-            return sslContext.getSocketFactory().createSocket();
-        }
-    }*/
+	    return result.toString();
+	}
 }

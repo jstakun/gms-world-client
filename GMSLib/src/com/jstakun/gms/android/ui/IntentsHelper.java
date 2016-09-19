@@ -1422,8 +1422,6 @@ public final class IntentsHelper {
         
         PersistenceManagerFactory.getFileManager().clearImageCache();
         
-        HttpUtils.closeConnManager();
-        
         showShortToast(Locale.getMessage(R.string.Close_app_bye));
         LoggerUtils.debug("Bye...");
     }

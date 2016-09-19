@@ -10,6 +10,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
 
@@ -30,9 +32,9 @@ public class GMSNotificationManager {
     }
 
     public int createNotification(int icon, String ticker, String title, boolean delete) {
-        int drawble = icon;
-        if (drawble == -1) {
-            drawble = R.drawable.globe24_new;        // icon from resources
+        int drawable = icon;
+        if (drawable == -1) {
+            drawable = R.drawable.globe24_new;        // icon from resources
         }
 
         int num = notificationCounter;
@@ -49,10 +51,17 @@ public class GMSNotificationManager {
         notificationIntent.putExtras(extras);
         PendingIntent contentIntent = PendingIntent.getActivity(context, num, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         // the next two lines initialize the Notification, using the configurations above
-        Notification notification = new Notification(drawble, tickerText, System.currentTimeMillis());
-        //notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+        //Notification notification = new Notification(drawable, tickerText, System.currentTimeMillis());
+        //notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
+        Notification notification = new NotificationCompat.Builder(context).
+        		setSmallIcon(drawable).
+        		setContentTitle(contentTitle).
+        		setContentText(contentText).
+        		setTicker(tickerText).
+        		setWhen(System.currentTimeMillis()).
+        		setContentIntent(contentIntent).build();        
+              
         //System.out.println("Created Notification: " + num + "---------------------------------");
         mNotificationManager.notify(num, notification);
 
