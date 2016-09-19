@@ -33,7 +33,7 @@ public class ServicesUtils {
             final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();       
             return (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnectedOrConnecting());
         } catch (Exception e) {
-            LoggerUtils.error("ServiceUtils.isNetworkActive exception:", e);
+            LoggerUtils.error("ServiceUtils.isNetworkActive() exception:", e);
             return false;
         }
     }

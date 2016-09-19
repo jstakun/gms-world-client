@@ -153,7 +153,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.gmsclient3_main);
         
-        //TODO testing
         ConfigurationManager.getInstance().setContext(this);
         
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -347,12 +346,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
         	GmsLocationServicesManager.getInstance().disable();
-        	//TODO testing
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         		IntentsHelper.getInstance().stopRouteTrackingService(mConnection);
         	}
-	        //
-        	IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
+	        IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else if (mMap != null) {
             IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         }
@@ -1007,10 +1004,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
             String route = RouteRecorder.getInstance().startRecording();
-            //TODO testing
             IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
-    		//
-            routesCluster.showRouteAction(route, true);
+    		routesCluster.showRouteAction(route, true);
             if (LayerLoader.getInstance().isLoading()) {
             	LayerLoader.getInstance().stopLoading();
             }
@@ -1028,10 +1023,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            	//TODO testing
             	IntentsHelper.getInstance().stopRouteTrackingService(mConnection);
-        		//
-            	String filename = RouteRecorder.getInstance().stopRecording();
+        		String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
                 } else {
@@ -1086,11 +1079,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 				String route = RouteRecorder.getInstance().startRecording();
-				//TODO testing
 				IntentsHelper.getInstance().startRouteTrackingService(mConnection);
-				//
-				routesCluster.showRouteAction(route, true);
-	
+				routesCluster.showRouteAction(route, true);	
 				MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
 			}
 		}

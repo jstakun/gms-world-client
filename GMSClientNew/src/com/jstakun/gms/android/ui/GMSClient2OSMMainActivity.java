@@ -157,10 +157,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     
         UserTracker.getInstance().trackActivity(getClass().getName());
 
-        //TODO testing
         ConfigurationManager.getInstance().setContext(this);
-        
-        
+                
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         OsUtil.setDisplayType(getResources().getConfiguration());
@@ -399,12 +397,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         super.onDestroy();
         if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
-        	//TODO testing
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         		IntentsHelper.getInstance().stopRouteTrackingService(mConnection);
         	}
-	        //
-        	IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
+	        IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else {
         	IntentsHelper.getInstance().softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
@@ -501,10 +497,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             	String route = RouteRecorder.getInstance().startRecording();
-            	//TODO testing
-                IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
-        		//
-                showRouteAction(route);
+            	IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
+        		showRouteAction(route);
                 MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
             } 
             
@@ -1114,10 +1108,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
             String route = RouteRecorder.getInstance().startRecording();
-            //TODO testing
             IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
-    		//
-            showRouteAction(route);
+    		showRouteAction(route);
             if (LayerLoader.getInstance().isLoading()) {
             	LayerLoader.getInstance().stopLoading();
             }
@@ -1136,10 +1128,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            	//TODO testing
-                IntentsHelper.getInstance().stopRouteTrackingService(mConnection);     
-        		//
-                String filename = RouteRecorder.getInstance().stopRecording();
+            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection);     
+        		String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
                 } else {

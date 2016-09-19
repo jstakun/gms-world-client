@@ -156,10 +156,9 @@ public class LayerLoader {
     }
     
     public boolean isLoading() {
-        if (!concurrentLayerLoader.isEmpty() //|| !initialized
-                || (currentLayerIndex != -1 && !concurrentLayerLoader.isCancelled()
-                && currentLayerIndex < LayerManager.getInstance().getLayers().size())) {
-            //LoggerUtils.debug("LayerLoader.isLoading() true " + currentLayerIndex);
+        if (!concurrentLayerLoader.isEmpty() || 
+        	(currentLayerIndex != -1 && !concurrentLayerLoader.isCancelled() && currentLayerIndex < LayerManager.getInstance().getLayers().size())) {
+            //LoggerUtils.debug("LayerLoader.isLoading() true " + currentLayerIndex + "/" + LayerManager.getInstance().getLayers().size());
             return true;
         } else {
         	//LoggerUtils.debug("LayerLoader.isLoading() false");
@@ -212,8 +211,9 @@ public class LayerLoader {
         
         @Override
         protected String doInBackground(String... args) {
-            String key = args[0];
-            if (!isCancelled() && key != null && !excludedExternal.contains(key)) {
+        	String key = args[0];
+        	//LoggerUtils.debug("LayerLoaderTask.doInBackground() " + key);
+        	if (!isCancelled() && key != null && !excludedExternal.contains(key)) {
                 loadLayer(key, false, true);
             }
             return key;
@@ -232,14 +232,14 @@ public class LayerLoader {
         }
         
         private void loadLayer(String key, boolean loadIfDisabled, boolean repaintIfNoError) {
-            //System.out.println("LayerLoaderTask.loadLayer() " + key);
+            //LoggerUtils.debug("LayerLoaderTask.loadLayer() " + key);
             Layer layer = LayerManager.getInstance().getLayer(key);
             if (layer != null && (loadIfDisabled || layer.isEnabled() || ConfigurationManager.getInstance().isOn(ConfigurationManager.LOAD_DISABLED_LAYERS))) {
-                List<LayerReader> readers = layer.getLayerReader();
+            	List<LayerReader> readers = layer.getLayerReader();
             	if (!readers.isEmpty()) {
                     if ((ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && loadExternal)
                             || ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                        for (LayerReader reader : readers) {
+                    	for (LayerReader reader : readers) {
                         	currentReader = reader;
                         	if (!concurrentLayerLoader.isCancelled() && !isCancelled()) {
                         		List<ExtendedLandmark> items = LandmarkManager.getInstance().getLandmarkStoreLayer(key);

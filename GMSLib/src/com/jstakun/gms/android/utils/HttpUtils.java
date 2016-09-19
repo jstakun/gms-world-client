@@ -404,7 +404,11 @@ public class HttpUtils {
         			httpErrorMessages.put(fileUrl, errorMessage);
         			LoggerUtils.error("HttpUtils.loadLandmarkList() network exception: " + errorMessage);
         		}
-    		}
+    		} else {
+        		String errorMessage = Locale.getMessage(R.string.Network_connection_error_title);
+        		httpErrorMessages.put(fileUrl, errorMessage);
+        		LoggerUtils.error("HttpUtils.loadLandmarkList() network exception: " + errorMessage);
+        	}
         } catch (Exception e) {
         	if (StringUtils.equals(e.getMessage(), "Connection already shutdown")) {
         		LoggerUtils.debug("HttpUtils.loadLandmarkList() exception: " + e.getMessage(), e);

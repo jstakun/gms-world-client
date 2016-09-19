@@ -13,8 +13,6 @@ import android.os.IBinder;
 public class AutoCheckinService extends Service {
 
 	private final IBinder gmsBinder = new GMSBinder();
-	//private static double lastExecutedLat = Double.NaN;
-	//private static double lastExecutedLng = Double.NaN;
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -26,18 +24,12 @@ public class AutoCheckinService extends Service {
         
         if (!Double.isNaN(lat) && !Double.isNaN(lng)) {               
             boolean silent = false;
-            //TODO verify this
-            //if (AsyncTaskManager == null) {
-            //	silent = true; 
-            //}
-        	AsyncTaskManager.getInstance().setContext(this);
+            AsyncTaskManager.getInstance().setContext(this);
         	if (ConfigurationManager.getInstance().getContext() == null) {
         		ConfigurationManager.getInstance().setContext(this);
         		silent= true;
         	}
         	int checkinCount = CheckinManager.getInstance().autoCheckin(lat, lng, silent); //set silent to true if running in background
-        	//lastExecutedLat = lat;
-        	//lastExecutedLng = lng;
         	LoggerUtils.debug("AutoCheckinService.doReceive() Initiated " + checkinCount + " checkins");
         } else {
         	LoggerUtils.debug("AutoCheckinService.doReceive() skipping current run");

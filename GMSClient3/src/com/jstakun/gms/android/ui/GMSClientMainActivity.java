@@ -125,6 +125,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
+        ConfigurationManager.getInstance().setContext(this);
+        
         mapProvider = ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

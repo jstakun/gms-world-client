@@ -120,6 +120,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
+        ConfigurationManager.getInstance().setContext(this);
+        
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         loadingHandler = new LoadingHandler(this);

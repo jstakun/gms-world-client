@@ -129,6 +129,8 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_deal_map);
         
+        ConfigurationManager.getInstance().setContext(this);
+        
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 		

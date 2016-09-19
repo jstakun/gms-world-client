@@ -4,7 +4,7 @@
       package="com.jstakun.gms.android.ui.deals"
       android:versionCode="11145"
       android:versionName="0.8">
-    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="21"/>
+    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="17"/>
     <supports-screens android:smallScreens="true"
                   android:normalScreens="true"
                   android:largeScreens="true"
