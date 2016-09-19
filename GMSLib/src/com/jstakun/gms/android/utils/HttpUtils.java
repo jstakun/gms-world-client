@@ -327,6 +327,11 @@ public class HttpUtils {
             	if (auth) {
             		setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
             	}
+            	
+            	java.util.Locale locale = ConfigurationManager.getInstance().getCurrentLocale();
+                if (locale != null) {
+                    conn.setRequestProperty("Accept-Language", locale.getLanguage() + "-" + locale.getCountry());
+                }
             
             	conn.setDoInput(true);
             	conn.setDoOutput(true);
@@ -423,8 +428,13 @@ public class HttpUtils {
         return landmarks;
     }
 	
-	public Integer getResponseCode(String url) {
-    	return httpResponseStatuses.remove(url);
+	public int getResponseCode(String url) {
+    	Integer status =  httpResponseStatuses.remove(url);
+    	if (status == null) {
+    		return -1;
+    	} else {
+    		return status.intValue();
+    	}
     }
 	
 	public String getResponseErrorMessage(String url) {

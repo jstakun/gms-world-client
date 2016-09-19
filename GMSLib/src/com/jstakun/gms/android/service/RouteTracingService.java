@@ -163,7 +163,7 @@ public class RouteTracingService extends Service implements LocationListener,
         public void handleMessage(Message msg) {
             switch (msg.what) {
             	case COMMAND_REGISTER_CLIENT:
-            		LoggerUtils.debug("New client registered!");
+            		//LoggerUtils.debug("New client registered!");
             		mClient = msg.replyTo;
             		break;
             	default:
