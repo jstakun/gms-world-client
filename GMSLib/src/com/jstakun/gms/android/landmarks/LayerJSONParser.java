@@ -1,6 +1,5 @@
 package com.jstakun.gms.android.landmarks;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,12 +96,8 @@ public class LayerJSONParser {
     }
 
     public void close() {
-        try {
-            if (utils != null) {
-                utils.close();
-            }
-        } catch (IOException ex) {
-            LoggerUtils.debug("JSonParser error: ", ex);
+        if (utils != null) {
+            utils.close();
         }
     }
 }

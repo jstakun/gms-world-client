@@ -1,6 +1,5 @@
 package com.jstakun.gms.android.landmarks;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -617,12 +616,10 @@ public class LandmarkManager {
         
         //System.out.println("Set values: " + key + " " + lmUrl);
 
-        try {
-            if (utils != null) {
-                utils.close();
-            }
-        } catch (IOException ioe) {
+        if (utils != null) {
+           utils.close();
         }
+        
 
         return errorMessage;
     }

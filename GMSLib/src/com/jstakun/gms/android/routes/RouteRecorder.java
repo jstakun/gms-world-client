@@ -112,11 +112,12 @@ public class RouteRecorder {
     }
 
     public boolean addCoordinate(Location newLocation) {
-    	Location candidate = filterLocation(newLocation);
+    	Location candidate = newLocation;
+    	Location filteredLocation = filterLocation(newLocation);
     	boolean added = false;   
-    	if (!paused && candidate != null) {
-    		mPreviousLocation = newLocation;
-        	QualifiedCoordinates qc = new QualifiedCoordinates(candidate.getLatitude(),candidate.getLongitude(), (float)candidate.getAltitude(), candidate.getAccuracy(), Float.NaN); 
+    	if (!paused && filteredLocation != null) {
+    		mPreviousLocation = candidate;
+        	QualifiedCoordinates qc = new QualifiedCoordinates(filteredLocation.getLatitude(),filteredLocation.getLongitude(), (float)filteredLocation.getAltitude(), filteredLocation.getAccuracy(), Float.NaN); 
             String l = DateTimeUtils.getCurrentDateStamp();
             String description = null;
             if (!routePoints.isEmpty()) {
@@ -125,7 +126,7 @@ public class RouteRecorder {
             } 
             ExtendedLandmark lm = LandmarkFactory.getLandmark(l, description, qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
             endTime = System.currentTimeMillis();
-            LoggerUtils.debug(routePoints.size() + ". Adding route point: " + candidate.getLatitude() + "," + candidate.getLongitude() + " with speed: " + candidate.getSpeed() + ", accuracy " + candidate.getAccuracy() + " and bearing: " + candidate.getBearing() + ".");
+            LoggerUtils.debug(routePoints.size() + ". Adding route point: " + filteredLocation.getLatitude() + "," + filteredLocation.getLongitude() + " with speed: " + filteredLocation.getSpeed() + ", accuracy " + filteredLocation.getAccuracy() + " and bearing: " + filteredLocation.getBearing() + ".");
     		routePoints.add(lm);
             added = true;
         }
@@ -204,18 +205,16 @@ public class RouteRecorder {
     		proposedLocation = null;
     	}
 
-    	// Do not log a waypoint which is more inaccurate then is configured to be acceptable
+    	// Do not log a point which is more inaccurate then is configured to be acceptable
     	if (proposedLocation != null && proposedLocation.getAccuracy() > mMaxAcceptableAccuracy) {
-    		LoggerUtils.debug(String.format("A weak location was received, lots of inaccuracy... (%f is more then max %f)", proposedLocation.getAccuracy(),
-                mMaxAcceptableAccuracy));
+    		LoggerUtils.debug(String.format("A weak location was received, lots of inaccuracy... (%f is more then max %f)", proposedLocation.getAccuracy(), mMaxAcceptableAccuracy));
     		proposedLocation = addBadLocation(proposedLocation);
     	}
 
-    	// Do not log a waypoint which might be on any side of the previous waypoint
+    	// Do not log a point which might be on any side of the previous point
     	if (proposedLocation != null && mPreviousLocation != null && proposedLocation.getAccuracy() > mPreviousLocation.distanceTo(proposedLocation)) {
     		LoggerUtils.debug(
-                String.format("A weak location was received, not quite clear from the previous route point... (%f more then max %f)",
-                      proposedLocation.getAccuracy(), mPreviousLocation.distanceTo(proposedLocation)));
+                String.format("A weak location was received, not quite clear from the previous route point... (%f more then max %f)", proposedLocation.getAccuracy(), mPreviousLocation.distanceTo(proposedLocation)));
     		proposedLocation = addBadLocation(proposedLocation);
     	}
 

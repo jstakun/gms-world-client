@@ -1,80 +1,9 @@
 package com.jstakun.gms.android.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.params.ConnManagerParams;
-import org.apache.http.conn.params.ConnPerRouteBean;
-import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreConnectionPNames;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.ui.lib.R;
 
 /**
  *
@@ -82,20 +11,20 @@ import com.jstakun.gms.android.ui.lib.R;
  */
 public class HttpUtils {
 
-	private static final int REQUEST_RETRY_COUNT = 2;
-    private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
-    private static DefaultHttpClient httpClient = null;
-    private static HttpContext httpContext = null;
-    private static boolean closeConnManager = false;
-	private HttpPost postRequest;
-    private HttpGet getRequest;
+	//private static final int REQUEST_RETRY_COUNT = 2;
+    //private static final int SOCKET_TIMEOUT = (int) DateTimeUtils.ONE_MINUTE; //DateTimeUtils.THIRTY_SECONDS;
+    //private static DefaultHttpClient httpClient = null;
+    //private static HttpContext httpContext = null;
+    //private static boolean closeConnManager = false;
+	//private HttpPost postRequest;
+    //private HttpGet getRequest;
     //private String errorMessage = null;
     //private static java.util.Locale locale;
     //private Map<String, String> headers = new HashMap<String, String>();
     //private String postResponse = null;
     //private int responseCode;
     
-    private static HttpClient getHttpClient() {
+    /*private static HttpClient getHttpClient() {
         if (httpClient == null) {
         	closeConnManager = false;
             HttpParams params = new BasicHttpParams();
@@ -135,7 +64,7 @@ public class HttpUtils {
         }
 
         return httpClient;
-    }
+    }*/
 
     public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
         /*getThreadSafeClientConnManagerStats();
@@ -206,7 +135,7 @@ public class HttpUtils {
     }
 
     public String uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
-        getThreadSafeClientConnManagerStats();
+        /*getThreadSafeClientConnManagerStats();
         InputStream is = null;
         String postResponse = null;
         
@@ -280,7 +209,8 @@ public class HttpUtils {
             } catch (IOException e) {
             }
         }
-        return postResponse;
+        return postResponse;*/
+    	return new HttpUtils2().uploadScreenshot(url, auth, latitude, longitude, file, filename);
     }
 
     public byte[] loadFile(String url, boolean auth, String format) {
@@ -505,14 +435,14 @@ public class HttpUtils {
     	return new HttpUtils2().loadLandmarksList(url, postParams, auth, formats);
     }
 
-    public void close() throws IOException {
-    	if (getRequest != null) {
+    public void close() {
+    	//if (getRequest != null) {
         	//LoggerUtils.debug("Closing connection to " + getRequest.getURI());
-        	getRequest.abort();
-        } else if (postRequest != null) {
+        	//getRequest.abort();
+        //} else if (postRequest != null) {
         	//LoggerUtils.debug("Closing connection to " + postRequest.getURI());
-            postRequest.abort();
-        }
+            //postRequest.abort();
+        //}
     }
 
     //private void readHeaders(HttpResponse httpResponse, String... headerNames) throws UnsupportedEncodingException {
@@ -525,7 +455,7 @@ public class HttpUtils {
     //    }
     //}
 
-    private static void setAuthHeader(HttpRequest request, boolean throwIfEmpty) {
+    /*private static void setAuthHeader(HttpRequest request, boolean throwIfEmpty) {
     	if (ConfigurationManager.getUserManager().isTokenPresent()) {
     		request.addHeader(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
     		request.addHeader(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
@@ -533,11 +463,11 @@ public class HttpUtils {
     		LoggerUtils.error("Missing authorization token");
     		throw new SecurityException("Missing authorization token");
     	}
-    }
+    }*/
 
     public static void closeConnManager() {
-    	closeConnManager = true;
-        new HttpClientClosingTask(1).execute();
+    	//closeConnManager = true;
+        //new HttpClientClosingTask(1).execute();
     }
 
     public String getHeader(String url, String key) {
@@ -557,7 +487,7 @@ public class HttpUtils {
     	return HttpUtils2.getResponseCode(url);
     }
 
-    private static String handleHttpException(Throwable e) {
+    /*private static String handleHttpException(Throwable e) {
         if (e instanceof java.net.UnknownHostException) {
             //unknown host exception
             return Locale.getMessage(R.string.Internet_connection_error);
@@ -583,9 +513,9 @@ public class HttpUtils {
         } else {
             return Locale.getMessage(R.string.Internet_connection_error);
         }
-    }
+    }*/
 
-    private String handleHttpStatus(int status) {
+    /*private String handleHttpStatus(int status) {
         if (status == HttpStatus.SC_UNAUTHORIZED) {
             return Locale.getMessage(R.string.Authz_error);
         } else if (status == HttpStatus.SC_CONFLICT) {
@@ -597,18 +527,18 @@ public class HttpUtils {
         }  else {
             return Locale.getMessage(R.string.Http_error, Integer.toString(status));
         }
-    }
+    }*/
 
-    private void getThreadSafeClientConnManagerStats() {
+    /*private void getThreadSafeClientConnManagerStats() {
         if (httpClient != null) {
             ClientConnectionManager cm = httpClient.getConnectionManager();
             if (cm != null && cm instanceof ThreadSafeClientConnManager) {
                 LoggerUtils.debug("No of connections in pool: " + ((ThreadSafeClientConnManager) cm).getConnectionsInPool());
             }
         }
-    }
+    }*/
 
-    private static SSLSocketFactory getSSLSocketFactory() {
+    /*private static SSLSocketFactory getSSLSocketFactory() {
     	try {
     		KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
     		trustStore.load(null, null);
@@ -620,9 +550,9 @@ public class HttpUtils {
     		LoggerUtils.error("HttpUtils.getSSLSocketFactory() exception", e);
     		return null;
     	}
-    }    
+    }*/   
   
-    private static class HttpClientClosingTask extends GMSAsyncTask<Void, Void, Void> {
+    /*private static class HttpClientClosingTask extends GMSAsyncTask<Void, Void, Void> {
 
 		public HttpClientClosingTask(int priority) {
 			super(priority, HttpClientClosingTask.class.getName());
@@ -720,5 +650,5 @@ public class HttpUtils {
         public Socket createSocket() throws IOException {
             return sslContext.getSocketFactory().createSocket();
         }
-    }
+    }*/
 }

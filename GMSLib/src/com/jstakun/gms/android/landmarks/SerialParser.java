@@ -1,6 +1,5 @@
 package com.jstakun.gms.android.landmarks;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.List;
@@ -23,13 +22,9 @@ public class SerialParser {
 	}
 	
 	protected void close() {
-		try {
-            if (utils != null) {
-                utils.close();
-            }
-        } catch (IOException ex) {
-            LoggerUtils.debug("SerialParser.close() exception: ", ex);
-        }
+		if (utils != null) {
+			utils.close();
+		}
     }
 	
     protected String parse(String[] urls, int urlIndex, Map<String, String> params, List<ExtendedLandmark> landmarks, GMSAsyncTask<?,?,?> task, boolean close, String socialService, boolean removeIfExists) { 	

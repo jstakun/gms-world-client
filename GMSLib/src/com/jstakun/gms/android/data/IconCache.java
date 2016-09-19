@@ -471,11 +471,8 @@ public class IconCache {
                     }
                 } catch (IOException ex) {
                 }
-                try {
-                    if (utils != null) {
-                        utils.close();
-                    }
-                } catch (IOException ex) {
+                if (utils != null) {
+                    utils.close();
                 }
                 if (!isCancelled) {
                 	if (img != null) {

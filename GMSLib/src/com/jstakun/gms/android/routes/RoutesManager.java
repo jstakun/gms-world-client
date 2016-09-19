@@ -1,6 +1,5 @@
 package com.jstakun.gms.android.routes;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -178,12 +177,9 @@ public class RoutesManager {
             LoggerUtils.error("RoutesManager.readRouteFromServer() exception", ex);
             message = utils.getResponseErrorMessage(url);
         } finally {
-        	try {
-                if (utils != null) {
-                    utils.close();
-                }
-            } catch (IOException ioe) {
-            }
+        	if (utils != null) {
+        		utils.close();
+            } 
         }
         
         if (!routePoints.isEmpty()) {

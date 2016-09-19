@@ -48,7 +48,6 @@ import com.jstakun.gms.android.utils.UserTracker;
 
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;

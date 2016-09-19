@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.utils;
 
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -43,10 +44,105 @@ public class HttpUtils2 {
 		aborted = false;
 	}
 	
-	public String uploadScreenshot(String url, boolean auth, double latitude, double longitude, byte[] file, String filename) {
-	    //TODO to be implemented
-		//must implement form multi part data
-		return null;
+	public String uploadScreenshot(String fileUrl, boolean auth, Double latitude, Double longitude, byte[] file, String filename) {
+	    InputStream is = null;
+	    String response = null;
+	    
+	    final String attachmentName = "screenshot";
+	    final String crlf = "\r\n";
+	    final String twoHyphens = "--";
+	    final String boundary =  "*****";
+		
+		try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
+            conn.setRequestMethod("POST");
+            conn.setConnectTimeout(SOCKET_TIMEOUT);
+            conn.setReadTimeout(SOCKET_TIMEOUT);
+            
+            conn.setRequestProperty("User-Agent", Locale.getMessage(R.string.app_name) + " HTTP client");
+            
+            conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+            conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
+            conn.setRequestProperty(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
+       
+            if (latitude != null) {
+            	conn.setRequestProperty(Commons.LAT_HEADER, StringUtil.formatCoordE6(latitude));
+            }
+            if (longitude != null) {
+            	conn.setRequestProperty(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
+            }
+            if (auth) {
+                setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
+                String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+                if (StringUtils.isNotEmpty(username)) {
+                	conn.setRequestProperty("username", username);
+                }                      
+            }
+            
+            conn.setRequestProperty("Accept-Encoding", "gzip");
+            
+            if (!aborted) {
+            	//write file
+            	conn.setDoOutput(true);
+            	conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            	DataOutputStream request = new DataOutputStream(conn.getOutputStream());
+
+            	request.writeBytes(twoHyphens + boundary + crlf);
+            	request.writeBytes("Content-Disposition: form-data; name=\"" + attachmentName + "\";filename=\"" + filename + "\"" + crlf);
+            	request.writeBytes(crlf);
+            		
+            	IOUtils.write(file, request);
+            		
+            	request.writeBytes(crlf);
+            	request.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
+            		
+            	request.flush();
+            	request.close();
+            }
+            
+            if (! aborted) {
+            	int responseCode = conn.getResponseCode();
+            	httpResponseStatuses.put(fileUrl, responseCode);
+
+            	if (responseCode == HttpURLConnection.HTTP_OK) {
+            		if (conn.getContentType().indexOf("gzip") != -1) {
+            			is = new GZIPInputStream(conn.getInputStream());
+            		} else {
+            			is = conn.getInputStream();
+            		}
+            	} else {
+                	is = conn.getErrorStream();
+                	LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
+        			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
+            	}
+                
+            	if (is != null) {
+            		//Read response
+            		response = IOUtils.toString(is, "UTF-8");
+            	}
+            	
+            	int sent = file.length;
+            	int received = 0;
+            	if (response != null) {
+            		received = response.getBytes().length;
+            	}
+            	if (sent > 0 || received > 0) {
+            		ConfigurationManager.getAppUtils().increaseCounter(sent, received);
+            	}
+            }
+		} catch (Throwable e) {
+            LoggerUtils.debug("HttpUtils.uploadScreenshot() exception: " + e.getMessage(), e);
+            httpErrorMessages.put(fileUrl, handleHttpException(e));
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+		
+		return response;
 	}
 	
 	public byte[] loadFile(String url, boolean auth, String format) {
@@ -71,11 +167,12 @@ public class HttpUtils2 {
         InputStream is = null;
         byte[] response = null;
         long start = System.currentTimeMillis();
+        HttpURLConnection conn = null;
         
         httpErrorMessages.remove(fileUrl);
 
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
+            conn = (HttpURLConnection) new URL(fileUrl).openConnection();
             conn.setRequestMethod(method);
             conn.setConnectTimeout(SOCKET_TIMEOUT);
             conn.setReadTimeout(SOCKET_TIMEOUT);
@@ -121,7 +218,7 @@ public class HttpUtils2 {
             		}
                 
             		if (compress) {
-            			conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+            			conn.setRequestProperty("Accept-Encoding", "gzip");
             		}
                 
             		conn.setDoInput(true);
@@ -151,10 +248,12 @@ public class HttpUtils2 {
             		} else {
             			is = conn.getInputStream();
             		}
-            	} else {
+            	} else if (responseCode > 299) {
                 	is = conn.getErrorStream();
                 	LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
         			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
+            	} else {
+            		LoggerUtils.debug(fileUrl + " loading response code: " + responseCode); 
             	}
                 
             	if (is != null) {
@@ -164,6 +263,19 @@ public class HttpUtils2 {
             		if (length > 0) {
             			LoggerUtils.debug("Received " + conn.getContentType() + " document having " + length + " characters");
             		}
+            	}
+            	
+            	int sent = 0;
+            	if (content != null )
+            	{
+            		sent = content.length;
+            	}
+            	int received = 0;
+            	if (response != null) {
+            		received = response.length;
+            	}
+            	if (sent > 0 || received > 0) {
+            		ConfigurationManager.getAppUtils().increaseCounter(sent, received);
             	}
             	
             	if (headersToRead != null && headersToRead.length > 0) {
@@ -181,7 +293,13 @@ public class HttpUtils2 {
             	} catch (Exception e) {
             		LoggerUtils.error(e.getMessage(), e);
             	}
+            	if (conn != null) {
+            		conn.disconnect();
+            	}
             }
+            if (conn != null) {
+        		conn.disconnect();
+        	}
         }
         
         return response;
@@ -189,13 +307,14 @@ public class HttpUtils2 {
 
 	public List<ExtendedLandmark> loadLandmarksList(String fileUrl, Map<String, String> params, boolean auth, String[] formats) {
     	ObjectInputStream ois = null;
+    	HttpURLConnection conn = null;
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
     	
     	httpErrorMessages.remove(fileUrl);
         
     	try {
     		if (ServicesUtils.isNetworkActive()) { 	
-    			HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
+    			conn = (HttpURLConnection) new URL(fileUrl).openConnection();
     			conn.setRequestMethod("POST");
     			conn.setConnectTimeout(SOCKET_TIMEOUT);
     			conn.setReadTimeout(SOCKET_TIMEOUT);
@@ -295,6 +414,9 @@ public class HttpUtils2 {
         		}
         	} catch (Exception e) {
         		LoggerUtils.error(e.getMessage(), e);
+        	}
+        	if (conn != null) {
+        		conn.disconnect();
         	}
         }
         
