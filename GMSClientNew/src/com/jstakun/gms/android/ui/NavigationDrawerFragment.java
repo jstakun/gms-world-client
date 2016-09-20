@@ -143,6 +143,8 @@ public class NavigationDrawerFragment extends Fragment {
                 }
                 for (int i=0;i<mDrawerListView.getExpandableListAdapter().getGroupCount();i++) {
                 	mDrawerListView.collapseGroup(i);	
+                	TextView textView = (TextView) mDrawerListView.getChildAt(i);
+                	textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
         		}
 
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
@@ -311,7 +313,9 @@ public class NavigationDrawerFragment extends Fragment {
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 			TextView textView = (TextView) parent.getChildAt(groupPosition);
-			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
+			if (groupPosition == 1 || groupPosition == 2) {
+				textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
+			}
 			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
         	mDrawerLayout.closeDrawer(mFragmentContainerView);
         	((GMSClient3MainActivity)getActivity()).onMenuItemSelected((int)id);

@@ -109,12 +109,8 @@ public class CalendarActivity extends Activity {
                     } else {
                     	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
                     }
-                } else {
-                	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-                }
-            } else {
-            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
-            }
+                } 
+            } 
         }
     }
     

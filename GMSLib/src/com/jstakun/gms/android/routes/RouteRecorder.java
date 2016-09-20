@@ -112,11 +112,10 @@ public class RouteRecorder {
     }
 
     public boolean addCoordinate(Location newLocation) {
-    	Location candidate = newLocation;
     	Location filteredLocation = filterLocation(newLocation);
     	boolean added = false;   
     	if (!paused && filteredLocation != null) {
-    		mPreviousLocation = candidate;
+    		mPreviousLocation = newLocation;
         	QualifiedCoordinates qc = new QualifiedCoordinates(filteredLocation.getLatitude(),filteredLocation.getLongitude(), (float)filteredLocation.getAltitude(), filteredLocation.getAccuracy(), Float.NaN); 
             String l = DateTimeUtils.getCurrentDateStamp();
             String description = null;
@@ -212,9 +211,8 @@ public class RouteRecorder {
     	}
 
     	// Do not log a point which might be on any side of the previous point
-    	if (proposedLocation != null && mPreviousLocation != null && proposedLocation.getAccuracy() > mPreviousLocation.distanceTo(proposedLocation)) {
-    		LoggerUtils.debug(
-                String.format("A weak location was received, not quite clear from the previous route point... (%f more then max %f)", proposedLocation.getAccuracy(), mPreviousLocation.distanceTo(proposedLocation)));
+    	if (proposedLocation != null && mPreviousLocation != null && proposedLocation.getAccuracy() > (mPreviousLocation.distanceTo(proposedLocation) * 3)) { //TODO testing
+    		LoggerUtils.debug(String.format("A weak location was received, not quite clear from the previous route point... (%f more then max %f)", proposedLocation.getAccuracy(), mPreviousLocation.distanceTo(proposedLocation)));
     		proposedLocation = addBadLocation(proposedLocation);
     	}
 
@@ -265,8 +263,7 @@ public class RouteRecorder {
     				best = whimp;
     			} else if (whimp.hasAccuracy() && !best.hasAccuracy()) {
     				best = whimp;
-                }
-             
+                }          
     		}
     		synchronized (mWeakLocations) {
     			mWeakLocations.clear();

@@ -220,6 +220,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 invalidateOptionsMenu(); 
             	for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
         			drawerList.collapseGroup(i);	
+        			TextView textView = (TextView) drawerList.getChildAt(i);
+                	textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);	
         		}
             }
 
