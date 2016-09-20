@@ -1,11 +1,5 @@
 package com.jstakun.gms.android.ui;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.CalendarView;
-
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -15,6 +9,12 @@ import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.UserTracker;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.CalendarView;
 
 public class CalendarActivity extends Activity {
 	
@@ -33,10 +33,9 @@ public class CalendarActivity extends Activity {
         	@Override
         	public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
 			    if (!isSearching) {
-			    	java.util.Locale currentLocale = ConfigurationManager.getInstance().getCurrentLocale();
-			    	String date = DateTimeUtils.getShortDateString(view.getDate(), currentLocale);
+			    	String date = DateTimeUtils.getShortDateString(view.getDate(), ConfigurationManager.getInstance().getCurrentLocale());
 			    	IntentsHelper.getInstance().showShortToast(Locale.getMessage(R.string.Searching_calendar_message, date));
-			    	new GetLandmarksTask().execute(year, month, dayOfMonth);
+			    	startGetLandmarkTask(year, month, dayOfMonth);
 			    }
 		    }
 		});
@@ -110,9 +109,18 @@ public class CalendarActivity extends Activity {
                     } else {
                     	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
                     }
+                } else {
+                	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
                 }
+            } else {
+            	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Landmark_opening_error));
             }
         }
+    }
+    
+    private void startGetLandmarkTask(int year, int month, int dayOfMonth) {
+    	IntentsHelper.getInstance().setActivity(this);
+		new GetLandmarksTask().execute(year, month, dayOfMonth);
     }
     
     private class GetLandmarksTask extends GMSAsyncTask<Integer, Void, Void> {

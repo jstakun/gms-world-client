@@ -877,7 +877,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
+    	IntentsHelper.getInstance().setActivity(this);
+    	if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
             	Double lat = null, lng = null;
             	String name = null;

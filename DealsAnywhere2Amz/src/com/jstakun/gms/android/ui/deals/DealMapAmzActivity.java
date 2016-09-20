@@ -378,7 +378,8 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
+    	IntentsHelper.getInstance().setActivity(this);
+    	if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
             if (resultCode == RESULT_OK) {
                 String action = intent.getStringExtra("action");
                 String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);

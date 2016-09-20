@@ -86,7 +86,7 @@ public class SocialListActivity extends ListActivity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    	System.out.println("SocialListActivity.onActivityResult() " + requestCode + " " + resultCode);
+    	IntentsHelper.getInstance().setActivity(this);
     	if (requestCode == IntentsHelper.INTENT_LAYERS) {
     		if (resultCode == Activity.RESULT_OK) {
     			String action = intent.getStringExtra("action");

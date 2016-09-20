@@ -753,8 +753,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        //super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
+    	IntentsHelper.getInstance().setActivity(this);
+    	if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
             	Double lat = null, lng = null;
             	String name = null;

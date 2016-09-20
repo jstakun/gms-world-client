@@ -541,6 +541,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    	IntentsHelper.getInstance().setActivity(this);
     	if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
             if (resultCode == RESULT_OK) {
             	Double lat = null, lng = null;
