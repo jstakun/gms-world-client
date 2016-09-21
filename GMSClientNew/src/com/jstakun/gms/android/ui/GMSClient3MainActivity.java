@@ -351,7 +351,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	}
 	        IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else if (mMap != null) {
-            IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection);
+        	}
+        	IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         }
         AdsUtils.destroyAdView(this);
         System.gc();  	

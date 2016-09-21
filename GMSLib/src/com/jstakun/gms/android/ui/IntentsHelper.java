@@ -1447,14 +1447,18 @@ public final class IntentsHelper {
     public void stopRouteTrackingService(ServiceConnection mConnection) {
     	Intent routeTracingService = new Intent(activity, RouteTracingService.class);	
 		routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_STOP);
-		try {
+		unbindRouteTrackingService(mConnection);
+		activity.stopService(routeTracingService);
+    }
+    
+    public void unbindRouteTrackingService(ServiceConnection mConnection) {
+    	try {
 			activity.unbindService(mConnection);
-			activity.stopService(routeTracingService);
 		} catch (Exception e) {
 			LoggerUtils.error(e.getMessage(), e);
 		}
     }
-    
+    	
     private boolean isGoogleApiAvailable() {
     	if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(activity) == ConnectionResult.SUCCESS) {
         	return true;
