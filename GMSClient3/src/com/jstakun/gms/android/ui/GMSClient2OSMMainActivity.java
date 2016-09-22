@@ -219,9 +219,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             public void onDrawerClosed(View view) {
                 invalidateOptionsMenu(); 
             	for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
-        			drawerList.collapseGroup(i);	
-        			TextView textView = (TextView) drawerList.getChildAt(i);
-                	textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);	
+            		if (drawerList.isGroupExpanded(i)) {
+            			drawerList.collapseGroup(i);	
+            			TextView textView = (TextView) drawerList.getChildAt(i);
+            			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);
+            		}
         		}
             }
 
@@ -1179,7 +1181,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 			TextView textView = (TextView) parent.getChildAt(groupPosition);
-			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
+			if (groupPosition == 1 || groupPosition == 2) {
+				textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
+			}
 			UserTracker.getInstance().trackEvent("NavigationDrawerClicks", textView.getText().toString(), "", 0);
         	drawerLayout.closeDrawer(drawerLinearLayout);
     		onMenuItemSelected((int)id);

@@ -149,10 +149,10 @@ public final class IntentsHelper {
     			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
     			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
     			.build();
-
     			intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)//.MODE_FULLSCREEN)
     			.setFilter(typeFilter)
-    			.build(activity);
+    			.build(activity);   			
+    			showInfoToast(Locale.getMessage(R.string.listLocations));
     		} catch (Exception e) {
     			LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
     			intent = new Intent(activity, PickLocationActivity.class);
@@ -413,7 +413,7 @@ public final class IntentsHelper {
         try {
         	if (OsUtil.hasTelephony(activity)) {
         		if (landmark != null) {
-                	String number = "tel:" + landmark.getPhone();
+        			String number = "tel:" + landmark.getPhone();
                 	Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
                 	activity.startActivity(callIntent);
             	} else {

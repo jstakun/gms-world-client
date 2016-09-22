@@ -718,7 +718,7 @@ public class LandmarkManager {
         if (recommendedDealShown != null) {
             lastShownDeals = StringUtil.stringToLongArray(recommendedDealShown, ",");
         }
-        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate())) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate(null))) {
             for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
                 Deal deal = landmark.getDeal();
 
@@ -751,7 +751,7 @@ public class LandmarkManager {
         if (recommendedDealShown != null) {
             lastShownDeals = StringUtil.stringToLongArray(recommendedDealShown, ",");
         }
-        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate())) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate(null))) {
             for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
                 Deal deal = landmark.getDeal();
 
@@ -1040,7 +1040,7 @@ public class LandmarkManager {
     	final List<String> included = Arrays.asList(new String[]{Commons.COUPONS_LAYER,
                 Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.HOTELS_LAYER, Commons.YELP_LAYER});
 
-    	for (String key : Iterables.filter(included, new LayerExistsPredicate())) {
+    	for (String key : Iterables.filter(included, new LayerExistsPredicate(null))) {
             if (! getLandmarkStoreLayer(key).isEmpty()) {
             	return true;
             }
@@ -1058,7 +1058,7 @@ public class LandmarkManager {
         List<ExtendedLandmark> categoryLandmarks = new ArrayList<ExtendedLandmark>();
         CategoryLandmarkPredicate categoryLandmarkPredicate = new CategoryLandmarkPredicate(categoryId, subCategoryId);
 
-        for (String key : Iterables.filter(included, new LayerExistsPredicate())) {
+        for (String key : Iterables.filter(included, new LayerExistsPredicate(null))) {
             categoryLandmarks.addAll(Collections2.filter(getLandmarkStoreLayer(key), categoryLandmarkPredicate));
         }
 
@@ -1082,7 +1082,7 @@ public class LandmarkManager {
                     Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER});
         CategoryLandmarkPredicate categoryLandmarkPredicate = new CategoryLandmarkPredicate(categoryId, subCategoryId);
 
-        for (String key : Iterables.filter(included, new LayerExistsPredicate())) {
+        for (String key : Iterables.filter(included, new LayerExistsPredicate(null))) {
             count += Collections2.filter(getLandmarkStoreLayer(key), categoryLandmarkPredicate).size();
         }
         
@@ -1102,7 +1102,7 @@ public class LandmarkManager {
                     Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER});
         CategoryLandmarkPredicate categoryLandmarkPredicate = new CategoryLandmarkPredicate(categoryId, subCategoryId);
 
-        for (String key : Iterables.filter(included, new LayerExistsPredicate())) {
+        for (String key : Iterables.filter(included, new LayerExistsPredicate(null))) {
             if (Collections2.filter(getLandmarkStoreLayer(key), categoryLandmarkPredicate).size() > 0) {
                 return false;
             }
@@ -1142,7 +1142,7 @@ public class LandmarkManager {
     public void findLandmarksInMonth(int year, int month, int[] daysWithLandmarks) {
         Calendar cal = Calendar.getInstance();
 
-        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate())) {
+        for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate(null))) {
             for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
                 if (landmark.isDeal()) {
                     cal.setTimeInMillis(landmark.getDeal().getEndDate());
@@ -1163,7 +1163,7 @@ public class LandmarkManager {
         	Calendar selectedDay = Calendar.getInstance();
             selectedDay.set(year, month, day);
             Calendar landmarkDate = Calendar.getInstance();
-            for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate())) {
+            for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerExistsPredicate(new String[]{Commons.LOCAL_LAYER}))) {
                 for (ExtendedLandmark landmark : getUnmodifableLayer(key)) {
                     if (landmark.isDeal()) {
                         landmarkDate.setTimeInMillis(landmark.getDeal().getEndDate());
@@ -1458,8 +1458,14 @@ public class LandmarkManager {
 
     private class LayerExistsPredicate implements Predicate<String> {
 
+    	String[] excludedLayers = null;
+    	
+    	public LayerExistsPredicate(String[] excludedLayers) {
+    		this.excludedLayers = excludedLayers;
+    	}
+    	
         public boolean apply(String layer) {
-            return landmarkStore.containsKey(layer);
+            return landmarkStore.containsKey(layer) && !StringUtils.endsWithAny(layer, excludedLayers);
         }
     }
 

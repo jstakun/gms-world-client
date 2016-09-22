@@ -50,7 +50,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 	}
 
 	public void disable() {
-		if (mGoogleApiClient.isConnected()) {
+		if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 			mGoogleApiClient.disconnect();
 		}

@@ -51,6 +51,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -62,8 +63,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -87,6 +90,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
+	private static final int PERMISSION_ACCESS_LOCATION = 0;
+	private static final int PERMISSION_CALL_PHONE = 1;
 	
 	private GoogleLandmarkProjectionV2 projection;
 	private GoogleMarkerClusterOverlay markerCluster;
@@ -244,7 +249,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public void onResume() {
     	super.onResume();
         LoggerUtils.debug("onResume");
-        GmsLocationServicesManager.getInstance().enable(loadingHandler);
+        
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
+    	    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    	    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
+    	} else {
+    		GmsLocationServicesManager.getInstance().enable(loadingHandler);
+    	}
         
         AsyncTaskManager.getInstance().setContext(this);
         IntentsHelper.getInstance().setActivity(this);
@@ -522,7 +533,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         				}
         		} else if (v == lvCallButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedLandmark", selectedLandmark.getLayer(), 0);
-        				IntentsHelper.getInstance().startPhoneCallActivity(selectedLandmark);
+        				if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            	        	ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CALL_PHONE}, PERMISSION_CALL_PHONE);
+            	        } else {
+            	        	IntentsHelper.getInstance().startPhoneCallActivity(selectedLandmark);
+            	        }
         		} else if (v == lvRouteButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedLandmark", selectedLandmark.getLayer(), 0);
         				if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
@@ -669,9 +684,15 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    GoogleMapsV2TypeSelector.selectMapType(mMap);
 	    
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
-	    mMap.setMyLocationEnabled(true);
 	    mMap.setOnMyLocationButtonClickListener(this);
 	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
+	    
+	    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
+	    	ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+	    	ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
+	    } else {
+	    	mMap.setMyLocationEnabled(true);
+	    }
 	    
 	    if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 	    	mMap.getUiSettings().setCompassEnabled(true);
@@ -695,6 +716,23 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		return true;
 	}
 	
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+	    switch (requestCode) {	
+	    	case PERMISSION_ACCESS_LOCATION:
+	    		if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+	    			GmsLocationServicesManager.getInstance().enable(loadingHandler);
+	    			mMap.setMyLocationEnabled(true);
+	    		}
+	    		break;
+	    	case PERMISSION_CALL_PHONE:
+	    		IntentsHelper.getInstance().startPhoneCallActivity(LandmarkManager.getInstance().getSeletedLandmarkUI());
+	    		break;
+	    	default:	
+	    		break; 	
+	    }
+	} 
+	
 	
 	private void onLocationChanged() {
 		Location location = ConfigurationManager.getInstance().getLocation();
@@ -711,16 +749,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			IntentsHelper.getInstance().vibrateOnLocationUpdate();
 			UserTracker.getInstance().sendMyLocation();
 	    	
-			//if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-			//	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-			//		RouteRecorder.getInstance().addCoordinate(location);
-			//		if (routesCluster != null) {
-			//		   routesCluster.showRecordedRoute();
-			//		}
-			//	}
-			//	showMyPositionAction(false);
-			//} 
-	        
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
 				CheckinManager.getInstance().autoCheckin(location.getLatitude(), location.getLongitude(), false);
 			}
@@ -1147,7 +1175,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
 				@Override
 				public void onSnapshotReady(Bitmap screenshot) {
-					LoggerUtils.debug("Google Map snapshot taken!");
+					LoggerUtils.debug("Google Map screenshot taken. This should happen only once!!!");
 				
 					long loadingTime = 0; 
     				Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);

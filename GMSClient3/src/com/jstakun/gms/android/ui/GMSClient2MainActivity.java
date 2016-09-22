@@ -236,9 +236,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             public void onDrawerClosed(View view) {
                 invalidateOptionsMenu(); 
             	for (int i=0;i<drawerList.getExpandableListAdapter().getGroupCount();i++) {
-        			drawerList.collapseGroup(i);	
-        			TextView textView = (TextView) drawerList.getChildAt(i);
-                	textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);	
+            		if (drawerList.isGroupExpanded(i)) {
+            			drawerList.collapseGroup(i);	
+            			TextView textView = (TextView) drawerList.getChildAt(i);
+            			textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);	
+            		}
         		}
             }
 

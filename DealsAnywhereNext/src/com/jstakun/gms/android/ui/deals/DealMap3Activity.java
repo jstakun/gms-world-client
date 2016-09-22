@@ -49,6 +49,7 @@ import com.jstakun.gms.android.utils.UserTracker;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -59,8 +60,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -83,6 +86,8 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
 	private static final int SHOW_MAP_VIEW = 0;
 	private static final int PICK_LOCATION = 1;
+	private static final int PERMISSION_ACCESS_LOCATION = 0;
+	private static final int PERMISSION_CALL_PHONE = 1;
 	
 	private DealOfTheDayDialog dealOfTheDayDialog;
     
@@ -211,7 +216,13 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     public void onResume() {
     	super.onResume();
         LoggerUtils.debug("onResume");
-        GmsLocationServicesManager.getInstance().enable(loadingHandler);
+        
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
+        	    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        	ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
+        } else {
+        	GmsLocationServicesManager.getInstance().enable(loadingHandler);
+        }
         
         AsyncTaskManager.getInstance().setContext(this);
         IntentsHelper.getInstance().setActivity(this);
@@ -875,7 +886,11 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     			}
     		} else if (v == lvCallButton) {
     			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".CallSelectedDeal", selectedLandmark.getLayer(), 0);
-    			callButtonPressedAction(LandmarkManager.getInstance().getSeletedLandmarkUI());
+    			if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+    	        	ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CALL_PHONE}, PERMISSION_CALL_PHONE);
+    	        } else {
+    	        	IntentsHelper.getInstance().startPhoneCallActivity(selectedLandmark);
+    	        }
     		} else if (v == lvRouteButton) {
     			UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".ShowRouteSelectedDeal", selectedLandmark.getLayer(), 0);
                 DialogManager.getInstance().showRouteAlertDialog(this, null, loadingHandler);
@@ -897,7 +912,14 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 		GoogleMapsV2TypeSelector.selectMapType(mMap);
 		
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
-	    mMap.setMyLocationEnabled(true);
+	    
+	    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
+		    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+		    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
+	    } else {
+		    mMap.setMyLocationEnabled(true);
+		}
+	    
 	    mMap.setOnMyLocationButtonClickListener(this);
 	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
 	    
@@ -909,6 +931,22 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	    }
 	}
 	
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+	    switch (requestCode) {	
+	    	case PERMISSION_ACCESS_LOCATION:
+	    		if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+	    			GmsLocationServicesManager.getInstance().enable(loadingHandler);
+	    			mMap.setMyLocationEnabled(true);
+	    		}
+	    		break;
+	    	case PERMISSION_CALL_PHONE:
+	    		IntentsHelper.getInstance().startPhoneCallActivity(LandmarkManager.getInstance().getSeletedLandmarkUI());
+	    		break;	
+	    	default:	
+	    		break; 	
+	    }
+	}
 	//auto generated placeholder
 	public static class PlaceholderFragment extends Fragment {
 		private static final String ARG_SECTION_NUMBER = "section_number";

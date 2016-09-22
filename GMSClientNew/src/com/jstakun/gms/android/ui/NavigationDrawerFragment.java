@@ -142,9 +142,11 @@ public class NavigationDrawerFragment extends Fragment {
                     return;
                 }
                 for (int i=0;i<mDrawerListView.getExpandableListAdapter().getGroupCount();i++) {
-                	mDrawerListView.collapseGroup(i);	
-                	TextView textView = (TextView) mDrawerListView.getChildAt(i);
-                	textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
+                	if (mDrawerListView.isGroupExpanded(i)) {
+                		mDrawerListView.collapseGroup(i);	
+                		TextView textView = (TextView) mDrawerListView.getChildAt(i);
+                		textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_bullet, 0, 0, 0);		
+                	}
         		}
 
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()

@@ -248,9 +248,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     		adapter.rebuild(new GoogleLandmarkProjection(mapView));
     	}
         
-        MenuItem config = menu.findItem(R.id.config);
-    	config.setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
-        
+        menu.findItem(R.id.config).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+    	menu.findItem(R.id.reset).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+    	menu.findItem(R.id.releaseNotes).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
+    	
     	return super.onPrepareOptionsMenu(menu);
     }
 
