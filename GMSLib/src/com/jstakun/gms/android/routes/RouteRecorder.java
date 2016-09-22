@@ -211,7 +211,7 @@ public class RouteRecorder {
     	}
 
     	// Do not log a point which might be on any side of the previous point
-    	if (proposedLocation != null && mPreviousLocation != null && proposedLocation.getAccuracy() > (mPreviousLocation.distanceTo(proposedLocation) * 3)) { //TODO testing
+    	if (proposedLocation != null && mPreviousLocation != null && proposedLocation.getAccuracy() > mPreviousLocation.distanceTo(proposedLocation)) { 
     		LoggerUtils.debug(String.format("A weak location was received, not quite clear from the previous route point... (%f more then max %f)", proposedLocation.getAccuracy(), mPreviousLocation.distanceTo(proposedLocation)));
     		proposedLocation = addBadLocation(proposedLocation);
     	}

@@ -33,6 +33,7 @@ public class RouteTracingService extends Service implements LocationListener,
 	public static final int COMMAND_STOP = 0;	
 	public static final int COMMAND_REGISTER_CLIENT = 2;
 	public static final int COMMAND_SHOW_ROUTE = 50;
+	private static final int LOCATION_READ_INTERVAL = 5000; //ms
 	
 	private final Messenger mMessenger = new Messenger(new IncomingHandler()); 
 	private Messenger mClient;
@@ -89,9 +90,9 @@ public class RouteTracingService extends Service implements LocationListener,
         this.mWakeLock.acquire();
         
     	mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setInterval(LOCATION_READ_INTERVAL); 
+        mLocationRequest.setFastestInterval(LOCATION_READ_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//.PRIORITY_BALANCED_POWER_ACCURACY);
     }
     
     private synchronized void stopTracking() {
