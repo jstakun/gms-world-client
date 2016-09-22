@@ -17,7 +17,6 @@ import com.jstakun.gms.android.utils.Locale;
 import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -47,8 +46,7 @@ public class LayerArrayAdapter extends ArrayAdapter<String> {
         final ViewHolder holder;
         View rowView = convertView;
         if (rowView == null) {
-            LayoutInflater inflater = parentActivity.getLayoutInflater();
-            rowView = inflater.inflate(R.layout.layerrow, null, true);
+            rowView = parentActivity.getLayoutInflater().inflate(R.layout.layerrow, parent, false);
             holder = new ViewHolder();
             holder.headerText = (TextView) rowView.findViewById(R.id.layerNameHeader);
             holder.layerCheckbox = (CheckBox) rowView.findViewById(R.id.layerStatusCheckbox);

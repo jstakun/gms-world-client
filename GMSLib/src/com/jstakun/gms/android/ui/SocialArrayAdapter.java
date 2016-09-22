@@ -5,7 +5,6 @@ package com.jstakun.gms.android.ui;
  * @author jstakun
  */
 import android.app.Activity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -54,8 +53,7 @@ public class SocialArrayAdapter extends ArrayAdapter<String> {
         ViewHolder holder;
         View rowView = convertView;
         if (rowView == null) {
-            LayoutInflater inflater = context.getLayoutInflater();
-            rowView = inflater.inflate(R.layout.socialrow, null, true);
+            rowView = context.getLayoutInflater().inflate(R.layout.socialrow, parent, false);
             holder = new ViewHolder();
             holder.headerText = (TextView) rowView.findViewById(R.id.socialStatusHeader);
             holder.statusText = (TextView) rowView.findViewById(R.id.socialStatusText);

@@ -2,16 +2,15 @@ package com.jstakun.gms.android.ui;
 
 import java.util.List;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-
 import com.jstakun.gms.android.deals.Category;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 /**
  *
@@ -33,8 +32,7 @@ public class DealCategoryArrayAdapter extends ArrayAdapter<String> {
         View rowView = convertView;
 
         if (rowView == null) {
-            LayoutInflater inflater = context.getLayoutInflater();
-            rowView = inflater.inflate(R.layout.categoryrow, null, true);
+            rowView = context.getLayoutInflater().inflate(R.layout.categoryrow, parent, false);
             holder = new ViewHolder();
             holder.headerText = (TextView) rowView.findViewById(R.id.categoryStatusHeader);
             holder.detailText = (TextView) rowView.findViewById(R.id.categoryDetailsHeader);

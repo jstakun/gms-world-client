@@ -30,8 +30,9 @@ import android.location.Location;
 public class RouteRecorder {
 
 	public static final String CURRENTLY_RECORDED = "Current";
-    public static final String ROUTE_PREFIX = "my_route";
-    private static final int MAX_REASONABLE_SPEED = 90; //324 kilometer per hour or 201 mile per hour
+	public static final String ROUTE_PREFIX = "my_route";
+	private static final String AUTO_SAVED_ROUTE_PREFIX = "auto_saved_route";
+	private static final int MAX_REASONABLE_SPEED = 90; //324 kilometer per hour or 201 mile per hour
     private static final int MAX_REASONABLE_ALTITUDECHANGE = 200; //meters
  
     private static final List<ExtendedLandmark> routePoints = new CopyOnWriteArrayList<ExtendedLandmark>();
@@ -143,7 +144,7 @@ public class RouteRecorder {
     public void onAppClose() {
     	//stop recording and save current route
     	//ConfigurationManager.getInstance().setOff(ConfigurationManager.RECORDING_ROUTE);
-    	String[] details = saveRoute(null);
+    	String[] details = saveRoute(AUTO_SAVED_ROUTE_PREFIX);
     	if (details != null) {
             LoggerUtils.debug("Saved route: " + details[0]);
         }

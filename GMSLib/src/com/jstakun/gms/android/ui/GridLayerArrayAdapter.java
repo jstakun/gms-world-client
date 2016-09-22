@@ -17,7 +17,6 @@ import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -41,8 +40,7 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        final ViewHolder holder;
 	        View rowView = convertView;
 	        if (rowView == null) {
-	            LayoutInflater inflater = parentActivity.getLayoutInflater();
-	            rowView = inflater.inflate(R.layout.dynamiclayerrow, null, true);
+	            rowView = parentActivity.getLayoutInflater().inflate(R.layout.dynamiclayerrow, parent, false);
 	            holder = new ViewHolder();
 	            holder.headerText = (TextView) rowView.findViewById(R.id.layerNameHeader);
 	            holder.detailText = (TextView) rowView.findViewById(R.id.layerDetailsHeader);
@@ -69,10 +67,6 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 	        	holder.headerText.setTextColor(Color.BLACK);
 	        }
 
-	        //BitmapDrawable image = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL,
-	        //                getContext().getResources().getDisplayMetrics(), new LayerImageLoadingHandler(holder, parentActivity, layerKey));
-	        //holder.headerText.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-	  
 	        int targetWidth = (int)(16f * parentActivity.getResources().getDisplayMetrics().density);
 	        int targetHeight = (int)(16f * parentActivity.getResources().getDisplayMetrics().density);
 	        int iconId = LayerManager.getLayerIcon(layerKey, LayerManager.LAYER_ICON_SMALL);

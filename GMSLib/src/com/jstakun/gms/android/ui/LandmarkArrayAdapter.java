@@ -22,7 +22,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Html.ImageGetter;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -63,8 +62,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
         final ViewHolder holder;
         final View rowView;
         if (convertView == null) {
-            LayoutInflater inflater = parentListActivity.getLayoutInflater();
-            rowView = inflater.inflate(R.layout.landmarkrow, null, true);
+            rowView = parentListActivity.getLayoutInflater().inflate(R.layout.landmarkrow, parent, false);
             holder = new ViewHolder();
             holder.landmarkNameText = (TextView) rowView.findViewById(R.id.landmarkNameText);
             holder.landmarkDescText = (TextView) rowView.findViewById(R.id.landmarkDescText);

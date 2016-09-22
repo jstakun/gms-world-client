@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.gms.android.ui;
 
 import android.app.Activity;
@@ -39,7 +34,7 @@ public class IntentArrayAdapter extends ArrayAdapter<ResolveInfo> {
     }
 
     private View newView(ViewGroup parent) {
-      return(context.getLayoutInflater().inflate(R.layout.intentrow, parent, false));
+      return context.getLayoutInflater().inflate(R.layout.intentrow, parent, false);
     }
 
     private void bindView(int position, View row) {

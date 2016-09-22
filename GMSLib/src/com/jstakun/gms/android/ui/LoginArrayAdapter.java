@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.gms.android.ui;
 
 import android.app.Activity;
@@ -53,14 +48,12 @@ public class LoginArrayAdapter extends ArrayAdapter<String> {
     }
 
     private View newView(ViewGroup parent) {
-      return(context.getLayoutInflater().inflate(R.layout.intentrow, parent, false));
+      return context.getLayoutInflater().inflate(R.layout.intentrow, parent, false);
     }
 
     private void bindView(int position, View row) {
       TextView label=(TextView)row.findViewById(R.id.intentLabel);
       label.setText(getItem(position));
-      //ImageView icon=(ImageView)row.findViewById(R.id.intentIcon);
-      //icon.setImageResource(icons.get(getItem(position)));
       label.setCompoundDrawablesWithIntrinsicBounds(icons.get(getItem(position)), 0, 0, 0);
     }
 }
