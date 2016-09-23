@@ -186,9 +186,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-        	//actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            //actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+        	actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(getTitle());
             actionBar.hide();
         }
@@ -723,6 +721,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    		if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 	    			GmsLocationServicesManager.getInstance().enable(loadingHandler);
 	    			mMap.setMyLocationEnabled(true);
+	    			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+	    				startRouteRecording(true);
+	    			}
 	    		}
 	    		break;
 	    	case PERMISSION_CALL_PHONE:
@@ -1035,22 +1036,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private String followMyPositionAction() {
 		if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
-            String route = RouteRecorder.getInstance().startRecording();
-            IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
-    		routesCluster.showRouteAction(route, true);
-            if (LayerLoader.getInstance().isLoading()) {
-            	LayerLoader.getInstance().stopLoading();
-            }
-            List<ExtendedLandmark> myPosV = LandmarkManager.getInstance().getUnmodifableLayer(Commons.MY_POSITION_LAYER);
-            if (!myPosV.isEmpty()) {
-                ExtendedLandmark landmark = myPosV.get(0);
-                if (projection.isVisible(landmark.getLatitudeE6(), landmark.getLongitudeE6())) {
-                    showMyPositionAction(false);
-                } else {
-                    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
-                }
+            //TODO testing
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
+            	ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            	ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
             } else {
-                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+            	 startRouteRecording(true);
             }
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
@@ -1068,6 +1059,25 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         }
 		return null;
     }
+	
+	private void startRouteRecording(boolean showMyPosition) {
+		String route = RouteRecorder.getInstance().startRecording();
+        IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
+		routesCluster.showRouteAction(route, true);
+        if (LayerLoader.getInstance().isLoading()) {
+        	LayerLoader.getInstance().stopLoading();
+        }
+        MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
+        Location myLocation = ConfigurationManager.getInstance().getLocation();
+        if (myLocation != null) {
+        	if (showMyPosition) {
+        		showMyPositionAction(false);
+        	}
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
+        } else {
+        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+        }
+	}
 	
 	private double[] getMyPosition() {
 		if (mMap != null) {
@@ -1109,11 +1119,14 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
 			routesCluster.loadAllRoutes();
 	    
+			//TODO testing
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-				String route = RouteRecorder.getInstance().startRecording();
-				IntentsHelper.getInstance().startRouteTrackingService(mConnection);
-				routesCluster.showRouteAction(route, true);	
-				MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
+				if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
+					ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+					ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
+				} else {
+					startRouteRecording(true);
+				}	
 			}
 		}
 	}

@@ -643,7 +643,7 @@ public class FileManager implements PersistenceManager {
             }
 
         } catch (Exception ex) {
-            LoggerUtils.error("FileManager.createDefaultDirs exception", ex);
+            LoggerUtils.error("FileManager.createDefaultDirs() exception", ex);
         }
     }
 
@@ -720,7 +720,7 @@ public class FileManager implements PersistenceManager {
                 result = true;
             }
         } catch (Exception ex) {
-            LoggerUtils.error("FileManager.fileExists exception", ex);
+            LoggerUtils.error("FileManager.fileExists() exception", ex);
         }
 
         return result;

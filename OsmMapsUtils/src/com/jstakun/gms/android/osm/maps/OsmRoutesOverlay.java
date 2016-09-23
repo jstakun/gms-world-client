@@ -17,7 +17,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.graphics.Rect;
 
 /**
  *
@@ -25,13 +24,13 @@ import android.graphics.Rect;
  */
 public class OsmRoutesOverlay extends Overlay {
 
-    private String routeName = null;
+    //private String routeName = null;
     //private final Paint lmpaint = new Paint();
     private final Paint paint = new Paint();
     private final Path path = new Path();
     private final Point point1 = new Point();
     private final Point point2 = new Point();
-    private final Rect viewportRect = new Rect();
+    //private final Rect viewportRect = new Rect();
     private final Point gp1 = new Point();
     private final Point gp2 = new Point();
     private List<Point> projectedPoints = new ArrayList<Point>();
@@ -41,7 +40,6 @@ public class OsmRoutesOverlay extends Overlay {
     
     public OsmRoutesOverlay(MapView mapView, Context context, String routeName, OsmMarkerClusterOverlay markerCluster) {
         super(context);
-        this.routeName = routeName;
         isCurrentlyRecording = routeName.equals(RouteRecorder.CURRENTLY_RECORDED);
         if (!isCurrentlyRecording && RoutesManager.getInstance().containsRoute(routeName)) {
             List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
@@ -94,11 +92,11 @@ public class OsmRoutesOverlay extends Overlay {
                 //canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
             } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point only
-                List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
+                List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(RouteRecorder.CURRENTLY_RECORDED);
                 routeSize = routePoints.size();
 
                 if (routeSize > 1) {
-                    viewportRect.set(projection.getScreenRect());
+                    //viewportRect.set(projection.getScreenRect());
                     ExtendedLandmark lastPoint = routePoints.get(routeSize - 1);
 
                     projection.toProjectedPixels(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(), gp1);
@@ -114,9 +112,9 @@ public class OsmRoutesOverlay extends Overlay {
                         projection.toPixelsFromProjected(gp2, point2);
 
                         path.lineTo(point2.x, point2.y);
-                        if (!viewportRect.contains(point1.x, point1.y)) {
-                            break;
-                        }
+                        //if (!viewportRect.contains(point1.x, point1.y)) {
+                        //   break;
+                        //}
                         
                         point1.x = point2.x;
                         point1.y = point2.y;

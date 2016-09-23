@@ -30,6 +30,7 @@ import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
+import com.jstakun.gms.android.utils.UserTracker;
 import com.openlapi.QualifiedCoordinates;
 
 import android.content.Context;
@@ -51,10 +52,10 @@ public final class ConfigurationManager {
     private static volatile Map<String, String> configuration = new ConcurrentHashMap<String, String>();
     private static volatile Map<String, String> changedConfig = new ConcurrentHashMap<String, String>();
     private static volatile Map<String, Object> objectCache = new ConcurrentHashMap<String, Object>();
-    private static volatile ConfigurationManager instance = null;
+    private static volatile ConfigurationManager instance = new ConfigurationManager();
     private static volatile UserManager userManager = null;
     private static volatile DatabaseManager databaseManager = null;
-    private static volatile AppUtils appUtils = null;
+    private static volatile AppUtils appUtils = getAppUtils();
     
     //configuration parameters
     public static final String PERSISTENCE_MANAGER = "persistenceManager";
@@ -221,9 +222,6 @@ public final class ConfigurationManager {
     }
 
     public static ConfigurationManager getInstance() {
-        if (instance == null) {
-        	instance = new ConfigurationManager();
-        }
         return instance;
     }
 
@@ -499,13 +497,14 @@ public final class ConfigurationManager {
     
     public class AppUtils {
     	
-    	private AppUtils() {}
+    	private AppUtils() {
+    		LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
+    		setDefaultConfiguration();
+    	}
     
     	public void initApp(Context applicationContext) {
     		setContext(applicationContext);
-    		LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
-    		setDefaultConfiguration();
-
+    		
     		if (PersistenceManagerFactory.getFileManager().fileExists(null, FileManager.CONFIGURATION_FILE)) {
     			PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();
     			getDatabaseManager().saveConfiguration(true);
@@ -514,10 +513,7 @@ public final class ConfigurationManager {
     			getDatabaseManager().readConfiguration();
     		}
 
-    		Resources applicationResources = null; 
-    		if (applicationContext != null) {
-    			applicationResources = applicationContext.getResources();
-    		}
+    		Resources applicationResources = applicationContext.getResources();
     		
     		if (applicationResources != null) {
     			String[] limitArray = applicationResources.getStringArray(com.jstakun.gms.android.ui.lib.R.array.landmarksPerLayer);
@@ -553,13 +549,11 @@ public final class ConfigurationManager {
 
     		long installed = System.currentTimeMillis();
     		try {
-    			if (applicationContext != null) {
-    				PackageManager pm = applicationContext.getPackageManager();
-    				//Version
-    				ApplicationInfo appInfo = pm.getApplicationInfo(applicationContext.getPackageName(), 0);
-    				String appFile = appInfo.sourceDir;
-    				installed = new File(appFile).lastModified();
-    			}	
+    			PackageManager pm = applicationContext.getPackageManager();
+    			//Version
+    			ApplicationInfo appInfo = pm.getApplicationInfo(applicationContext.getPackageName(), 0);
+    			String appFile = appInfo.sourceDir;
+    			installed = new File(appFile).lastModified();
     		} catch (Exception ex) {
     			LoggerUtils.error("ConfigurationManager.initApp() exception", ex);   			
     		}
@@ -590,8 +584,8 @@ public final class ConfigurationManager {
         	default_locations.put("SAU", LandmarkFactory.getLandmark("Saudi Arabia, Riyadh", "", new QualifiedCoordinates(24.64732, 46.714581, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SAU Saudi Arabia, Riyadh 24.64732, 46.714581
         	default_locations.put("PRT", LandmarkFactory.getLandmark("Portugal, Lisbon", "", new QualifiedCoordinates(38.7252993, -9.1500364, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PRT Portugal, Lisbon 38.7252993, 9.1500364
         	default_locations.put("PAK", LandmarkFactory.getLandmark("Pakistan, Islamabad", "", new QualifiedCoordinates(33.718151, 73.060547, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //PAK Pakistan, Islamabad 33.718151, 73.060547
-        	default_locations.put("SWE", LandmarkFactory.getLandmark("Sweden, Stockholm", "", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SWE Sweden, Stockholm 59.32893, 18.06491  	       	
-      	}
+        	default_locations.put("SWE", LandmarkFactory.getLandmark("Sweden, Stockholm", "", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN), Commons.LOCAL_LAYER, installed)); //SWE Sweden, Stockholm 59.32893, 18.06491  	       	      	
+    	}
 
     	public String collectSystemInformation() {
 

@@ -988,7 +988,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             if (!myPosV.isEmpty()) {
                 ExtendedLandmark landmark = myPosV.get(0);
                 ProjectionInterface projection = new OsmLandmarkProjection(mapView);
-                if (projection.isVisible(landmark.getLatitudeE6(), landmark.getLongitudeE6())) {
+                if (!projection.isVisible(landmark.getLatitudeE6(), landmark.getLongitudeE6())) {
                     showMyPositionAction(false);
                 } else {
                     IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));

@@ -5,6 +5,8 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
+import android.content.Context;
+
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.UserTracker;
@@ -26,10 +28,15 @@ public class GMSClientApp extends Application {
     public void onCreate() {
         super.onCreate();
         LoggerUtils.debug("GMSClientApp.onCreate...");
-        ACRA.init(this);  
         ConfigurationManager.getAppUtils().initApp(this);  
         UserTracker.getInstance().initialize(this);
         UserTracker.getInstance().setDryRun(false, this);
+    }
+    
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        ACRA.init(this);
     }
 
     @Override

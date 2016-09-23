@@ -43,7 +43,7 @@ public class UserTracker {
     			tracker.enableExceptionReporting(true);
           	}
     	} catch (Throwable t) {
-    		LoggerUtils.error("UserTracker.initialize exception:", t);
+    		LoggerUtils.error("UserTracker.initialize() exception:", t);
     	}
     }
     

@@ -35,9 +35,9 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 	public static final int SHOW_LANDMARK_DETAILS = 22;
 	public static final int SHOW_LANDMARK_LIST = 23;
 	
-	private static final int COLOR_WHITE = Color.argb(128, 255, 255, 255); //white
-    private static final int COLOR_LIGHT_SALMON = Color.argb(128, 255, 160, 122); //red Light Salmon
-    private static final int COLOR_PALE_GREEN = Color.argb(128, 152, 251, 152); //Pale Green
+	//private static final int COLOR_WHITE = Color.argb(128, 255, 255, 255); //white
+    //private static final int COLOR_LIGHT_SALMON = Color.argb(128, 255, 160, 122); //red Light Salmon
+    //private static final int COLOR_PALE_GREEN = Color.argb(128, 152, 251, 152); //Pale Green
     
     private static final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     
@@ -149,7 +149,8 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 			marker.setPosition(new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6())); 
 			marker.setTitle(landmark.getName());
 		
-			boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
+			//TODO testing
+			/*boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
 			
 			int color = COLOR_WHITE;
 			if (landmark.isCheckinsOrPhotos()) {
@@ -174,7 +175,7 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
         		
         	if (frame != null) {
         		marker.setIcon(frame); 
-        	}
+        	}*/
 				
 			marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 			
