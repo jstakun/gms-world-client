@@ -66,13 +66,21 @@ public class AlertDialogBuilder {
             dialog.cancel();
         }
     };
+    private DialogInterface.OnClickListener dialogRouteClickListener = new DialogInterface.OnClickListener() {
+
+        public void onClick(DialogInterface dialog, int id) {
+            ConfigurationManager.getInstance().removeObject(OPEN_DIALOG, Integer.class);
+            RouteRecorder.getInstance().clear();
+            dialog.cancel();
+        }
+    };
     private DialogInterface.OnCancelListener dialogCancelListener = new DialogInterface.OnCancelListener() {
 
         public void onCancel(DialogInterface dialog) {
             ConfigurationManager.getInstance().removeObject(OPEN_DIALOG, Integer.class);
         }
     };
-
+    
     private void createExitAlertDialog(Activity activity, DialogInterface.OnClickListener exitListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(Locale.getMessage(R.string.Close_app_prompt)).
@@ -164,7 +172,7 @@ public class AlertDialogBuilder {
                         dialog.cancel();
                     }
                 }).
-                setNegativeButton(Locale.getMessage(R.string.cancelButton), dialogClickListener).
+                setNegativeButton(Locale.getMessage(R.string.cancelButton), dialogRouteClickListener).
                 setOnCancelListener(dialogCancelListener);
         saveRouteDialog = builder.create();
     }

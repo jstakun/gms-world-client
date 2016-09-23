@@ -102,14 +102,18 @@ public class RouteRecorder {
             String[] desc = getRouteDetails();
 
             details = saveRoute(routePoints, filename, desc[1], desc[2], desc[0]);
-
-            if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
-                paused = false;
-                routePoints.clear();
-            }
         }
 
+        clear();
+        
         return details;
+    }
+    
+    public void clear() {
+    	if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
+            paused = false;
+            routePoints.clear();
+        }
     }
 
     public boolean addCoordinate(Location newLocation) {

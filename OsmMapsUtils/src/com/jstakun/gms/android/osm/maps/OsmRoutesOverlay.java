@@ -31,16 +31,16 @@ public class OsmRoutesOverlay extends Overlay {
     private final Point point1 = new Point();
     private final Point point2 = new Point();
     //private final Rect viewportRect = new Rect();
-    //private final Point gp1 = new Point();
-    //private final Point gp2 = new Point();
+    private final Point gp1 = new Point();
+    private final Point gp2 = new Point();
     private List<Point> projectedPoints = new ArrayList<Point>();
     private int routeSize = 0;//, w, h;
-    //private boolean isCurrentlyRecording = false;
+    private boolean isCurrentlyRecording = false;
     //private Bitmap routesLayerBitmap;
     
     public OsmRoutesOverlay(MapView mapView, Context context, String routeName, OsmMarkerClusterOverlay markerCluster) {
         super(context);
-        //sCurrentlyRecording = routeName.equals(RouteRecorder.CURRENTLY_RECORDED);
+        isCurrentlyRecording = routeName.equals(RouteRecorder.CURRENTLY_RECORDED);
         if (RoutesManager.getInstance().containsRoute(routeName)) {
             List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(routeName);
             routeSize = routePoints.size();
@@ -75,7 +75,7 @@ public class OsmRoutesOverlay extends Overlay {
             Projection projection = mapView.getProjection();
             path.rewind();
 
-            if (routeSize > 1) {
+            if (!isCurrentlyRecording && routeSize > 1) {
                 projection.toPixelsFromProjected(projectedPoints.get(0), point1); 
                 //canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - h, lmpaint);
                 path.moveTo(point1.x, point1.y);
@@ -90,7 +90,7 @@ public class OsmRoutesOverlay extends Overlay {
 
                 canvas.drawPath(path, paint);
                 //canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
-            } /*else if (isCurrentlyRecording) {
+            } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point only
                 List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(RouteRecorder.CURRENTLY_RECORDED);
                 routeSize = routePoints.size();
@@ -128,7 +128,7 @@ public class OsmRoutesOverlay extends Overlay {
                     //    canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
                     //}
                 }
-            }*/
+            }
         }
     }
 }
