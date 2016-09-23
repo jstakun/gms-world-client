@@ -30,7 +30,6 @@ import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
-import com.jstakun.gms.android.utils.UserTracker;
 import com.openlapi.QualifiedCoordinates;
 
 import android.content.Context;
@@ -52,10 +51,10 @@ public final class ConfigurationManager {
     private static volatile Map<String, String> configuration = new ConcurrentHashMap<String, String>();
     private static volatile Map<String, String> changedConfig = new ConcurrentHashMap<String, String>();
     private static volatile Map<String, Object> objectCache = new ConcurrentHashMap<String, Object>();
-    private static volatile ConfigurationManager instance = new ConfigurationManager();
+    private static volatile ConfigurationManager instance = null;
     private static volatile UserManager userManager = null;
     private static volatile DatabaseManager databaseManager = null;
-    private static volatile AppUtils appUtils = getAppUtils();
+    private static volatile AppUtils appUtils = null;
     
     //configuration parameters
     public static final String PERSISTENCE_MANAGER = "persistenceManager";
@@ -222,13 +221,15 @@ public final class ConfigurationManager {
     }
 
     public static ConfigurationManager getInstance() {
+    	if (instance == null) {
+    		instance = new ConfigurationManager();
+    	}
         return instance;
     }
 
     private void setDefaultConfiguration() {
-        FileManager fm = PersistenceManagerFactory.getFileManager();
-        fm.readResourceBundleFile(configuration, R.raw.defaultconfig, getContext());
-        fm.createDefaultDirs(); 
+    	PersistenceManagerFactory.getFileManager().createDefaultDirs();
+    	PersistenceManagerFactory.getFileManager().readResourceBundleFile(configuration, R.raw.defaultconfig, getContext());
         changedConfig.clear();
     }
 
@@ -498,12 +499,19 @@ public final class ConfigurationManager {
     public class AppUtils {
     	
     	private AppUtils() {
-    		LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
-    		setDefaultConfiguration();
+    		//TODO create app dirs
+    		//try {
+    		//	LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
+    		//	PersistenceManagerFactory.getFileManager().createDefaultDirs();
+    		//} catch (Throwable t) {
+    		//	LoggerUtils.error(t.getMessage(), t);
+    		//}
     	}
     
     	public void initApp(Context applicationContext) {
     		setContext(applicationContext);
+    		LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
+    		setDefaultConfiguration();
     		
     		if (PersistenceManagerFactory.getFileManager().fileExists(null, FileManager.CONFIGURATION_FILE)) {
     			PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();

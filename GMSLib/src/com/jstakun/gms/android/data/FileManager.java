@@ -604,7 +604,7 @@ public class FileManager implements PersistenceManager {
 
         try {
 
-            LoggerUtils.debug("Creating default dirs");
+            LoggerUtils.debug("Creating default dirs if not exists");
 
             fc = getExternalDirectory(getRoutesFolderPath(), null);
             if (!fc.exists()) {
