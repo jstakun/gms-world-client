@@ -37,7 +37,6 @@ public class AndroidPersistenceManager implements PersistenceManager {
 
     private static final String CONFIGURATION_FILE = "lm_configuration";
     private static final String MAP_FILE = "lm_map" + FORMAT_PNG;
-    private static final String TILES_FILE = "lm_tiles.txt";
     private static final String LANDMARKDB_FILE = "lm_landmarkdb.txt";
 
     public Bitmap readImageFile() {
@@ -216,35 +215,6 @@ public class AndroidPersistenceManager implements PersistenceManager {
     private boolean deleteFile(String filename) {
         Context ctx = ConfigurationManager.getInstance().getContext();
         return ctx.deleteFile(filename);
-    }
-
-    public void deleteTile() {
-        deleteFile(TILES_FILE);
-    }
-
-    public boolean tileExists(String filename) {
-        Context ctx = ConfigurationManager.getInstance().getContext();
-        String[] fileList = ctx.fileList();
-        for (int i = 0; i < fileList.length; i++) {
-            if (fileList[i].equals(filename)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public int deleteTilesCache() {
-        int result = 0;
-        Context ctx = ConfigurationManager.getInstance().getContext();
-        String[] fileList = ctx.fileList();
-        for (int i = 0; i < fileList.length; i++) {
-            if (fileList[i].endsWith(FORMAT_PNG)) {
-                ctx.deleteFile(fileList[i]);
-                result++;
-            }
-        }
-        return result;
     }
 
     private static String readLine(InputStreamReader reader) throws IOException {

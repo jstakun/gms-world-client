@@ -41,18 +41,6 @@ public class MemoryPersistenceManager implements PersistenceManager {
 
     }
 
-    public void deleteTile() {
-        
-    }
-
-    public boolean tileExists(String filename) {
-        return false;
-    }
-
-    public int deleteTilesCache() {
-        return 0;
-    }
-
     public Bitmap readImageFile(String filename) {
         return null;
     }

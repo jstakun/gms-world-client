@@ -620,56 +620,7 @@ public class FileManager implements PersistenceManager {
     		LoggerUtils.error("FileManager.createFolder() exception", ex);
         }
     	return res;
-    }
-    
-    
-    /*public void createDefaultDirs() {
-        File fc;
-
-        try {
-
-            LoggerUtils.debug("Creating default dirs if not exists");
-
-            fc = getExternalDirectory(getRoutesFolderPath(), null);
-            if (!fc.exists()) {
-                boolean res = fc.mkdirs();
-                LoggerUtils.debug("Created routes folder: " + res);
-            }
-
-            fc = getExternalDirectory(getFileFolderPath(), null);
-            if (!fc.exists()) {
-                boolean res = fc.mkdirs();
-                LoggerUtils.debug("Created files folder: " + res);
-            }
-
-            fc = getExternalDirectory(getIconsFolderPath(), null);
-            if (!fc.exists()) {
-                boolean res = fc.mkdirs();
-                LoggerUtils.debug("Created icons folder: " + res);
-            }
-
-            fc = getExternalDirectory(getImagesFolder(), null);
-            if (!fc.exists()) {
-                boolean res = fc.mkdirs();
-                LoggerUtils.debug("Created images folder: " + res);
-            }
-
-            fc = getExternalDirectory(getTilesFolder(), null);
-            if (!fc.exists()) {
-                boolean res = fc.mkdirs();
-                LoggerUtils.debug("Created tiles folder: " + res);
-            }
-            
-            fc = getExternalDirectory(LOGS_FOLDER, null);
-            if (!fc.exists()) {
-                boolean res = fc.mkdirs();
-                LoggerUtils.debug("Created logs folder: " + res);
-            }
-
-        } catch (Exception ex) {
-            LoggerUtils.error("FileManager.createDefaultDirs() exception", ex);
-        }
-    }*/
+    }    
 
     public void deleteFile() {
         deleteFile(getImagesFolder(), MAP_FILE);
@@ -712,25 +663,6 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    public void deleteTile() {
-    //    deleteFile(getImagesFolder(), TILES_FILE);
-    }
-
-    public int deleteTilesCache() {
-        //int result = 0;
-
-        /*for (int i = 0; i < 9; i++) {
-            deleteFile(getImagesFolder(), i + FORMAT_PNG);
-            result++;
-        }
-        
-        //delete old images
-        List<String> images = readFolder(getImagesFolder(), FilenameFilterFactory.getFilenameFilter(FORMAT_PNG));
-        new DeletingTilesTask().execute(images);*/
-                 
-        return -1;
-    }
-
     public void clearImageCache() {
         new ClearCacheTask().execute(ConfigurationManager.getInstance().getContext().getCacheDir());
     }
@@ -748,10 +680,6 @@ public class FileManager implements PersistenceManager {
         }
 
         return result;
-    }
-
-    public boolean tileExists(String filename) {
-        return fileExists(getImagesFolder(), filename);
     }
 
     public List<String> readFolder(String path, FilenameFilter filter) {

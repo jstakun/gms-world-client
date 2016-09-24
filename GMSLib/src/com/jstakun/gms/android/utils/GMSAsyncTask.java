@@ -574,7 +574,7 @@ public abstract class GMSAsyncTask<Params, Progress, Result> {
 
         @Override
         public void handleMessage(Message msg) {
-            AsyncTaskResult result = (AsyncTaskResult) msg.obj;
+        	AsyncTaskResult result = (AsyncTaskResult) msg.obj;
             switch (msg.what) {
                 case MESSAGE_POST_RESULT:
                     // There is only one result

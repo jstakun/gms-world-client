@@ -10,18 +10,6 @@ import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Message;
-import android.util.DisplayMetrics;
-
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.data.IconCache;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -29,6 +17,14 @@ import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Message;
 
 public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 
