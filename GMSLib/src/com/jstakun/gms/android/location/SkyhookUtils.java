@@ -1,13 +1,7 @@
 package com.jstakun.gms.android.location;
 
-import android.content.Context;
-import android.location.Location;
-import android.os.Handler;
-import android.os.Message;
-
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -22,6 +16,11 @@ import com.skyhookwireless.wps.WPSPeriodicLocationCallback;
 import com.skyhookwireless.wps.WPSReturnCode;
 import com.skyhookwireless.wps.WPSStreetAddressLookup;
 import com.skyhookwireless.wps.XPS;
+
+import android.content.Context;
+import android.location.Location;
+import android.os.Handler;
+import android.os.Message;
 
 /**
  *
@@ -86,8 +85,7 @@ public class SkyhookUtils {
     public SkyhookUtils(Context context, Handler locationHandler) {
         xps = new XPS(context);
         xps.setKey(context.getString(R.string.skyhookApiKey));
-        FileManager fm = PersistenceManagerFactory.getFileManager();
-        String cache = fm.getExternalDirectory(FileManager.getTilesFolder(), null).getAbsolutePath();
+        String cache = FileManager.getInstance().getExternalDirectory(FileManager.getInstance().getTilesFolder(), null).getAbsolutePath();
         LoggerUtils.debug("Setting WPS tiling at " + cache + "...");
         xps.setTiling(cache, 460800, 4608000, new GMSTilingCallback());
         this.locationHandler = locationHandler;

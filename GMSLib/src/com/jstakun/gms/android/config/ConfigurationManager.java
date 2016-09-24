@@ -18,7 +18,6 @@ import com.jstakun.gms.android.data.ConfigDbDataSource;
 import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.LandmarkDbDataSource;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
@@ -228,8 +227,7 @@ public final class ConfigurationManager {
     }
 
     private void setDefaultConfiguration() {
-    	PersistenceManagerFactory.getFileManager().createDefaultDirs();
-    	PersistenceManagerFactory.getFileManager().readResourceBundleFile(configuration, R.raw.defaultconfig, getContext());
+    	FileManager.getInstance().readResourceBundleFile(configuration, R.raw.defaultconfig, getContext());
         changedConfig.clear();
     }
 
@@ -499,13 +497,6 @@ public final class ConfigurationManager {
     public class AppUtils {
     	
     	private AppUtils() {
-    		//TODO create app dirs
-    		//try {
-    		//	LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
-    		//	PersistenceManagerFactory.getFileManager().createDefaultDirs();
-    		//} catch (Throwable t) {
-    		//	LoggerUtils.error(t.getMessage(), t);
-    		//}
     	}
     
     	public void initApp(Context applicationContext) {
@@ -513,10 +504,10 @@ public final class ConfigurationManager {
     		LoggerUtils.setTag(Locale.getMessage(R.string.app_name));
     		setDefaultConfiguration();
     		
-    		if (PersistenceManagerFactory.getFileManager().fileExists(null, FileManager.CONFIGURATION_FILE)) {
-    			PersistenceManagerFactory.getPersistenceManagerInstance().readConfigurationFile();
+    		if (FileManager.getInstance().fileExists(null, FileManager.CONFIGURATION_FILE)) {
+    			FileManager.getInstance().readConfigurationFile();
     			getDatabaseManager().saveConfiguration(true);
-    			PersistenceManagerFactory.getFileManager().deleteFile(null, FileManager.CONFIGURATION_FILE);
+    			FileManager.getInstance().deleteFile(null, FileManager.CONFIGURATION_FILE);
     		} else {
     			getDatabaseManager().readConfiguration();
     		}
@@ -598,16 +589,18 @@ public final class ConfigurationManager {
     	public String collectSystemInformation() {
 
     		String ReturnVal = "";
-    		try {
+    		String VersionName = null;
+    		String PackageName = null;
+    		int VersionCode = 0;
+    		
     			PackageInfo pi = getPackageInfo();
             
-    			String VersionName = pi.versionName;
-    			// Package name
-    			String PackageName = pi.packageName;
-    			// Device model
+    			if (pi != null) {
+    				VersionName = pi.versionName;
+    				PackageName = pi.packageName;
+    				VersionCode = pi.versionCode;
+    			}
     			
-    			int VersionCode = pi.versionCode;
-
     			String PhoneModel = android.os.Build.MODEL;
     			// Android version
     			String AndroidVersion = android.os.Build.VERSION.RELEASE;
@@ -645,25 +638,17 @@ public final class ConfigurationManager {
             	ReturnVal += "Type: " + Type;
             	//ReturnVal += "User : " + User;
 
-        	} catch (NameNotFoundException ex) {
-            	LoggerUtils.error("ConfigurationManager.collectSystemInformation() exception", ex);
-        	}
-
         	return ReturnVal;
     	}
     	
     	public String getAboutMessage() {
     		int versionCode = 0;
     		String versionName = "Latest";
-    		try {
     		PackageInfo info = getPackageInfo(); 
-    			if (info != null) {
-    				versionCode = info.versionCode;
-    				versionName = info.versionName;
-    			}
-    		} catch (NameNotFoundException e) {
-    			LoggerUtils.error("ConfigurationManager.AppUtils.getAboutMessage() exception", e);
-    		}
+    		if (info != null) {
+    			versionCode = info.versionCode;
+    			versionName = info.versionName;
+    		} 		
             String app_name = Locale.getMessage(R.string.app_name);
             String message = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), ConfigurationManager.SERVER_URL);
     	    return message;
@@ -671,15 +656,10 @@ public final class ConfigurationManager {
     	
     	public int getVersionCode() {
     		int versionCode = 0;
-    		try {
-    			PackageInfo info = getPackageInfo(); 
-    			if (info != null) {
-    				versionCode = info.versionCode;
-    			}
-    		} catch (NameNotFoundException e) {
-    			LoggerUtils.error("ConfigurationManager.AppUtils.getVersionCode() exception", e);
-    		}
-    		
+    		PackageInfo info = getPackageInfo(); 
+    		if (info != null) {
+    			versionCode = info.versionCode;
+    		} 		
     		return versionCode;
     	}
     	
@@ -705,13 +685,13 @@ public final class ConfigurationManager {
     		 return s;
     	}
     
-    	public PackageInfo getPackageInfo() throws NameNotFoundException {    
-    		Context c = getContext();
-    		if (c != null) {
-    			PackageManager pm = c.getPackageManager();
-    			PackageInfo pi = pm.getPackageInfo(c.getPackageName(), 0);
+    	public PackageInfo getPackageInfo() {    
+    		try {
+    			PackageManager pm = getContext().getPackageManager();
+    			PackageInfo pi = pm.getPackageInfo(getContext().getPackageName(), 0);
     			return pi;
-    		} else {
+    		} catch (Exception e) {
+    			LoggerUtils.error(e.getMessage(), e);
     			return null;
     		}
     	}
@@ -835,13 +815,12 @@ public final class ConfigurationManager {
     	public synchronized List<ExtendedLandmark> getLandmarkDatabase() {
         	LandmarkDbDataSource db = new LandmarkDbDataSource(getContext());
         	List<ExtendedLandmark> lmdb;
-        	FileManager fm = PersistenceManagerFactory.getFileManager();
-
+        	
         	//file to landmarkdb migration code
-        	if (fm.fileExists(null, FileManager.LANDMARKDB_FILE)) {
+        	if (FileManager.getInstance().fileExists(null, FileManager.LANDMARKDB_FILE)) {
             	lmdb = new ArrayList<ExtendedLandmark>();
-            	fm.readLandmarkStore(lmdb);
-            	fm.deleteFile(null, FileManager.LANDMARKDB_FILE);
+            	FileManager.getInstance().readLandmarkStore(lmdb);
+            	FileManager.getInstance().deleteFile(null, FileManager.LANDMARKDB_FILE);
             	db.addAll(lmdb);
         	} else {
             	lmdb = db.fetchAllLandmarks();

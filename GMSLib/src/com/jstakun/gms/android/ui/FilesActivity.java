@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
@@ -61,13 +60,13 @@ public class FilesActivity extends AbstractLandmarkList {
             files = extras.getParcelableArrayList("files");
             type = extras.getInt("type");
 
-            String directory = PersistenceManagerFactory.getFileManager().getExternalDirectory(null, null).getAbsolutePath();
+            String directory = FileManager.getInstance().getExternalDirectory(null, null).getAbsolutePath();
             if (directory != null) {
 
                 if (type == ROUTES) {
-                    directory += "/" + FileManager.getRoutesFolderPath();
+                    directory += "/" + FileManager.getInstance().getRoutesFolderPath();
                 } else if (type == FILES) {
-                    directory += "/" + FileManager.getFileFolderPath();
+                    directory += "/" + FileManager.getInstance().getFileFolderPath();
                 }
 
                 TextView topTextView = (TextView) findViewById(R.id.topTextView);
@@ -123,9 +122,9 @@ public class FilesActivity extends AbstractLandmarkList {
         } else if (menuItemIndex == ACTION_SHARE) { 
         	Uri uri = null;
         	if (type == ROUTES) {
-        		uri = Uri.fromFile(PersistenceManagerFactory.getFileManager().getRouteFile(files.get(currentPos).getName()));
+        		uri = Uri.fromFile(FileManager.getInstance().getRouteFile(files.get(currentPos).getName()));
         	} else if (type == FILES) {
-        		uri = Uri.fromFile(PersistenceManagerFactory.getFileManager().getPoiFile(files.get(currentPos).getName()));
+        		uri = Uri.fromFile(FileManager.getInstance().getPoiFile(files.get(currentPos).getName()));
         	}
         	if (uri != null) {
         		IntentsHelper.getInstance().shareFileAction(uri, type);
@@ -177,9 +176,9 @@ public class FilesActivity extends AbstractLandmarkList {
                     		newName += ".kml";
                     		//rename file
                     		if (type == ROUTES) {
-                    			PersistenceManagerFactory.getFileManager().renameRouteFile(oldName, newName);
+                    			FileManager.getInstance().renameRouteFile(oldName, newName);
                     		} else if (type == FILES) {
-                    			PersistenceManagerFactory.getFileManager().renamePoiFile(oldName, newName);
+                    			FileManager.getInstance().renamePoiFile(oldName, newName);
                     		}
                     		//refresh files list
                     		((ArrayAdapter<LandmarkParcelable>) getListAdapter()).getItem(filePos).setName(newName);
@@ -207,16 +206,15 @@ public class FilesActivity extends AbstractLandmarkList {
     }
 
     private void remove(int position) {
-        FileManager fm = PersistenceManagerFactory.getFileManager();
         String filename = files.get(position).getName();
         ((ArrayAdapter<LandmarkParcelable>) getListAdapter()).remove(files.remove(position));
 
         if (type == ROUTES) {
             //delete route file
-            fm.deleteRouteFile(filename);
+        	FileManager.getInstance().deleteRouteFile(filename);
         } else if (type == FILES) {
             //delete poi file
-            fm.deletePoiFile(filename);
+        	FileManager.getInstance().deletePoiFile(filename);
         }
         
         IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Files_deleted));

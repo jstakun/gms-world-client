@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.IconCache;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkParcelable;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.ui.lib.R;
@@ -95,7 +94,7 @@ public class LandmarkArrayAdapter extends ArrayAdapter<LandmarkParcelable> {
     				if (iconUri != null && StringUtils.startsWith(iconUri, "http")) {
     					Picasso.with(parentListActivity).load(iconUri).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
     				} else {
-    					File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
+    					File fc = FileManager.getInstance().getExternalDirectory(FileManager.getInstance().getIconsFolderPath(), iconUri);
     					Picasso.with(parentListActivity).load(fc).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.landmarkNameText, PicassoTextViewTarget.Position.LEFT));
     				}
     			}

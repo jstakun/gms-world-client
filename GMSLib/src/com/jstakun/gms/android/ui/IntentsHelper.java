@@ -29,7 +29,6 @@ import com.jstakun.gms.android.data.FavouritesDbDataSource;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
 import com.jstakun.gms.android.data.IconCache;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -183,7 +182,7 @@ public final class IntentsHelper {
     }
 
     public boolean startRouteFileLoadingActivity() {
-        ArrayList<LandmarkParcelable> routes = PersistenceManagerFactory.getFileManager().readFolderAsLandmarkParcelable(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"), Commons.ROUTES_LAYER);
+        ArrayList<LandmarkParcelable> routes = FileManager.getInstance().readFolderAsLandmarkParcelable(FileManager.getInstance().getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"), Commons.ROUTES_LAYER);
 
         if (!routes.isEmpty()) {
             Bundle extras = new Bundle();
@@ -198,7 +197,7 @@ public final class IntentsHelper {
     }
 
     public boolean startFilesLoadingActivity() {
-        ArrayList<LandmarkParcelable> files = PersistenceManagerFactory.getFileManager().readFolderAsLandmarkParcelable(FileManager.getFileFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"), null);
+        ArrayList<LandmarkParcelable> files = FileManager.getInstance().readFolderAsLandmarkParcelable(FileManager.getInstance().getFileFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"), null);
 
         if (!files.isEmpty()) {
             Bundle extras = new Bundle();
@@ -875,9 +874,7 @@ public final class IntentsHelper {
         	int iconId = LayerManager.getDealCategoryIcon(selectedLandmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
 			Picasso.with(activity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(name, PicassoTextViewTarget.Position.LEFT));	           
         } else {
-            //BitmapDrawable icon = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL, activity.getResources().getDisplayMetrics(), null);
-            //name.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-        	int iconId = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
+            int iconId = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
 			if (iconId != R.drawable.image_missing16) {
 				Picasso.with(activity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(name, PicassoTextViewTarget.Position.LEFT));
 			} else {
@@ -885,7 +882,7 @@ public final class IntentsHelper {
 				if (iconUri != null && StringUtils.startsWith(iconUri, "http")) {
 					Picasso.with(activity).load(iconUri).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(name, PicassoTextViewTarget.Position.LEFT));
 				} else {
-					File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
+					File fc = FileManager.getInstance().getExternalDirectory(FileManager.getInstance().getIconsFolderPath(), iconUri);
 					Picasso.with(activity).load(fc).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(name, PicassoTextViewTarget.Position.LEFT));
 				}
 			}
@@ -893,18 +890,7 @@ public final class IntentsHelper {
 
         ImageView thumbnail = (ImageView) lvView.findViewById(R.id.thumbnailButton);
         if (StringUtils.isNotEmpty(selectedLandmark.getThumbnail())) {
-            /*Bitmap image = IconCache.getInstance().getThumbnailResource(selectedLandmark.getThumbnail(), selectedLandmark.getLayer(), activity.getResources().getDisplayMetrics(), new ThumbnailLoadedHandler(activity));
-            int width = activity.getWindowManager().getDefaultDisplay().getWidth();            
             if (thumbnail != null) {
-            	if (image != null && (width == 0 || image.getWidth() < width * 0.9)) { 
-                	thumbnail.setImageBitmap(image);
-                	thumbnail.setTag(null);
-            	} else {
-                	thumbnail.setImageResource(R.drawable.download48);
-                	thumbnail.setTag(selectedLandmark);
-            	}
-            }*/
-        	if (thumbnail != null) {
         		targetWidth = (int)(128f * activity.getResources().getDisplayMetrics().density);
                 targetHeight = (int)(128f * activity.getResources().getDisplayMetrics().density);
                 Picasso.with(activity).load(selectedLandmark.getThumbnail()).resize(targetWidth, targetHeight).centerInside().tag(selectedLandmark).error(R.drawable.image_missing48).placeholder(R.drawable.download48).into(thumbnail);
@@ -1420,7 +1406,7 @@ public final class IntentsHelper {
         ConfigurationManager.getInstance().clearObjectCache();
         IconCache.getInstance().clearAll();
         
-        PersistenceManagerFactory.getFileManager().clearImageCache();
+        FileManager.getInstance().clearImageCache();
         
         showShortToast(Locale.getMessage(R.string.Close_app_bye));
         LoggerUtils.debug("Bye...");

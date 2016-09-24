@@ -52,7 +52,6 @@ import android.util.DisplayMetrics;
 public class FileManager implements PersistenceManager {
 
     private static final String MAP_FILE = "lm_map" + FORMAT_PNG;
-    private static final String TILES_FILE = "lm_tiles.txt";
     public static final String CONFIGURATION_FILE = "lm_configuration.txt";
     public static final String LANDMARKDB_FILE = "lm_landmarkdb.txt";
     private static final String IMAGES_FOLDER = "Images";
@@ -63,14 +62,16 @@ public class FileManager implements PersistenceManager {
     private static final String LOGS_FOLDER = "Logs";
     private static final String ROOT_FOLDER_PREFIX = "/Android/data/";
     private static final String TIMESTAMP = "timestamp";
-    private String packageName;
-    private File cacheDir;
+    
+    protected static FileManager instance = new FileManager();
     
     public enum ClearPolicy {ONE_DAY, ONE_WEEK, ONE_MONTH, ONE_QUARTER, ONE_YEAR}; 
 
-    public FileManager(String packageName) {
-        this.packageName = packageName;
-        cacheDir = ConfigurationManager.getInstance().getContext().getCacheDir();
+    public static FileManager getInstance() {
+    	return instance;
+    }
+    
+    private FileManager() {
     }
 
     public Bitmap readImageFile() {
@@ -120,7 +121,7 @@ public class FileManager implements PersistenceManager {
         Bitmap image = null;
 
         try {
-            fc = new File(cacheDir, filename);
+            fc = new File(ConfigurationManager.getInstance().getContext().getCacheDir(), filename);
             if (!fc.exists()) {
                 LoggerUtils.debug("File " + fc.getAbsolutePath() + " doesn't exists...");
             } else {
@@ -179,7 +180,7 @@ public class FileManager implements PersistenceManager {
         if (map != null) {
         	OutputStream out = null;
         	try {
-        		File fc = new File(cacheDir, filename);
+        		File fc = new File(ConfigurationManager.getInstance().getContext().getCacheDir(), filename);
         		out = new FileOutputStream(fc);
         		if (compress) {
         			map.compress(Bitmap.CompressFormat.PNG, 100, out);
@@ -228,7 +229,7 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    private static String readLine(InputStreamReader reader) throws IOException {
+    private String readLine(InputStreamReader reader) throws IOException {
         // Test whether the end of file has been reached. If so, return null.
         int readChar = reader.read();
         if (readChar == -1) {
@@ -575,31 +576,54 @@ public class FileManager implements PersistenceManager {
         return json.trim();
     }
 
-    public static String getRoutesFolderPath() {
-        return ROUTES_FOLDER;
+    public String getRoutesFolderPath() {
+        createFolder(ROUTES_FOLDER);
+    	return ROUTES_FOLDER;
     }
 
-    public static String getFileFolderPath() {
+    public String getFileFolderPath() {
+    	createFolder(FILES_FOLDER);
         return FILES_FOLDER;
     }
 
-    public static String getIconsFolderPath() {
+    public String getIconsFolderPath() {
+    	createFolder(ICONS_FOLDER);
         return ICONS_FOLDER;
     }
 
-    private static String getImagesFolder() {
+    private String getImagesFolder() {
+    	createFolder(IMAGES_FOLDER);
         return IMAGES_FOLDER;
     }
 
-    public static String getTilesFolder() {
+    public String getTilesFolder() {
+    	createFolder(TILES_FOLDER);
         return TILES_FOLDER;
     }
     
-    private static String getLogsFolder() {
+    private String getLogsFolder() {
+    	createFolder(LOGS_FOLDER);
         return LOGS_FOLDER;
     }
 
-    public void createDefaultDirs() {
+    private boolean createFolder(String path) {
+    	File fc;
+    	boolean res = false;
+    	
+    	try {
+    		fc = getExternalDirectory(path, null);
+            if (!fc.exists()) {
+                res = fc.mkdirs();
+                LoggerUtils.debug("Created routes folder: " + res);
+            }
+    	} catch (Exception ex) {
+    		LoggerUtils.error("FileManager.createFolder() exception", ex);
+        }
+    	return res;
+    }
+    
+    
+    /*public void createDefaultDirs() {
         File fc;
 
         try {
@@ -645,7 +669,7 @@ public class FileManager implements PersistenceManager {
         } catch (Exception ex) {
             LoggerUtils.error("FileManager.createDefaultDirs() exception", ex);
         }
-    }
+    }*/
 
     public void deleteFile() {
         deleteFile(getImagesFolder(), MAP_FILE);
@@ -689,11 +713,11 @@ public class FileManager implements PersistenceManager {
     }
 
     public void deleteTile() {
-        deleteFile(getImagesFolder(), TILES_FILE);
+    //    deleteFile(getImagesFolder(), TILES_FILE);
     }
 
     public int deleteTilesCache() {
-        int result = 0;
+        //int result = 0;
 
         /*for (int i = 0; i < 9; i++) {
             deleteFile(getImagesFolder(), i + FORMAT_PNG);
@@ -704,7 +728,7 @@ public class FileManager implements PersistenceManager {
         List<String> images = readFolder(getImagesFolder(), FilenameFilterFactory.getFilenameFilter(FORMAT_PNG));
         new DeletingTilesTask().execute(images);*/
                  
-        return result;
+        return -1;
     }
 
     public void clearImageCache() {
@@ -776,7 +800,7 @@ public class FileManager implements PersistenceManager {
     public boolean isFolderEmpty(String path, FilenameFilter filter) {
     	try {
             File fc = getExternalDirectory(path, null);
-            if (fc.isDirectory()) {
+            if (fc.exists() && fc.isDirectory()) {
                 //apply filefilter
                 String[] fileList = fc.list(filter);
                 return (fileList == null || fileList.length == 0);
@@ -789,7 +813,7 @@ public class FileManager implements PersistenceManager {
 
     public File getExternalDirectory(String path, String file) {
 
-        String absolutePath = ROOT_FOLDER_PREFIX + packageName + "/files";
+        String absolutePath = ROOT_FOLDER_PREFIX + ConfigurationManager.getAppUtils().getPackageInfo().packageName + "/files";
 
         if (path != null) {
             absolutePath += "/" + path;
@@ -799,44 +823,8 @@ public class FileManager implements PersistenceManager {
             absolutePath += "/" + file;
         }
 
-        //sd card status message commented out
-        //int sdcardStatus = getExternalStorageStatus();
-        //if (sdcardStatus == 0) {
-        //    intents.showInfoToast(Locale.getMessage(R.string.SDcard_missing_error));
-        //} else if (sdcardStatus == 1) {
-        //    intents.showInfoToast(Locale.getMessage(R.string.SDcard_readmode_error));
-        //}
-
-        //API version 4+
-        /*Context ctx = ConfigurationManager.getInstance().getContext();
-         if (file != null) {
-         return new File(ctx.getExternalFilesDir(path), file);
-         } else {
-         return ctx.getExternalFilesDir(path);
-         }*/
-
         return new File(Environment.getExternalStorageDirectory() + absolutePath);
     }
-
-    /*private static int getExternalStorageStatus() {
-        //boolean mExternalStorageAvailable = false;
-        //boolean mExternalStorageWriteable = false;
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            // We can read and write the media
-            //mExternalStorageAvailable = mExternalStorageWriteable = true;
-            return 2;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {    // We can only read the media
-            //mExternalStorageAvailable = true;
-            //mExternalStorageWriteable = false;
-            return 1;
-        } else {
-            // Something else is wrong. It may be one of many other states, but all we need
-            //  to know is we can neither read nor write
-            //mExternalStorageAvailable = mExternalStorageWriteable = false;
-            return 0;
-        }
-    }*/
 
     public File getRouteFile(String filename) {
         return getExternalDirectory(getRoutesFolderPath(), filename);
@@ -846,7 +834,7 @@ public class FileManager implements PersistenceManager {
         return getExternalDirectory(getFileFolderPath(), filename);
     }
 
-    public static Writer openKmlRouteFile(File fc) throws IOException {
+    public Writer openKmlRouteFile(File fc) throws IOException {
         Writer out = new OutputStreamWriter(new FileOutputStream(fc), "UTF8");
 
         out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
@@ -860,7 +848,7 @@ public class FileManager implements PersistenceManager {
         return out;
     }
 
-    public static void closeKmlRouteFile(Writer out) throws IOException {
+    public void closeKmlRouteFile(Writer out) throws IOException {
         if (out != null) {
             out.write("  </Folder>\r\n");
             out.write("</Document>\r\n");
@@ -950,7 +938,7 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    public static void writePlacemark(ExtendedLandmark landmark, Writer out) throws IOException {
+    public void writePlacemark(ExtendedLandmark landmark, Writer out) throws IOException {
         if (out != null && landmark != null) {
             out.write("   <Placemark>\r\n");
             out.write("    <name>" + landmark.getName() + "</name>\r\n");
@@ -969,31 +957,6 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    /*public static void copyDatabaseToSdCard(String packageName, String dbName) {
-        LoggerUtils.debug("FileManager.copyDatabaseToSdCard() started with params: " + packageName + "," + dbName + ".");
-        try {
-            File f1 = new File("/data/data/" + packageName + "/databases/" + dbName);
-            if (f1.exists()) {
-                File f2 = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + dbName);
-                f2.createNewFile();
-                InputStream in = new FileInputStream(f1);
-                OutputStream out = new FileOutputStream(f2);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                in.close();
-                out.close();
-            }
-        } catch (FileNotFoundException ex) {
-            LoggerUtils.error(ex.getMessage() + " in the specified directory.");
-        } catch (IOException e) {
-            LoggerUtils.error("FileManager.copyDatabaseToSdCard() exception: ", e);
-        }
-        LoggerUtils.debug("FileManager.copyDatabaseToSdCard() finished.");
-    }*/
-
     private class ClearCacheTask extends GMSAsyncTask<Void, Void, Void> {
 
     	public ClearCacheTask() {
@@ -1003,11 +966,11 @@ public class FileManager implements PersistenceManager {
         @Override
         protected Void doInBackground(Void... params) {
         	//delete old images
-        	deleteFiles(cacheDir, new FileDeletePredicate());
+        	deleteFiles(ConfigurationManager.getInstance().getContext().getCacheDir(), new FileDeletePredicate());
         	//delete old logs
         	deleteFiles(getExternalDirectory(getLogsFolder(), null), new FileDeletePredicate());
         	//save log file in debug mode
-        	LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + packageName + "/files/" + LOGS_FOLDER + "/logcat" + System.currentTimeMillis() + ".txt");       	
+        	LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + ConfigurationManager.getAppUtils().getPackageInfo().packageName + "/files/" + LOGS_FOLDER + "/logcat" + System.currentTimeMillis() + ".txt");       	
         	return null;
         }
         

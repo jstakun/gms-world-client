@@ -176,7 +176,7 @@ public class IconCache {
                     try {
                         URL imageURL = new URL(uri);
                         String[] pathTokens = imageURL.getFile().split("/");
-                        img = PersistenceManagerFactory.getFileManager().readImageFile(FileManager.getIconsFolderPath(), pathTokens[pathTokens.length - 1], displayMetrics);
+                        img = FileManager.getInstance().readImageFile(FileManager.getInstance().getIconsFolderPath(), pathTokens[pathTokens.length - 1], displayMetrics);
                     } catch (Exception ex) {
                         LoggerUtils.error("IconCache.getLayerImageResource() exception 1", ex);
                     }
@@ -199,7 +199,7 @@ public class IconCache {
                 }
             } else if (type == LayerManager.LAYER_FILESYSTEM) {
             	//LoggerUtils.debug("Loading " + FileManager.getIconsFolderPath() + "/" + uri);
-                img = PersistenceManagerFactory.getFileManager().readImageFile(FileManager.getIconsFolderPath(), uri, displayMetrics);
+                img = FileManager.getInstance().readImageFile(FileManager.getInstance().getIconsFolderPath(), uri, displayMetrics);
             }
 
             if (img != null) {
@@ -238,7 +238,7 @@ public class IconCache {
                 //check if image exists in file cache
                 try {
                 	//System.out.println("Trying to find " + hash + " cache...");
-                    img = PersistenceManagerFactory.getFileManager().readImageFileFromCache(hash, displayMetrics);
+                    img = FileManager.getInstance().readImageFileFromCache(hash, displayMetrics);
                 } catch (Exception ex) {
                     LoggerUtils.error("IconCache.getThumbnailResource() exception reading image file from cache", ex);
                 }
@@ -446,9 +446,9 @@ public class IconCache {
                     if (!isImage) {
                         URL imageURL = new URL(url);
                         String[] pathTokens = imageURL.getFile().split("/");
-                        PersistenceManagerFactory.getFileManager().saveIconFile(b, pathTokens[pathTokens.length - 1]);
+                        FileManager.getInstance().saveIconFile(b, pathTokens[pathTokens.length - 1]);
                     } else {
-                        PersistenceManagerFactory.getFileManager().saveImageFileToCache(b, layer, true);
+                    	FileManager.getInstance().saveImageFileToCache(b, layer, true);
                     }
                     //
                     if (b != null && !b.isRecycled()) {

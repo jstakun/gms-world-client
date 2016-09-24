@@ -6,7 +6,6 @@ import java.util.List;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.utils.ProjectionInterface;
 
@@ -82,7 +81,7 @@ public class NavigationDrawerExpandableListAdapter extends BaseExpandableListAda
 	    landmarks.add(new NavigationDrawerListItem(landmark[4], R.id.showMyLandmarks));
 	    
 	    landmarks.add(new NavigationDrawerListItem(landmark[5], R.id.events));
-	    if (!PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getFileFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {
+	    if (!FileManager.getInstance().isFolderEmpty(FileManager.getInstance().getFileFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {
 	    	landmarks.add(new NavigationDrawerListItem(landmark[6], R.id.loadPoiFile));
 	    }
 	    

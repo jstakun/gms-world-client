@@ -10,6 +10,40 @@ import org.osmdroid.api.IMyLocationOverlay;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FavouritesDAO;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.data.FilenameFilterFactory;
+import com.jstakun.gms.android.deals.CategoriesManager;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkManager;
+import com.jstakun.gms.android.landmarks.LayerLoader;
+import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.location.LocationServicesManager;
+import com.jstakun.gms.android.osm.maps.ObservableMapView;
+import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
+import com.jstakun.gms.android.osm.maps.OsmLandmarkProjection;
+import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
+import com.jstakun.gms.android.osm.maps.OsmMarkerClusterOverlay;
+import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
+import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
+import com.jstakun.gms.android.routes.RouteRecorder;
+import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.MathUtils;
+import com.jstakun.gms.android.utils.MessageStack;
+import com.jstakun.gms.android.utils.OsUtil;
+import com.jstakun.gms.android.utils.ProjectionInterface;
+import com.jstakun.gms.android.utils.ServicesUtils;
+import com.jstakun.gms.android.utils.StringUtil;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,41 +70,6 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.Commons;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FavouritesDAO;
-import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.FilenameFilterFactory;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
-import com.jstakun.gms.android.deals.CategoriesManager;
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkManager;
-import com.jstakun.gms.android.landmarks.LayerLoader;
-import com.jstakun.gms.android.landmarks.LayerManager;
-import com.jstakun.gms.android.location.LocationServicesManager;
-import com.jstakun.gms.android.osm.maps.ObservableMapView;
-import com.jstakun.gms.android.osm.maps.OsmLandmarkOverlay;
-import com.jstakun.gms.android.osm.maps.OsmLandmarkProjection;
-import com.jstakun.gms.android.osm.maps.OsmMapsTypeSelector;
-import com.jstakun.gms.android.osm.maps.OsmMarkerClusterOverlay;
-import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
-import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
-import com.jstakun.gms.android.routes.RouteRecorder;
-import com.jstakun.gms.android.routes.RoutesManager;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.MathUtils;
-import com.jstakun.gms.android.utils.MessageStack;
-import com.jstakun.gms.android.utils.OsUtil;
-import com.jstakun.gms.android.utils.ProjectionInterface;
-import com.jstakun.gms.android.utils.ServicesUtils;
-import com.jstakun.gms.android.utils.StringUtil;
-import com.jstakun.gms.android.utils.UserTracker;
 
 public class GMSClient2OSMMainActivity extends Activity implements OnClickListener {
 
@@ -574,7 +573,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                     	pauseRecording.setTitle(R.string.Routes_PauseRecording);
                 	}
             	}
-            	if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
+            	if (FileManager.getInstance().isFolderEmpty(FileManager.getInstance().getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
         			loadRoute.setVisible(false);
         		} else {
         			loadRoute.setVisible(true);

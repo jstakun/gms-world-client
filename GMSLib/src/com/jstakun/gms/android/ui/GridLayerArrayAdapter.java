@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
 import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
@@ -77,7 +76,7 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 				if (iconUri != null && StringUtils.startsWith(iconUri, "http")) {
 					Picasso.with(parentActivity).load(iconUri).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
 				} else {
-					File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getIconsFolderPath(), iconUri);
+					File fc = FileManager.getInstance().getExternalDirectory(FileManager.getInstance().getIconsFolderPath(), iconUri);
 					Picasso.with(parentActivity).load(fc).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
 				}
 			}

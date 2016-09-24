@@ -1,5 +1,28 @@
 package com.jstakun.gms.android.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.jstakun.gms.android.ads.AdsUtils;
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.landmarks.LayerManager;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.GMSAsyncTask;
+import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.UserTracker;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,28 +36,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-
-import com.jstakun.gms.android.ads.AdsUtils;
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
-import com.jstakun.gms.android.landmarks.LayerManager;
-import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.GMSAsyncTask;
-import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.UserTracker;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
@@ -80,8 +81,7 @@ public class AddLandmarkActivity extends Activity implements OnClickListener {
         } else {
             fsCatMap = (Map<String, Map<String, String>>) ConfigurationManager.getInstance().getObject("fsCatMap", Map.class);
             if (fsCatMap == null) {
-                FileManager fm = PersistenceManagerFactory.getFileManager();
-                String json = fm.readJsonFile(R.raw.fscategories, ConfigurationManager.getInstance().getContext());
+               String json = FileManager.getInstance().readJsonFile(R.raw.fscategories, ConfigurationManager.getInstance().getContext());
                 //AsyncTaskExecutor.executeTask(new ParseFoursquareCategoriesTask(), this, json);
                 new ParseFoursquareCategoriesTask(1).execute(json);
             } else {

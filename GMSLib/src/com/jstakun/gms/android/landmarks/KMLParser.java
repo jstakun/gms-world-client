@@ -15,7 +15,7 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -49,7 +49,7 @@ public class KMLParser {
             }
             creationDate = System.currentTimeMillis();
         } else {
-            File fc = PersistenceManagerFactory.getFileManager().getExternalDirectory(source, filename);
+            File fc = FileManager.getInstance().getExternalDirectory(source, filename);
             if (!fc.exists()) {
                 throw new Exception("File " + source + "/" + filename + " doesn't exists");
             } else {

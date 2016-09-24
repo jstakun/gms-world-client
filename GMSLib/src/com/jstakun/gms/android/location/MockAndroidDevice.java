@@ -1,22 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.location;
 
-import android.content.Context;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.Message;
-
-import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.KMLParser;
-import com.jstakun.gms.android.ui.lib.R;
-import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.MercatorUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +7,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.KMLParser;
+import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.MercatorUtils;
+
+import android.content.Context;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Message;
 
 /**
  *
@@ -108,7 +104,7 @@ public class MockAndroidDevice extends AndroidDevice {
                 createExternalStoragePrivateFile();
 
                 try {
-                    parser.parse(FileManager.getRoutesFolderPath(), ROUTE, routePoints, false, null, null);
+                    parser.parse(FileManager.getInstance().getRoutesFolderPath(), ROUTE, routePoints, false, null, null);
                 } catch (Exception ex) {
                     LoggerUtils.debug("LMCanvas.loadRouteAction exception", ex);
                 }
@@ -156,7 +152,7 @@ public class MockAndroidDevice extends AndroidDevice {
 
         private void createExternalStoragePrivateFile() {
             Context ctx = ConfigurationManager.getInstance().getContext();
-            File file = PersistenceManagerFactory.getFileManager().getExternalDirectory(FileManager.getRoutesFolderPath(), ROUTE);
+            File file = FileManager.getInstance().getExternalDirectory(FileManager.getInstance().getRoutesFolderPath(), ROUTE);
             InputStream is = null;
             OutputStream os = null;
 

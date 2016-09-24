@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
@@ -178,7 +178,7 @@ public class RouteRecorder {
         //System.out.println("RouteRecorder.saveRoute");
         String description = Locale.getMessage(R.string.Routes_Recording_description, dist, avg, timeInterval);
         LoggerUtils.debug("Saving route - " + description);
-        PersistenceManagerFactory.getFileManager().saveKmlRoute(points, description, filename);
+        FileManager.getInstance().saveKmlRoute(points, description, filename);
         return new String[]{filename, description};
     }
     

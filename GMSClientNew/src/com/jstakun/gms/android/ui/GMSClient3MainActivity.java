@@ -453,7 +453,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         					pauseRecording.setTitle(R.string.Routes_PauseRecording);
         				}
         			}
-        			if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
+        			if (FileManager.getInstance().isFolderEmpty(FileManager.getInstance().getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
         				loadRoute.setVisible(false);
         			} else {
         				loadRoute.setVisible(true);
@@ -1201,7 +1201,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     				ByteArrayOutputStream out = new ByteArrayOutputStream();
                 	screenshot.compress(Bitmap.CompressFormat.JPEG, 80, out);
                 
-                	Uri uri = PersistenceManagerFactory.getFileManager().saveImageFile(screenshot, "screenshot.jpg");
+                	Uri uri = FileManager.getInstance().saveImageFile(screenshot, "screenshot.jpg");
                 	
                 	int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
                     LoggerUtils.debug("Shutter sound played with id " + id);

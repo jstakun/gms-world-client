@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
+import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkProjectionV2;
 import com.jstakun.gms.android.google.maps.GoogleMapsV2TypeSelector;
@@ -710,7 +710,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     				ByteArrayOutputStream out = new ByteArrayOutputStream();
                 	screenshot.compress(Bitmap.CompressFormat.JPEG, 80, out);
                 
-                	Uri uri = PersistenceManagerFactory.getFileManager().saveImageFile(screenshot, "screenshot.jpg");
+                	Uri uri = FileManager.getInstance().saveImageFile(screenshot, "screenshot.jpg");
                 	
                 	int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
                     LoggerUtils.debug("Shutter sound played with id " + id);

@@ -9,25 +9,6 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
 import org.osmdroid.api.IMyLocationOverlay;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ResolveInfo;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.SpannableString;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -37,7 +18,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
 import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
@@ -62,6 +42,25 @@ import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.SpannableString;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
+import android.widget.TextView;
  
 public class GMSClientMainActivity extends MapActivity implements OnClickListener {
 
@@ -525,7 +524,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         				pauseRecording.setTitle(R.string.Routes_PauseRecording);
         			}
         		}
-        		if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
+        		if (FileManager.getInstance().isFolderEmpty(FileManager.getInstance().getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
         			loadRoute.setVisible(false);
         		} else {
         			loadRoute.setVisible(true);

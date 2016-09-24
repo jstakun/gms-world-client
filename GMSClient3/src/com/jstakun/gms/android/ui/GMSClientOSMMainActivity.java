@@ -17,7 +17,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkManager;
@@ -494,7 +493,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         				pauseRecording.setTitle(R.string.Routes_PauseRecording);
         			}
         		}
-        		if (PersistenceManagerFactory.getFileManager().isFolderEmpty(FileManager.getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
+        		if (FileManager.getInstance().isFolderEmpty(FileManager.getInstance().getRoutesFolderPath(), FilenameFilterFactory.getFilenameFilter("kml"))) {    
         			loadRoute.setVisible(false);
         		} else {
         			loadRoute.setVisible(true);

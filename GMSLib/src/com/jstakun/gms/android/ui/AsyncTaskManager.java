@@ -9,21 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.location.Location;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.net.Uri;
-import android.os.Handler;
-import android.os.Message;
-import android.view.View;
-
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FileManager;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.deals.CategoryJsonParser;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -47,6 +35,17 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MercatorUtils;
 import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.StringUtil;
+
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.location.Location;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
 
 /**
  *
@@ -249,7 +248,7 @@ public class AsyncTaskManager {
             KMLParser parser = new KMLParser();
 
             try {
-                parser.parse(FileManager.getRoutesFolderPath(), filename, routePoints, false, Commons.ROUTES_LAYER, this);
+                parser.parse(FileManager.getInstance().getRoutesFolderPath(), filename, routePoints, false, Commons.ROUTES_LAYER, this);
                 if (!isCancelled()) {
                     String description = parser.getDescription();
                     RoutesManager.getInstance().addRoute(filename, routePoints, description);
@@ -370,13 +369,13 @@ public class AsyncTaskManager {
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 
         try {
-            parser.parse(FileManager.getFileFolderPath(), filename, landmarks, false, filename, caller);
+            parser.parse(FileManager.getInstance().getFileFolderPath(), filename, landmarks, false, filename, caller);
         } catch (Exception ex) {
             LoggerUtils.error("AsyncTaskManager.loadFileAction exception", ex);
         }
 
         if (!caller.isCancelled()) {
-            if (!PersistenceManagerFactory.getFileManager().fileExists(FileManager.getIconsFolderPath(), iconPath)) {
+            if (!FileManager.getInstance().fileExists(FileManager.getInstance().getIconsFolderPath(), iconPath)) {
                 iconPath = null;
             }
 
@@ -844,15 +843,13 @@ public class AsyncTaskManager {
 
         @Override
         protected Void doInBackground(Void... arg0) {
-            FileManager fm = PersistenceManagerFactory.getFileManager();
-
             if (!isCancelled()) {
-                String catjson = fm.readJsonFile(R.raw.category, ConfigurationManager.getInstance().getContext());
+                String catjson = FileManager.getInstance().readJsonFile(R.raw.category, ConfigurationManager.getInstance().getContext());
                 CategoriesManager.getInstance().setCategories(CategoryJsonParser.parserCategoryJson(catjson, -1, this));
             }
 
             if (!isCancelled()) {
-                String subcatjson = fm.readJsonFile(R.raw.subcategory, ConfigurationManager.getInstance().getContext());
+                String subcatjson = FileManager.getInstance().readJsonFile(R.raw.subcategory, ConfigurationManager.getInstance().getContext());
                 CategoriesManager.getInstance().setSubcategories(CategoryJsonParser.parserCategoryJson(subcatjson, -1, this), initStats);
             }
             
@@ -971,7 +968,7 @@ public class AsyncTaskManager {
                     screenshot.compress(Bitmap.CompressFormat.JPEG, 80, out);
                     
                     if (screenshot != null) {  
-                    	uri = PersistenceManagerFactory.getFileManager().saveImageFile(screenshot, "screenshot.jpg");
+                    	uri = FileManager.getInstance().saveImageFile(screenshot, "screenshot.jpg");
                     }
                     
                     scr = out.toByteArray();
