@@ -64,7 +64,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private MapView mapView;
     private MapController mapController;
     private GoogleMyLocationOverlay myLocation;
-    private LayerLoader layerLoader;
     
     private DealOfTheDayDialog dealOfTheDayDialog;
     
@@ -307,7 +306,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                         mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
             } else {
             	//load existing layers
-                if (layerLoader.isLoading()) {
+                if (LayerLoader.getInstance().isLoading()) {
                     loadingHandler.sendEmptyMessage(MessageStack.STATUS_VISIBLE);
                 } else {
                     loadingHandler.sendEmptyMessage(MessageStack.STATUS_GONE);
@@ -317,8 +316,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             }
             
             loadingProgressBar.setProgress(100);
-            
-            layerLoader.setRepaintHandler(loadingHandler);
              
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
             
