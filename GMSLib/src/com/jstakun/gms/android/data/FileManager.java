@@ -731,8 +731,8 @@ public class FileManager implements PersistenceManager {
         return -1;
     }
 
-    public void clearImageCache() {
-        new ClearCacheTask().execute();
+    public void clearImageCache(File cacheDir) {
+        new ClearCacheTask().execute(cacheDir);
     }
 
     public boolean fileExists(String path, String filename) {
@@ -957,16 +957,16 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    private class ClearCacheTask extends GMSAsyncTask<Void, Void, Void> {
+    private class ClearCacheTask extends GMSAsyncTask<File, Void, Void> {
 
     	public ClearCacheTask() {
         	super(10, ClearCacheTask.class.getName());
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Void doInBackground(File... params) {
         	//delete old images
-        	deleteFiles(ConfigurationManager.getInstance().getContext().getCacheDir(), new FileDeletePredicate());
+        	deleteFiles(params[0], new FileDeletePredicate());
         	//delete old logs
         	deleteFiles(getExternalDirectory(getLogsFolder(), null), new FileDeletePredicate());
         	//save log file in debug mode

@@ -1403,10 +1403,11 @@ public final class IntentsHelper {
         RoutesManager.getInstance().clearRoutesStore();
 
         ConfigurationManager.getDatabaseManager().closeAllDatabases();
-        ConfigurationManager.getInstance().clearObjectCache();
         IconCache.getInstance().clearAll();
         
-        FileManager.getInstance().clearImageCache();
+        FileManager.getInstance().clearImageCache(ConfigurationManager.getInstance().getContext().getCacheDir());
+        
+        ConfigurationManager.getInstance().clearObjectCache();
         
         showShortToast(Locale.getMessage(R.string.Close_app_bye));
         LoggerUtils.debug("Bye...");
