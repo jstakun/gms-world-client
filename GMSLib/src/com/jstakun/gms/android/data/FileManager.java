@@ -731,8 +731,8 @@ public class FileManager implements PersistenceManager {
         return -1;
     }
 
-    public void clearImageCache(File cacheDir) {
-        new ClearCacheTask().execute(cacheDir);
+    public void clearImageCache() {
+        new ClearCacheTask().execute(ConfigurationManager.getInstance().getContext().getCacheDir());
     }
 
     public boolean fileExists(String path, String filename) {

@@ -1405,7 +1405,7 @@ public final class IntentsHelper {
         ConfigurationManager.getDatabaseManager().closeAllDatabases();
         IconCache.getInstance().clearAll();
         
-        FileManager.getInstance().clearImageCache(ConfigurationManager.getInstance().getContext().getCacheDir());
+        FileManager.getInstance().clearImageCache();
         
         ConfigurationManager.getInstance().clearObjectCache();
         

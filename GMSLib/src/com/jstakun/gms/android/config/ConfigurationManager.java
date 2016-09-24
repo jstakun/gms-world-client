@@ -101,7 +101,6 @@ public final class ConfigurationManager {
     public static final String LAST_STARTING_DATE = "lastStartingDate";
     public static final String NOTIFICATION_RUNNING_DATE = "notificationRunningDate";
     public static final String LOCATION = "location";
-    public static final String CONTEXT = "context";
     public static final String LAYER_PAINT_LIMIT = "layerPaintLimit";
     public static final String TOTAL_PAINT_LIMIT = "totalPaintLimit";
     public static final String DEAL_LIMIT = "dealLimit";
@@ -216,6 +215,8 @@ public final class ConfigurationManager {
 	public static final int DYNAMIC_LAYERS_MODE = 1;
 	public static final int ALL_LAYERS_MODE = 0;
     
+	private Context context = null;
+	
     private ConfigurationManager() {
     }
 
@@ -300,14 +301,11 @@ public final class ConfigurationManager {
     }
 
     public Context getContext() {
-        if (containsObject(CONTEXT, Context.class)) {
-            return (Context) objectCache.get(CONTEXT);
-        }
-        return null;
+        return context;
     }
 
     public void setContext(Context c) {
-        putObject(CONTEXT, c);
+        context = c;
     }
 
     //server urls
