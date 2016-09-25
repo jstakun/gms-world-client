@@ -1,7 +1,6 @@
 package com.jstakun.gms.android.ui.deals;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -29,7 +28,6 @@ import com.jstakun.gms.android.ui.AlertDialogBuilder;
 import com.jstakun.gms.android.ui.AsyncTaskManager;
 import com.jstakun.gms.android.ui.DialogManager;
 import com.jstakun.gms.android.ui.HelpActivity;
-import com.jstakun.gms.android.ui.IntentArrayAdapter;
 import com.jstakun.gms.android.ui.IntentsHelper;
 import com.jstakun.gms.android.ui.LandmarkListActivity;
 import com.jstakun.gms.android.ui.MapInfoView;
@@ -40,13 +38,11 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.MessageStack;
 import com.jstakun.gms.android.utils.OsUtil;
-import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
@@ -556,23 +552,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             IntentsHelper.getInstance().showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
-        if (ConfigurationManager.getInstance().containsObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class)) {
-            int type = (Integer) ConfigurationManager.getInstance().getObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            IntentArrayAdapter arrayAdapter = null;
-            if (type == AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG) {
-                showRecommendedDeal(true);
-            } else {
-                if (type == AlertDialogBuilder.SHARE_INTENTS_DIALOG) {
-                    List<ResolveInfo> intentList = IntentsHelper.getInstance().getSendIntentsList();
-                    if (!intentList.isEmpty()) {
-                        arrayAdapter = new IntentArrayAdapter(this, intentList);
-                    }
-                }
-                DialogManager.getInstance().showAlertDialog(this, type, arrayAdapter, null);
-            }
-        }
-
+        IntentsHelper.getInstance().showStatusDialogs();
+        
         IntentsHelper.getInstance().onAppVersionChanged();
 
         if (ConfigurationManager.getInstance().removeObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class) != null) {
@@ -595,8 +576,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        IntentsHelper.getInstance().setActivity(this);
-        IntentsHelper.getInstance().showStatusDialogs();
     }
 
     @Override

@@ -37,7 +37,6 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
 import com.jstakun.gms.android.utils.MessageStack;
 import com.jstakun.gms.android.utils.OsUtil;
-import com.jstakun.gms.android.utils.ServicesUtils;
 import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 
@@ -530,22 +529,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             IntentsHelper.getInstance().showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
-        if (ConfigurationManager.getInstance().containsObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class)) {
-            int type = (Integer) ConfigurationManager.getInstance().getObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-            IntentArrayAdapter arrayAdapter = null;
-            if (type == AlertDialogBuilder.DEAL_OF_THE_DAY_DIALOG) {
-                showRecommendedDeal(true);
-            } else {
-                if (type == AlertDialogBuilder.SHARE_INTENTS_DIALOG) {
-                    List<ResolveInfo> intentList = IntentsHelper.getInstance().getSendIntentsList();
-                    if (!intentList.isEmpty()) {
-                        arrayAdapter = new IntentArrayAdapter(this, intentList);
-                    }
-                }
-                DialogManager.getInstance().showAlertDialog(this, type, arrayAdapter, null);
-            }
-        }
+        IntentsHelper.getInstance().showStatusDialogs();
 
         IntentsHelper.getInstance().onAppVersionChanged();
 
@@ -573,8 +557,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        IntentsHelper.getInstance().setActivity(this);
-        IntentsHelper.getInstance().showStatusDialogs();
     }
 
     @Override

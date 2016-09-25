@@ -50,7 +50,6 @@ import com.jstakun.gms.android.utils.UserTracker;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
@@ -68,7 +67,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -287,8 +285,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     @Override
     public void onStart() {
         super.onStart();       
-        IntentsHelper.getInstance().setActivity(this);
-        IntentsHelper.getInstance().showStatusDialogs();
     }
 
     @Override
@@ -329,21 +325,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             IntentsHelper.getInstance().showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
-        Integer type = (Integer) ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-        if (type != null) {
-            ArrayAdapter<?> arrayAdapter = null;
-            if (type == AlertDialogBuilder.SHARE_INTENTS_DIALOG) {
-                List<ResolveInfo> intentList = IntentsHelper.getInstance().getSendIntentsList();
-                if (!intentList.isEmpty()) {
-                    arrayAdapter = new IntentArrayAdapter(this, intentList);
-                }
-            } else if (type == AlertDialogBuilder.LOGIN_DIALOG) {
-                if (!ConfigurationManager.getUserManager().isUserLoggedInFully()) {
-                    arrayAdapter = new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false));
-                }
-            }
-            DialogManager.getInstance().showAlertDialog(this, type, arrayAdapter, null);
-        }
+        IntentsHelper.getInstance().showStatusDialogs();
 
         IntentsHelper.getInstance().onAppVersionChanged();
 

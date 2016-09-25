@@ -899,6 +899,9 @@ public class FileManager implements PersistenceManager {
         	deleteFiles(getExternalDirectory(getLogsFolder(), null), new FileDeletePredicate());
         	//save log file in debug mode
         	LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + ConfigurationManager.getAppUtils().getPackageInfo().packageName + "/files/" + LOGS_FOLDER + "/logcat" + System.currentTimeMillis() + ".txt");       	
+        	//set context == null
+        	LoggerUtils.debug("Deleting saved application context.");
+        	ConfigurationManager.getInstance().setContext(null);
         	return null;
         }
         

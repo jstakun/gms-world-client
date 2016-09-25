@@ -79,6 +79,7 @@ import android.text.Html.ImageGetter;
 import android.text.method.LinkMovementMethod;
 import android.view.Display;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -1128,10 +1129,6 @@ public final class IntentsHelper {
         }
         int buildVersion = ConfigurationManager.getInstance().getInt(ConfigurationManager.BUILD_VERSION);
         
-        //if (buildVersion != -1 && buildVersion < 1000) { //2.0.1
-        //    PersistenceManagerFactory.getPersistenceManagerInstance().deleteTilesCache();
-        //}
-        
         if (buildVersion < versionCode) {
         
         	//info.versionName ends with m;
@@ -1456,20 +1453,40 @@ public final class IntentsHelper {
     }
     
     public void showStatusDialogs() {
-    	boolean networkActive = ServicesUtils.isNetworkActive(activity);
-        if (!networkActive && !ConfigurationManager.getInstance().containsObject("NetworkStatus", Object.class)) {
-        	ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
-        	DialogManager.getInstance().showAlertDialog(activity, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
-        }
+    	//check if dialog is open
+    	Integer type = (Integer) ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
+        if (type != null) {
+            ArrayAdapter<?> arrayAdapter = null;
+            if (type == AlertDialogBuilder.SHARE_INTENTS_DIALOG) {
+                List<ResolveInfo> intentList = IntentsHelper.getInstance().getSendIntentsList();
+                if (!intentList.isEmpty()) {
+                    arrayAdapter = new IntentArrayAdapter(activity, intentList);
+                }
+            } else if (type == AlertDialogBuilder.LOGIN_DIALOG) {
+                if (!ConfigurationManager.getUserManager().isUserLoggedInFully()) {
+                    arrayAdapter = new LoginArrayAdapter(activity, ConfigurationManager.getUserManager().getLoginItems(false));
+                }
+            }
+            DialogManager.getInstance().showAlertDialog(activity, type, arrayAdapter, null);
+        } else {
+        	//show network status dialog
+        	boolean networkActive = ServicesUtils.isNetworkActive(activity);
+        	if (!networkActive && !ConfigurationManager.getInstance().containsObject("NetworkStatus", Integer.class)) {
+        		LoggerUtils.debug("No network is available. Showing network dialog!");
+        		ConfigurationManager.getInstance().putObject("NetworkStatus", new Integer(1));
+        		DialogManager.getInstance().showAlertDialog(activity, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
+        	}
 
-        int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
-        //show rate us dialog
-        if (useCount > 0 && (useCount % 10) == 0) {
-        	if (networkActive && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && !ConfigurationManager.getInstance().containsObject("RateDialogStatus", Object.class)) {
-        		ConfigurationManager.getInstance().putObject("RateDialogStatus", new Object());
-        		DialogManager.getInstance().showAlertDialog(activity, AlertDialogBuilder.RATE_US_DIALOG, null, null);
-                ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
-        	} 
+        	int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
+        	//show rate us dialog
+        	if (useCount > 0 && (useCount % 10) == 0) {
+        		if (networkActive && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && !ConfigurationManager.getInstance().containsObject("RateDialogStatus", Integer.class)) {
+        			ConfigurationManager.getInstance().putObject("RateDialogStatus", new Integer(1));
+        			LoggerUtils.debug("Showing rate us dialog!");
+        			DialogManager.getInstance().showAlertDialog(activity, AlertDialogBuilder.RATE_US_DIALOG, null, null);
+        			ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
+        		} 
+        	}
         }
     }
     

@@ -2,7 +2,6 @@ package com.jstakun.gms.android.ui;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -51,7 +50,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.media.AudioManager;
@@ -79,7 +77,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -282,21 +279,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             IntentsHelper.getInstance().showLandmarkDetailsView(landmark, lvView, getMyPosition(), true);
         }
 
-        Integer type = (Integer) ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
-        if (type != null) {
-            ArrayAdapter<?> arrayAdapter = null;
-            if (type == AlertDialogBuilder.SHARE_INTENTS_DIALOG) {
-                List<ResolveInfo> intentList = IntentsHelper.getInstance().getSendIntentsList();
-                if (!intentList.isEmpty()) {
-                    arrayAdapter = new IntentArrayAdapter(this, intentList);
-                }
-            } else if (type == AlertDialogBuilder.LOGIN_DIALOG) {
-                if (!ConfigurationManager.getUserManager().isUserLoggedInFully()) {
-                    arrayAdapter = new LoginArrayAdapter(this, ConfigurationManager.getUserManager().getLoginItems(false));
-                }
-            }
-            DialogManager.getInstance().showAlertDialog(this, type, arrayAdapter, null);
-        }
+        IntentsHelper.getInstance().showStatusDialogs();
 
         IntentsHelper.getInstance().onAppVersionChanged();
 
@@ -319,8 +302,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public void onStart() {
     	LoggerUtils.debug("onStart");
         super.onStart();
-        IntentsHelper.getInstance().setActivity(this);
-        IntentsHelper.getInstance().showStatusDialogs();
     }
     
     @Override
