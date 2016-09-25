@@ -160,27 +160,20 @@ public class OsUtil {
     }
     
     public static String getDeviceId(Context context) {
-        String id = getUniqueID(context);
-        if (id == null)
-            id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        return id;
-    }
-
-    private static String getUniqueID(Context context) {
-
-        String telephonyDeviceId = null;
+        //String telephonyDeviceId = null;
         String androidDeviceId = null;
 
         if (context != null) {
-        // get telephony id
-        	try {
-        		final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        		telephonyDeviceId = tm.getDeviceId();     		
-        	} catch (Exception e) {
-        		LoggerUtils.error("OsUtil.getUniqueId() exception", e);
-        	}
+        	//android.Manifest.permission.READ_PHONE_STATE required
+        	// get telephony id
+        	//try {
+        	//	final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        	//	telephonyDeviceId = tm.getDeviceId();     		
+        	//} catch (Exception e) {
+        	//	LoggerUtils.error("OsUtil.getUniqueId() exception", e);
+        	//}
         
-                // get internal android device id
+            // get internal android device id
         	try {
         		androidDeviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);          
         	} catch (Exception e) {
@@ -188,15 +181,16 @@ public class OsUtil {
         	}
         }
         
-        if (telephonyDeviceId == null) {
-			telephonyDeviceId = "NoTelephonyId";
-		}
+        //if (telephonyDeviceId == null) {
+		//	telephonyDeviceId = "NoTelephonyId";
+		//}
 
         if (androidDeviceId == null) {
             androidDeviceId = "NoAndroidId";
         }
 
-        return androidDeviceId.equals("NoAndroidId") ? telephonyDeviceId : androidDeviceId;
+        //return androidDeviceId.equals("NoAndroidId") ? telephonyDeviceId : androidDeviceId;
+        return androidDeviceId;
     }
 
     private static class BuildVersionHelperInternal {

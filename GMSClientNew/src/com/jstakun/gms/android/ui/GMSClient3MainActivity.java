@@ -91,6 +91,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private static final int PICK_LOCATION = 1;
 	private static final int PERMISSION_ACCESS_LOCATION = 0;
 	private static final int PERMISSION_CALL_PHONE = 1;
+	private static final int PERMISSION_INITIAL = 2;
 	
 	private GoogleLandmarkProjectionV2 projection;
 	private GoogleMarkerClusterOverlay markerCluster;
@@ -231,6 +232,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         }
         
         loadingProgressBar.setProgress(50);
+        
+        //reqest for permissions
+        
+        //if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+        //		ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        //    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_PHONE_STATE}, PERMISSION_INITIAL);
+        //}
     }
     
     @Override
@@ -309,6 +317,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     
     @Override
     public void onStart() {
+    	LoggerUtils.debug("onStart");
         super.onStart();
         IntentsHelper.getInstance().setActivity(this);
         IntentsHelper.getInstance().showStatusDialogs();
@@ -316,6 +325,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     
     @Override
     public void onPause() {
+    	LoggerUtils.debug("onPause");
         super.onPause();
         GmsLocationServicesManager.getInstance().disable();
         DialogManager.getInstance().dismissDialog(this);
@@ -710,6 +720,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    		break;
 	    	case PERMISSION_CALL_PHONE:
 	    		IntentsHelper.getInstance().startPhoneCallActivity(LandmarkManager.getInstance().getSeletedLandmarkUI());
+	    		break;
+	    	case PERMISSION_INITIAL:
 	    		break;
 	    	default:	
 	    		break; 	

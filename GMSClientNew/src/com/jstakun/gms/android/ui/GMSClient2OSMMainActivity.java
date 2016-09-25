@@ -86,7 +86,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 	
 	private static final int PERMISSION_ACCESS_LOCATION = 0;
 	private static final int PERMISSION_CALL_PHONE = 1;
-	private static final int PERMISSION_EXTERNAL_STORAGE = 2;
+	private static final int PERMISSION_INITIAL = 2;
 	
     private MapView mapView;
     private IMapController mapController;
@@ -284,9 +284,16 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
         
         loadingProgressBar.setProgress(50);
+    
+        //request for permissions
+        
+        //if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+        //		ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        //    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_PHONE_STATE}, PERMISSION_INITIAL);
+        //}
         
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_EXTERNAL_STORAGE);
+        	 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_INITIAL);
         }
     }
 
@@ -982,7 +989,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 	    	case PERMISSION_CALL_PHONE:
 	    		 IntentsHelper.getInstance().startPhoneCallActivity(LandmarkManager.getInstance().getSeletedLandmarkUI());
 	    		 break;
-	    	case PERMISSION_EXTERNAL_STORAGE:
+	    	case PERMISSION_INITIAL:
 	    		 break;
 	    	default:	
 	    		 break; 	

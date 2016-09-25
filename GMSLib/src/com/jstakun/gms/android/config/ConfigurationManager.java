@@ -299,7 +299,7 @@ public final class ConfigurationManager {
             return false;
         }
     }
-
+    
     public Context getContext() {
         return context;
     }

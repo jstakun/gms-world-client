@@ -1456,21 +1456,19 @@ public final class IntentsHelper {
     }
     
     public void showStatusDialogs() {
-    	Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
-        boolean networkActive = ServicesUtils.isNetworkActive(activity);
-        if (networkStatus == null && !networkActive) {
+    	boolean networkActive = ServicesUtils.isNetworkActive(activity);
+        if (!networkActive && !ConfigurationManager.getInstance().containsObject("NetworkStatus", Object.class)) {
+        	ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
         	DialogManager.getInstance().showAlertDialog(activity, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
-            ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
         }
 
         int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
         //show rate us dialog
         if (useCount > 0 && (useCount % 10) == 0) {
-        	Object rateDialogStatus = ConfigurationManager.getInstance().getObject("RateDialogStatus", Object.class);
-        	if (rateDialogStatus == null && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && networkActive) {
-            	DialogManager.getInstance().showAlertDialog(activity, AlertDialogBuilder.RATE_US_DIALOG, null, null);
+        	if (networkActive && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && !ConfigurationManager.getInstance().containsObject("RateDialogStatus", Object.class)) {
+        		ConfigurationManager.getInstance().putObject("RateDialogStatus", new Object());
+        		DialogManager.getInstance().showAlertDialog(activity, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
-                ConfigurationManager.getInstance().putObject("RateDialogStatus", new Object());
         	} 
         }
     }
