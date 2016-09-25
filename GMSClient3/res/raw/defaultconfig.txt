@@ -41,12 +41,6 @@ setLastKnownLocAtStartup;1
 adsProvider;3
 memoryCacheSize;48
 routeType;0
-Groupon_status;0
-Coupons_status;0
-Eventful_status;0
-Picasa_status;0
-Flickr_status;0
-Expedia_status;0
 loadDisabledLayers;1
 bitmapType;0
 layerPaintLimit;15

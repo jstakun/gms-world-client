@@ -145,34 +145,6 @@ public class OsmMarkerClusterOverlay extends RadiusMarkerClusterer {
 			marker.setPosition(new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6())); 
 			marker.setTitle(landmark.getName());
 		
-			//TODO testing
-			/*boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-			
-			int color = COLOR_WHITE;
-			if (landmark.isCheckinsOrPhotos()) {
-				color = COLOR_LIGHT_SALMON;
-			} else if (landmark.getRating() >= 0.85) {
-				color = COLOR_PALE_GREEN;
-			}
-
-			DisplayMetrics displayMetrics = mapView.getResources().getDisplayMetrics();
-			Drawable frame = null;
-        
-        	if (landmark.getCategoryId() != -1) {
-            	int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-            	frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, displayMetrics);
-        	} else { //if (!landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-           		//doesn't work with local layer
-        		BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, displayMetrics, null);
-           		frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, displayMetrics);
-        	} //else if (landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-        	//	frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
-        	//}
-        		
-        	if (frame != null) {
-        		marker.setIcon(frame); 
-        	}*/
-				
 			marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 			
 				@Override

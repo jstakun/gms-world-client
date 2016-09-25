@@ -301,23 +301,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     @Override
     public void onStart() {
         super.onStart();
-        Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
-        boolean networkActive = ServicesUtils.isNetworkActive(this);
-        if (networkStatus == null && !networkActive) {
-        	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
-            ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
-        }
-
-        Object rateDialogStatus = ConfigurationManager.getInstance().getObject("rateDialogStatus", Object.class);
-        if (rateDialogStatus == null && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && networkActive) {
-            int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
-            //show rate us dialog
-            if (useCount > 0 && (useCount % 10) == 0) {
-            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
-                ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
-                ConfigurationManager.getInstance().putObject("rateDialogStatus", new Object());
-            }
-        }
+        IntentsHelper.getInstance().setActivity(this);
+        IntentsHelper.getInstance().showStatusDialogs();
     }
 
     @Override

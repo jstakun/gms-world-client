@@ -21,7 +21,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.data.FavouritesDAO;
 import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.data.FilenameFilterFactory;
-import com.jstakun.gms.android.data.PersistenceManagerFactory;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkOverlay;
 import com.jstakun.gms.android.google.maps.GoogleMapsTypeSelector;
@@ -286,6 +285,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     @Override
+    public void onStart() {
+        super.onStart();       
+        IntentsHelper.getInstance().setActivity(this);
+        IntentsHelper.getInstance().showStatusDialogs();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         LoggerUtils.debug("onResume");
@@ -357,29 +363,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         syncRoutesOverlays();
         
         IntentsHelper.getInstance().startAutoCheckinBroadcast(); 
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        
-        Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
-        boolean networkActive = ServicesUtils.isNetworkActive(this);
-        if (networkStatus == null && !networkActive) {
-        	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
-            ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
-        }
-
-        Object rateDialogStatus = ConfigurationManager.getInstance().getObject("rateDialogStatus", Object.class);
-        if (rateDialogStatus == null && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && networkActive) {
-            int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
-            //show rate us dialog
-            if (useCount > 0 && (useCount % 10) == 0) {
-            	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
-                ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
-                ConfigurationManager.getInstance().putObject("rateDialogStatus", new Object());
-            }
-        }
     }
 
     @Override

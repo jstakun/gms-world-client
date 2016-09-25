@@ -24,8 +24,6 @@ import android.graphics.Point;
  */
 public class OsmRoutesOverlay extends Overlay {
 
-    //private String routeName = null;
-    //private final Paint lmpaint = new Paint();
     private final Paint paint = new Paint();
     private final Path path = new Path();
     private final Point point1 = new Point();

@@ -290,25 +290,8 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	@Override
     public void onStart() {
         super.onStart();
-        
-        //show network status dialog
-        Object networkStatus = ConfigurationManager.getInstance().getObject("NetworkStatus", Object.class);
-        boolean networkActive = ServicesUtils.isNetworkActive(this);
-        if (networkStatus == null && !networkActive) {
-            DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.NETWORK_ERROR_DIALOG, null, null);
-            ConfigurationManager.getInstance().putObject("NetworkStatus", new Object());
-        }
-
-		//show rate us dialog
-        Object rateDialogStatus = ConfigurationManager.getInstance().getObject("rateDialogStatus", Object.class);
-        if (rateDialogStatus == null && ConfigurationManager.getInstance().isOff(ConfigurationManager.APP_RATED) && networkActive) {
-            int useCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.USE_COUNT);
-            if (useCount > 0 && (useCount % 10) == 0) {
-                DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
-                ConfigurationManager.getInstance().putInteger(ConfigurationManager.USE_COUNT, useCount + 1);
-                ConfigurationManager.getInstance().putObject("rateDialogStatus", new Object());
-            }
-        }
+        IntentsHelper.getInstance().setActivity(this);
+        IntentsHelper.getInstance().showStatusDialogs();
     }
 	
 	@Override

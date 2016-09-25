@@ -116,34 +116,11 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 				marker = (GoogleMarker)landmark.getRelatedUIObject();
 			}
 			if (marker == null) {
-				//TODO testing
-				/*boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
-			
-				int color = COLOR_WHITE;
-				if (landmark.isCheckinsOrPhotos()) {
-					color = COLOR_LIGHT_SALMON;
-				} else if (landmark.getRating() >= 0.85) {
-					color = COLOR_PALE_GREEN;
-				}
-
-				Drawable frame = null;
-        
-				if (landmark.getCategoryId() != -1) {
-            		int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
-            		frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, mDisplayMetrics);
-        		} else { //if (!landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-           			//doesn't work with local layer
-        			BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, mDisplayMetrics, null);
-           			frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, mDisplayMetrics);
-        		} //else if (landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-        		//	frame = IconCache.getInstance().getCategoryBitmap(R.drawable.ok, "local", -1, false, null);
-        		//}
-        		marker = new GoogleMarker(landmark, frame);*/
 				marker = new GoogleMarker(landmark);
 				landmark.setRelatedUIObject(marker);
 				mClusterManager.addItem(marker);
 				added = true;
-			} else { //if (!mClusterManager.getMarkerCollection().getMarkers().contains(marker)) {
+			} else { 
 				mClusterManager.addItem(marker);
 				added = true;
 			}	
@@ -206,11 +183,6 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 		
 		@Override
 	    protected void onBeforeClusterItemRendered(GoogleMarker marker, MarkerOptions markerOptions) {
-			//try {
-			//	markerOptions.icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable)marker.getIcon()).getBitmap()));
-			//} catch (Exception e) {
-			//	LoggerUtils.error("Unable to load bitmap for layer " + marker.getRelatedObject().getLayer(), e);
-			//}
 			ExtendedLandmark landmark = marker.getRelatedObject();
 			
 			boolean isMyPosLayer = landmark.getLayer().equals(Commons.MY_POSITION_LAYER);
@@ -227,8 +199,7 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
 			if (landmark.getCategoryId() != -1) {
         		int icon = LayerManager.getDealCategoryIcon(landmark.getCategoryId(), LayerManager.LAYER_ICON_LARGE);
         		frame = IconCache.getInstance().getCategoryBitmap(icon, Integer.toString(landmark.getCategoryId()), color, !isMyPosLayer, mDisplayMetrics);
-    		} else { //if (!landmark.getLayer().equals(Commons.LOCAL_LAYER)) {
-       			//doesn't work with local layer
+    		} else { 
     			BitmapDrawable icon = LayerManager.getLayerIcon(landmark.getLayer(), LayerManager.LAYER_ICON_LARGE, mDisplayMetrics, null);
        			frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, mDisplayMetrics);
     		} 
