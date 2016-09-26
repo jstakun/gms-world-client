@@ -24,7 +24,8 @@ public class GoogleRoutesOverlay {
 	private GoogleMap mMap;
 	private float mDensity;
 	private GoogleMarkerClusterOverlay mMarkerCluster;
-	private Polyline mRoutePolyline = null;
+	private Polyline mCurrentRoutePolyline = null;
+	private static final List<Polyline> routes = new ArrayList<Polyline>();
 	
 	public GoogleRoutesOverlay(GoogleMap map, GoogleMarkerClusterOverlay markerCluster, float density) {
 		this.mMap = map;
@@ -37,6 +38,7 @@ public class GoogleRoutesOverlay {
     	if (routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) || (!routeKey.startsWith(RouteRecorder.CURRENTLY_RECORDED) && LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER))) {
     		drawRoute(routeKey, animateTo);
         } 
+    	routes.clear();
     }
 	
 	public void showRecordedRoute() {
@@ -64,8 +66,8 @@ public class GoogleRoutesOverlay {
                 mMarkerCluster.addMarker(points.get(points.size()-1), true);
            	}
             
-           	if (isCurrentlyRecorded && mRoutePolyline != null) {
-            	mRoutePolyline.remove();
+           	if (isCurrentlyRecorded && mCurrentRoutePolyline != null) {
+            	mCurrentRoutePolyline.remove();
             }
             	
             Polyline po = mMap.addPolyline(new PolylineOptions()
@@ -75,8 +77,10 @@ public class GoogleRoutesOverlay {
             			.geodesic(true));
             	
             if (isCurrentlyRecorded) {           		
-            	mRoutePolyline = po;
+            	mCurrentRoutePolyline = po;
             }
+            
+            routes.add(po);
             	
             if (animateTo && !isCurrentlyRecorded) {
             	LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -91,10 +95,20 @@ public class GoogleRoutesOverlay {
         }
 	}
 	
+	private void clearAllRoutes() {
+		LoggerUtils.debug("Removing " + routes.size() + " routes from Google Map!");
+		for (Polyline p : routes) {
+			p.remove();
+		}
+		routes.clear();
+	}
+	
 	public void loadAllRoutes() {
+		clearAllRoutes();
 		if (LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER)) {
 			LoggerUtils.debug("Loading all routes to map view");
 			for(String routeKey : RoutesManager.getInstance().getRoutes()) {
+				//LoggerUtils.debug("Loading route " + routeKey + " to map view"); 
 				showRouteAction(routeKey, false);
 			}
 		}

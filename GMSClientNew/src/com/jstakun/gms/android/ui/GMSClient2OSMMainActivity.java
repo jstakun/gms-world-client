@@ -1048,6 +1048,17 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     }
     
     private void syncRoutesOverlays() {   	
+    	for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
+            if (iter.next() instanceof OsmRoutesOverlay) {
+            	iter.remove();
+            }
+        }
+    	
+    	for (String routeKey : RoutesManager.getInstance().getRoutes()) {
+            addRoutesOverlay(routeKey);
+        }
+    	
+    	/*boolean isRoutesEnabled = LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER);
     	int routesCount = RoutesManager.getInstance().getCount();
     	int routesOverlaysCount = 0;
     	
@@ -1057,8 +1068,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
         }         
     	
-    	boolean isRoutesEnabled = LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER);
-    		
     	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
     		for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
     			if (iter.next() instanceof OsmRoutesOverlay) {
@@ -1069,7 +1078,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     		for (String routeKey : RoutesManager.getInstance().getRoutes()) {
                 addRoutesOverlay(routeKey);
             }
-    	}
+    	}*/
     }
 
     private void postInvalidate() {

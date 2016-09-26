@@ -126,8 +126,17 @@ public class RoutesManager {
     }
 
     public void clearRoutesStore() {
-        routes.clear();
-        descs.clear();
+    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+    		for (String routeKey : routes.keySet()) {
+    			if (!routeKey.equals(RouteRecorder.CURRENTLY_RECORDED)) {
+    				routes.remove(routeKey);
+    				descs.remove(routeKey);
+    			}
+    		}
+    	} else {
+    		routes.clear();
+    		descs.clear();
+    	}
     }
 
     public boolean containsRoute(String key) {

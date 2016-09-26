@@ -292,8 +292,15 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         IntentsHelper.getInstance().startAutoCheckinBroadcast();
         
+        if (mMap != null) {
+        	mMap.clear();
+        }
+        
         if (markerCluster != null) {
         	markerCluster.loadAllMarkers();
+        }
+        
+        if (routesCluster != null) {
         	routesCluster.loadAllRoutes();
         }
     }
@@ -1072,6 +1079,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	markerCluster.clearMarkers();
     	LandmarkManager.getInstance().clearLandmarkStore();
     	RoutesManager.getInstance().clearRoutesStore();
+    	//load currently recorded route
+    	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION) && routesCluster != null) {
+    		routesCluster.loadAllRoutes();
+    	}
         IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Maps_cleared));
     }
     
@@ -1082,17 +1093,19 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		}
 		if ((lvView == null || !lvView.isShown()) && getSupportActionBar() != null) {
 			getSupportActionBar().show();
-		}
+		}	
+		
+		mMap.clear();
 		
 		if (markerCluster == null) {
 			markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, this.getResources().getDisplayMetrics());	
-			markerCluster.loadAllMarkers();
+		    //markerCluster.loadAllMarkers();
 		}
-	    
+		markerCluster.loadAllMarkers();
+		
 		if (routesCluster == null) {
 			routesCluster = new GoogleRoutesOverlay(mMap, markerCluster, this.getResources().getDisplayMetrics().density);
-			routesCluster.loadAllRoutes();
-	    
+	        //routesCluster.loadAllRoutes();
 			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 				if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
 					ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -1102,6 +1115,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 				}	
 			}
 		}
+		routesCluster.loadAllRoutes();
 	}
 
 	private void showMyPositionAction(boolean loadLayers) {
