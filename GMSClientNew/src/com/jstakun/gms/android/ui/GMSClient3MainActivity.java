@@ -498,6 +498,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         				if (authStatus) {
         					boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
         					CheckinManager.getInstance().checkinAction(addToFavourites, false, selectedLandmark);
+        				} else {
+        					hideLandmarkView();
         				}
         		} else if (v == lvOpenButton) { 
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);
@@ -849,7 +851,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		    		break;
 				case R.id.blogeo:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-		        		if (LandmarkManager.getInstance().hasMyLocation()) {
+		        		if (ConfigurationManager.getInstance().getLocation() != null) {
 		        			IntentsHelper.getInstance().startBlogeoActivity();
 		        		} else {
 		            		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));

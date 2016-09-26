@@ -461,7 +461,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         
         IntentsHelper.getInstance().setActivity(this);
         
-        if (LandmarkManager.getInstance().hasMyLocation()){
+        if (ConfigurationManager.getInstance().getLocation() != null){
         	mapButtons.setVisibility(View.VISIBLE);
         }
         

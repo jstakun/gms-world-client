@@ -308,8 +308,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         AsyncTaskManager.getInstance().executeNewVersionCheckTask(this);
         
-        //check if myloc is available
-        if (LandmarkManager.getInstance().hasMyLocation() && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        //check if my location is available
+        if (ConfigurationManager.getInstance().getLocation() != null && ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
         	mapButtons.setVisibility(View.VISIBLE);
         }
         
@@ -687,7 +687,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 		    		break;
 		    	case R.id.blogeo:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-		    			if (LandmarkManager.getInstance().hasMyLocation()) {
+		    			if (ConfigurationManager.getInstance().getLocation() != null) {
 		    				IntentsHelper.getInstance().startBlogeoActivity();
 		    			} else {
 		    				IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
@@ -812,6 +812,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         				if (authStatus) {
         					boolean addToFavourites = ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN) && !selectedLandmark.getLayer().equals(Commons.MY_POSITION_LAYER);
         					CheckinManager.getInstance().checkinAction(addToFavourites, false, selectedLandmark);
+        				} else {
+        					hideLandmarkView();
         				}
         			} else if (v == lvOpenButton) {
         				UserTracker.getInstance().trackEvent("Clicks", getLocalClassName() + ".OpenURLSelectedLandmark", selectedLandmark.getLayer(), 0);

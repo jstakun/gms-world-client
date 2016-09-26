@@ -840,7 +840,7 @@ public final class IntentsHelper {
         lvView.findViewById(R.id.lvOpenSeparator).setVisibility(View.VISIBLE);
         
         //show only if location is available
-        if (LandmarkManager.getInstance().hasMyLocation()) {
+        if (ConfigurationManager.getInstance().getLocation() != null) {
         	lvRouteButton.setVisibility(View.VISIBLE);
         	lvView.findViewById(R.id.lvRouteSeparator).setVisibility(View.VISIBLE);  
         } else {
@@ -871,9 +871,7 @@ public final class IntentsHelper {
         int targetWidth = (int)(16f * activity.getResources().getDisplayMetrics().density);
         int targetHeight = (int)(16f * activity.getResources().getDisplayMetrics().density);
         if (selectedLandmark.getCategoryId() != -1) {
-            //int icon = LayerManager.getDealCategoryIcon(selectedLandmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
-            //name.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
-        	int iconId = LayerManager.getDealCategoryIcon(selectedLandmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
+            int iconId = LayerManager.getDealCategoryIcon(selectedLandmark.getCategoryId(), LayerManager.LAYER_ICON_SMALL);
 			Picasso.with(activity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(name, PicassoTextViewTarget.Position.LEFT));	           
         } else {
             int iconId = LayerManager.getLayerIcon(selectedLandmark.getLayer(), LayerManager.LAYER_ICON_SMALL);
@@ -926,7 +924,6 @@ public final class IntentsHelper {
         } else if (selectedLandmark.getLayer().equals(Commons.FOURSQUARE_MERCHANT_LAYER)) {
             header.setText(LayerManager.getInstance().getLayerFormatted(selectedLandmark.getLayer()));
             if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FS_AUTH_STATUS)) {
-                //lvActionButton.setImageResource(R.drawable.login);
                 lvCheckinButton.setVisibility(View.GONE);
                 lvView.findViewById(R.id.lvCheckinSeparator).setVisibility(View.GONE);
                 lvCommentButton.setVisibility(View.GONE);
@@ -1438,7 +1435,11 @@ public final class IntentsHelper {
     
     public void unbindRouteTrackingService(ServiceConnection mConnection, boolean isBound) {
     	if (isBound) {
-    		activity.unbindService(mConnection);
+    		try {
+    			activity.unbindService(mConnection);
+    		} catch (Exception e) {
+    			LoggerUtils.debug(e.getMessage(), e);
+    		}
 		} 
     }
     	

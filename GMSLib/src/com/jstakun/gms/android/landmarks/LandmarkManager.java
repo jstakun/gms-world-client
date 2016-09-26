@@ -1119,9 +1119,9 @@ public class LandmarkManager {
         return landmarkPaintManager.getSelectedLandmarkDrawable();
     }
 
-    public boolean hasMyLocation() {
-    	return !getLandmarkStoreLayer(Commons.MY_POSITION_LAYER).isEmpty();
-    }
+    //public boolean hasMyLocation() {
+    //	return !getLandmarkStoreLayer(Commons.MY_POSITION_LAYER).isEmpty();
+    //}
     
     public double[] getMyLocation(double lat, double lon) {
         double latt, lonn;
