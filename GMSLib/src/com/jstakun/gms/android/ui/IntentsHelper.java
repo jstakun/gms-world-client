@@ -1422,26 +1422,24 @@ public final class IntentsHelper {
         }
     }
     
-    public void startRouteTrackingService(ServiceConnection mConnection) {
+    public boolean startRouteTrackingService(ServiceConnection mConnection) {
     	Intent routeTracingService = new Intent(activity, RouteTracingService.class);	
 		routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_START);
 		activity.startService(routeTracingService);
-		activity.bindService(routeTracingService, mConnection, Context.BIND_AUTO_CREATE);         
+		return activity.bindService(routeTracingService, mConnection, Context.BIND_AUTO_CREATE);         
     }
     
-    public void stopRouteTrackingService(ServiceConnection mConnection) {
+    public void stopRouteTrackingService(ServiceConnection mConnection, boolean isBound) {
     	Intent routeTracingService = new Intent(activity, RouteTracingService.class);	
 		routeTracingService.putExtra(RouteTracingService.COMMAND, RouteTracingService.COMMAND_STOP);
-		unbindRouteTrackingService(mConnection);
+		unbindRouteTrackingService(mConnection, isBound);
 		activity.stopService(routeTracingService);
     }
     
-    public void unbindRouteTrackingService(ServiceConnection mConnection) {
-    	try {
-			activity.unbindService(mConnection);
-		} catch (Exception e) {
-			LoggerUtils.error(e.getMessage(), e);
-		}
+    public void unbindRouteTrackingService(ServiceConnection mConnection, boolean isBound) {
+    	if (isBound) {
+    		activity.unbindService(mConnection);
+		} 
     }
     	
     private boolean isGoogleApiAvailable() {

@@ -895,29 +895,16 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         addOverlay(routesOverlay);
     }
     
-    private void syncRoutesOverlays() {
-    	int routesCount = RoutesManager.getInstance().getCount();
-    	int routesOverlaysCount = 0;
-    	
+    private void syncRoutesOverlays() {   	
     	for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-            	if (iter.next() instanceof OsmRoutesOverlay) {
-            		routesOverlaysCount++;
-            	}
-        }         
-           	
-    	boolean isRoutesEnabled = LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER);
-    		
-    	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
-    		for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-    				if (iter.next() instanceof OsmRoutesOverlay) {
-    					iter.remove();
-    				}
-    		}         
-    	} else if (routesCount > 0 && isRoutesEnabled && routesOverlaysCount == 0) {
-    		for (String routeKey : RoutesManager.getInstance().getRoutes()) {
-                addRoutesOverlay(routeKey);
+            if (iter.next() instanceof OsmRoutesOverlay) {
+            	iter.remove();
             }
-    	}
+        }
+    	
+    	for (String routeKey : RoutesManager.getInstance().getRoutes()) {
+            addRoutesOverlay(routeKey);
+        }
     }
 
     private void postInvalidate() {

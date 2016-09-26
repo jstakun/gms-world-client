@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -33,7 +34,7 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class RoutesManager {
 
-    private static Map<String, List<ExtendedLandmark>> routes = new HashMap<String, List<ExtendedLandmark>>();
+    private static Map<String, List<ExtendedLandmark>> routes = new ConcurrentHashMap<String, List<ExtendedLandmark>>();
     private static Map<String, String> descs = new HashMap<String, String>();
     private static RoutesManager instance = null; 
 

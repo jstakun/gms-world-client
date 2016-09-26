@@ -1058,44 +1058,24 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
     
     private void syncRoutesOverlays() {
-    	int routesCount = RoutesManager.getInstance().getCount();
-    	int routesOverlaysCount = 0;
     	if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-            	if (iter.next() instanceof OsmRoutesOverlay) {
-            		routesOverlaysCount++;
-            	}
-            }         
-        } else {
-            for (Iterator<com.google.android.maps.Overlay> iter = googleMapsView.getOverlays().listIterator(); iter.hasNext();) {
-            	if (iter.next() instanceof GoogleRoutesOverlay) {
-            		routesOverlaysCount++;
-            	}
-            }
-        }
-    	
-    	boolean isRoutesEnabled = LayerManager.getInstance().isLayerEnabled(Commons.ROUTES_LAYER);
-    		
-    	if ((routesCount == 0 || !isRoutesEnabled) && routesOverlaysCount > 0) {
-    		if (mapProvider == ConfigurationManager.OSM_MAPS) {
-    			for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
-    				if (iter.next() instanceof OsmRoutesOverlay) {
-    					iter.remove();
-    				}
-    			}         
-    		} else {
-    			for (Iterator<com.google.android.maps.Overlay> iter = googleMapsView.getOverlays().listIterator(); iter.hasNext();) {
-    				if (iter.next() instanceof GoogleRoutesOverlay) {
-    					iter.remove();
-    				}
+    		for (Iterator<org.osmdroid.views.overlay.Overlay> iter = ((org.osmdroid.views.MapView) mapView).getOverlays().listIterator(); iter.hasNext();) {
+    			if (iter.next() instanceof OsmRoutesOverlay) {
+    				iter.remove();
     			}
     		}
-    	} else if (routesCount > 0 && isRoutesEnabled && routesOverlaysCount == 0) {
-    		for (String routeKey: RoutesManager.getInstance().getRoutes()) {
-                addRoutesOverlay(routeKey);
-            }
-    		isRouteDisplayed = true;
+    	} else {
+    		//Google Maps
+    		for (Iterator<com.google.android.maps.Overlay> iter = googleMapsView.getOverlays().listIterator(); iter.hasNext();) {
+				if (iter.next() instanceof GoogleRoutesOverlay) {
+					iter.remove();
+				}
+			}
     	}
+    	
+    	for (String routeKey : RoutesManager.getInstance().getRoutes()) {
+			addRoutesOverlay(routeKey);
+		}
     }
 
     private void postInvalidate() {

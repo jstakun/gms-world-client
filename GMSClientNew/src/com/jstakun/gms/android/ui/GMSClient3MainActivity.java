@@ -105,7 +105,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     private ProgressBar loadingProgressBar;
 	private NavigationDrawerFragment mNavigationDrawerFragment;
    
-    private boolean appInitialized = false;
+    private boolean appInitialized = false, isRouteTrackingServiceBound = false;
     
     private GoogleMap.OnCameraChangeListener mOnCameraChangeListener = new GoogleMap.OnCameraChangeListener() {
 		
@@ -336,12 +336,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	appInitialized = false;
         	GmsLocationServicesManager.getInstance().disable();
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-        		IntentsHelper.getInstance().stopRouteTrackingService(mConnection);
+        		IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}
 	        IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         } else if (mMap != null) {
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-        		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection);
+        		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}
         	IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         }
@@ -1027,7 +1027,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection);
+            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         		String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
@@ -1043,7 +1043,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	
 	private void startRouteRecording(boolean showMyPosition) {
 		String route = RouteRecorder.getInstance().startRecording();
-        IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
+		isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
 		routesCluster.showRouteAction(route, true);
         if (LayerLoader.getInstance().isLoading()) {
         	LayerLoader.getInstance().stopLoading();
