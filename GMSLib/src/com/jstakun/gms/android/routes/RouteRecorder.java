@@ -60,7 +60,6 @@ public class RouteRecorder {
     public String startRecording() {
     	ConfigurationManager.getInstance().setOn(ConfigurationManager.RECORDING_ROUTE);  	
     	if (!RoutesManager.getInstance().containsRoute(CURRENTLY_RECORDED)) {
-    		startTime = System.currentTimeMillis();
     		RoutesManager.getInstance().addRoute(CURRENTLY_RECORDED, routePoints, null);
     	}
     	if (notificationId == -1) {
@@ -127,7 +126,10 @@ public class RouteRecorder {
             if (!routePoints.isEmpty()) {
             	String[] details = getRouteDetails();
             	description = Locale.getMessage(R.string.Routes_Recording_description, details[0], details[1], details[2]);
-            } 
+            } else {
+            	//set start time when first point is added
+            	startTime = System.currentTimeMillis();
+            }
             ExtendedLandmark lm = LandmarkFactory.getLandmark(l, description, qc, Commons.ROUTES_LAYER, System.currentTimeMillis());
             endTime = System.currentTimeMillis();
             LoggerUtils.debug(routePoints.size() + ". Adding route point: " + filteredLocation.getLatitude() + "," + filteredLocation.getLongitude() + " with speed: " + filteredLocation.getSpeed() + ", accuracy " + filteredLocation.getAccuracy() + " and bearing: " + filteredLocation.getBearing() + ".");
