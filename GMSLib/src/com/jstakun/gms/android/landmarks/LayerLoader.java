@@ -93,8 +93,8 @@ public class LayerLoader {
             concurrentLayerLoader.addTask(selectedLayer, currentTask);           
             initialized = true;
         } else {
-        	initLayerLoadingTask = new InitLayerLoadingTask();
-            initLayerLoadingTask.execute(loadServerLayers);
+        	initLayerLoadingTask = new InitLayerLoadingTask(loadServerLayers);
+            initLayerLoadingTask.execute();
         }
     }
     
@@ -267,21 +267,19 @@ public class LayerLoader {
         }
     }
     
-    private class InitLayerLoadingTask extends GMSAsyncTask<Boolean, Void, Void> {
+    private class InitLayerLoadingTask extends GMSAsyncTask<Void, Void, Void> {
         
-        public InitLayerLoadingTask() {
+    	private boolean loadServerLayers = false;
+    	
+        public InitLayerLoadingTask(boolean loadServerLayers) {
             super(1, InitLayerLoadingTask.class.getName());
+            this.loadServerLayers = loadServerLayers;
         }
         
         @Override
-        protected Void doInBackground(Boolean... b) {
+        protected Void doInBackground(Void... params) {
 
             //System.out.println("InitLayerLoadingTask.doInBackground()");
-
-            Boolean loadServerLayers = false;
-            if (b.length > 0) {
-                loadServerLayers = b[0];
-            }
 
             //load server layers after external layers
             if (loadServerLayers) {

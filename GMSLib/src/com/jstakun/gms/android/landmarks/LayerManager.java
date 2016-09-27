@@ -258,15 +258,13 @@ public class LayerManager {
     }
 
     protected final String initializeExternalLayers(List<String> excluded, double latitude, double longitude, int zoom, int width, int height) {
-        Map<String, Layer> externalLayers = new LinkedHashMap<String, Layer>();
-
+        LoggerUtils.debug("I'm initilizing external server layers!");
+    	Map<String, Layer> externalLayers = new LinkedHashMap<String, Layer>();
         LayerJSONParser lp = new LayerJSONParser();
         String response = lp.parse(externalLayers, excluded, latitude, longitude, zoom, width, height);
-
         synchronized (layers) {
             layers.putAll(externalLayers);
         }
-
         return response;
     }
 
