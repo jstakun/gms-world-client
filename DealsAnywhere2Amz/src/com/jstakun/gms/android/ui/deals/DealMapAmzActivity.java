@@ -776,13 +776,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         } else if (forceToShow) {
             //System.out.println("recommended == null");
             IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.noDodAvailable));
-        } //else {
-        //comment out
-        //IntentsHelper.getInstance().showInfoToast("Recommended == null\n"
-        //        + "SubCategoryStats: " + cm.getTopSubCategoryStats() + " " + cm.getTopCategory() + " " + cm.getTopSubCategory() + "\n"
-        //        + "showDealOfTheDay: " + ConfigurationManager.getInstance().isOn(ConfigurationManager.SHOW_DEAL_OF_THE_DAY) + "\n"
-        //        + "shownDeals: " + ConfigurationManager.getInstance().getString(ConfigurationManager.RECOMMENDED_DEALS_SHOWN));
-        //}
+        } 
     }
     
     private void animateTo(int[] coordsE6) {
