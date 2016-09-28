@@ -19,8 +19,8 @@
             <item android:id="@+id/loadRoute" android:title="@string/loadRoute" />
         </menu>
     </item>      
-    <item android:id="@+id/register" android:title="@string/register" /> <!-- a -->
     <item android:id="@+id/shareScreenshot" android:title="@string/shareScreenshot" /> <!-- a -->
+    <item android:id="@+id/register" android:title="@string/register" /> <!-- a -->
     <item android:id="@+id/blogeo" android:title="@string/blogeo" /> <!-- a -->
     <item android:id="@+id/clearMap" android:title="@string/clearMap" /> <!-- a -->
     <item android:id="@+id/dataPacket" android:title="@string/dataPacket" /> <!-- a -->

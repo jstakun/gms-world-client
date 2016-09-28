@@ -123,7 +123,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 		}
         
     };
-    //
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
@@ -607,7 +606,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	}
             //
 
-        	menu.findItem(R.id.shareScreenshot).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
         	menu.findItem(R.id.dataPacket).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
         	menu.findItem(R.id.reset).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
         	menu.findItem(R.id.releaseNotes).setVisible(ConfigurationManager.getInstance().isOn(ConfigurationManager.DEV_MODE));
