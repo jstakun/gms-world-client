@@ -33,7 +33,7 @@ public class AndroidDevice implements LocationListener {
     
     private LocationManager locationManager;
     private Location previousLocation;
-    protected Handler positionHandler = null;
+    private Handler positionHandler = null;
     private boolean isListening = false;
     
     private Listener gpsStatusListener = new GpsStatus.Listener() {
@@ -90,7 +90,7 @@ public class AndroidDevice implements LocationListener {
         if (!isListening) {
 
             Criteria crit = new Criteria();
-            crit.setAccuracy(Criteria.ACCURACY_FINE);
+            crit.setAccuracy(Criteria.ACCURACY_HIGH);//.ACCURACY_FINE);
             String provider = locationManager.getBestProvider(crit, true);
             try {
                 locationManager.requestLocationUpdates(provider, MILLIS, METERS, this);
@@ -108,7 +108,7 @@ public class AndroidDevice implements LocationListener {
         Location currentLocation = null;
 
         if (isBetterLocation(location, previousLocation)) {
-            currentLocation = location; //filterLocation(location);
+            currentLocation = location; 
         }
 
         if (currentLocation != null) {
@@ -193,6 +193,10 @@ public class AndroidDevice implements LocationListener {
                 + status + "], extras=" + extras);
         //if (status == LocationProvider.AVAILABLE) {
         //}
+    }
+    
+    protected Handler getPositionHandler() {
+    	return positionHandler;
     }
 
     public static boolean isBetterLocation(Location location, Location currentBestLocation) {

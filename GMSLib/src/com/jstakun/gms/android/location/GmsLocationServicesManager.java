@@ -18,6 +18,8 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 	public static final int GMS_CONNECTED = 300;
 	public static final int UPDATE_LOCATION = 301;
 	
+	private static final int LOCATION_READ_INTERVAL = 5000; //ms
+	
 	private boolean isEnabled = false;
 	
 	private GoogleApiClient mGoogleApiClient;
@@ -42,9 +44,9 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		if (!isEnabled) {
 			mLocationHandler = locationHandler;
 			mLocationRequest = new LocationRequest();
-			mLocationRequest.setInterval(1000);
-			mLocationRequest.setFastestInterval(1000);
-			mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+			mLocationRequest.setInterval(LOCATION_READ_INTERVAL);
+			mLocationRequest.setFastestInterval(LOCATION_READ_INTERVAL);
+			mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//.PRIORITY_BALANCED_POWER_ACCURACY);
 			isEnabled = true;
 		}
 	}
@@ -96,6 +98,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 			ConfigurationManager.getInstance().setLocation(location);
 			mLocationHandler.sendEmptyMessage(GMS_CONNECTED);
 		}
+		LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 	}
 

@@ -46,20 +46,20 @@ public class MockAndroidDevice extends AndroidDevice {
 
         ConfigurationManager.getInstance().setLocation(location);
 
-        if (positionHandler != null) {
+        if (getPositionHandler() != null) {
             double lat = MercatorUtils.normalizeE6(location.getLatitude());
             double lon = MercatorUtils.normalizeE6(location.getLongitude());
             float altitude = (float)location.getAltitude();
             float accuracy = location.getAccuracy();
 
-            Message msg = positionHandler.obtainMessage();
+            Message msg = getPositionHandler().obtainMessage();
             Bundle b = new Bundle();
             b.putDouble("lat", lat);
             b.putDouble("lng", lon);
             b.putFloat("alt", altitude);
             b.putFloat("acc", accuracy);
             msg.setData(b);
-            positionHandler.handleMessage(msg);
+            getPositionHandler().handleMessage(msg);
         }
     }
     

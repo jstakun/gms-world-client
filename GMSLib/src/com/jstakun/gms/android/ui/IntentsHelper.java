@@ -1443,7 +1443,7 @@ public final class IntentsHelper {
 		} 
     }
     	
-    private boolean isGoogleApiAvailable() {
+    public boolean isGoogleApiAvailable() {
     	if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(activity) == ConnectionResult.SUCCESS) {
         	return true;
         } else {

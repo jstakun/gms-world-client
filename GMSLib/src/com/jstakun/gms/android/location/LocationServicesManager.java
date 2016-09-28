@@ -21,12 +21,16 @@ public class LocationServicesManager {
     private static SkyhookUtils skyhook;
     private static IMyLocationOverlay myLocation;
     private static boolean isGpsHardwarePresent = false;
-
+    
     public static void initLocationServicesManager(Context context, Handler locationHandler, IMyLocationOverlay imyLocation) {
-        if (imyLocation != null && isGpsHardwarePresent(context)) {
+        if (isGpsHardwarePresent(context)) {
             LoggerUtils.debug("GPS is present !!!");
             isGpsHardwarePresent = true;
-            myLocation = imyLocation;
+            if (imyLocation != null) {
+            	myLocation = imyLocation;
+            } else {
+            	GpsDeviceFactory.initGpsDevice(context, locationHandler);
+            }
         } else {
             LoggerUtils.debug("GPS is missing. Using Skyhook !!!");
             isGpsHardwarePresent = false;
@@ -49,29 +53,34 @@ public class LocationServicesManager {
 
     public static void enableMyLocation() {
         if (isGpsHardwarePresent) {
-            myLocation.enableMyLocation();
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                myLocation.enableCompass();
-            }
+        	if (myLocation != null) {
+        		myLocation.enableMyLocation();
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        			myLocation.enableCompass();
+        		}		
+        	} else {
+        		GpsDeviceFactory.startDevice();
+        	}
         } else {
             skyhook.enableMyLocation();
         }
     }
 
     public static void disableMyLocation() {
-        if (myLocation != null) {
-            //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-            myLocation.disableCompass();
-            //} else {
-            myLocation.disableMyLocation();
-            //}
+    	if (isGpsHardwarePresent) {
+    		if (myLocation != null) {
+    			myLocation.disableCompass();
+    			myLocation.disableMyLocation();
+            } else {
+            	GpsDeviceFactory.stopDevice();
+            }
         } else if (skyhook != null) {
             skyhook.disableMyLocation();
         }
     }
 
     public static void runOnFirstFix(Runnable r) {
-        if (isGpsHardwarePresent) {
+        if (isGpsHardwarePresent && myLocation != null) {
             myLocation.runOnFirstFix(r);
         } else {
             skyhook.runOnFirstFix(r);
@@ -79,7 +88,7 @@ public class LocationServicesManager {
     }
 
     public static void enableCompass() {
-        if (isGpsHardwarePresent) {
+        if (isGpsHardwarePresent && myLocation != null) {
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 myLocation.enableCompass();
             } else {

@@ -11,43 +11,44 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 public class GpsDeviceFactory {
      private static AndroidDevice device = null;
 
-     public static AndroidDevice initGpsDevice(Context context)
-     {
-         if (device == null)
-         {
-            //change device
-            LoggerUtils.debug("Starting GPS...");
+     public static AndroidDevice initGpsDevice(Context context) {
+         if (device == null) {
+            LoggerUtils.debug("Starting GPS listener...");
             device = new AndroidDevice(context);
+            //for testing change device
             //device = new MockAndroidDevice();
          }
          return device;
      }
+     
+     public static AndroidDevice initGpsDevice(Context context, Handler positionHandler) {
+         if (device == null) {
+            LoggerUtils.debug("Starting GPS listener...");
+            device = new AndroidDevice(context);
+            //for testing change device
+            //device = new MockAndroidDevice();
+            device.setPositionHandler(positionHandler);
+         }
+         return device;
+     }
 
-     public static void stopDevice()
-     {
-        if (device != null)
-        {
+     public static void stopDevice() {
+        if (device != null) {
             device.stopListening();
         }
      }
 
-     public static void startDevice(Context context)
-     {
-        if (device == null)
-        {
-            initGpsDevice(context);
-        }
-        device.startListening();
+     public static void startDevice() {
+        if (device != null) {
+        	device.startListening();
+     	}
      }
      
-     public static void startDevice(Handler handler, Context context)
-     {
-        if (device == null)
-        {
-            initGpsDevice(context);
+     public static void startDevice(Handler handler, Context context) {
+        if (device != null) {
+        	device.startListening();
+        	device.setPositionHandler(handler);
         }
-        device.startListening();
-        device.setPositionHandler(handler);
      }
 
      public static void setPositionHandler(Handler handler) {
