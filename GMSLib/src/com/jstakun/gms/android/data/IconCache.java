@@ -438,7 +438,7 @@ public class IconCache {
 
             try {
                 utils = new HttpUtils();
-                byte[] file = utils.loadFile(url, false, "image");
+                byte[] file = utils.loadFile(url, false, null, "image");
                 if (file != null) {
                     input = new ByteArrayInputStream(file);
                     Bitmap b = BitmapFactory.decodeStream(input);

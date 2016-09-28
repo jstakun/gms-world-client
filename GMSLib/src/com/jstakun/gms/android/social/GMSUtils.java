@@ -21,37 +21,43 @@ public final class GMSUtils {
 	
 	public static String loginAction(String login, String password) {
         HttpUtils utils = new HttpUtils();
-        String errorMessage = null, //encPwd = null, 
-        		email = null, user = null, token = null;
+        String errorMessage = null, email = null, user = null, token = null;
         String url = ConfigurationManager.getInstance().getSecuredServicesUrl() + "authenticate";
         
         try {
-            byte[] resp = utils.loadFile(url, true, "text/json");
+            byte[] resp = utils.loadFile(url, true, login + ":" + password, "text/json");
             if (resp != null && resp.length > 0) {
                 String jsonResp = new String(resp, "UTF-8");   
-                if (jsonResp.startsWith("{")) {          
+                if (jsonResp.startsWith("{")) {     
+                	//LoggerUtils.debug("Auth response: " + jsonResp);
                 	JSONObject json = new JSONObject(jsonResp);
-                	//encPwd = json.getString("password");               	
-                    email = json.optString(ConfigurationManager.USER_EMAIL);
+                	email = json.optString(ConfigurationManager.USER_EMAIL);
                     user = json.optString(ConfigurationManager.GMS_NAME);
-                    token = json.optString(ConfigurationManager.GMS_TOKEN);
+                    token = json.getString(ConfigurationManager.GMS_TOKEN);
+                    errorMessage = json.optString("message");
+                } else {
+                	errorMessage = "Authentication failed: error0!";
                 }
-                //System.out.println(jsonResp);
-            }    
+            } else {
+            	errorMessage = "Authentication failed: error1!";
+            }
         } catch (Exception ex) {
             LoggerUtils.error("GMSUtils.loginAction() exception", ex);
             errorMessage = ex.getMessage();
         } finally {
             try {
                 if (utils != null) {
-                    errorMessage = utils.getResponseErrorMessage(url);
+                	String msg = utils.getResponseErrorMessage(url);
+                	if (msg != null) {
+                		errorMessage = msg;
+                	}
                     utils.close();
                 }
             } catch (Exception e) {
             }
         }
 
-        if (errorMessage == null && token != null) {
+        if (StringUtils.isEmpty(errorMessage) && StringUtils.isNotEmpty(token)) {
         	ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_USERNAME, login);
             ConfigurationManager.getInstance().putString(ConfigurationManager.GMS_TOKEN, token);
             if (StringUtils.isNotEmpty(email)) {
@@ -65,6 +71,14 @@ public final class GMSUtils {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.GMS_AUTH_STATUS);
             ConfigurationManager.getInstance().putLong(ConfigurationManager.GMS_LOGIN_DATE, System.currentTimeMillis());
             ConfigurationManager.getDatabaseManager().saveConfiguration(false);
+        } else if (StringUtils.isNotEmpty(errorMessage)) {
+        	errorMessage = "Authentication failed: " + errorMessage;
+        } else {
+        	errorMessage = "Authentication failed: error2";
+        }
+        
+        if (StringUtils.isEmpty(errorMessage)) {
+        	errorMessage = null;
         }
         
         return errorMessage;
@@ -76,7 +90,7 @@ public final class GMSUtils {
         String url = ConfigurationManager.getInstance().getSecuredServerUrl() + "token?scope=" + scope;
         
         try {
-            byte[] resp = utils.loadFile(url, false, "text/json");
+            byte[] resp = utils.loadFile(url, false, null, "text/json");
             if (resp != null && resp.length > 0) {
                 String jsonResp = new String(resp, "UTF-8");   
                 if (jsonResp.startsWith("{")) {          

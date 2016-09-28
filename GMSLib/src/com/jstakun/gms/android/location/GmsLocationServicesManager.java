@@ -59,7 +59,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		isEnabled = false;
 	}
 	
-	private void buildGoogleApiClient() {
+	private synchronized void buildGoogleApiClient() {
 		if (mGoogleApiClient == null) {
 			mGoogleApiClient = new GoogleApiClient.Builder(ConfigurationManager.getInstance().getContext())
                 .addConnectionCallbacks(this)

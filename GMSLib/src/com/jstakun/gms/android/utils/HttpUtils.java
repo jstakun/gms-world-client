@@ -20,6 +20,7 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.spongycastle.util.encoders.Base64;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -145,13 +146,13 @@ public class HttpUtils {
 		return response;
 	}
 	
-	public byte[] loadFile(String url, boolean auth, String format) {
-		return processRequest(url, auth, "GET", null, null, null, true, format, null, null);
+	public byte[] loadFile(String url, boolean auth, String userpassword, String format) {
+		return processRequest(url, auth, userpassword, "GET", null, null, null, true, format, null, null);
 	}
 	
 	public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
 		try {
-			byte[] response = processRequest(url, auth, "POST", null, getQuery(postParams).getBytes(), FORM_ENCODING, true, null, null, null, "key", "name", "hash");
+			byte[] response = processRequest(url, auth, "POST", null, null, getQuery(postParams).getBytes(), FORM_ENCODING, true, null, null, null, "key", "name", "hash");
 			if (response != null && response.length > 0) {
 				return new String(response, "UTF-8");
 			} else {
@@ -163,7 +164,7 @@ public class HttpUtils {
 		}
 	}
 	
-	private byte[] processRequest(String fileUrl, boolean auth, String method, String accept, byte[] content, String contentType, boolean compress, String format, Double latitude, Double longitude, String... headersToRead) {
+	private byte[] processRequest(String fileUrl, boolean auth, String userpassword, String method, String accept, byte[] content, String contentType, boolean compress, String format, Double latitude, Double longitude, String... headersToRead) {
         InputStream is = null;
         byte[] response = null;
         long start = System.currentTimeMillis();
@@ -189,11 +190,17 @@ public class HttpUtils {
             	conn.setRequestProperty(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
             }
             if (auth) {
-                setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
-                String username = ConfigurationManager.getUserManager().getLoggedInUsername();
-                if (StringUtils.isNotEmpty(username)) {
-                	conn.setRequestProperty("username", username);
-                }                      
+            	if (userpassword != null) {
+            		//username : password
+                    String encodedAuthorization = Base64.toBase64String(userpassword.getBytes());
+                    conn.setRequestProperty("Authorization", "Basic " + encodedAuthorization);
+            	} else {
+            		setAuthHeader(conn, fileUrl.contains(ConfigurationManager.SERVICES_SUFFIX));
+            		String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+            		if (StringUtils.isNotEmpty(username)) {
+            			conn.setRequestProperty("username", username);
+            		}       
+            	}
             }
 
             java.util.Locale locale = ConfigurationManager.getInstance().getCurrentLocale();
@@ -248,7 +255,7 @@ public class HttpUtils {
             		} else {
             			is = conn.getInputStream();
             		}
-            	} else if (responseCode > 299) {
+            	} else if (responseCode > 399) {
                 	is = conn.getErrorStream();
                 	LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
         			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
@@ -282,7 +289,7 @@ public class HttpUtils {
             		readHeaders(conn, fileUrl, headersToRead);
             	}
             
-            	LoggerUtils.debug("Request processed with status " + responseCode + " in " + (System.currentTimeMillis()-start) + " millis.");
+            	LoggerUtils.debug("Request processed with status " + responseCode + " in " + (System.currentTimeMillis()-start) + " millis from " + fileUrl  + ".");
             }
         } catch (Exception e) {
         	LoggerUtils.error(e.getMessage(), e);

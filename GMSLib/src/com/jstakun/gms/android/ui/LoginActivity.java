@@ -41,11 +41,6 @@ public class LoginActivity extends Activity implements OnClickListener {
         loginText = (EditText) findViewById(R.id.loginText);
         passwordText = (EditText) findViewById(R.id.passwordText);
 
-        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.GMS_AUTH_STATUS)) {
-        //    loginText.setText(ConfigurationManager.getInstance().getString(ConfigurationManager.USERNAME));
-        //    passwordText.setText(ConfigurationManager.getInstance().getString(ConfigurationManager.PASSWORD));
-        //}
-
         AdsUtils.loadAd(this);
 
         loginButton.setOnClickListener(LoginActivity.this);
