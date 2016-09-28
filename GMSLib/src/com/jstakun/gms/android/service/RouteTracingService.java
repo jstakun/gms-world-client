@@ -5,6 +5,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.utils.LoggerUtils;
@@ -24,8 +25,10 @@ public class RouteTracingService extends Service implements LocationListener,
 															GoogleApiClient.ConnectionCallbacks,
 															GoogleApiClient.OnConnectionFailedListener{
 
+	//TODO implement without GMS using GpsDevice class
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
+	
 	private PowerManager.WakeLock mWakeLock;
 	
 	public static final String COMMAND = "RouteTracingService.COMMAND";

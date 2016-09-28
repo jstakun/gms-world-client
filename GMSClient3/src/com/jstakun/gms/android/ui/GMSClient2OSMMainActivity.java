@@ -169,6 +169,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         loadingHandler = new LoadingHandler(this);
         
+        mMessenger = new Messenger(loadingHandler);
+        
         LoggerUtils.debug("Map provider is OSM");
 
         setContentView(R.layout.osmdroidcanvasview_2);

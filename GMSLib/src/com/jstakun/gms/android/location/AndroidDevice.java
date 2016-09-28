@@ -26,16 +26,16 @@ import com.jstakun.gms.android.utils.LoggerUtils;
  */
 public class AndroidDevice implements LocationListener {
 
-    //private static final int MAX_REASONABLE_SPEED = 90; //324 km/h
     private static final int MILLIS = 0; //5000;
     private static final int METERS = 0; //5;
     //private static final int TWO_MINUTES = 1000 * 60 * 2;
     private static final int THREE_MINUTES = 1000 * 60 * 3;
-    //private float maxAcceptableAccuracy = 100f;
+    
     private LocationManager locationManager;
     private Location previousLocation;
     protected Handler positionHandler = null;
     private boolean isListening = false;
+    
     private Listener gpsStatusListener = new GpsStatus.Listener() {
         public synchronized void onGpsStatusChanged(int event) {
             switch (event) {
@@ -79,11 +79,7 @@ public class AndroidDevice implements LocationListener {
 
         if (lastKnownLocation != null) {
             setMyLocation(lastKnownLocation);
-            //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.SET_LAST_KNOWN_LOC_AT_STARTUP) || ConfigurationManager.getInstance().isDefaultCoordinate()) {
-            //    ConfigurationManager.getInstance().putDouble(ConfigurationManager.LATITUDE, lastKnownLocation.getLatitude());
-            //    ConfigurationManager.getInstance().putDouble(ConfigurationManager.LONGITUDE, lastKnownLocation.getLongitude());
-            //}
-        }
+         }
     }
 
     public void setPositionHandler(Handler handler) {
@@ -92,12 +88,6 @@ public class AndroidDevice implements LocationListener {
 
     public void startListening() {
         if (!isListening) {
-
-            /*if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MILLIS, METERS, AndroidDevice.this);
-             } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MILLIS, METERS, AndroidDevice.this);
-             }*/
 
             Criteria crit = new Criteria();
             crit.setAccuracy(Criteria.ACCURACY_FINE);
@@ -108,12 +98,6 @@ public class AndroidDevice implements LocationListener {
             } catch (Exception e) {
                 stopListening();
             }
-
-            //Location lastKnownLocation = getLastKnownLocation();
-
-            //if (lastKnownLocation != null) {
-            //    setMyLocation(lastKnownLocation);
-            //}
 
             locationManager.addGpsStatusListener(gpsStatusListener);
         }
@@ -158,21 +142,6 @@ public class AndroidDevice implements LocationListener {
     private Location getLastKnownLocation() {
         Location lastKnownLocation = null;
 
-        /*Criteria criteria = new Criteria();
-         criteria.setAccuracy(Criteria.ACCURACY_FINE);
-
-         String bestProvider = locationManager.getBestProvider(criteria, true);
-
-         LoggerUtils.debug("Android suggested following provider: " + bestProvider);
-
-         try {
-         if (locationManager.isProviderEnabled(bestProvider)) {
-         lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
-         }
-         } catch (Exception e) {
-         LoggerUtils.error("AndroidDevice.getLastKnownLocation() error:", e);
-         }*/
-
         try {
             if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -202,10 +171,7 @@ public class AndroidDevice implements LocationListener {
 
     private void updatePositionUi(Location l) {
         if (positionHandler != null) {
-            Message msg = positionHandler.obtainMessage();
-            Bundle b = new Bundle();
-            b.putParcelable("l", l);
-            msg.setData(b);
+            Message msg = positionHandler.obtainMessage(LocationServicesManager.UPDATE_LOCATION, l);
             positionHandler.handleMessage(msg);
         } else {
             //the same code as in IntentsHelper.addMyLocationLandmark
@@ -213,44 +179,6 @@ public class AndroidDevice implements LocationListener {
             LandmarkManager.getInstance().addLandmark(l.getLatitude(), l.getLongitude(), (float)l.getAltitude(), Locale.getMessage(R.string.Your_Location), Locale.getMessage(R.string.Your_Location_Desc, l.getProvider(), l.getAccuracy(), date), Commons.MY_POSITION_LAYER, false);
         }
     }
-
-    /*private Location filterLocation(Location proposedLocation) {
-        // Do no include log wrong 0.0 lat 0.0 long, skip to next value in while-loop
-        if (proposedLocation != null && (proposedLocation.getLatitude() == 0.0d || proposedLocation.getLongitude() == 0.0d)) {
-            LoggerUtils.debug("A wrong location was received, 0.0 latitude and 0.0 longitude... ");
-            return null;
-        }
-
-        // Do not log a waypoint which is more inaccurate then is configured to be acceptable
-        if (proposedLocation != null && proposedLocation.getAccuracy() > maxAcceptableAccuracy) {
-            LoggerUtils.debug(String.format("A weak location was received, lots of inaccuracy... (%f is more then max %f)", proposedLocation.getAccuracy(),
-                    maxAcceptableAccuracy));
-            return null;
-        }
-
-        // Do not log a waypoint which might be on any side of the previous waypoint
-        if (proposedLocation != null && previousLocation != null && proposedLocation.getAccuracy() > previousLocation.distanceTo(proposedLocation)) {
-            LoggerUtils.debug(
-                    String.format("A weak location was received, not quite clear from the previous waypoint... (%f more then max %f)",
-                    proposedLocation.getAccuracy(), previousLocation.distanceTo(proposedLocation)));
-            return null;
-        }
-
-        // Speed checks, check if the proposed location could be reached from the previous one in sane speed
-        // Common to jump on network logging and sometimes jumps on Samsung Galaxy S type of devices
-        if (proposedLocation != null && previousLocation != null) {
-            // To avoid near instant teleportation on network location or glitches cause continent hopping
-            float meters = proposedLocation.distanceTo(previousLocation);
-            long seconds = (proposedLocation.getTime() - previousLocation.getTime()) / 1000L;
-            float speed = meters / seconds;
-            if (speed > MAX_REASONABLE_SPEED) {
-                LoggerUtils.debug("A strange location was received, a really high speed of " + speed + " m/s, prob wrong...");
-                return null;
-            }
-        }
-
-        return proposedLocation;
-    }*/
 
     public void onProviderDisabled(String provider) {
         LoggerUtils.debug("Provider Disabled: " + provider);
