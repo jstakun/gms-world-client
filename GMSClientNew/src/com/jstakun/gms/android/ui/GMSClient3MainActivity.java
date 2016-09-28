@@ -704,6 +704,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    			GmsLocationServicesManager.getInstance().enable(loadingHandler);
 	    			mMap.setMyLocationEnabled(true);
 	    			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+	    				loadingImage.setVisibility(View.GONE);
 	    				startRouteRecording(true);
 	    			}
 	    		}
@@ -985,10 +986,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
             loadingProgressBar.setProgress(100);
             
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                loadingImage.setVisibility(View.GONE);
-            }
-            
             appInitialized = true;
             
             if (mMap != null) {
@@ -1111,6 +1108,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 					ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 					ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
 				} else {
+					loadingImage.setVisibility(View.GONE);
 					startRouteRecording(true);
 				}	
 			}

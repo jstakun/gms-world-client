@@ -101,7 +101,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private boolean isAppInitialized = false, isRouteDisplayed = false, isRouteTrackingServiceBound = false;
     
     private Handler loadingHandler;
-    private Messenger mMessenger;
+    private Messenger mMessenger;  //TODO
 	
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -394,13 +394,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         LoggerUtils.debug("onDestroy");
         super.onDestroy();
         if (ConfigurationManager.getInstance().isClosing()) {
-        	isAppInitialized = false;
+        	isAppInitialized = false; //TODO
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         		IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}
         	IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
-        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) { //TODO
         		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}
         	IntentsHelper.getInstance().softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
@@ -525,10 +525,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             }
 
             loadingProgressBar.setProgress(100);
-            
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                loadingImage.setVisibility(View.GONE);
-            }
             
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
             
@@ -1027,7 +1023,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	IntentsHelper.getInstance().addMyLocationLandmark(l);     
     	IntentsHelper.getInstance().vibrateOnLocationUpdate();
     	UserTracker.getInstance().sendMyLocation();
-    	
+    	//TODO
     	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
         	CheckinManager.getInstance().autoCheckin(l.getLatitude(), l.getLongitude(), false);
         }
@@ -1129,7 +1125,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
+            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound); //TODO
         		String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
@@ -1145,7 +1141,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     
     private void startRouteRecording(boolean showMyPosition) {
     	String route = RouteRecorder.getInstance().startRecording();
-    	isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
+    	isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);    //TODO 
 		showRouteAction(route);
         if (LayerLoader.getInstance().isLoading()) {
             LayerLoader.getInstance().stopLoading();
@@ -1273,14 +1269,15 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 		activity.getActionBar().show();
                 	}
                 	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                    	activity.startRouteRecording(true);
+                		activity.loadingImage.setVisibility(View.GONE);
+                		activity.startRouteRecording(true);
                 	}
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
             	} else if (LocationServicesManager.UPDATE_LOCATION == msg.what) {
                 	Location location = (Location) msg.obj;
                 	activity.updateLocation(location);
-            	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) {
+            	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) { //TODO
             		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 		activity.mapButtons.setVisibility(View.GONE);
                 		activity.showMyPositionAction(false);

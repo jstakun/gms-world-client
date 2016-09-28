@@ -502,10 +502,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
             loadingProgressBar.setProgress(100);
 
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                loadingImage.setVisibility(View.GONE);
-            }
-            
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
             
             isAppInitialized = true;
@@ -1215,6 +1211,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 		activity.getActionBar().show();
                 	}
                 	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+                		activity.loadingImage.setVisibility(View.GONE);
                 		activity.startRouteRecording(true);
                 	}
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {

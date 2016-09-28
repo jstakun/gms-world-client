@@ -498,9 +498,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             loadingProgressBar.setProgress(100);
 
             LayerLoader.getInstance().setRepaintHandler(loadingHandler);
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                loadingImage.setVisibility(View.GONE);
-            }
             
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
             
@@ -1244,7 +1241,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 		activity.getActionBar().show();
                 	}
                 	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                    	if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
+                		activity.loadingImage.setVisibility(View.GONE);
+                		if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
                             ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
                         } else {

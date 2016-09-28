@@ -2,8 +2,6 @@ package com.jstakun.gms.android.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
-import java.util.List;
-
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMyLocationOverlay;
@@ -357,12 +355,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             
             MessageStack.getInstance().setHandler(loadingHandler);
             
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                String route = RouteRecorder.getInstance().startRecording();
-                showRouteAction(route);
-                MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
-            } 
-
             LayerLoader.getInstance().setRepaintHandler(loadingHandler);
             
             if (!LayerLoader.getInstance().isInitialized() && !LayerLoader.getInstance().isLoading()) {
@@ -384,10 +376,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
             loadingProgressBar.setProgress(100);
             
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                loadingImage.setVisibility(View.GONE);
-            }
-
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
             
             appInitialized = true;
@@ -933,23 +921,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     private String followMyPositionAction() {
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
-            String route = RouteRecorder.getInstance().startRecording();
-            showRouteAction(route);
-            if (LayerLoader.getInstance().isLoading()) {
-            	LayerLoader.getInstance().stopLoading();
-            }
-            List<ExtendedLandmark> myPosV = LandmarkManager.getInstance().getUnmodifableLayer(Commons.MY_POSITION_LAYER);
-            if (!myPosV.isEmpty()) {
-                ExtendedLandmark landmark = myPosV.get(0);
-                ProjectionInterface projection = new OsmLandmarkProjection(mapView);
-                if (!projection.isVisible(landmark.getLatitudeE6(), landmark.getLongitudeE6())) {
-                    showMyPositionAction(false);
-                } else {
-                    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
-                }
-            } else {
-                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
-            }
+            startRouteRecording();
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
@@ -964,6 +936,20 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             }
         }
         return null;
+    }
+    
+    private void startRouteRecording() {
+    	String route = RouteRecorder.getInstance().startRecording();
+        showRouteAction(route);
+        if (LayerLoader.getInstance().isLoading()) {
+        	LayerLoader.getInstance().stopLoading();
+        }
+        if (LocationServicesManager.getMyLocation() != null) {
+            showMyPositionAction(false);
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
+        } else {
+            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+        }
     }
 
     private void clearMapAction() {
@@ -1028,6 +1014,10 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         			View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);
         			loading.setVisibility(View.GONE);
         			mapCanvas.setVisibility(View.VISIBLE);
+        			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        				activity.loadingImage.setVisibility(View.GONE);
+        				activity.startRouteRecording();
+                    }
         		} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
         			activity.showRouteAction((String)msg.obj);
         		} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {

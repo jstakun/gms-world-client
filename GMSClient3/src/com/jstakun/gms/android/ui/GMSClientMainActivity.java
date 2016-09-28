@@ -2,8 +2,6 @@ package com.jstakun.gms.android.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
-import java.util.List;
-
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
@@ -77,14 +75,14 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private ProgressBar loadingProgressBar;
     
     private int mapProvider;
-    private boolean appInitialized = false, isRouteDisplayed = false;
+    private boolean isAppInitialized = false, isRouteDisplayed = false;
     //Handlers
     private Handler loadingHandler;
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             IGeoPoint location = LocationServicesManager.getMyLocation();
-            if (location != null && !appInitialized) {
+            if (location != null && !isAppInitialized) {
                 initOnLocationChanged(location);
             } else {
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
@@ -92,7 +90,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                     if (!ConfigurationManager.getInstance().containsObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class)) {
                     	IntentsHelper.getInstance().startPickLocationActivity();
                     }
-                } else if (!appInitialized) {
+                } else if (!isAppInitialized) {
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
                     double lng = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
                     GeoPoint loc = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
@@ -205,7 +203,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
-        appInitialized = false;
+        isAppInitialized = false;
         
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
@@ -217,7 +215,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         } else {
             Runnable r = new Runnable() {
                 public void run() {
-                    if (!appInitialized) {
+                    if (!isAppInitialized) {
                         initOnLocationChanged(LocationServicesManager.getMyLocation());
                     }
                 }
@@ -308,7 +306,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         LoggerUtils.debug("onDestroy");
         super.onDestroy();
         if (ConfigurationManager.getInstance().isClosing()) {
-        	appInitialized = false;
+        	isAppInitialized = false;
             IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
         	IntentsHelper.getInstance().softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
@@ -372,18 +370,17 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     }
 
     private void initOnLocationChanged(IGeoPoint location) {
-        if (!appInitialized && location != null) {
+        if (!isAppInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
         	mapController.setCenter(location);
 
         	if (!LandmarkManager.getInstance().isInitialized()) {
-                //UserTracker.getInstance().sendMyLocation();
                 LandmarkManager.getInstance().initialize();
             }
 
             addLandmarkOverlay();
+            
             //must be on top of other overlays
-            //addOverlay(infoOverlay);
             addOverlay(myLocation);
             
             syncRoutesOverlays();
@@ -417,13 +414,9 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
             loadingProgressBar.setProgress(100);
             
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                loadingImage.setVisibility(View.GONE);
-            }
-
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
             
-            appInitialized = true;
+            isAppInitialized = true;
         }
     }
 
@@ -443,7 +436,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
     @Override
     public boolean onSearchRequested() {
-        if (appInitialized) {
+        if (isAppInitialized) {
             IntentsHelper.getInstance().startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, false);
             return true;
         } else {
@@ -454,7 +447,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        if (appInitialized) {
+        if (isAppInitialized) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.main_menu, menu);
             return true;
@@ -776,13 +769,13 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                     lng = defaultLocation.getQualifiedCoordinates().getLongitude();
                 }
                 GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
-                if (!appInitialized) {
+                if (!isAppInitialized) {
                     initOnLocationChanged(new org.osmdroid.google.wrapper.GeoPoint(location));
                 } else {
                     pickPositionAction(location, true, true);
                 }
                 LandmarkManager.getInstance().addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
-            } else if (resultCode == RESULT_CANCELED && !appInitialized) {
+            } else if (resultCode == RESULT_CANCELED && !isAppInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
@@ -1030,23 +1023,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private String followMyPositionAction() {
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
-            String route = RouteRecorder.getInstance().startRecording();
-            showRouteAction(route);
-            if (LayerLoader.getInstance().isLoading()) {
-            	LayerLoader.getInstance().stopLoading();
-            }
-            List<ExtendedLandmark> myPosV = LandmarkManager.getInstance().getUnmodifableLayer(Commons.MY_POSITION_LAYER);
-            if (!myPosV.isEmpty()) {
-                ExtendedLandmark landmark = myPosV.get(0);
-                ProjectionInterface projection = ProjectionFactory.getProjection(mapView, googleMapsView);
-                if (!projection.isVisible(landmark.getLatitudeE6(), landmark.getLongitudeE6())) {
-                    showMyPositionAction(false);
-                } else {
-                    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
-                }
-            } else {
-                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
-            }
+            startRouteRecording();
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
@@ -1062,6 +1039,20 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         }
         return null;
     }
+
+	private void startRouteRecording() {
+		String route = RouteRecorder.getInstance().startRecording();
+		showRouteAction(route);
+		if (LayerLoader.getInstance().isLoading()) {
+			LayerLoader.getInstance().stopLoading();
+		}
+		if (LocationServicesManager.getMyLocation() != null) {
+		    showMyPositionAction(false);
+		    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
+		} else {
+		    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+		}
+	}
 
     private void clearMapAction() {
         LandmarkManager.getInstance().clearLandmarkStore();
@@ -1127,6 +1118,10 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 	View mapCanvas = activity.findViewById(R.id.mapCanvasWidgetM);
                 	loading.setVisibility(View.GONE);
                 	mapCanvas.setVisibility(View.VISIBLE);
+                	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+                		activity.loadingImage.setVisibility(View.GONE);
+                		activity.startRouteRecording();
+                    }
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
             	} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
