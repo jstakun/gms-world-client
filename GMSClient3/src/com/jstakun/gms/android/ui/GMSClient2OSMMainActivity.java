@@ -34,6 +34,7 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.service.RouteTracingService;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
@@ -45,13 +46,17 @@ import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -88,9 +93,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private ExpandableListView drawerList;
     private ProgressBar loadingProgressBar;
     
-    private boolean isAppInitialized = false;
+    private boolean isAppInitialized = false, isRouteTrackingServiceBound = false;
     
     private  Handler loadingHandler;
+    private Messenger mMessenger;
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
@@ -112,6 +118,28 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
         }
     };
+    
+    private ServiceConnection mConnection = new ServiceConnection() {
+		
+    	@Override
+		public void onServiceConnected(ComponentName arg0, IBinder service) {
+			try {
+                Message msg = Message.obtain(null, RouteTracingService.COMMAND_REGISTER_CLIENT);
+                msg.replyTo = mMessenger;
+                new Messenger(service).send(msg);
+            }
+            catch (Exception e) {
+                LoggerUtils.error(e.getMessage(), e);
+            }
+			
+			
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName arg0) {
+		}       
+    };
+    
     //OnClickListener
     private DialogInterface.OnClickListener trackMyPosListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int id) {
@@ -345,8 +373,14 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         super.onDestroy();
         if (ConfigurationManager.getInstance().isClosing()) {
         	isAppInitialized = false;
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        		IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
+        	}
         	IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
+        	}
         	IntentsHelper.getInstance().softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
@@ -968,16 +1002,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	IntentsHelper.getInstance().vibrateOnLocationUpdate();
         	UserTracker.getInstance().sendMyLocation();
     	
-        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        		mapButtons.setVisibility(View.GONE);
-        		showMyPositionAction(false);
-            	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            		RouteRecorder.getInstance().addCoordinate(l);
-            	}
-        	} else {
-        		mapButtons.setVisibility(View.VISIBLE);
-        	}
-
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
         		CheckinManager.getInstance().autoCheckin(l.getLatitude(), l.getLongitude(), false);
         	}
@@ -1041,22 +1065,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private String followMyPositionAction() {
         if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOn(ConfigurationManager.FOLLOW_MY_POSITION);
-            String route = RouteRecorder.getInstance().startRecording();
-            showRouteAction(route);
-            if (LayerLoader.getInstance().isLoading()) {
-                LayerLoader.getInstance().stopLoading();
-            }
-            Location myLocation = ConfigurationManager.getInstance().getLocation();
-        	if (myLocation != null) {
-                showMyPositionAction(false);
-                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
-            } else {
-                IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
-            }
+            startRouteRecording(true);
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                String filename = RouteRecorder.getInstance().stopRecording();
+            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);     
+        		String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
                 } else {
@@ -1068,6 +1082,24 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
         return null;
     }
+    
+    private void startRouteRecording(boolean showMyPosition) {
+    	String route = RouteRecorder.getInstance().startRecording();
+    	isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
+        showRouteAction(route);
+        if (LayerLoader.getInstance().isLoading()) {
+        	LayerLoader.getInstance().stopLoading();
+        }
+        MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
+        if (showMyPosition) {
+        	if (ConfigurationManager.getInstance().getLocation() != null) {
+        		showMyPositionAction(false);
+        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
+        	} else {
+        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+        	}
+        }
+	}
 
     private void clearMapAction() {
     	LandmarkManager.getInstance().clearLandmarkStore();
@@ -1183,11 +1215,21 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 	if (activity.lvView == null || !activity.lvView.isShown()) {
                 		activity.getActionBar().show();
                 	}
+                	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+                		activity.startRouteRecording(true);
+                	}
             	} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
             		activity.showRouteAction((String) msg.obj);
             	} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
             		Location location = (Location) msg.obj;
                 	activity.updateLocation(location);
+            	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) {
+            		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+                		activity.mapButtons.setVisibility(View.GONE);
+                		activity.showMyPositionAction(false);
+                	} else {
+                		activity.mapButtons.setVisibility(View.VISIBLE);
+                	}
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}

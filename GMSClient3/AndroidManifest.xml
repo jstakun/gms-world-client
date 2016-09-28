@@ -4,7 +4,7 @@
       android:versionCode="03146"
       android:versionName="2.0.8">
     <uses-sdk android:minSdkVersion="3" 
-        	  android:targetSdkVersion="23"/>
+        	  android:targetSdkVersion="21"/>
     <supports-screens android:smallScreens="true"
                   android:normalScreens="true"
                   android:largeScreens="true"
@@ -116,8 +116,9 @@
             </intent-filter>
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
         </activity>
+        
         <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider"/>
-        <service android:name="com.jstakun.gms.android.service.AutoCheckinService"></service>
+        
         <receiver android:name="com.jstakun.gms.android.service.GMSScheduleReceiver">
             <intent-filter>
                 <action android:name="com.jstakun.gms.android.autocheckinbroadcast" />
@@ -131,7 +132,11 @@
              	<action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
          	</intent-filter>
      	</receiver>
+     	
      	<service android:name="com.google.android.gms.analytics.AnalyticsService" android:enabled="true" android:exported="false"/>
+        <service android:name="com.jstakun.gms.android.service.AutoCheckinService"></service>
+        <service android:name="com.jstakun.gms.android.service.RouteTracingService" android:exported="false"/>
+        
         <meta-data android:name="com.tapfortap.API_KEY" android:value="@string/tapForTapKey"/>
         <meta-data android:name="com.tapfortap.TEST_MODE" android:value="false"/>
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/googlePlayKey"/>

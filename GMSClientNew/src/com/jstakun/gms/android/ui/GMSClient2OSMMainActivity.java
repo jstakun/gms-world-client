@@ -1125,8 +1125,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
         MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
         if (showMyPosition) {
-        	Location myLocation = ConfigurationManager.getInstance().getLocation();
-        	if (myLocation != null) {
+        	if (ConfigurationManager.getInstance().getLocation() != null) {
         		showMyPositionAction(false);
         		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
         	} else {

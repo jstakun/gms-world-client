@@ -1051,8 +1051,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	LayerLoader.getInstance().stopLoading();
         }
         MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
-        Location myLocation = ConfigurationManager.getInstance().getLocation();
-        if (myLocation != null) {
+        if (ConfigurationManager.getInstance().getLocation() != null) {
         	if (showMyPosition) {
         		showMyPositionAction(false);
         	}
@@ -1101,7 +1100,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		
 		if (markerCluster == null) {
 			markerCluster = new GoogleMarkerClusterOverlay(this, mMap, loadingHandler, this.getResources().getDisplayMetrics());	
-		    //markerCluster.loadAllMarkers();
 		}
 		markerCluster.loadAllMarkers();
 		

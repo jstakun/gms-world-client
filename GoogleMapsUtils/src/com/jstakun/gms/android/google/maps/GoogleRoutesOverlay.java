@@ -1,23 +1,21 @@
 package com.jstakun.gms.android.google.maps;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
-import android.graphics.Rect;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
-import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
-import java.util.ArrayList;
-import java.util.List;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
 
 /**
  *
@@ -26,16 +24,16 @@ import java.util.List;
 public class GoogleRoutesOverlay extends Overlay {
 
     private final Path path = new Path();
-    private final Paint lmpaint = new Paint();
+    //private final Paint lmpaint = new Paint();
     private final Paint paint = new Paint();
     private final Point point1 = new Point();
     private final Point point2 = new Point();
     private List<ExtendedLandmark> routePoints = new ArrayList<ExtendedLandmark>();
-    private int routeSize = 0, w = 0, h = 0;
+    private int routeSize = 0;//, w = 0, h = 0;
     private boolean isCurrentlyRecording = false;
     private String routeName = null;
-    private final Rect viewportRect = new Rect();
-    private Bitmap routesLayerBitmap = null;
+    //private final Rect viewportRect = new Rect();
+    //private Bitmap routesLayerBitmap = null;
 
     public GoogleRoutesOverlay(Context context, String routeName) {
         this.routeName = routeName;
@@ -45,11 +43,11 @@ public class GoogleRoutesOverlay extends Overlay {
             routeSize = routePoints.size();
         }
         
-        routesLayerBitmap = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, context.getResources().getDisplayMetrics(), null).getBitmap();
-        if (routesLayerBitmap != null) {
-            w = routesLayerBitmap.getWidth();
-            h = routesLayerBitmap.getHeight();
-        }
+        //routesLayerBitmap = LayerManager.getLayerIcon(Commons.ROUTES_LAYER, LayerManager.LAYER_ICON_LARGE, context.getResources().getDisplayMetrics(), null).getBitmap();
+        //if (routesLayerBitmap != null) {
+        //    w = routesLayerBitmap.getWidth();
+        //    h = routesLayerBitmap.getHeight();
+        //}
         
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
@@ -69,9 +67,9 @@ public class GoogleRoutesOverlay extends Overlay {
                 ExtendedLandmark firstPoint = routePoints.get(0);
                 GeoPoint gp1 = new GeoPoint(firstPoint.getLatitudeE6(), firstPoint.getLongitudeE6());
                 projection.toPixels(gp1, point1);
-                if (routesLayerBitmap != null && !routesLayerBitmap.isRecycled()) {
-                	canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - h, lmpaint); 
-                }
+                //if (routesLayerBitmap != null && !routesLayerBitmap.isRecycled()) {
+                //	canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - h, lmpaint); 
+                //}
                 path.moveTo(point1.x, point1.y);
 
                 for (int i = 1; i < routeSize; i++) {
@@ -86,9 +84,9 @@ public class GoogleRoutesOverlay extends Overlay {
                 }
 
                 canvas.drawPath(path, paint);
-                if (routesLayerBitmap != null && !routesLayerBitmap.isRecycled()) {
-                	canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
-                }
+                //if (routesLayerBitmap != null && !routesLayerBitmap.isRecycled()) {
+                //	canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
+                //}
             } else if (isCurrentlyRecording) {
                 //draw currently recorded route from the end to first invisible point only
                 routePoints = RoutesManager.getInstance().getRoute(routeName);
@@ -102,7 +100,7 @@ public class GoogleRoutesOverlay extends Overlay {
                     path.moveTo(point1.x, point1.y);
 
                     int i = routeSize - 2;
-                    mapView.getDrawingRect(viewportRect);
+                    //mapView.getDrawingRect(viewportRect);
 
                     while (i >= 0) {
                         ExtendedLandmark secondPoint = routePoints.get(i);
@@ -110,9 +108,9 @@ public class GoogleRoutesOverlay extends Overlay {
                         projection.toPixels(gp2, point2);
                         
                         path.lineTo(point2.x, point2.y);
-                        if (!viewportRect.contains(point1.x, point1.y)) {
-                            break;
-                        }
+                        //if (!viewportRect.contains(point1.x, point1.y)) {
+                        //    break;
+                        //}
 
                         point1.x = point2.x;
                         point1.y = point2.y;
@@ -122,9 +120,9 @@ public class GoogleRoutesOverlay extends Overlay {
                     canvas.drawPath(path, paint);
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);
-                    if (i == -1 && routesLayerBitmap != null && !routesLayerBitmap.isRecycled()) {
-                        canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint); 
-                    }
+                    //if (i == -1 && routesLayerBitmap != null && !routesLayerBitmap.isRecycled()) {
+                    //    canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint); 
+                    //}
                 }
             }
 
