@@ -96,7 +96,7 @@ public class RouteTracingService extends Service { //implements LocationListener
         this.mWakeLock.acquire();
         
         if (!isGoogleApiAvailable) {
-        	LocationServicesManager.enableMyLocation();
+        	LocationServicesManager.enableMyLocation(incomingHandler);
         } else {
         	GmsLocationServicesManager.getInstance().enable(incomingHandler);
         }

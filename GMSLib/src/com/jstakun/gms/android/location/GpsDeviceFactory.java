@@ -44,7 +44,7 @@ public class GpsDeviceFactory {
      	}
      }
      
-     public static void startDevice(Handler handler, Context context) {
+     public static void startDevice(Handler handler) {
         if (device != null) {
         	device.startListening();
         	device.setPositionHandler(handler);

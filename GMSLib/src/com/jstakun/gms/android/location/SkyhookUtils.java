@@ -117,18 +117,18 @@ public class SkyhookUtils {
         location.setSpeed((float) wpsLocation.getSpeed());
         location.setTime(wpsLocation.getTime());
 
-        if (AndroidDevice.isBetterLocation(location, ConfigurationManager.getInstance().getLocation())) {
+        //if (AndroidDevice.isBetterLocation(location, ConfigurationManager.getInstance().getLocation())) {
 
-            ConfigurationManager.getInstance().setLocation(location);
+        ConfigurationManager.getInstance().setLocation(location);
 
-            if (!hasRunOnFirstFix && runOnFirstFix != null) {
-                runOnFirstFix.run();
-                hasRunOnFirstFix = true;
-            }
-
-            Message msg = locationHandler.obtainMessage(LocationServicesManager.UPDATE_LOCATION, location);
-            locationHandler.handleMessage(msg);
+        if (!hasRunOnFirstFix && runOnFirstFix != null) {
+        	runOnFirstFix.run();
+            hasRunOnFirstFix = true;
         }
+
+        Message msg = locationHandler.obtainMessage(LocationServicesManager.UPDATE_LOCATION, location);
+        locationHandler.handleMessage(msg);
+        //}
 
         return WPSContinuation.WPS_CONTINUE;
     }

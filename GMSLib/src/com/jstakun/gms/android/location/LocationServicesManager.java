@@ -65,6 +65,21 @@ public class LocationServicesManager {
             skyhook.enableMyLocation();
         }
     }
+    
+    public static void enableMyLocation(Handler positionHandler) {
+    	if (isGpsHardwarePresent) {
+        	if (myLocation != null) {
+        		myLocation.enableMyLocation();
+        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        			myLocation.enableCompass();
+        		}		
+        	} else {
+        		GpsDeviceFactory.startDevice(positionHandler);
+        	}
+        } else {
+            skyhook.enableMyLocation();
+        }
+    }
 
     public static void disableMyLocation() {
     	if (isGpsHardwarePresent) {
