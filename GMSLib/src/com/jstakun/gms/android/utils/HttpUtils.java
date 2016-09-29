@@ -152,7 +152,7 @@ public class HttpUtils {
 	
 	public String sendPostRequest(String url, Map<String, String> postParams, boolean auth) {
 		try {
-			byte[] response = processRequest(url, auth, "POST", null, null, getQuery(postParams).getBytes(), FORM_ENCODING, true, null, null, null, "key", "name", "hash");
+			byte[] response = processRequest(url, auth, null, "POST", null, getQuery(postParams).getBytes(), FORM_ENCODING, true, null, null, null, "key", "name", "hash");
 			if (response != null && response.length > 0) {
 				return new String(response, "UTF-8");
 			} else {

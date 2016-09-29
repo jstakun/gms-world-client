@@ -1135,6 +1135,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 } else {
                     IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOff));
                 }
+                if (ConfigurationManager.getInstance().getLocation() != null) {
+                	mapButtons.setVisibility(View.VISIBLE);
+                }
             } else {
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOff));
             }

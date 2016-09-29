@@ -71,10 +71,10 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 
 	@Override
 	public void onLocationChanged(Location location) {
-		if (AndroidDevice.isBetterLocation(location, ConfigurationManager.getInstance().getLocation())) {
-            ConfigurationManager.getInstance().setLocation(location);
-            mLocationHandler.sendEmptyMessage(UPDATE_LOCATION);
-        }
+		//if (AndroidDevice.isBetterLocation(location, ConfigurationManager.getInstance().getLocation())) {
+        ConfigurationManager.getInstance().setLocation(location);
+        mLocationHandler.sendEmptyMessage(UPDATE_LOCATION);
+        //}
 	}
 
 	@Override
