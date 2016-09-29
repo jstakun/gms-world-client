@@ -69,7 +69,7 @@ public class RouteTracingService extends Service { //implements LocationListener
     public void onCreate() {
     	super.onCreate();
     	LoggerUtils.debug("RouteTracingService onCreate()");
-    	isGoogleApiAvailable = IntentsHelper.getInstance().isGoogleApiAvailable();
+    	isGoogleApiAvailable = IntentsHelper.getInstance().isGoogleApiAvailable(); 
     	if (!isGoogleApiAvailable) {
     		LocationServicesManager.initLocationServicesManager(this, incomingHandler, null);
     	}
@@ -127,7 +127,7 @@ public class RouteTracingService extends Service { //implements LocationListener
         //}
     	
     	if (!isGoogleApiAvailable) {
-        	LocationServicesManager.enableMyLocation();
+        	LocationServicesManager.disableMyLocation();
         } else {
         	GmsLocationServicesManager.getInstance().disable();
         }

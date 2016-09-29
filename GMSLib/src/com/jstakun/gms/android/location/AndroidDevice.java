@@ -32,7 +32,6 @@ public class AndroidDevice implements LocationListener {
     private static final int THREE_MINUTES = 1000 * 60 * 3;
     
     private LocationManager locationManager;
-    private Location previousLocation;
     private Handler positionHandler = null;
     private boolean isListening = false;
     
@@ -113,7 +112,6 @@ public class AndroidDevice implements LocationListener {
         //if (currentLocation != null) {
         LoggerUtils.debug("Setting current gps location.");
         ConfigurationManager.getInstance().setLocation(location);
-        previousLocation = location;
         updatePositionUi(location);
         //}
     }
