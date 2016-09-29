@@ -105,18 +105,17 @@ public class AndroidDevice implements LocationListener {
 
     public void onLocationChanged(Location location) {
 
-        Location currentLocation = null;
+        //Location currentLocation = null;
+        //if (isBetterLocation(location, previousLocation)) {
+        //    currentLocation = location; 
+        //}
 
-        if (isBetterLocation(location, previousLocation)) {
-            currentLocation = location; 
-        }
-
-        if (currentLocation != null) {
-            LoggerUtils.debug("Setting current gps location.");
-            ConfigurationManager.getInstance().setLocation(currentLocation);
-            previousLocation = currentLocation;
-            updatePositionUi(currentLocation);
-        }
+        //if (currentLocation != null) {
+        LoggerUtils.debug("Setting current gps location.");
+        ConfigurationManager.getInstance().setLocation(location);
+        previousLocation = location;
+        updatePositionUi(location);
+        //}
     }
 
     public void stopListening() {

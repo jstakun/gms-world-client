@@ -54,6 +54,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -1026,6 +1027,9 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	IntentsHelper.getInstance().addMyLocationLandmark(l);     
     	IntentsHelper.getInstance().vibrateOnLocationUpdate();
     	UserTracker.getInstance().sendMyLocation();
+    	if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+    		mapButtons.setVisibility(View.VISIBLE);
+    	}
     	//TODO
     	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
         	CheckinManager.getInstance().autoCheckin(l.getLatitude(), l.getLongitude(), false);
