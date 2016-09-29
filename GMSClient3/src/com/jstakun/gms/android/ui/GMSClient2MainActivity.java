@@ -127,7 +127,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
-            IGeoPoint location = LocationServicesManager.getMyLocation();
+            IGeoPoint location = LocationServicesManager.getInstance().getMyLocation();
             if (location != null && !isAppInitialized) {
             	initOnLocationChanged(location, 0);
             } else {
@@ -188,7 +188,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             ((com.jstakun.gms.android.osm.maps.ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
             //set this to solve path painting issue
             ((org.osmdroid.views.MapView) mapView).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            if (LocationServicesManager.isGpsHardwarePresent(this)) {
+            if (LocationServicesManager.getInstance().isGpsHardwarePresent(this)) {
             	myLocation = new OsmMyLocationNewOverlay(this, (org.osmdroid.views.MapView) mapView, loadingHandler);
             }
         } else {
@@ -200,12 +200,12 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             //set this to solve path painting issue
             googleMapsView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             mapView = new org.osmdroid.google.wrapper.MapView(googleMapsView);
-            if (LocationServicesManager.isGpsHardwarePresent(this)) {
+            if (LocationServicesManager.getInstance().isGpsHardwarePresent(this)) {
             	myLocation = new GoogleIMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
             }
         }    
 
-        LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
+        LocationServicesManager.getInstance().initLocationServicesManager(this, loadingHandler, myLocation);
         initComponents(savedInstanceState);
     }
 
@@ -303,11 +303,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             Runnable r = new Runnable() {
                 public void run() {
                     if (!isAppInitialized) {
-                        initOnLocationChanged(LocationServicesManager.getMyLocation(), 3);
+                        initOnLocationChanged(LocationServicesManager.getInstance().getMyLocation(), 3);
                     }
                 }
             };
-            LocationServicesManager.runOnFirstFix(r);
+            LocationServicesManager.getInstance().runOnFirstFix(r);
         }
         
         loadingProgressBar.setProgress(50);
@@ -323,7 +323,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         super.onResume();
         LoggerUtils.debug("onResume");
 
-        LocationServicesManager.enableMyLocation();
+        LocationServicesManager.getInstance().enableMyLocation();
 
         if (mapProvider == ConfigurationManager.GOOGLE_MAPS) {
             GoogleMapsTypeSelector.selectMapType(googleMapsView);
@@ -383,7 +383,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         super.onPause();
         LoggerUtils.debug("onPause");
 
-        LocationServicesManager.disableMyLocation();
+        LocationServicesManager.getInstance().disableMyLocation();
 
         DialogManager.getInstance().dismissDialog(this);
     }
@@ -422,7 +422,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         if (mapProvider != ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER)) {
             Intent intent = getIntent();
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
-            LocationServicesManager.disableMyLocation();
+            LocationServicesManager.getInstance().disableMyLocation();
             finish();
             startActivity(intent);
         }
@@ -991,7 +991,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     }
 
     private void showMyPositionAction(boolean loadLayers) {
-        IGeoPoint myLoc = LocationServicesManager.getMyLocation();
+        IGeoPoint myLoc = LocationServicesManager.getInstance().getMyLocation();
         if (myLoc != null) {
             boolean isVisible = false;
             boolean clearLandmarks = false;
@@ -1058,7 +1058,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	addOverlay(markerCluster);
         } else {
             GoogleLandmarkOverlay landmarkOverlay = null;
-            if (LocationServicesManager.isGpsHardwarePresent()) {
+            if (LocationServicesManager.getInstance().isGpsHardwarePresent()) {
             	landmarkOverlay = new GoogleLandmarkOverlay(loadingHandler);
             } else {
             	landmarkOverlay = new GoogleLandmarkOverlay(loadingHandler, new String[]{Commons.ROUTES_LAYER});
@@ -1156,7 +1156,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         if (LayerLoader.getInstance().isLoading()) {
             LayerLoader.getInstance().stopLoading();
         }
-        if (LocationServicesManager.getMyLocation() != null) {
+        if (LocationServicesManager.getInstance().getMyLocation() != null) {
         	if (showMyPosition) {
         		showMyPositionAction(false);
         	}
@@ -1185,7 +1185,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private void trackMyPosAction() {
     	String filename = followMyPositionAction();
 
-        LocationServicesManager.enableCompass();
+        LocationServicesManager.getInstance().enableCompass();
 
         ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
         if (filename != null) {

@@ -108,7 +108,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
-            GeoPoint location = LocationServicesManager.getMyLocation();
+            GeoPoint location = LocationServicesManager.getInstance().getMyLocation();
             if (location != null && !isAppInitialized) {
                 initOnLocationChanged(location);
             } else {
@@ -183,7 +183,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         ((ObservableMapView)mapView).setOnZoomChangeListener(new ZoomListener());
 
         myLocation = new OsmMyLocationNewOverlay(this, mapView, loadingHandler);
-        LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
+        LocationServicesManager.getInstance().initLocationServicesManager(this, loadingHandler, myLocation);
         
         loadingProgressBar = (ProgressBar) findViewById(R.id.mapCanvasLoadingProgressBar);
     	loadingProgressBar.setProgress(25);
@@ -273,12 +273,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             Runnable r = new Runnable() {
                 public void run() {
                     if (!isAppInitialized) {
-                        initOnLocationChanged(LocationServicesManager.getMyLocation());
+                        initOnLocationChanged(LocationServicesManager.getInstance().getMyLocation());
                     }
                 }
             };
 
-            LocationServicesManager.runOnFirstFix(r);
+            LocationServicesManager.getInstance().runOnFirstFix(r);
         }
         
         loadingProgressBar.setProgress(50);
@@ -300,7 +300,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         super.onResume();
         LoggerUtils.debug("onResume");
 
-        LocationServicesManager.enableMyLocation();
+        LocationServicesManager.getInstance().enableMyLocation();
 
         OsmMapsTypeSelector.selectMapType(mapView, this);
 
@@ -361,7 +361,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         super.onPause();
         LoggerUtils.debug("onPause");
 
-        LocationServicesManager.disableMyLocation();
+        LocationServicesManager.getInstance().disableMyLocation();
 
         DialogManager.getInstance().dismissDialog(this);
     }
@@ -469,7 +469,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             }
 
             addLandmarkOverlay();
-            if (LocationServicesManager.isGpsHardwarePresent()) {
+            if (LocationServicesManager.getInstance().isGpsHardwarePresent()) {
                 addOverlay(myLocation);
             }
 
@@ -988,7 +988,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     }
 
     private void showMyPositionAction(boolean loadLayers) {
-        GeoPoint myLoc = LocationServicesManager.getMyLocation();
+        GeoPoint myLoc = LocationServicesManager.getInstance().getMyLocation();
         if (myLoc != null) {
             boolean isVisible = false;
             boolean clearLandmarks = false;
@@ -1149,7 +1149,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private void trackMyPosAction() {
     	String filename = followMyPositionAction();
 
-        LocationServicesManager.enableCompass();
+    	LocationServicesManager.getInstance().enableCompass();
 
         ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
         if (filename != null) {

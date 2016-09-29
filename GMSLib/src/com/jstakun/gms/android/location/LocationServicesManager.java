@@ -18,11 +18,22 @@ import org.osmdroid.util.GeoPoint;
 public class LocationServicesManager {
 
 	public static final int UPDATE_LOCATION = 21;
-    private static SkyhookUtils skyhook;
-    private static IMyLocationOverlay myLocation;
-    private static boolean isGpsHardwarePresent = false;
+	
+    private SkyhookUtils skyhook;
+    private IMyLocationOverlay myLocation;
+    private boolean isGpsHardwarePresent = false;
     
-    public static void initLocationServicesManager(Context context, Handler locationHandler, IMyLocationOverlay imyLocation) {
+    public static final LocationServicesManager instance = new LocationServicesManager();
+	
+	private LocationServicesManager() {
+		
+	}
+	
+	public static LocationServicesManager getInstance() {
+		return instance;
+	}
+    
+    public void initLocationServicesManager(Context context, Handler locationHandler, IMyLocationOverlay imyLocation) {
         if (isGpsHardwarePresent(context)) {
             LoggerUtils.debug("GPS is present !!!");
             isGpsHardwarePresent = true;
@@ -38,20 +49,19 @@ public class LocationServicesManager {
         }
     }
 
-    public static boolean isGpsHardwarePresent(Context context) {
+    public boolean isGpsHardwarePresent(Context context) {
     	try {
             return HelperInternal.isGpsHardwarePresent(context);
         } catch (VerifyError e) {
             return true;
         }
-    	//return false;
     }
     
-    public static boolean isGpsHardwarePresent() {
+    public boolean isGpsHardwarePresent() {
         return isGpsHardwarePresent;
     }
 
-    public static void enableMyLocation() {
+    public void enableMyLocation() {
         if (isGpsHardwarePresent) {
         	if (myLocation != null) {
         		myLocation.enableMyLocation();
@@ -66,7 +76,7 @@ public class LocationServicesManager {
         }
     }
     
-    public static void enableMyLocation(Handler positionHandler) {
+    public void enableMyLocation(Handler positionHandler) {
     	if (isGpsHardwarePresent) {
         	if (myLocation != null) {
         		myLocation.enableMyLocation();
@@ -81,7 +91,7 @@ public class LocationServicesManager {
         }
     }
 
-    public static void disableMyLocation() {
+    public void disableMyLocation() {
     	if (isGpsHardwarePresent) {
     		if (myLocation != null) {
     			myLocation.disableCompass();
@@ -94,7 +104,7 @@ public class LocationServicesManager {
         }
     }
 
-    public static void runOnFirstFix(Runnable r) {
+    public void runOnFirstFix(Runnable r) {
         if (isGpsHardwarePresent && myLocation != null) {
             myLocation.runOnFirstFix(r);
         } else {
@@ -102,7 +112,7 @@ public class LocationServicesManager {
         }
     }
 
-    public static void enableCompass() {
+    public void enableCompass() {
         if (isGpsHardwarePresent && myLocation != null) {
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 myLocation.enableCompass();
@@ -112,7 +122,7 @@ public class LocationServicesManager {
         }
     }
 
-    public static GeoPoint getMyLocation() {
+    public GeoPoint getMyLocation() {
         Location location = ConfigurationManager.getInstance().getLocation();
         if (location == null && myLocation != null) {
             location = myLocation.getLastFix();

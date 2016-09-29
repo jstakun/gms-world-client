@@ -48,14 +48,14 @@ public class AndroidDevice implements LocationListener {
                                 satellites++;
                             }
                         }
-                        LoggerUtils.debug("Number of available satellites: " + satellites);
+                        LoggerUtils.debug("AndroidDevice Number of available satellites: " + satellites);
                     }
                     break;
                 case GpsStatus.GPS_EVENT_STOPPED:
-                	LoggerUtils.debug("Android GPS device stopped!");
+                	LoggerUtils.debug("AndroidDevice GPS device stopped!");
                     break;
                 case GpsStatus.GPS_EVENT_STARTED:
-                	LoggerUtils.debug("Android GPS device started!");
+                	LoggerUtils.debug("AndroidDevice GPS device started!");
                 	break;
                 default:
                     break;
@@ -65,6 +65,8 @@ public class AndroidDevice implements LocationListener {
 
     public AndroidDevice(Context context) {
 
+    	LoggerUtils.debug("AndroidDevice() created...");
+        
     	if (context == null) {
     		context = ConfigurationManager.getInstance().getContext();
     	}
@@ -88,8 +90,8 @@ public class AndroidDevice implements LocationListener {
     }
 
     public void startListening() {
+    	LoggerUtils.debug("AndroidDevice.startListening(): " + isListening);
         if (!isListening) {
-
             Criteria crit = new Criteria();
             crit.setAccuracy(Criteria.ACCURACY_HIGH);//.ACCURACY_FINE);
             String provider = locationManager.getBestProvider(crit, true);
@@ -120,25 +122,31 @@ public class AndroidDevice implements LocationListener {
     }
 
     public void stopListening() {
+    	LoggerUtils.debug("AndroidDevice.stopListening(): " + isListening);
         if (isListening) {
             locationManager.removeUpdates(this);
             locationManager.removeGpsStatusListener(gpsStatusListener);
-            isListening = false;
         }
+        isListening = false;
     }
 
-    public static int getBearingIndex(Location location) {
-
-        final double sector = 22.5; // = 360 degrees / 16 sectors
-        final int[] compass = {0 /* N */, 1 /* NNE */, 2 /* NE */, 3 /* ENE */,
-            4 /* E */, 5 /* ESE */, 6 /* SE */, 7 /* SSE */,
-            8 /* S */, 9 /* SSW */, 10 /* SW */, 11 /* WSW */,
-            12 /* W */, 13 /* WNW */, 14 /* NW */, 15 /* NNW */, 0 /* N */};
-        final int directionIndex = (int) (Math.floor((location.getBearing() - 11.25) / sector) + 1);// we add one because north would otherwise be a -1 index, and we add a reference to N as the zero index
-        int heading = compass[directionIndex];
-        return heading;
+    
+    public void onProviderDisabled(String provider) {
+        LoggerUtils.debug("AndroidDevice Provider Disabled: " + provider);
     }
 
+    public void onProviderEnabled(String provider) {
+        LoggerUtils.debug("AndroidDevice Provider Enabled: " + provider);
+    }
+
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        LoggerUtils.debug("AndroidDevice Provider Status Changed: " + provider + ", Status=[" + status + "], extras=" + extras);
+    }
+    
+    protected Handler getPositionHandler() {
+    	return positionHandler;
+    }
+    
     private Location getLastKnownLocation() {
         Location lastKnownLocation = null;
 
@@ -147,7 +155,7 @@ public class AndroidDevice implements LocationListener {
                 lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
         } catch (Exception e) {
-            LoggerUtils.error("AndroidDevice() error:", e);
+            LoggerUtils.error("AndroidDevice.getLastKnownLocation() exception:", e);
         }
 
         if (lastKnownLocation == null) {
@@ -156,7 +164,7 @@ public class AndroidDevice implements LocationListener {
                     lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 }
             } catch (Exception e) {
-                LoggerUtils.error("AndroidDevice() error:", e);
+                LoggerUtils.error("AndroidDevice.getLastKnownLocation() exception:", e);
             }
         }
 
@@ -164,7 +172,7 @@ public class AndroidDevice implements LocationListener {
     }
 
     private void setMyLocation(Location lastKnownLocation) {
-        LoggerUtils.debug("Setting last known location.");
+        LoggerUtils.debug("AndroidDevice Setting last known location.");
         ConfigurationManager.getInstance().setLocation(lastKnownLocation);
         updatePositionUi(lastKnownLocation);
     }
@@ -180,22 +188,18 @@ public class AndroidDevice implements LocationListener {
         }
     }
 
-    public void onProviderDisabled(String provider) {
-        LoggerUtils.debug("Provider Disabled: " + provider);
-    }
+    public static int getBearingIndex(Location location) {
 
-    public void onProviderEnabled(String provider) {
-        LoggerUtils.debug("Provider Enabled: " + provider);
-    }
-
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        LoggerUtils.debug("Provider Status Changed: " + provider + ", Status=[" + status + "], extras=" + extras);
+        final double sector = 22.5; // = 360 degrees / 16 sectors
+        final int[] compass = {0 /* N */, 1 /* NNE */, 2 /* NE */, 3 /* ENE */,
+            4 /* E */, 5 /* ESE */, 6 /* SE */, 7 /* SSE */,
+            8 /* S */, 9 /* SSW */, 10 /* SW */, 11 /* WSW */,
+            12 /* W */, 13 /* WNW */, 14 /* NW */, 15 /* NNW */, 0 /* N */};
+        final int directionIndex = (int) (Math.floor((location.getBearing() - 11.25) / sector) + 1);// we add one because north would otherwise be a -1 index, and we add a reference to N as the zero index
+        int heading = compass[directionIndex];
+        return heading;
     }
     
-    protected Handler getPositionHandler() {
-    	return positionHandler;
-    }
-
     public static boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             // A new location is always better than no location

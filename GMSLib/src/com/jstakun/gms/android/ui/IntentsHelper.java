@@ -1382,7 +1382,7 @@ public final class IntentsHelper {
         	loadingHandler.removeCallbacks(gpsRunnable);
         }
         
-        LocationServicesManager.disableMyLocation();
+        LocationServicesManager.getInstance().disableMyLocation();
 
         ConfigurationManager.getInstance().setOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
         softClose(zoomLevel, latitudeE6, longitudeE6);

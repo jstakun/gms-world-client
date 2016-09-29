@@ -81,7 +81,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
-            IGeoPoint location = LocationServicesManager.getMyLocation();
+            IGeoPoint location = LocationServicesManager.getInstance().getMyLocation();
             if (location != null && !isAppInitialized) {
                 initOnLocationChanged(location);
             } else {
@@ -145,7 +145,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             myLocation = new GoogleIMyLocationOverlay(this, googleMapsView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
         }
 
-        LocationServicesManager.initLocationServicesManager(this, loadingHandler, myLocation);
+        LocationServicesManager.getInstance().initLocationServicesManager(this, loadingHandler, myLocation);
 
         initComponents();
         //}
@@ -216,11 +216,11 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             Runnable r = new Runnable() {
                 public void run() {
                     if (!isAppInitialized) {
-                        initOnLocationChanged(LocationServicesManager.getMyLocation());
+                        initOnLocationChanged(LocationServicesManager.getInstance().getMyLocation());
                     }
                 }
             };
-            LocationServicesManager.runOnFirstFix(r);
+            LocationServicesManager.getInstance().runOnFirstFix(r);
         }
         
         loadingProgressBar.setProgress(50);
@@ -231,7 +231,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         super.onResume();
         LoggerUtils.debug("onResume");
 
-        LocationServicesManager.enableMyLocation();
+        LocationServicesManager.getInstance().enableMyLocation();
 
         if (mapProvider == ConfigurationManager.GOOGLE_MAPS) {
             GoogleMapsTypeSelector.selectMapType(googleMapsView);
@@ -290,7 +290,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         super.onPause();
         LoggerUtils.debug("onPause");
 
-        LocationServicesManager.disableMyLocation();
+        LocationServicesManager.getInstance().disableMyLocation();
 
         DialogManager.getInstance().dismissDialog(this);
     }
@@ -323,7 +323,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         if (mapProvider != ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER)) {
             Intent intent = getIntent();
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
-            LocationServicesManager.disableMyLocation();
+            LocationServicesManager.getInstance().disableMyLocation();
             finish();
             startActivity(intent);
         }
@@ -855,7 +855,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     }
 
     private void showMyPositionAction(boolean loadLayers) {
-        IGeoPoint myLoc = LocationServicesManager.getMyLocation();
+        IGeoPoint myLoc = LocationServicesManager.getInstance().getMyLocation();
         if (myLoc != null) {
             boolean isVisible = false;
             boolean clearLandmarks = false;
@@ -924,7 +924,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private void addLandmarkOverlay() {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
         	 OsmLandmarkOverlay landmarkOverlay = null;
-        	 if (LocationServicesManager.isGpsHardwarePresent()) {
+        	 if (LocationServicesManager.getInstance().isGpsHardwarePresent()) {
                  landmarkOverlay = new OsmLandmarkOverlay(this, loadingHandler);
              } else {
                  landmarkOverlay = new OsmLandmarkOverlay(this, loadingHandler, new String[]{Commons.ROUTES_LAYER});
@@ -932,7 +932,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             addOverlay(landmarkOverlay);
         } else {
             GoogleLandmarkOverlay landmarkOverlay = null;
-            if (LocationServicesManager.isGpsHardwarePresent()) {
+            if (LocationServicesManager.getInstance().isGpsHardwarePresent()) {
             	landmarkOverlay = new GoogleLandmarkOverlay(loadingHandler);
             } else {
             	landmarkOverlay = new GoogleLandmarkOverlay(loadingHandler, new String[]{Commons.ROUTES_LAYER});
@@ -1046,7 +1046,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 		if (LayerLoader.getInstance().isLoading()) {
 			LayerLoader.getInstance().stopLoading();
 		}
-		if (LocationServicesManager.getMyLocation() != null) {
+		if (LocationServicesManager.getInstance().getMyLocation() != null) {
 		    showMyPositionAction(false);
 		    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
 		} else {
@@ -1070,7 +1070,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private void trackMyPosAction() {
     	String filename = followMyPositionAction();
 
-        LocationServicesManager.enableCompass();
+        LocationServicesManager.getInstance().enableCompass();
 
         ConfigurationManager.getInstance().removeObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
         if (filename != null) {
