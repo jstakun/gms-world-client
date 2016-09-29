@@ -98,9 +98,9 @@ public class UserTracker {
             ConfigurationManager.getDatabaseManager().saveConfiguration(false);
             LoggerUtils.debug("I'm sending current location.");
             new SendMyLocationTask(10).execute();
-        } else {
-        	LoggerUtils.debug("I'm skipping sending current location.");
-        }
+        } //else {
+        	//LoggerUtils.debug("I'm skipping sending current location.");
+        //}
     }
 
     private class SendMyLocationTask extends GMSAsyncTask<Void, Void, String> {

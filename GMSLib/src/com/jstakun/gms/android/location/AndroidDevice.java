@@ -26,8 +26,8 @@ import com.jstakun.gms.android.utils.LoggerUtils;
  */
 public class AndroidDevice implements LocationListener {
 
-    private static final int MILLIS = 0; //5000;
-    private static final int METERS = 0; //5;
+    private static final int MILLIS = 5000;
+    private static final int METERS = 5;
     //private static final int TWO_MINUTES = 1000 * 60 * 2;
     private static final int THREE_MINUTES = 1000 * 60 * 3;
     
@@ -52,9 +52,11 @@ public class AndroidDevice implements LocationListener {
                     }
                     break;
                 case GpsStatus.GPS_EVENT_STOPPED:
+                	LoggerUtils.debug("Android GPS device stopped!");
                     break;
                 case GpsStatus.GPS_EVENT_STARTED:
-                    break;
+                	LoggerUtils.debug("Android GPS device started!");
+                	break;
                 default:
                     break;
             }
@@ -92,6 +94,7 @@ public class AndroidDevice implements LocationListener {
             crit.setAccuracy(Criteria.ACCURACY_HIGH);//.ACCURACY_FINE);
             String provider = locationManager.getBestProvider(crit, true);
             try {
+            	locationManager.removeUpdates(this);
                 locationManager.requestLocationUpdates(provider, MILLIS, METERS, this);
                 isListening = true;
             } catch (Exception e) {
@@ -186,10 +189,7 @@ public class AndroidDevice implements LocationListener {
     }
 
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        LoggerUtils.debug("Provider Status Changed: " + provider + ", Status=["
-                + status + "], extras=" + extras);
-        //if (status == LocationProvider.AVAILABLE) {
-        //}
+        LoggerUtils.debug("Provider Status Changed: " + provider + ", Status=[" + status + "], extras=" + extras);
     }
     
     protected Handler getPositionHandler() {
