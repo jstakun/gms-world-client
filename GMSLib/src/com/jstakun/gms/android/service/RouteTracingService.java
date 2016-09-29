@@ -2,6 +2,7 @@ package com.jstakun.gms.android.service;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.location.GmsLocationServicesManager;
+import com.jstakun.gms.android.location.GpsDeviceFactory;
 import com.jstakun.gms.android.location.LocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.ui.IntentsHelper;
@@ -30,8 +31,6 @@ public class RouteTracingService extends Service {
 	private final Messenger mMessenger = new Messenger(incomingHandler); 
 	private Messenger mClient;
 	
-	//private boolean isGoogleApiAvailable = false;
-    
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mMessenger.getBinder();
@@ -44,9 +43,6 @@ public class RouteTracingService extends Service {
         
         if (intent != null && intent.hasExtra(COMMAND)) {
         	if (intent.getIntExtra(COMMAND, -1) == COMMAND_START) {
-        		//if (!isGoogleApiAvailable) {
-        		LocationServicesManager.getInstance().initLocationServicesManager(this, incomingHandler, null);
-            	//}
         		startTracking();
         	} else if (intent.getIntExtra(COMMAND, -1) == COMMAND_STOP) {
         		stopTracking();
@@ -60,10 +56,6 @@ public class RouteTracingService extends Service {
     public void onCreate() {
     	super.onCreate();
     	LoggerUtils.debug("RouteTracingService onCreate()");
-    	//isGoogleApiAvailable = IntentsHelper.getInstance().isGoogleApiAvailable(); 
-    	//if (!isGoogleApiAvailable) {
-    	LocationServicesManager.getInstance().initLocationServicesManager(this, incomingHandler, null);
-    	//}
     	startTracking();
     }
     
@@ -86,11 +78,12 @@ public class RouteTracingService extends Service {
     	this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LoggerUtils.getTag());
         this.mWakeLock.acquire();
         
-        //if (!isGoogleApiAvailable) {
-        	LocationServicesManager.getInstance().enableMyLocation(incomingHandler);
-        //} else {
+        if (!IntentsHelper.getInstance().isGoogleApiAvailable()) {
+        	GpsDeviceFactory.initGpsDevice(this, incomingHandler);
+        	GpsDeviceFactory.startDevice();
+        } else {
         	GmsLocationServicesManager.getInstance().enable(incomingHandler);
-        //}
+        }
     }
     
     private synchronized void stopTracking() {
@@ -102,11 +95,11 @@ public class RouteTracingService extends Service {
            this.mWakeLock = null;
         }
     	
-    	//if (!isGoogleApiAvailable) {
-    	LocationServicesManager.getInstance().disableMyLocation();
-        //} else {
+    	if (!IntentsHelper.getInstance().isGoogleApiAvailable()) {
+    		GpsDeviceFactory.stopDevice();
+        } else {
         	GmsLocationServicesManager.getInstance().disable();
-        //}
+        }
     }
 
 	private class IncomingHandler extends Handler {

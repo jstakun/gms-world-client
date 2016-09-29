@@ -93,8 +93,8 @@ public class AndroidDevice implements LocationListener {
     	LoggerUtils.debug("AndroidDevice.startListening(): " + isListening);
         if (!isListening) {
             Criteria crit = new Criteria();
-            crit.setAccuracy(Criteria.ACCURACY_HIGH);//.ACCURACY_FINE);
-            String provider = locationManager.getBestProvider(crit, true);
+            crit.setAccuracy(Criteria.ACCURACY_FINE); //don't change
+            String provider = locationManager.getBestProvider(crit, false);
             try {
             	locationManager.removeUpdates(this);
                 locationManager.requestLocationUpdates(provider, MILLIS, METERS, this);

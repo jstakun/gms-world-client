@@ -99,7 +99,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private ExpandableListView drawerList;
     
     private int mapProvider;
-    private boolean isAppInitialized = false, isRouteDisplayed = false, isRouteTrackingServiceBound = false;
+    private boolean isAppInitialized = false, isRouteDisplayed = false, isRouteTrackingServiceBound = false;  //TODO
     
     private Handler loadingHandler;
     private Messenger mMessenger;  //TODO
@@ -1027,6 +1027,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	IntentsHelper.getInstance().addMyLocationLandmark(l);     
     	IntentsHelper.getInstance().vibrateOnLocationUpdate();
     	UserTracker.getInstance().sendMyLocation();
+    	
     	if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
     		mapButtons.setVisibility(View.VISIBLE);
     	}

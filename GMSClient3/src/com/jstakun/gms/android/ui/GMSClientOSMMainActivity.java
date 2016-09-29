@@ -29,6 +29,7 @@ import com.jstakun.gms.android.osm.maps.OsmMyLocationNewOverlay;
 import com.jstakun.gms.android.osm.maps.OsmRoutesOverlay;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.service.RouteTracingService;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
@@ -39,12 +40,16 @@ import com.jstakun.gms.android.utils.StringUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
 import android.text.SpannableString;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -71,14 +76,36 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             lvCheckinButton, lvRouteButton, thumbnailButton, loadingImage;
     private ProgressBar loadingProgressBar;
     
-    private boolean appInitialized = false;
-    //Handlers
+    private boolean isAppInitialized = false, isRouteTrackingServiceBound = false;
+    
     private Handler loadingHandler;
+    private Messenger mMessenger; 
+	
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName arg0, IBinder service) {
+			try {
+                Message msg = Message.obtain(null, RouteTracingService.COMMAND_REGISTER_CLIENT);
+                msg.replyTo = mMessenger;
+                new Messenger(service).send(msg);
+            }
+            catch (Exception e) {
+                LoggerUtils.error(e.getMessage(), e);
+            }
+			
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName arg0) {
+		}
+        
+    };
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = LocationServicesManager.getInstance().getMyLocation();
-            if (location != null && !appInitialized) {
+            if (location != null && !isAppInitialized) {
                 initOnLocationChanged(location);
             } else {
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
@@ -86,7 +113,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                     if (!ConfigurationManager.getInstance().containsObject(HelpActivity.HELP_ACTIVITY_SHOWN, String.class)) {
                     	IntentsHelper.getInstance().startPickLocationActivity();
                     }
-                } else if (!appInitialized) {
+                } else if (!isAppInitialized) {
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
                     double lng = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
                     GeoPoint loc = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
@@ -120,6 +147,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         loadingHandler = new LoadingHandler(this);
+        
+        mMessenger = new Messenger(loadingHandler); 
         
         setContentView(R.layout.osmdroidcanvasview);
         mapView = (MapView) findViewById(R.id.mapCanvas);
@@ -185,7 +214,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
-        appInitialized = false;
+        isAppInitialized = false;
         
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
@@ -197,7 +226,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         } else {
             Runnable r = new Runnable() {
                 public void run() {
-                    if (!appInitialized) {
+                    if (!isAppInitialized) {
                         initOnLocationChanged(LocationServicesManager.getInstance().getMyLocation());
                     }
                 }
@@ -284,9 +313,15 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         LoggerUtils.debug("onDestroy");
         super.onDestroy();
         if (ConfigurationManager.getInstance().isClosing()) {
-        	appInitialized = false;
+        	isAppInitialized = false;
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        		IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
+        	}
             IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
+        	}
         	IntentsHelper.getInstance().softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
         }
@@ -334,7 +369,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     }
 
     private synchronized void initOnLocationChanged(final GeoPoint location) {
-        if (!appInitialized && location != null) {
+        if (!isAppInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
         	
         	mapController.setCenter(location);
@@ -378,7 +413,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             
             loadingHandler.sendEmptyMessage(SHOW_MAP_VIEW);
             
-            appInitialized = true;
+            isAppInitialized = true;
         }
     }
 
@@ -400,7 +435,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
     @Override
     public boolean onSearchRequested() {
-        if (appInitialized) {
+        if (isAppInitialized) {
             IntentsHelper.getInstance().startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, false);
             return true;
         } else {
@@ -411,7 +446,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        if (appInitialized) {
+        if (isAppInitialized) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.main_menu, menu);
             return true;
@@ -727,13 +762,13 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                     lng = defaultLocation.getQualifiedCoordinates().getLongitude();
                 }
                 GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
-                if (!appInitialized) {
+                if (!isAppInitialized) {
                     initOnLocationChanged(location);
                 } else {
                     pickPositionAction(location, true, true);
                 }
                 LandmarkManager.getInstance().addLandmark(lat, lng, 0.0f, StringUtil.formatCommaSeparatedString(name), "", Commons.LOCAL_LAYER, true);
-            } else if (resultCode == RESULT_CANCELED && intent != null && !appInitialized) {
+            } else if (resultCode == RESULT_CANCELED && intent != null && !isAppInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
@@ -846,15 +881,9 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         IntentsHelper.getInstance().vibrateOnLocationUpdate();
         UserTracker.getInstance().sendMyLocation();
         
-        if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        	mapButtons.setVisibility(View.GONE);
-        	showMyPositionAction(false);
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            	RouteRecorder.getInstance().addCoordinate(l);
-            }
-        } else {
-        	mapButtons.setVisibility(View.VISIBLE);
-        }
+        if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+    		mapButtons.setVisibility(View.VISIBLE);
+    	}
 
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
         	CheckinManager.getInstance().autoCheckin(l.getLatitude(), l.getLongitude(), false);
@@ -925,7 +954,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                String filename = RouteRecorder.getInstance().stopRecording();
+            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound); 
+        		String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
                 } else {
@@ -940,6 +970,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     
     private void startRouteRecording() {
     	String route = RouteRecorder.getInstance().startRecording();
+    	isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);
         showRouteAction(route);
         if (LayerLoader.getInstance().isLoading()) {
         	LayerLoader.getInstance().stopLoading();
@@ -1023,7 +1054,14 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         		} else if (msg.what == LocationServicesManager.UPDATE_LOCATION) {
         			Location location = (Location) msg.obj;
         			activity.updateLocation(location);
-        		} else if (msg.obj != null) {
+        		} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) {
+            		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
+                		activity.mapButtons.setVisibility(View.GONE);
+                		activity.showMyPositionAction(false);
+                	} else {
+                		activity.mapButtons.setVisibility(View.VISIBLE);
+                	}
+            	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}
         	}

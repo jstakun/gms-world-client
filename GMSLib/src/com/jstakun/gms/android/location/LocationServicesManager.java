@@ -39,9 +39,7 @@ public class LocationServicesManager {
             isGpsHardwarePresent = true;
             if (imyLocation != null) {
             	myLocation = imyLocation;
-            } else {
-            	GpsDeviceFactory.initGpsDevice(context, locationHandler);
-            }
+            } 
         } else {
             LoggerUtils.debug("GPS is missing. Using Skyhook !!!");
             isGpsHardwarePresent = false;
@@ -68,37 +66,18 @@ public class LocationServicesManager {
         		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
         			myLocation.enableCompass();
         		}		
-        	} else {
-        		GpsDeviceFactory.startDevice();
-        	}
+        	} 
         } else {
             skyhook.enableMyLocation();
         }
     }
     
-    public void enableMyLocation(Handler positionHandler) {
-    	if (isGpsHardwarePresent) {
-        	if (myLocation != null) {
-        		myLocation.enableMyLocation();
-        		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-        			myLocation.enableCompass();
-        		}		
-        	} else {
-        		GpsDeviceFactory.startDevice(positionHandler);
-        	}
-        } else {
-            skyhook.enableMyLocation();
-        }
-    }
-
     public void disableMyLocation() {
     	if (isGpsHardwarePresent) {
     		if (myLocation != null) {
     			myLocation.disableCompass();
     			myLocation.disableMyLocation();
-            } else {
-            	GpsDeviceFactory.stopDevice();
-            }
+            } 
         } else if (skyhook != null) {
             skyhook.disableMyLocation();
         }
