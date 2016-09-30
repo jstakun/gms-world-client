@@ -45,7 +45,6 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
 
 /**
  *
@@ -909,12 +908,9 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeImageUploadTask(Activity activity, double lat, double lng, boolean notify) {
-    	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), Object.class)) && !activity.isFinishing()) {
-    	    //if (notify) {
-    		//	IntentsHelper.getInstance().showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
-    		//}   		
-    		long loadingTime = 0; 
+    public void executeImageUploadTask(Context context, Bitmap screenshot, double lat, double lng, boolean notify) {
+    	if (notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), Object.class)) {
+    	    long loadingTime = 0; 
     		Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
     		if (l != null) {
     			loadingTime = l.longValue();
@@ -923,81 +919,33 @@ public class AsyncTaskManager {
     		int numOfLandmarks = LandmarkManager.getInstance().getAllLayersSize();
     		int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
     		String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
-    		new TakeScreenshotTask(activity, filename, notify).execute(lat, lng);
+    		SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+            int shutterSound = soundPool.load(context, R.raw.camera_click, 0);
+            byte[] scr = null;
+            if (screenshot != null) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                screenshot.compress(Bitmap.CompressFormat.JPEG, 80, out);
+                
+                if (screenshot != null && notify) {  
+                	Uri uri = FileManager.getInstance().saveImageFile(screenshot, "screenshot.jpg");
+                	if (uri != null) {
+                		IntentsHelper.getInstance().shareImageAction(uri);
+                	}
+                }
+                
+                scr = out.toByteArray();
+                
+                int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
+                LoggerUtils.debug("Shutter sound played with id " + id);
+        	}
+    		if (scr != null) {
+    			new UploadImageTask(filename, scr).execute(lat, lng);  
+    		}
     	} else if (notify) {
     		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
     	} else {
     		LoggerUtils.debug("Screenshot for current location has already been sent!");
     	}
-    }
-    
-    
-
-    public void executeImageUploadTask(byte[] image, String filename, double lat, double lng) {
-    	new UploadImageTask(filename, image).execute(lat, lng);
-    }
-    
-    private class TakeScreenshotTask extends GMSAsyncTask<Double, Void, Void>  {
-    	
-    	private String filename;
-    	private boolean notify;
-    	private Uri uri;
-    	private Activity activity;
-    	
-    	public TakeScreenshotTask(Activity activity, String filename, boolean notify) {
-			super(10, TakeScreenshotTask.class.getName());
-			this.filename = filename;
-			this.notify = notify;
-			this.activity = activity;
-		}
-
-    	private byte[] takeScreenshot() {
-        	Bitmap screenshot = null;
-            View v = activity.getWindow().getDecorView();
-            byte[] scr = null;
-            
-            try {
-            	SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
-                int shutterSound = soundPool.load(activity, R.raw.camera_click, 0);
-                
-            	v.setDrawingCacheEnabled(true);
-                //v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-            	screenshot = v.getDrawingCache();
-                if (screenshot != null) {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    screenshot.compress(Bitmap.CompressFormat.JPEG, 80, out);
-                    
-                    if (screenshot != null) {  
-                    	uri = FileManager.getInstance().saveImageFile(screenshot, "screenshot.jpg");
-                    }
-                    
-                    scr = out.toByteArray();
-                    
-                    int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
-                    LoggerUtils.debug("Shutter sound played with id " + id);
-            	}
-            } catch (Throwable ex) {
-                LoggerUtils.error("AsyncTaskManager.takeScreenshot() exception", ex);
-            } finally {
-                v.setDrawingCacheEnabled(false);
-            }
-            return scr;
-        }
-		
-    	@Override
-		protected Void doInBackground(Double... param) {
-    		byte[] screenshot = takeScreenshot();
-			executeImageUploadTask(screenshot, filename, param[0], param[1]);   	
-			return null;
-		}
-    	
-    	@Override
-        protected void onPostExecute(Void res) {
-    		if (notify && uri != null) {
-    			IntentsHelper.getInstance().shareImageAction(uri);
-    		}
-    	}
-    	
     }
     
     private class UploadImageTask extends GMSAsyncTask<Double, Void, Void> {

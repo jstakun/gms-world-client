@@ -784,6 +784,14 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         mapController.animateTo(g);
     }
     
+    private void takeScreenshot(boolean notify) {
+    	View v = getWindow().getDecorView();
+    	v.setDrawingCacheEnabled(true);
+    	//v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+    	AsyncTaskManager.getInstance().executeImageUploadTask(this, v.getDrawingCache(), MathUtils.coordIntToDouble(mapView.getMapCenter().getLatitudeE6()), MathUtils.coordIntToDouble(mapView.getMapCenter().getLongitudeE6()), notify);
+    	v.setDrawingCacheEnabled(false);
+    }
+    
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -817,8 +825,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 } else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
                 	activity.showRecommendedDeal(false);
                 	if (activity.mapView.canCoverCenter()) {       			
-                		AsyncTaskManager.getInstance().executeImageUploadTask(activity, MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLatitudeE6()),
-                                MathUtils.coordIntToDouble(activity.mapView.getMapCenter().getLongitudeE6()), false);
+                		activity.takeScreenshot(false);
                 	}
                 } else if (msg.what == AmzLandmarkOverlay.SHOW_LANDMARK_DETAILS) {
                 	int[] coordsE6 = IntentsHelper.getInstance().showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, activity.mapView.getZoomLevel(), new AmzLandmarkProjection(activity.mapView));

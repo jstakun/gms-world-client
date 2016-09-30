@@ -702,7 +702,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 	    		}
 	    		break;    
             case R.id.shareScreenshot:
-            	AsyncTaskManager.getInstance().executeImageUploadTask(this, mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(), true);
+            	takeScreenshot(true);
             	break;    
             case R.id.reset:
             	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RESET_DIALOG, null, null);
@@ -1111,6 +1111,14 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         }
     }
     
+    private void takeScreenshot(boolean notify) {
+    	View v = getWindow().getDecorView();
+    	v.setDrawingCacheEnabled(true);
+    	//v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+    	AsyncTaskManager.getInstance().executeImageUploadTask(this, v.getDrawingCache(), mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude(), notify);
+    	v.setDrawingCacheEnabled(false);
+    }
+    
     private static class LoadingHandler extends Handler {
     	
         private WeakReference<GMSClientMainActivity> parentActivity;
@@ -1133,8 +1141,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             		activity.postInvalidate();
             	} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
             		if (activity.mapProvider == ConfigurationManager.OSM_MAPS || activity.googleMapsView.canCoverCenter()) {
-                		AsyncTaskManager.getInstance().executeImageUploadTask(activity, activity.mapView.getMapCenter().getLatitude(),
-                            activity.mapView.getMapCenter().getLongitude(), false);
+                		activity.takeScreenshot(false);
             		}	
             	} else if (msg.what == LayerLoader.FB_TOKEN_EXPIRED) {
             		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Social_token_expired, "Facebook"));

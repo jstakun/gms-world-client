@@ -492,7 +492,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RATE_US_DIALOG, null, null);
                 break;
             case R.id.shareScreenshot:
-				takeScreenshot(true);
+				takeScreenshot(true, this);
 				break;
 			case R.id.reset:
             	DialogManager.getInstance().showAlertDialog(this, AlertDialogBuilder.RESET_DIALOG, null, null);
@@ -644,52 +644,16 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	    routesCluster.loadAllRoutes();
 	}
     
-    private void takeScreenshot(final boolean notify)
-    {
-    	if ((notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.latitude) + "_" + StringUtil.formatCoordE2(mMap.getCameraPosition().target.longitude), Object.class)) && !isFinishing()) {   		
-    		//if (notify) {
-    		//	IntentsHelper.getInstance().showShortToast(Locale.getMessage(R.string.Task_started, Locale.getMessage(R.string.shareScreenshot)));
-    		//}   		
-    		final SoundPool soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
-            final int shutterSound = soundPool.load(this, R.raw.camera_click, 0);
-    		
-        	SnapshotReadyCallback callback = new SnapshotReadyCallback() {
-
-				@Override
-				public void onSnapshotReady(Bitmap screenshot) {
-					LoggerUtils.debug("Google Map snapshot taken!");
-				
-					long loadingTime = 0; 
-    				Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
-    				if (l != null) {
-    					loadingTime = l.longValue();
-    				}
-    				int version = OsUtil.getSdkVersion();
-    				int numOfLandmarks = LandmarkManager.getInstance().getAllLayersSize();
-    				int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, 30);
-    				String filename = "screenshot_time_" + loadingTime + "sec_sdk_v" + version + "_num_" + numOfLandmarks + "_l_" + limit + ".jpg";
-    			
-    				ByteArrayOutputStream out = new ByteArrayOutputStream();
-                	screenshot.compress(Bitmap.CompressFormat.JPEG, 80, out);
-                
-                	Uri uri = FileManager.getInstance().saveImageFile(screenshot, "screenshot.jpg");
-                	
-                	int id = soundPool.play(shutterSound, 1f, 1f, 0, 0, 1);
-                    LoggerUtils.debug("Shutter sound played with id " + id);
-                	
-                    AsyncTaskManager.getInstance().executeImageUploadTask(out.toByteArray(), filename, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
-				    
-					if (notify) {
-						IntentsHelper.getInstance().shareImageAction(uri);
-					}
-				}        	
-        	};
-        
-        	mMap.snapshot(callback);
-    	} else if (notify) {
-    		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
-    	} else {
-    		LoggerUtils.debug("Screenshot for current location has already been sent!");
+    private void takeScreenshot(final boolean notify, final Context context) {
+    	if (mMap != null) {
+    		SnapshotReadyCallback callback = new SnapshotReadyCallback() {
+    			@Override
+    			public void onSnapshotReady(Bitmap screenshot) {
+    				LoggerUtils.debug("Google Map snapshot taken!");
+    				AsyncTaskManager.getInstance().executeImageUploadTask(context, screenshot, mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude, notify);
+    			}        	
+    		};
+    		mMap.snapshot(callback);
     	}
     }
     
@@ -974,9 +938,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             		}
         		} else if (msg.what == LayerLoader.ALL_LAYERS_LOADED) {
         			activity.showRecommendedDeal(false);
-        			if (activity.mMap != null) {
-            			activity.takeScreenshot(false);
-            		}	
+        			activity.takeScreenshot(false, activity);
         		} else if (msg.what == GoogleMarkerClusterOverlay.SHOW_LANDMARK_DETAILS) {
             		int[] coordsE6 = IntentsHelper.getInstance().showLandmarkDetailsAction(activity.getMyPosition(), activity.lvView, (int)activity.mMap.getCameraPosition().zoom, activity.projection);
                     if (coordsE6 != null) {
