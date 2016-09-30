@@ -893,7 +893,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         IGeoPoint myLoc = LocationServicesManager.getInstance().getMyLocation();
         if (myLoc != null) {
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                mapController.setCenter(myLoc);
+        		mapController.animateTo(myLoc); //TODO testing
+        		//mapController.setCenter(myLoc);
             } else {
             	boolean isVisible = false;
             	boolean clearLandmarks = false;
