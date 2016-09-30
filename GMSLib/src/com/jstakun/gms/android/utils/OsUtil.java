@@ -1,19 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.utils;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.jstakun.gms.android.config.ConfigurationManager;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.jstakun.gms.android.config.ConfigurationManager;
 
 /**
  *

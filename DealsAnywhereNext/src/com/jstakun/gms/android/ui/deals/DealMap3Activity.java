@@ -1,6 +1,5 @@
 package com.jstakun.gms.android.ui.deals;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 
 import com.google.android.gms.common.api.Status;
@@ -17,7 +16,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
-import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.google.maps.GoogleLandmarkProjectionV2;
 import com.jstakun.gms.android.google.maps.GoogleMapsV2TypeSelector;
@@ -49,9 +47,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;

@@ -1,6 +1,5 @@
 package com.jstakun.gms.android.ui;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 
 import org.osmdroid.util.GeoPoint;
@@ -52,9 +51,6 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;

@@ -892,29 +892,28 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private void showMyPositionAction(boolean loadLayers) {
         IGeoPoint myLoc = LocationServicesManager.getInstance().getMyLocation();
         if (myLoc != null) {
-            boolean isVisible = false;
-            boolean clearLandmarks = false;
-            ProjectionInterface projection = ProjectionFactory.getProjection(mapView, googleMapsView);
-            if (projection.isVisible(myLoc.getLatitudeE6(), myLoc.getLongitudeE6())) {
-                isVisible = true;
-            }
-            if (!isVisible) {
-            	hideLandmarkView();
-        		IGeoPoint mapCenter = mapView.getMapCenter();
-                clearLandmarks = IntentsHelper.getInstance().isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
-                        myLoc.getLatitudeE6(), myLoc.getLongitudeE6());
-            }
-
-            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
                 mapController.setCenter(myLoc);
             } else {
-                mapController.animateTo(myLoc);
-            }
+            	boolean isVisible = false;
+            	boolean clearLandmarks = false;
+            	ProjectionInterface projection = ProjectionFactory.getProjection(mapView, googleMapsView);
+            	if (projection.isVisible(myLoc.getLatitudeE6(), myLoc.getLongitudeE6())) {
+            		isVisible = true;
+            	}
+            	if (!isVisible) {
+            		hideLandmarkView();
+            		IGeoPoint mapCenter = mapView.getMapCenter();
+            		clearLandmarks = IntentsHelper.getInstance().isClearLandmarksRequired(projection, mapCenter.getLatitudeE6(), mapCenter.getLongitudeE6(),
+                        myLoc.getLatitudeE6(), myLoc.getLongitudeE6());
+            	}
 
-            if (loadLayers && !isVisible) {
-                IntentsHelper.getInstance().loadLayersAction(true, null, clearLandmarks, true, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
-            }
-        } else {
+            	if (loadLayers && !isVisible) {
+                	IntentsHelper.getInstance().loadLayersAction(true, null, clearLandmarks, true, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
+                }          	
+            	mapController.animateTo(myLoc);
+        	}
+        } else 	{
             IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
         }
     }
