@@ -893,7 +893,8 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         IGeoPoint myLoc = LocationServicesManager.getInstance().getMyLocation();
         if (myLoc != null) {
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-        		mapController.animateTo(myLoc); //TODO testing
+        		LoggerUtils.debug("c----------");//TODO testing
+        		mapController.animateTo(myLoc); 
         		//mapController.setCenter(myLoc);
             } else {
             	boolean isVisible = false;
@@ -1082,6 +1083,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 		} else {
 		    IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
 		}
+		mapButtons.setVisibility(View.GONE);
 	}
 
     private void clearMapAction() {
@@ -1166,7 +1168,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
                 	activity.updateLocation(location);
             	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) { 
             		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
-                		activity.mapButtons.setVisibility(View.GONE);
+            			activity.mapButtons.setVisibility(View.GONE);
                 		activity.showMyPositionAction(false);
                 	} else {
                 		activity.mapButtons.setVisibility(View.VISIBLE);

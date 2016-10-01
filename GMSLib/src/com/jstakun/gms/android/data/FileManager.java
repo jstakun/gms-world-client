@@ -38,6 +38,7 @@ import com.jstakun.gms.android.utils.MercatorUtils;
 import com.openlapi.QualifiedCoordinates;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -895,10 +896,15 @@ public class FileManager implements PersistenceManager {
         protected Void doInBackground(File... params) {
         	//delete old images
         	deleteFiles(params[0], new FileDeletePredicate());
+        	//get path to logs folder
+        	File logsFolder = getExternalDirectory(getLogsFolder(), null);
         	//delete old logs
-        	deleteFiles(getExternalDirectory(getLogsFolder(), null), new FileDeletePredicate());
+        	deleteFiles(logsFolder, new FileDeletePredicate());
         	//save log file in debug mode
-        	LoggerUtils.saveLogcat(Environment.getExternalStorageDirectory() + ROOT_FOLDER_PREFIX + ConfigurationManager.getAppUtils().getPackageInfo().packageName + "/files/" + LOGS_FOLDER + "/logcat" + System.currentTimeMillis() + ".txt");       	
+        	PackageInfo pi = ConfigurationManager.getAppUtils().getPackageInfo();
+        	if (pi != null) {
+        		LoggerUtils.saveLogcat(logsFolder.getAbsolutePath() + "/logcat" + System.currentTimeMillis() + ".txt");       	
+        	}
         	//set context == null
         	LoggerUtils.debug("Deleting saved application context.");
         	ConfigurationManager.getInstance().setContext(null);

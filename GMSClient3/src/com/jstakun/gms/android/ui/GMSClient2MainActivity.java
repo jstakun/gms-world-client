@@ -1161,6 +1161,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         } else {
             IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
         }
+        mapButtons.setVisibility(View.GONE);
     }
 
     private void clearMapAction() {

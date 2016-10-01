@@ -40,6 +40,7 @@ public class OsmMyLocationNewOverlay extends MyLocationNewOverlay implements IMy
         }    
     }
 
+    //compass works by default when location has bearing
 	@Override
 	public void disableCompass() {
 	}

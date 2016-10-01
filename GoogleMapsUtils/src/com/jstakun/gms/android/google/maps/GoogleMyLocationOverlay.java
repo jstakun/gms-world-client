@@ -109,6 +109,11 @@ public class GoogleMyLocationOverlay extends MyLocationOverlay {
         return false;
     }
 
+    @Override
+    protected void drawCompass(Canvas canvas, float bearing) {
+    	//TODO change default position of compass image
+    	super.drawCompass(canvas, bearing);
+    }
     /*@Override
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
         try {

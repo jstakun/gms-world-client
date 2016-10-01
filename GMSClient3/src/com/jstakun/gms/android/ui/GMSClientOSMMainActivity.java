@@ -979,6 +979,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         } else {
             IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
         }
+        mapButtons.setVisibility(View.GONE);
     }
 
     private void clearMapAction() {

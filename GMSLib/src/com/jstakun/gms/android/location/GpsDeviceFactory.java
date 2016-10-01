@@ -27,8 +27,8 @@ public class GpsDeviceFactory {
             device = new AndroidDevice(context);
             //for testing change device
             //device = new MockAndroidDevice();
-            device.setPositionHandler(positionHandler);
          }
+         device.setPositionHandler(positionHandler);
          return device;
      }
 
