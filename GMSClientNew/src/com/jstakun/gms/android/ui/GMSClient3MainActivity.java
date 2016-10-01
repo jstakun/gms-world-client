@@ -49,8 +49,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -662,19 +660,23 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		
 	    GoogleMapsV2TypeSelector.selectMapType(mMap);
 	    
-	    //TODO testing
-	    int actionBarHeight = 0;
-	    TypedValue tv = new TypedValue();
-	    if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-	    	actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-	    }
-	    int statusBarHeight = findViewById(R.id.bottomPanel).getMeasuredHeight();
-	    if (statusBarHeight == 0) {
-	    	statusBarHeight = 32;
-	    }	    	
-	    mMap.setPadding(0, actionBarHeight, 0, statusBarHeight);//left, top, right, bottom
-	    LoggerUtils.debug("Action bar height: " +  actionBarHeight + ", Bottom panel height: " + statusBarHeight);	
-	    //
+	    new Handler().post(new Runnable() {
+	        @Override
+	        public void run() {
+	        	int actionBarHeight = 0;
+	        	TypedValue tv = new TypedValue();
+	        	if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+	        		actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+	        	}
+	        	int statusBarHeight = findViewById(R.id.bottomPanel).getMeasuredHeight();
+	        	if (statusBarHeight == 0) {
+	        		statusBarHeight = 32;
+	        	} else {
+	        		statusBarHeight += 8;
+	        	}
+	        	mMap.setPadding(0, actionBarHeight, 0, statusBarHeight);//left, top, right, bottom
+	        }
+	    });
 	    
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
 	    mMap.setOnMyLocationButtonClickListener(this);
