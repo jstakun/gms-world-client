@@ -953,9 +953,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     private void showMyPositionAction(boolean loadLayers) {
         GeoPoint myLoc = LocationServicesManager.getInstance().getMyLocation();
         if (myLoc != null) {
-        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                mapController.setCenter(myLoc);
-            } else {
+        	if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
             	boolean isVisible = false;
             	boolean clearLandmarks = false;
             	ProjectionInterface projection = new OsmLandmarkProjection(mapView);
@@ -975,8 +973,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 	}
                 	IntentsHelper.getInstance().loadLayersAction(true, null, clearLandmarks, true, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
                 }
-                mapController.animateTo(myLoc);        
             }
+            mapController.animateTo(myLoc);        
         } else {
             IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
         }

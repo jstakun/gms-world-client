@@ -98,10 +98,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private ExpandableListView drawerList;
     
     private int mapProvider;
-    private boolean isAppInitialized = false, isRouteDisplayed = false, isRouteTrackingServiceBound = false;  //TODO
+    private boolean isAppInitialized = false, isRouteDisplayed = false, isRouteTrackingServiceBound = false; 
     
     private Handler loadingHandler;
-    private Messenger mMessenger;  //TODO
+    private Messenger mMessenger;  
 	
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -173,7 +173,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         
         loadingHandler = new LoadingHandler(this);
         
-        mMessenger = new Messenger(loadingHandler); //TODO
+        mMessenger = new Messenger(loadingHandler); 
         
         LoggerUtils.debug("Map provider is " + mapProvider);
 
@@ -395,13 +395,13 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         LoggerUtils.debug("onDestroy");
         super.onDestroy();
         if (ConfigurationManager.getInstance().isClosing()) {
-        	isAppInitialized = false; //TODO
+        	isAppInitialized = false; 
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         		IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}
         	IntentsHelper.getInstance().hardClose(loadingHandler, gpsRunnable, mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
         } else if (mapView.getMapCenter().getLatitudeE6() != 0 && mapView.getMapCenter().getLongitudeE6() != 0) {
-        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) { //TODO
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) { 
         		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}
         	IntentsHelper.getInstance().softClose(mapView.getZoomLevel(), mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6());
@@ -990,9 +990,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private void showMyPositionAction(boolean loadLayers) {
         IGeoPoint myLoc = LocationServicesManager.getInstance().getMyLocation();
         if (myLoc != null) {
-        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-                mapController.setCenter(myLoc);
-            } else {
+        	if (ConfigurationManager.getInstance().isOff(ConfigurationManager.RECORDING_ROUTE)) {
             	boolean isVisible = false;
             	boolean clearLandmarks = false;
             	ProjectionInterface projection = ProjectionFactory.getProjection(mapView, googleMapsView);
@@ -1012,8 +1010,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             		}
             		IntentsHelper.getInstance().loadLayersAction(true, null, clearLandmarks, true, myLoc.getLatitude(), myLoc.getLongitude(), mapView.getZoomLevel(), projection);
             	}
-            	mapController.animateTo(myLoc);
             }
+        	mapController.animateTo(myLoc);
         } else {
             IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
         }
@@ -1027,7 +1025,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     	if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
     		mapButtons.setVisibility(View.VISIBLE);
     	}
-    	//TODO
+    	
     	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
         	CheckinManager.getInstance().autoCheckin(l.getLatitude(), l.getLongitude(), false);
         }
@@ -1129,7 +1127,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         } else if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
-            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound); //TODO
+            	IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound); 
         		String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
@@ -1148,7 +1146,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     
     private void startRouteRecording(boolean showMyPosition) {
     	String route = RouteRecorder.getInstance().startRecording();
-    	isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);    //TODO 
+    	isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);    
 		showRouteAction(route);
         if (LayerLoader.getInstance().isLoading()) {
             LayerLoader.getInstance().stopLoading();
@@ -1292,7 +1290,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             	} else if (LocationServicesManager.UPDATE_LOCATION == msg.what) {
                 	Location location = (Location) msg.obj;
                 	activity.updateLocation(location);
-            	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) { //TODO
+            	} else if (msg.what == RouteTracingService.COMMAND_SHOW_ROUTE) {
             		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 		activity.mapButtons.setVisibility(View.GONE);
                 		activity.showMyPositionAction(false);

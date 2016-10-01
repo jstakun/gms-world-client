@@ -659,6 +659,15 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		
 	    GoogleMapsV2TypeSelector.selectMapType(mMap);
 	    
+	    //TODO testing
+	    try {
+	    	mMap.setPadding(0, getSupportActionBar().getHeight(), 0, findViewById(R.id.bottomPanel).getHeight() + 2);//left, top, right, bottom
+	    	LoggerUtils.debug("Action bar height: " + getSupportActionBar().getHeight() + ", Bottom panel height: " + findViewById(R.id.bottomPanel).getHeight());	
+	    } catch (Exception e) {
+	    	LoggerUtils.error(e.getMessage(), e);
+	    }
+	    //
+	    
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
 	    mMap.setOnMyLocationButtonClickListener(this);
 	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
