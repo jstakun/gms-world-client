@@ -671,7 +671,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
 	    mMap.setOnMyLocationButtonClickListener(this);
 	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
-	    
+	  
 	    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
 	    	ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 	    	ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
@@ -1038,6 +1038,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 } else {
                     IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOff));
                 }
+                if (mMap != null) {
+                	mMap.getUiSettings().setCompassEnabled(false);
+                }
             } else {
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOff));
             }
@@ -1060,6 +1063,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
         } else {
         	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+        }
+        if (mMap != null) {
+        	mMap.getUiSettings().setCompassEnabled(true);
         }
 	}
 	
