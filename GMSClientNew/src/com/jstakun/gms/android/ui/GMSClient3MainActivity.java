@@ -49,6 +49,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -64,6 +66,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -660,12 +663,17 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    GoogleMapsV2TypeSelector.selectMapType(mMap);
 	    
 	    //TODO testing
-	    try {
-	    	mMap.setPadding(0, getSupportActionBar().getHeight(), 0, findViewById(R.id.bottomPanel).getHeight() + 2);//left, top, right, bottom
-	    	LoggerUtils.debug("Action bar height: " + getSupportActionBar().getHeight() + ", Bottom panel height: " + findViewById(R.id.bottomPanel).getHeight());	
-	    } catch (Exception e) {
-	    	LoggerUtils.error(e.getMessage(), e);
+	    int actionBarHeight = 0;
+	    TypedValue tv = new TypedValue();
+	    if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+	    	actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
 	    }
+	    int statusBarHeight = findViewById(R.id.bottomPanel).getMeasuredHeight();
+	    if (statusBarHeight == 0) {
+	    	statusBarHeight = 32;
+	    }	    	
+	    mMap.setPadding(0, actionBarHeight, 0, statusBarHeight);//left, top, right, bottom
+	    LoggerUtils.debug("Action bar height: " +  actionBarHeight + ", Bottom panel height: " + statusBarHeight);	
 	    //
 	    
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -723,7 +731,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    		break; 	
 	    }
 	} 
-	
 	
 	private void onLocationChanged() {
 		Location location = ConfigurationManager.getInstance().getLocation();

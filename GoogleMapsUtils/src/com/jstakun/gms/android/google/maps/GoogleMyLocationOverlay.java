@@ -24,7 +24,6 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 public class GoogleMyLocationOverlay extends MyLocationOverlay {
 
     private Handler positionHandler;
-    //private boolean bugged = false;
     private final Paint accuracyPaint = new Paint();
     private Drawable drawable;
     private final Point center = new Point();
@@ -57,52 +56,38 @@ public class GoogleMyLocationOverlay extends MyLocationOverlay {
 
     @Override
     protected void drawMyLocation(Canvas canvas, MapView mapView, Location lastFix, GeoPoint myLoc, long when) {
-        /*if (!bugged) {
-            try {
-                super.drawMyLocation(canvas, mapView, lastFix, myLoc, when);
-            } catch (Exception e) {
-                bugged = true;
-            }
-        }
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
 
-        if (bugged) {*/
-            int width = drawable.getIntrinsicWidth();
-            int height = drawable.getIntrinsicHeight();
+        Projection projection = mapView.getProjection();
 
-            Projection projection = mapView.getProjection();
+        double latitude = lastFix.getLatitude();
+        double longitude = lastFix.getLongitude();
+        float accuracy = lastFix.getAccuracy();
 
-            double latitude = lastFix.getLatitude();
-            double longitude = lastFix.getLongitude();
-            float accuracy = lastFix.getAccuracy();
+        float[] result = new float[1];
 
-            float[] result = new float[1];
+        Location.distanceBetween(latitude, longitude, latitude, longitude + 1, result);
+        float longitudeLineDistance = result[0];
 
-            Location.distanceBetween(latitude, longitude, latitude, longitude + 1, result);
-            float longitudeLineDistance = result[0];
+        GeoPoint leftGeo = new GeoPoint((int) (latitude * 1e6), (int) ((longitude - accuracy / longitudeLineDistance) * 1e6));
+        projection.toPixels(leftGeo, left);
+        projection.toPixels(myLoc, center);
 
-            GeoPoint leftGeo = new GeoPoint((int) (latitude * 1e6), (int) ((longitude - accuracy
-                    / longitudeLineDistance) * 1e6));
-            projection.toPixels(leftGeo, left);
-            projection.toPixels(myLoc, center);
+        int radius = center.x - left.x;
+        accuracyPaint.setColor(0xff6666ff);
+        accuracyPaint.setStyle(Style.STROKE);
+        canvas.drawCircle(center.x, center.y, radius, accuracyPaint);
 
-            int radius = center.x - left.x;
-            accuracyPaint.setColor(0xff6666ff);
-            accuracyPaint.setStyle(Style.STROKE);
-            canvas.drawCircle(center.x, center.y, radius, accuracyPaint);
+        accuracyPaint.setColor(0x186666ff);
+        accuracyPaint.setStyle(Style.FILL);
+        canvas.drawCircle(center.x, center.y, radius, accuracyPaint);
 
-            accuracyPaint.setColor(0x186666ff);
-            accuracyPaint.setStyle(Style.FILL);
-            canvas.drawCircle(center.x, center.y, radius, accuracyPaint);
-
-            int w = width / 2;
-            int h = height / 2;
-            drawable.setBounds(center.x - w, center.y - h, center.x + w, center.y + h);
-            drawable.draw(canvas);
-        //}
-        
-        //System.out.println("GoogleMyLocationOverlay.drawMyLocation() ------------------------------------");
-        //mapView.postInvalidate();
-    }
+        int w = width / 2;
+        int h = height / 2;
+        drawable.setBounds(center.x - w, center.y - h, center.x + w, center.y + h);
+        drawable.draw(canvas);
+     }
 
     @Override
     public boolean onTap(GeoPoint p, MapView mapView) {
@@ -114,12 +99,4 @@ public class GoogleMyLocationOverlay extends MyLocationOverlay {
     	//TODO change default position of compass image
     	super.drawCompass(canvas, bearing);
     }
-    /*@Override
-    public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-        try {
-            super.draw(canvas, mapView, shadow);
-        } catch (Exception e) {
-            LoggerUtils.error("GoogleMyLocationOverlay exception", e);
-        }
-    }*/
 }
