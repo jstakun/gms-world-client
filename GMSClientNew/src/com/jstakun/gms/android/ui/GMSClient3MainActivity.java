@@ -673,11 +673,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	        	if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
 	        		actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
 	        	}
+	        	final int offset = 16;
 	        	int statusBarHeight = findViewById(R.id.bottomPanel).getMeasuredHeight();
 	        	if (statusBarHeight == 0) {
-	        		statusBarHeight = 36;
+	        		statusBarHeight = 24 + offset;
 	        	} else {
-	        		statusBarHeight += 12;
+	        		statusBarHeight += offset;
 	        	}
 	        	mMap.setPadding(0, actionBarHeight, 0, statusBarHeight);//left, top, right, bottom
 	        }
