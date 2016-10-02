@@ -117,7 +117,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
 			mapInfo.setZoomLevel((int)position.zoom); 
 			mapInfo.setMaxZoom((int)mMap.getMaxZoomLevel());
-			mapInfo.setDrawDistance(false);
+			if (projection != null) {
+				mapInfo.setDrawDistance(true);
+				mapInfo.setDistance(projection.getViewDistance());
+			} else {
+				mapInfo.setDrawDistance(false);
+			}
 			mapInfo.postInvalidate();
 		}
 	};    
@@ -670,9 +675,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	        	}
 	        	int statusBarHeight = findViewById(R.id.bottomPanel).getMeasuredHeight();
 	        	if (statusBarHeight == 0) {
-	        		statusBarHeight = 32;
+	        		statusBarHeight = 36;
 	        	} else {
-	        		statusBarHeight += 8;
+	        		statusBarHeight += 12;
 	        	}
 	        	mMap.setPadding(0, actionBarHeight, 0, statusBarHeight);//left, top, right, bottom
 	        }
