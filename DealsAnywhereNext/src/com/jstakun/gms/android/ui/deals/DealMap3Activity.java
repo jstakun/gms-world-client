@@ -59,6 +59,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -112,7 +113,12 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 			MapInfoView mapInfo = (MapInfoView) findViewById(R.id.info);
 			mapInfo.setZoomLevel((int)position.zoom); 
 			mapInfo.setMaxZoom((int)mMap.getMaxZoomLevel());
-			mapInfo.setDrawDistance(false);
+			if (projection != null) {
+				mapInfo.setDrawDistance(true);
+				mapInfo.setDistance(projection.getViewDistance());
+			} else {
+				mapInfo.setDrawDistance(false);
+			}
 			mapInfo.postInvalidate();
 		}
 	};    
@@ -832,7 +838,28 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 		
 		GoogleMapsV2TypeSelector.selectMapType(mMap);
 		
+		new Handler().post(new Runnable() {
+	        @Override
+	        public void run() {
+	        	int actionBarHeight = 0;
+	        	TypedValue tv = new TypedValue();
+	        	if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+	        		actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+	        	}
+	        	final int offset = 56;
+	        	int statusBarHeight = findViewById(R.id.bottomPanel).getMeasuredHeight();
+	        	if (statusBarHeight == 0) {
+	        		statusBarHeight = 32 + offset;
+	        	} else {
+	        		statusBarHeight += offset;
+	        	}
+	        	mMap.setPadding(0, actionBarHeight, 0, statusBarHeight);//left, top, right, bottom
+	        }
+	    });
+		
 	    mMap.getUiSettings().setZoomControlsEnabled(true);
+	    mMap.setOnMyLocationButtonClickListener(this);
+	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
 	    
 	    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
 		    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -840,10 +867,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	    } else {
 		    mMap.setMyLocationEnabled(true);
 		}
-	    
-	    mMap.setOnMyLocationButtonClickListener(this);
-	    mMap.setOnCameraChangeListener(mOnCameraChangeListener);
-	    
+	   
 	    if (appInitialized) {
 	    	LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
 	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mapCenter, ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));

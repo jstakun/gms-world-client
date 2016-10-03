@@ -673,10 +673,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	        	if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
 	        		actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
 	        	}
-	        	final int offset = 16;
+	        	final int offset = 56;
 	        	int statusBarHeight = findViewById(R.id.bottomPanel).getMeasuredHeight();
 	        	if (statusBarHeight == 0) {
-	        		statusBarHeight = 24 + offset;
+	        		statusBarHeight = 32 + offset;
 	        	} else {
 	        		statusBarHeight += offset;
 	        	}
