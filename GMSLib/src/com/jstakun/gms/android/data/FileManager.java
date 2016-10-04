@@ -664,8 +664,12 @@ public class FileManager implements PersistenceManager {
         }
     }
 
-    public void clearImageCache() {
-        new ClearCacheTask().execute(ConfigurationManager.getInstance().getContext().getCacheDir());
+    public void clearImageCache(Context context) {
+    	if (context != null) {
+    		new ClearCacheTask().execute(context.getCacheDir());
+    	} else {
+    		LoggerUtils.error("Unable to start ClearCacheTask due to context is null");
+    	}
     }
 
     public boolean fileExists(String path, String filename) {

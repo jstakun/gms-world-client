@@ -78,7 +78,7 @@ public class RouteTracingService extends Service {
     	this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LoggerUtils.getTag());
         this.mWakeLock.acquire();
         
-        if (!IntentsHelper.getInstance().isGoogleApiAvailable()) {
+        if (!IntentsHelper.getInstance().isGoogleApiAvailable(this)) {
         	GpsDeviceFactory.initGpsDevice(this, incomingHandler);
         	GpsDeviceFactory.startDevice();
         } else {
@@ -95,7 +95,7 @@ public class RouteTracingService extends Service {
            this.mWakeLock = null;
         }
     	
-    	if (!IntentsHelper.getInstance().isGoogleApiAvailable()) {
+    	if (!IntentsHelper.getInstance().isGoogleApiAvailable(this)) {
     		GpsDeviceFactory.stopDevice();
         } else {
         	GmsLocationServicesManager.getInstance().disable();

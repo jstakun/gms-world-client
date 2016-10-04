@@ -145,7 +145,7 @@ public final class IntentsHelper {
 
     public void startPickLocationActivity() {
     	Intent intent = null;
-    	if (isGoogleApiAvailable()) {
+    	if (isGoogleApiAvailable(activity)) {
     		try {
     			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
     			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
@@ -1400,7 +1400,7 @@ public final class IntentsHelper {
         ConfigurationManager.getDatabaseManager().closeAllDatabases();
         IconCache.getInstance().clearAll();
         
-        FileManager.getInstance().clearImageCache();
+        FileManager.getInstance().clearImageCache(activity);
         
         ConfigurationManager.getInstance().clearObjectCache();
         
@@ -1443,8 +1443,8 @@ public final class IntentsHelper {
 		} 
     }
     	
-    public boolean isGoogleApiAvailable() {
-    	if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(activity) == ConnectionResult.SUCCESS) {
+    public boolean isGoogleApiAvailable(Context context) {
+    	if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS) {
         	return true;
         } else {
         	return false;
