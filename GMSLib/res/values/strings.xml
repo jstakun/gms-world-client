@@ -98,7 +98,7 @@
     <string name="layerCreated">Layer created!</string>
     <string name="Layer.name.empty.error">Layer name can\'t be empty!</string>
     <string name="Layer.exists.error">Layer already exists! Choose different name.</string>
-    <string name="Layer.creating.dynamic">Creating dynamic layer &amp;lt;b&amp;&amp;gt;%1$s&amp;&amp;lt;/b&amp;&amp;gt;...</string>
+    <string name="Layer.creating.dynamic">Creating dynamic layer <b>%1$s</b>...</string>
     <!-- blogeoview -->
     <string name="validityLabel">Validity Time</string>
     <string name="sendButton">Send</string>
@@ -116,7 +116,7 @@
     <string name="pickButton">Search</string>
     <string name="countryLabel">Country</string>
     <string name="addressLabel">City or place</string>
-    <string name="Pick.location.default">Loading default location %1$s…\nIn order to search for other locations go to Menu-&amp;&amp;gt;Search location.</string>
+    <string name="Pick.location.default">Loading default location %1$s…\nIn order to search for other locations go to Menu -> Search location.</string>
     <string name="Action.canceled">Location search cancelled!</string>
     <!-- comment -->
     <string name="commentTitle">Enter your comment</string>
@@ -130,10 +130,10 @@
     <string name="listSelection">Select landmark</string>
     <string name="listLocations">Select location</string>
     <string name="foundLandmarksLow">
-         If you want to improve search results go to Menu -&amp;&amp;gt; Settings -&amp;&amp;gt; Search type
+         If you want to improve search results go to Menu -> Settings -> Search type
      </string>
     <string name="foundDealsLow">
-         If you want to improve search results go to Menu -&amp;&amp;gt; Settings -&amp;&amp;gt; Search type
+         If you want to improve search results go to Menu -> Settings -> Search type
      </string>
     <!-- Deals list -->
     <string name="searchDeals">Available deals</string>
@@ -189,7 +189,7 @@
     <string name="Http.error">Operation failed with code %1$s!</string>
     <string name="GPS.location.missing.error">I\'m still waiting for your location…</string>
     <string name="Pick.location.failed.error">Failed to find location %1$s due to: %2$s</string>
-    <string name="Login.required.error">This function is available only for logged in users! Please go to Menu-&amp;&amp;gt;Login and login to any social network.</string>
+    <string name="Login.required.error">This function is available only for logged in users! Please go to Menu -> Login and login to any social network.</string>
     <string name="Checkin.required.error">This function requires Facebook, Foursquare or Twitter login!</string>
     <string name="Checkin.layer.error">Wrong layer for check-in: %1$s</string>
     <string name="Location.send.error">Location upload failed due to %1$s</string>
@@ -221,10 +221,10 @@
     <string name="Last.update">Last update: %1$s</string>
     <string name="Location.sent">Location uploaded</string>
     <string name="Close.app.prompt">Exit Landmark Manager?</string>
-    <string name="Searching.dialog.message">Searching for: &amp;lt;br/&amp;&amp;gt;&amp;&amp;lt;b&amp;&amp;gt;%1$s&amp;&amp;lt;/b&amp;&amp;gt;...</string>
+    <string name="Searching.dialog.message">Searching for: <br/><b>%1$s</b>...</string>
     <string name="Searching.dialog.message.plain">Searching for:\n%1$s...</string>
     <string name="Searching.calendar.message">Searching for landmarks on %1$s</string>
-    <string name="Oauth.progress.message">Authenticating to &amp;&amp;lt;b&amp;&amp;gt;%1$s&amp;&amp;lt;/b&amp;&amp;gt;...</string>
+    <string name="Oauth.progress.message">Authenticating to <b>;%1$s</b>...</string>
     <string name="Oauth.progress.message.plain">Authenticating to %1$s...</string>
     <string name="rate.us.message">You\'ve been using our app for %1$d times. Do you want to rate our app?</string>
     <string name="Reset.short.message">Reset to default settings</string>
@@ -242,7 +242,7 @@
     <!-- Auto Check-In alert -->
     <string name="yesButton">Yes</string>
     <string name="noButton">No</string>
-    <string name="autoCheckinMessage">Do you want to be checked-in automatically next time you\'ll visit &amp;&amp;lt;b&amp;&amp;gt;%1$s&amp;&amp;lt;/b&amp;&amp;gt;?</string>
+    <string name="autoCheckinMessage">Do you want to be checked-in automatically next time you\'ll visit <b>%1$s</b>?</string>
     <string name="autoCheckinListEmpty">Your Auto Check-In list is empty!</string>
     <string name="lastCheckinDate">Last check-in: %1$s</string>
     <!-- Settings -->
@@ -364,7 +364,7 @@
     <string name="Layer.disabled">Layer disabled</string>
     <string name="Layer.operation.unsupported">This operation is unsupported for this layer</string>
     <string name="Layer.Loading">Loading layers…</string>
-    <string name="Layer.Loading.1">Loading layer &amp;&amp;lt;b&amp;&amp;gt;%1$s&amp;&amp;lt;/b&amp;&amp;gt;...</string>
+    <string name="Layer.Loading.1">Loading layer <b>%1$s</b>...</string>
     <string name="Layer.Loading.counter">Loading layer (%1$d/%2$d)…</string>
     <string name="Layer.Loading.processing">Processing loaded layers…</string>
     <string name="Layer.action">Select action for layer %1$s</string>
@@ -373,15 +373,15 @@
     <string name="Layer.deleted">Layer %1$s deleted!</string>
     <string name="Layer.delete.prompt">Delete layer %1$s?</string>
     <string name="Layer.add.message.short">Searching for %1$s…</string>
-    <string name="Layer.add.message.long">Do you want to save your query &amp;&amp;lt;b&amp;&amp;gt;%1$s&amp;&amp;lt;/b&amp;&amp;gt; as layer?</string>
+    <string name="Layer.add.message.long">Do you want to save your query <b>%1$s</b> as layer?</string>
     <string name="Layer.add.message.long.plain">Do you want to save your query %1$s as layer?</string>
     <string name="Layer.enableLayers.prompt">Enable all layers?</string>
     <string name="Layer.disableLayers.prompt">Disable all layers?</string>
     <!-- DealCategoryListActivity -->
     <string name="Category.title">Select category</string>
-    <string name="Category.Loading.1">Loading category &amp;&amp;lt;b&amp;&amp;gt;%1$s&amp;&amp;lt;/b&amp;&amp;gt;...</string>
+    <string name="Category.Loading.1">Loading category <b>%1$s</b>...</string>
     <!-- English only -->
-    <string name="Crash.error">An unexpected error occurred. Crash raport has been sent to developer and the issue will be fixed soon!</string>
+    <string name="Crash.error">An unexpected error occurred. Crash report has been sent to developer and the issue will be fixed soon!</string>
     <string name="Status.bar.default">Landmark Manager</string>
     <string name="Info.about">%1$s (R)\nVersion: %2$s-%3$d built on %4$s\nCopyright © 2010–16 GMS World\n%5$s</string>
     <string name="checkboxDodDialog">Show deal of the day at startup</string>
