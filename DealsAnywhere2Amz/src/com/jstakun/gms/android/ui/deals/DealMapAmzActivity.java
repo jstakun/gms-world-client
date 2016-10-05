@@ -689,11 +689,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     }
 
     private GeoPoint getMyLocation() {
-        /*if (myLocation != null) {
-         return myLocation.getMyLocation();
-         } else {
-         return null;
-         }*/
         Location location = ConfigurationManager.getInstance().getLocation();
         if (location != null) {
             return new GeoPoint(MathUtils.coordDoubleToInt(location.getLatitude()),
