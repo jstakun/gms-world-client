@@ -293,6 +293,7 @@ public class HttpUtils {
             }
         } catch (Exception e) {
         	LoggerUtils.error(e.getMessage(), e);
+        	httpErrorMessages.put(fileUrl, handleHttpException(e));
         } finally {
             if (is != null) {
             	try {
