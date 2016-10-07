@@ -1021,6 +1021,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     		IntentsHelper.getInstance().addMyLocationLandmark(l);
         	IntentsHelper.getInstance().vibrateOnLocationUpdate();
         	UserTracker.getInstance().sendMyLocation();
+        	
+        	if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
+        		mapButtons.setVisibility(View.VISIBLE);
+        	}
     	
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.AUTO_CHECKIN)) {
         		CheckinManager.getInstance().autoCheckin(l.getLatitude(), l.getLongitude(), false);
