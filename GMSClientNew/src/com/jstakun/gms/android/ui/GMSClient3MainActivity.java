@@ -34,6 +34,7 @@ import com.jstakun.gms.android.location.GmsLocationServicesManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.service.RouteTracingService;
+import com.jstakun.gms.android.utils.BoundingBox;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.MathUtils;
@@ -662,6 +663,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		LoggerUtils.debug("Google Map is ready!");
 		this.mMap = map;
 		this.projection = new GoogleLandmarkProjectionV2(mMap);
+		ConfigurationManager.getInstance().putObject(BoundingBox.BBOX, projection.getBoundingBox());
 		
 	    GoogleMapsV2TypeSelector.selectMapType(mMap);
 	    

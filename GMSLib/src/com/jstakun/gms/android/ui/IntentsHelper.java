@@ -44,6 +44,7 @@ import com.jstakun.gms.android.service.RouteTracingService;
 import com.jstakun.gms.android.social.GMSUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
 import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.BoundingBox;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.HttpUtils;
@@ -757,7 +758,7 @@ public final class IntentsHelper {
             ConfigurationManager.getInstance().removeObject("dod", ExtendedLandmark.class);
         }
         if (projection != null) {
-           ConfigurationManager.getInstance().putObject(ProjectionInterface.TAG, projection);
+           ConfigurationManager.getInstance().putObject(BoundingBox.BBOX, projection.getBoundingBox());
         }
         Display display = activity.getWindowManager().getDefaultDisplay();
         LayerLoader.getInstance().loadLayers(latitude, longitude, zoomLevel, display.getWidth(), display.getHeight(), loadExternal, selectedLayer, loadServerLayers);
