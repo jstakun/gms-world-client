@@ -292,7 +292,7 @@ public class HttpUtils {
             	LoggerUtils.debug("Request processed with status " + responseCode + " in " + (System.currentTimeMillis()-start) + " millis from " + fileUrl  + ".");
             }
         } catch (Exception e) {
-        	LoggerUtils.error(e.getMessage(), e);
+        	LoggerUtils.debug(e.getMessage(), e);
         	httpErrorMessages.put(fileUrl, handleHttpException(e));
         } finally {
             if (is != null) {

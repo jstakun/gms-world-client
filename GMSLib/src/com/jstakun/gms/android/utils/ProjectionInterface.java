@@ -7,6 +7,8 @@ import android.graphics.Point;
  * @author jstakun
  */
 public interface ProjectionInterface {
+   public static final String TAG = "MapProjectionProvider";	
+	
    public void toPixels(int latE6, int lngE6, Point point);
 
    public int[] fromPixels(int x, int y);

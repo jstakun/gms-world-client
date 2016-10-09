@@ -5,6 +5,9 @@ package com.jstakun.gms.android.utils;
  * @author jstakun
  */
 public class BoundingBox {
+	
+	public static final String BBOX = "bbox";
+	
     public double north;
     public double south;
     public double east;

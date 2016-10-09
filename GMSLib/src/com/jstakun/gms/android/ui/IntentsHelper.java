@@ -757,7 +757,7 @@ public final class IntentsHelper {
             ConfigurationManager.getInstance().removeObject("dod", ExtendedLandmark.class);
         }
         if (projection != null) {
-           ConfigurationManager.getInstance().putObject("bbox", projection.getBoundingBox());
+           ConfigurationManager.getInstance().putObject(ProjectionInterface.TAG, projection);
         }
         Display display = activity.getWindowManager().getDefaultDisplay();
         LayerLoader.getInstance().loadLayers(latitude, longitude, zoomLevel, display.getWidth(), display.getHeight(), loadExternal, selectedLayer, loadServerLayers);
