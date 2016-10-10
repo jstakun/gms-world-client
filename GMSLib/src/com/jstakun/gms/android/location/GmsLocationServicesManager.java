@@ -43,13 +43,13 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 			mGoogleApiClient.connect();
 		}
 		if (!isEnabled) {
-			mLocationHandler = locationHandler;
 			mLocationRequest = new LocationRequest();
 			mLocationRequest.setInterval(LOCATION_READ_INTERVAL);
 			mLocationRequest.setFastestInterval(LOCATION_READ_INTERVAL);
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//.PRIORITY_BALANCED_POWER_ACCURACY);
 			isEnabled = true;
 		}
+		mLocationHandler = locationHandler;
 	}
 
 	public void disable() {

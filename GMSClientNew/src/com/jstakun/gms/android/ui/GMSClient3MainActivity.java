@@ -1071,7 +1071,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		if (!isRouteTrackingServiceBound) {
 			String route = RouteRecorder.getInstance().startRecording();
 			isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
-			LoggerUtils.debug("Activity bound to route tracking service: " + isRouteTrackingServiceBound);
 			routesCluster.showRouteAction(route, true);
 			if (LayerLoader.getInstance().isLoading()) {
 				LayerLoader.getInstance().stopLoading();
