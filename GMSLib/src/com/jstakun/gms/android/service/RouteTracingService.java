@@ -56,7 +56,7 @@ public class RouteTracingService extends Service {
     public void onCreate() {
     	super.onCreate();
     	LoggerUtils.debug("RouteTracingService onCreate()");
-    	startTracking();
+    	//startTracking();
     }
     
     @Override

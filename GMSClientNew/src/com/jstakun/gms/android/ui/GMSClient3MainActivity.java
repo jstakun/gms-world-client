@@ -348,8 +348,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	}
         	IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         }
-    	isRouteTrackingServiceBound = false;
-        AdsUtils.destroyAdView(this);
+    	AdsUtils.destroyAdView(this);
         System.gc();  	
     }
     
@@ -1050,8 +1049,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             ConfigurationManager.getInstance().setOff(ConfigurationManager.FOLLOW_MY_POSITION);
             if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
             	IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
-            	isRouteTrackingServiceBound = false;
-        		String filename = RouteRecorder.getInstance().stopRecording();
+            	String filename = RouteRecorder.getInstance().stopRecording();
                 if (filename != null) {
                     return filename;
                 } else {
@@ -1067,25 +1065,23 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		return null;
     }
 	
-	private synchronized void startRouteRecording(boolean showMyPosition) {
-		if (!isRouteTrackingServiceBound) {
-			String route = RouteRecorder.getInstance().startRecording();
-			isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
-			routesCluster.showRouteAction(route, true);
-			if (LayerLoader.getInstance().isLoading()) {
-				LayerLoader.getInstance().stopLoading();
+	private void startRouteRecording(boolean showMyPosition) {
+		String route = RouteRecorder.getInstance().startRecording();
+		isRouteTrackingServiceBound = IntentsHelper.getInstance().startRouteTrackingService(mConnection);     
+		routesCluster.showRouteAction(route, true);
+		if (LayerLoader.getInstance().isLoading()) {
+			LayerLoader.getInstance().stopLoading();
+		}
+		MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
+		if (ConfigurationManager.getInstance().getLocation() != null) {
+			if (showMyPosition) {
+				showMyPositionAction(false);
 			}
-			MessageStack.getInstance().addMessage(Locale.getMessage(R.string.Routes_TrackMyPosOn), 10, -1, -1);
-			if (ConfigurationManager.getInstance().getLocation() != null) {
-				if (showMyPosition) {
-					showMyPositionAction(false);
-				}
-				IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
-			} else {
-				IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
-			}
+			IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Routes_TrackMyPosOn));
+		} else {
+			IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
+		}
 			
-		} 
 		if (mMap != null) {
 			mMap.getUiSettings().setCompassEnabled(true);
 		}
