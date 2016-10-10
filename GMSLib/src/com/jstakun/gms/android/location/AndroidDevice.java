@@ -115,7 +115,7 @@ public class AndroidDevice implements LocationListener {
         //}
 
         //if (currentLocation != null) {
-        LoggerUtils.debug("Setting current gps location.");
+        LoggerUtils.debug("AndroidDevice received new location");
         ConfigurationManager.getInstance().setLocation(location);
         updatePositionUi(location);
         //}

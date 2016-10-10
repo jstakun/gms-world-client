@@ -6,6 +6,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.utils.LoggerUtils;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -36,7 +37,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		return instance;
 	}
 	
-	public void enable(Handler locationHandler) {
+	public synchronized void enable(Handler locationHandler) {
 		buildGoogleApiClient();
 		if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
 			mGoogleApiClient.connect();
@@ -55,6 +56,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 			mGoogleApiClient.disconnect();
+			mGoogleApiClient = null;
 		}
 		isEnabled = false;
 	}
@@ -72,6 +74,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 	@Override
 	public void onLocationChanged(Location location) {
 		//if (AndroidDevice.isBetterLocation(location, ConfigurationManager.getInstance().getLocation())) {
+		LoggerUtils.debug("GmsLocationServicesManager received new location");
         ConfigurationManager.getInstance().setLocation(location);
         mLocationHandler.sendEmptyMessage(UPDATE_LOCATION);
         //}
@@ -86,9 +89,9 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
         	} catch (IntentSender.SendIntentException e) {
             	//e.printStackTrace();
         	}
-    	} else {
-        	LoggerUtils.error("Location services connection failed with code " + connectionResult.getErrorCode());
-    	}*/
+    	} else {*/
+		LoggerUtils.error("GmsLocationServicesManager connection failed with code " + connectionResult.getErrorCode());
+    	//}
 	}
 
 	@Override
@@ -100,11 +103,13 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		}
 		LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+		LoggerUtils.debug("GmsLocationServicesManager requested location updates");
 	}
 
 	@Override
 	public void onConnectionSuspended(int reason) {
 		//call logger
+		LoggerUtils.debug("GmsLocationServicesManager connection suspended with code " + reason);
 	}
 
 }
