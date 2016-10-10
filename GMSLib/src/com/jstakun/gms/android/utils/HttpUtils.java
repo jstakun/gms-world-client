@@ -60,7 +60,7 @@ public class HttpUtils {
             conn.setConnectTimeout(SOCKET_TIMEOUT);
             conn.setReadTimeout(SOCKET_TIMEOUT);
             
-            conn.setRequestProperty("User-Agent", Locale.getMessage(R.string.app_name) + " HTTP client");
+            conn.setRequestProperty("User-Agent", ConfigurationManager.getAppUtils().getAboutMessage());
             
             conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
             conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
@@ -178,7 +178,7 @@ public class HttpUtils {
             conn.setConnectTimeout(SOCKET_TIMEOUT);
             conn.setReadTimeout(SOCKET_TIMEOUT);
             
-            conn.setRequestProperty("User-Agent", Locale.getMessage(R.string.app_name) + " HTTP client");
+            conn.setRequestProperty("User-Agent", ConfigurationManager.getAppUtils().getAboutMessage());
             
             conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
             conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
@@ -327,7 +327,7 @@ public class HttpUtils {
     			conn.setConnectTimeout(SOCKET_TIMEOUT);
     			conn.setReadTimeout(SOCKET_TIMEOUT);
             	conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-            	conn.setRequestProperty("User-Agent", Locale.getMessage(R.string.app_name) + " HTTP client");
+            	conn.setRequestProperty("User-Agent", ConfigurationManager.getAppUtils().getAboutMessage());
             	conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
             	conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
             	conn.setRequestProperty(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));

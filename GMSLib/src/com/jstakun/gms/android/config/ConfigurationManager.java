@@ -494,6 +494,8 @@ public final class ConfigurationManager {
     
     public class AppUtils {
     	
+    	private String aboutMessage = null;
+    	
     	private AppUtils() {
     	}
     
@@ -639,17 +641,19 @@ public final class ConfigurationManager {
         	return ReturnVal;
     	}
     	
-    	public String getAboutMessage() {
-    		int versionCode = 0;
-    		String versionName = "Latest";
-    		PackageInfo info = getPackageInfo(); 
-    		if (info != null) {
-    			versionCode = info.versionCode;
-    			versionName = info.versionName;
-    		} 		
-            String app_name = Locale.getMessage(R.string.app_name);
-            String message = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), ConfigurationManager.SERVER_URL);
-    	    return message;
+    	public synchronized String getAboutMessage() {
+    		if (aboutMessage == null) {
+    			int versionCode = 0;
+    			String versionName = "Latest";
+    			PackageInfo info = getPackageInfo(); 
+    			if (info != null) {
+    				versionCode = info.versionCode;
+    				versionName = info.versionName;
+    			} 		
+    			String app_name = Locale.getMessage(R.string.app_name);
+    			aboutMessage = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), ConfigurationManager.SERVER_URL);
+    		}
+    		return aboutMessage;
     	}
     	
     	public int getVersionCode() {
