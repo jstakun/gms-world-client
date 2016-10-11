@@ -495,6 +495,7 @@ public final class ConfigurationManager {
     public class AppUtils {
     	
     	private String aboutMessage = null;
+    	private PackageInfo pi;
     	
     	private AppUtils() {
     	}
@@ -589,67 +590,66 @@ public final class ConfigurationManager {
     	public String collectSystemInformation() {
 
     		String ReturnVal = "";
-    		String VersionName = null;
-    		String PackageName = null;
-    		int VersionCode = 0;
+    		String VersionName = "latest";
+    		String PackageName = "com.jstakun.gms.android.ui"; 
+    		int VersionCode = 1;
     		
-    			PackageInfo pi = getPackageInfo();
-            
-    			if (pi != null) {
-    				VersionName = pi.versionName;
-    				PackageName = pi.packageName;
-    				VersionCode = pi.versionCode;
-    			}
-    			
-    			String PhoneModel = android.os.Build.MODEL;
-    			// Android version
-    			String AndroidVersion = android.os.Build.VERSION.RELEASE;
-    			String Board = android.os.Build.BOARD;
-    			String Brand = android.os.Build.BRAND;
-    			String Device = android.os.Build.DEVICE;
-            	String Display = android.os.Build.DISPLAY;
-            	//String FingerPrint = android.os.Build.FINGERPRINT;
-            	String Host = android.os.Build.HOST;
-            	String ID = android.os.Build.ID;
-            	String Model = android.os.Build.MODEL;
-            	String Product = android.os.Build.PRODUCT;
-            	String Tags = android.os.Build.TAGS;
+    		if (getPackageInfo() != null) {
+    			VersionName = getPackageInfo().versionName;
+        		PackageName = getPackageInfo().packageName;
+        		VersionCode = getPackageInfo().versionCode;
+    		}
+    		
+    		String PhoneModel = android.os.Build.MODEL;
+    		// Android version
+    		String AndroidVersion = android.os.Build.VERSION.RELEASE;
+    		String Board = android.os.Build.BOARD;
+    		String Brand = android.os.Build.BRAND;
+    		String Device = android.os.Build.DEVICE;
+            String Display = android.os.Build.DISPLAY;
+            //String FingerPrint = android.os.Build.FINGERPRINT;
+            String Host = android.os.Build.HOST;
+            String ID = android.os.Build.ID;
+            String Model = android.os.Build.MODEL;
+            String Product = android.os.Build.PRODUCT;
+            String Tags = android.os.Build.TAGS;
 
-            	long Time = android.os.Build.TIME;
-            	String Type = android.os.Build.TYPE;
-            	//String User = android.os.Build.USER;
+            long Time = android.os.Build.TIME;
+            String Type = android.os.Build.TYPE;
+            //String User = android.os.Build.USER;
 
-            	ReturnVal += "Package: " + PackageName + ", ";
-            	ReturnVal += "Version: " + VersionName + ", ";
-            	ReturnVal += "Version Code: " + VersionCode + ", ";
-            	ReturnVal += "Phone Model: " + PhoneModel + ", ";
-            	ReturnVal += "Android Version: " + AndroidVersion + ", ";
-            	ReturnVal += "Board: " + Board + ", ";
-            	ReturnVal += "Brand: " + Brand + ", ";
-            	ReturnVal += "Device: " + Device + ", ";
-            	ReturnVal += "Display: " + Display + ", ";
-            	//ReturnVal += "Finger Print: " + FingerPrint + ", ";
-            	ReturnVal += "Host: " + Host + ", ";
-            	ReturnVal += "ID: " + ID + ", ";
-            	ReturnVal += "Model: " + Model + ", ";
-            	ReturnVal += "Product: " + Product + ", ";
-            	ReturnVal += "Tags: " + Tags + ", ";
-            	ReturnVal += "Time: " + Time + ", ";
-            	ReturnVal += "Type: " + Type;
-            	//ReturnVal += "User : " + User;
+            ReturnVal += "Package: " + PackageName + ", ";
+            ReturnVal += "Version: " + VersionName + ", ";
+            ReturnVal += "Version Code: " + VersionCode + ", ";
+            ReturnVal += "Phone Model: " + PhoneModel + ", ";
+            ReturnVal += "Android Version: " + AndroidVersion + ", ";
+            ReturnVal += "Board: " + Board + ", ";
+            ReturnVal += "Brand: " + Brand + ", ";
+            ReturnVal += "Device: " + Device + ", ";
+            ReturnVal += "Display: " + Display + ", ";
+            //ReturnVal += "Finger Print: " + FingerPrint + ", ";
+            ReturnVal += "Host: " + Host + ", ";
+            ReturnVal += "ID: " + ID + ", ";
+            ReturnVal += "Model: " + Model + ", ";
+            ReturnVal += "Product: " + Product + ", ";
+            ReturnVal += "Tags: " + Tags + ", ";
+            ReturnVal += "Time: " + Time + ", ";
+            ReturnVal += "Type: " + Type;
+            //ReturnVal += "User : " + User;
 
         	return ReturnVal;
     	}
     	
     	public synchronized String getAboutMessage() {
     		if (aboutMessage == null) {
-    			int versionCode = 0;
-    			String versionName = "Latest";
-    			PackageInfo info = getPackageInfo(); 
-    			if (info != null) {
-    				versionCode = info.versionCode;
-    				versionName = info.versionName;
-    			} 		
+    			String versionName = "latest"; 
+        		int versionCode = 1;
+        		
+        		if (getPackageInfo() != null) {
+        			versionName = getPackageInfo().versionName;
+            		versionCode = getPackageInfo().versionCode;
+        		}
+        		
     			String app_name = Locale.getMessage(R.string.app_name);
     			aboutMessage = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), ConfigurationManager.SERVER_URL);
     		}
@@ -657,12 +657,7 @@ public final class ConfigurationManager {
     	}
     	
     	public int getVersionCode() {
-    		int versionCode = 0;
-    		PackageInfo info = getPackageInfo(); 
-    		if (info != null) {
-    			versionCode = info.versionCode;
-    		} 		
-    		return versionCode;
+    		return getPackageInfo().versionCode;
     	}
     	
     	private String getBuildDate() {
@@ -688,15 +683,16 @@ public final class ConfigurationManager {
     	}
     
     	public PackageInfo getPackageInfo() {  
-    		PackageInfo pi = null;
-    		try {
-    			Context c = getContext();
-    			if (c != null) {
-    				pi = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+    		if (pi == null) {
+    			try {
+    				Context c = getContext();
+    				if (c != null) {
+    					pi = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+    				}
+    			} catch (Exception e) {
+    				LoggerUtils.error(e.getMessage(), e);
     			}
-    		} catch (Exception e) {
-    			LoggerUtils.error(e.getMessage(), e);
-    		}
+    		}	
     		return pi;
     	}
     	
