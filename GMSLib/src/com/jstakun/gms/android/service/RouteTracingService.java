@@ -98,7 +98,7 @@ public class RouteTracingService extends Service {
     	if (!IntentsHelper.getInstance().isGoogleApiAvailable(this)) {
     		GpsDeviceFactory.stopDevice();
         } else {
-        	GmsLocationServicesManager.getInstance().disable();
+        	GmsLocationServicesManager.getInstance().disable(incomingHandler);
         }
     }
 

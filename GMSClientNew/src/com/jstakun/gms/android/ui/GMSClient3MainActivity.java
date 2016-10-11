@@ -318,7 +318,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public void onPause() {
     	LoggerUtils.debug("onPause");
         super.onPause();
-        GmsLocationServicesManager.getInstance().disable();
+        GmsLocationServicesManager.getInstance().disable(loadingHandler);
         DialogManager.getInstance().dismissDialog(this);
     }
     
@@ -337,7 +337,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	super.onDestroy();
     	if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
-        	GmsLocationServicesManager.getInstance().disable();
+        	GmsLocationServicesManager.getInstance().disable(loadingHandler);
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         		IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}

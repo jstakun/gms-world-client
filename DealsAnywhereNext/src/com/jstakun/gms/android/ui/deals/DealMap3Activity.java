@@ -277,7 +277,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	@Override
     public void onPause() {
         super.onPause();
-        GmsLocationServicesManager.getInstance().disable();
+        GmsLocationServicesManager.getInstance().disable(loadingHandler);
         
         DialogManager.getInstance().dismissDialog(this);
     }

@@ -1,5 +1,8 @@
 package com.jstakun.gms.android.location;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -24,7 +27,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 	private boolean isEnabled = false;
 	
 	private GoogleApiClient mGoogleApiClient;
-	private Handler mLocationHandler;
+	private static List<Handler> mLocationHandlers = new ArrayList<Handler>();
 	private LocationRequest mLocationRequest;
 	
 	public static final GmsLocationServicesManager instance = new GmsLocationServicesManager();
@@ -49,16 +52,17 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//.PRIORITY_BALANCED_POWER_ACCURACY);
 			isEnabled = true;
 		}
-		mLocationHandler = locationHandler;
+		mLocationHandlers.add(locationHandler);
 	}
 
-	public void disable() {
-		if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+	public void disable(Handler toRemove) {
+		mLocationHandlers.remove(toRemove);
+		if (mLocationHandlers.isEmpty() && mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 			mGoogleApiClient.disconnect();
 			mGoogleApiClient = null;
+			isEnabled = false;
 		}
-		isEnabled = false;
 	}
 	
 	private synchronized void buildGoogleApiClient() {
@@ -76,7 +80,9 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		//if (AndroidDevice.isBetterLocation(location, ConfigurationManager.getInstance().getLocation())) {
 		LoggerUtils.debug("GmsLocationServicesManager received new location");
         ConfigurationManager.getInstance().setLocation(location);
-        mLocationHandler.sendEmptyMessage(UPDATE_LOCATION);
+        for (Handler handler : mLocationHandlers) {
+        	handler.sendEmptyMessage(UPDATE_LOCATION);
+        }
         //}
 	}
 
@@ -99,7 +105,9 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 		if (location != null) {
 			ConfigurationManager.getInstance().setLocation(location);
-			mLocationHandler.sendEmptyMessage(GMS_CONNECTED);
+			for (Handler handler : mLocationHandlers) {
+				handler.sendEmptyMessage(GMS_CONNECTED);
+			}
 		}
 		LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
