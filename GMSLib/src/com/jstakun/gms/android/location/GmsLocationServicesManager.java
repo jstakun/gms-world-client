@@ -1,7 +1,7 @@
 package com.jstakun.gms.android.location;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,7 +27,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 	private boolean isEnabled = false;
 	
 	private GoogleApiClient mGoogleApiClient;
-	private static List<Handler> mLocationHandlers = new ArrayList<Handler>();
+	private static Map<String, Handler> mLocationHandlers = new HashMap<String, Handler>();
 	private LocationRequest mLocationRequest;
 	
 	public static final GmsLocationServicesManager instance = new GmsLocationServicesManager();
@@ -40,7 +40,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		return instance;
 	}
 	
-	public synchronized void enable(Handler locationHandler) {
+	public void enable(String handlerName, Handler locationHandler) {
 		buildGoogleApiClient();
 		if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
 			mGoogleApiClient.connect();
@@ -52,16 +52,18 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//.PRIORITY_BALANCED_POWER_ACCURACY);
 			isEnabled = true;
 		}
-		mLocationHandlers.add(locationHandler);
+		mLocationHandlers.put(handlerName, locationHandler);
 	}
-
-	public void disable(Handler toRemove) {
-		mLocationHandlers.remove(toRemove);
+	
+	public void disable(String handlerName) {
+		mLocationHandlers.remove(handlerName);
 		if (mLocationHandlers.isEmpty() && mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 			mGoogleApiClient.disconnect();
 			mGoogleApiClient = null;
 			isEnabled = false;
+		} else {
+			LoggerUtils.debug("GmsLocationServicesManager has " + mLocationHandlers.size() + " handlers");
 		}
 	}
 	
@@ -80,8 +82,8 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		//if (AndroidDevice.isBetterLocation(location, ConfigurationManager.getInstance().getLocation())) {
 		LoggerUtils.debug("GmsLocationServicesManager received new location");
         ConfigurationManager.getInstance().setLocation(location);
-        for (Handler handler : mLocationHandlers) {
-        	handler.sendEmptyMessage(UPDATE_LOCATION);
+        for (Map.Entry<String, Handler> entry : mLocationHandlers.entrySet()) {
+        	entry.getValue().sendEmptyMessage(UPDATE_LOCATION);
         }
         //}
 	}
@@ -105,9 +107,9 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 		if (location != null) {
 			ConfigurationManager.getInstance().setLocation(location);
-			for (Handler handler : mLocationHandlers) {
-				handler.sendEmptyMessage(GMS_CONNECTED);
-			}
+			for (Map.Entry<String, Handler> entry : mLocationHandlers.entrySet()) {
+	        	entry.getValue().sendEmptyMessage(UPDATE_LOCATION);
+	        }
 		}
 		LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);

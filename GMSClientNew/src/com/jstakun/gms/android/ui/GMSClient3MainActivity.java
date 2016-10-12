@@ -259,7 +259,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
     	    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
     	} else {
-    		GmsLocationServicesManager.getInstance().enable(loadingHandler);
+    		GmsLocationServicesManager.getInstance().enable(LoadingHandler.class.getName(), loadingHandler);
     	}
         
         AsyncTaskManager.getInstance().setContext(this);
@@ -318,7 +318,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public void onPause() {
     	LoggerUtils.debug("onPause");
         super.onPause();
-        GmsLocationServicesManager.getInstance().disable(loadingHandler);
+        GmsLocationServicesManager.getInstance().disable(LoadingHandler.class.getName());
         DialogManager.getInstance().dismissDialog(this);
     }
     
@@ -337,7 +337,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	super.onDestroy();
     	if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
-        	GmsLocationServicesManager.getInstance().disable(loadingHandler);
+        	GmsLocationServicesManager.getInstance().disable(LoadingHandler.class.getName());
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         		IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}
@@ -346,6 +346,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}
+        	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
         	IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         }
     	AdsUtils.destroyAdView(this);
@@ -724,7 +725,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    switch (requestCode) {	
 	    	case PERMISSION_ACCESS_LOCATION:
 	    		if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-	    			GmsLocationServicesManager.getInstance().enable(loadingHandler);
+	    			GmsLocationServicesManager.getInstance().enable(LoadingHandler.class.getName(), loadingHandler);
 	    			mMap.setMyLocationEnabled(true);
 	    			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 	    				loadingImage.setVisibility(View.GONE);

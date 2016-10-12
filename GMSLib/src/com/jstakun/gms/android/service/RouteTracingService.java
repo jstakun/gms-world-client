@@ -82,7 +82,7 @@ public class RouteTracingService extends Service {
         	GpsDeviceFactory.initGpsDevice(this, incomingHandler);
         	GpsDeviceFactory.startDevice();
         } else {
-        	GmsLocationServicesManager.getInstance().enable(incomingHandler);
+        	GmsLocationServicesManager.getInstance().enable(IncomingHandler.class.getName(), incomingHandler);
         }
     }
     
@@ -98,7 +98,7 @@ public class RouteTracingService extends Service {
     	if (!IntentsHelper.getInstance().isGoogleApiAvailable(this)) {
     		GpsDeviceFactory.stopDevice();
         } else {
-        	GmsLocationServicesManager.getInstance().disable(incomingHandler);
+        	GmsLocationServicesManager.getInstance().disable(IncomingHandler.class.getName());
         }
     }
 

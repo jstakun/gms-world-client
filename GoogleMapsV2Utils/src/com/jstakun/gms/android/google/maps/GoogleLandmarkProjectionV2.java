@@ -60,7 +60,7 @@ public class GoogleLandmarkProjectionV2 implements ProjectionInterface {
 	@Override
 	public float getViewDistance() {
 		Projection proj = mMap.getProjection();
-		return (float)SphericalUtil.computeDistanceBetween(proj.getVisibleRegion().latLngBounds.northeast, proj.getVisibleRegion().latLngBounds.southwest) / 1000f;
+		return (float)SphericalUtil.computeDistanceBetween(proj.getVisibleRegion().latLngBounds.northeast, proj.getVisibleRegion().latLngBounds.southwest) / (4f * 1000f); //1/4 in kilometers
 	}
 
 }
