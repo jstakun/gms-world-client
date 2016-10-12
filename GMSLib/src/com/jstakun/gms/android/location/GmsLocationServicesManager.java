@@ -58,6 +58,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 	public void disable(String handlerName) {
 		mLocationHandlers.remove(handlerName);
 		if (mLocationHandlers.isEmpty() && mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+			LoggerUtils.debug("GmsLocationServicesManager removed location updates");
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 			mGoogleApiClient.disconnect();
 			mGoogleApiClient = null;

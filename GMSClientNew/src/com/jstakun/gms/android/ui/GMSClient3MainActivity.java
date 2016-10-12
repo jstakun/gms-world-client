@@ -153,6 +153,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LoggerUtils.debug("GMSClient3MainActivity.onCreate called...");
+        
         //requestFeature() must be called before adding content
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
@@ -164,9 +166,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-        
-        LoggerUtils.debug("GMSClient3MainActivity.onCreate called...");
-        
+           
         loadingHandler = new LoadingHandler(this);
         
         mMessenger = new Messenger(loadingHandler);
@@ -253,7 +253,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     @Override
     public void onResume() {
     	super.onResume();
-        LoggerUtils.debug("onResume");
+        LoggerUtils.debug("GMSClient3MainActivity.onResume");
         
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || 
     	    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -310,13 +310,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     
     @Override
     public void onStart() {
-    	LoggerUtils.debug("onStart");
+    	LoggerUtils.debug("GMSClient3MainActivity.onStart");
         super.onStart();
     }
     
     @Override
     public void onPause() {
-    	LoggerUtils.debug("onPause");
+    	LoggerUtils.debug("GMSClient3MainActivity.onPause");
         super.onPause();
         GmsLocationServicesManager.getInstance().disable(LoadingHandler.class.getName());
         DialogManager.getInstance().dismissDialog(this);
@@ -324,7 +324,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     
     @Override
     protected void onStop() {
-    	LoggerUtils.debug("onStop");
+    	LoggerUtils.debug("GMSClient3MainActivity.onStop");
         super.onStop();
         if (mMap != null) {
         	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mMap.getCameraPosition().target);
@@ -333,7 +333,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
     @Override
     public void onDestroy() {
-    	LoggerUtils.debug("onDestroy");
+    	LoggerUtils.debug("GMSClient3MainActivity.onDestroy");
     	super.onDestroy();
     	if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
@@ -356,7 +356,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     @Override
     public void onRestart() {
         super.onRestart();
-        LoggerUtils.debug("onRestart");
+        LoggerUtils.debug("GMSClient3MainActivity.onRestart");
         if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS) {
             Intent intent = new Intent(this, GMSClient2OSMMainActivity.class);
             LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
@@ -364,6 +364,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	GeoPoint center = new GeoPoint(MathUtils.coordDoubleToInt(mapCenter.latitude), MathUtils.coordDoubleToInt(mapCenter.longitude));
             	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, center);
             }
+            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
+        		isRouteTrackingServiceBound = false;
+        	}
             finish();
             startActivity(intent);
         } 
@@ -375,7 +379,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     
     @Override
     public void onNewIntent(Intent intent) {
-    	LoggerUtils.debug("onNewIntent");
+    	LoggerUtils.debug("GMSClient3MainActivity.onNewIntent");
         Bundle extras = intent.getExtras();
         if (extras != null && extras.containsKey("notification") && extras.containsKey("delete")) {
             boolean delete = extras.getBoolean("delete");

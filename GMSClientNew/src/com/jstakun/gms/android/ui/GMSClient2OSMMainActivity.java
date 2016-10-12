@@ -156,7 +156,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         super.onCreate(savedInstanceState);
 
-        LoggerUtils.debug("onCreate");
         LoggerUtils.debug("GMSClient2OSMMainActivity.onCreate called...");
     
         UserTracker.getInstance().trackActivity(getClass().getName());
@@ -171,7 +170,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         loadingHandler = new LoadingHandler(this);
         mMessenger = new Messenger(loadingHandler);
         
-        LoggerUtils.debug("Map provider is osm");
+        LoggerUtils.debug("Map provider is OSM");
 
         setContentView(R.layout.osmdroidcanvasview_2);
         
@@ -298,7 +297,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     @Override
     public void onResume() {
         super.onResume();
-        LoggerUtils.debug("onResume");
+        LoggerUtils.debug("GMSClient2OSMMainActivity.onResume");
 
         LocationServicesManager.getInstance().enableMyLocation();
 
@@ -354,12 +353,13 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     @Override
     public void onStart() {
         super.onStart();
+        LoggerUtils.debug("GMSClient2OSMMainActivity.onStart");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LoggerUtils.debug("onPause");
+        LoggerUtils.debug("GMSClient2OSMMainActivity.onPause");
 
         LocationServicesManager.getInstance().disableMyLocation();
 
@@ -369,12 +369,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        //UserTracker.getInstance().stopSession(this);
+        LoggerUtils.debug("GGMSClient2OSMMainActivity.onStop");
     }
 
     @Override
     public void onDestroy() {
-        LoggerUtils.debug("onDestroy");
+        LoggerUtils.debug("GMSClient2OSMMainActivity.onDestroy");
         super.onDestroy();
         if (ConfigurationManager.getInstance().isClosing()) {
         	isAppInitialized = false;
@@ -400,6 +400,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.GOOGLE_MAPS) {
         	Intent intent = new Intent(this, GMSClient3MainActivity.class);
         	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, new LatLng(mapView.getMapCenter().getLatitude(),mapView.getMapCenter().getLongitude()));
+        	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
+        		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
+        		isRouteTrackingServiceBound = false;
+        	}
         	finish();
             startActivity(intent);
         }
@@ -507,7 +511,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     @Override
     public void onNewIntent(Intent intent) {
-        LoggerUtils.debug("onNewIntent");
+        LoggerUtils.debug("GMSClient2OSMMainActivity.onNewIntent");
         Bundle extras = intent.getExtras();
         if (extras != null && extras.containsKey("notification") && extras.containsKey("delete")) {
             boolean delete = extras.getBoolean("delete");
