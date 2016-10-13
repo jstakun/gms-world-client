@@ -38,7 +38,7 @@ public class RoutesManager {
     private static Map<String, String> descs = new HashMap<String, String>();
     private static RoutesManager instance = null; 
 
-    public static RoutesManager getInstance() {
+    public synchronized static RoutesManager getInstance() {
     	if (instance == null) {
     		instance = new RoutesManager();
     	}

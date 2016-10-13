@@ -908,8 +908,9 @@ public class AsyncTaskManager {
         }
     }
 
-    public void executeImageUploadTask(Context context, Bitmap screenshot, double lat, double lng, boolean notify) {
-    	if (notify || !ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), Object.class)) {
+    public void executeImageUploadTask(Context context, Bitmap screenshot, double lat, double lng, boolean force) {
+    	final boolean screenshotExists = ConfigurationManager.getInstance().containsObject("screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng), Object.class);
+    	if (force || !screenshotExists) {
     	    long loadingTime = 0; 
     		Long l = (Long) ConfigurationManager.getInstance().removeObject("LAYERS_LOADING_TIME_SEC", Long.class);
     		if (l != null) {
@@ -926,7 +927,7 @@ public class AsyncTaskManager {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 screenshot.compress(Bitmap.CompressFormat.JPEG, 80, out);
                 
-                if (screenshot != null && notify) {  
+                if (screenshot != null && force) {  
                 	Uri uri = FileManager.getInstance().saveImageFile(screenshot, "screenshot.jpg");
                 	if (uri != null) {
                 		IntentsHelper.getInstance().shareImageAction(uri);
@@ -941,9 +942,7 @@ public class AsyncTaskManager {
     		if (scr != null) {
     			new UploadImageTask(filename, scr).execute(lat, lng);  
     		}
-    	} else if (notify) {
-    		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Share_screenshot_exists));
-    	} else {
+    	} else if (screenshotExists) {
     		LoggerUtils.debug("Screenshot for current location has already been sent!");
     	}
     }
