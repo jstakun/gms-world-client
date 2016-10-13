@@ -420,6 +420,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             Intent intent = getIntent();
             ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, mapView.getMapCenter());
             LocationServicesManager.getInstance().disableMyLocation();
+            if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) { 
+        		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
+        		isRouteTrackingServiceBound = false;
+        	}
             finish();
             startActivity(intent);
         }
