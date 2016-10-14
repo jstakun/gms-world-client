@@ -405,6 +405,7 @@
     <string name="Layer.Upcoming.desc">Events around your current location</string>
     <string name="Layer.Eventful.desc">Events around your current location</string>
     <string name="Layer.OSM.Parkings.desc">Parkings near your current location</string>
+    <string name="Layer.OSM.Taxi.desc">Taxi stop near your current location</string>
     <string name="Layer.Foursquare.Merchant.desc">Daily deals around your current location</string>
     <string name="Layer.Groupon.desc">Daily deals around your current location</string>
     <string name="Layer.8Coupons.desc">Daily deals around your current location aggregated from multiple services</string>

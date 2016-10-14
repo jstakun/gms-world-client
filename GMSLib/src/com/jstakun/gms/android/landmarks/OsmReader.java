@@ -6,8 +6,6 @@ import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.BoundingBox;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
-import com.jstakun.gms.android.utils.LoggerUtils;
-import com.jstakun.gms.android.utils.ProjectionInterface;
 import com.jstakun.gms.android.utils.StringUtil;
 
 /**
@@ -34,6 +32,8 @@ public class OsmReader extends AbstractSerialReader {
 		String amenity = "atm"; //Commons.OSM_ATM_LAYER
         if (layer.equals(Commons.OSM_PARKING_LAYER)){
             amenity = "parking";
+        } else if (layer.equals(Commons.OSM_TAXI_LAYER)){
+            amenity = "taxi";
         }
         params.put("amenity", amenity);
 	    return parser.parse(getUrls(), 0, params, landmarks, task, true, layer, false);	
