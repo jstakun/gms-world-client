@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.gms.android.landmarks;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -17,10 +13,9 @@ import java.util.List;
 public class Layer {
 
     private String name;
-    //private boolean extensible; //czy mozna dodac wlasne landmarki
-    private boolean manageable; //czy moza samemu wlaczyc widok warstwy
+    private boolean manageable; //can you enable/disable layer
     private boolean checkinable; //is checkin allowed
-    private boolean searchable;
+    private boolean searchable; //can you search layer
     private List<LayerReader> layerReader;
     private String smallIconPath;
     private int smallIconResource;
@@ -35,9 +30,8 @@ public class Layer {
     private FileManager.ClearPolicy clearPolicy;
     private int image;
 
-    protected Layer(String name, boolean extensible, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, List<LayerReader> layerReader, String smallIconPath, int smallIconResource, String largeIconPath, int largeIconResource, int type, String desc, String formatted, FileManager.ClearPolicy clearPolicy, int image) {
+    protected Layer(String name, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, List<LayerReader> layerReader, String smallIconPath, int smallIconResource, String largeIconPath, int largeIconResource, int type, String desc, String formatted, FileManager.ClearPolicy clearPolicy, int image) {
         this.name = name;
-        //this.extensible = extensible;
         this.manageable = manageable;
         this.checkinable = checkinable;
         this.searchable = searchable;
