@@ -42,6 +42,7 @@ public class GMSClientDispatchActivity extends Activity {
             final String action = intent.getAction();
             // If the intent is a request to create a shortcut, we'll do that and exit
             if (Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
+            	IntentsHelper.getInstance().setActivity(this);
             	IntentsHelper.getInstance().setupShortcut();
                 abort = true;
             } else {

@@ -55,6 +55,7 @@ public class LayerManager {
     }
     
     private LayerManager() {
+    	//TODO load all layers automatically
     	allLayers.put(Commons.LOCAL_LAYER, LayerFactory.getLayer(Commons.LOCAL_LAYER, true, isLayerEnabledConf(Commons.LOCAL_LAYER), false, false, Arrays.asList(new LayerReader[]{new LandmarkDBReader()}), null, R.drawable.ok16, null, R.drawable.ok, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Phone_Landmarks_desc), Commons.LOCAL_LAYER, FileManager.ClearPolicy.ONE_MONTH, -1)); 
         allLayers.put(Commons.FACEBOOK_LAYER, LayerFactory.getLayer(Commons.FACEBOOK_LAYER, true, isLayerEnabledConf(Commons.FACEBOOK_LAYER), true, true, Arrays.asList(new LayerReader[]{new FbTaggedReader(), /*new FbCheckinsReader(),*/ new FbPhotosReader(), new FbPlacesReader()}), null, R.drawable.facebook_icon, null, R.drawable.facebook_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Facebook_desc), Commons.FACEBOOK_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.facebook_128));  
         allLayers.put(Commons.FOURSQUARE_LAYER, LayerFactory.getLayer(Commons.FOURSQUARE_LAYER, true, isLayerEnabledConf(Commons.FOURSQUARE_LAYER), true, true, Arrays.asList(new LayerReader[]{new FsCheckinsReader(), new FsRecommendsReader(), new FoursquareReader()}), null, R.drawable.foursquare, null, R.drawable.foursquare_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Foursquare_desc), Commons.FOURSQUARE_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.foursquare_128)); 

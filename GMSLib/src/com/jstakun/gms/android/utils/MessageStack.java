@@ -42,7 +42,7 @@ public class MessageStack {
     }
     
     public void addMessage(String message, int validity, int condition, int setLoadingImage) {
-        if (setLoadingImage == MAP_LOADED || setLoadingImage == LOADING || setLoadingImage == LAYER_LOADED) {
+        if (uiHandler != null && (setLoadingImage == MAP_LOADED || setLoadingImage == LOADING || setLoadingImage == LAYER_LOADED)) {
             if ((setLoadingImage == MAP_LOADED && !messageCondition.isLoading(MessageCondition.LAYER_LOADING)) ||
                     (setLoadingImage == LAYER_LOADED && !messageCondition.isLoading(MessageCondition.MAP_LOADING)))
             {
