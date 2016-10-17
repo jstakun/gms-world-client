@@ -439,7 +439,10 @@ public class AlertDialogBuilder {
         if (ConfigurationManager.getInstance().containsObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class)) {
             type = (Integer) ConfigurationManager.getInstance().getObject(AlertDialogBuilder.OPEN_DIALOG, Integer.class);
             if (type != DEAL_OF_THE_DAY_DIALOG && type != ADD_LAYER_DIALOG) {
-                getAlertDialog(activity, type, null, dialogClickListener).dismiss();
+            	AlertDialog dialog = getAlertDialog(activity, type, null, dialogClickListener);
+            	if (dialog != null) {
+            		dialog.dismiss();
+            	}
             }
         }
         return type;
