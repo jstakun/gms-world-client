@@ -2,6 +2,8 @@ package com.jstakun.gms.android.landmarks;
 
 import java.util.Locale;
 
+import com.jstakun.gms.android.config.Commons;
+
 /**
  *
  * @author jstakun
@@ -18,5 +20,10 @@ public class GooglePlacesReader extends AbstractSerialReader {
 	@Override
 	protected String getUri() {
 		return "googlePlacesProvider";
+	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.GOOGLE_PLACES_LAYER;
 	}
 }

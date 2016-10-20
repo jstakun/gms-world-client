@@ -941,7 +941,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		    		break;
 				case R.id.deals:
 		    		if (ConfigurationManager.getUserManager().isUserLoggedIn()) {
-		    			IntentsHelper.getInstance().startCategoryListActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), -1, -1);
+		    			if (mMap != null) {
+		            		IntentsHelper.getInstance().startCategoryListActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), -1, -1);
+		            	} else {
+		            		IntentsHelper.getInstance().startCategoryListActivity(MathUtils.coordDoubleToInt(ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE)), 
+		            				MathUtils.coordDoubleToInt(ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE)), -1, -1);
+		            	}
 		    		} else {
 		        		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Login_required_error));
 		    		}

@@ -432,7 +432,7 @@ public final class IntentsHelper {
 
     public void openButtonPressedAction(ExtendedLandmark landmark) {
     	final String[] actionLayers = new String[]{Commons.YOUTUBE_LAYER, Commons.PANORAMIO_LAYER, Commons.COUPONS_LAYER, 
-        		Commons.FLICKR_LAYER, Commons.GOOGLE_PLACES_LAYER};
+    			Commons.FLICKR_LAYER, Commons.GOOGLE_PLACES_LAYER};
         
     	String url = buildUrl(landmark);
     	

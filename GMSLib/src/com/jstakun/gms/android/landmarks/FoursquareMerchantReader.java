@@ -16,7 +16,7 @@ import com.jstakun.gms.android.social.OAuthServiceFactory;
  */
 public class FoursquareMerchantReader extends AbstractSerialReader {
 
-    @Override
+	@Override
 	protected void init(double latitude, double longitude, int zoom, int width, int height) {
 		super.init(latitude, longitude, zoom, width, height);
 		params.put("lang", Locale.getDefault().getLanguage());
@@ -38,5 +38,10 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
 	@Override
 	protected String getUri() {
 		return "foursquareMerchant";		
+	}
+
+	@Override
+	protected String getLayerName() {
+		return Commons.FOURSQUARE_MERCHANT_LAYER;
 	}
 }

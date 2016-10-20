@@ -2,6 +2,7 @@ package com.jstakun.gms.android.landmarks;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.deals.CategoriesManager;
 
 /**
@@ -24,5 +25,10 @@ public class GrouponReader extends AbstractSerialReader {
 	@Override
 	protected String getUri() {
 		return "grouponProvider";
+	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.GROUPON_LAYER;
 	}
 }

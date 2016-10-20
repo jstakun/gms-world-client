@@ -55,4 +55,9 @@ public class FbPhotosReader extends AbstractSerialReader {
 	protected String getUri() {
 		return "fbPhotos";
 	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.FACEBOOK_LAYER;
+	}
 }

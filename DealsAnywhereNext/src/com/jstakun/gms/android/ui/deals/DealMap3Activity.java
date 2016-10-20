@@ -449,7 +449,12 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 IntentsHelper.getInstance().startSettingsActivity(SettingsActivity.class);
                 break;
             case R.id.listMode:
-                IntentsHelper.getInstance().startCategoryListActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), -1, -1);
+            	if (mMap != null) {
+            		IntentsHelper.getInstance().startCategoryListActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), -1, -1);
+            	} else {
+            		IntentsHelper.getInstance().startCategoryListActivity(MathUtils.coordDoubleToInt(ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE)), 
+            				MathUtils.coordDoubleToInt(ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE)), -1, -1);
+            	}
                 break;
             case R.id.pickMyPos:
                 IntentsHelper.getInstance().startPickLocationActivity();

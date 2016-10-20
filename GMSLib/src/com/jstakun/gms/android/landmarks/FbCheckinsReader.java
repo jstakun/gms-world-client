@@ -54,4 +54,14 @@ public class FbCheckinsReader extends AbstractSerialReader {
 	protected String getUri() {
 		return "fbCheckins";
 	}
+
+	@Override
+	protected String getLayerName() {
+		return Commons.FACEBOOK_LAYER;
+	}
+	
+	@Override
+	public boolean isEnabled() {
+    	return false;
+    }
 }

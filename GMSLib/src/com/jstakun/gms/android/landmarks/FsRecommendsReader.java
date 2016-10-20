@@ -57,4 +57,9 @@ public class FsRecommendsReader extends AbstractSerialReader {
 	protected String getUri() {
 		return "fsRecommended";
 	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.FOURSQUARE_LAYER;
+	}
 }

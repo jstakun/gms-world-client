@@ -55,4 +55,9 @@ public class FbTaggedReader extends AbstractSerialReader {
 	protected String getUri() {
 		return "fbTagged";
 	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.FACEBOOK_LAYER;
+	}
 }

@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.gms.android.landmarks;
+
+import com.jstakun.gms.android.config.Commons;
 
 /**
  *
@@ -15,4 +12,14 @@ public class LastFmReader extends AbstractSerialReader {
 	protected String getUri() {
 		return "lastfmProvider";
 	}
+    
+    @Override
+	protected String getLayerName() {
+		return Commons.LASTFM_LAYER;
+	}
+    
+    @Override
+	public boolean isEnabled() {
+    	return false;
+    }
 }

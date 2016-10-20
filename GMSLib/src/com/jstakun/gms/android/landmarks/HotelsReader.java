@@ -2,6 +2,8 @@ package com.jstakun.gms.android.landmarks;
 
 import java.util.Locale;
 
+import com.jstakun.gms.android.config.Commons;
+
 /**
  *
  * @author jstakun
@@ -20,5 +22,10 @@ public class HotelsReader extends AbstractSerialReader {
 	@Override
 	protected String getUri() {
 		return "hotelsProvider";
+	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.HOTELS_LAYER;
 	}
 }

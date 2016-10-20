@@ -365,7 +365,7 @@ public class LandmarkManager {
 
     public boolean hasCheckinableLandmarks() {
     	final String[] excluded = new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER,
-                Commons.FOURSQUARE_MERCHANT_LAYER, Commons.GOOGLE_PLACES_LAYER};
+    			Commons.FOURSQUARE_MERCHANT_LAYER, Commons.GOOGLE_PLACES_LAYER};
 
     	for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerNotExcludedAndCheckinablePredicate(excluded))) {
             if (!getLandmarkStoreLayer(key).isEmpty()) {
@@ -378,7 +378,7 @@ public class LandmarkManager {
     
     public void getCheckinableLandmarks(List<LandmarkParcelable> checkinable, double lat, double lng) {
         final String[] excluded = new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER,
-            Commons.FOURSQUARE_MERCHANT_LAYER, Commons.GOOGLE_PLACES_LAYER};
+        		Commons.FOURSQUARE_MERCHANT_LAYER, Commons.GOOGLE_PLACES_LAYER};
 
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         for (String key : Iterables.filter(LayerManager.getInstance().getLayers(), new LayerNotExcludedAndCheckinablePredicate(excluded))) {

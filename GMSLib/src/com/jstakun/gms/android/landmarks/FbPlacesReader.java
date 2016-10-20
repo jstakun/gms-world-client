@@ -27,4 +27,9 @@ public class FbPlacesReader extends AbstractSerialReader {
 	protected String getUri() {
     	return "facebookProvider";
 	}
+    
+    @Override
+	protected String getLayerName() {
+		return Commons.FACEBOOK_LAYER;
+	}
 }

@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.jstakun.gms.android.config.Commons;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RouteRecorder;
@@ -18,6 +19,7 @@ import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
 import android.graphics.Color;
+import android.location.Location;
 
 public class GoogleRoutesOverlay {
 	
@@ -55,9 +57,18 @@ public class GoogleRoutesOverlay {
                 LatLng p = new LatLng(l.getQualifiedCoordinates().getLatitude(), l.getQualifiedCoordinates().getLongitude());
                 pointsLatLng.add(p);
            	}
-                
-        	//final int resourceId = R.drawable.bullet_blue; //.start_marker;
+            
+        	//TODO testing
+        	if (isCurrentlyRecorded) {
+        		Location l = ConfigurationManager.getInstance().getLocation();
+        		if (l != null) {
+        			pointsLatLng.add(new LatLng(l.getLatitude(), l.getLongitude()));
+        		}
+        		
+        	}
+        	//
         	
+        	//final int resourceId = R.drawable.bullet_blue; //.start_marker;
         	//mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(resourceId)));
            	mMarkerCluster.addMarker(points.get(0), true);
             

@@ -2,6 +2,7 @@ package com.jstakun.gms.android.landmarks;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.deals.CategoriesManager;
 
 /**
@@ -22,5 +23,10 @@ public class CouponsReader extends AbstractSerialReader {
 	@Override
 	protected String getUri() {
 		return "couponsProvider";
+	}
+
+	@Override
+	protected String getLayerName() {
+		return Commons.COUPONS_LAYER;
 	}
 }

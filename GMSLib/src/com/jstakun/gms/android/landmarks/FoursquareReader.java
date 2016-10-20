@@ -2,6 +2,8 @@ package com.jstakun.gms.android.landmarks;
 
 import java.util.Locale;
 
+import com.jstakun.gms.android.config.Commons;
+
 /**
  *
  * @author jstakun
@@ -17,5 +19,10 @@ public class FoursquareReader extends AbstractSerialReader {
 	@Override
 	protected String getUri() {
 		return "foursquareProvider";
+	}
+
+	@Override
+	protected String getLayerName() {
+		return Commons.FOURSQUARE_LAYER;
 	}
 }

@@ -1,5 +1,7 @@
 package com.jstakun.gms.android.landmarks;
 
+import com.jstakun.gms.android.config.Commons;
+
 /**
  *
  * @author jstakun
@@ -16,5 +18,10 @@ public class YelpReader extends AbstractSerialReader{
 	@Override
 	protected String getUri() {
 		return "yelpProvider";
+	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.YELP_LAYER;
 	}
 }

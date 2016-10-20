@@ -41,8 +41,6 @@ public abstract class AbstractSerialReader implements LayerReader {
         params.put("version", SERIAL_VERSION);
     }
     
-    protected abstract String getUri();
-    
     protected String[] getUrls() { 
     	List<String> urls = new ArrayList<String>(3);
     	if (ConfigurationManager.getUserManager().isTokenPresent()) {
@@ -69,4 +67,12 @@ public abstract class AbstractSerialReader implements LayerReader {
     public final String[] getUrlPrefix() {
         return null;
     }
+    
+    public boolean isEnabled() {
+    	return true;
+    }
+    
+    protected abstract String getUri();
+    
+    protected abstract String getLayerName();
 }

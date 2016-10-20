@@ -1,5 +1,7 @@
 package com.jstakun.gms.android.landmarks;
 
+import com.jstakun.gms.android.config.Commons;
+
 /**
  *
  * @author jstakun
@@ -16,5 +18,10 @@ public class GMSWorldReader extends AbstractSerialReader {
 	@Override
 	protected String getUri() {
 		return "downloadLandmark";
+	}
+
+	@Override
+	protected String getLayerName() {
+		return Commons.LM_SERVER_LAYER;
 	}
 }

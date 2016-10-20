@@ -1,5 +1,6 @@
 package com.jstakun.gms.android.landmarks;
 
+import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.BoundingBox;
 import com.jstakun.gms.android.utils.StringUtil;
@@ -24,4 +25,14 @@ public class PicasaReader extends AbstractSerialReader {
 	protected String getUri() {
 		return "picasaProvider";
 	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.PICASA_LAYER;
+	}
+	
+	@Override
+	public boolean isEnabled() {
+    	return false;
+    }
 }

@@ -7,16 +7,19 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.Overlay;
 
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
+import com.jstakun.gms.android.utils.MathUtils;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.location.Location;
 
 /**
  *
@@ -89,7 +92,7 @@ public class OsmRoutesOverlay extends Overlay {
                 canvas.drawPath(path, paint);
                 //canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
             } else if (isCurrentlyRecording) {
-                //draw currently recorded route from the end to first invisible point only
+                //draw currently recorded route from the end to first point
                 List<ExtendedLandmark> routePoints = RoutesManager.getInstance().getRoute(RouteRecorder.CURRENTLY_RECORDED);
                 routeSize = routePoints.size();
 
@@ -119,6 +122,15 @@ public class OsmRoutesOverlay extends Overlay {
                         i--;
                     }
 
+                    //TODO testing
+                    Location l = ConfigurationManager.getInstance().getLocation();
+            		if (l != null) {
+            			projection.toProjectedPixels(MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude()), gp2);
+                        projection.toPixelsFromProjected(gp2, point2);
+            		}
+            		path.lineTo(point2.x, point2.y);
+            		//
+            		
                     canvas.drawPath(path, paint);
 
                     //System.out.println("Painting landmark: " + xy1[0] + " " + xy1[1]);

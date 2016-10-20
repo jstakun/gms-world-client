@@ -57,4 +57,9 @@ public class FsCheckinsReader extends AbstractSerialReader {
 	protected String getUri() {
 		return "fsCheckins";
 	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.FOURSQUARE_LAYER;
+	}
 }

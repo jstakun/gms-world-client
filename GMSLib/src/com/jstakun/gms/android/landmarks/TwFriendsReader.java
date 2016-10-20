@@ -52,5 +52,10 @@ public class TwFriendsReader extends AbstractSerialReader {
 	protected String getUri() {
 		return "twFriends";
 	}
+	
+	@Override
+	protected String getLayerName() {
+		return Commons.TWITTER_LAYER;
+	}
 
 }
