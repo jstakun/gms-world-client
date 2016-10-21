@@ -98,13 +98,22 @@ public class OsmRoutesOverlay extends Overlay {
 
                 if (routeSize > 1) {
                     //viewportRect.set(projection.getScreenRect());
-                    ExtendedLandmark lastPoint = routePoints.get(routeSize - 1);
-
-                    projection.toProjectedPixels(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(), gp1);
-                    projection.toPixelsFromProjected(gp1, point1);
-
-                    int i = routeSize - 2;
-                    path.moveTo(point1.x, point1.y);
+                	//TODO testing
+                    Location l = ConfigurationManager.getInstance().getLocation();
+                    int i = -1;
+            		if (l != null) {
+            			projection.toProjectedPixels(MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude()), gp2);
+                        projection.toPixelsFromProjected(gp1, point1);
+                        path.moveTo(point1.x, point1.y);
+                        i = routeSize - 1;
+            		} else {
+            			ExtendedLandmark lastPoint = routePoints.get(routeSize - 1);
+            			projection.toProjectedPixels(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(), gp1);
+            			projection.toPixelsFromProjected(gp1, point1);
+            			path.moveTo(point1.x, point1.y);
+            			i = routeSize - 2;
+            		}
+            		//
 
                     while (i >= 0) {
                         ExtendedLandmark secondPoint = routePoints.get(i);
@@ -121,15 +130,6 @@ public class OsmRoutesOverlay extends Overlay {
                         point1.y = point2.y;
                         i--;
                     }
-
-                    //TODO testing
-                    Location l = ConfigurationManager.getInstance().getLocation();
-            		if (l != null) {
-            			projection.toProjectedPixels(MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude()), gp2);
-                        projection.toPixelsFromProjected(gp2, point2);
-            		}
-            		path.lineTo(point2.x, point2.y);
-            		//
             		
                     canvas.drawPath(path, paint);
 

@@ -26,4 +26,9 @@ public abstract class OsmReader extends AbstractSerialReader {
 	protected String getUri() {
 		return "osmProvider";
 	}
+	
+	@Override
+	public int getPriority() {
+		return 9;
+	}
 }

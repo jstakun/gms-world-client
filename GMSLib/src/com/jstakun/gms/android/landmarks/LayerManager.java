@@ -1,8 +1,10 @@
 package com.jstakun.gms.android.landmarks;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -16,6 +18,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import dalvik.system.DexFile;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -55,31 +58,59 @@ public class LayerManager {
     }
     
     private LayerManager() {
+    	
     	//TODO load all layers automatically
-    	allLayers.put(Commons.LOCAL_LAYER, LayerFactory.getLayer(Commons.LOCAL_LAYER, true, isLayerEnabledConf(Commons.LOCAL_LAYER), false, false, Arrays.asList(new LayerReader[]{new LandmarkDBReader()}), null, R.drawable.ok16, null, R.drawable.ok, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Phone_Landmarks_desc), Commons.LOCAL_LAYER, FileManager.ClearPolicy.ONE_MONTH, -1)); 
-        allLayers.put(Commons.FACEBOOK_LAYER, LayerFactory.getLayer(Commons.FACEBOOK_LAYER, true, isLayerEnabledConf(Commons.FACEBOOK_LAYER), true, true, Arrays.asList(new LayerReader[]{new FbTaggedReader(), /*new FbCheckinsReader(),*/ new FbPhotosReader(), new FbPlacesReader()}), null, R.drawable.facebook_icon, null, R.drawable.facebook_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Facebook_desc), Commons.FACEBOOK_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.facebook_128));  
-        allLayers.put(Commons.FOURSQUARE_LAYER, LayerFactory.getLayer(Commons.FOURSQUARE_LAYER, true, isLayerEnabledConf(Commons.FOURSQUARE_LAYER), true, true, Arrays.asList(new LayerReader[]{new FsCheckinsReader(), new FsRecommendsReader(), new FoursquareReader()}), null, R.drawable.foursquare, null, R.drawable.foursquare_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Foursquare_desc), Commons.FOURSQUARE_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.foursquare_128)); 
-        allLayers.put(Commons.YELP_LAYER, LayerFactory.getLayer(Commons.YELP_LAYER, true, isLayerEnabledConf(Commons.YELP_LAYER), false, true, Arrays.asList(new LayerReader[]{new YelpReader()}), null, R.drawable.yelp, null, R.drawable.yelp_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Yelp_desc), Commons.YELP_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.yelp_128));
-        allLayers.put(Commons.HOTELS_LAYER, LayerFactory.getLayer(Commons.HOTELS_LAYER, true, isLayerEnabledConf(Commons.HOTELS_LAYER), false, true, Arrays.asList(new LayerReader[]{new HotelsReader()}), null, R.drawable.hotel, null, R.drawable.hotel_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Hotels_Combined_desc), Commons.HOTELS_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.travel_img)); 
-        allLayers.put(Commons.GOOGLE_PLACES_LAYER, LayerFactory.getLayer(Commons.GOOGLE_PLACES_LAYER, true, isLayerEnabledConf(Commons.GOOGLE_PLACES_LAYER), true, true, Arrays.asList(new LayerReader[]{new GooglePlacesReader()}), null, R.drawable.google_icon, null, R.drawable.google_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Google_Places_desc), Commons.GOOGLE_PLACES_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.google_places_128)); 
-        allLayers.put(Commons.TWITTER_LAYER, LayerFactory.getLayer(Commons.TWITTER_LAYER, true, isLayerEnabledConf(Commons.TWITTER_LAYER), false, true, Arrays.asList(new LayerReader[]{new TwFriendsReader(), new TwitterReader()}), null, R.drawable.twitter, null, R.drawable.twitter_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Twitter_desc), Commons.TWITTER_LAYER, FileManager.ClearPolicy.ONE_WEEK, R.drawable.twitter_128)); 
-        allLayers.put(Commons.MC_ATM_LAYER, LayerFactory.getLayer(Commons.MC_ATM_LAYER, true, isLayerEnabledConf(Commons.MC_ATM_LAYER), false, true, Arrays.asList(new LayerReader[]{new MastercardAtmReader()}), null, R.drawable.mastercard, null, R.drawable.mastercard_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_MasterCard_ATMs_desc), Commons.MC_ATM_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.mastercard_128)); 
-        allLayers.put(Commons.OSM_ATM_LAYER, LayerFactory.getLayer(Commons.OSM_ATM_LAYER, true, isLayerEnabledConf(Commons.OSM_ATM_LAYER), false, true, Arrays.asList(new LayerReader[]{new OsmAtmReader()}), null, R.drawable.credit_card_16, null, R.drawable.credit_card_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_OSM_ATMs_desc), Commons.OSM_ATM_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.atm_128)); 
-        allLayers.put(Commons.OSM_TAXI_LAYER, LayerFactory.getLayer(Commons.OSM_TAXI_LAYER, true, isLayerEnabledConf(Commons.OSM_TAXI_LAYER), false, true, Arrays.asList(new LayerReader[]{new OsmTaxiReader()}), null, R.drawable.taxi16, null, R.drawable.taxi24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_OSM_Taxi_desc), Commons.OSM_TAXI_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.taxi128)); 
-        allLayers.put(Commons.MEETUP_LAYER, LayerFactory.getLayer(Commons.MEETUP_LAYER, true, isLayerEnabledConf(Commons.MEETUP_LAYER), false, true, Arrays.asList(new LayerReader[]{new MeetupReader()}), null, R.drawable.meetup, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Meetup_desc), Commons.MEETUP_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.meetup_128)); 
-        allLayers.put(Commons.EVENTFUL_LAYER, LayerFactory.getLayer(Commons.EVENTFUL_LAYER, true, isLayerEnabledConf(Commons.EVENTFUL_LAYER), false, true, Arrays.asList(new LayerReader[]{new EventfulReader()}), null, R.drawable.eventful, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Eventful_desc), Commons.EVENTFUL_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.eventful_128)); 
-        allLayers.put(Commons.OSM_PARKING_LAYER, LayerFactory.getLayer(Commons.OSM_PARKING_LAYER, true, isLayerEnabledConf(Commons.OSM_PARKING_LAYER), false, true, Arrays.asList(new LayerReader[]{new OsmParkingReader()}), null, R.drawable.parking, null, R.drawable.parking_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_OSM_Parkings_desc), Commons.OSM_PARKING_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.parking_img)); 
-        allLayers.put(Commons.FOURSQUARE_MERCHANT_LAYER, LayerFactory.getLayer(Commons.FOURSQUARE_MERCHANT_LAYER, true, isLayerEnabledConf(Commons.FOURSQUARE_MERCHANT_LAYER), true, true, Arrays.asList(new LayerReader[]{new FoursquareMerchantReader()}), null, R.drawable.gift, null, R.drawable.gift_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Foursquare_Merchant_desc), "Merchant by Foursquare", FileManager.ClearPolicy.ONE_YEAR, R.drawable.gift_128)); 
-        allLayers.put(Commons.GROUPON_LAYER, LayerFactory.getLayer(Commons.GROUPON_LAYER, true, isLayerEnabledConf(Commons.GROUPON_LAYER), false, true, Arrays.asList(new LayerReader[]{new GrouponReader()}), null, R.drawable.groupon_icon, null, R.drawable.groupon_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Groupon_desc), Commons.GROUPON_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.groupon_128)); 
-        allLayers.put(Commons.COUPONS_LAYER, LayerFactory.getLayer(Commons.COUPONS_LAYER, true, isLayerEnabledConf(Commons.COUPONS_LAYER), false, true, Arrays.asList(new LayerReader[]{new CouponsReader()}), null, R.drawable.dollar, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_8Coupons_desc), Commons.COUPONS_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.coupon_128)); 
-        allLayers.put(Commons.WIKIPEDIA_LAYER, LayerFactory.getLayer(Commons.WIKIPEDIA_LAYER, true, isLayerEnabledConf(Commons.WIKIPEDIA_LAYER), false, true, Arrays.asList(new LayerReader[]{new GeonamesReader()}), null, R.drawable.wikipedia, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Wikipedia_desc), Commons.WIKIPEDIA_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.wikipedia_128)); 
-        allLayers.put(Commons.PANORAMIO_LAYER, LayerFactory.getLayer(Commons.PANORAMIO_LAYER, true, isLayerEnabledConf(Commons.PANORAMIO_LAYER), false, true, Arrays.asList(new LayerReader[]{new PanoramioReader()}), null, R.drawable.panoramio, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Panoramio_desc), Commons.PANORAMIO_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.panoramio_128)); 
-        allLayers.put(Commons.FLICKR_LAYER, LayerFactory.getLayer(Commons.FLICKR_LAYER, true, isLayerEnabledConf(Commons.FLICKR_LAYER), false, true, Arrays.asList(new LayerReader[]{new FlickrReader()}), null, R.drawable.flickr, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Flickr_desc), Commons.FLICKR_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.flickr_128)); 
-        allLayers.put(Commons.YOUTUBE_LAYER, LayerFactory.getLayer(Commons.YOUTUBE_LAYER, true, isLayerEnabledConf(Commons.YOUTUBE_LAYER), false, true, Arrays.asList(new LayerReader[]{new YouTubeReader()}), null, R.drawable.youtube_icon, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_YouTube_desc), Commons.YOUTUBE_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.youtube_128)); 
-        allLayers.put(Commons.WEBCAM_LAYER, LayerFactory.getLayer(Commons.WEBCAM_LAYER, true, isLayerEnabledConf(Commons.WEBCAM_LAYER), false, true, Arrays.asList(new LayerReader[]{new WebcamReader()}), null, R.drawable.webcam, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Travel_Webcams_desc), "Webcams", FileManager.ClearPolicy.ONE_DAY, R.drawable.webcam_128)); 
-        allLayers.put(Commons.LM_SERVER_LAYER, LayerFactory.getLayer(Commons.LM_SERVER_LAYER, true, isLayerEnabledConf(Commons.LM_SERVER_LAYER), true, true, Arrays.asList(new LayerReader[]{new GMSWorldReader()}), null, R.drawable.globe16_new, null, R.drawable.globe24_new, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Public_desc, ConfigurationManager.GMS_WORLD), Commons.LM_SERVER_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.discover_128)); 
-        allLayers.put(Commons.ROUTES_LAYER, LayerFactory.getLayer(Commons.ROUTES_LAYER, true, isLayerEnabledConf(Commons.ROUTES_LAYER), false, false, null, null, R.drawable.route, null, R.drawable.start_marker, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Routes_desc), Commons.ROUTES_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.routes_128));
-        allLayers.put(Commons.MY_POSITION_LAYER, LayerFactory.getLayer(Commons.MY_POSITION_LAYER, true, isLayerEnabledConf(Commons.MY_POSITION_LAYER), false, false, null, null, R.drawable.mypos16, null, R.drawable.ic_maps_indicator_current_position, LAYER_LOCAL, null, Commons.MY_POSITION_LAYER, FileManager.ClearPolicy.ONE_MONTH, 0));
+    	try {
+    		LoggerUtils.debug("Searching for layer readers");
+    		String[] classes = getClassesOfPackage("com.jstakun.gms.android.landmarks");
+    		for (String className : classes) {
+    			Class<?> clazz = Class.forName(className);
+    			if (LayerReader.class.isAssignableFrom(clazz) && !Modifier.isAbstract(clazz.getModifiers())) {
+    				LayerReader reader = (LayerReader)clazz.newInstance();
+    				if (reader.isEnabled()) {
+    					LoggerUtils.debug("Found enabled layer reader " + className);
+    				} else {
+    					LoggerUtils.debug("Found disabled layer reader " + className);
+    				}
+    			}   			
+    		}
+    	} catch (Exception e) {
+    		LoggerUtils.error(e.getMessage(), e);
+    	} finally {
+    		LoggerUtils.debug("Done");
+    	}
+    	//
+    	
+    	//1. load all layer reader grouped by layer
+    	//2. sort layers by priority and add to allLayers
+    	
+    	allLayers.put(Commons.LOCAL_LAYER, LayerFactory.getLayer(Commons.LOCAL_LAYER, true, isLayerEnabledConf(Commons.LOCAL_LAYER), false, Arrays.asList(new LayerReader[]{new LandmarkDBReader()}), null, R.drawable.ok16, null, R.drawable.ok, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Phone_Landmarks_desc), Commons.LOCAL_LAYER, FileManager.ClearPolicy.ONE_MONTH, -1)); 
+        allLayers.put(Commons.FACEBOOK_LAYER, LayerFactory.getLayer(Commons.FACEBOOK_LAYER, true, isLayerEnabledConf(Commons.FACEBOOK_LAYER), true, Arrays.asList(new LayerReader[]{new FbTaggedReader(), /*new FbCheckinsReader(),*/ new FbPhotosReader(), new FbPlacesReader()}), null, R.drawable.facebook_icon, null, R.drawable.facebook_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Facebook_desc), Commons.FACEBOOK_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.facebook_128));  
+        allLayers.put(Commons.FOURSQUARE_LAYER, LayerFactory.getLayer(Commons.FOURSQUARE_LAYER, true, isLayerEnabledConf(Commons.FOURSQUARE_LAYER), true, Arrays.asList(new LayerReader[]{new FsCheckinsReader(), new FsRecommendsReader(), new FoursquareReader()}), null, R.drawable.foursquare, null, R.drawable.foursquare_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Foursquare_desc), Commons.FOURSQUARE_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.foursquare_128)); 
+        allLayers.put(Commons.YELP_LAYER, LayerFactory.getLayer(Commons.YELP_LAYER, true, isLayerEnabledConf(Commons.YELP_LAYER), false, Arrays.asList(new LayerReader[]{new YelpReader()}), null, R.drawable.yelp, null, R.drawable.yelp_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Yelp_desc), Commons.YELP_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.yelp_128));
+        allLayers.put(Commons.HOTELS_LAYER, LayerFactory.getLayer(Commons.HOTELS_LAYER, true, isLayerEnabledConf(Commons.HOTELS_LAYER), false, Arrays.asList(new LayerReader[]{new HotelsReader()}), null, R.drawable.hotel, null, R.drawable.hotel_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Hotels_Combined_desc), Commons.HOTELS_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.travel_img)); 
+        allLayers.put(Commons.GOOGLE_PLACES_LAYER, LayerFactory.getLayer(Commons.GOOGLE_PLACES_LAYER, true, isLayerEnabledConf(Commons.GOOGLE_PLACES_LAYER), true, Arrays.asList(new LayerReader[]{new GooglePlacesReader()}), null, R.drawable.google_icon, null, R.drawable.google_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Google_Places_desc), Commons.GOOGLE_PLACES_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.google_places_128)); 
+        allLayers.put(Commons.TWITTER_LAYER, LayerFactory.getLayer(Commons.TWITTER_LAYER, true, isLayerEnabledConf(Commons.TWITTER_LAYER), false, Arrays.asList(new LayerReader[]{new TwFriendsReader(), new TwitterReader()}), null, R.drawable.twitter, null, R.drawable.twitter_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Twitter_desc), Commons.TWITTER_LAYER, FileManager.ClearPolicy.ONE_WEEK, R.drawable.twitter_128)); 
+        allLayers.put(Commons.MC_ATM_LAYER, LayerFactory.getLayer(Commons.MC_ATM_LAYER, true, isLayerEnabledConf(Commons.MC_ATM_LAYER), false, Arrays.asList(new LayerReader[]{new MastercardAtmReader()}), null, R.drawable.mastercard, null, R.drawable.mastercard_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_MasterCard_ATMs_desc), Commons.MC_ATM_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.mastercard_128)); 
+        allLayers.put(Commons.OSM_ATM_LAYER, LayerFactory.getLayer(Commons.OSM_ATM_LAYER, true, isLayerEnabledConf(Commons.OSM_ATM_LAYER), false, Arrays.asList(new LayerReader[]{new OsmAtmReader()}), null, R.drawable.credit_card_16, null, R.drawable.credit_card_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_OSM_ATMs_desc), Commons.OSM_ATM_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.atm_128)); 
+        allLayers.put(Commons.OSM_TAXI_LAYER, LayerFactory.getLayer(Commons.OSM_TAXI_LAYER, true, isLayerEnabledConf(Commons.OSM_TAXI_LAYER), false, Arrays.asList(new LayerReader[]{new OsmTaxiReader()}), null, R.drawable.taxi16, null, R.drawable.taxi24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_OSM_Taxi_desc), Commons.OSM_TAXI_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.taxi128)); 
+        allLayers.put(Commons.MEETUP_LAYER, LayerFactory.getLayer(Commons.MEETUP_LAYER, true, isLayerEnabledConf(Commons.MEETUP_LAYER), false, Arrays.asList(new LayerReader[]{new MeetupReader()}), null, R.drawable.meetup, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Meetup_desc), Commons.MEETUP_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.meetup_128)); 
+        allLayers.put(Commons.EVENTFUL_LAYER, LayerFactory.getLayer(Commons.EVENTFUL_LAYER, true, isLayerEnabledConf(Commons.EVENTFUL_LAYER), false, Arrays.asList(new LayerReader[]{new EventfulReader()}), null, R.drawable.eventful, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Eventful_desc), Commons.EVENTFUL_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.eventful_128)); 
+        allLayers.put(Commons.OSM_PARKING_LAYER, LayerFactory.getLayer(Commons.OSM_PARKING_LAYER, true, isLayerEnabledConf(Commons.OSM_PARKING_LAYER), false, Arrays.asList(new LayerReader[]{new OsmParkingReader()}), null, R.drawable.parking, null, R.drawable.parking_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_OSM_Parkings_desc), Commons.OSM_PARKING_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.parking_img)); 
+        allLayers.put(Commons.FOURSQUARE_MERCHANT_LAYER, LayerFactory.getLayer(Commons.FOURSQUARE_MERCHANT_LAYER, true, isLayerEnabledConf(Commons.FOURSQUARE_MERCHANT_LAYER), true, Arrays.asList(new LayerReader[]{new FoursquareMerchantReader()}), null, R.drawable.gift, null, R.drawable.gift_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Foursquare_Merchant_desc), "Merchant by Foursquare", FileManager.ClearPolicy.ONE_YEAR, R.drawable.gift_128)); 
+        allLayers.put(Commons.GROUPON_LAYER, LayerFactory.getLayer(Commons.GROUPON_LAYER, true, isLayerEnabledConf(Commons.GROUPON_LAYER), false, Arrays.asList(new LayerReader[]{new GrouponReader()}), null, R.drawable.groupon_icon, null, R.drawable.groupon_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Groupon_desc), Commons.GROUPON_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.groupon_128)); 
+        allLayers.put(Commons.COUPONS_LAYER, LayerFactory.getLayer(Commons.COUPONS_LAYER, true, isLayerEnabledConf(Commons.COUPONS_LAYER), false, Arrays.asList(new LayerReader[]{new CouponsReader()}), null, R.drawable.dollar, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_8Coupons_desc), Commons.COUPONS_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.coupon_128)); 
+        allLayers.put(Commons.WIKIPEDIA_LAYER, LayerFactory.getLayer(Commons.WIKIPEDIA_LAYER, true, isLayerEnabledConf(Commons.WIKIPEDIA_LAYER), false, Arrays.asList(new LayerReader[]{new GeonamesReader()}), null, R.drawable.wikipedia, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Wikipedia_desc), Commons.WIKIPEDIA_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.wikipedia_128)); 
+        allLayers.put(Commons.PANORAMIO_LAYER, LayerFactory.getLayer(Commons.PANORAMIO_LAYER, true, isLayerEnabledConf(Commons.PANORAMIO_LAYER), false, Arrays.asList(new LayerReader[]{new PanoramioReader()}), null, R.drawable.panoramio, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Panoramio_desc), Commons.PANORAMIO_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.panoramio_128)); 
+        allLayers.put(Commons.FLICKR_LAYER, LayerFactory.getLayer(Commons.FLICKR_LAYER, true, isLayerEnabledConf(Commons.FLICKR_LAYER), false, Arrays.asList(new LayerReader[]{new FlickrReader()}), null, R.drawable.flickr, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Flickr_desc), Commons.FLICKR_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.flickr_128)); 
+        allLayers.put(Commons.YOUTUBE_LAYER, LayerFactory.getLayer(Commons.YOUTUBE_LAYER, true, isLayerEnabledConf(Commons.YOUTUBE_LAYER), false, Arrays.asList(new LayerReader[]{new YouTubeReader()}), null, R.drawable.youtube_icon, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_YouTube_desc), Commons.YOUTUBE_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.youtube_128)); 
+        allLayers.put(Commons.WEBCAM_LAYER, LayerFactory.getLayer(Commons.WEBCAM_LAYER, true, isLayerEnabledConf(Commons.WEBCAM_LAYER), false, Arrays.asList(new LayerReader[]{new WebcamReader()}), null, R.drawable.webcam, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Travel_Webcams_desc), "Webcams", FileManager.ClearPolicy.ONE_DAY, R.drawable.webcam_128)); 
+        allLayers.put(Commons.LM_SERVER_LAYER, LayerFactory.getLayer(Commons.LM_SERVER_LAYER, true, isLayerEnabledConf(Commons.LM_SERVER_LAYER), true, Arrays.asList(new LayerReader[]{new GMSWorldReader()}), null, R.drawable.globe16_new, null, R.drawable.globe24_new, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Public_desc, ConfigurationManager.GMS_WORLD), Commons.LM_SERVER_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.discover_128)); 
+        
+        //add this two layers manually
+        
+        allLayers.put(Commons.ROUTES_LAYER, LayerFactory.getLayer(Commons.ROUTES_LAYER, true, isLayerEnabledConf(Commons.ROUTES_LAYER), false, null, null, R.drawable.route, null, R.drawable.start_marker, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Routes_desc), Commons.ROUTES_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.routes_128));
+        allLayers.put(Commons.MY_POSITION_LAYER, LayerFactory.getLayer(Commons.MY_POSITION_LAYER, true, isLayerEnabledConf(Commons.MY_POSITION_LAYER), false, null, null, R.drawable.mypos16, null, R.drawable.ic_maps_indicator_current_position, LAYER_LOCAL, null, Commons.MY_POSITION_LAYER, FileManager.ClearPolicy.ONE_MONTH, 0));
     }
 
     public boolean isLayerEnabled(String layerName) {
@@ -239,9 +270,9 @@ public class LayerManager {
     protected void addLayer(String name, boolean extensible, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, String smallIconPath, String largeIconPath, String desc, String formatted) {
         synchronized (layers) {
             if (smallIconPath == null) {
-                layers.put(name, LayerFactory.getLayer(name, manageable, enabled, checkinable, searchable, null, null, R.drawable.custom, null, -1, LAYER_LOCAL, desc, formatted, FileManager.ClearPolicy.ONE_MONTH, 0));
+                layers.put(name, LayerFactory.getLayer(name, manageable, enabled, checkinable, null, null, R.drawable.custom, null, -1, LAYER_LOCAL, desc, formatted, FileManager.ClearPolicy.ONE_MONTH, 0));
             } else {
-                layers.put(name, LayerFactory.getLayer(name, manageable, enabled, checkinable, searchable, null, smallIconPath, -1, largeIconPath, -1, LAYER_FILESYSTEM, desc, formatted, FileManager.ClearPolicy.ONE_MONTH, 0));
+                layers.put(name, LayerFactory.getLayer(name, manageable, enabled, checkinable, null, smallIconPath, -1, largeIconPath, -1, LAYER_FILESYSTEM, desc, formatted, FileManager.ClearPolicy.ONE_MONTH, 0));
             }
         }
     }
@@ -452,9 +483,26 @@ public class LayerManager {
             }
         }
     }
+    
+    private String[] getClassesOfPackage(String packageName) {
+        ArrayList<String> classes = new ArrayList<String>();
+        try {
+        	DexFile df = new DexFile(ConfigurationManager.getInstance().getContext().getPackageCodePath());
+        	for (Enumeration<String> iter = df.entries(); iter.hasMoreElements(); ) {
+                String className = iter.nextElement();
+                if (className.contains(packageName)) {
+                	classes.add(className);
+                	//classes.add(className.substring(className.lastIndexOf(".") + 1, className.length()));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return classes.toArray(new String[classes.size()]);
+    }
 
     //DYNAMIC LAYERS
-    //
     
     private void initializeDynamicLayers() {
         String dl = ConfigurationManager.getInstance().getString(ConfigurationManager.DYNAMIC_LAYERS);
@@ -469,7 +517,7 @@ public class LayerManager {
 
                 int image = getDynamicLayerImage(layer);
 
-                Layer newLayer = LayerFactory.getLayer(layer, false, true, false, true, null, null, res, null, -1, LAYER_DYNAMIC, null, StringUtils.capitalize(layer), FileManager.ClearPolicy.ONE_MONTH, image);
+                Layer newLayer = LayerFactory.getLayer(layer, false, true, false, null, null, res, null, -1, LAYER_DYNAMIC, null, StringUtils.capitalize(layer), FileManager.ClearPolicy.ONE_MONTH, image);
                 newLayer.setKeywords(tokens);
                 dynLayers.put(layer, newLayer);
             }
@@ -522,7 +570,7 @@ public class LayerManager {
             
             int image = getDynamicLayerImage(layerName);
 
-            Layer layer = LayerFactory.getLayer(layerName, false, true, false, true, null, null, res, null, -1, LAYER_DYNAMIC, null, StringUtils.capitalize(layerName), FileManager.ClearPolicy.ONE_MONTH, image);
+            Layer layer = LayerFactory.getLayer(layerName, false, true, false, null, null, res, null, -1, LAYER_DYNAMIC, null, StringUtils.capitalize(layerName), FileManager.ClearPolicy.ONE_MONTH, image);
             layer.setKeywords(tokens);
 
             synchronized (layers) {

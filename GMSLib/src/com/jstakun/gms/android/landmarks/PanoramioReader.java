@@ -2,6 +2,7 @@ package com.jstakun.gms.android.landmarks;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.BoundingBox;
 import com.jstakun.gms.android.utils.StringUtil;
 
@@ -30,7 +31,32 @@ public class PanoramioReader extends AbstractSerialReader {
 	}
 	
 	@Override
-	protected String getLayerName() {
+	public String getLayerName(boolean formatted) {
 		return Commons.PANORAMIO_LAYER;
+	}
+
+	@Override
+	public int getDescriptionResource() {
+		return R.string.Layer_Panoramio_desc;
+	}
+
+	@Override
+	public int getSmallIconResource() {
+		return R.drawable.panoramio;
+	}
+
+	@Override
+	public int getLargeIconResource() {
+		return -1;
+	}
+
+	@Override
+	public int getImageResource() {
+		return R.drawable.panoramio_128;
+	}
+	
+	@Override
+	public int getPriority() {
+		return 13;
 	}
 }

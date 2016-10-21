@@ -9,6 +9,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.deals.CategoriesManager;
 import com.jstakun.gms.android.social.ISocialUtils;
 import com.jstakun.gms.android.social.OAuthServiceFactory;
+import com.jstakun.gms.android.ui.lib.R;
 
 /**
  *
@@ -41,7 +42,41 @@ public class FoursquareMerchantReader extends AbstractSerialReader {
 	}
 
 	@Override
-	protected String getLayerName() {
-		return Commons.FOURSQUARE_MERCHANT_LAYER;
+	public String getLayerName(boolean formatted) {
+		if (formatted) {
+			return "Merchants by Foursquare";
+		} else {
+			return Commons.FOURSQUARE_MERCHANT_LAYER;
+		}
+	}
+	
+	@Override
+	public boolean isCheckinable() {
+    	return true;
+    }
+
+	@Override
+	public int getDescriptionResource() {
+		return R.string.Layer_Foursquare_Merchant_desc;
+	}
+
+	@Override
+	public int getSmallIconResource() {
+		return R.drawable.gift;
+	}
+
+	@Override
+	public int getLargeIconResource() {
+		return R.drawable.gift_24;
+	}
+
+	@Override
+	public int getImageResource() {
+		return R.drawable.gift_128;
+	}
+	
+	@Override
+	public int getPriority() {
+		return 11;
 	}
 }

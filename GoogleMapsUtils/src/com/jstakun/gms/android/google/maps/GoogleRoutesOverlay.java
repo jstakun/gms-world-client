@@ -7,15 +7,18 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
+import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.routes.RouteRecorder;
 import com.jstakun.gms.android.routes.RoutesManager;
+import com.jstakun.gms.android.utils.MathUtils;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.location.Location;
 
 /**
  *
@@ -82,6 +85,15 @@ public class GoogleRoutesOverlay extends Overlay {
                     point1.y = point2.y;
                     //System.out.print(point1.x +  "," + point1.y + " ");
                 }
+                
+                //TODO testing
+                Location l = ConfigurationManager.getInstance().getLocation();
+        		if (l != null) {
+        			GeoPoint gp2 = new GeoPoint(MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude()));
+                    projection.toPixels(gp2, point2);
+                    path.lineTo(point2.x, point2.y);
+        		}
+        		//
 
                 canvas.drawPath(path, paint);
                 //if (routesLayerBitmap != null && !routesLayerBitmap.isRecycled()) {

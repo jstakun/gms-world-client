@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.jstakun.gms.android.config.ConfigurationManager;
+import com.jstakun.gms.android.data.FileManager;
 import com.jstakun.gms.android.utils.DistanceUtils;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
 import com.jstakun.gms.android.utils.OsUtil;
@@ -74,5 +75,19 @@ public abstract class AbstractSerialReader implements LayerReader {
     
     protected abstract String getUri();
     
-    protected abstract String getLayerName();
+    public boolean isCheckinable() {
+    	return false;
+    }
+    
+    public boolean isPrimary() {
+    	return true;
+    }
+    
+    public FileManager.ClearPolicy getClearPolicy() {
+    	return FileManager.ClearPolicy.ONE_MONTH; //this is legacy code replaced by picasso library
+    }
+    
+    public int getPriority() {
+    	return 100;
+    }
 }

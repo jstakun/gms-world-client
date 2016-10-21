@@ -15,7 +15,6 @@ public class Layer {
     private String name;
     private boolean manageable; //can you enable/disable layer
     private boolean checkinable; //is checkin allowed
-    private boolean searchable; //can you search layer
     private List<LayerReader> layerReader;
     private String smallIconPath;
     private int smallIconResource;
@@ -30,11 +29,10 @@ public class Layer {
     private FileManager.ClearPolicy clearPolicy;
     private int image;
 
-    protected Layer(String name, boolean manageable, boolean enabled, boolean checkinable, boolean searchable, List<LayerReader> layerReader, String smallIconPath, int smallIconResource, String largeIconPath, int largeIconResource, int type, String desc, String formatted, FileManager.ClearPolicy clearPolicy, int image) {
+    protected Layer(String name, boolean manageable, boolean enabled, boolean checkinable, List<LayerReader> layerReader, String smallIconPath, int smallIconResource, String largeIconPath, int largeIconResource, int type, String desc, String formatted, FileManager.ClearPolicy clearPolicy, int image) {
         this.name = name;
         this.manageable = manageable;
         this.checkinable = checkinable;
-        this.searchable = searchable;
         this.layerReader = layerReader;
         this.smallIconPath = smallIconPath;
         this.smallIconResource = smallIconResource;
@@ -64,7 +62,7 @@ public class Layer {
             }
         }
         
-        this.setClearPolicy(clearPolicy);
+        this.clearPolicy = clearPolicy;
     }
 
     public boolean isEnabled() {
@@ -123,10 +121,6 @@ public class Layer {
         return checkinable;
     }
 
-    public boolean isSearchable() {
-        return searchable;
-    }
-
     public String getDesc() {
         return desc;
     }
@@ -179,10 +173,6 @@ public class Layer {
 		return clearPolicy;
 	}
 
-	public void setClearPolicy(FileManager.ClearPolicy clearPolicy) {
-		this.clearPolicy = clearPolicy;
-	}
-	
 	public int getImage() {
 		return image;
 	}
