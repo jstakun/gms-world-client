@@ -4,6 +4,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,13 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-
-import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.DisplayMetrics;
-import dalvik.system.DexFile;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -31,6 +25,13 @@ import com.jstakun.gms.android.deals.Category;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
+
+import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.DisplayMetrics;
+import dalvik.system.DexFile;
 
 /**
  *
@@ -59,7 +60,9 @@ public class LayerManager {
     
     private LayerManager() {
     	
-    	//TODO load all layers automatically
+    	Map<String, List<LayerReader>> readers = new HashMap<String, List<LayerReader>>();
+    	
+    	//1. load all layer reader grouped by layer
     	try {
     		LoggerUtils.debug("Searching for layer readers");
     		String[] classes = getClassesOfPackage("com.jstakun.gms.android.landmarks");
@@ -69,6 +72,13 @@ public class LayerManager {
     				LayerReader reader = (LayerReader)clazz.newInstance();
     				if (reader.isEnabled()) {
     					LoggerUtils.debug("Found enabled layer reader " + className);
+    					if (readers.containsKey(reader.getLayerName(false))) {
+    						readers.get(reader.getLayerName(false)).add(reader);
+    					} else {
+    						List<LayerReader> layerReaders = new ArrayList<LayerReader>();
+    						layerReaders.add(reader);
+    						readers.put(reader.getLayerName(false), layerReaders);
+    					}
     				} else {
     					LoggerUtils.debug("Found disabled layer reader " + className);
     				}
@@ -79,13 +89,32 @@ public class LayerManager {
     	} finally {
     		LoggerUtils.debug("Done");
     	}
-    	//
     	
-    	//1. load all layer reader grouped by layer
     	//2. sort layers by priority and add to allLayers
-    	
+    	List<List<LayerReader>> entries = new ArrayList<List<LayerReader>>(); 
+    	entries.addAll(readers.values());
+    	Collections.sort(entries, new LayerReaderComparator());
+
+		//3. copy sorted layers to allLayers collection		
+		for (List<LayerReader> layerReaders : entries) {
+			LayerReader layerReader = layerReaders.get(0);
+			if (layerReaders.size() > 0) {
+				for (LayerReader lr : layerReaders) {
+					if (lr.isPrimary()) {
+						layerReader = lr;
+						break;
+					}
+				}
+			}
+			allLayers.put(layerReader.getLayerName(false), 
+					LayerFactory.getLayer(layerReader.getLayerName(false), true, isLayerEnabledConf(layerReader.getLayerName(false)), layerReader.isCheckinable(),
+							layerReaders, null, layerReader.getSmallIconResource(), null, layerReader.getLargeIconResource(), LAYER_LOCAL, 
+							Locale.getMessage(layerReader.getDescriptionResource()), layerReader.getLayerName(true), layerReader.getClearPolicy(), layerReader.getImageResource()));
+		}
+
+  	    /*
     	allLayers.put(Commons.LOCAL_LAYER, LayerFactory.getLayer(Commons.LOCAL_LAYER, true, isLayerEnabledConf(Commons.LOCAL_LAYER), false, Arrays.asList(new LayerReader[]{new LandmarkDBReader()}), null, R.drawable.ok16, null, R.drawable.ok, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Phone_Landmarks_desc), Commons.LOCAL_LAYER, FileManager.ClearPolicy.ONE_MONTH, -1)); 
-        allLayers.put(Commons.FACEBOOK_LAYER, LayerFactory.getLayer(Commons.FACEBOOK_LAYER, true, isLayerEnabledConf(Commons.FACEBOOK_LAYER), true, Arrays.asList(new LayerReader[]{new FbTaggedReader(), /*new FbCheckinsReader(),*/ new FbPhotosReader(), new FbPlacesReader()}), null, R.drawable.facebook_icon, null, R.drawable.facebook_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Facebook_desc), Commons.FACEBOOK_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.facebook_128));  
+        allLayers.put(Commons.FACEBOOK_LAYER, LayerFactory.getLayer(Commons.FACEBOOK_LAYER, true, isLayerEnabledConf(Commons.FACEBOOK_LAYER), true, Arrays.asList(new LayerReader[]{new FbTaggedReader(), new FbPhotosReader(), new FbPlacesReader()}), null, R.drawable.facebook_icon, null, R.drawable.facebook_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Facebook_desc), Commons.FACEBOOK_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.facebook_128));  
         allLayers.put(Commons.FOURSQUARE_LAYER, LayerFactory.getLayer(Commons.FOURSQUARE_LAYER, true, isLayerEnabledConf(Commons.FOURSQUARE_LAYER), true, Arrays.asList(new LayerReader[]{new FsCheckinsReader(), new FsRecommendsReader(), new FoursquareReader()}), null, R.drawable.foursquare, null, R.drawable.foursquare_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Foursquare_desc), Commons.FOURSQUARE_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.foursquare_128)); 
         allLayers.put(Commons.YELP_LAYER, LayerFactory.getLayer(Commons.YELP_LAYER, true, isLayerEnabledConf(Commons.YELP_LAYER), false, Arrays.asList(new LayerReader[]{new YelpReader()}), null, R.drawable.yelp, null, R.drawable.yelp_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Yelp_desc), Commons.YELP_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.yelp_128));
         allLayers.put(Commons.HOTELS_LAYER, LayerFactory.getLayer(Commons.HOTELS_LAYER, true, isLayerEnabledConf(Commons.HOTELS_LAYER), false, Arrays.asList(new LayerReader[]{new HotelsReader()}), null, R.drawable.hotel, null, R.drawable.hotel_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Hotels_Combined_desc), Commons.HOTELS_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.travel_img)); 
@@ -106,6 +135,7 @@ public class LayerManager {
         allLayers.put(Commons.YOUTUBE_LAYER, LayerFactory.getLayer(Commons.YOUTUBE_LAYER, true, isLayerEnabledConf(Commons.YOUTUBE_LAYER), false, Arrays.asList(new LayerReader[]{new YouTubeReader()}), null, R.drawable.youtube_icon, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_YouTube_desc), Commons.YOUTUBE_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.youtube_128)); 
         allLayers.put(Commons.WEBCAM_LAYER, LayerFactory.getLayer(Commons.WEBCAM_LAYER, true, isLayerEnabledConf(Commons.WEBCAM_LAYER), false, Arrays.asList(new LayerReader[]{new WebcamReader()}), null, R.drawable.webcam, null, -1, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Travel_Webcams_desc), "Webcams", FileManager.ClearPolicy.ONE_DAY, R.drawable.webcam_128)); 
         allLayers.put(Commons.LM_SERVER_LAYER, LayerFactory.getLayer(Commons.LM_SERVER_LAYER, true, isLayerEnabledConf(Commons.LM_SERVER_LAYER), true, Arrays.asList(new LayerReader[]{new GMSWorldReader()}), null, R.drawable.globe16_new, null, R.drawable.globe24_new, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Public_desc, ConfigurationManager.GMS_WORLD), Commons.LM_SERVER_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.discover_128)); 
+        */
         
         //add this two layers manually
         
@@ -703,5 +733,26 @@ public class LayerManager {
                 return false;
             }
         }
+    }
+    
+    private class LayerReaderComparator implements Comparator<List<LayerReader>> {
+
+		@Override
+		public int compare(List<LayerReader> first, List<LayerReader> second) {
+			return getPriority(first) - getPriority(second);
+		}
+		
+		private int getPriority(List<LayerReader> readers) {
+			int priority = readers.get(0).getPriority();
+			if (readers.size() > 0) {
+				for (LayerReader l : readers) {
+					if (l.isPrimary()) {
+						priority = l.getPriority();
+						break;
+					}
+				}
+			}
+			return priority;
+		}   	
     }
 }

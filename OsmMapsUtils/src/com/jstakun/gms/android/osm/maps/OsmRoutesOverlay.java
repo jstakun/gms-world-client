@@ -102,7 +102,7 @@ public class OsmRoutesOverlay extends Overlay {
                     Location l = ConfigurationManager.getInstance().getLocation();
                     int i = -1;
             		if (l != null) {
-            			projection.toProjectedPixels(MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude()), gp2);
+            			projection.toProjectedPixels(MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude()), gp1);
                         projection.toPixelsFromProjected(gp1, point1);
                         path.moveTo(point1.x, point1.y);
                         i = routeSize - 1;

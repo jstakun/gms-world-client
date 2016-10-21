@@ -86,15 +86,6 @@ public class GoogleRoutesOverlay extends Overlay {
                     //System.out.print(point1.x +  "," + point1.y + " ");
                 }
                 
-                //TODO testing
-                Location l = ConfigurationManager.getInstance().getLocation();
-        		if (l != null) {
-        			GeoPoint gp2 = new GeoPoint(MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude()));
-                    projection.toPixels(gp2, point2);
-                    path.lineTo(point2.x, point2.y);
-        		}
-        		//
-
                 canvas.drawPath(path, paint);
                 //if (routesLayerBitmap != null && !routesLayerBitmap.isRecycled()) {
                 //	canvas.drawBitmap(routesLayerBitmap, point1.x - (w / 2), point1.y - (h / 2), lmpaint);
@@ -105,15 +96,23 @@ public class GoogleRoutesOverlay extends Overlay {
                 routeSize = routePoints.size();
 
                 if (routeSize > 1) {
-                    ExtendedLandmark lastPoint = routePoints.get(routeSize - 1);
-                    GeoPoint gp1 = new GeoPoint(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6());
-                    projection.toPixels(gp1, point1);
-                    //canvas.drawBitmap(b, point1.x - (b.getWidth() / 2), point1.y - b.getHeight(), lmpaint);
+                    
+                	Location l = ConfigurationManager.getInstance().getLocation();
+                    int i = -1;
+                    GeoPoint gp1 = null;
+            		
+                    if (l != null) {
+            			gp1 = new GeoPoint(MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude()));          			
+                        i = routeSize - 1;
+            		} else {
+            			ExtendedLandmark lastPoint = routePoints.get(routeSize - 1);
+            			gp1 = new GeoPoint(lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6());
+            			i = routeSize - 2;
+                    }
+            		
+            		projection.toPixels(gp1, point1);
                     path.moveTo(point1.x, point1.y);
-
-                    int i = routeSize - 2;
-                    //mapView.getDrawingRect(viewportRect);
-
+            		
                     while (i >= 0) {
                         ExtendedLandmark secondPoint = routePoints.get(i);
                         GeoPoint gp2 = new GeoPoint(secondPoint.getLatitudeE6(), secondPoint.getLongitudeE6());
