@@ -98,7 +98,7 @@ public class LayerManager {
 		//3. copy sorted layers to allLayers collection		
 		for (List<LayerReader> layerReaders : entries) {
 			LayerReader layerReader = layerReaders.get(0);
-			if (layerReaders.size() > 0) {
+			if (layerReaders.size() > 1) {
 				for (LayerReader lr : layerReaders) {
 					if (lr.isPrimary()) {
 						layerReader = lr;
@@ -106,13 +106,15 @@ public class LayerManager {
 					}
 				}
 			}
-			allLayers.put(layerReader.getLayerName(false), 
-					LayerFactory.getLayer(layerReader.getLayerName(false), true, isLayerEnabledConf(layerReader.getLayerName(false)), layerReader.isCheckinable(),
+			String layerName = layerReader.getLayerName(false);
+			LoggerUtils.debug("Adding layer " + layerName);
+			allLayers.put(layerName, 
+					LayerFactory.getLayer(layerName, true, isLayerEnabledConf(layerName), layerReader.isCheckinable(),
 							layerReaders, null, layerReader.getSmallIconResource(), null, layerReader.getLargeIconResource(), LAYER_LOCAL, 
 							Locale.getMessage(layerReader.getDescriptionResource()), layerReader.getLayerName(true), layerReader.getClearPolicy(), layerReader.getImageResource()));
 		}
 
-  	    /*
+  	    /* remove
     	allLayers.put(Commons.LOCAL_LAYER, LayerFactory.getLayer(Commons.LOCAL_LAYER, true, isLayerEnabledConf(Commons.LOCAL_LAYER), false, Arrays.asList(new LayerReader[]{new LandmarkDBReader()}), null, R.drawable.ok16, null, R.drawable.ok, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Phone_Landmarks_desc), Commons.LOCAL_LAYER, FileManager.ClearPolicy.ONE_MONTH, -1)); 
         allLayers.put(Commons.FACEBOOK_LAYER, LayerFactory.getLayer(Commons.FACEBOOK_LAYER, true, isLayerEnabledConf(Commons.FACEBOOK_LAYER), true, Arrays.asList(new LayerReader[]{new FbTaggedReader(), new FbPhotosReader(), new FbPlacesReader()}), null, R.drawable.facebook_icon, null, R.drawable.facebook_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Facebook_desc), Commons.FACEBOOK_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.facebook_128));  
         allLayers.put(Commons.FOURSQUARE_LAYER, LayerFactory.getLayer(Commons.FOURSQUARE_LAYER, true, isLayerEnabledConf(Commons.FOURSQUARE_LAYER), true, Arrays.asList(new LayerReader[]{new FsCheckinsReader(), new FsRecommendsReader(), new FoursquareReader()}), null, R.drawable.foursquare, null, R.drawable.foursquare_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Foursquare_desc), Commons.FOURSQUARE_LAYER, FileManager.ClearPolicy.ONE_YEAR, R.drawable.foursquare_128)); 

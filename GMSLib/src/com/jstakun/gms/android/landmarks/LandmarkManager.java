@@ -1012,7 +1012,9 @@ public class LandmarkManager {
 
         if (layer.equals(Commons.LOCAL_LAYER)) {
             LandmarkDbDataSource db = (LandmarkDbDataSource) ConfigurationManager.getInstance().getObject("LANDMARKDB", LandmarkDbDataSource.class);
-            response = db.deleteLandmark(landmark);
+            if (db != null) {
+            	response = db.deleteLandmark(landmark);
+            }
         }
         
         return response;
