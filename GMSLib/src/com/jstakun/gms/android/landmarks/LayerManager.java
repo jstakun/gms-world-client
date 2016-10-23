@@ -65,24 +65,27 @@ public class LayerManager {
     	//1. load all layer reader grouped by layer
     	try {
     		String[] classes = getClassesOfPackage("com.jstakun.gms.android.landmarks");
-    		LoggerUtils.debug("Found " + classes.length + " layer readers");
+    		LoggerUtils.debug("Found " + classes.length + " classes in package com.jstakun.gms.android.landmarks");
     		for (String className : classes) {
     			Class<?> clazz = Class.forName(className);
     			if (LayerReader.class.isAssignableFrom(clazz) && !Modifier.isAbstract(clazz.getModifiers())) {
     				LayerReader reader = (LayerReader)clazz.newInstance();
     				if (reader.isEnabled()) {
     					LoggerUtils.debug("Layer reader " + className + " is enabled");
-    					if (readers.containsKey(reader.getLayerName(false))) {
-    						readers.get(reader.getLayerName(false)).add(reader);
+    					String layerName = reader.getLayerName(false);
+    					if (readers.containsKey(layerName)) {
+    						readers.get(layerName).add(reader);
     					} else {
     						List<LayerReader> layerReaders = new ArrayList<LayerReader>();
     						layerReaders.add(reader);
-    						readers.put(reader.getLayerName(false), layerReaders);
+    						readers.put(layerName, layerReaders);
     					}
     				} else {
     					LoggerUtils.debug("Layer reader " + className + " is disabled");
     				}
-    			}   			
+    			} else {
+    				LoggerUtils.debug("Class " + className + " is not layer reader");
+    			}
     		}
     	} catch (Exception e) {
     		LoggerUtils.error(e.getMessage(), e);
@@ -114,7 +117,7 @@ public class LayerManager {
 							Locale.getMessage(layerReader.getDescriptionResource()), layerReader.getLayerName(true), layerReader.getClearPolicy(), layerReader.getImageResource()));
 		}
 
-  	    //TODO remove
+  	    //remove
 		/*if (readers.size() < 10) {
 			allLayers.put(Commons.LOCAL_LAYER, LayerFactory.getLayer(Commons.LOCAL_LAYER, true, isLayerEnabledConf(Commons.LOCAL_LAYER), false, Arrays.asList(new LayerReader[]{new LandmarkDBReader()}), null, R.drawable.ok16, null, R.drawable.ok, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Phone_Landmarks_desc), Commons.LOCAL_LAYER, FileManager.ClearPolicy.ONE_MONTH, -1)); 
 			allLayers.put(Commons.FACEBOOK_LAYER, LayerFactory.getLayer(Commons.FACEBOOK_LAYER, true, isLayerEnabledConf(Commons.FACEBOOK_LAYER), true, Arrays.asList(new LayerReader[]{new FbTaggedReader(), new FbPhotosReader(), new FbPlacesReader()}), null, R.drawable.facebook_icon, null, R.drawable.facebook_24, LAYER_LOCAL, Locale.getMessage(R.string.Layer_Facebook_desc), Commons.FACEBOOK_LAYER, FileManager.ClearPolicy.ONE_MONTH, R.drawable.facebook_128));  
