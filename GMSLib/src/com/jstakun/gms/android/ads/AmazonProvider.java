@@ -59,7 +59,11 @@ public class AmazonProvider implements AdsProvider {
         
         adOptions.enableGeoLocation(true);
         
-        adView.loadAd(adOptions);
+        try {
+        	adView.loadAd(adOptions);
+        } catch (Exception e) {
+            LoggerUtils.error("AmazonUtils.loadAd() exception:", e);
+        }
 	}
 	
 	public void destroyAdView(Activity activity) {

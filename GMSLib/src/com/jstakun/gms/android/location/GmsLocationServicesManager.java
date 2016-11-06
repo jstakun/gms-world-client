@@ -11,6 +11,7 @@ import com.google.android.gms.location.LocationServices;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.LoggerUtils;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,8 +41,8 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		return instance;
 	}
 	
-	public void enable(String handlerName, Handler locationHandler) {
-		buildGoogleApiClient();
+	public void enable(String handlerName, Handler locationHandler, Context context) {
+		buildGoogleApiClient(context);
 		if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
 			mGoogleApiClient.connect();
 		}
@@ -68,9 +69,9 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		}
 	}
 	
-	private synchronized void buildGoogleApiClient() {
+	private synchronized void buildGoogleApiClient(Context context) {
 		if (mGoogleApiClient == null) {
-			mGoogleApiClient = new GoogleApiClient.Builder(ConfigurationManager.getInstance().getContext())
+			mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)

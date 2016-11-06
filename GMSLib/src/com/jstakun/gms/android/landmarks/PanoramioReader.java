@@ -59,4 +59,9 @@ public class PanoramioReader extends AbstractSerialReader {
 	public int getPriority() {
 		return 13;
 	}
+	
+	@Override
+	public boolean isEnabled() {
+    	return false;
+    }
 }

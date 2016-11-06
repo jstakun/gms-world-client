@@ -259,7 +259,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
     	    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
     	} else {
-    		GmsLocationServicesManager.getInstance().enable(LoadingHandler.class.getName(), loadingHandler);
+    		GmsLocationServicesManager.getInstance().enable(LoadingHandler.class.getName(), loadingHandler, this);
     	}
         
         AsyncTaskManager.getInstance().setContext(this);
@@ -729,7 +729,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    switch (requestCode) {	
 	    	case PERMISSION_ACCESS_LOCATION:
 	    		if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-	    			GmsLocationServicesManager.getInstance().enable(LoadingHandler.class.getName(), loadingHandler);
+	    			GmsLocationServicesManager.getInstance().enable(LoadingHandler.class.getName(), loadingHandler, this);
 	    			mMap.setMyLocationEnabled(true);
 	    			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 	    				loadingImage.setVisibility(View.GONE);

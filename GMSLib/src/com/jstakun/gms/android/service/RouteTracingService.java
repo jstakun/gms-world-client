@@ -82,7 +82,7 @@ public class RouteTracingService extends Service {
         	GpsDeviceFactory.initGpsDevice(this, incomingHandler);
         	GpsDeviceFactory.startDevice();
         } else {
-        	GmsLocationServicesManager.getInstance().enable(IncomingHandler.class.getName(), incomingHandler);
+        	GmsLocationServicesManager.getInstance().enable(IncomingHandler.class.getName(), incomingHandler, this);
         }
     }
     
