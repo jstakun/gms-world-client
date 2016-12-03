@@ -262,6 +262,9 @@ public class GridLayerListActivity extends Activity {
             }
         } else if (type == ACTION_DELETE) {
             //DELETE
+        	if (LandmarkManager.getInstance().getLayerSize(layerKey) > 0) {
+    			LandmarkManager.getInstance().getLandmarkStoreLayer(layerKey).clear();
+    		}
         	LandmarkManager.getInstance().deleteLayer(layerKey);
             ((ArrayAdapter<String>) gridView.getAdapter()).remove(names.remove(position));
 

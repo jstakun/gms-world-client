@@ -332,6 +332,9 @@ public class LayerListActivity extends ListActivity {
             }
         } else if (type == ACTION_DELETE) {
             //DELETE
+        	if (LandmarkManager.getInstance().getLayerSize(layerKey) > 0) {
+    			LandmarkManager.getInstance().getLandmarkStoreLayer(layerKey).clear();
+    		}
         	LandmarkManager.getInstance().deleteLayer(layerKey);
             ((ArrayAdapter<String>) getListAdapter()).remove(names.remove(position));
 

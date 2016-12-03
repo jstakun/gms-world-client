@@ -1068,8 +1068,10 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
 
     private void addRoutesOverlay(String routeName) {
         if (mapProvider == ConfigurationManager.OSM_MAPS) {
-            OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routeName, markerCluster);
-            addOverlay(routesOverlay);
+        	if (markerCluster != null) {
+        		OsmRoutesOverlay routesOverlay = new OsmRoutesOverlay((org.osmdroid.views.MapView) mapView, this, routeName, markerCluster);
+        		addOverlay(routesOverlay);
+        	}
         } else {
             GoogleRoutesOverlay routesOverlay = new GoogleRoutesOverlay(this, routeName);
             addOverlay(routesOverlay);
