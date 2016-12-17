@@ -58,7 +58,6 @@ public class GoogleRoutesOverlay {
                 pointsLatLng.add(p);
            	}
             
-        	//TODO testing
         	if (isCurrentlyRecorded) {
         		Location l = ConfigurationManager.getInstance().getLocation();
         		if (l != null) {
@@ -66,7 +65,6 @@ public class GoogleRoutesOverlay {
         		}
         		
         	}
-        	//
         	
         	//final int resourceId = R.drawable.bullet_blue; //.start_marker;
         	//mMap.addMarker(new MarkerOptions().position(pointsLatLng.get(0)).icon(BitmapDescriptorFactory.fromResource(resourceId)));

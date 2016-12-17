@@ -325,17 +325,7 @@ public class AsyncTaskManager {
     }
 
     public void executePoiFileLoadingTask(String filename, Handler handler) {
-        //TODO testing
-    	/*if (!LayerManager.getInstance().layerExists(filename)) {
-            String files_loading_msg = Locale.getMessage(R.string.Files_Background_task_loading);
-            IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Task_started, files_loading_msg));
-            LoadPoiFileTask poiLoading = new LoadPoiFileTask(handler);
-            String notificationId = createNotification(R.drawable.star24, files_loading_msg, files_loading_msg, true);
-            poiLoading.execute(filename, notificationId);
-        } else {
-        	IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Layer_exists));
-        }*/
-    	if (LayerManager.getInstance().layerExists(filename)) {
+        if (LayerManager.getInstance().layerExists(filename)) {
     		//remove layer and landmarks
     		if (LandmarkManager.getInstance().getLayerSize(filename) > 0) {
     			LandmarkManager.getInstance().getLandmarkStoreLayer(filename).clear();

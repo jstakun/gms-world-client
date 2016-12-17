@@ -98,8 +98,7 @@ public class OsmRoutesOverlay extends Overlay {
 
                 if (routeSize > 1) {
                     //viewportRect.set(projection.getScreenRect());
-                	//TODO testing
-                    Location l = ConfigurationManager.getInstance().getLocation();
+                	Location l = ConfigurationManager.getInstance().getLocation();
                     int i = -1;
             		if (l != null) {
             			projection.toProjectedPixels(MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude()), gp1);
@@ -113,8 +112,7 @@ public class OsmRoutesOverlay extends Overlay {
             			path.moveTo(point1.x, point1.y);
             			i = routeSize - 2;
             		}
-            		//
-
+            		
                     while (i >= 0) {
                         ExtendedLandmark secondPoint = routePoints.get(i);
 
