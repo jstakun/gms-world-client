@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:amazon="http://schemas.amazon.com/apk/res/android"
       package="com.jstakun.gms.android.ui.deals"
-      android:versionCode="11148"
+      android:versionCode="11149"
       android:versionName="0.8">
     <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="17"/>
     <supports-screens android:smallScreens="true"

@@ -43,7 +43,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 	
 	public void enable(String handlerName, Handler locationHandler, Context context) {
 		buildGoogleApiClient(context);
-		if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
+		if (mGoogleApiClient != null && !mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
 			mGoogleApiClient.connect();
 		}
 		if (!isEnabled) {
@@ -61,8 +61,10 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 		if (mLocationHandlers.isEmpty() && mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
 			LoggerUtils.debug("GmsLocationServicesManager removed location updates");
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-			mGoogleApiClient.disconnect();
-			mGoogleApiClient = null;
+			if (mGoogleApiClient != null) {
+				mGoogleApiClient.disconnect();
+				mGoogleApiClient = null;
+			}
 			isEnabled = false;
 		} else {
 			LoggerUtils.debug("GmsLocationServicesManager has " + mLocationHandlers.size() + " handlers");
@@ -70,7 +72,7 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 	}
 	
 	private synchronized void buildGoogleApiClient(Context context) {
-		if (mGoogleApiClient == null) {
+		if (mGoogleApiClient == null && context != null) {
 			mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)

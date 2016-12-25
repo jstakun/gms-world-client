@@ -2,6 +2,7 @@ package com.jstakun.gms.android.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -651,7 +652,7 @@ public final class ConfigurationManager {
         		}
         		
     			String app_name = Locale.getMessage(R.string.app_name);
-    			aboutMessage = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), ConfigurationManager.SERVER_URL);
+    			aboutMessage = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), Calendar.getInstance().get(Calendar.YEAR), ConfigurationManager.SERVER_URL);
     		}
     		return aboutMessage;
     	}

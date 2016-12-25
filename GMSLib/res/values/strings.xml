@@ -116,7 +116,7 @@
     <string name="pickButton">Search</string>
     <string name="countryLabel">Country</string>
     <string name="addressLabel">City or place</string>
-    <string name="Pick.location.default">Loading default location %1$s…\nIn order to search for other locations go to Menu -> Search location.</string>
+    <string name="Pick.location.default">Loading default location %1$s…\nIn order to search for other locations go to Menu -&amp;gt; Search location.</string>
     <string name="Action.canceled">Location search cancelled!</string>
     <!-- comment -->
     <string name="commentTitle">Enter your comment</string>
@@ -130,10 +130,10 @@
     <string name="listSelection">Select landmark</string>
     <string name="listLocations">Select location</string>
     <string name="foundLandmarksLow">
-         If you want to improve search results go to Menu -> Settings -> Search type
+         If you want to improve search results go to Menu -&amp;gt; Settings -&amp;gt; Search type
      </string>
     <string name="foundDealsLow">
-         If you want to improve search results go to Menu -> Settings -> Search type
+         If you want to improve search results go to Menu -&amp;gt; Settings -&amp;gt; Search type
      </string>
     <!-- Deals list -->
     <string name="searchDeals">Available deals</string>
@@ -189,7 +189,7 @@
     <string name="Http.error">Operation failed with code %1$s!</string>
     <string name="GPS.location.missing.error">I\'m still waiting for your location…</string>
     <string name="Pick.location.failed.error">Failed to find location %1$s due to: %2$s</string>
-    <string name="Login.required.error">This function is available only for logged in users! Please go to Menu -> Login and login to any social network.</string>
+    <string name="Login.required.error">This function is available only for logged in users! Please go to Menu -&amp;gt; Login and login to any social network.</string>
     <string name="Checkin.required.error">This function requires Facebook, Foursquare or Twitter login!</string>
     <string name="Checkin.layer.error">Wrong layer for check-in: %1$s</string>
     <string name="Location.send.error">Location upload failed due to %1$s</string>
@@ -221,7 +221,7 @@
     <string name="Last.update">Last update: %1$s</string>
     <string name="Location.sent">Location uploaded</string>
     <string name="Close.app.prompt">Exit Landmark Manager?</string>
-    <string name="Searching.dialog.message">Searching for: <br/><b>%1$s</b>...</string>
+    <string name="Searching.dialog.message">Searching for: <br></br><b>%1$s</b>...</string>
     <string name="Searching.dialog.message.plain">Searching for:\n%1$s...</string>
     <string name="Searching.calendar.message">Searching for landmarks on %1$s</string>
     <string name="Oauth.progress.message">Authenticating to <b>;%1$s</b>...</string>
@@ -383,7 +383,7 @@
     <!-- English only -->
     <string name="Crash.error">An unexpected error occurred. Crash report has been sent to developer and the issue will be fixed soon!</string>
     <string name="Status.bar.default">Landmark Manager</string>
-    <string name="Info.about">%1$s (R)\nVersion: %2$s-%3$d built on %4$s\nCopyright © 2010–16 GMS World\n%5$s</string>
+    <string name="Info.about">%1$s (R)\nVersion: %2$s-%3$d built on %4$s\nCopyright © 2010–%5$s GMS World\n%6$s</string>
     <string name="checkboxDodDialog">Show deal of the day at startup</string>
     <string name="Zoom.info">Zoom %1$d/%2$d</string>
     <string name="keywordDesc">Discover nearby %1$s</string>
