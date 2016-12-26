@@ -4,9 +4,6 @@ import java.lang.ref.WeakReference;
 
 import org.osmdroid.util.GeoPoint;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -558,12 +555,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                     lat = Double.parseDouble(lats);
                     lng = Double.parseDouble(lngs);                   
                     name = intent.getStringExtra("name");
-            	} else {
+            	} /*else {
             		Place place = PlaceAutocomplete.getPlace(this, intent);
             		name = place.getName().toString();
             		lat = place.getLatLng().latitude;
             		lng = place.getLatLng().longitude;
-            	}
+            	}*/
                 
                 if (lat == null || lng == null || name == null) {
                 	ExtendedLandmark defaultLocation = ConfigurationManager.getInstance().getDefaultCoordinate();
@@ -587,7 +584,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 IntentsHelper.getInstance().showInfoToast(message);
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            } /*else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             	Status status = PlaceAutocomplete.getStatus(this, intent);
                 IntentsHelper.getInstance().showInfoToast(status.getStatusMessage());
             	if (! appInitialized) {
@@ -595,7 +592,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		LatLng mapCenter = new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude());
             		initOnLocationChanged(mapCenter, 6);
             	}
-            } else if (resultCode != RESULT_CANCELED) {
+            }*/ else if (resultCode != RESULT_CANCELED) {
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } 
         } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {
@@ -1185,17 +1182,26 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
     
     private void pickPositionAction(LatLng newCenter, boolean loadLayers, boolean clearMap) {
-    	if (clearMap && markerCluster != null) {
+    	//TODO testing
+        if (clearMap && markerCluster != null) {
     		markerCluster.clearMarkers();
     	}
     	if (mMap != null) {
 	    	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(newCenter);
 	    	mMap.moveCamera(cameraUpdate);
-	    } 
-        if (loadLayers) {     	
-            IntentsHelper.getInstance().loadLayersAction(true, null, clearMap, true,
+	    } else {
+	    	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, newCenter);
+	    }
+    	if (loadLayers) {     	
+        	if (mMap != null) {
+        		IntentsHelper.getInstance().loadLayersAction(true, null, clearMap, true,
                     mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude,
                     (int)mMap.getCameraPosition().zoom, projection);
+        	} else {
+        		IntentsHelper.getInstance().loadLayersAction(true, null, clearMap, true,
+                        newCenter.latitude, newCenter.longitude,
+                        ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM), projection);
+        	}
         }
     }
     

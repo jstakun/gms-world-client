@@ -114,7 +114,7 @@
     <string name="pickButton">Szukaj</string>
     <string name="countryLabel">Kraj</string>
     <string name="addressLabel">Miasto lub miejsce</string>
-    <string name="Pick.location.default">\u0141aduj\u0119 domy\u015bln\u0105 lokalizacj\u0119 %1$s…\nW celu wyszukania innych lokalizacji kliknij Menu -&amp;gt; Szukaj lokalizacji.</string>
+    <string name="Pick.location.default">\u0141aduj\u0119 domy\u015bln\u0105 lokalizacj\u0119 %1$s…\nW celu wyszukania innych lokalizacji kliknij Menu -> Szukaj lokalizacji.</string>
     <string name="Action.canceled">Wyszukiwanie lokalizacji wstrzymane!</string>
     <!-- comment -->
     <string name="commentLabel">Tw\u00f3j komentarz:</string>
@@ -128,10 +128,10 @@
     <string name="listSelection">Wybierz miejsce</string>
     <string name="listLocations">Wybierz lokalizacj\u0119</string>
     <string name="foundLandmarksLow">
-         Je\u017celi chcesz poprawi\u0107 wyniki wyszukiwania id\u017a do Menu -&amp;gt; Ustawienia -&amp;gt; Typ wyszukiwania
+         Je\u017celi chcesz poprawi\u0107 wyniki wyszukiwania id\u017a do Menu -> Ustawienia -> Typ wyszukiwania
      </string>
     <string name="foundDealsLow">
-         Je\u017celi chcesz poprawi\u0107 wyniki wyszukiwania id\u017a do Menu -&amp;gt; Ustawienia -&amp;gt; Typ wyszukiwania
+         Je\u017celi chcesz poprawi\u0107 wyniki wyszukiwania id\u017a do Menu -> Ustawienia -> Typ wyszukiwania
      </string>
     <!-- Deals list -->
     <string name="searchDeals">Dost\u0119pne okazje</string>
@@ -160,7 +160,7 @@
     <string name="Http.error">B\u0142\u0105d po\u0142\u0105czenia %1$s!</string>
     <string name="GPS.location.missing.error">Czekam na rozpoznanie lokalizacji…</string>
     <string name="Pick.location.failed.error">Nie mog\u0119 znale\u017a\u0107 lokalizacji %1$s z powodu: %2$s</string>
-    <string name="Login.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w! Prosz\u0119 przej\u015b\u0107 do Menu -&amp;gt; Zaloguj i zalogowa\u0107 si\u0119 do dowolnej sieci spo\u0142eczeno\u015bciowej.</string>
+    <string name="Login.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w! Prosz\u0119 przej\u015b\u0107 do Menu -> Zaloguj i zalogowa\u0107 si\u0119 do dowolnej sieci spo\u0142eczeno\u015bciowej.</string>
     <string name="Checkin.required.error">Funkcja jest dost\u0119pna tylko dla zalogowanych u\u017cytkownik\u00f3w Facebook, Twitter lub Foursquare!</string>
     <string name="Checkin.layer.error">Nie mog\u0119 zameldowa\u0107 do warstwy: %1$s</string>
     <string name="Location.send.error">Nie uda\u0142o si\u0119 wys\u0142a\u0107 lokalizacji z powodu: %1$s</string>
@@ -193,7 +193,7 @@
     <string name="Last.update">Ostatnia aktualizacja: %1$s</string>
     <string name="Location.sent">Lokalizacja przes\u0142ana</string>
     <string name="Close.app.prompt">Zamkn\u0105\u0107 aplikacj\u0119?</string>
-    <string name="Searching.dialog.message">Wyszukiwanie:<br></br><b>%1$s</b>...</string>
+    <string name="Searching.dialog.message">Wyszukiwanie:<br/><b>%1$s</b>...</string>
     <string name="Searching.dialog.message.plain">Wyszukiwanie:\n%1$s...</string>
     <string name="Searching.calendar.message">Wyszukiwanie miejsc z dnia %1$s</string>
     <string name="Oauth.progress.message">Logowanie do <b>%1$s</b>...</string>

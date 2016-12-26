@@ -10,9 +10,6 @@ import org.osmdroid.api.IMyLocationOverlay;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.Commons;
@@ -866,12 +863,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                     lat = Double.parseDouble(lats);
                     lng = Double.parseDouble(lngs);                   
                     name = intent.getStringExtra("name");
-            	} else {
+            	} /*else {
             		Place place = PlaceAutocomplete.getPlace(this, intent);
             		name = place.getName().toString();
             		lat = place.getLatLng().latitude;
             		lng = place.getLatLng().longitude;
-            	}
+            	}*/
                 
                 if (lat == null || lng == null || name == null) {
                 	ExtendedLandmark defaultLocation = ConfigurationManager.getInstance().getDefaultCoordinate();
@@ -896,10 +893,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 IntentsHelper.getInstance().showInfoToast(message);
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            } /*else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             	Status status = PlaceAutocomplete.getStatus(this, intent);
                 IntentsHelper.getInstance().showInfoToast(status.getStatusMessage());
-            } else if (resultCode != RESULT_CANCELED) {
+            }*/else if (resultCode != RESULT_CANCELED) {
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } 
         } else if (requestCode == IntentsHelper.INTENT_MULTILANDMARK) {

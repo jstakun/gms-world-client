@@ -6,6 +6,9 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
@@ -51,7 +54,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     private static final int ID_DIALOG_PROGRESS = 0;
     private static final String DEFAULT_NAME = "unknown";
     private static final String NAME = "name";
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +63,6 @@ public class PickLocationActivity extends Activity implements OnClickListener {
 
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
-        //UserTracker.getInstance().startSession(this);
         UserTracker.getInstance().trackActivity(getClass().getName());
 
         if (savedInstanceState != null) {
@@ -86,31 +88,13 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         ArrayAdapter<?> adapter = ArrayAdapter.createFromResource(this, R.array.countries, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationCountrySpinner.setAdapter(adapter);
-        locationCountrySpinner.setOnItemSelectedListener(new MyOnItemSelectedListener());
         
-        String iso3Country = ConfigurationManager.getInstance().getString(ConfigurationManager.ISO3COUNTRY);
-        if (StringUtils.isEmpty(iso3Country)) {
-            iso3Country = "USA";
-        }
-        String[] iso3countryCodes = getResources().getStringArray(R.array.iso3countryCodes);
-        int selection = 0;
-
-        for (int i = 0; i < iso3countryCodes.length; i++) {
-            if (iso3countryCodes[i].equals(iso3Country)) {
-                selection = i;
-                break;
-            }
-        }
-
-        locationCountrySpinner.setSelection(selection);
-        country = (String) adapter.getItem(selection); 
         AdsUtils.loadAd(this);
 
-        pickButton.setOnClickListener(PickLocationActivity.this);
-        cancelButton.setOnClickListener(PickLocationActivity.this);
+        pickButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
 
         locationAddressText.setOnEditorActionListener(new OnEditorActionListener() {
-
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     String address = locationAddressText.getText().toString();
@@ -124,6 +108,25 @@ public class PickLocationActivity extends Activity implements OnClickListener {
                 return false;
             }
         });
+        
+        String iso3Country = ConfigurationManager.getInstance().getString(ConfigurationManager.ISO3COUNTRY);
+        if (StringUtils.isEmpty(iso3Country)) {
+            iso3Country = "USA";
+        }
+        String[] iso3countryCodes = getResources().getStringArray(R.array.iso3countryCodes);
+        int selection = 0;
+        for (int i = 0; i < iso3countryCodes.length; i++) {
+            if (iso3countryCodes[i].equals(iso3Country)) {
+                selection = i;
+                break;
+            }
+        }
+        locationCountrySpinner.setSelection(selection);
+        country = (String) adapter.getItem(selection); 
+        
+        locationCountrySpinner.setOnItemSelectedListener(new MyOnItemSelectedListener());
+        //try to show google place autocomplete activity
+        locationAddressText.setOnClickListener(this);       
     }
 
     public void onClick(View v) {
@@ -143,6 +146,9 @@ public class PickLocationActivity extends Activity implements OnClickListener {
             new PickLocationTask().execute();
         } else if (v == cancelButton) {
             cancelActivity();
+        } else if (v == locationCountrySpinner || v == locationAddressText) {
+        	//TODO blur this activity
+			IntentsHelper.getInstance().startPlaceAutocompleteActivity();	
         }
     }
 
@@ -162,8 +168,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         if (id == ID_DIALOG_PROGRESS) {
             ProgressDialog progressDialog = new ProgressDialog(this);
             if (name != null) {
-                //progressDialog.setMessage(Html.fromHtml(Locale.getMessage(R.string.Searching_dialog_message, name)));
-            	progressDialog.setMessage(Locale.getMessage(R.string.Searching_dialog_message_plain, name));
+                progressDialog.setMessage(Locale.getMessage(R.string.Searching_dialog_message_plain, name));
             } else {
                 progressDialog.setMessage(Locale.getMessage(R.string.Please_Wait));
             }
@@ -203,9 +208,14 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     @Override
     protected void onStop() {
         super.onStop();
-        //UserTracker.getInstance().stopSession(this);
     }
 
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	IntentsHelper.getInstance().setActivity(this);
+    }
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -222,6 +232,29 @@ public class PickLocationActivity extends Activity implements OnClickListener {
             return super.onOptionsItemSelected(item);
         }
     }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    	if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
+    		Intent result = new Intent();
+    		if (resultCode == RESULT_OK) {
+            	Place place = PlaceAutocomplete.getPlace(this, intent);
+        		name = place.getName().toString();
+        		lat = Double.toString(place.getLatLng().latitude);
+        		lng = Double.toString(place.getLatLng().longitude);
+        		result.putExtra("lat", lat);
+                result.putExtra("lng", lng);
+                result.putExtra("name", name);
+                setResult(RESULT_OK, result);
+            } else if (resultCode == RESULT_CANCELED) {
+            	result.putExtra("message", Locale.getMessage(R.string.Action_canceled));
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            	Status status = PlaceAutocomplete.getStatus(this, intent);
+            	result.putExtra("message", Locale.getMessage(R.string.Pick_location_failed_error, name, status.getStatusMessage()));
+            }    
+    		finish();
+    	}    
+    }
 
     private void cancelActivity() {
         Intent result = new Intent();
@@ -233,50 +266,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         setResult(RESULT_CANCELED, result);
         finish();
     }
-
-    private class PickLocationTask extends GMSAsyncTask<Void, Void, Void> {
-
-        public PickLocationTask() {
-            super(1, PickLocationTask.class.getName());
-        }
-        
-        @Override
-        protected void onPreExecute() {
-        	try {
-        		showDialog(ID_DIALOG_PROGRESS);
-        	} catch (Exception e) {
-        		LoggerUtils.error("PickLocationTask.onPreExecute() exception", e);
-            }
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            pickLocationAction();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void res) {
-            try {
-                dismissDialog(ID_DIALOG_PROGRESS);
-            } catch (Exception e) {
-                //ignore error
-            }
-            Intent result = new Intent();
-            if (lat != null && lng != null) {
-                result.putExtra("lat", lat);
-                result.putExtra("lng", lng);
-                result.putExtra("name", name);
-                setResult(RESULT_OK, result);
-            } else {
-                result.putExtra("message", message);
-                result.putExtra("name", name);
-                setResult(RESULT_CANCELED, result);
-            }
-            finish();
-        }
-    }
-
+    
     private void pickLocationAction() {
 
         HttpUtils utils = new HttpUtils();
@@ -329,12 +319,57 @@ public class PickLocationActivity extends Activity implements OnClickListener {
             }
         }
     }
+    
+    private class PickLocationTask extends GMSAsyncTask<Void, Void, Void> {
+
+        public PickLocationTask() {
+            super(1, PickLocationTask.class.getName());
+        }
+        
+        @Override
+        protected void onPreExecute() {
+        	try {
+        		showDialog(ID_DIALOG_PROGRESS);
+        	} catch (Exception e) {
+        		LoggerUtils.error("PickLocationTask.onPreExecute() exception", e);
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            pickLocationAction();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void res) {
+            try {
+                dismissDialog(ID_DIALOG_PROGRESS);
+            } catch (Exception e) {
+                //ignore error
+            }
+            Intent result = new Intent();
+            if (lat != null && lng != null) {
+                result.putExtra("lat", lat);
+                result.putExtra("lng", lng);
+                result.putExtra("name", name);
+                setResult(RESULT_OK, result);
+            } else {
+                result.putExtra("message", message);
+                result.putExtra("name", name);
+                setResult(RESULT_CANCELED, result);
+            }
+            finish();
+        }
+    }
 
     private class MyOnItemSelectedListener implements OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             country = parent.getItemAtPosition(pos).toString();
-            //System.out.println("You have selected: " + parent.getItemAtPosition(pos).toString());
+            
+            //TODO blur this activity
+			IntentsHelper.getInstance().startPlaceAutocompleteActivity();
             
             //TODO select english name
             //Configuration conf = new Configuration();

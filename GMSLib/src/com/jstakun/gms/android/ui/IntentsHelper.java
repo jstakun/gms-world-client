@@ -146,7 +146,8 @@ public final class IntentsHelper {
 
     public void startPickLocationActivity() {
     	Intent intent = null;
-    	if (isGoogleApiAvailable(activity)) {
+    	//TODO testing
+    	/*if (isGoogleApiAvailable(activity)) {
     		try {
     			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
     			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
@@ -159,10 +160,28 @@ public final class IntentsHelper {
     			LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
     			intent = new Intent(activity, PickLocationActivity.class);
     		}
-    	} else {
+    	} else {*/
     		intent = new Intent(activity, PickLocationActivity.class);
-    	}
+    	//}
     	activity.startActivityForResult(intent, INTENT_PICKLOCATION);
+    }
+    
+    public void startPlaceAutocompleteActivity() {
+    	if (isGoogleApiAvailable(activity)) {
+    		try {
+    			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+    			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
+    			.build();
+    			Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)//.MODE_OVERLAY)//.MODE_FULLSCREEN)
+    			.setFilter(typeFilter)
+    			.build(activity);   			
+    			showInfoToast(Locale.getMessage(R.string.listLocations));
+    			activity.startActivityForResult(intent, INTENT_PICKLOCATION);
+    		} catch (Exception e) {
+    			LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
+    			
+    		}
+    	} 
     }
 
     public void startSettingsActivity(Class<?> settingsActivityClass) {
