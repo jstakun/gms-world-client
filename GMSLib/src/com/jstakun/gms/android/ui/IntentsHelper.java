@@ -166,7 +166,7 @@ public final class IntentsHelper {
     	activity.startActivityForResult(intent, INTENT_PICKLOCATION);
     }
     
-    public void startPlaceAutocompleteActivity() {
+    public void startPlaceAutocompleteActivity(int requestCode) {
     	if (isGoogleApiAvailable(activity)) {
     		try {
     			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
@@ -175,11 +175,10 @@ public final class IntentsHelper {
     			Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)//.MODE_OVERLAY)//.MODE_FULLSCREEN)
     			.setFilter(typeFilter)
     			.build(activity);   			
+    			activity.startActivityForResult(intent, requestCode);
     			showInfoToast(Locale.getMessage(R.string.listLocations));
-    			activity.startActivityForResult(intent, INTENT_PICKLOCATION);
     		} catch (Exception e) {
-    			LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
-    			
+    			LoggerUtils.error("IntentsHelper.startPlaceAutocompleteActivity() exception:", e); 			
     		}
     	} 
     }

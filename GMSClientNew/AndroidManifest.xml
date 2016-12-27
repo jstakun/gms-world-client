@@ -65,7 +65,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
-        <activity android:name=".GMSClient3MainActivity" android:label="@string/app_name" android:theme="@style/AppTheme" 
+        <activity android:name=".GMSClient3MainActivity" android:label="@string/app_name" android:theme="@style/AppTheme" android:screenOrientation="sensor"
                   android:launchMode="singleTop" android:permission="com.jstakun.gms.android.permission.ACTIVITY">
              <meta-data android:name="android.app.default_searchable" android:value=".GMSSearchActivity"/>
         </activity>

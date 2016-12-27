@@ -47,20 +47,21 @@ import android.widget.TextView.OnEditorActionListener;
  */
 public class PickLocationActivity extends Activity implements OnClickListener {
 
+	private static final int ID_DIALOG_PROGRESS = 0;
+    private static final String DEFAULT_NAME = "unknown";
+    private static final String NAME = "name";
+    
     private EditText locationAddressText;
     private View pickButton, cancelButton, loading, form;
     private Spinner locationCountrySpinner;
     private String country, lat, lng, name, message;
-    private static final int ID_DIALOG_PROGRESS = 0;
-    private static final String DEFAULT_NAME = "unknown";
-    private static final String NAME = "name";
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.pickMyPos);
         setContentView(R.layout.picklocation);
-
+        
         ActionBarHelper.setDisplayHomeAsUpEnabled(this);
 
         UserTracker.getInstance().trackActivity(getClass().getName());
@@ -125,8 +126,19 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         country = (String) adapter.getItem(selection); 
         
         locationCountrySpinner.setOnItemSelectedListener(new MyOnItemSelectedListener());
+        
         //try to show google place autocomplete activity
-        locationAddressText.setOnClickListener(this);       
+        /*locationAddressText.setOnClickListener(this);  
+        
+        locationCountrySpinner.setOnTouchListener(new OnTouchListener() {
+        	@Override
+            public boolean onTouch(View v, MotionEvent event) {
+        		if (event.getAction() == MotionEvent.ACTION_UP) { //.ACTION_DOWN) {
+        			IntentsHelper.getInstance().startPlaceAutocompleteActivity();      			
+        		} 
+        		return false;
+        	}
+        });*/        
     }
 
     public void onClick(View v) {
@@ -146,15 +158,13 @@ public class PickLocationActivity extends Activity implements OnClickListener {
             new PickLocationTask().execute();
         } else if (v == cancelButton) {
             cancelActivity();
-        } else if (v == locationCountrySpinner || v == locationAddressText) {
-        	//TODO blur this activity
-			IntentsHelper.getInstance().startPlaceAutocompleteActivity();	
-        }
+        } //else if (v == locationCountrySpinner || v == locationAddressText) {
+        	//IntentsHelper.getInstance().startPlaceAutocompleteActivity();	
+        //}
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //System.out.println("Key pressed in activity: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             cancelActivity();
             return true;
@@ -213,12 +223,16 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     @Override
     public void onResume() {
     	super.onResume();
+    	LoggerUtils.debug("PickLocationActivity.onResume() "  + hashCode());
     	IntentsHelper.getInstance().setActivity(this);
+    	IntentsHelper.getInstance().startPlaceAutocompleteActivity(hashCode());  
     }
     
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+    	super.onDestroy();
+    	LoggerUtils.debug("PickLocationActivity.onDestroy() " + hashCode());
+    	finishActivity(hashCode());
         AdsUtils.destroyAdView(this);
     }
 
@@ -235,25 +249,29 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    	if (requestCode == IntentsHelper.INTENT_PICKLOCATION) {
-    		Intent result = new Intent();
+    	LoggerUtils.debug("PickLocationActivity.onActivityResult() " + hashCode());
+    	if (requestCode == hashCode()) {
     		if (resultCode == RESULT_OK) {
             	Place place = PlaceAutocomplete.getPlace(this, intent);
         		name = place.getName().toString();
         		lat = Double.toString(place.getLatLng().latitude);
         		lng = Double.toString(place.getLatLng().longitude);
+        		Intent result = new Intent();
         		result.putExtra("lat", lat);
                 result.putExtra("lng", lng);
                 result.putExtra("name", name);
                 setResult(RESULT_OK, result);
+                finish();
             } else if (resultCode == RESULT_CANCELED) {
-            	result.putExtra("message", Locale.getMessage(R.string.Action_canceled));
+            	cancelActivity();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             	Status status = PlaceAutocomplete.getStatus(this, intent);
-            	result.putExtra("message", Locale.getMessage(R.string.Pick_location_failed_error, name, status.getStatusMessage()));
+            	Intent result = new Intent();
+        		result.putExtra("message", Locale.getMessage(R.string.Pick_location_failed_error, name, status.getStatusMessage()));
+            	setResult(RESULT_CANCELED, result);
+                finish();
             }    
-    		finish();
-    	}    
+    	} 
     }
 
     private void cancelActivity() {
@@ -367,10 +385,6 @@ public class PickLocationActivity extends Activity implements OnClickListener {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             country = parent.getItemAtPosition(pos).toString();
-            
-            //TODO blur this activity
-			IntentsHelper.getInstance().startPlaceAutocompleteActivity();
-            
             //TODO select english name
             //Configuration conf = new Configuration();
             //conf.setToDefaults();   // That will set conf.locale to null (current locale)
@@ -378,6 +392,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
             //Resources resources = new Resources(getAssets(), null, conf);
             //String[] countries = resources.getStringArray(R.array.countries);
             //country = countries[pos];           
+        	LoggerUtils.debug("Setting pick location activity country value to " + country);
         }
 
         public void onNothingSelected(AdapterView<?> parent) {
