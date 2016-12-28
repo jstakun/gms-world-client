@@ -8,9 +8,6 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
 import org.osmdroid.api.IMyLocationOverlay;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -886,12 +883,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                     lat = Double.parseDouble(lats);
                     lng = Double.parseDouble(lngs);                   
                     name = intent.getStringExtra("name");
-            	} else {
-            		Place place = PlaceAutocomplete.getPlace(this, intent);
-            		name = place.getName().toString();
-            		lat = place.getLatLng().latitude;
-            		lng = place.getLatLng().longitude;
-            	}
+            	} 
                 
                 if (lat == null || lng == null || name == null) {
                 	ExtendedLandmark defaultLocation = ConfigurationManager.getInstance().getDefaultCoordinate();
@@ -915,9 +907,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 IntentsHelper.getInstance().showInfoToast(message);
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-            	Status status = PlaceAutocomplete.getStatus(this, intent);
-                IntentsHelper.getInstance().showInfoToast(status.getStatusMessage());
             } else if (resultCode != RESULT_CANCELED) {
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } 

@@ -59,6 +59,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LoggerUtils.debug("PickLocationActivity.onCreate() " + hashCode());
         setTitle(R.string.pickMyPos);
         setContentView(R.layout.picklocation);
         
@@ -139,6 +140,9 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         		return false;
         	}
         });*/        
+        
+        IntentsHelper.getInstance().setActivity(this);
+    	IntentsHelper.getInstance().startPlaceAutocompleteActivity(hashCode());  
     }
 
     public void onClick(View v) {
@@ -224,8 +228,6 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     public void onResume() {
     	super.onResume();
     	LoggerUtils.debug("PickLocationActivity.onResume() "  + hashCode());
-    	IntentsHelper.getInstance().setActivity(this);
-    	IntentsHelper.getInstance().startPlaceAutocompleteActivity(hashCode());  
     }
     
     @Override
@@ -252,6 +254,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
     	LoggerUtils.debug("PickLocationActivity.onActivityResult() " + hashCode());
     	if (requestCode == hashCode()) {
     		if (resultCode == RESULT_OK) {
+    			//LoggerUtils.debug("PickLocationActivity.onActivityResult() ok " + hashCode());
             	Place place = PlaceAutocomplete.getPlace(this, intent);
         		name = place.getName().toString();
         		lat = Double.toString(place.getLatLng().latitude);
@@ -263,15 +266,19 @@ public class PickLocationActivity extends Activity implements OnClickListener {
                 setResult(RESULT_OK, result);
                 finish();
             } else if (resultCode == RESULT_CANCELED) {
+            	//LoggerUtils.debug("PickLocationActivity.onActivityResult() canceled " + hashCode());
             	cancelActivity();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            	//LoggerUtils.debug("PickLocationActivity.onActivityResult() error " + hashCode());
             	Status status = PlaceAutocomplete.getStatus(this, intent);
             	Intent result = new Intent();
         		result.putExtra("message", Locale.getMessage(R.string.Pick_location_failed_error, name, status.getStatusMessage()));
             	setResult(RESULT_CANCELED, result);
                 finish();
             }    
-    	} 
+    	} //else {
+    	//	LoggerUtils.debug("PickLocationActivity.onActivityResult() old hashcode " + requestCode);
+    	//}
     }
 
     private void cancelActivity() {

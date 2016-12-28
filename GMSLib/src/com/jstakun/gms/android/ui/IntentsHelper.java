@@ -145,24 +145,7 @@ public final class IntentsHelper {
     }
 
     public void startPickLocationActivity() {
-    	Intent intent = null;
-    	//TODO testing
-    	/*if (isGoogleApiAvailable(activity)) {
-    		try {
-    			AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-    			.setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE) //.TYPE_FILTER_NONE) //everything
-    			.build();
-    			intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)//.MODE_FULLSCREEN)
-    			.setFilter(typeFilter)
-    			.build(activity);   			
-    			showInfoToast(Locale.getMessage(R.string.listLocations));
-    		} catch (Exception e) {
-    			LoggerUtils.error("Intents.startPickLocationActivity() exception:", e);
-    			intent = new Intent(activity, PickLocationActivity.class);
-    		}
-    	} else {*/
-    		intent = new Intent(activity, PickLocationActivity.class);
-    	//}
+    	Intent intent = new Intent(activity, PickLocationActivity.class);
     	activity.startActivityForResult(intent, INTENT_PICKLOCATION);
     }
     

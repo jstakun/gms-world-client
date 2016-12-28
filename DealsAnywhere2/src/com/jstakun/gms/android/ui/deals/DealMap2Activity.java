@@ -2,9 +2,6 @@ package com.jstakun.gms.android.ui.deals;
 
 import java.lang.ref.WeakReference;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -401,12 +398,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             		lat = intent.getDoubleExtra("lat", -200d);
                     lng = intent.getDoubleExtra("lng", -200d);
                     name = intent.getStringExtra("name");
-            	} else {
-            		Place place = PlaceAutocomplete.getPlace(this, intent);
-            		name = place.getName().toString();
-            		lat = place.getLatLng().latitude;
-            		lng = place.getLatLng().longitude;
-            	}
+            	} 
+                
                 if (lat != null && lng != null && name != null && lat > -200d && lng > -200d) { 
                 	GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
                 	if (!appInitialized) {
@@ -427,9 +420,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             } else if (resultCode == RESULT_CANCELED && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 IntentsHelper.getInstance().showInfoToast(message);
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-            	Status status = PlaceAutocomplete.getStatus(this, intent);
-                IntentsHelper.getInstance().showInfoToast(status.getStatusMessage());
             } else if (resultCode != RESULT_CANCELED) {
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } 

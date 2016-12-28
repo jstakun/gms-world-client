@@ -2,9 +2,6 @@ package com.jstakun.gms.android.ui.deals;
 
 import java.lang.ref.WeakReference;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -600,7 +597,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 pickPositionAction(location, false, false);
             }
         } else if (forceToShow) {
-            //System.out.println("recommended == null");
             IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.noDodAvailable));
         } //else {
         //comment out
@@ -618,11 +614,19 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     	if (mMap != null) {
 	    	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(newCenter);
 	    	mMap.moveCamera(cameraUpdate);
-	    } 
+	    } else {
+	    	ConfigurationManager.getInstance().putObject(ConfigurationManager.MAP_CENTER, newCenter);
+	    }
         if (loadLayers) {     	
-            IntentsHelper.getInstance().loadLayersAction(true, null, clearMap, false,
+        	if (mMap != null) {
+        		IntentsHelper.getInstance().loadLayersAction(true, null, clearMap, false,
                     mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude,
                     (int)mMap.getCameraPosition().zoom, projection);
+        	} else {
+        		IntentsHelper.getInstance().loadLayersAction(true, null, clearMap, true,
+                        newCenter.latitude, newCenter.longitude,
+                        ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM), projection);
+        	}	
         }
     }
     
@@ -688,12 +692,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                     lat = Double.parseDouble(lats);
                     lng = Double.parseDouble(lngs);                   
                     name = intent.getStringExtra("name");
-            	} else {
-            		Place place = PlaceAutocomplete.getPlace(this, intent);
-            		name = place.getName().toString();
-            		lat = place.getLatLng().latitude;
-            		lng = place.getLatLng().longitude;
-            	}
+            	} 
                 
                 if (lat == null || lng == null || name == null) {
                 	ExtendedLandmark defaultLocation = ConfigurationManager.getInstance().getDefaultCoordinate();
@@ -715,13 +714,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 IntentsHelper.getInstance().showInfoToast(message);
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-            	Status status = PlaceAutocomplete.getStatus(this, intent);
-                IntentsHelper.getInstance().showInfoToast(status.getStatusMessage());
-            	if (! appInitialized) {
-            		ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
-                    initOnLocationChanged(new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()), 6);
-            	}
             } else if (resultCode != RESULT_CANCELED) {
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.GPS_location_missing_error));
             } 
