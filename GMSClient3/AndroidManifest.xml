@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.jstakun.gms.android.ui"
-      android:versionCode="03149"
+      android:versionCode="03150"
       android:versionName="2.0.8">
     <uses-sdk android:minSdkVersion="3" 
         	  android:targetSdkVersion="23"/>
@@ -117,11 +117,10 @@
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
         </activity>
         
-        <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider"/>
+        <provider android:authorities="com.jstakun.gms.android.landmarks" android:name=".LandmarksSuggestionProvider" android:exported="false"/>
         
         <receiver android:name="com.jstakun.gms.android.service.GMSScheduleReceiver">
             <intent-filter>
-                <action android:name="com.jstakun.gms.android.autocheckinbroadcast" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>

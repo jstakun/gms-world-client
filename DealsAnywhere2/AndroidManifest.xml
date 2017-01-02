@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.jstakun.gms.android.ui.deals"
-      android:versionCode="03149"
+      android:versionCode="03150"
       android:versionName="0.8">
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="23"/>
     <supports-screens android:smallScreens="true"
@@ -83,12 +83,14 @@
           <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
         </activity>
         
-        <provider android:authorities="com.jstakun.gms.android.deals" android:name="com.jstakun.gms.android.ui.deals.DealsSuggestionProvider"/>
+        <provider android:authorities="com.jstakun.gms.android.deals" android:name="com.jstakun.gms.android.ui.deals.DealsSuggestionProvider" android:exported="false"/>
+  		
   		<receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver" android:enabled="true">
          	<intent-filter>
              	<action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
          	</intent-filter>
      	</receiver>
+     	
      	<service android:name="com.google.android.gms.analytics.AnalyticsService" android:enabled="true" android:exported="false"/>
   		
   		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
