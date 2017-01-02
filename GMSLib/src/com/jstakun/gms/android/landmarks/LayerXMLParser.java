@@ -105,7 +105,6 @@ public class LayerXMLParser {
                 tags.removeElement(name);
                 if (LAYER_ELEMENT.equals(name))
                 {
-                   boolean searchable = true;
                    List<LayerReader> layerReader = new ArrayList<LayerReader>();
                    layerReader.add(new GMSWorldReader());
                    return LayerFactory.getLayer(lname, manageable, enabled, checkinable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, null, lname, FileManager.ClearPolicy.ONE_DAY, 0);

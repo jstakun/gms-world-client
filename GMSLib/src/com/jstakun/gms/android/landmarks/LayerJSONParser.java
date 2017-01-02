@@ -82,8 +82,7 @@ public class LayerJSONParser {
             if (layer.getBoolean("isEmpty")) {
                 excluded.add(lname);
             }
-            boolean searchable = true;
-
+            
             List<LayerReader> layerReader = new ArrayList<LayerReader>();
             layerReader.add(new GMSWorldReader());
             Layer l = LayerFactory.getLayer(lname, manageable, enabled, checkinable, layerReader, icon_uri, -1, null, -1, LayerManager.LAYER_EXTERNAL, desc, formatted, FileManager.ClearPolicy.ONE_DAY, 0);

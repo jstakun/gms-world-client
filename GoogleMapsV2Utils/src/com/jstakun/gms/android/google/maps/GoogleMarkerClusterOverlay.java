@@ -204,10 +204,12 @@ public class GoogleMarkerClusterOverlay implements ClusterManager.OnClusterClick
        			frame = IconCache.getInstance().getLayerBitmap(icon, landmark.getLayer(), color, !isMyPosLayer, mDisplayMetrics);
     		} 
 			
-			try {
-				markerOptions.icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable)frame).getBitmap()));
-			} catch (Exception e) {
-				LoggerUtils.error("Unable to load bitmap for layer " + marker.getRelatedObject().getLayer(), e);
+			if (frame != null) {
+				try {
+					markerOptions.icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable)frame).getBitmap()));
+				} catch (Exception e) {
+					LoggerUtils.error("Unable to load bitmap for layer " + marker.getRelatedObject().getLayer(), e);
+				}
 			}
 	    }
 		

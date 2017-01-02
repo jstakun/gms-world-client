@@ -1182,8 +1182,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
     
     private void pickPositionAction(LatLng newCenter, boolean loadLayers, boolean clearMap) {
-    	//TODO testing
-        if (clearMap && markerCluster != null) {
+    	if (clearMap && markerCluster != null) {
     		markerCluster.clearMarkers();
     	}
     	if (mMap != null) {

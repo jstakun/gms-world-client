@@ -35,15 +35,15 @@ public class OAuthServiceFactory {
     
     public static String getOAuthCallback(String service) {
     	if (service.equals(Commons.LINKEDIN)) {
-    		return ConfigurationManager.SSL_SERVER_URL + "lnauth";
+    		return ConfigurationManager.getInstance().getSecuredServerUrl() + "lnauth";
     	} else if (service.equals(Commons.TWITTER)) {
-    		return ConfigurationManager.SERVER_URL + "twauth";
+    		return ConfigurationManager.getInstance().getSecuredServerUrl() + "twauth";
     	} else if (service.equals(Commons.GOOGLE)) { 
-    		return ConfigurationManager.SSL_SERVER_URL + "glauth";
+    		return ConfigurationManager.getInstance().getSecuredServerUrl() + "glauth";
     	} else if (service.equals(Commons.FOURSQUARE)) {
-    		return ConfigurationManager.SSL_SERVER_URL + "fsauth";
+    		return ConfigurationManager.getInstance().getSecuredServerUrl() + "fsauth";
     	} else if (service.equals(Commons.FACEBOOK)) {
-    		return ConfigurationManager.SSL_SERVER_URL + "fbauth";
+    		return ConfigurationManager.getInstance().getSecuredServerUrl() + "fbauth";
     	}
     	return null;
     }

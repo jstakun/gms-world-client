@@ -132,14 +132,14 @@ public final class ConfigurationManager {
     private static final String DISABLED = "-1";
     public static final String LAYER_SEPARATOR = "-=+=-";
     
-    public static final String SERVER_HOST = "gms-world.appspot.com";
     public static final String SERVER_URL = "http://www.gms-world.net/";
-    public static final String SSL_SERVER_URL = "https://" + SERVER_HOST + "/";
+    private static final String SSL_SERVER_URL = "https://www.gms-world.net/";
     private static final String SSL_RHCLOUD_URL = "https://landmarks-gmsworld.rhcloud.com/";
-    public static final String SHOW_LANDMARK_URL = SERVER_URL + "showLandmark/";
     public static final String BITLY_URL = "http://bit.ly/";
+    public static final String SHOW_LANDMARK_URL = SERVER_URL + "showLandmark/";
     public static final String REGISTER_URL = SERVER_URL + "m/register.jsp";
     public static final String SERVICES_SUFFIX = "s/";
+    
     private static final String SSL_SERVER_SERVICES_URL = SSL_SERVER_URL + SERVICES_SUFFIX;
     private static final String SSL_RHCLOUD_SERVICES_URL = SSL_RHCLOUD_URL + SERVICES_SUFFIX;
     public static final String CRASH_REPORT_URL = SSL_SERVER_SERVICES_URL + "crashReport";
@@ -160,8 +160,6 @@ public final class ConfigurationManager {
     public static final int DA = 1;
     public static final int ROUTE_WALK = 2;
     public static final int ROUTE_BICYCLE = 1;
-    
-    //private static final int NETWORK_NONE = 2;
     
     //User Manager
     public static final String GMS_USERNAME = "gmsUsername";
