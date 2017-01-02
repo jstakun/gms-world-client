@@ -1,8 +1,17 @@
+11150
+
+Modify client to use https://www.gms-world.net - done
+Renew mc certificate - done
+Removed panoramio layer due o api shutdown on 4th Nov - done
+Add layers dynamically to allLayers map in com.jstakun.gms.android.landmarks.LayerManager constructor - done
+Draw current route to configurationmanager.getinstance.getlocation() as last point - done
+Place autocomplete activity moved to pick location activity - done
+
 11148
 
 Add taxi layer - done
-freebase api removed - done
-overpass api replaced xapi - done
+Freebase api removed - done
+Overpass api replaced xapi - done
 
 11147
 

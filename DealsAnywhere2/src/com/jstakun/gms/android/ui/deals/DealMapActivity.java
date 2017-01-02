@@ -627,7 +627,7 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
 
             if (loadLayers && !isVisible) {
                 //mapController.setCenter(g);
-                IntentsHelper.getInstance().loadLayersAction(true, null, clearLandmarks, false,MathUtils.coordIntToDouble(g.getLatitudeE6()),
+                IntentsHelper.getInstance().loadLayersAction(true, null, clearLandmarks, false, MathUtils.coordIntToDouble(g.getLatitudeE6()),
                         MathUtils.coordIntToDouble(g.getLongitudeE6()), mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));
             }
         } else {
