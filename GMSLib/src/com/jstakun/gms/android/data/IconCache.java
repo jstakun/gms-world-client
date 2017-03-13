@@ -394,7 +394,10 @@ public class IconCache {
 
     public synchronized void clearAll() {
     	for (int i=0;i<loadingTasks.size();i++) {
-    		loadingTasks.get(images.keyAt(i)).cancel(true);
+    		GMSAsyncTask<?,?,?> task = loadingTasks.get(images.keyAt(i));
+    		if (task != null) {
+    			task.cancel(true);
+    		}
     	}
     	loadingTasks.clear();
     	
