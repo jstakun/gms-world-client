@@ -121,12 +121,14 @@ public class FilesActivity extends AbstractLandmarkList {
             close(currentPos, "load");
         } else if (menuItemIndex == ACTION_SHARE) { 
         	Uri uri = null;
+        	String filename = files.get(currentPos).getName();
         	if (type == ROUTES) {
-        		uri = Uri.fromFile(FileManager.getInstance().getRouteFile(files.get(currentPos).getName()));
+        		uri = Uri.fromFile(FileManager.getInstance().getRouteFile(filename));
         	} else if (type == FILES) {
-        		uri = Uri.fromFile(FileManager.getInstance().getPoiFile(files.get(currentPos).getName()));
+        		uri = Uri.fromFile(FileManager.getInstance().getPoiFile(filename));
         	}
         	if (uri != null) {
+        		AsyncTaskManager.getInstance().executeUploadRouteTask(filename);
         		IntentsHelper.getInstance().shareFileAction(uri, type);
         	} else {
         		IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Unexpected_error));

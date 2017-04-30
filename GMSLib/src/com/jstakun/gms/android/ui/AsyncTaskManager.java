@@ -3,11 +3,15 @@ package com.jstakun.gms.android.ui;
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.jstakun.gms.android.config.Commons;
 import com.jstakun.gms.android.config.ConfigurationManager;
@@ -257,6 +261,85 @@ public class AsyncTaskManager {
             }
 
             return Integer.toString(routePoints.size());
+        }
+    }
+    
+    public void executeUploadRouteTask(String filename) {
+        UploadRouteTask routeLoading = new UploadRouteTask();
+        routeLoading.execute(filename, "-1");
+    }
+    
+    private class UploadRouteTask extends GenericTask {
+
+    	private HttpUtils utils = new HttpUtils();
+    	
+        @Override
+        protected String doInBackground(String... fileData) {
+            super.doInBackground(fileData);
+            List<ExtendedLandmark> routePoints = new ArrayList<ExtendedLandmark>();
+            KMLParser parser = new KMLParser();
+
+            try {
+                parser.parse(FileManager.getInstance().getRoutesFolderPath(), filename, routePoints, false, Commons.ROUTES_LAYER, this);
+                if (!isCancelled() && routePoints.size() > 0) {
+                    //TODO upload route to server
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("route", routeToGeoJson(routePoints, filename, parser.getDescription()));
+                    String url = ConfigurationManager.getInstance().getServerUrl() + "routeProvider";
+                    String response = utils.sendPostRequest(url, params, true);
+                    int responseCode = utils.getResponseCode(url);
+                    if (responseCode != HttpURLConnection.HTTP_OK) {
+                    	LoggerUtils.error("Received server response " + responseCode + ": " + response);
+                    }
+                }
+            } catch (Exception ex) {
+                LoggerUtils.error("UploadRouteTask.callDoInBackground exception", ex);
+            }
+
+            return Integer.toString(routePoints.size());
+        }
+        
+        private String routeToGeoJson(List<ExtendedLandmark> routePoints, String filename, String description) throws JSONException {
+        	JSONObject fc = new JSONObject();
+        	fc.put("_id", filename);
+        	fc.put("type", "FeatureCollection");
+        	
+        	JSONObject route = new JSONObject();
+        	route.put("type", "Feature");
+        	
+        	JSONObject properties = new JSONObject();
+        	properties.put("name", filename);
+        	properties.put("description", description);
+        	route.put("properties", properties);
+        	
+        	JSONObject geometry = new JSONObject();
+        	geometry.put("type", "LineString");
+        	
+        	JSONArray coords = new JSONArray();
+        	
+        	for (ExtendedLandmark point : routePoints) {
+        		coords.put(new JSONArray().put(point.getQualifiedCoordinates().getLatitude()).put(point.getQualifiedCoordinates().getLongitude()));
+        	}
+        	
+        	geometry.put("coordinates", coords);
+        	route.put("geometry", geometry);
+        	
+        	JSONArray f = new JSONArray();
+        	f.put(route);
+        	
+        	fc.put("features", f);
+        	
+        	return fc.toString();
+        }
+        
+        @Override
+        protected void onPostExecute(String res) {
+            super.onPostExecute(res);
+            if (res.equals("0")) {
+            	LoggerUtils.error("Failed to upload route file to server!");
+            } else {
+            	LoggerUtils.debug("Upladed route file to server successfully!");
+            }
         }
     }
 
