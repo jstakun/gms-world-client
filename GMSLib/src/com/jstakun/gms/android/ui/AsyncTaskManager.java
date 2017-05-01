@@ -284,7 +284,7 @@ public class AsyncTaskManager {
                 if (!isCancelled() && routePoints.size() > 0) {
                     //TODO upload route to server
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("route", routeToGeoJson(routePoints, filename, parser.getDescription()));
+                    params.put("route", routeToGeoJson(routePoints, filename, parser.getDescription(), parser.getCreationDate()));
                     String url = ConfigurationManager.getInstance().getServerUrl() + "routeProvider";
                     String response = utils.sendPostRequest(url, params, true);
                     int responseCode = utils.getResponseCode(url);
@@ -299,7 +299,7 @@ public class AsyncTaskManager {
             return Integer.toString(routePoints.size());
         }
         
-        private String routeToGeoJson(List<ExtendedLandmark> routePoints, String filename, String description) throws JSONException {
+        private String routeToGeoJson(List<ExtendedLandmark> routePoints, String filename, String description, long creationDate) throws JSONException {
         	JSONObject fc = new JSONObject();
         	fc.put("_id", filename);
         	fc.put("type", "FeatureCollection");
@@ -310,6 +310,15 @@ public class AsyncTaskManager {
         	JSONObject properties = new JSONObject();
         	properties.put("name", filename);
         	properties.put("description", description);
+        	
+        	String username = ConfigurationManager.getUserManager().getLoggedInUsername();
+        	if (username == null) {
+        		username = "anonymous";
+        	}
+        	properties.put("username", username);
+        	properties.put("uploadDate", System.currentTimeMillis());
+        	properties.put("creationDate", creationDate);
+        	
         	route.put("properties", properties);
         	
         	JSONObject geometry = new JSONObject();

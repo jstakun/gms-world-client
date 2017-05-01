@@ -410,6 +410,10 @@ public class KMLParser {
         return description;
     }
     
+    public long getCreationDate() {
+        return creationDate;
+    }
+    
     private String getUtf8(XmlPullParser parser) throws UnsupportedEncodingException {
     	String enc = parser.getInputEncoding(); 
     	String text = parser.getText();
