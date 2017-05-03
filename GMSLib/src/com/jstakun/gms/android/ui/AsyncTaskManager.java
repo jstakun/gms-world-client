@@ -284,7 +284,7 @@ public class AsyncTaskManager {
                 if (!isCancelled() && routePoints.size() > 0) {
                     //TODO upload route to server
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("route", routeToGeoJson(routePoints, filename, parser.getDescription(), parser.getCreationDate()));
+                    params.put("route", routeToGeoJson(routePoints, filename.replace(' ', '_'), parser.getDescription(), parser.getCreationDate()));
                     String url = ConfigurationManager.getInstance().getServerUrl() + "routeProvider";
                     String response = utils.sendPostRequest(url, params, true);
                     int responseCode = utils.getResponseCode(url);

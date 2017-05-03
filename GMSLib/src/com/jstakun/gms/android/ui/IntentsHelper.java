@@ -675,7 +675,7 @@ public final class IntentsHelper {
     	if (type == FilesActivity.ROUTES) {	
     		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Locale.getMessage(R.string.Routes_share_subject));
     		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Locale.getMessage(R.string.Routes_share_text) + "\n" + 
-    		        Locale.getMessage(R.string.Routes_share_link, ConfigurationManager.SERVER_URL + "showRoute/" + uri.getLastPathSegment()) + "\n" + 
+    		        Locale.getMessage(R.string.Routes_share_link, ConfigurationManager.SERVER_URL + "showRoute/" + uri.getLastPathSegment().replace(' ', '_')) + "\n" + 
     				Locale.getMessage(R.string.mailMessageSuffix, ConfigurationManager.SERVER_URL, Locale.getMessage(R.string.app_name)));
     		activity.startActivity(Intent.createChooser(shareIntent, Locale.getMessage(R.string.Routes_share_title)));
     	} else {
