@@ -28,6 +28,8 @@ public class GMSClientApp extends Application {
     public void onCreate() {
         super.onCreate();
         LoggerUtils.debug("GMSClientApp.onCreate...");
+        //TODO use initAcra()
+        ACRA.init(this);  
         ConfigurationManager.getAppUtils().initApp(this);  
         UserTracker.getInstance().initialize(this);
         UserTracker.getInstance().setDryRun(false, this);
@@ -51,4 +53,19 @@ public class GMSClientApp extends Application {
         LoggerUtils.debug("GMSClientApp.onLowMemory...");
         System.gc();
     }
+    
+    /*private void initAcra(Map<String, String> headers) {
+    try {
+        ACRAConfiguration config = new ConfigurationBuilder(this)
+                .setFormUri("https://www.gms-world.net/crashReport")
+                .setMode(ReportingInteractionMode.TOAST)
+                .setHttpHeaders(headers)
+                .setResToastText(R.string.Crash_error)
+                .setSocketTimeout(30000)
+                .build();
+        ACRA.init(this, config);
+    } catch (Exception e) {
+        Log.e(TAG, e.getMessage(), e);
+    }*/
+}
 }
