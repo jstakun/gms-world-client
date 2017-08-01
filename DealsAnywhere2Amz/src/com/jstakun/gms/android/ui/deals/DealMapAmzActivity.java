@@ -69,7 +69,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
     private static final int SHOW_MAP_VIEW = 0;
     
-    private MapView mapView;
+    private MapView mapView;    
     private MapController mapController;
     private SkyhookUtils skyhook;
     

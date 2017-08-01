@@ -68,4 +68,3 @@ public class GMSClientApp extends Application {
         Log.e(TAG, e.getMessage(), e);
     }*/
 }
-}
