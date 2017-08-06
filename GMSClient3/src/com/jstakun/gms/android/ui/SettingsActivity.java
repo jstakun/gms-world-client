@@ -65,6 +65,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             
             if (!OsUtil.hasSystemSharedLibraryInstalled(this, "com.google.android.maps") || !OsUtil.isDonutOrHigher()) {
                 settings.removePreference(mapProvider);
+                settings.removePreference(googleMapsType);
             }
         } else {
             finish();

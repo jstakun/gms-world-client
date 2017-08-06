@@ -4,6 +4,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.Locale;
+import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 
 import android.content.Intent;
@@ -57,7 +58,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             mapProvider = findPreference("mapProvider");
             settings = (PreferenceCategory) findPreference("settings");
 
-            if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {    
+            if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS ||
+            		OsUtil.hasSystemSharedLibraryInstalled(this, "com.google.android.maps")) {    
             	if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS) {
             		settings.addPreference(osmMapsType);
             		settings.removePreference(googleMapsType);
@@ -67,6 +69,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             	}
             } else {
             	settings.removePreference(mapProvider);
+            	settings.removePreference(googleMapsType);
             }
         } else {
             finish();
