@@ -58,8 +58,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
             mapProvider = findPreference("mapProvider");
             settings = (PreferenceCategory) findPreference("settings");
 
-            if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS ||
-            		OsUtil.hasSystemSharedLibraryInstalled(this, "com.google.android.maps")) {    
+            if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext()) == ConnectionResult.SUCCESS) {    
             	if (ConfigurationManager.getInstance().getInt(ConfigurationManager.MAP_PROVIDER) == ConfigurationManager.OSM_MAPS) {
             		settings.addPreference(osmMapsType);
             		settings.removePreference(googleMapsType);
