@@ -194,7 +194,6 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	}
 	
 	private void processJSon(String jsonString) {
-		//System.out.println("json: " + jsonString);
 		if (StringUtils.startsWith(jsonString, "{")) {
 			String token = null;
 			JSONObject json = null;
@@ -290,7 +289,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 
 		@Override
 		public void onPageFinished(WebView view, String url) {
-			LoggerUtils.debug("onPageFinished: " + url);
+			LoggerUtils.debug("onPageFinished: " + url + " with redirect " + redirect);
 			if (!redirect) {
 				loadingFinished = true;
 			}
@@ -302,8 +301,9 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 						// ignore error
 					}
 				}
-
-				if (url.startsWith(OAuthServiceFactory.getOAuthCallback(serviceName))) {
+				String prefix = OAuthServiceFactory.getOAuthCallback(serviceName);
+				LoggerUtils.debug("Checking if url starts with " + prefix);
+				if (url.startsWith(prefix)) {
 					//process page title
 					processJSon(view.getTitle());
 	    		} else if (StringUtils.startsWith(view.getTitle(), "401")) {
