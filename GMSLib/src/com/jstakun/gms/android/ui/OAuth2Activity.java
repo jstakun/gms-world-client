@@ -264,7 +264,8 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 				redirect = true;
 			}
 			loadingFinished = false;
-			view.loadUrl(url);
+			//view.loadUrl(url);
+			UrlLoaderHelperInternal.loadUrl(url, view);
 			return true;
 		}
 
