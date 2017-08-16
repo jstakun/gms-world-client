@@ -133,7 +133,7 @@ public final class ConfigurationManager {
     public static final String LAYER_SEPARATOR = "-=+=-";
     
     public static final String SERVER_URL = "http://www.gms-world.net/";
-    private static final String SSL_SERVER_URL = "https://www.gms-world.net/";
+    public static final String SSL_SERVER_URL = "https://www.gms-world.net/";
     private static final String SSL_RHCLOUD_URL = "https://landmarks-gmsworld.rhcloud.com/";
     public static final String BITLY_URL = "http://bit.ly/";
     public static final String SHOW_LANDMARK_URL = SERVER_URL + "showLandmark/";

@@ -71,8 +71,6 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		webView.getSettings().setSupportZoom(true);
 		webView.getSettings().setBuiltInZoomControls(true);
 		
-		webView.getSettings().setUserAgentString("Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0");
-		
 		webView.setWebViewClient(new MyWebViewClient());
 
 		webView.setOnTouchListener(new View.OnTouchListener() {
@@ -230,6 +228,12 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	}
 
 	private static void loadUrl(WebView webView, String url) {
+		if (url.contains("google.com")) {
+			//workaround for https://developers.googleblog.com/2016/08/modernizing-oauth-interactions-in-native-apps.html
+			webView.getSettings().setUserAgentString("Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0");
+		} else {
+			webView.getSettings().setUserAgentString(ConfigurationManager.getAppUtils().getAboutMessage());
+		}
 		try {
 			UrlLoaderHelperInternal.loadUrl(url, webView);
 		} catch (Throwable e) {
@@ -241,11 +245,13 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		private static void loadUrl(String url, WebView webView) {
 			//API version 8+
 			Map<String, String> headers = new HashMap<String, String>();
-			if (ConfigurationManager.getUserManager().isTokenPresent()) {
-	    		headers.put(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
-	    		headers.put(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
-	    		headers.put(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
-	    		headers.put(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));	            
+			if (url.startsWith(ConfigurationManager.SERVER_URL) || url.startsWith(ConfigurationManager.SSL_SERVER_URL)) {
+				if (ConfigurationManager.getUserManager().isTokenPresent()) {
+					headers.put(Commons.TOKEN_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_TOKEN));
+					headers.put(Commons.SCOPE_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.GMS_SCOPE));
+					headers.put(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+					headers.put(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));	            
+				}
 			}
 			webView.loadUrl(url, headers);
 		}
