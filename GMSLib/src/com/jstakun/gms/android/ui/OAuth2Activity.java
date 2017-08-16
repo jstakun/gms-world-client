@@ -71,8 +71,6 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		webView.getSettings().setSupportZoom(true);
 		webView.getSettings().setBuiltInZoomControls(true);
 		
-		webView.getSettings().setUserAgentString(ConfigurationManager.getAppUtils().getAboutMessage());
-		
 		webView.setWebViewClient(new MyWebViewClient());
 
 		webView.setOnTouchListener(new View.OnTouchListener() {
@@ -248,6 +246,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	    		headers.put(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
 	    		headers.put(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));	            
 			}
+			webView.getSettings().setUserAgentString(ConfigurationManager.getAppUtils().getAboutMessage());
 			webView.loadUrl(url, headers);
 		}
 	}
@@ -320,7 +319,7 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	    		}
 
 				rl.setVisibility(View.GONE);
-				webView.setVisibility(View.VISIBLE);
+				view.setVisibility(View.VISIBLE);
 			} else {
 				redirect = false;
 			}
