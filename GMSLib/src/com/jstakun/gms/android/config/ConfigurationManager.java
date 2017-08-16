@@ -1024,6 +1024,9 @@ public final class ConfigurationManager {
         		Map<String, String> headers = new HashMap<String, String>();
         		headers.put(Commons.TOKEN_HEADER, getString(ConfigurationManager.GMS_TOKEN));
         		headers.put(Commons.SCOPE_HEADER, getString(ConfigurationManager.GMS_SCOPE));
+	    		headers.put("User-Agent", ConfigurationManager.getAppUtils().getAboutMessage());
+	    		headers.put(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
+	    		headers.put(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
         		ACRA.getConfig().setHttpHeaders(headers);
     		}
     		LoggerUtils.debug("GMS Token is present!");
