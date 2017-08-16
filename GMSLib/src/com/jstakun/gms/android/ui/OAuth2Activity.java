@@ -71,6 +71,9 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 		webView.getSettings().setSupportZoom(true);
 		webView.getSettings().setBuiltInZoomControls(true);
 		
+		//workaround for https://developers.googleblog.com/2016/08/modernizing-oauth-interactions-in-native-apps.html
+		webView.getSettings().setUserAgentString("Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0");
+		
 		webView.setWebViewClient(new MyWebViewClient());
 
 		webView.setOnTouchListener(new View.OnTouchListener() {
@@ -228,12 +231,6 @@ public class OAuth2Activity extends Activity implements OnDismissListener {
 	}
 
 	private static void loadUrl(WebView webView, String url) {
-		if (url.contains("google.com")) {
-			//workaround for https://developers.googleblog.com/2016/08/modernizing-oauth-interactions-in-native-apps.html
-			webView.getSettings().setUserAgentString("Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0");
-		} else {
-			webView.getSettings().setUserAgentString(ConfigurationManager.getAppUtils().getAboutMessage());
-		}
 		try {
 			UrlLoaderHelperInternal.loadUrl(url, webView);
 		} catch (Throwable e) {
