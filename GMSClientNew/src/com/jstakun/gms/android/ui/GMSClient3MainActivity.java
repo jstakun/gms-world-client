@@ -728,7 +728,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	    	case PERMISSION_ACCESS_LOCATION:
 	    		if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 	    			GmsLocationServicesManager.getInstance().enable(LoadingHandler.class.getName(), loadingHandler, this);
-	    			mMap.setMyLocationEnabled(true);
+	    			if (mMap != null) {
+	    				mMap.setMyLocationEnabled(true);
+	    			}
 	    			if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FOLLOW_MY_POSITION)) {
 	    				loadingImage.setVisibility(View.GONE);
 	    				startRouteRecording(true);

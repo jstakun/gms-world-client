@@ -73,11 +73,16 @@ public class GmsLocationServicesManager implements GoogleApiClient.ConnectionCal
 	
 	private synchronized void buildGoogleApiClient(Context context) {
 		if (mGoogleApiClient == null && context != null) {
-			mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+			try {
+				mGoogleApiClient = new GoogleApiClient.Builder(context)
+						.addConnectionCallbacks(this)
+						.addOnConnectionFailedListener(this)
+						.addApi(LocationServices.API)
+						.build();
+			} catch (Exception e) {
+				LoggerUtils.error("GmsLocationServicesManager.buildGoogleApiClient() exception:", e);
+				
+			}
 		}
     }
 
