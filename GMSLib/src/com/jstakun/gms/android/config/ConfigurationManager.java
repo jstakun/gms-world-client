@@ -1017,7 +1017,7 @@ public final class ConfigurationManager {
     		if (!StringUtils.isNotEmpty(getString(GMS_TOKEN))) {
     			String errorMessage = GMSUtils.generateToken(getString(GMS_SCOPE));
     			if (errorMessage != null) {
-    				LoggerUtils.error("UserManager.verifyToken exception: " + errorMessage);
+    				LoggerUtils.error("UserManager.verifyToken() exception: " + errorMessage);
     			} 
     		} 
     		if (StringUtils.isNotEmpty(getString(GMS_TOKEN))) { 
@@ -1028,8 +1028,11 @@ public final class ConfigurationManager {
 	    		headers.put(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
 	    		headers.put(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
         		ACRA.getConfig().setHttpHeaders(headers);
+        		LoggerUtils.debug("GMS Token is present!");
+    		} else {
+    			LoggerUtils.error("GMS Token is missing!");
     		}
-    		LoggerUtils.debug("GMS Token is present!");
+    		
     	}
     	
     	public String getSocialIds() {
