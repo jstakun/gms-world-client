@@ -317,6 +317,7 @@ public class HttpUtils {
     	ObjectInputStream ois = null;
     	HttpURLConnection conn = null;
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
+    	String redirectUrl = null;
     	
     	httpErrorMessages.remove(fileUrl);
         
@@ -401,6 +402,9 @@ public class HttpUtils {
             				LoggerUtils.error("Object stream is null");
             			}
             			LoggerUtils.debug("Received " + size + " landmarks from " + fileUrl);
+            		} else if ((responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
+            				|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) && !aborted) {
+            			redirectUrl = conn.getHeaderField("Location");
             		} else if (!aborted) {
             			LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
             			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
@@ -437,7 +441,11 @@ public class HttpUtils {
         	}
         }
         
-        return landmarks;
+    	if (redirectUrl != null && !aborted) {
+    		return loadLandmarkList(redirectUrl, params, auth, formats);
+    	} else {
+    		return landmarks;
+    	}
     }
 	
 	public int getResponseCode(String url) {
