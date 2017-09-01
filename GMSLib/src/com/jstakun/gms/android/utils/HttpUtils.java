@@ -409,6 +409,15 @@ public class HttpUtils {
             		} else if (!aborted) {
             			LoggerUtils.error(fileUrl + " loading error response: " + responseCode); 
             			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
+            			String contentType = conn.getContentType();
+            			if (contentType != null) {
+            				LoggerUtils.debug("Response content type: " + contentType);
+            				String file = IOUtils.toString(conn.getInputStream(), "UTF-8");
+                        	int length = file.length();
+                        	if (length > 0) {
+                        		LoggerUtils.debug("Received " + contentType + " document having " + length + " characters:\n" + file);
+                        	}
+            			}
             		} else {
             			LoggerUtils.debug("Request to " + fileUrl + " has been aborted");
             		}
