@@ -34,6 +34,8 @@ public class HttpUtils {
 	private static final Map<String, Integer> httpResponseStatuses = new HashMap<String, Integer>();
 	private static final Map<String, String> httpErrorMessages = new HashMap<String, String>();
 	private static final Map<String, String> httpHeaders = new HashMap<String, String>();
+	private static final String USER_AGENT = "Mozilla/5.0 (compatible; GMS World; http://www.gms-world.net)";
+	
 	
 	private boolean aborted = false;
 	
@@ -60,7 +62,7 @@ public class HttpUtils {
             conn.setConnectTimeout(SOCKET_TIMEOUT);
             conn.setReadTimeout(SOCKET_TIMEOUT);
             
-            conn.setRequestProperty("User-Agent", ConfigurationManager.getAppUtils().getAboutMessage());
+            conn.setRequestProperty("User-Agent", USER_AGENT);
             
             conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
             conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
@@ -178,7 +180,7 @@ public class HttpUtils {
             conn.setConnectTimeout(SOCKET_TIMEOUT);
             conn.setReadTimeout(SOCKET_TIMEOUT);
             
-            conn.setRequestProperty("User-Agent", ConfigurationManager.getAppUtils().getAboutMessage());
+            conn.setRequestProperty("User-Agent", USER_AGENT);
             
             conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
             conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
@@ -329,7 +331,7 @@ public class HttpUtils {
     			conn.setConnectTimeout(SOCKET_TIMEOUT);
     			conn.setReadTimeout(SOCKET_TIMEOUT);
             	conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-            	conn.setRequestProperty("User-Agent", ConfigurationManager.getAppUtils().getAboutMessage());
+            	conn.setRequestProperty("User-Agent", USER_AGENT);
             	conn.setRequestProperty(Commons.APP_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.APP_ID));
             	conn.setRequestProperty(Commons.APP_VERSION_HEADER, Integer.toString(ConfigurationManager.getAppUtils().getVersionCode()));
             	conn.setRequestProperty(Commons.USE_COUNT_HEADER, ConfigurationManager.getInstance().getString(ConfigurationManager.USE_COUNT));
