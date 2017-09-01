@@ -34,7 +34,7 @@ public class HttpUtils {
 	private static final Map<String, Integer> httpResponseStatuses = new HashMap<String, Integer>();
 	private static final Map<String, String> httpErrorMessages = new HashMap<String, String>();
 	private static final Map<String, String> httpHeaders = new HashMap<String, String>();
-	private static final String USER_AGENT = "Mozilla/5.0 (compatible; GMS World; http://www.gms-world.net)";
+	private static final String USER_AGENT = "GMS World (+http://www.gms-world.net)";
 	
 	
 	private boolean aborted = false;
