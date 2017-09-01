@@ -319,14 +319,14 @@ public class HttpUtils {
     	ObjectInputStream ois = null;
     	HttpURLConnection conn = null;
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-    	//String redirectUrl = null;
+    	String redirectUrl = null;
     	
     	httpErrorMessages.remove(fileUrl);
         
     	try {
     		if (ServicesUtils.isNetworkActive()) { 	
     			conn = (HttpURLConnection) new URL(fileUrl).openConnection();
-    			conn.setInstanceFollowRedirects(true);
+    			conn.setInstanceFollowRedirects(false);
     			conn.setRequestMethod("POST");
     			conn.setConnectTimeout(SOCKET_TIMEOUT);
     			conn.setReadTimeout(SOCKET_TIMEOUT);
@@ -405,9 +405,9 @@ public class HttpUtils {
             				LoggerUtils.error("Object stream is null");
             			}
             			LoggerUtils.debug("Received " + size + " landmarks from " + fileUrl);
-            		//} else if ((responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
-            		//		|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) && !aborted) {
-            		//	redirectUrl = conn.getHeaderField("Location");
+            		} else if ((responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
+            				|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) && !aborted) {
+            			redirectUrl = conn.getHeaderField("Location");
             		} else if (!aborted) {
             			LoggerUtils.error(fileUrl + " loading error response: " + responseCode); 
             			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
@@ -456,12 +456,12 @@ public class HttpUtils {
         	}
         }
         
-    	//if (redirectUrl != null && !aborted) {
-    	//	LoggerUtils.debug("Sending redirect to: " + redirectUrl);
-    	//	return loadLandmarkList(redirectUrl, params, auth, formats);
-    	//} else {
+    	if (redirectUrl != null && !aborted) {
+    		LoggerUtils.debug("Sending redirect to: " + redirectUrl);
+    		return loadLandmarkList(redirectUrl, params, auth, formats);
+    	} else {
     		return landmarks;
-    	//}
+    	}
     }
 	
 	public int getResponseCode(String url) {
