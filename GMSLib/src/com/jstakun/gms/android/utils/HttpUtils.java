@@ -406,7 +406,7 @@ public class HttpUtils {
             				|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) && !aborted) {
             			redirectUrl = conn.getHeaderField("Location");
             		} else if (!aborted) {
-            			LoggerUtils.error(fileUrl + " loading error: " + responseCode); 
+            			LoggerUtils.error(fileUrl + " loading error response: " + responseCode); 
             			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
             		} else {
             			LoggerUtils.debug("Request to " + fileUrl + " has been aborted");
@@ -442,6 +442,7 @@ public class HttpUtils {
         }
         
     	if (redirectUrl != null && !aborted) {
+    		LoggerUtils.debug("Sending redirect to: " + redirectUrl);
     		return loadLandmarkList(redirectUrl, params, auth, formats);
     	} else {
     		return landmarks;
