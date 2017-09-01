@@ -324,6 +324,7 @@ public class HttpUtils {
     	try {
     		if (ServicesUtils.isNetworkActive()) { 	
     			conn = (HttpURLConnection) new URL(fileUrl).openConnection();
+    			conn.setInstanceFollowRedirects(false);
     			conn.setRequestMethod("POST");
     			conn.setConnectTimeout(SOCKET_TIMEOUT);
     			conn.setReadTimeout(SOCKET_TIMEOUT);
