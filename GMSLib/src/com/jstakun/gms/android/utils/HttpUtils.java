@@ -317,14 +317,14 @@ public class HttpUtils {
     	ObjectInputStream ois = null;
     	HttpURLConnection conn = null;
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-    	String redirectUrl = null;
+    	//String redirectUrl = null;
     	
     	httpErrorMessages.remove(fileUrl);
         
     	try {
     		if (ServicesUtils.isNetworkActive()) { 	
     			conn = (HttpURLConnection) new URL(fileUrl).openConnection();
-    			conn.setInstanceFollowRedirects(false);
+    			conn.setInstanceFollowRedirects(true);
     			conn.setRequestMethod("POST");
     			conn.setConnectTimeout(SOCKET_TIMEOUT);
     			conn.setReadTimeout(SOCKET_TIMEOUT);
@@ -403,21 +403,24 @@ public class HttpUtils {
             				LoggerUtils.error("Object stream is null");
             			}
             			LoggerUtils.debug("Received " + size + " landmarks from " + fileUrl);
-            		} else if ((responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
-            				|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) && !aborted) {
-            			redirectUrl = conn.getHeaderField("Location");
+            		//} else if ((responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
+            		//		|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) && !aborted) {
+            		//	redirectUrl = conn.getHeaderField("Location");
             		} else if (!aborted) {
             			LoggerUtils.error(fileUrl + " loading error response: " + responseCode); 
             			httpErrorMessages.put(fileUrl, handleHttpStatus(responseCode));
             			String contentType = conn.getContentType();
-            			if (contentType != null) {
-            				LoggerUtils.debug("Response content type: " + contentType);
-            				String file = IOUtils.toString(conn.getInputStream(), "UTF-8");
-                        	int length = file.length();
-                        	if (length > 0) {
-                        		LoggerUtils.debug("Received " + contentType + " document having " + length + " characters:\n" + file);
-                        	}
-            			}
+            			String file = null;
+            			int length = conn.getContentLength();
+            			try {
+            				file = IOUtils.toString(conn.getErrorStream(), "UTF-8");
+            				length = file.length();
+            			} catch (Exception e) {
+            				LoggerUtils.debug("Reading error response exception:", e);
+            			} 
+                    	if (length > 0) {
+                    		LoggerUtils.debug("Received " + contentType + " document with " + length + " characters:\n" + file);
+                    	}
             		} else {
             			LoggerUtils.debug("Request to " + fileUrl + " has been aborted");
             		}
@@ -451,12 +454,12 @@ public class HttpUtils {
         	}
         }
         
-    	if (redirectUrl != null && !aborted) {
-    		LoggerUtils.debug("Sending redirect to: " + redirectUrl);
-    		return loadLandmarkList(redirectUrl, params, auth, formats);
-    	} else {
+    	//if (redirectUrl != null && !aborted) {
+    	//	LoggerUtils.debug("Sending redirect to: " + redirectUrl);
+    	//	return loadLandmarkList(redirectUrl, params, auth, formats);
+    	//} else {
     		return landmarks;
-    	}
+    	//}
     }
 	
 	public int getResponseCode(String url) {
