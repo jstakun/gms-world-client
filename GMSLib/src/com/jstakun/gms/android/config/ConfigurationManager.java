@@ -493,7 +493,7 @@ public final class ConfigurationManager {
     
     public class AppUtils {
     	
-    	private String aboutMessage = null;
+    	private String aboutMessage = null, userAgentMessage;
     	private PackageInfo pi;
     	
     	private AppUtils() {
@@ -653,6 +653,21 @@ public final class ConfigurationManager {
     			aboutMessage = Locale.getMessage(R.string.Info_about, app_name, versionName, versionCode, getBuildDate(), Calendar.getInstance().get(Calendar.YEAR), ConfigurationManager.SERVER_URL);
     		}
     		return aboutMessage;
+    	}
+    	
+    	public synchronized String getUserAgent() {
+    		if (userAgentMessage == null) {
+    			String versionName = "latest"; 
+        		int versionCode = 1;
+        		
+        		if (getPackageInfo() != null) {
+        			versionName = getPackageInfo().versionName;
+            		versionCode = getPackageInfo().versionCode;
+        		}
+        		
+    			userAgentMessage = Locale.getMessage(R.string.app_name) + "/" + versionName + "-" + versionCode + " (+" + ConfigurationManager.SERVER_URL + ")";
+    		}
+    		return userAgentMessage;
     	}
     	
     	public int getVersionCode() {
