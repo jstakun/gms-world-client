@@ -374,15 +374,15 @@ public class HttpUtils {
             				LoggerUtils.debug("Missing content type! Expected: " + StringUtils.join(formats," or ") + " at url: " + fileUrl);
             			}
             			ConfigurationManager.getAppUtils().increaseCounter(queryString.getBytes().length, conn.getContentLength());
-            			if (conn.getContentLength() > 0) {
-            				if (conn.getContentType().indexOf("deflate") != -1) {
-            					ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
-            				} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
-            					ois = new ObjectInputStream(conn.getInputStream());
-            				} 
+            			
+            			if (conn.getContentType().indexOf("deflate") != -1) {
+            				ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
+            			} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
+            				ois = new ObjectInputStream(conn.getInputStream());
             			} else {
             				LoggerUtils.debug("Received no content from " + fileUrl); 	
             			}
+            			
             			int size = 0;
             			if (ois != null) {
             				size = ois.readInt();

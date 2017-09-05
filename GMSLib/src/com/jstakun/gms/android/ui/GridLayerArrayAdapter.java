@@ -12,6 +12,7 @@ import com.jstakun.gms.android.landmarks.Layer;
 import com.jstakun.gms.android.landmarks.LayerManager;
 import com.jstakun.gms.android.routes.RoutesManager;
 import com.jstakun.gms.android.ui.lib.R;
+import com.jstakun.gms.android.utils.LoggerUtils;
 import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
@@ -73,6 +74,7 @@ public class GridLayerArrayAdapter extends ArrayAdapter<String> {
 				Picasso.with(parentActivity).load(iconId).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
 			} else {
 				String iconUri = LayerManager.getLayerIconUri(layerKey, LayerManager.LAYER_ICON_SMALL);
+				LoggerUtils.debug("Picasso will load icon: " + iconUri);
 				if (iconUri != null && StringUtils.startsWith(iconUri, "http")) {
 					Picasso.with(parentActivity).load(iconUri).resize(targetWidth, targetHeight).error(R.drawable.image_missing16).centerInside().into(new PicassoTextViewTarget(holder.headerText, PicassoTextViewTarget.Position.LEFT));
 				} else {
