@@ -375,18 +375,18 @@ public class HttpUtils {
             			}
             			ConfigurationManager.getAppUtils().increaseCounter(queryString.getBytes().length, conn.getContentLength());
             			
-            			if (conn.getContentType().indexOf("deflate") != -1) {
-            				ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
-            			} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
-            				ois = new ObjectInputStream(conn.getInputStream());
+            			if (conn.getContentLength() > 0 || StringUtils.equalsIgnoreCase(conn.getHeaderField("Transfer-Encoding"), "chunked")) {
+            				if (conn.getContentType().indexOf("deflate") != -1) {
+            					ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
+            				} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
+            					ois = new ObjectInputStream(conn.getInputStream());
+            				}
             			} else {
             				LoggerUtils.debug("Received no content from " + fileUrl); 	
             			}
             			
-            			int size = 0;
             			if (ois != null) {
-            				size = ois.readInt();
-            				LoggerUtils.debug("Reading " + size + " landmarks");
+            				int size = ois.readInt();
             				if (size > 0) {
             					for(int i = 0;i < size;i++) {
             						try {
@@ -399,10 +399,10 @@ public class HttpUtils {
             						}
             					}       				
             				}
+            				LoggerUtils.debug("Received " + size + " landmarks from " + fileUrl);
             			} else {
-            				LoggerUtils.error("Object stream is null");
+            				LoggerUtils.error("Received 0 landmarks from " + fileUrl);
             			}
-            			LoggerUtils.debug("Received " + size + " landmarks from " + fileUrl);
             		} else if ((responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
             				|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) && !aborted) {
             			redirectUrl = conn.getHeaderField("Location");
