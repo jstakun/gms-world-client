@@ -39,7 +39,7 @@ public class OsUtil {
     private static final int HONEYCOMB_3_0 = 11;
     private static final int HONEYCOMB_3_2 = 13;
     private static final int ICE_CREAM_SANDWICH = 14;
-
+    
     public static boolean isDonutOrHigher() {
         return getSdkVersion() >= DONUT;
     }
@@ -176,15 +176,7 @@ public class OsUtil {
         	}
         }
         
-        //if (telephonyDeviceId == null) {
-		//	telephonyDeviceId = "NoTelephonyId";
-		//}
-
-        if (androidDeviceId == null) {
-            androidDeviceId = "NoAndroidId";
-        }
-
-        //return androidDeviceId.equals("NoAndroidId") ? telephonyDeviceId : androidDeviceId;
+        //return androidDeviceId != null ? androidDeviceId : telephonyDeviceId;
         return androidDeviceId;
     }
 

@@ -189,6 +189,13 @@ public class HttpUtils {
             if (longitude != null) {
             	conn.setRequestProperty(Commons.LNG_HEADER, StringUtil.formatCoordE6(longitude));
             }
+            try {
+            	String deviceId = OsUtil.getDeviceId(ConfigurationManager.getInstance().getContext());
+                if (deviceId != null) {
+                	 conn.setRequestProperty(Commons.DEVICE_HEADER, deviceId);
+                }
+            } catch (Exception e) {
+            }
             if (auth) {
             	if (userpassword != null) {
             		//username : password

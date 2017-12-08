@@ -77,6 +77,9 @@ public final class BCTools {
     	if (cipherParameters == null) {
     		PKCS12ParametersGenerator pGen = new PKCS12ParametersGenerator(new SHA1Digest());
     		String salt = OsUtil.getDeviceId(context);
+    		if (salt == null) {
+    			salt = "NoAndroidId";
+    		}
     		//System.out.println("Salt: " + salt + " ----------------------------");
     		char[] password = context.getString(R.string.bcPwd).toCharArray();
             pGen.init(PBEParametersGenerator.PKCS12PasswordToBytes(password), Hex.decode(salt), 128);

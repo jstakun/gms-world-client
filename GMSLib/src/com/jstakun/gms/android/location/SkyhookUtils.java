@@ -141,9 +141,8 @@ public class SkyhookUtils {
     }
 
     public void enableMyLocation() {
-    	//byte[] key = Commons.SKYHOOK_KEY.getBytes();
-    	byte[] key = OsUtil.getDeviceId(ConfigurationManager.getInstance().getContext()).getBytes();
-        byte[] token = xps.getOfflineToken(null, key);
+    	byte[] key = ConfigurationManager.getInstance().getContext().getString(R.string.skyhookApiKey).getBytes();
+    	byte[] token = xps.getOfflineToken(null, key);
         if (token != null) {
             xps.getOfflineLocation(null, key, token, oneTimeCallback);
         } else {
