@@ -30,6 +30,11 @@ public class CouponsReader extends AbstractSerialReader {
 	public String getLayerName(boolean formatted) {
 		return Commons.COUPONS_LAYER;
 	}
+	
+	@Override
+	public boolean isEnabled() {
+    	return false;
+    }
 
 	@Override
 	public int getDescriptionResource() {
