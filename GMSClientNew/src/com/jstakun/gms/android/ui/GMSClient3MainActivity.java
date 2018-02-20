@@ -269,7 +269,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         Integer searchQueryResult = (Integer) ConfigurationManager.getInstance().removeObject(ConfigurationManager.SEARCH_QUERY_RESULT, Integer.class);
         if (searchQueryResult != null) {
-        	int[] coordsE6 = IntentsHelper.getInstance().showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, (int)mMap.getCameraPosition().zoom, projection);
+        	int zoom = (mMap != null) ? (int)mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
+        	int[] coordsE6 = IntentsHelper.getInstance().showSelectedLandmark(searchQueryResult, getMyPosition(), lvView, zoom, projection);
             if (coordsE6 != null) {
             	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
             }
@@ -601,10 +602,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 if (action.equals("load")) {
                     String ids = intent.getStringExtra(LandmarkListActivity.LANDMARK);
                     int id = Integer.parseInt(ids);
-                    int zoom = ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
-                    if (mMap != null) {
-                    	zoom = (int)mMap.getCameraPosition().zoom;
-                    }
+                    int zoom = (mMap != null) ? (int)mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
                     int[] coordsE6 = IntentsHelper.getInstance().showSelectedLandmark(id, getMyPosition(), lvView, zoom, projection);
                     if (coordsE6 != null) {
                     	animateTo(new LatLng(MathUtils.coordIntToDouble(coordsE6[0]),MathUtils.coordIntToDouble(coordsE6[1])));
@@ -1004,10 +1002,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	if (!LayerLoader.getInstance().isInitialized() && !LayerLoader.getInstance().isLoading()) {
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                     LoggerUtils.debug("Loading Layers in " + location.latitude + "," +  location.longitude);
-                    int zoom = ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
-                    if (mMap != null) {
-                    	zoom = (int)mMap.getCameraPosition().zoom;
-                    }
+                    int zoom = (mMap != null) ? (int)mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
                     IntentsHelper.getInstance().loadLayersAction(true, null, false, true, location.latitude, location.longitude, zoom, projection);
                 }
             } else {
