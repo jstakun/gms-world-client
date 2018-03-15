@@ -320,7 +320,7 @@ public class HttpUtils {
         return response;
     }
 
-	public List<ExtendedLandmark> loadLandmarkList(String fileUrl, Map<String, String> params, boolean auth, String[] formats) {
+	public List<ExtendedLandmark> loadLandmarkList(String fileUrl, String firstRefererUrl, Map<String, String> params, boolean auth, String[] formats) {
     	ObjectInputStream ois = null;
     	HttpURLConnection conn = null;
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
@@ -368,6 +368,9 @@ public class HttpUtils {
             
             		int responseCode = conn.getResponseCode();
             		httpResponseStatuses.put(fileUrl, responseCode);
+            		if (firstRefererUrl != null) {
+            			httpResponseStatuses.put(firstRefererUrl, responseCode);
+            		}
 
             		if (responseCode == HttpURLConnection.HTTP_OK && !aborted) {
             			String contentType = conn.getContentType();
@@ -426,7 +429,7 @@ public class HttpUtils {
             				LoggerUtils.debug("Reading error response exception:", e);
             			} 
                     	if (length > 0) {
-                    		LoggerUtils.debug("Received " + contentType + " document with " + length + " characters:\n" + file);
+                    		LoggerUtils.debug("Received " + contentType + " document with " + length + " characters:\n" + StringUtils.substring(file, 0, 64) + "...");
                     	}
             		} else {
             			LoggerUtils.debug("Request to " + fileUrl + " has been aborted");
@@ -463,7 +466,10 @@ public class HttpUtils {
         
     	if (redirectUrl != null && !aborted) {
     		LoggerUtils.debug("Sending redirect to: " + redirectUrl);
-    		return loadLandmarkList(redirectUrl, params, auth, formats);
+    		if (firstRefererUrl == null) {
+    			firstRefererUrl = fileUrl;
+    		}
+    		return loadLandmarkList(redirectUrl, firstRefererUrl, params, auth, formats);
     	} else {
     		return landmarks;
     	}

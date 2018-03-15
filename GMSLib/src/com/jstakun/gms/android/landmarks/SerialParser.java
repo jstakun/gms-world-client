@@ -33,7 +33,7 @@ public class SerialParser {
         
         try {
         	if (!task.isCancelled()) {
-        		List<ExtendedLandmark> received = utils.loadLandmarkList(urls[urlIndex], params, true, new String[]{"deflate", "application/x-java-serialized-object"});
+        		List<ExtendedLandmark> received = utils.loadLandmarkList(urls[urlIndex], null, params, true, new String[]{"deflate", "application/x-java-serialized-object"});
         		if (!received.isEmpty()) {
         			if (landmarks.isEmpty()) {
         				LandmarkManager.getInstance().addLandmarkListToDynamicLayer(received);

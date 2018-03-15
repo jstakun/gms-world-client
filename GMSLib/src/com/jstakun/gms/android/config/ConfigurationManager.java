@@ -493,7 +493,7 @@ public final class ConfigurationManager {
     
     public class AppUtils {
     	
-    	private String aboutMessage = null, userAgentMessage;
+    	private String aboutMessage = null, userAgentMessage = null;
     	private PackageInfo pi;
     	
     	private AppUtils() {
