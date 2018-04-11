@@ -2,6 +2,7 @@ package com.jstakun.gms.android.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -10,6 +11,8 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
+
+import java.util.List;
 
 import org.acra.ACRA;
 
@@ -49,6 +52,17 @@ public class GMSClientDispatchActivity extends Activity {
             	long lastStartupTime = ConfigurationManager.getInstance().getLong(ConfigurationManager.LAST_STARTING_DATE);
                 LoggerUtils.debug("Last startup time is: " + DateTimeUtils.getDefaultDateTimeString(lastStartupTime, ConfigurationManager.getInstance().getCurrentLocale()));
                 ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, System.currentTimeMillis());
+                
+                //TODO check if there were any params set
+                Uri data = intent.getData();
+                if (data != null) {
+                	String scheme = data.getScheme(); 
+                	String host = data.getHost();
+                	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
+                	for (String param : data.getPathSegments()) {
+                		LoggerUtils.debug("path segment: " + param);
+                	}
+                }
                 
             	Intent mapActivity;
                 if (OsUtil.isHoneycombOrHigher()) {
