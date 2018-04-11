@@ -277,9 +277,11 @@ public final class IntentsHelper {
     public void startOAuthActivity(String service) {
         Bundle extras = new Bundle();
         extras.putString("service", service);
-        Intent intent = new Intent(activity, OAuth2Activity.class);
-        intent.putExtras(extras);
-        activity.startActivityForResult(intent, INTENT_LAYERS);
+        if (activity != null) {
+        	Intent intent = new Intent(activity, OAuth2Activity.class);
+        	intent.putExtras(extras);
+        	activity.startActivityForResult(intent, INTENT_LAYERS);
+        }
     }
 
     public void startLoginActivity() {
