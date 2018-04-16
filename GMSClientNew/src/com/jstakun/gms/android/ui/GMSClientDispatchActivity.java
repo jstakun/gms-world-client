@@ -16,6 +16,7 @@ import com.jstakun.gms.android.utils.StringUtil;
 import java.util.List;
 
 import org.acra.ACRA;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -64,8 +65,10 @@ public class GMSClientDispatchActivity extends Activity {
                 	int length = data.getPathSegments().size();
                 	if (length > 2) {
                 		try {
-                			lat = StringUtil.decode(data.getPathSegments().get(length-2));
-                			lng = StringUtil.decode(data.getPathSegments().get(length-1));
+                			String latSegment = data.getPathSegments().get(length-2);
+                			lat = StringUtil.decode(latSegment);
+                			String lngSegment = StringUtils.split(data.getPathSegments().get(length-1), ";jsessionid=")[0]; 
+                			lng = StringUtil.decode(lngSegment);
                 			LoggerUtils.debug("Decoded params " + lat + "," + lng);
                 		} catch (Exception e) {
                 			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getPathSegments().get(length-1));
