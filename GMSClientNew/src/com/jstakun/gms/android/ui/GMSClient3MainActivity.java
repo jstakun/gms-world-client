@@ -231,6 +231,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	Double lng = bundle.getDouble("lng");
         	if (lat != null && lng != null) {
         		mapCenter = new LatLng(lat, lng);
+        		LoggerUtils.debug("Setting map center to " + lat + "," + lng);
         	}
         }
         
@@ -1001,10 +1002,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     }
 
 	private synchronized void initOnLocationChanged(LatLng location, int source) {
-    	//System.out.println("4 --------------------------------");
     	if (!appInitialized && location != null) {
-    		//System.out.println("4.1 --------------------------------");
-        	loadingProgressBar.setProgress(75);
+    		loadingProgressBar.setProgress(75);
         	    	
         	if (!LandmarkManager.getInstance().isInitialized()) {
         		LandmarkManager.getInstance().initialize();

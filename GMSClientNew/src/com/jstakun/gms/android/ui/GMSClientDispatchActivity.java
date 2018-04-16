@@ -66,6 +66,7 @@ public class GMSClientDispatchActivity extends Activity {
                 		try {
                 			lat = StringUtil.decode(data.getPathSegments().get(length-2));
                 			lng = StringUtil.decode(data.getPathSegments().get(length-1));
+                			LoggerUtils.debug("Decoded params " + lat + "," + lng);
                 		} catch (Exception e) {
                 			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getPathSegments().get(length-1));
                 		}
