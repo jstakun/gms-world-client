@@ -275,6 +275,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	}
         
         AsyncTaskManager.getInstance().setContext(this);
+        
         IntentsHelper.getInstance().setActivity(this);
 
         AsyncTaskManager.getInstance().executeNewVersionCheckTask(this);
@@ -1003,6 +1004,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
 	private synchronized void initOnLocationChanged(LatLng location, int source) {
     	if (!appInitialized && location != null) {
+    		IntentsHelper.getInstance().setActivity(this);
+    		
     		loadingProgressBar.setProgress(75);
         	    	
         	if (!LandmarkManager.getInstance().isInitialized()) {
