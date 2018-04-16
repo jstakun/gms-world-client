@@ -215,4 +215,16 @@ public class StringUtil {
     	}
 		return result;
 	}
+    
+    public static Double decode(String val) {
+    	if (val != null) {
+    		StringBuilder sb = new StringBuilder();
+    		for (char c : val.toCharArray()) {
+    			sb.append((char)((int)c - 64));
+    		}
+    		return new Double(sb.toString()) / 1E6;
+    	} else {
+    		return null;
+    	}
+    }
 }

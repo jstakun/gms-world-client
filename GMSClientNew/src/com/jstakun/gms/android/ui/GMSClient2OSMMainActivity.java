@@ -248,12 +248,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         mapController = mapView.getController();
 
-        GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
-
-        if (mapCenter == null) {
-            loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
-        }
-
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
         isAppInitialized = false;
@@ -262,7 +256,29 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	LoggerUtils.debug("Loading deal categories...");
         	AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
-
+        
+        GeoPoint mapCenter = null;
+        
+        Bundle bundle = getIntent().getExtras();
+        
+        if (bundle != null) {
+        	Double lat = bundle.getDouble("lat");
+        	Double lng = bundle.getDouble("lng");
+        	if (lat != null && lng != null) {
+        		mapCenter = new GeoPoint(lat, lng);
+        	}
+        }
+        
+        if (mapCenter == null) {
+        	mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
+        }
+        
+        if (mapCenter == null) {
+            loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
+        }
+        
+        loadingProgressBar.setProgress(50);
+                
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
         } else {
@@ -277,8 +293,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             LocationServicesManager.getInstance().runOnFirstFix(r);
         }
         
-        loadingProgressBar.setProgress(50);
-    
         //request for permissions
         
         //if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||

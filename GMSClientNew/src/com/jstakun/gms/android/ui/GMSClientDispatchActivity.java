@@ -11,6 +11,7 @@ import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
+import com.jstakun.gms.android.utils.StringUtil;
 
 import java.util.List;
 
@@ -54,13 +55,20 @@ public class GMSClientDispatchActivity extends Activity {
                 ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, System.currentTimeMillis());
                 
                 //TODO check if there were any params set
+                Double lat = null, lng = null;
                 Uri data = intent.getData();
                 if (data != null) {
                 	String scheme = data.getScheme(); 
                 	String host = data.getHost();
                 	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
-                	for (String param : data.getPathSegments()) {
-                		LoggerUtils.debug("path segment: " + param);
+                	int length = data.getPathSegments().size();
+                	if (length > 2) {
+                		try {
+                			lat = StringUtil.decode(data.getPathSegments().get(length-2));
+                			lng = StringUtil.decode(data.getPathSegments().get(length-1));
+                		} catch (Exception e) {
+                			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getPathSegments().get(length-1));
+                		}
                 	}
                 }
                 
@@ -72,6 +80,10 @@ public class GMSClientDispatchActivity extends Activity {
                     } else {
                         ConfigurationManager.getInstance().putInteger(ConfigurationManager.MAP_PROVIDER, ConfigurationManager.OSM_MAPS);
                         mapActivity = new Intent(this, GMSClient2OSMMainActivity.class);
+                    }
+                    if (lat != null && lng != null) {
+                    	mapActivity.putExtra("lat", lat);
+                    	mapActivity.putExtra("lng", lng);
                     }
                     startActivity(mapActivity);
                 } else {

@@ -220,15 +220,29 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
-            
+        loadingProgressBar.setProgress(50);
+        
+        LatLng mapCenter = null;
+        
+        Bundle bundle = getIntent().getExtras();
+        
+        if (bundle != null) {
+        	Double lat = bundle.getDouble("lat");
+        	Double lng = bundle.getDouble("lng");
+        	if (lat != null && lng != null) {
+        		mapCenter = new LatLng(lat, lng);
+        	}
+        }
+        
+        if (mapCenter == null) {
+        	mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
+        }
+        
         if (mapCenter != null) {
         	initOnLocationChanged(mapCenter, 2);
         } else {
         	loadingHandler.sendEmptyMessageDelayed(PICK_LOCATION, ConfigurationManager.FIVE_SECONDS);
         }
-        
-        loadingProgressBar.setProgress(50);
         
         //reqest for permissions
         
