@@ -1,9 +1,7 @@
 package com.jstakun.gms.android.ui;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
+import org.acra.ACRA;
+import org.apache.commons.lang.StringUtils;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -13,10 +11,10 @@ import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.StringUtil;
 
-import java.util.List;
-
-import org.acra.ACRA;
-import org.apache.commons.lang.StringUtils;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 
 /**
  *
@@ -55,7 +53,6 @@ public class GMSClientDispatchActivity extends Activity {
                 LoggerUtils.debug("Last startup time is: " + DateTimeUtils.getDefaultDateTimeString(lastStartupTime, ConfigurationManager.getInstance().getCurrentLocale()));
                 ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, System.currentTimeMillis());
                 
-                //TODO check if there were any params set
                 Double lat = null, lng = null;
                 Uri data = intent.getData();
                 if (data != null) {

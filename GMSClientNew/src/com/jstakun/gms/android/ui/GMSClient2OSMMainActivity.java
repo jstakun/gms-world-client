@@ -257,6 +257,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
         
+        loadingProgressBar.setProgress(50);
+        
         GeoPoint mapCenter = null;
         
         Bundle bundle = getIntent().getExtras();
@@ -276,8 +278,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         if (mapCenter == null) {
             loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
         }
-        
-        loadingProgressBar.setProgress(50);
                 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
@@ -494,6 +494,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             syncRoutesOverlays();
             
             MessageStack.getInstance().setHandler(loadingHandler);
+            
             LayerLoader.getInstance().setRepaintHandler(loadingHandler);
             
             if (!LayerLoader.getInstance().isLoading() && !LayerLoader.getInstance().isInitialized()) {

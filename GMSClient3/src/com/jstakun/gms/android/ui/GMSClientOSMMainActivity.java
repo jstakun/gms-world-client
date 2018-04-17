@@ -206,12 +206,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
 
         setBuiltInZoomControls(true);
 
-        GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
-
-        if (mapCenter == null) {
-            loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
-        }
-
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
         isAppInitialized = false;
@@ -220,7 +214,29 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
             LoggerUtils.debug("Loading deal categories...");
             AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
+        
+        loadingProgressBar.setProgress(50);
 
+        GeoPoint mapCenter = null;
+        
+        Bundle bundle = getIntent().getExtras();
+        
+        if (bundle != null) {
+        	Double lat = bundle.getDouble("lat");
+        	Double lng = bundle.getDouble("lng");
+        	if (lat != null && lng != null) {
+        		mapCenter = new GeoPoint(lat, lng);
+        	}
+        }
+        
+        if (mapCenter == null) {
+        	mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
+        }
+
+        if (mapCenter == null) {
+            loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
+        }
+        
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
         } else {
@@ -232,9 +248,7 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
                 }
             };
             LocationServicesManager.getInstance().runOnFirstFix(r);
-        }
-        
-        loadingProgressBar.setProgress(50);
+        }       
     }
 
     @Override

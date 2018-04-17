@@ -224,12 +224,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
         setBuiltInZoomControls(true);
 
-        IGeoPoint mapCenter = (IGeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, IGeoPoint.class);
-
-        if (mapCenter == null) {
-            loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
-        }
-
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
         isAppInitialized = false;
@@ -237,6 +231,28 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
         if (!CategoriesManager.getInstance().isInitialized()) {
             LoggerUtils.debug("Loading deal categories...");
             AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
+        }
+
+        loadingProgressBar.setProgress(50);
+        
+        IGeoPoint mapCenter = null;
+        
+        Bundle bundle = getIntent().getExtras();
+        
+        if (bundle != null) {
+        	Double lat = bundle.getDouble("lat");
+        	Double lng = bundle.getDouble("lng");
+        	if (lat != null && lng != null) {
+        		mapCenter = new org.osmdroid.google.wrapper.GeoPoint(new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng)));
+        	}
+        }
+        
+        if (mapCenter == null) {
+        	mapCenter = (IGeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, IGeoPoint.class);
+        }
+        
+        if (mapCenter == null) {
+            loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
         }
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
@@ -251,8 +267,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
             };
             LocationServicesManager.getInstance().runOnFirstFix(r);
         }
-        
-        loadingProgressBar.setProgress(50);
     }
 
     @Override
