@@ -66,7 +66,7 @@ public class GMSClientDispatchActivity extends Activity {
                 			lat = StringUtil.decode(latSegment);
                 			String lngSegment = StringUtils.split(data.getPathSegments().get(length-1), ";jsessionid=")[0]; 
                 			lng = StringUtil.decode(lngSegment);
-                			LoggerUtils.debug("Decoded params " + lat + "," + lng);
+                			LoggerUtils.debug("Decoded params " + latSegment + "," + lngSegment + " to " + lat + "," + lng);
                 		} catch (Exception e) {
                 			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getPathSegments().get(length-1));
                 		}
