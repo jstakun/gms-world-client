@@ -222,7 +222,7 @@ public class StringUtil {
     		for (char c : val.toCharArray()) {
     			sb.append((char)((int)c - 64));
     		}
-    		return new Double(sb.toString()) / 1E6;
+    		return Double.parseDouble(sb.toString()) / 1E6;
     	} else {
     		return null;
     	}
