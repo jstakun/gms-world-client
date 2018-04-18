@@ -64,7 +64,7 @@ public class GMSClientDispatchActivity extends Activity {
                 		try {
                 			String latSegment = data.getPathSegments().get(length-2);
                 			lat = StringUtil.decode(latSegment);
-                			String lngSegment = StringUtils.split(data.getPathSegments().get(length-1), ";jsessionid=")[0]; 
+                			String lngSegment = StringUtils.split(data.getPathSegments().get(length-1), ";")[0]; 
                 			lng = StringUtil.decode(lngSegment);
                 			LoggerUtils.debug("Decoded params " + latSegment + "," + lngSegment + " to " + lat + "," + lng);
                 		} catch (Exception e) {
