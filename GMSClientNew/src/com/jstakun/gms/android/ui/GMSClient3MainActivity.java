@@ -90,8 +90,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 	private GoogleMap mMap;
 	private GoogleRoutesOverlay routesCluster;
 	
-	private Handler loadingHandler;
-	private Messenger mMessenger;
+	private final Handler loadingHandler = new LoadingHandler(this);    
+	private final Messenger mMessenger = new Messenger(loadingHandler);
 	
 	private TextView statusBar;
     private View lvCloseButton, lvCallButton, lvCommentButton, 
@@ -164,10 +164,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
            
-        loadingHandler = new LoadingHandler(this);
-        
-        mMessenger = new Messenger(loadingHandler);
-        
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         
         if (mapFragment == null) {

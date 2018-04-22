@@ -78,8 +78,8 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
     
     private boolean isAppInitialized = false, isRouteTrackingServiceBound = false;
     
-    private Handler loadingHandler;
-    private Messenger mMessenger; 
+    private final Handler loadingHandler = new LoadingHandler(this);
+    private final Messenger mMessenger = new Messenger(loadingHandler);  
 	
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -146,10 +146,6 @@ public class GMSClientOSMMainActivity extends Activity implements OnClickListene
         
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        loadingHandler = new LoadingHandler(this);
-        
-        mMessenger = new Messenger(loadingHandler); 
-        
         setContentView(R.layout.osmdroidcanvasview);
         mapView = (MapView) findViewById(R.id.mapCanvas);
         mapView.setMultiTouchControls(true);

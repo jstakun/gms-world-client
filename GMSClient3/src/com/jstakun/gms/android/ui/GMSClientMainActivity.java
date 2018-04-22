@@ -82,9 +82,9 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     private int mapProvider;
     private boolean isAppInitialized = false, isRouteDisplayed = false, isRouteTrackingServiceBound = false;
     
-    private Handler loadingHandler;
-    private Messenger mMessenger; 
-	
+    private final Handler loadingHandler = new LoadingHandler(this);
+    private final Messenger mMessenger = new Messenger(loadingHandler); 
+    
     private ServiceConnection mConnection = new ServiceConnection() {
 
 		@Override
@@ -153,10 +153,6 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
-        loadingHandler = new LoadingHandler(this);
-        
-        mMessenger = new Messenger(loadingHandler); 
-
         LoggerUtils.debug("Map provider is " + mapProvider);
 
         if (mapProvider == ConfigurationManager.OSM_MAPS) {

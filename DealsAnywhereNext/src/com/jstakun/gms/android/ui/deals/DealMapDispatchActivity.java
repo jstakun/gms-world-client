@@ -25,7 +25,6 @@ public class DealMapDispatchActivity extends Activity {
 
         boolean abort = false;
 
-
         try {
             super.onCreate(icicle);
         } catch (Throwable t) {

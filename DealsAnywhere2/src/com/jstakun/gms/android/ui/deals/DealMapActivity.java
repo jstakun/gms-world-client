@@ -73,7 +73,8 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
     private boolean isStopped = false, appInitialized = false, isRouteDisplayed = false;
    
     //Handlers
-    private Handler loadingHandler;
+    private final Handler loadingHandler = new LoadingHandler(this);
+    
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = myLocation.getMyLocation();
@@ -108,7 +109,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         ConfigurationManager.getInstance().setContext(this);
         
         OsUtil.setDisplayType(getResources().getConfiguration()); 
-        loadingHandler = new LoadingHandler(this);
         
         setContentView(R.layout.mapcanvasview);
         

@@ -95,8 +95,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     
     private boolean isAppInitialized = false, isRouteTrackingServiceBound = false;
     
-    private  Handler loadingHandler;
-    private Messenger mMessenger;
+    private final Handler loadingHandler = new LoadingHandler(this);
+    private final Messenger mMessenger = new Messenger(loadingHandler);
+;
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
@@ -166,11 +167,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         OsUtil.setDisplayType(getResources().getConfiguration());
         getActionBar().hide();
-        
-        loadingHandler = new LoadingHandler(this);
-        
-        mMessenger = new Messenger(loadingHandler);
-        
+                
         LoggerUtils.debug("Map provider is OSM");
 
         setContentView(R.layout.osmdroidcanvasview_2);

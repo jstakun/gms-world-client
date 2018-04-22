@@ -83,8 +83,10 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
     private ProgressBar loadingProgressBar;
     
     private boolean isStopped = false, appInitialized = false, isRouteDisplayed = false;
+    
     //Handlers
-    private Handler loadingHandler;
+    private final Handler loadingHandler = new LoadingHandler(this);;
+    
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
             GeoPoint location = getMyLocation();
@@ -193,8 +195,6 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         drawerLayout.setDrawerListener(drawerToggle);
         
         ((ObservableMapView) mapView).setOnZoomChangeListener(new ZoomListener());
-        
-        loadingHandler = new LoadingHandler(this);
         
         myLocation = new GoogleMyLocationOverlay(this, mapView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
 

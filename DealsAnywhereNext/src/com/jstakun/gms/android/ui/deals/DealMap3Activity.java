@@ -92,10 +92,9 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	private GoogleMap mMap;
 	private GoogleRoutesOverlay routesCluster;
 	
-    
     private boolean appInitialized = false;
     
-    private Handler loadingHandler;
+    private final Handler loadingHandler = new LoadingHandler(this);;
     
     private GoogleMap.OnCameraChangeListener mOnCameraChangeListener = new GoogleMap.OnCameraChangeListener() {
 		
@@ -132,8 +131,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-		
-		loadingHandler = new LoadingHandler(this);
         
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         
@@ -182,6 +179,8 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         
         appInitialized = false;
                 
+        loadingProgressBar.setProgress(50);
+
         if (!CategoriesManager.getInstance().isInitialized()) {
         	LoggerUtils.debug("Loading deal categories...");
         	AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
@@ -195,7 +194,6 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         	loadingHandler.sendEmptyMessageDelayed(PICK_LOCATION, ConfigurationManager.FIVE_SECONDS);
         }
         
-        loadingProgressBar.setProgress(50);
 	}
 
 	@Override

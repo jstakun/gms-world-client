@@ -87,7 +87,7 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
     private boolean appAbort = false, isStopped = false, appInitialized = false, isRouteDisplayed = false;
     
     //Handlers
-    private Handler loadingHandler;
+    private final Handler loadingHandler = new LoadingHandler(this);
     
     private final Runnable gpsRunnable = new Runnable() {
         public void run() {
@@ -130,8 +130,6 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
 
             setContentView(R.layout.mapcanvasview_amz);
             
-            loadingHandler = new LoadingHandler(this);
-
             initComponents();
         }
     }

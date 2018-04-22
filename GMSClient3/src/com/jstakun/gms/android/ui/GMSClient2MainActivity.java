@@ -97,8 +97,8 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
     private int mapProvider;
     private boolean isAppInitialized = false, isRouteDisplayed = false, isRouteTrackingServiceBound = false; 
     
-    private Handler loadingHandler;
-    private Messenger mMessenger;  
+    private final Handler loadingHandler = new LoadingHandler(this);
+    private Messenger mMessenger = new Messenger(loadingHandler);  
 	
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -167,11 +167,7 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         OsUtil.setDisplayType(getResources().getConfiguration());
-        
-        loadingHandler = new LoadingHandler(this);
-        
-        mMessenger = new Messenger(loadingHandler); 
-        
+            
         LoggerUtils.debug("Map provider is " + mapProvider);
 
         //System.out.println("1. --------------------------------");
