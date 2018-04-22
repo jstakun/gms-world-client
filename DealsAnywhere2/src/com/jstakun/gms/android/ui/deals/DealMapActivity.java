@@ -165,12 +165,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         
         myLocation = new GoogleMyLocationOverlay(this, mapView, loadingHandler, getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
 
-        GeoPoint mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
-
-        if (mapCenter == null) {
-            loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
-        }
-
         mapController = mapView.getController();
         mapController.setZoom(ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM));
 
@@ -180,10 +174,29 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
             LoggerUtils.debug("Loading deal categories...");
             AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
+        
+        loadingProgressBar.setProgress(50);
+        
+        GeoPoint mapCenter = null;
+        
+        Bundle bundle = getIntent().getExtras();
+        
+        if (bundle != null) {
+        	Double lat = bundle.getDouble("lat");
+        	Double lng = bundle.getDouble("lng");
+        	if (lat != null && lng != null) {
+        		mapCenter = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
+        	}
+        }
+        
+        if (mapCenter == null) {
+        	mapCenter = (GeoPoint) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, GeoPoint.class);
+        }
 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
             initOnLocationChanged(mapCenter);
         } else {
+            loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
             myLocation.runOnFirstFix(new Runnable() {
                 public void run() {
                     if (!appInitialized) {
@@ -192,8 +205,6 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
                 }
             });
         }
-        
-        loadingProgressBar.setProgress(50);
     }
 
     @Override

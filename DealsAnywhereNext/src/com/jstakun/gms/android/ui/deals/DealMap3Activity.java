@@ -179,21 +179,34 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         
         appInitialized = false;
                 
-        loadingProgressBar.setProgress(50);
-
         if (!CategoriesManager.getInstance().isInitialized()) {
         	LoggerUtils.debug("Loading deal categories...");
         	AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
 
-        LatLng mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
+        loadingProgressBar.setProgress(50);
+
+        LatLng mapCenter = null;
+        
+        Bundle bundle = getIntent().getExtras();
+        
+        if (bundle != null) {
+        	Double lat = bundle.getDouble("lat");
+        	Double lng = bundle.getDouble("lng");
+        	if (lat != null && lng != null) {
+        		mapCenter = new LatLng(lat, lng);
+        	}
+        }
+        
+        if (mapCenter == null) {
+        	mapCenter = (LatLng) ConfigurationManager.getInstance().getObject(ConfigurationManager.MAP_CENTER, LatLng.class);
+        }
         
         if (mapCenter != null) {
         	initOnLocationChanged(mapCenter, 2);
         } else {
         	loadingHandler.sendEmptyMessageDelayed(PICK_LOCATION, ConfigurationManager.FIVE_SECONDS);
         }
-        
 	}
 
 	@Override
