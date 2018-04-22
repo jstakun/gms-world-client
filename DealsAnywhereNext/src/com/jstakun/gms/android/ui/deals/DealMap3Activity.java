@@ -414,6 +414,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 if (mMap != null) {
                     zoom = (int)mMap.getCameraPosition().zoom;
                 }
+                IntentsHelper.getInstance().setActivity(this);
                 IntentsHelper.getInstance().loadLayersAction(true, null, false, false, location.latitude, location.longitude, zoom, projection);               
             } else {
                 //load existing layers
