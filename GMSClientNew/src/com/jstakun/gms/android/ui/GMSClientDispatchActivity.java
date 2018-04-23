@@ -75,11 +75,11 @@ public class GMSClientDispatchActivity extends Activity {
                 	} else {
                 		String schemePart = data.getEncodedSchemeSpecificPart();
                 		try {
-                			//Toast.makeText(this, "Received input: " + schemePart + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG).show();;
+                			Toast.makeText(this, "Received input: " + schemePart + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG).show();;
                 			String[] coords = StringUtils.split(schemePart,",");
                     		if (coords != null && coords.length == 2) {
-                    			lat = Double.valueOf(StringUtils.trim(coords[0]));
-                				lng = Double.valueOf(StringUtils.trim(coords[1]));
+                    			lat = Double.parseDouble(StringUtils.trim(coords[0]));
+                				lng = Double.parseDouble(StringUtils.trim(coords[1]));
                     		}
                 		} catch (Throwable e) {
                 			LoggerUtils.debug("Unable to decode geo:" + schemePart);
