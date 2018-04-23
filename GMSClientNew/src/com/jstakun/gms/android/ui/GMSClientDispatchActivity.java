@@ -65,25 +65,25 @@ public class GMSClientDispatchActivity extends Activity {
                 		try {
                 			String latSegment = data.getPathSegments().get(length-2);
                 			lat = StringUtil.decode(latSegment);
-                			String lngSegment = StringUtils.split(data.getPathSegments().get(length-1), ";")[0]; 
+                			String lngSegment = StringUtils.split(data.getLastPathSegment(), ";")[0]; 
                 			lng = StringUtil.decode(lngSegment);
                 			LoggerUtils.debug("Decoded params " + latSegment + "," + lngSegment + " to " + lat + "," + lng);
                 		} catch (Exception e) {
-                			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getPathSegments().get(length-1));
+                			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getLastPathSegment());
                 		}
                 	} else {
-                		String[] coords = host.split(",");
-                		if (coords.length == 2) {
-                			try {
-                				lat = Double.valueOf(coords[0].trim());
+                		try {
+                			String[] coords = data.getEncodedSchemeSpecificPart().split(",");
+                    		if (coords.length == 2) {
+                    			lat = Double.valueOf(coords[0].trim());
                 				lng = Double.valueOf(coords[1].trim());
                 				String q = data.getQueryParameter("q");
                 				if (q != null) {
                 					query = Uri.decode(q);
                 				}
-                			} catch (Exception e) {
-                				LoggerUtils.debug("Unable to decode " + host);
-                			}
+                    		}
+                		} catch (Exception e) {
+                			LoggerUtils.debug("Unable to decode " + data.getEncodedSchemeSpecificPart());
                 		}
                 	}
                 }
