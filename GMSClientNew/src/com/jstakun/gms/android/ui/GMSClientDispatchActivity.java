@@ -60,7 +60,7 @@ public class GMSClientDispatchActivity extends Activity {
                 	String scheme = data.getScheme(); 
                 	String host = data.getHost();
                 	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
-                	int length = data.getPathSegments().size();
+                	int length = data.getPathSegments() != null ? data.getPathSegments().size() : 0;
                 	if (length > 2) {
                 		try {
                 			String latSegment = data.getPathSegments().get(length-2);
