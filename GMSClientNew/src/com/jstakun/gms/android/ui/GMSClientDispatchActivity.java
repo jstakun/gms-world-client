@@ -78,10 +78,10 @@ public class GMSClientDispatchActivity extends Activity {
                 			//Toast.makeText(this, "Received input: " + schemePart + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG).show();;
                 			String[] coords = StringUtils.split(schemePart,",");
                     		if (coords != null && coords.length == 2) {
-                    			lat = Double.valueOf(coords[0].trim());
-                				lng = Double.valueOf(coords[1].trim());
+                    			lat = Double.valueOf(StringUtils.trim(coords[0]));
+                				lng = Double.valueOf(StringUtils.trim(coords[1]));
                     		}
-                		} catch (Exception e) {
+                		} catch (Throwable e) {
                 			LoggerUtils.debug("Unable to decode geo:" + schemePart);
                 		}
                 	}
