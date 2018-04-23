@@ -73,15 +73,16 @@ public class GMSClientDispatchActivity extends Activity {
                 			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getLastPathSegment());
                 		}
                 	} else {
+                		String schemePart = data.getEncodedSchemeSpecificPart();
                 		try {
-                			Toast.makeText(this, "Received input: " + data.getEncodedSchemeSpecificPart() + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG).show();;
-                			//String[] coords = data.getEncodedSchemeSpecificPart().split(",");
-                    		//if (coords != null && coords.length == 2) {
-                    		//	lat = Double.valueOf(coords[0].trim());
-                			//	lng = Double.valueOf(coords[1].trim());
-                    		//}
+                			//Toast.makeText(this, "Received input: " + schemePart + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG).show();;
+                			String[] coords = StringUtils.split(schemePart,",");
+                    		if (coords != null && coords.length == 2) {
+                    			lat = Double.valueOf(coords[0].trim());
+                				lng = Double.valueOf(coords[1].trim());
+                    		}
                 		} catch (Exception e) {
-                			LoggerUtils.debug("Unable to decode geo:" + data.getEncodedSchemeSpecificPart());
+                			LoggerUtils.debug("Unable to decode geo:" + schemePart);
                 		}
                 	}
                 }
