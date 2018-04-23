@@ -54,6 +54,7 @@ public class GMSClientDispatchActivity extends Activity {
                 ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, System.currentTimeMillis());
                 
                 Double lat = null, lng = null;
+                String query = null;
                 Uri data = intent.getData();
                 if (data != null) {
                 	String scheme = data.getScheme(); 
@@ -70,6 +71,20 @@ public class GMSClientDispatchActivity extends Activity {
                 		} catch (Exception e) {
                 			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getPathSegments().get(length-1));
                 		}
+                	} else {
+                		String[] coords = host.split(",");
+                		if (coords.length == 2) {
+                			try {
+                				lat = Double.valueOf(coords[0].trim());
+                				lng = Double.valueOf(coords[1].trim());
+                				String q = data.getQueryParameter("q");
+                				if (q != null) {
+                					query = Uri.decode(q);
+                				}
+                			} catch (Exception e) {
+                				LoggerUtils.debug("Unable to decode " + host);
+                			}
+                		}
                 	}
                 }
                 
@@ -85,6 +100,9 @@ public class GMSClientDispatchActivity extends Activity {
                     if (lat != null && lng != null) {
                     	mapActivity.putExtra("lat", lat);
                     	mapActivity.putExtra("lng", lng);
+                    	if (query != null) {
+                    		mapActivity.putExtra("query", query);
+                    	}
                     }
                     startActivity(mapActivity);
                 } else {
