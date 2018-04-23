@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
 /**
  *
@@ -59,8 +60,8 @@ public class GMSClientDispatchActivity extends Activity {
                 if (data != null) {
                 	String scheme = data.getScheme(); 
                 	String host = data.getHost();
-                	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
                 	int length = data.getPathSegments() != null ? data.getPathSegments().size() : 0;
+                	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
                 	if (length > 2) {
                 		try {
                 			String latSegment = data.getPathSegments().get(length-2);
@@ -73,11 +74,12 @@ public class GMSClientDispatchActivity extends Activity {
                 		}
                 	} else {
                 		try {
-                			String[] coords = data.getEncodedSchemeSpecificPart().split(",");
-                    		if (coords.length == 2) {
-                    			lat = Double.valueOf(coords[0].trim());
-                				lng = Double.valueOf(coords[1].trim());
-                    		}
+                			Toast.makeText(this, "Received input: " + data.getEncodedSchemeSpecificPart() + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG);
+                			//String[] coords = data.getEncodedSchemeSpecificPart().split(",");
+                    		//if (coords != null && coords.length == 2) {
+                    		//	lat = Double.valueOf(coords[0].trim());
+                			//	lng = Double.valueOf(coords[1].trim());
+                    		//}
                 		} catch (Exception e) {
                 			LoggerUtils.debug("Unable to decode geo:" + data.getEncodedSchemeSpecificPart());
                 		}
