@@ -74,7 +74,7 @@ public class GMSClientDispatchActivity extends Activity {
                 		}
                 	} else {
                 		try {
-                			Toast.makeText(this, "Received input: " + data.getEncodedSchemeSpecificPart() + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG);
+                			Toast.makeText(this, "Received input: " + data.getEncodedSchemeSpecificPart() + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG).show();;
                 			//String[] coords = data.getEncodedSchemeSpecificPart().split(",");
                     		//if (coords != null && coords.length == 2) {
                     		//	lat = Double.valueOf(coords[0].trim());
