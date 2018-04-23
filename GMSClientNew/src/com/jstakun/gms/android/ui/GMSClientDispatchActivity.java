@@ -77,13 +77,9 @@ public class GMSClientDispatchActivity extends Activity {
                     		if (coords.length == 2) {
                     			lat = Double.valueOf(coords[0].trim());
                 				lng = Double.valueOf(coords[1].trim());
-                				String q = data.getQueryParameter("q");
-                				if (q != null) {
-                					query = Uri.decode(q);
-                				}
                     		}
                 		} catch (Exception e) {
-                			LoggerUtils.debug("Unable to decode " + data.getEncodedSchemeSpecificPart());
+                			LoggerUtils.debug("Unable to decode geo:" + data.getEncodedSchemeSpecificPart());
                 		}
                 	}
                 }
@@ -100,6 +96,14 @@ public class GMSClientDispatchActivity extends Activity {
                     if (lat != null && lng != null) {
                     	mapActivity.putExtra("lat", lat);
                     	mapActivity.putExtra("lng", lng);
+                    	try {
+                    		String q = data.getQueryParameter("q");
+                    		if (StringUtils.isNotEmpty(q)) {
+                    			query = Uri.decode(q);
+                    		}
+                    	} catch (Exception e) {
+                    		LoggerUtils.debug("Unble to decode query " + data.getQueryParameter("q"));
+                    	}
                     	if (query != null) {
                     		mapActivity.putExtra("query", query);
                     	}
