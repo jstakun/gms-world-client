@@ -102,7 +102,7 @@ public class GMSClientDispatchActivity extends Activity {
                     			query = Uri.decode(q);
                     		}
                     	} catch (Exception e) {
-                    		LoggerUtils.debug("Unble to decode query " + data.getQueryParameter("q"));
+                    		LoggerUtils.debug("Unable to decode query " + data.getQueryParameter("q"));
                     	}
                     	if (query != null) {
                     		mapActivity.putExtra("query", query);
