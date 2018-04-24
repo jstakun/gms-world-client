@@ -107,13 +107,25 @@ public class GMSClientDispatchActivity extends Activity {
                 			String q = data.getQueryParameter("q");
                 			if (StringUtils.isNotEmpty(q)) {
                 				query = Uri.decode(q);
-                				//Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
+                				Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
                 			}
                 		} else {
                 			LoggerUtils.debug("This is non hierarchical uri");
+                			String[] decomposed = StringUtils.split(schemePart, "?");
+                    		if (decomposed.length == 2) {
+                    			String queryString = Uri.decode(decomposed[1]);
+                    			String[] params = StringUtils.split(queryString, "&");
+                    			for (int i=0;i<params.length;i++) {
+                    				if (params[i].startsWith("q=")) {
+                    					query = params[i].substring(2);
+                    					Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
+                    					break;
+                    				}
+                    			}
+                    		}
                 		}
                 	} catch (Exception e) {
-                		LoggerUtils.debug("Unable to decode query " + data.getQueryParameter("q"));
+                		LoggerUtils.debug("Unable to decode query from " + schemePart);
                 	}
                 }
                 
