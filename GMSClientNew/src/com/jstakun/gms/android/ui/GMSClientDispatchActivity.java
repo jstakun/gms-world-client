@@ -88,14 +88,15 @@ public class GMSClientDispatchActivity extends Activity {
                     			}
                     			if (!StringUtils.equals(latStr, "0") && !StringUtils.equals(lngStr, "0") && NumberUtils.isNumber(latStr) && NumberUtils.isNumber(lngStr)) {
                     				try {		
-                    					LoggerUtils.debug("Decoding: " + latStr + " " + lngStr);
+                    					LoggerUtils.debug("Decoded: " + latStr + " " + lngStr);
                     					lat = Double.parseDouble(latStr);
                     					lng = Double.parseDouble(lngStr);
                     				} catch (NumberFormatException e) {
                     					LoggerUtils.debug("Failed to decode: " + latStr + " " + lngStr);
                     				}
                     			} else {
-                    				LoggerUtils.debug("Failed to decode: " + latStr + " " + lngStr);
+                    				LoggerUtils.debug("Unable to decode: " + latStr + " " + lngStr);
+                    				lat = lng = null;
                     			}
                     		}
                     		
@@ -121,7 +122,7 @@ public class GMSClientDispatchActivity extends Activity {
                         		}
                     		}
                 		} catch (Throwable e) {
-                			LoggerUtils.debug("Unable to decode geo:" + schemePart);
+                			LoggerUtils.debug("Unable to decode geo " + schemePart);
                 		}
                 	}
                 }
