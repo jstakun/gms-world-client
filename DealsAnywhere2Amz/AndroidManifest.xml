@@ -44,6 +44,12 @@
             	<data android:scheme="https" android:host="www.gms-world.net" android:pathPrefix="/showLandmark/"/>
             	<data android:scheme="https" android:host="www.gms-world.net" android:pathPrefix="/showLocation/" />
         	</intent-filter>
+        	<intent-filter>
+        		<action android:name="android.intent.action.VIEW" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        		<category android:name="android.intent.category.BROWSABLE" />
+            	<data android:scheme="geo" />
+    		</intent-filter>
             <meta-data android:name="android.app.default_searchable" android:value="com.jstakun.gms.android.ui.GMSSearchActivity"/>
         </activity>
         <activity-alias android:name=".CreateShortcut" android:targetActivity=".DealMapDispatchActivity"

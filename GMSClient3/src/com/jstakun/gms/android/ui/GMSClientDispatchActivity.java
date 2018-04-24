@@ -50,27 +50,7 @@ public class GMSClientDispatchActivity extends Activity {
                 LoggerUtils.debug("Last startup time is: " + DateTimeUtils.getDefaultDateTimeString(lastStartupTime, ConfigurationManager.getInstance().getCurrentLocale()));
                 ConfigurationManager.getInstance().putLong(ConfigurationManager.LAST_STARTING_DATE, System.currentTimeMillis());
                 
-                Double lat = null, lng = null;
-                Uri data = intent.getData();
-                if (data != null) {
-                	String scheme = data.getScheme(); 
-                	String host = data.getHost();
-                	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
-                	int length = data.getPathSegments().size();
-                	if (length > 2) {
-                		try {
-                			String latSegment = data.getPathSegments().get(length-2);
-                			lat = StringUtil.decode(latSegment);
-                			String lngSegment = StringUtils.split(data.getPathSegments().get(length-1), ";")[0]; 
-                			lng = StringUtil.decode(lngSegment);
-                			LoggerUtils.debug("Decoded params " + latSegment + "," + lngSegment + " to " + lat + "," + lng);
-                		} catch (Exception e) {
-                			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getPathSegments().get(length-1));
-                		}
-                	}
-                }
-                
-            	Intent mapActivity;
+                Intent mapActivity;
                 if (OsUtil.isHoneycombOrHigher()) {
                     if (OsUtil.isGoogleMapActivityInstalled() && OsUtil.hasSystemSharedLibraryInstalled(this, "com.google.android.maps")) {
                     	mapActivity = new Intent(this, GMSClient2MainActivity.class);
@@ -86,10 +66,7 @@ public class GMSClientDispatchActivity extends Activity {
                         mapActivity = new Intent(this, GMSClientOSMMainActivity.class);
                     }
                 }
-                if (lat != null && lng != null) {
-                	mapActivity.putExtra("lat", lat);
-                	mapActivity.putExtra("lng", lng);
-                }
+                IntentsHelper.getInstance().parseIntentData(intent, mapActivity);
                 startActivity(mapActivity);
             }
         }

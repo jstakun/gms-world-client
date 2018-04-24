@@ -100,6 +100,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     
     private boolean isAppInitialized = false, isRouteTrackingServiceBound = false;
     
+    private String query;
+    
     private final Handler loadingHandler = new LoadingHandler(this);
     private final Messenger mMessenger = new Messenger(loadingHandler);
     
@@ -299,6 +301,13 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         	 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_INITIAL);
+        }
+        
+        if (bundle != null) {
+        	query = bundle.getString("query", null);
+        	if (query != null) {
+        		onSearchRequested();
+        	}
         }
     }
 
@@ -538,7 +547,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     @Override
     public boolean onSearchRequested() {
         if (isAppInitialized) {
-            IntentsHelper.getInstance().startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), null, -1, false);
+            IntentsHelper.getInstance().startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), query, -1, false);
             return true;
         } else {
             return false;

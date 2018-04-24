@@ -102,6 +102,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
    
     private boolean appInitialized = false, isRouteTrackingServiceBound = false;
     
+    private String query;
+    
     private GoogleMap.OnCameraChangeListener mOnCameraChangeListener = new GoogleMap.OnCameraChangeListener() {
 		
 		@Override
@@ -239,6 +241,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	initOnLocationChanged(mapCenter, 2);
         } else {
         	loadingHandler.sendEmptyMessageDelayed(PICK_LOCATION, ConfigurationManager.FIVE_SECONDS);
+        }
+        
+        if (bundle != null) {
+        	query = bundle.getString("query", null);
+        	if (query != null) {
+        		onSearchRequested();
+        	}
         }
         
         //reqest for permissions
@@ -405,7 +414,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public boolean onSearchRequested() {
     	if (appInitialized) {
             IntentsHelper.getInstance().startSearchActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
-            		MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), null, -1, false);
+            		MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), query, -1, false);
             return true;
         } else {
             return false;

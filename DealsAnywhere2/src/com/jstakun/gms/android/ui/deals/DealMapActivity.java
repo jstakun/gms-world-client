@@ -182,9 +182,9 @@ public class DealMapActivity extends MapActivity implements OnClickListener {
         Bundle bundle = getIntent().getExtras();
         
         if (bundle != null) {
-        	Double lat = bundle.getDouble("lat");
-        	Double lng = bundle.getDouble("lng");
-        	if (lat != null && lng != null) {
+        	Double lat = bundle.getDouble("lat", 0.0);
+        	Double lng = bundle.getDouble("lng", 0.0);
+        	if (lat != 0d && lng != 0d) {
         		mapCenter = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
         	}
         }
