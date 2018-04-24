@@ -76,7 +76,6 @@ public class GMSClientDispatchActivity extends Activity {
                 	} else {
                 		String schemePart = data.getEncodedSchemeSpecificPart();
                 		try {
-                			Toast.makeText(this, "Received input: " + schemePart + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG).show();;
                 			String[] coords = StringUtils.split(schemePart,",");
                     		if (coords != null && coords.length == 2) {
                     			String latStr = coords[0];
@@ -88,9 +87,11 @@ public class GMSClientDispatchActivity extends Activity {
                     			}
                     			if (NumberUtils.isNumber(latStr) && NumberUtils.isNumber(lngStr)) {
                     				try {		
+                    					LoggerUtils.debug("Decoding: " + latStr + " " + lngStr);
                     					lat = Double.parseDouble(latStr);
                     					lng = Double.parseDouble(lngStr);
-                    				} catch (NumberFormatException e) {
+                    					//Toast.makeText(this, "Received input: " + latStr + "," + lngStr, Toast.LENGTH_LONG).show();
+                            		} catch (NumberFormatException e) {
                     					LoggerUtils.debug("Failed to decode: " + latStr + " " + lngStr);
                     				}
                     			} else {
@@ -116,9 +117,11 @@ public class GMSClientDispatchActivity extends Activity {
                     	mapActivity.putExtra("lat", lat);
                     	mapActivity.putExtra("lng", lng);
                     	try {
-                    		String q = data.getQueryParameter("q");
-                    		if (StringUtils.isNotEmpty(q)) {
-                    			query = Uri.decode(q);
+                    		if (data.isHierarchical()) {
+                    			String q = data.getQueryParameter("q");
+                    			if (StringUtils.isNotEmpty(q)) {
+                    				query = Uri.decode(q);
+                    			}
                     		}
                     	} catch (Exception e) {
                     		LoggerUtils.debug("Unable to decode query " + data.getQueryParameter("q"));
