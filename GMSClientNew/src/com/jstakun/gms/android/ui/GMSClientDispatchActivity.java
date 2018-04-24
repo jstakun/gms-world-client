@@ -86,7 +86,7 @@ public class GMSClientDispatchActivity extends Activity {
                     			} else if (StringUtils.contains(coords[1], "?")) {
                     				lngStr = StringUtils.split(coords[1], "?")[0];
                     			}
-                    			if (!StringUtils.equals(latStr, "0") && !StringUtils.equals(lngStr, "0") && NumberUtils.isNumber(latStr) && NumberUtils.isNumber(lngStr)) {
+                    			if (NumberUtils.isNumber(latStr) && NumberUtils.isNumber(lngStr)) {
                     				try {		
                     					LoggerUtils.debug("Decoded: " + latStr + " " + lngStr);
                     					lat = Double.parseDouble(latStr);
@@ -136,7 +136,7 @@ public class GMSClientDispatchActivity extends Activity {
                         ConfigurationManager.getInstance().putInteger(ConfigurationManager.MAP_PROVIDER, ConfigurationManager.OSM_MAPS);
                         mapActivity = new Intent(this, GMSClient2OSMMainActivity.class);
                     }
-                    if (lat != null && lng != null) {
+                    if (lat != null && lat != 0d && lng != null && lng != 0d) {
                     	mapActivity.putExtra("lat", lat);
                     	mapActivity.putExtra("lng", lng);
                     }
