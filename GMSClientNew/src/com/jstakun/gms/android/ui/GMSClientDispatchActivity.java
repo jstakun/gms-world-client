@@ -107,8 +107,10 @@ public class GMSClientDispatchActivity extends Activity {
                 			String q = data.getQueryParameter("q");
                 			if (StringUtils.isNotEmpty(q)) {
                 				query = Uri.decode(q);
-                				Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
+                				//Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
                 			}
+                		} else {
+                			LoggerUtils.debug("This is non hierarchical uri");
                 		}
                 	} catch (Exception e) {
                 		LoggerUtils.debug("Unable to decode query " + data.getQueryParameter("q"));
