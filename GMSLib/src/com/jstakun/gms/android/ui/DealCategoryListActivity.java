@@ -134,7 +134,7 @@ public class DealCategoryListActivity extends ListActivity implements View.OnCli
 
     @Override
     public boolean onSearchRequested() {
-    	IntentsHelper.getInstance().startSearchActivity(lat, lng, radius, true);
+    	IntentsHelper.getInstance().startSearchActivity(lat, lng, null, radius, true);
         return true;
     }
 

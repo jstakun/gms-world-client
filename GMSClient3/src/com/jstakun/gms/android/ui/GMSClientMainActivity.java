@@ -486,7 +486,7 @@ public class GMSClientMainActivity extends MapActivity implements OnClickListene
     @Override
     public boolean onSearchRequested() {
         if (isAppInitialized) {
-            IntentsHelper.getInstance().startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), -1, false);
+            IntentsHelper.getInstance().startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), null, -1, false);
             return true;
         } else {
             return false;

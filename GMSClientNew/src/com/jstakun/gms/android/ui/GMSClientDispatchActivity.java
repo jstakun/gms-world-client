@@ -75,7 +75,8 @@ public class GMSClientDispatchActivity extends Activity {
                 		}
                 	} else {
                 		String schemePart = data.getEncodedSchemeSpecificPart();
-                		try {
+                		LoggerUtils.debug("Decoding: " + schemePart);
+    					try {
                 			String[] coords = StringUtils.split(schemePart,",");
                     		if (coords != null && coords.length == 2) {
                     			String latStr = coords[0];
@@ -115,21 +116,21 @@ public class GMSClientDispatchActivity extends Activity {
                     if (lat != null && lng != null) {
                     	mapActivity.putExtra("lat", lat);
                     	mapActivity.putExtra("lng", lng);
-                    	try {
-                    		if (data.isHierarchical()) {
-                    			String q = data.getQueryParameter("q");
-                    			if (StringUtils.isNotEmpty(q)) {
-                    				query = Uri.decode(q);
-                    				Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
-                    			}
-                    		}
-                    	} catch (Exception e) {
-                    		LoggerUtils.debug("Unable to decode query " + data.getQueryParameter("q"));
-                    	}
-                    	if (query != null) {
-                    		mapActivity.putExtra("query", query);
-                    	}
                     }
+                    try {
+                		if (data.isHierarchical()) {
+                			String q = data.getQueryParameter("q");
+                			if (StringUtils.isNotEmpty(q)) {
+                				query = Uri.decode(q);
+                				//Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
+                			}
+                		}
+                	} catch (Exception e) {
+                		LoggerUtils.debug("Unable to decode query " + data.getQueryParameter("q"));
+                	}
+                	if (query != null) {
+                		mapActivity.putExtra("query", query);
+                	}
                     startActivity(mapActivity);
                 } else {
                 	IntentsHelper.getInstance().showInfoToast("This application requires Android 3.0 or higher to run!");

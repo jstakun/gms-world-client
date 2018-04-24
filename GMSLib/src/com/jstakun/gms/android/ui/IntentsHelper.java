@@ -1098,7 +1098,7 @@ public final class IntentsHelper {
         return response;
     }
 
-    public void startSearchActivity(int cursorLatitude, int cursorLongitude, int radius, boolean isDeal) {
+    public void startSearchActivity(int cursorLatitude, int cursorLongitude, String initialQuery, int radius, boolean isDeal) {
         Bundle appData = new Bundle();
         if (isDeal) {
             appData.putString("type", GMSSearchActivity.TYPE.DEALS.name());
@@ -1110,7 +1110,7 @@ public final class IntentsHelper {
         } else {
             appData.putInt("radius", radius);
         }
-        activity.startSearch(null, false, appData, false);
+        activity.startSearch(initialQuery, false, appData, false);
     }
 
     public void onAppVersionChanged() {
