@@ -223,9 +223,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         Bundle bundle = getIntent().getExtras();
         
         if (bundle != null) {
-        	Double lat = bundle.getDouble("lat");
-        	Double lng = bundle.getDouble("lng");
-        	if (lat != null && lng != null) {
+        	Double lat = bundle.getDouble("lat", 0.0);
+        	Double lng = bundle.getDouble("lng", 0.0);
+        	if (lat != 0d && lng != 0d) {
         		mapCenter = new LatLng(lat, lng);
         		LoggerUtils.debug("Setting map center to " + lat + "," + lng);
         	}
