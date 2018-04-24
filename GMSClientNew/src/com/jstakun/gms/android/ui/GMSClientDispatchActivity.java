@@ -98,34 +98,31 @@ public class GMSClientDispatchActivity extends Activity {
                     				LoggerUtils.debug("Failed to decode: " + latStr + " " + lngStr);
                     			}
                     		}
+                    		
+                    		if (data.isHierarchical()) {
+                    			String q = data.getQueryParameter("q");
+                    			if (StringUtils.isNotEmpty(q)) {
+                    				query = Uri.decode(q);
+                    				//Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
+                    			}
+                    		} else {
+                    			LoggerUtils.debug("This is non hierarchical uri " + schemePart);
+                    			String[] decomposed = StringUtils.split(schemePart, "?");
+                        		if (decomposed.length == 2) {
+                        			String queryString = Uri.decode(decomposed[1]);
+                        			String[] params = StringUtils.split(queryString, "&");
+                        			for (int i=0;i<params.length;i++) {
+                        				if (params[i].startsWith("q=")) {
+                        					query = Uri.decode(params[i].substring(2));
+                        					Toast.makeText(this, "Search query decoded: " + query + " from " + schemePart, Toast.LENGTH_LONG).show();
+                        					break;
+                        				}
+                        			}
+                        		}
+                    		}
                 		} catch (Throwable e) {
                 			LoggerUtils.debug("Unable to decode geo:" + schemePart);
                 		}
-                	}
-                	try {
-                		if (data.isHierarchical()) {
-                			String q = data.getQueryParameter("q");
-                			if (StringUtils.isNotEmpty(q)) {
-                				query = Uri.decode(q);
-                				Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
-                			}
-                		} else {
-                			LoggerUtils.debug("This is non hierarchical uri");
-                			String[] decomposed = StringUtils.split(schemePart, "?");
-                    		if (decomposed.length == 2) {
-                    			String queryString = Uri.decode(decomposed[1]);
-                    			String[] params = StringUtils.split(queryString, "&");
-                    			for (int i=0;i<params.length;i++) {
-                    				if (params[i].startsWith("q=")) {
-                    					query = params[i].substring(2);
-                    					Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
-                    					break;
-                    				}
-                    			}
-                    		}
-                		}
-                	} catch (Exception e) {
-                		LoggerUtils.debug("Unable to decode query from " + schemePart);
                 	}
                 }
                 
