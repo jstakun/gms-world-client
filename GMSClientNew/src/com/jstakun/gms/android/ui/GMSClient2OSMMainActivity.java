@@ -548,8 +548,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     public boolean onSearchRequested() {
         if (isAppInitialized) {
             IntentsHelper.getInstance().startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), query, -1, false);
+            query = null;
             return true;
         } else {
+        	query = null;
             return false;
         }
     }

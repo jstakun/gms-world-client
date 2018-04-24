@@ -415,8 +415,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     	if (appInitialized) {
             IntentsHelper.getInstance().startSearchActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
             		MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), query, -1, false);
+            query = null;
             return true;
         } else {
+        	query = null;
             return false;
         }
     }
