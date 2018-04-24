@@ -61,7 +61,8 @@ public class GMSClientDispatchActivity extends Activity {
                 if (data != null) {
                 	String scheme = data.getScheme(); 
                 	String host = data.getHost();
-                	int length = data.getPathSegments() != null ? data.getPathSegments().size() : 0;
+                	String schemePart = data.getEncodedSchemeSpecificPart();
+            		int length = data.getPathSegments() != null ? data.getPathSegments().size() : 0;
                 	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
                 	if (length > 2) {
                 		try {
@@ -73,8 +74,7 @@ public class GMSClientDispatchActivity extends Activity {
                 		} catch (Exception e) {
                 			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getLastPathSegment());
                 		}
-                	} else {
-                		String schemePart = data.getEncodedSchemeSpecificPart();
+                	} else if (schemePart != null) {
                 		LoggerUtils.debug("Decoding: " + schemePart);
     					try {
                 			String[] coords = StringUtils.split(schemePart,",");
@@ -86,7 +86,7 @@ public class GMSClientDispatchActivity extends Activity {
                     			} else if (StringUtils.contains(coords[1], "?")) {
                     				lngStr = StringUtils.split(coords[1], "?")[0];
                     			}
-                    			if (NumberUtils.isNumber(latStr) && NumberUtils.isNumber(lngStr)) {
+                    			if (!StringUtils.equals(latStr, "0") && !StringUtils.equals(lngStr, "0") && NumberUtils.isNumber(latStr) && NumberUtils.isNumber(lngStr)) {
                     				try {		
                     					LoggerUtils.debug("Decoding: " + latStr + " " + lngStr);
                     					lat = Double.parseDouble(latStr);
@@ -101,6 +101,17 @@ public class GMSClientDispatchActivity extends Activity {
                 		} catch (Throwable e) {
                 			LoggerUtils.debug("Unable to decode geo:" + schemePart);
                 		}
+                	}
+                	try {
+                		if (data.isHierarchical()) {
+                			String q = data.getQueryParameter("q");
+                			if (StringUtils.isNotEmpty(q)) {
+                				query = Uri.decode(q);
+                				Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
+                			}
+                		}
+                	} catch (Exception e) {
+                		LoggerUtils.debug("Unable to decode query " + data.getQueryParameter("q"));
                 	}
                 }
                 
@@ -117,17 +128,6 @@ public class GMSClientDispatchActivity extends Activity {
                     	mapActivity.putExtra("lat", lat);
                     	mapActivity.putExtra("lng", lng);
                     }
-                    try {
-                		if (data.isHierarchical()) {
-                			String q = data.getQueryParameter("q");
-                			if (StringUtils.isNotEmpty(q)) {
-                				query = Uri.decode(q);
-                				//Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
-                			}
-                		}
-                	} catch (Exception e) {
-                		LoggerUtils.debug("Unable to decode query " + data.getQueryParameter("q"));
-                	}
                 	if (query != null) {
                 		mapActivity.putExtra("query", query);
                 	}
