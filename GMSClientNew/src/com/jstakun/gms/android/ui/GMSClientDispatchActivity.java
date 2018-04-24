@@ -90,8 +90,7 @@ public class GMSClientDispatchActivity extends Activity {
                     					LoggerUtils.debug("Decoding: " + latStr + " " + lngStr);
                     					lat = Double.parseDouble(latStr);
                     					lng = Double.parseDouble(lngStr);
-                    					//Toast.makeText(this, "Received input: " + latStr + "," + lngStr, Toast.LENGTH_LONG).show();
-                            		} catch (NumberFormatException e) {
+                    				} catch (NumberFormatException e) {
                     					LoggerUtils.debug("Failed to decode: " + latStr + " " + lngStr);
                     				}
                     			} else {
@@ -121,6 +120,7 @@ public class GMSClientDispatchActivity extends Activity {
                     			String q = data.getQueryParameter("q");
                     			if (StringUtils.isNotEmpty(q)) {
                     				query = Uri.decode(q);
+                    				Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
                     			}
                     		}
                     	} catch (Exception e) {
