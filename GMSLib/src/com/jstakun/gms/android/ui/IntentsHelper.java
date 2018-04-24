@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.json.JSONObject;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -1493,6 +1494,87 @@ public final class IntentsHelper {
         		} 
         	}
         }
+    }
+    
+    public void parseIntentData(Intent src, Intent dest) {
+    	Double lat = null, lng = null;
+        String query = null;
+        Uri data = src.getData();
+        if (data != null) {
+        	String scheme = data.getScheme(); 
+        	String host = data.getHost();
+        	String schemePart = data.getEncodedSchemeSpecificPart();
+    		int length = data.getPathSegments() != null ? data.getPathSegments().size() : 0;
+        	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
+        	if (length > 2) {
+        		try {
+        			String latSegment = data.getPathSegments().get(length-2);
+        			lat = StringUtil.decode(latSegment);
+        			String lngSegment = StringUtils.split(data.getLastPathSegment(), ";")[0]; 
+        			lng = StringUtil.decode(lngSegment);
+        			LoggerUtils.debug("Decoded params " + latSegment + "," + lngSegment + " to " + lat + "," + lng);
+        		} catch (Exception e) {
+        			LoggerUtils.debug("Unable to decode " + data.getPathSegments().get(length-2) + "," + data.getLastPathSegment());
+        		}
+        	} else if (schemePart != null) {
+        		LoggerUtils.debug("Decoding: " + schemePart);
+				try {
+        			String[] coords = StringUtils.split(schemePart,",");
+            		if (coords != null && coords.length == 2) {
+            			String latStr = coords[0];
+            			String lngStr = coords[1];
+            			if (StringUtils.contains(coords[1], ";")) {
+            				lngStr = StringUtils.split(coords[1], ";")[0];
+            			} else if (StringUtils.contains(coords[1], "?")) {
+            				lngStr = StringUtils.split(coords[1], "?")[0];
+            			}
+            			if (NumberUtils.isNumber(latStr) && NumberUtils.isNumber(lngStr)) {
+            				try {		
+            					LoggerUtils.debug("Decoded: " + latStr + " " + lngStr);
+            					lat = Double.parseDouble(latStr);
+            					lng = Double.parseDouble(lngStr);
+            				} catch (NumberFormatException e) {
+            					LoggerUtils.debug("Failed to decode: " + latStr + " " + lngStr);
+            				}
+            			} else {
+            				LoggerUtils.debug("Unable to decode: " + latStr + " " + lngStr);
+            				lat = lng = null;
+            			}
+            		}
+            		
+            		if (data.isHierarchical()) {
+            			String q = data.getQueryParameter("q");
+            			if (StringUtils.isNotEmpty(q)) {
+            				query = Uri.decode(q);
+            				//Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
+            			}
+            		} else {
+            			LoggerUtils.debug("This is non hierarchical uri " + schemePart);
+            			String[] decomposed = StringUtils.split(schemePart, "?");
+                		if (decomposed.length == 2) {
+                			String queryString = Uri.decode(decomposed[1]);
+                			String[] params = StringUtils.split(queryString, "&");
+                			for (int i=0;i<params.length;i++) {
+                				if (params[i].startsWith("q=")) {
+                					query = params[i].substring(2);
+                					break;
+                				}
+                			}
+                		}
+            		}
+        		} catch (Throwable e) {
+        			LoggerUtils.debug("Unable to decode geo " + schemePart);
+        		}
+        	}
+        }
+        
+        if (lat != null && lng != null) {
+        	dest.putExtra("lat", lat);
+        	dest.putExtra("lng", lng);
+        } 
+    	if (query != null) {
+    		dest.putExtra("query", query);
+    	}
     }
     
     //private classes
