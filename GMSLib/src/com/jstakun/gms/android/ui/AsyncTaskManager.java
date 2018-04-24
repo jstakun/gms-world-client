@@ -102,8 +102,11 @@ public class AsyncTaskManager {
     }
 
     public String createNotification(int icon, String ticker, String title, boolean delete) {
-        int notificationId = notificationManager.createNotification(icon, ticker, title, delete);
-        return Integer.toString(notificationId);
+    	int notificationId = -1;
+    	if (notificationManager != null) { 
+    		notificationId = notificationManager.createNotification(icon, ticker, title, delete);
+    	}
+    	return Integer.toString(notificationId);
     }
 
     public void cancelNotification(int num) {

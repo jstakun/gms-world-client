@@ -2,6 +2,7 @@ package com.jstakun.gms.android.ui;
 
 import org.acra.ACRA;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -78,9 +79,23 @@ public class GMSClientDispatchActivity extends Activity {
                 			Toast.makeText(this, "Received input: " + schemePart + "\n" + data.getEncodedQuery(), Toast.LENGTH_LONG).show();;
                 			String[] coords = StringUtils.split(schemePart,",");
                     		if (coords != null && coords.length == 2) {
-                    		//	lat = Double.parseDouble(coords[0]);
-                			//	lng = Double.parseDouble(coords[1]);
-                    			LoggerUtils.debug(coords[0] + " " + coords[1]);
+                    			String latStr = coords[0];
+                    			String lngStr = coords[1];
+                    			if (StringUtils.contains(coords[1], ";")) {
+                    				lngStr = StringUtils.split(coords[1], ";")[0];
+                    			} else if (StringUtils.contains(coords[1], "?")) {
+                    				lngStr = StringUtils.split(coords[1], "?")[0];
+                    			}
+                    			if (NumberUtils.isNumber(latStr) && NumberUtils.isNumber(lngStr)) {
+                    				try {		
+                    					lat = Double.parseDouble(latStr);
+                    					lng = Double.parseDouble(lngStr);
+                    				} catch (NumberFormatException e) {
+                    					LoggerUtils.debug("Failed to decode: " + latStr + " " + lngStr);
+                    				}
+                    			} else {
+                    				LoggerUtils.debug("Failed to decode: " + latStr + " " + lngStr);
+                    			}
                     		}
                 		} catch (Throwable e) {
                 			LoggerUtils.debug("Unable to decode geo:" + schemePart);
