@@ -229,8 +229,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	Double lng = bundle.getDouble("lng", 0.0);
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new LatLng(lat, lng);
-        		LoggerUtils.debug("Setting map center to " + lat + "," + lng);
         	}
+        	query = bundle.getString("query", null);
         }
         
         if (mapCenter == null) {
@@ -243,14 +243,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	loadingHandler.sendEmptyMessageDelayed(PICK_LOCATION, ConfigurationManager.FIVE_SECONDS);
         }
         
-        if (bundle != null) {
-        	query = bundle.getString("query", null);
-        	if (query != null) {
-        		onSearchRequested();
-        	}
-        }
-        
-        //reqest for permissions
+        //request for permissions
         
         //if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
         //		ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -331,6 +324,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public void onStart() {
     	LoggerUtils.debug("GMSClient3MainActivity.onStart");
         super.onStart();
+        
+        if (query != null) {
+    		onSearchRequested();
+    	}
     }
     
     @Override

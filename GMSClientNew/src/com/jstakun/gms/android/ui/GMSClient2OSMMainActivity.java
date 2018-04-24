@@ -268,6 +268,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new GeoPoint(lat, lng);
         	}
+        	query = bundle.getString("query", null);
         }
         
         if (mapCenter == null) {
@@ -301,13 +302,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         	 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_INITIAL);
-        }
-        
-        if (bundle != null) {
-        	query = bundle.getString("query", null);
-        	if (query != null) {
-        		onSearchRequested();
-        	}
         }
     }
 
@@ -372,6 +366,10 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     public void onStart() {
         super.onStart();
         LoggerUtils.debug("GMSClient2OSMMainActivity.onStart");
+        
+        if (query != null) {
+    		onSearchRequested();
+    	}
     }
 
     @Override
