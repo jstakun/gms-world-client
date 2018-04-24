@@ -100,8 +100,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     
     private boolean isAppInitialized = false, isRouteTrackingServiceBound = false;
     
-    private String query;
-    
     private final Handler loadingHandler = new LoadingHandler(this);
     private final Messenger mMessenger = new Messenger(loadingHandler);
     
@@ -268,7 +266,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new GeoPoint(lat, lng);
         	}
-        	query = bundle.getString("query", null);
+        	String query = bundle.getString("query", null);
+        	if (query != null) {
+        		//TODO
+        		LoggerUtils.debug("Find geocode: " + query);
+        	}
         }
         
         if (mapCenter == null) {
@@ -366,10 +368,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     public void onStart() {
         super.onStart();
         LoggerUtils.debug("GMSClient2OSMMainActivity.onStart");
-        
-        if (query != null) {
-    		onSearchRequested();
-    	}
     }
 
     @Override
@@ -545,11 +543,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
     @Override
     public boolean onSearchRequested() {
         if (isAppInitialized) {
-            IntentsHelper.getInstance().startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), query, -1, false);
-            query = null;
+            IntentsHelper.getInstance().startSearchActivity(mapView.getMapCenter().getLatitudeE6(), mapView.getMapCenter().getLongitudeE6(), null, -1, false);
             return true;
         } else {
-        	query = null;
             return false;
         }
     }

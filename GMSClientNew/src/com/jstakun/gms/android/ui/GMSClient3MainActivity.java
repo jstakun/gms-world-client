@@ -102,8 +102,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
    
     private boolean appInitialized = false, isRouteTrackingServiceBound = false;
     
-    private String query;
-    
     private GoogleMap.OnCameraChangeListener mOnCameraChangeListener = new GoogleMap.OnCameraChangeListener() {
 		
 		@Override
@@ -230,7 +228,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new LatLng(lat, lng);
         	}
-        	query = bundle.getString("query", null);
+        	String query = bundle.getString("query", null);
+        	if (query != null) {
+        		//TODO
+        		LoggerUtils.debug("Find geocode: " + query);
+        	}
         }
         
         if (mapCenter == null) {
@@ -324,10 +326,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public void onStart() {
     	LoggerUtils.debug("GMSClient3MainActivity.onStart");
         super.onStart();
-        
-        if (query != null) {
-    		onSearchRequested();
-    	}
     }
     
     @Override
@@ -411,11 +409,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     public boolean onSearchRequested() {
     	if (appInitialized) {
             IntentsHelper.getInstance().startSearchActivity(MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), 
-            		MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), query, -1, false);
-            query = null;
+            		MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude), null, -1, false);
             return true;
         } else {
-        	query = null;
             return false;
         }
     }
