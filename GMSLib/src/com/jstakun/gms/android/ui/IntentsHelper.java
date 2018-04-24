@@ -1543,11 +1543,7 @@ public final class IntentsHelper {
             		}
             		
             		if (data.isHierarchical()) {
-            			String q = data.getQueryParameter("q");
-            			if (StringUtils.isNotEmpty(q)) {
-            				query = Uri.decode(q);
-            				//Toast.makeText(this, "Search query decoded: " + query, Toast.LENGTH_LONG).show();
-            			}
+            			query = data.getQueryParameter("q");
             		} else {
             			LoggerUtils.debug("This is non hierarchical uri " + schemePart);
             			String[] decomposed = StringUtils.split(schemePart, "?");
@@ -1569,10 +1565,12 @@ public final class IntentsHelper {
         }
         
         if (lat != null && lng != null) {
+        	LoggerUtils.debug("Setting lat: " + lat + " ,lng: " + lng);
         	dest.putExtra("lat", lat);
         	dest.putExtra("lng", lng);
         } 
     	if (query != null) {
+    		LoggerUtils.debug("Setting query: " + query);
     		dest.putExtra("query", query);
     	}
     }
