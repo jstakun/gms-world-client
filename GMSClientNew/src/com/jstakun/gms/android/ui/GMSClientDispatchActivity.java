@@ -137,6 +137,7 @@ public class GMSClientDispatchActivity extends Activity {
                         mapActivity = new Intent(this, GMSClient2OSMMainActivity.class);
                     }
                     if (lat != null && lat != 0d && lng != null && lng != 0d) {
+                    	LoggerUtils.debug("Setting lat: " + lat + ", lng: " + lng);
                     	mapActivity.putExtra("lat", lat);
                     	mapActivity.putExtra("lng", lng);
                     }
