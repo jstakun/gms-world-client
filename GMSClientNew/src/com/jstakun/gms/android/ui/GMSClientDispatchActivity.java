@@ -140,9 +140,14 @@ public class GMSClientDispatchActivity extends Activity {
                     	LoggerUtils.debug("Setting lat: " + lat + ", lng: " + lng);
                     	mapActivity.putExtra("lat", lat);
                     	mapActivity.putExtra("lng", lng);
+                    } else {
+                    	mapActivity.removeExtra("lat");
+                    	mapActivity.removeExtra("lng");
                     }
                 	if (query != null) {
                 		mapActivity.putExtra("query", query);
+                	} else {
+                		mapActivity.removeExtra("query");
                 	}
                     startActivity(mapActivity);
                 } else {
