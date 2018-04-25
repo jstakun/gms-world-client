@@ -1,6 +1,7 @@
 package com.jstakun.gms.android.ui;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -69,6 +70,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -1563,16 +1566,29 @@ public final class IntentsHelper {
         		}
         	}
         }
-        
-        if (lat != null && lng != null) {
+         
+    	if (query != null) {
+    		if (Geocoder.isPresent()) {
+    			try {
+					List<Address> addresses = new Geocoder(activity).getFromLocationName(query.replace('+',  ' '), 1);
+					if (!addresses.isEmpty()) {
+						lat = addresses.get(0).getLatitude();
+						lng = addresses.get(1).getLatitude();
+						
+					}
+				} catch (Exception e) {
+					LoggerUtils.debug("Unable to process geocode " + query, e);
+				}
+    		} else {
+    			LoggerUtils.debug("No geocoder for " + query);
+    		}
+    	}
+    	
+    	if (lat != null && lng != null) {
         	LoggerUtils.debug("Setting lat: " + lat + " ,lng: " + lng);
         	dest.putExtra("lat", lat);
         	dest.putExtra("lng", lng);
-        } 
-    	if (query != null) {
-    		LoggerUtils.debug("Setting query: " + query);
-    		dest.putExtra("query", query);
-    	}
+        }
     }
     
     //private classes

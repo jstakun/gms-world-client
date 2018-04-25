@@ -228,11 +228,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new LatLng(lat, lng);
         	}
-        	String query = bundle.getString("query", null);
-        	if (query != null) {
-        		//TODO
-        		LoggerUtils.debug("Find geocode: " + query);
-        	}
         }
         
         if (mapCenter == null) {
