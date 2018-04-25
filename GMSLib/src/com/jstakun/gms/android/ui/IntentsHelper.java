@@ -1574,7 +1574,6 @@ public final class IntentsHelper {
 					if (!addresses.isEmpty()) {
 						lat = addresses.get(0).getLatitude();
 						lng = addresses.get(1).getLatitude();
-						
 					}
 				} catch (Exception e) {
 					LoggerUtils.debug("Unable to process geocode " + query, e);

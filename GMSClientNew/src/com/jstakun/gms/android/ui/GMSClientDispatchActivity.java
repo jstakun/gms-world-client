@@ -59,6 +59,7 @@ public class GMSClientDispatchActivity extends Activity {
                         ConfigurationManager.getInstance().putInteger(ConfigurationManager.MAP_PROVIDER, ConfigurationManager.OSM_MAPS);
                         mapActivity = new Intent(this, GMSClient2OSMMainActivity.class);
                     }
+                    IntentsHelper.getInstance().setActivity(this);
                     IntentsHelper.getInstance().parseIntentData(intent, mapActivity);
                     startActivity(mapActivity);
                 } else {
