@@ -1169,11 +1169,13 @@ public class AsyncTaskManager {
 					if (!addresses.isEmpty()) {
 						Location l = new Location("");
 						l.setLatitude(addresses.get(0).getLatitude());
-						l.setLongitude(addresses.get(1).getLatitude());
+						l.setLongitude(addresses.get(0).getLatitude());
 						//ConfigurationManager.getInstance().setLocation(l);
 						//handler.sendEmptyMessage(GmsLocationServicesManager.UPDATE_LOCATION);
 						//TODO send message to ui
 						Toast.makeText(activity, "Set map center to " + l.getLatitude() + "," + l.getLongitude(), Toast.LENGTH_LONG).show();
+					} else {
+						LoggerUtils.debug("No geocode found for " + query);
 					}
 				} catch (Exception e) {
 					LoggerUtils.debug("Unable to process geocode " + query, e);

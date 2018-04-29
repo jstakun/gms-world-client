@@ -269,7 +269,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	}
         	String query = bundle.getString("query", null);
         	if (StringUtils.isNotEmpty(query)) {
-        		//TODO
+        		LoggerUtils.debug("Searching for geocode...");
         		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);
         	}
         }

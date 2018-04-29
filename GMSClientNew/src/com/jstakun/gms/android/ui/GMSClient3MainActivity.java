@@ -232,8 +232,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	String query = bundle.getString("query", null);
         	if (StringUtils.isNotEmpty(query)) {
         		//TODO decode and find geocode using Geocoder getFromLocationName (String locationName, int maxResults)
-        		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);
-        		
+        		LoggerUtils.debug("Searching for geocode...");
+        		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
         }
         
