@@ -2,6 +2,7 @@ package com.jstakun.gms.android.ui;
 
 import java.lang.ref.WeakReference;
 
+import org.apache.commons.lang.StringUtils;
 import org.osmdroid.util.GeoPoint;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -227,6 +228,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	Double lng = bundle.getDouble("lng", 0.0);
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new LatLng(lat, lng);
+        	}
+        	String query = bundle.getString("query", null);
+        	if (StringUtils.isNotEmpty(query)) {
+        		//TODO decode and find geocode using Geocoder getFromLocationName (String locationName, int maxResults)
+        		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);
+        		
         	}
         }
         

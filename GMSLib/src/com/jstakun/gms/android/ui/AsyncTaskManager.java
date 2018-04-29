@@ -43,12 +43,15 @@ import com.jstakun.gms.android.utils.StringUtil;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 /**
  *
@@ -1138,6 +1141,46 @@ public class AsyncTaskManager {
         		LandmarkManager.getInstance().addLandmarkListToDynamicLayer(LandmarkManager.getInstance().getLandmarkStoreLayer(layer), dynamicLayersArr);
         	}
         	//System.out.println("Done -----------------------------");           	
+			return null;
+		}
+    }
+    
+    public void executeParseGeocodeTask(String query, Context activity, Handler uiHandler) {
+    	new ParseGeocodeTask(activity, uiHandler).execute(query);
+    }
+    
+    private class ParseGeocodeTask extends GMSAsyncTask<String, Void, Void> {
+
+    	private Context activity;
+    	private Handler handler;
+    	
+    	public ParseGeocodeTask(Context activity, Handler handler) {
+    		super(1, ParseGeocodeTask.class.getName());
+    		this.activity = activity;
+    		this.handler = handler;
+    	}
+    	
+		@Override
+		protected Void doInBackground(String... params) {
+			if (Geocoder.isPresent() && params.length > 0) {
+				String query = params[0];
+				try {
+					List<Address> addresses = new Geocoder(activity).getFromLocationName(query.replace('+',  ' '), 1);
+					if (!addresses.isEmpty()) {
+						Location l = new Location("");
+						l.setLatitude(addresses.get(0).getLatitude());
+						l.setLongitude(addresses.get(1).getLatitude());
+						//ConfigurationManager.getInstance().setLocation(l);
+						//handler.sendEmptyMessage(GmsLocationServicesManager.UPDATE_LOCATION);
+						//TODO send message to ui
+						Toast.makeText(activity, "Set map center to " + l.getLatitude() + "," + l.getLongitude(), Toast.LENGTH_LONG).show();
+					}
+				} catch (Exception e) {
+					LoggerUtils.debug("Unable to process geocode " + query, e);
+				}
+			} else {
+				LoggerUtils.debug("No geocoder available");
+			}
 			return null;
 		}
     	

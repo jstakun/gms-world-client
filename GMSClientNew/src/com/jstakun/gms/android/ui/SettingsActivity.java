@@ -4,7 +4,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.Locale;
-import com.jstakun.gms.android.utils.OsUtil;
 import com.jstakun.gms.android.utils.UserTracker;
 
 import android.content.Intent;

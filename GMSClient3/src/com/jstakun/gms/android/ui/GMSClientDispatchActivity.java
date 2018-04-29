@@ -1,17 +1,15 @@
 package com.jstakun.gms.android.ui;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
+import org.acra.ACRA;
+
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.utils.DateTimeUtils;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.OsUtil;
-import com.jstakun.gms.android.utils.StringUtil;
 
-import org.acra.ACRA;
-import org.apache.commons.lang.StringUtils;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 
 /**
  *

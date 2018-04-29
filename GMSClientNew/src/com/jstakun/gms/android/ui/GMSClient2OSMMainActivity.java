@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMyLocationOverlay;
@@ -265,6 +266,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	Double lng = bundle.getDouble("lng", 0.0);
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new GeoPoint(lat, lng);
+        	}
+        	String query = bundle.getString("query", null);
+        	if (StringUtils.isNotEmpty(query)) {
+        		//TODO
+        		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);
         	}
         }
         
