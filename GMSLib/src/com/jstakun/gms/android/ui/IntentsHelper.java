@@ -69,6 +69,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -1574,6 +1576,68 @@ public final class IntentsHelper {
         	dest.putExtra("lat", lat);
         	dest.putExtra("lng", lng);
         }
+    }
+    
+    public Location parseGeocode(String query) {
+
+    	Location l = null;
+    	
+    	if (Geocoder.isPresent() && activity != null) {
+			try {
+				List<Address> addresses = new Geocoder(activity).getFromLocationName(query.replace('+',  ' '), 1);
+				if (!addresses.isEmpty()) {
+					l = new Location("g");
+					l.setLatitude(addresses.get(0).getLatitude());
+					l.setLongitude(addresses.get(0).getLatitude());
+				} else {
+					LoggerUtils.debug("No geocode found for " + query);
+				}
+			} catch (Exception e) {
+				LoggerUtils.debug("Unable to process geocode " + query);
+				LoggerUtils.error("IntentsHelper.parseGeocode() exception", e);
+			}
+    	} else {
+    		HttpUtils utils = new HttpUtils();
+        
+    		try {
+    			Map<String, String> params = new HashMap<String, String>();
+    			params.put("address", query);
+            
+    			String email = ConfigurationManager.getUserManager().getUserEmail();
+    			if (StringUtils.isNotEmpty(email)) {
+    				params.put("email", email);
+    			}
+
+    			String url = ConfigurationManager.getInstance().getServerUrl() + "geocode";
+
+    			String response = utils.sendPostRequest(url, params, true);
+            
+    			if (StringUtils.startsWith(response, "{")) {
+    				JSONObject json = new JSONObject(response);
+    				LoggerUtils.debug("Geocode response: " + response);
+    				if (json.getString("status").equals("OK")) {
+    					l = new Location(json.getString("type"));
+    					l.setLatitude(json.getDouble("lat"));
+    					l.setLongitude(json.getDouble("lng"));
+    				} else {
+    					LoggerUtils.debug(Locale.getMessage(R.string.Http_error, json.getString("message")));
+    				}              
+    			} else {
+    				LoggerUtils.debug(utils.getResponseErrorMessage(url));
+    			}
+    		} catch (Exception ex) {
+    			LoggerUtils.error("IntentsHelper.parseGeocode() exception", ex);
+    		} finally {
+    			try {
+    				if (utils != null) {
+    					utils.close();
+    				}
+    			} catch (Exception e) {
+    			}
+    		}
+    	}
+    	
+    	return l;
     }
      
     //private classes

@@ -43,15 +43,12 @@ import com.jstakun.gms.android.utils.StringUtil;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.widget.Toast;
 
 /**
  *
@@ -60,7 +57,8 @@ import android.widget.Toast;
 public class AsyncTaskManager {
 
     public static final int SHOW_ROUTE_MESSAGE = 30;
-    private static Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress = new ConcurrentHashMap<Integer, GMSAsyncTask<?,?,?>>();
+    public static final int SHOW_MAP_CENTER = 31;
+	private static Map<Integer, GMSAsyncTask<?,?,?>> tasksInProgress = new ConcurrentHashMap<Integer, GMSAsyncTask<?,?,?>>();
     private GMSNotificationManager notificationManager;
     private static final AsyncTaskManager instance = new AsyncTaskManager();
     
@@ -1162,29 +1160,14 @@ public class AsyncTaskManager {
     	
 		@Override
 		protected Void doInBackground(String... params) {
-			if (Geocoder.isPresent() && params.length > 0) {
-				String query = params[0];
-				try {
-					List<Address> addresses = new Geocoder(activity).getFromLocationName(query.replace('+',  ' '), 1);
-					if (!addresses.isEmpty()) {
-						Location l = new Location("");
-						l.setLatitude(addresses.get(0).getLatitude());
-						l.setLongitude(addresses.get(0).getLatitude());
-						//ConfigurationManager.getInstance().setLocation(l);
-						//handler.sendEmptyMessage(GmsLocationServicesManager.UPDATE_LOCATION);
-						//TODO send message to ui
-						Toast.makeText(activity, "Set map center to " + l.getLatitude() + "," + l.getLongitude(), Toast.LENGTH_LONG).show();
-					} else {
-						LoggerUtils.debug("No geocode found for " + query);
-					}
-				} catch (Exception e) {
-					LoggerUtils.debug("Unable to process geocode " + query, e);
-				}
-			} else {
-				LoggerUtils.debug("No geocoder available");
+			Location l = IntentsHelper.getInstance().parseGeocode(params[0]);
+			if (l != null) {
+				Message m = Message.obtain();
+				m.obj = l;
+				m.what = SHOW_MAP_CENTER;
+				handler.sendMessage(m);
 			}
 			return null;
 		}
-    	
     }
 }

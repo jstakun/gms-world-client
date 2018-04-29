@@ -1334,6 +1334,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         				}
         				activity.showMyPositionAction(false);
         			} 
+            	} else if (msg.what == AsyncTaskManager.SHOW_MAP_CENTER) {
+            		Location l = (Location) msg.obj;
+            		IntentsHelper.getInstance().showInfoToast("Change map center to " + l.getLatitude()  + "," + l.getLongitude());
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	} 
