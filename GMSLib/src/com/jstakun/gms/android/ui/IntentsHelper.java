@@ -1589,8 +1589,8 @@ public final class IntentsHelper {
 				if (!addresses.isEmpty()) {
 					l = new Location("g");
 					l.setLatitude(addresses.get(0).getLatitude());
-					l.setLongitude(addresses.get(0).getLatitude());
-					LoggerUtils.debug("Found coordinnates " + l.getLatitude() + "," + l.getLongitude() + " for " + query);
+					l.setLongitude(addresses.get(0).getLongitude());
+					LoggerUtils.debug("Found coordinates " + l.getLatitude() + "," + l.getLongitude() + " for " + query);
 				} else {
 					LoggerUtils.debug("No geocode found for " + query);
 				}

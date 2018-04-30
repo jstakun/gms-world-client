@@ -1334,9 +1334,13 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             	} else if (msg.what == AsyncTaskManager.SHOW_MAP_CENTER) {
             		Location l = (Location) msg.obj;
             		if (l != null) {
-            			activity.animateTo(new LatLng(l.getLatitude(), l.getLongitude()));
-            			int zoom = (activity.mMap != null) ? (int)activity.mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
-                        IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), zoom, activity.projection);
+            			if (!activity.appInitialized) {
+            				activity.initOnLocationChanged(new LatLng(l.getLatitude(), l.getLongitude()), 10);
+            			} else {
+            				activity.animateTo(new LatLng(l.getLatitude(), l.getLongitude()));
+            				int zoom = (activity.mMap != null) ? (int)activity.mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
+            				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), zoom, activity.projection);
+            			}
             		}
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
