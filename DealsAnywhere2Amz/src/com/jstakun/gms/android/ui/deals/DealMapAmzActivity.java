@@ -3,6 +3,8 @@ package com.jstakun.gms.android.ui.deals;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.amazon.geo.maps.GeoPoint;
 import com.amazon.geo.maps.MapActivity;
 import com.amazon.geo.maps.MapController;
@@ -221,6 +223,11 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
         	Double lng = bundle.getDouble("lng", 0.0);
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
+        	}
+        	String query = bundle.getString("query", null);
+        	if (StringUtils.isNotEmpty(query)) {
+        		LoggerUtils.debug("Searching for geocode...");
+        		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
         }
         
@@ -850,7 +857,18 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
                 } else if (msg.what == AmzMyLocationOverlay.UPDATE_LOCATION) {
                     Location location = (Location) msg.obj;
                     activity.updateLocation(location);
-                }
+                } else if (msg.what == AsyncTaskManager.SHOW_MAP_CENTER) {
+            		Location l = (Location) msg.obj;
+            		if (l != null) {
+            			int[] coordsE6 = {MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude())};
+        				if (!activity.appInitialized) {
+            				activity.initOnLocationChanged(new GeoPoint(coordsE6[0], coordsE6[1]));
+            			} else {
+            				activity.animateTo(coordsE6);
+            				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), activity.mapView.getZoomLevel(), new AmzLandmarkProjection(activity.mapView));
+            			}
+            		}
+            	} 
             }
         }	
     }

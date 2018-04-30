@@ -2,6 +2,8 @@ package com.jstakun.gms.android.ui.deals;
 
 import java.lang.ref.WeakReference;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -219,6 +221,11 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         	Double lng = bundle.getDouble("lng", 0.0);
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
+        	}
+        	String query = bundle.getString("query", null);
+        	if (StringUtils.isNotEmpty(query)) {
+        		LoggerUtils.debug("Searching for geocode...");
+        		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
         }
         
@@ -860,7 +867,18 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         			activity.mapButtons.setVisibility(View.VISIBLE);
         			IntentsHelper.getInstance().vibrateOnLocationUpdate();
         			UserTracker.getInstance().sendMyLocation();
-        		} else if (msg.obj != null) {
+        		} else if (msg.what == AsyncTaskManager.SHOW_MAP_CENTER) {
+            		Location l = (Location) msg.obj;
+            		if (l != null) {
+            			int[] coordsE6 = {MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude())};
+        				if (!activity.appInitialized) {
+            				activity.initOnLocationChanged(new GeoPoint(coordsE6[0], coordsE6[1]));
+            			} else {
+            				activity.animateTo(coordsE6);
+            				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), activity.mapView.getZoomLevel(), new GoogleLandmarkProjection(activity.mapView));
+            			}
+            		}
+            	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}
         	}

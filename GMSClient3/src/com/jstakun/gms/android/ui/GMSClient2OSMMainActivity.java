@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMyLocationOverlay;
@@ -273,6 +274,11 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         	Double lng = bundle.getDouble("lng", 0.0);
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new GeoPoint(lat, lng);
+        	}
+        	String query = bundle.getString("query", null);
+        	if (StringUtils.isNotEmpty(query)) {
+        		LoggerUtils.debug("Searching for geocode...");
+        		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
         }
         
@@ -1232,6 +1238,17 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 	} else {
                 		activity.mapButtons.setVisibility(View.VISIBLE);
                 	}
+            	} else if (msg.what == AsyncTaskManager.SHOW_MAP_CENTER) {
+            		Location l = (Location) msg.obj;
+            		if (l != null) {
+            			if (!activity.isAppInitialized) {
+            				activity.initOnLocationChanged(new GeoPoint(l.getLatitude(),l.getLongitude()));
+            			} else {
+            				int[] coordsE6 = {MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude())};
+            				activity.animateTo(coordsE6);
+            				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), activity.mapView.getZoomLevel(), new OsmLandmarkProjection(activity.mapView));
+            			}
+            		}
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}

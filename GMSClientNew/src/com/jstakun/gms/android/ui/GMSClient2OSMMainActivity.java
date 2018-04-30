@@ -1302,7 +1302,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), activity.mapView.getZoomLevel(), new OsmLandmarkProjection(activity.mapView));
             			}
             		}
-            	}else if (msg.obj != null) {
+            	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}
         	}

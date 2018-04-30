@@ -2,6 +2,8 @@ package com.jstakun.gms.android.ui.deals;
 
 import java.lang.ref.WeakReference;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -195,6 +197,11 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         	Double lng = bundle.getDouble("lng", 0.0);
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new LatLng(lat, lng);
+        	}
+        	String query = bundle.getString("query", null);
+        	if (StringUtils.isNotEmpty(query)) {
+        		LoggerUtils.debug("Searching for geocode...");
+        		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
         }
         
@@ -987,6 +994,17 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             		activity.onConnected();
             	} else if (msg.what == GmsLocationServicesManager.UPDATE_LOCATION) {
             		activity.onLocationChanged();
+            	} else if (msg.what == AsyncTaskManager.SHOW_MAP_CENTER) {
+            		Location l = (Location) msg.obj;
+            		if (l != null) {
+            			if (!activity.appInitialized) {
+            				activity.initOnLocationChanged(new LatLng(l.getLatitude(), l.getLongitude()), 10);
+            			} else {
+            				activity.animateTo(new LatLng(l.getLatitude(), l.getLongitude()));
+            				int zoom = (activity.mMap != null) ? (int)activity.mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
+            				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), zoom, activity.projection);
+            			}
+            		}
             	} 
         	}
 		}

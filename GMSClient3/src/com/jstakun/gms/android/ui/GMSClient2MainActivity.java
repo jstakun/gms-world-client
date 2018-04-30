@@ -3,6 +3,7 @@ package com.jstakun.gms.android.ui;
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 
+import org.apache.commons.lang.StringUtils;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
@@ -294,6 +295,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	Double lng = bundle.getDouble("lng", 0.0);
         	if (lat != 0d && lng != 0d) {
         		mapCenter = new org.osmdroid.google.wrapper.GeoPoint(new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng)));
+        	}
+        	String query = bundle.getString("query", null);
+        	if (StringUtils.isNotEmpty(query)) {
+        		LoggerUtils.debug("Searching for geocode...");
+        		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
         }
         
@@ -1302,7 +1308,18 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
                 	} else {
                 		activity.mapButtons.setVisibility(View.VISIBLE);
                 	}
-            	} else if (msg.obj != null) {
+            	} else if (msg.what == AsyncTaskManager.SHOW_MAP_CENTER) {
+            		Location l = (Location) msg.obj;
+            		if (l != null) {
+            			int[] coordsE6 = {MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude())};
+        				if (!activity.isAppInitialized) {
+            				activity.initOnLocationChanged(new org.osmdroid.google.wrapper.GeoPoint(new GeoPoint(coordsE6[0], coordsE6[1])), 10);
+            			} else {
+            				activity.animateTo(coordsE6);
+            				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), activity.mapView.getZoomLevel(), ProjectionFactory.getProjection(activity.mapView, activity.googleMapsView));
+            			}
+            		}
+            	}  else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}
         	}
