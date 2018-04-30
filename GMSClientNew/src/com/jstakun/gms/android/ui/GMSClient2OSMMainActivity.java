@@ -317,9 +317,9 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
         OsmMapsTypeSelector.selectMapType(mapView, this);
 
-        AsyncTaskManager.getInstance().setContext(this);
-        
         IntentsHelper.getInstance().setActivity(this);
+
+        AsyncTaskManager.getInstance().setContext(this);
         
         AsyncTaskManager.getInstance().executeNewVersionCheckTask(this);
         
@@ -479,8 +479,6 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
 
     private synchronized void initOnLocationChanged(final GeoPoint location) {
         if (!isAppInitialized && location != null) {
-        	IntentsHelper.getInstance().setActivity(this);
-        	
         	loadingProgressBar.setProgress(75);
         	
         	mapController.setCenter(location);

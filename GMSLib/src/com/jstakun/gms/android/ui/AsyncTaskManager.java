@@ -1143,18 +1143,17 @@ public class AsyncTaskManager {
 		}
     }
     
-    public void executeParseGeocodeTask(String query, Context activity, Handler uiHandler) {
+    public void executeParseGeocodeTask(String query, Activity activity, Handler uiHandler) {
     	new ParseGeocodeTask(activity, uiHandler).execute(query);
     }
     
     private class ParseGeocodeTask extends GMSAsyncTask<String, Void, Void> {
 
-    	private Context activity;
     	private Handler handler;
     	
-    	public ParseGeocodeTask(Context activity, Handler handler) {
+    	public ParseGeocodeTask(Activity activity, Handler handler) {
     		super(1, ParseGeocodeTask.class.getName());
-    		this.activity = activity;
+    		IntentsHelper.getInstance().setActivity(activity);
     		this.handler = handler;
     	}
     	

@@ -216,7 +216,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	LoggerUtils.debug("Loading deal categories...");
             AsyncTaskManager.getInstance().executeDealCategoryLoaderTask(true);
         }
-
+        
         loadingProgressBar.setProgress(50);
         
         LatLng mapCenter = null;
@@ -275,10 +275,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     		GmsLocationServicesManager.getInstance().enable(LoadingHandler.class.getName(), loadingHandler, this);
     	}
         
-        AsyncTaskManager.getInstance().setContext(this);
-        
         IntentsHelper.getInstance().setActivity(this);
 
+        AsyncTaskManager.getInstance().setContext(this);
+        
         AsyncTaskManager.getInstance().executeNewVersionCheckTask(this);
         
         //verify access token
@@ -1005,8 +1005,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 
 	private synchronized void initOnLocationChanged(LatLng location, int source) {
     	if (!appInitialized && location != null) {
-    		IntentsHelper.getInstance().setActivity(this);
-    		
     		loadingProgressBar.setProgress(75);
         	    	
         	if (!LandmarkManager.getInstance().isInitialized()) {
