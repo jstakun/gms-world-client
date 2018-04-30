@@ -1583,12 +1583,14 @@ public final class IntentsHelper {
     	Location l = null;
     	
     	if (Geocoder.isPresent() && activity != null) {
-			try {
+    		LoggerUtils.debug("Using device geocoder...");
+    		try {
 				List<Address> addresses = new Geocoder(activity).getFromLocationName(query.replace('+',  ' '), 1);
 				if (!addresses.isEmpty()) {
 					l = new Location("g");
 					l.setLatitude(addresses.get(0).getLatitude());
 					l.setLongitude(addresses.get(0).getLatitude());
+					LoggerUtils.debug("Found coordinnates " + l.getLatitude() + "," + l.getLongitude() + " for " + query);
 				} else {
 					LoggerUtils.debug("No geocode found for " + query);
 				}
@@ -1597,8 +1599,8 @@ public final class IntentsHelper {
 				LoggerUtils.error("IntentsHelper.parseGeocode() exception", e);
 			}
     	} else {
+    		LoggerUtils.debug("Using remote geocoder...");
     		HttpUtils utils = new HttpUtils();
-        
     		try {
     			Map<String, String> params = new HashMap<String, String>();
     			params.put("address", query);
@@ -1619,6 +1621,7 @@ public final class IntentsHelper {
     					l = new Location(json.getString("type"));
     					l.setLatitude(json.getDouble("lat"));
     					l.setLongitude(json.getDouble("lng"));
+    					LoggerUtils.debug("Found coordinnates " + l.getLatitude() + "," + l.getLongitude() + " for " + query);
     				} else {
     					LoggerUtils.debug(Locale.getMessage(R.string.Http_error, json.getString("message")));
     				}              
