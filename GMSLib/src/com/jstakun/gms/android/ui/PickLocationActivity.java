@@ -1,10 +1,6 @@
 package com.jstakun.gms.android.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -13,7 +9,6 @@ import com.jstakun.gms.android.ads.AdsUtils;
 import com.jstakun.gms.android.config.ConfigurationManager;
 import com.jstakun.gms.android.ui.lib.R;
 import com.jstakun.gms.android.utils.GMSAsyncTask;
-import com.jstakun.gms.android.utils.HttpUtils;
 import com.jstakun.gms.android.utils.Locale;
 import com.jstakun.gms.android.utils.LoggerUtils;
 import com.jstakun.gms.android.utils.UserTracker;
@@ -25,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -292,7 +288,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
         finish();
     }
     
-    private void pickLocationAction() {
+    /*private void pickLocationAction() {
 
         HttpUtils utils = new HttpUtils();
         
@@ -343,7 +339,7 @@ public class PickLocationActivity extends Activity implements OnClickListener {
             } catch (Exception e) {
             }
         }
-    }
+    }*/
     
     private class PickLocationTask extends GMSAsyncTask<Void, Void, Void> {
 
@@ -362,7 +358,22 @@ public class PickLocationActivity extends Activity implements OnClickListener {
 
         @Override
         protected Void doInBackground(Void... arg0) {
-            pickLocationAction();
+            //pickLocationAction();
+        	String address = locationAddressText.getText().toString();
+            name = country;
+            if (StringUtils.isNotEmpty(address)) {
+                name += "," + StringUtils.trimToEmpty(address);
+            }
+            Location l = IntentsHelper.getInstance().parseGeocode(name);
+            if (l != null) {
+            	lat = Double.toString(l.getLatitude());
+                lng = Double.toString(l.getLongitude());
+                if (StringUtils.equals(l.getProvider(), "l")) {
+                   name = address;
+                }
+            } else {
+            	message = "Failed to find geocode";
+            }
             return null;
         }
 

@@ -231,7 +231,6 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	}
         	String query = bundle.getString("query", null);
         	if (StringUtils.isNotEmpty(query)) {
-        		//TODO decode and find geocode using Geocoder getFromLocationName (String locationName, int maxResults)
         		LoggerUtils.debug("Searching for geocode...");
         		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
@@ -1336,7 +1335,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         			} 
             	} else if (msg.what == AsyncTaskManager.SHOW_MAP_CENTER) {
             		Location l = (Location) msg.obj;
-            		IntentsHelper.getInstance().showInfoToast("Change map center to " + l.getLatitude()  + "," + l.getLongitude());
+            		if (l != null) {
+            			activity.animateTo(new LatLng(l.getLatitude(), l.getLongitude()));
+            			int zoom = (activity.mMap != null) ? (int)activity.mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
+                        IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), zoom, activity.projection);
+            		}
             	} else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	} 

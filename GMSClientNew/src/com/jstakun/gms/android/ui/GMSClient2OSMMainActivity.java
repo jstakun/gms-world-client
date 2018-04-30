@@ -1293,7 +1293,14 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 	} else {
                 		activity.mapButtons.setVisibility(View.VISIBLE);
                 	}
-            	} else if (msg.obj != null) {
+            	} else if (msg.what == AsyncTaskManager.SHOW_MAP_CENTER) {
+            		Location l = (Location) msg.obj;
+            		if (l != null) {
+            			int[] coordsE6 = {MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude())};
+            			activity.animateTo(coordsE6);
+            			IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), activity.mapView.getZoomLevel(), new OsmLandmarkProjection(activity.mapView));
+            		}
+            	}else if (msg.obj != null) {
             		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
             	}
         	}
