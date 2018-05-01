@@ -988,9 +988,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         			activity.showMapAndMarkers();
         		} else if (msg.what == AsyncTaskManager.SHOW_ROUTE_MESSAGE) {
         			activity.routesCluster.showRouteAction((String) msg.obj, true);
-        		} else if (msg.obj != null) {
-            		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
-            	} else if (msg.what == GmsLocationServicesManager.GMS_CONNECTED) {
+        		} else if (msg.what == GmsLocationServicesManager.GMS_CONNECTED) {
             		activity.onConnected();
             	} else if (msg.what == GmsLocationServicesManager.UPDATE_LOCATION) {
             		activity.onLocationChanged();
@@ -1005,7 +1003,9 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), zoom, activity.projection);
             			}
             		}
-            	} 
+            	} else if (msg.obj != null) {
+            		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
+            	}
         	}
 		}
 	}

@@ -868,7 +868,9 @@ public class DealMapAmzActivity extends MapActivity implements OnClickListener {
             				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), activity.mapView.getZoomLevel(), new AmzLandmarkProjection(activity.mapView));
             			}
             		}
-            	} 
+            	} else if (msg.obj != null) {
+            		LoggerUtils.error("Unknown message received: " + msg.obj.toString());
+            	}
             }
         }	
     }
