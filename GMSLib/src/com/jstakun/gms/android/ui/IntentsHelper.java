@@ -1603,7 +1603,7 @@ public final class IntentsHelper {
     		HttpUtils utils = new HttpUtils();
     		try {
     			Map<String, String> params = new HashMap<String, String>();
-    			params.put("address", query);
+    			params.put("address", query.replace('+',  ' '));
             
     			String email = ConfigurationManager.getUserManager().getUserEmail();
     			if (StringUtils.isNotEmpty(email)) {
