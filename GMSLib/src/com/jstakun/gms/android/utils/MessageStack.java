@@ -56,7 +56,9 @@ public class MessageStack {
     }
 
     private void updateStatusBar() {
-        uiHandler.sendEmptyMessage(STATUS_MESSAGE);
+    	if (uiHandler != null) {
+    		uiHandler.sendEmptyMessage(STATUS_MESSAGE);
+    	}
     }
 
     public void removeConditionalMessage(boolean hideLoadingImage, int loaderType) {
