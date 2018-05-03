@@ -237,6 +237,9 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
         	layer = bundle.getString("layer", null);
+        	if (layer != null) {
+        		LoggerUtils.debug("Requested layer " + layer);
+        	}
         }
         
         if (mapCenter == null) {
