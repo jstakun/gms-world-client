@@ -190,6 +190,8 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 
         LatLng mapCenter = null;
         
+        String layer = null;
+        
         Bundle bundle = getIntent().getExtras();
         
         if (bundle != null) {
@@ -203,6 +205,10 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         		LoggerUtils.debug("Searching for geocode...");
         		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
+        	layer = bundle.getString("layer", null);
+        	if (layer != null) {
+        		LoggerUtils.debug("Requested layer " + layer);
+        	}
         }
         
         if (mapCenter == null) {
@@ -210,7 +216,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         }
         
         if (mapCenter != null) {
-        	initOnLocationChanged(mapCenter, 2);
+        	initOnLocationChanged(mapCenter, 2, layer);
         } else {
         	loadingHandler.sendEmptyMessageDelayed(PICK_LOCATION, ConfigurationManager.FIVE_SECONDS);
         }
@@ -401,15 +407,19 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     	
 	}
 	
-	private synchronized void initOnLocationChanged(LatLng location, int source) {
+	private synchronized void initOnLocationChanged(LatLng location, int source, String layer) {
     	//System.out.println("4 --------------------------------");
     	if (!appInitialized && location != null) {
     		//System.out.println("4.1 --------------------------------");
         	loadingProgressBar.setProgress(75);
         	    	
         	if (!LandmarkManager.getInstance().isInitialized()) {
-        		LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, 
+        		if (layer == null) {
+        			LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, 
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
+        		} else {
+        			LandmarkManager.getInstance().initialize(layer);
+        		}
             }
             
         	MessageStack.getInstance().setHandler(loadingHandler);
@@ -722,7 +732,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
                 }
                 
                 if (!appInitialized) {
-                	initOnLocationChanged(new LatLng(lat, lng), 4);
+                	initOnLocationChanged(new LatLng(lat, lng), 4, null);
                 } else {
                 	pickPositionAction(new LatLng(lat, lng), true, true);
                 }
@@ -730,7 +740,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             } else if (resultCode == RESULT_CANCELED && !appInitialized) {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
-                initOnLocationChanged(new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()), 5);
+                initOnLocationChanged(new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude()), 5, null);
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 IntentsHelper.getInstance().showInfoToast(message);
@@ -784,7 +794,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 		Location location = ConfigurationManager.getInstance().getLocation();
 		
 		if (!appInitialized && !isFinishing()) {
-			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 3);
+			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 3, null);
 		}
 		
 		if (appInitialized && !isFinishing() && AndroidDevice.isBetterLocation(location, ConfigurationManager.getInstance().getLocation())) {
@@ -797,7 +807,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
 	private void onConnected() {
 		Location location = ConfigurationManager.getInstance().getLocation();
 		if (location != null && !appInitialized) {
-			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 0);
+			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 0, null);
 		}	
 	}
 
@@ -996,7 +1006,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
             		Location l = (Location) msg.obj;
             		if (l != null) {
             			if (!activity.appInitialized) {
-            				activity.initOnLocationChanged(new LatLng(l.getLatitude(), l.getLongitude()), 10);
+            				activity.initOnLocationChanged(new LatLng(l.getLatitude(), l.getLongitude()), 10, null);
             			} else {
             				activity.animateTo(new LatLng(l.getLatitude(), l.getLongitude()));
             				int zoom = (activity.mMap != null) ? (int)activity.mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
