@@ -1510,6 +1510,9 @@ public final class IntentsHelper {
         	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
         	if (length > 2) {
         		try {
+        			if (StringUtils.equals(data.getPathSegments().get(0), "showHotels")) {
+        				dest.putExtra("layer", Commons.HOTELS_LAYER);
+        			}
         			String latSegment = data.getPathSegments().get(length-2);
         			lat = StringUtil.decode(latSegment);
         			String lngSegment = StringUtils.split(data.getLastPathSegment(), ";")[0]; 

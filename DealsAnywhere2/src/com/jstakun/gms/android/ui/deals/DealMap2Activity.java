@@ -357,7 +357,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             
             if (!LandmarkManager.getInstance().isInitialized()) {
                 //UserTracker.getInstance().sendMyLocation();
-            	LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
+            	LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, 
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
 

@@ -108,7 +108,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         public void run() {
             GeoPoint location = LocationServicesManager.getInstance().getMyLocation();
             if (location != null && !isAppInitialized) {
-                initOnLocationChanged(location);
+                initOnLocationChanged(location, null);
             } else {
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
                     //start only if help activity not on top
@@ -119,7 +119,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
                     double lng = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
                     GeoPoint loc = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
-                    initOnLocationChanged(loc);
+                    initOnLocationChanged(loc, null);
                 }
             }
         }
@@ -261,6 +261,8 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         
         Bundle bundle = getIntent().getExtras();
         
+        String layer = null;
+        
         if (bundle != null) {
         	Double lat = bundle.getDouble("lat", 0.0);
         	Double lng = bundle.getDouble("lng", 0.0);
@@ -272,6 +274,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         		LoggerUtils.debug("Searching for geocode...");
         		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);
         	}
+        	layer = bundle.getString("layer", null);
         }
         
         if (mapCenter == null) {
@@ -283,12 +286,12 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
         }
                 
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
-            initOnLocationChanged(mapCenter);
+            initOnLocationChanged(mapCenter, layer);
         } else {
             Runnable r = new Runnable() {
                 public void run() {
                     if (!isAppInitialized) {
-                        initOnLocationChanged(LocationServicesManager.getInstance().getMyLocation());
+                        initOnLocationChanged(LocationServicesManager.getInstance().getMyLocation(), null);
                     }
                 }
             };
@@ -477,14 +480,14 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
   	  	}
     }
 
-    private synchronized void initOnLocationChanged(final GeoPoint location) {
+    private synchronized void initOnLocationChanged(final GeoPoint location, String layer) {
         if (!isAppInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
         	
         	mapController.setCenter(location);
         	
             if (!LandmarkManager.getInstance().isInitialized()) {
-                LandmarkManager.getInstance().initialize();
+                LandmarkManager.getInstance().initialize(layer);
             }
 
             addLandmarkOverlay();
@@ -898,7 +901,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 	
                 GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
                 if (!isAppInitialized) {
-                	initOnLocationChanged(location);
+                	initOnLocationChanged(location, null);
                 } else {
                 	pickPositionAction(location, true, true);
                 }
@@ -908,7 +911,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
-                initOnLocationChanged(location);
+                initOnLocationChanged(location, null);
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 IntentsHelper.getInstance().showInfoToast(message);
@@ -1295,7 +1298,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             		Location l = (Location) msg.obj;
             		if (l != null) {
             			if (!activity.isAppInitialized) {
-            				activity.initOnLocationChanged(new GeoPoint(l.getLatitude(),l.getLongitude()));
+            				activity.initOnLocationChanged(new GeoPoint(l.getLatitude(),l.getLongitude()), null);
             			} else {
             				int[] coordsE6 = {MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude())};
             				activity.animateTo(coordsE6);

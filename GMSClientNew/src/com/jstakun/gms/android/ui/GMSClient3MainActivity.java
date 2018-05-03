@@ -223,6 +223,8 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         
         Bundle bundle = getIntent().getExtras();
         
+        String layer = null;
+        
         if (bundle != null) {
         	Double lat = bundle.getDouble("lat", 0.0);
         	Double lng = bundle.getDouble("lng", 0.0);
@@ -234,6 +236,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         		LoggerUtils.debug("Searching for geocode...");
         		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
+        	layer = bundle.getString("layer", null);
         }
         
         if (mapCenter == null) {
@@ -241,7 +244,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         }
         
         if (mapCenter != null) {
-        	initOnLocationChanged(mapCenter, 2);
+        	initOnLocationChanged(mapCenter, 2, layer);
         } else {
         	loadingHandler.sendEmptyMessageDelayed(PICK_LOCATION, ConfigurationManager.FIVE_SECONDS);
         }
@@ -589,7 +592,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 
                 if (!appInitialized) {
                 	LatLng mapCenter = new LatLng(lat, lng);
-                	initOnLocationChanged(mapCenter, 4);
+                	initOnLocationChanged(mapCenter, 4, null);
                 } else {
                 	pickPositionAction(new LatLng(lat, lng), true, true);
                 }
@@ -598,7 +601,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 LatLng mapCenter = new LatLng(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude());
-                initOnLocationChanged(mapCenter, 5);
+                initOnLocationChanged(mapCenter, 5, null);
             } else if (resultCode == RESULT_CANCELED && intent != null && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 IntentsHelper.getInstance().showInfoToast(message);
@@ -770,7 +773,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		Location location = ConfigurationManager.getInstance().getLocation();
 		//user location has changed	
 		if (!appInitialized && !isFinishing()) {
-			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 3);
+			initOnLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()), 3, null);
 		}
 		
 		if (appInitialized && !isFinishing()) {
@@ -791,7 +794,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		Location location = ConfigurationManager.getInstance().getLocation();
 		if (location != null && !appInitialized) {
 			LatLng mapCenter = new LatLng(location.getLatitude(), location.getLongitude());
-			initOnLocationChanged(mapCenter, 0);
+			initOnLocationChanged(mapCenter, 0, null);
 		}
     }
 	
@@ -1003,12 +1006,12 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
 		return true;
     }
 
-	private synchronized void initOnLocationChanged(LatLng location, int source) {
+	private synchronized void initOnLocationChanged(LatLng location, int source, String layer) {
     	if (!appInitialized && location != null) {
     		loadingProgressBar.setProgress(75);
         	    	
         	if (!LandmarkManager.getInstance().isInitialized()) {
-        		LandmarkManager.getInstance().initialize();
+        		LandmarkManager.getInstance().initialize(layer);
             }
             
         	MessageStack.getInstance().setHandler(loadingHandler);
@@ -1335,7 +1338,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
             		Location l = (Location) msg.obj;
             		if (l != null) {
             			if (!activity.appInitialized) {
-            				activity.initOnLocationChanged(new LatLng(l.getLatitude(), l.getLongitude()), 10);
+            				activity.initOnLocationChanged(new LatLng(l.getLatitude(), l.getLongitude()), 10, null);
             			} else {
             				activity.animateTo(new LatLng(l.getLatitude(), l.getLongitude()));
             				int zoom = (activity.mMap != null) ? (int)activity.mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);

@@ -408,7 +408,7 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
         	loadingProgressBar.setProgress(75);
         	    	
         	if (!LandmarkManager.getInstance().isInitialized()) {
-        		LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, Commons.COUPONS_LAYER,
+        		LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, 
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
             }
             
