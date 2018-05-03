@@ -506,7 +506,11 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
         	mapController.setCenter(location);
         	
         	if (!LandmarkManager.getInstance().isInitialized()) {
-        		LandmarkManager.getInstance().initialize(layer);
+        		if (layer == null) {
+        			LandmarkManager.getInstance().initialize();
+        		} else {
+        			LandmarkManager.getInstance().initialize(layer);
+        		}
             }
             
             addLandmarkOverlay();

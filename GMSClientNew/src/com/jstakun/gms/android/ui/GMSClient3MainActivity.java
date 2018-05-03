@@ -1011,7 +1011,11 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
     		loadingProgressBar.setProgress(75);
         	    	
         	if (!LandmarkManager.getInstance().isInitialized()) {
-        		LandmarkManager.getInstance().initialize(layer);
+        		if (layer == null) {
+        			LandmarkManager.getInstance().initialize();
+        		} else {
+        			LandmarkManager.getInstance().initialize(layer);
+        		}
             }
             
         	MessageStack.getInstance().setHandler(loadingHandler);
