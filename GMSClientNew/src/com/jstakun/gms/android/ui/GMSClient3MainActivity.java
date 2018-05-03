@@ -1028,6 +1028,7 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                     LoggerUtils.debug("Loading Layers in " + location.latitude + "," +  location.longitude);
                     int zoom = (mMap != null) ? (int)mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
+                    IntentsHelper.getInstance().setActivity(this);
                     IntentsHelper.getInstance().loadLayersAction(true, null, false, true, location.latitude, location.longitude, zoom, projection);
                 }
             } else {

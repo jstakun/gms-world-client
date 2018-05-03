@@ -508,6 +508,7 @@ public class GMSClient2OSMMainActivity extends Activity implements OnClickListen
             if (!LayerLoader.getInstance().isLoading() && !LayerLoader.getInstance().isInitialized()) {
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                 	LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());
+                	IntentsHelper.getInstance().setActivity(this);
                     IntentsHelper.getInstance().loadLayersAction(true, null, false, true, location.getLatitude(),
                     		location.getLongitude(), mapView.getZoomLevel(), new OsmLandmarkProjection(mapView));
                 }
