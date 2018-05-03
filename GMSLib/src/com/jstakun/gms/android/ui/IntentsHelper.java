@@ -1510,8 +1510,9 @@ public final class IntentsHelper {
         	LoggerUtils.debug("Deep link: " + scheme + "://" + host);
         	if (length > 2) {
         		try {
-        			LoggerUtils.debug("First path segment: " + data.getPathSegments().get(0));
-        			if (StringUtils.equals(data.getPathSegments().get(0), "showHotels")) {
+        			String first = data.getPathSegments().get(0);
+        			LoggerUtils.debug("First path segment: -" + first + "-");
+        			if (StringUtils.equalsIgnoreCase(first, "showHotels")) {
         				LoggerUtils.debug("Setting layer: " + Commons.HOTELS_LAYER);
         				dest.putExtra("layer", Commons.HOTELS_LAYER);
         			}
