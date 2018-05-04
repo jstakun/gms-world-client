@@ -12,8 +12,8 @@ import com.jstakun.gms.android.ui.lib.R;
 public class HotelsReader extends AbstractSerialReader {
 
 	@Override
-	protected void init(double latitude, double longitude, int zoom, int width, int height) {
-		super.init(latitude, longitude, zoom, width, height);    
+	protected void init(double latitude, double longitude, int zoom) {
+		super.init(latitude, longitude, zoom);    
 		String l = Locale.getDefault().getLanguage();
 		params.put("latitudeMin", Double.toString(latitude));
 		params.put("longitudeMin", Double.toString(longitude));

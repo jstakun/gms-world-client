@@ -81,7 +81,6 @@ import android.provider.Settings;
 import android.text.Html;
 import android.text.Html.ImageGetter;
 import android.text.method.LinkMovementMethod;
-import android.view.Display;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -768,8 +767,7 @@ public final class IntentsHelper {
         if (projection != null) {
            ConfigurationManager.getInstance().putObject(BoundingBox.BBOX, projection.getBoundingBox());
         }
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        LayerLoader.getInstance().loadLayers(latitude, longitude, zoomLevel, display.getWidth(), display.getHeight(), loadExternal, selectedLayer, loadServerLayers);
+        LayerLoader.getInstance().loadLayers(latitude, longitude, zoomLevel, loadExternal, selectedLayer, loadServerLayers);
     }
     
     public int[] showSelectedLandmark(int id, double[] currentLocation, View lvView, int zoomLevel, ProjectionInterface projection) {

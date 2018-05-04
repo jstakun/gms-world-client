@@ -528,7 +528,6 @@ public class GMSClient2MainActivity extends MapActivity implements OnClickListen
             if (!LayerLoader.getInstance().isInitialized() && !LayerLoader.getInstance().isLoading()) {
                 if (ConfigurationManager.getInstance().isOff(ConfigurationManager.FOLLOW_MY_POSITION)) {
                     LoggerUtils.debug("Loading Layers in " + location.getLatitude() + "," +  location.getLongitude());
-                    IntentsHelper.getInstance().setActivity(this);
                     IntentsHelper.getInstance().loadLayersAction(true, null, false, true, location.getLatitude(), location.getLongitude(),
                             mapView.getZoomLevel(), ProjectionFactory.getProjection(mapView, googleMapsView));
                 }

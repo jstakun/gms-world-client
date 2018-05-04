@@ -15,8 +15,8 @@ public class TwFriendsReader extends AbstractSerialReader {
 	private boolean hasToken = false;
 	
 	@Override
-	protected void init(double latitude, double longitude, int zoom, int width, int height) {
-		super.init(latitude, longitude, zoom, width, height);
+	protected void init(double latitude, double longitude, int zoom) {
+		super.init(latitude, longitude, zoom);
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TWEET_AUTH_STATUS)) {
 			ISocialUtils twUtils = OAuthServiceFactory.getSocialUtils(Commons.TWITTER);
 			Token token = twUtils.getAccessToken();
@@ -29,11 +29,11 @@ public class TwFriendsReader extends AbstractSerialReader {
 	}
 	
 	@Override
-	public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
+	public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, String layer, GMSAsyncTask<?, ? ,?> task) {
 		String errorMessage = null;
         
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TWEET_AUTH_STATUS)) {
-			init(latitude, longitude, zoom, width, height);
+			init(latitude, longitude, zoom);
 			if (hasToken) {
 				errorMessage = parser.parse(getUrls(), 0, params, landmarks, task, true, Commons.TWITTER, true);
 			}

@@ -27,7 +27,7 @@ public class LayerJSONParser {
 
     private HttpUtils utils = new HttpUtils();
 
-    public String parse(Map<String, Layer> layers, List<String> excluded, double latitude, double longitude, int zoom, int width, int height) {
+    public String parse(Map<String, Layer> layers, List<String> excluded, double latitude, double longitude, int zoom) {
         String errorMessage = null;
         String url = ConfigurationManager.getInstance().getServerUrl() + "listLayers";
 

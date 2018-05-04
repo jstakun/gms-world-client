@@ -554,6 +554,7 @@ public class LandmarkManager {
         }
         
         landmarkPaintManager.clearRecentlyOpenedLandmarks();
+        initialized = false;
     }
 
     public String persistToServer(ExtendedLandmark landmark, String validityDate) {

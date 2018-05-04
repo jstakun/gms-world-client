@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface LayerReader {
 
-    public abstract String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ?, ?> task);
+    public abstract String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, String layer, GMSAsyncTask<?, ?, ?> task);
 
     public abstract void close();
 

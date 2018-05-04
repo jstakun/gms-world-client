@@ -35,7 +35,7 @@ public class LayerLoader {
     private static final LayerLoader instance = new LayerLoader();
     
     private double latitude, longitude;
-    private int zoom, width, height, counter;
+    private int zoom, counter; 
     private boolean loadExternal = true, initialized = false;
     private Handler repaintHandler;
     private InitLayerLoadingTask initLayerLoadingTask;
@@ -68,12 +68,10 @@ public class LayerLoader {
         }
     }
     
-    public void loadLayers(double latitude, double longitude, int zoom, int width, int height, boolean loadExternal, String selectedLayer, boolean loadServerLayers) {
+    public void loadLayers(double latitude, double longitude, int zoom, boolean loadExternal, String selectedLayer, boolean loadServerLayers) {
         
-        this.height = height;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.width = width;
         this.zoom = zoom;
         this.loadExternal = loadExternal;
         initialized = false;
@@ -244,7 +242,7 @@ public class LayerLoader {
                         	if (!concurrentLayerLoader.isCancelled() && !isCancelled()) {
                         		List<ExtendedLandmark> items = LandmarkManager.getInstance().getLandmarkStoreLayer(key);
                         		int initialSize = items.size();
-                        		String errorMessage = reader.readRemoteLayer(items, latitude, longitude, zoom, width, height, key, this);
+                        		String errorMessage = reader.readRemoteLayer(items, latitude, longitude, zoom, key, this);
                             	if (errorMessage != null) {
                             		MessageStack.getInstance().addMessage(errorMessage, 10, -1, -1);
                         			if (repaintHandler != null && errorMessage.equals(FacebookUtils.FB_OAUTH_ERROR)) {
@@ -336,7 +334,7 @@ public class LayerLoader {
         @Override
         protected String doInBackground(String... arg0) {
             excludedExternal.clear();
-            return LayerManager.getInstance().initializeExternalLayers(excludedExternal, latitude, longitude, zoom, width, height);
+            return LayerManager.getInstance().initializeExternalLayers(excludedExternal, latitude, longitude, zoom);
         }
         
         @Override

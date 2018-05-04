@@ -20,7 +20,7 @@ public abstract class AbstractSerialReader implements LayerReader {
     protected SerialParser parser = null;
     protected int radius;
      
-    protected void init(double latitude, double longitude, int zoom, int width, int height) {
+    protected void init(double latitude, double longitude, int zoom) {
         parser = new SerialParser();
         radius = DistanceUtils.radiusInKilometer();
         int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, DEFAULT_LIMIT);
@@ -52,8 +52,8 @@ public abstract class AbstractSerialReader implements LayerReader {
     	return urls.toArray(new String[urls.size()]);
     }
 
-    public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
-    	init(latitude, longitude, zoom, width, height);
+    public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, String layer, GMSAsyncTask<?, ? ,?> task) {
+    	init(latitude, longitude, zoom);
     	params.put("layer", layer);
 	    return parser.parse(getUrls(), 0, params, landmarks, task, true, layer, false);
     }

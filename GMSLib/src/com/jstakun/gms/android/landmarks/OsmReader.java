@@ -11,8 +11,8 @@ import com.jstakun.gms.android.utils.StringUtil;
 public abstract class OsmReader extends AbstractSerialReader {
 
 	@Override
-	protected void init(double latitude, double longitude, int zoom, int width, int height) {
-		super.init(latitude, longitude, zoom, width, height);
+	protected void init(double latitude, double longitude, int zoom) {
+		super.init(latitude, longitude, zoom);
         BoundingBox bbox = (BoundingBox) ConfigurationManager.getInstance().getObject(BoundingBox.BBOX, BoundingBox.class);
 		if (bbox != null) {
 			params.put("longitudeMin", StringUtil.formatCoordE2(bbox.west));

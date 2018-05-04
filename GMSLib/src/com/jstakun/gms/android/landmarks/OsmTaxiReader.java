@@ -9,8 +9,8 @@ import com.jstakun.gms.android.utils.GMSAsyncTask;
 public class OsmTaxiReader extends OsmReader {
 
 	@Override
-	public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, int width, int height, String layer, GMSAsyncTask<?, ? ,?> task) {
-		init(latitude, longitude, zoom, width, height);
+	public String readRemoteLayer(List<ExtendedLandmark> landmarks, double latitude, double longitude, int zoom, String layer, GMSAsyncTask<?, ? ,?> task) {
+		init(latitude, longitude, zoom);
 		params.put("amenity", "taxi");
 	    return parser.parse(getUrls(), 0, params, landmarks, task, true, layer, false);	
     }

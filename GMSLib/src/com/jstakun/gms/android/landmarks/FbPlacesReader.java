@@ -13,8 +13,8 @@ import com.jstakun.gms.android.ui.lib.R;
 public class FbPlacesReader extends AbstractSerialReader {
 
 	@Override
-	protected void init(double latitude, double longitude, int zoom, int width, int height) {
-		super.init(latitude, longitude, zoom, width, height);
+	protected void init(double latitude, double longitude, int zoom) {
+		super.init(latitude, longitude, zoom);
 		if (ConfigurationManager.getInstance().isOn(ConfigurationManager.FB_AUTH_STATUS)) {
 			ISocialUtils fbUtils = OAuthServiceFactory.getSocialUtils(Commons.FACEBOOK);
             String token = fbUtils.getAccessToken().getToken();

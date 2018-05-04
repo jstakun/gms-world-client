@@ -251,7 +251,10 @@ public class LayerManager {
         synchronized (layers) {
             layers.clear();
             dynamicLayers.clear();
-            initializeDynamicLayers();
+            
+            if (layerNames.length != 1) {
+            	initializeDynamicLayers();
+            }
 
             if (layerNames.length == 0) {
                 for (Iterator<String> iter = Iterables.filter(allLayers.keySet(), new LayerEnabledPredicate()).iterator(); iter.hasNext();) {
@@ -295,11 +298,11 @@ public class LayerManager {
         }
     }
 
-    protected final String initializeExternalLayers(List<String> excluded, double latitude, double longitude, int zoom, int width, int height) {
+    protected final String initializeExternalLayers(List<String> excluded, double latitude, double longitude, int zoom) {
         LoggerUtils.debug("I'm initilizing external server layers!");
     	Map<String, Layer> externalLayers = new LinkedHashMap<String, Layer>();
         LayerJSONParser lp = new LayerJSONParser();
-        String response = lp.parse(externalLayers, excluded, latitude, longitude, zoom, width, height);
+        String response = lp.parse(externalLayers, excluded, latitude, longitude, zoom);
         synchronized (layers) {
             layers.putAll(externalLayers);
         }
