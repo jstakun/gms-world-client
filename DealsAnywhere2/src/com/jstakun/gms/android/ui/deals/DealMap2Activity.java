@@ -93,7 +93,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         public void run() {
             GeoPoint location = getMyLocation();
             if (location != null && !appInitialized) {
-                initOnLocationChanged(location);
+                initOnLocationChanged(location, null);
             } else {
                 if (ConfigurationManager.getInstance().isDefaultCoordinate()) {
                     //start only if help activity not on top
@@ -104,7 +104,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                     double lat = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
                     double lng = ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
                     GeoPoint loc = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
-                    initOnLocationChanged(loc);
+                    initOnLocationChanged(loc, null);
                 }
             }
         }
@@ -214,6 +214,8 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
         GeoPoint mapCenter = null;
         
+        String layer = null;
+        
         Bundle bundle = getIntent().getExtras();
         
         if (bundle != null) {
@@ -227,6 +229,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         		LoggerUtils.debug("Searching for geocode...");
         		AsyncTaskManager.getInstance().executeParseGeocodeTask(query, this, loadingHandler);	
         	}
+        	layer = bundle.getString("layer", null);
         }
         
         if (mapCenter == null) {
@@ -234,13 +237,13 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         }
         
         if (mapCenter != null && mapCenter.getLatitudeE6() != 0 && mapCenter.getLongitudeE6() != 0) {
-            initOnLocationChanged(mapCenter);
+            initOnLocationChanged(mapCenter, layer);
         } else {
             loadingHandler.postDelayed(gpsRunnable, ConfigurationManager.FIVE_SECONDS);
             myLocation.runOnFirstFix(new Runnable() {
                 public void run() {
                     if (!appInitialized) {
-                        initOnLocationChanged(getMyLocation());
+                        initOnLocationChanged(getMyLocation(), null);
                     }
                 }
             });
@@ -350,15 +353,18 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
         return true;
 	}
 
-    private synchronized void initOnLocationChanged(GeoPoint location) {
+    private synchronized void initOnLocationChanged(GeoPoint location, String layer) {
         if (!appInitialized && location != null) {
         	loadingProgressBar.setProgress(75);
             mapController.setCenter(location);
             
             if (!LandmarkManager.getInstance().isInitialized()) {
-                //UserTracker.getInstance().sendMyLocation();
-            	LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, 
+            	if (layer == null) {
+        			LandmarkManager.getInstance().initialize(Commons.LOCAL_LAYER, Commons.ROUTES_LAYER, Commons.MY_POSITION_LAYER, 
                 		Commons.HOTELS_LAYER, Commons.GROUPON_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER, Commons.YELP_LAYER);
+        		} else {
+        			LandmarkManager.getInstance().initialize(layer);
+        		}
             }
 
             GoogleLandmarkOverlay landmarkOverlay = new GoogleLandmarkOverlay(loadingHandler);//, new String[]{LayerManager.ROUTES_LAYER});
@@ -372,7 +378,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
 
             if (!LayerLoader.getInstance().isInitialized() && !LayerLoader.getInstance().isLoading()) {
                 LoggerUtils.debug("Loading Layers...");
-                IntentsHelper.getInstance().loadLayersAction(true, null, false, false,
+                IntentsHelper.getInstance().loadLayersAction(true, layer, false, false,
                         MathUtils.coordIntToDouble(location.getLatitudeE6()),
                         MathUtils.coordIntToDouble(location.getLongitudeE6()),
                         mapView.getZoomLevel(), new GoogleLandmarkProjection(mapView));              
@@ -424,7 +430,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 if (lat != null && lng != null && name != null && lat > -200d && lng > -200d) { 
                 	GeoPoint location = new GeoPoint(MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
                 	if (!appInitialized) {
-                		initOnLocationChanged(location);
+                		initOnLocationChanged(location, null);
                 	} else {
                 		pickPositionAction(location, true, false, true);
                 	}
@@ -437,7 +443,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
                 ExtendedLandmark landmark = ConfigurationManager.getInstance().getDefaultCoordinate();
                 IntentsHelper.getInstance().showInfoToast(Locale.getMessage(R.string.Pick_location_default, landmark.getName()));
                 GeoPoint location = new GeoPoint(landmark.getLatitudeE6(), landmark.getLongitudeE6());
-                initOnLocationChanged(location);
+                initOnLocationChanged(location, null);
             } else if (resultCode == RESULT_CANCELED && intent.hasExtra("message")) {
                 String message = intent.getStringExtra("message");
                 IntentsHelper.getInstance().showInfoToast(message);
@@ -872,7 +878,7 @@ public class DealMap2Activity extends MapActivity implements OnClickListener {
             		if (l != null) {
             			int[] coordsE6 = {MathUtils.coordDoubleToInt(l.getLatitude()), MathUtils.coordDoubleToInt(l.getLongitude())};
         				if (!activity.appInitialized) {
-            				activity.initOnLocationChanged(new GeoPoint(coordsE6[0], coordsE6[1]));
+            				activity.initOnLocationChanged(new GeoPoint(coordsE6[0], coordsE6[1]), null);
             			} else {
             				activity.animateTo(coordsE6);
             				IntentsHelper.getInstance().loadLayersAction(true, null, false, true, l.getLatitude(), l.getLongitude(), activity.mapView.getZoomLevel(), new GoogleLandmarkProjection(activity.mapView));
