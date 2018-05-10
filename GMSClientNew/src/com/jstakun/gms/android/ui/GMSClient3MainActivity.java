@@ -362,7 +362,10 @@ public class GMSClient3MainActivity extends ActionBarActivity implements Navigat
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         		IntentsHelper.getInstance().stopRouteTrackingService(mConnection, isRouteTrackingServiceBound);
         	}
-	        IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
+        	int zoom = (mMap != null) ? (int)mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
+        	double lat = (mMap != null) ? mMap.getCameraPosition().target.latitude : ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
+        	double lng = (mMap != null) ? mMap.getCameraPosition().target.longitude : ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
+        	IntentsHelper.getInstance().hardClose(loadingHandler, null, zoom, MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
         } else if (mMap != null) {
         	if (ConfigurationManager.getInstance().isOn(ConfigurationManager.RECORDING_ROUTE)) {
         		IntentsHelper.getInstance().unbindRouteTrackingService(mConnection, isRouteTrackingServiceBound);
