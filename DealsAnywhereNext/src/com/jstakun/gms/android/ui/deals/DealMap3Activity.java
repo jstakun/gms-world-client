@@ -324,7 +324,10 @@ public class DealMap3Activity extends ActionBarActivity implements NavigationDra
     	super.onDestroy();
     	if (ConfigurationManager.getInstance().isClosing()) {
         	appInitialized = false;
-        	IntentsHelper.getInstance().hardClose(loadingHandler, null, (int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
+        	int zoom = (mMap != null) ? (int)mMap.getCameraPosition().zoom : ConfigurationManager.getInstance().getInt(ConfigurationManager.ZOOM);
+        	double lat = (mMap != null) ? mMap.getCameraPosition().target.latitude : ConfigurationManager.getInstance().getDouble(ConfigurationManager.LATITUDE);
+        	double lng = (mMap != null) ? mMap.getCameraPosition().target.longitude : ConfigurationManager.getInstance().getDouble(ConfigurationManager.LONGITUDE);
+        	IntentsHelper.getInstance().hardClose(loadingHandler, null, zoom, MathUtils.coordDoubleToInt(lat), MathUtils.coordDoubleToInt(lng));
         } else if (mMap != null) {
             IntentsHelper.getInstance().softClose((int)mMap.getCameraPosition().zoom, MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.latitude), MathUtils.coordDoubleToInt(mMap.getCameraPosition().target.longitude));
         }
