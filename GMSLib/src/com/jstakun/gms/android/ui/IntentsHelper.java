@@ -1514,9 +1514,14 @@ public final class IntentsHelper {
         				LoggerUtils.debug("Setting layer: " + Commons.HOTELS_LAYER);
         				dest.putExtra("layer", Commons.HOTELS_LAYER);
         			}
-        			String latSegment = data.getPathSegments().get(length-2);
+        			int coordsIndex = length-2;
+        			if (StringUtils.isNumeric(data.getLastPathSegment())) {
+        				coordsIndex -= 1;
+        				ConfigurationManager.getInstance().putObject(ConfigurationManager.LANDMARKS_PER_LAYER, new Integer(data.getLastPathSegment()));
+        			}
+        			String latSegment = data.getPathSegments().get(coordsIndex);
         			lat = StringUtil.decode(latSegment);
-        			String lngSegment = StringUtils.split(data.getLastPathSegment(), ";")[0]; 
+        			String lngSegment = StringUtils.split(data.getPathSegments().get(coordsIndex+1), ";")[0]; 
         			lng = StringUtil.decode(lngSegment);
         			LoggerUtils.debug("Decoded params " + latSegment + "," + lngSegment + " to " + lat + "," + lng);
         		} catch (Exception e) {

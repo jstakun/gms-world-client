@@ -23,10 +23,15 @@ public abstract class AbstractSerialReader implements LayerReader {
     protected void init(double latitude, double longitude, int zoom) {
         parser = new SerialParser();
         radius = DistanceUtils.radiusInKilometer();
-        int limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, DEFAULT_LIMIT);
-        if (limit == DEFAULT_LIMIT && OsUtil.isIceCreamSandwichOrHigher()) {
-            limit = 2 * limit;
-        } 
+        int limit = DEFAULT_LIMIT;
+        if (ConfigurationManager.getInstance().containsObject(ConfigurationManager.LANDMARKS_PER_LAYER, Integer.class)) {
+        	limit = (Integer)ConfigurationManager.getInstance().getObject(ConfigurationManager.LANDMARKS_PER_LAYER, Integer.class);
+        } else {
+        	limit = ConfigurationManager.getInstance().getInt(ConfigurationManager.LANDMARKS_PER_LAYER, DEFAULT_LIMIT);
+        	if (limit == DEFAULT_LIMIT && OsUtil.isIceCreamSandwichOrHigher()) {
+        		limit = 2 * limit;
+        	} 
+        }
         int dealLimit = ConfigurationManager.getInstance().getInt(ConfigurationManager.DEAL_LIMIT, DEFAULT_DEAL_LIMIT);      
         if (dealLimit == DEFAULT_DEAL_LIMIT && OsUtil.isIceCreamSandwichOrHigher()) {
             dealLimit = (int) (1.5 * dealLimit);
