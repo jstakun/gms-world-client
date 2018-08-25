@@ -560,15 +560,17 @@ public class HttpUtils {
 	    try {
 	    	for (Map.Entry<String, String> pair : params.entrySet())
 	    	{
-	    		if (first) {
-	    			first = false;
-	    		} else {
-	    			result.append("&");
-	    		}
+	    		if (pair.getKey() != null && pair.getValue() != null) {
+	    			if (first) {
+	    				first = false;
+	    			} else {
+	    				result.append("&");
+	    			}
 	    		
-	    		result.append(URLEncoder.encode(pair.getKey(), "UTF-8"));
-	    		result.append("=");
-	    		result.append(URLEncoder.encode(pair.getValue(), "UTF-8"));
+	    			result.append(URLEncoder.encode(pair.getKey(), "UTF-8"));
+	    			result.append("=");
+	    			result.append(URLEncoder.encode(pair.getValue(), "UTF-8"));
+	    		}
 	    	}
 	    } catch (Exception e) {
 	    	LoggerUtils.error(e.getMessage(), e);
