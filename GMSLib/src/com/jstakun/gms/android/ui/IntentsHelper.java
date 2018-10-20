@@ -287,7 +287,9 @@ public final class IntentsHelper {
     }
 
     public void startLoginActivity() {
-        activity.startActivity(new Intent(activity, LoginActivity.class));
+    	if (activity != null) {
+    		activity.startActivity(new Intent(activity, LoginActivity.class));
+    	}
     }
     
     public boolean checkAuthStatus(ExtendedLandmark selectedLandmark) {
