@@ -71,8 +71,8 @@ public class UserTracker {
     		tracker.send(new HitBuilders.EventBuilder()
             	.setCategory(category)
             	.setAction(action)
-            	.setLabel(label).
-            	setValue(value).build());
+            	.setLabel(label)
+            	.setValue(value).build());
         }
     }
 
@@ -90,17 +90,14 @@ public class UserTracker {
     }
     
     //send my location action 
+    
     public void sendMyLocation() {
         if (ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
-        //if (ConfigurationManager.getInstance().isOn(ConfigurationManager.TRACK_USER)
-        //     && ConfigurationManager.getInstance().isOn(ConfigurationManager.SEND_MY_POS_AT_STARTUP)) {
         	ConfigurationManager.getInstance().remove(ConfigurationManager.SEND_MY_POS_AT_STARTUP);
             ConfigurationManager.getDatabaseManager().saveConfiguration(false);
             LoggerUtils.debug("I'm sending current location.");
             new SendMyLocationTask(10).execute();
-        } //else {
-        	//LoggerUtils.debug("I'm skipping sending current location.");
-        //}
+        } 
     }
 
     private class SendMyLocationTask extends GMSAsyncTask<Void, Void, String> {

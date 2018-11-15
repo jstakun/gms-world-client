@@ -555,21 +555,19 @@ public class HttpUtils {
 	private static String getQuery(Map<String, String> params) 
 	{
 	    StringBuilder result = new StringBuilder();
-	    boolean first = true;
-
+	    
 	    try {
-	    	for (Map.Entry<String, String> pair : params.entrySet())
-	    	{
-	    		if (pair.getKey() != null && pair.getValue() != null) {
-	    			if (first) {
-	    				first = false;
-	    			} else {
+	    	for (Map.Entry<String, String> pair : params.entrySet()) {
+	    		final String key = pair.getKey();
+	    		final String value = pair.getValue();
+	    		if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
+	    			if (result.length() > 0) {
 	    				result.append("&");
 	    			}
 	    		
-	    			result.append(URLEncoder.encode(pair.getKey(), "UTF-8"));
+	    			result.append(URLEncoder.encode(key, "UTF-8"));
 	    			result.append("=");
-	    			result.append(URLEncoder.encode(pair.getValue(), "UTF-8"));
+	    			result.append(URLEncoder.encode(value, "UTF-8"));
 	    		}
 	    	}
 	    } catch (Exception e) {
